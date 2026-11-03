@@ -12,7 +12,7 @@ Dedicated GitHub workspace for RTL88WiFi on macOS Sequoia 15.8.1 (24H32), x86_64
 1. All future RTL88WiFi logs are uploaded to `Development/output.log`.
 2. All future RTL88WiFi scripts, source ZIP/tar archives, audit files, build reports and generated artifacts are uploaded under `Development/`.
 3. Runner URLs use the `/Development/` prefix, for example:
-   `https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage27-new-tree-compile-only.sh`.
+   `https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage27-new-tree-compile-only.sh`.
 4. Do not create new RTL88WiFi development files at the repository root.
 5. Preserve the user's existing working older `rtl88wifi.kext`. Experimental WCL candidates must not replace it until build, dependency, signing, ABI, queue lifecycle, teardown and hardware checks are complete.
 6. Preserve every run log as a uniquely named file directly under `Development/Logs/`; never overwrite an earlier run's log. Use the stage and UTC run timestamp in each filename, for example `stage43-run-20261102-040558-report.txt`, `stage43-run-20261102-040558-build.log`, `stage43-run-20261102-040558-source.patch`, and `stage43-run-20261102-040558-manifest.txt`. Timestamped subfolders may also retain the original grouped run artifacts. Keep appending concise stage summaries to `Development/output.log`, but do not use that shared file as the only retained record.
@@ -36,7 +36,7 @@ The Stage26 copy originally excluded all `*.kext` paths, which also omitted the 
 Run the next audit from the target Mac:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage29d-native-mach-o-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage29d-native-mach-o-audit.sh | bash
 ```
 
 Stage29d verifies that the audited executable SHA-256 still matches the Stage29c-v5 build. It does not build, patch, install, load, or change OpenCore. Reports are appended to the canonical [output.log](./output.log).
@@ -49,7 +49,7 @@ Stage29d's structural Mach-O checks passed, but the legacy `kextlibs` tool repor
 Run the modern, read-only KernelManagement audit on the target Mac:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage29e-kmutil-symbol-resolution-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage29e-kmutil-symbol-resolution-audit.sh | bash
 ```
 
 Stage29e uses `kmutil libraries` against the Boot/System Kernel Collections plus `kmutil print-diagnostics`. It does not use `kmutil load`, `--do-staging`, or make any install/OpenCore/source changes. It verifies the binary hash before inspecting it and appends to the canonical `output.log`.
@@ -64,7 +64,7 @@ Stage29f performs read-only ownership, code-signature, xattr and kmutil checks a
 Run on the target Mac:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage29f-package-auth-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage29f-package-auth-audit.sh | bash
 ```
 
 Do not proceed to installation until ownership and signing validation are resolved. Preserve the existing working legacy kext and OpenCore configuration.
@@ -82,7 +82,7 @@ Stage29g is a read-only preflight to inspect SIP status, available valid code-si
 Run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage29g-signing-policy-preflight.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage29g-signing-policy-preflight.sh | bash
 ```
 
 
@@ -108,7 +108,7 @@ Stage29h is a read-only Intel Hackintosh boot-policy/test-isolation audit. It in
 Run:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage29h-boot-policy-and-test-isolation-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage29h-boot-policy-and-test-isolation-audit.sh | bash
 ```
 
 Stage29h must be reviewed before any SIP change. After that, prepare an explicitly separate test EFI/configuration while preserving the known-good everyday EFI and legacy RTL88WiFi kext. The native bundle currently shares the legacy bundle identifier; therefore the two candidates are mutually exclusive and must never be installed side by side. Installation and loading remain blocked until a test-only rollback plan and queue/teardown ABI review are complete.
@@ -121,7 +121,7 @@ Stage29h completed, but no mounted `EFI/OC/config.plist` was found. Stage29i inv
 Run on the target Mac:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage29i-efi-partition-discovery.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage29i-efi-partition-discovery.sh | bash
 ```
 
 If the report lists one or more unmounted EFI partitions, it will print an exact `sudo diskutil mount diskXs1` command for each. Do not guess which EFI to mount: identify the partition used to start OpenCore before mounting. After the correct EFI is mounted, rerun Stage29i so its `config.plist` can be audited. No replacement config is generated until the existing OpenCore config and test-boot strategy are reviewed.
@@ -139,7 +139,7 @@ See [STAGE20-24H32-queue-contract-review.md](./STAGE20-24H32-queue-contract-revi
 After Stage20, run this read-only audit on the Stage26 source tree. It inventories current WCL source files, extracts the controller/interface start fences, lists registration and queue call sites, inspects the built native bundle dependencies and compares the executable hash with Stage29c-v5. It appends its report to the canonical Development/output.log and verifies the GitHub update. It does not edit source, build, install, load, register queues, enable callbacks, alter SIP/NVRAM, or change OpenCore.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage21-native-source-contract-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage21-native-source-contract-audit.sh | bash
 ```
 
 The result is intentionally REVIEW_REQUIRED pending manual correlation with the exact 24H32 callbacks and ownership contracts.
@@ -152,7 +152,7 @@ Stage22 is a read-only evidence-collection pass over the Stage26 native WCL sour
 Run on the target Mac from the Stage26 project root (or set `PROJECT_DIR`):
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage22-deep-source-lifecycle-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage22-deep-source-lifecycle-audit.sh | bash
 ```
 
 The runner fetches the canonical `Development/output.log`, verifies Stage21 and prior prerequisites, appends the Stage22 report, uploads it to GitHub and checks the remote blob SHA. It does not modify source, build, install, load, register/enable queues, change OpenCore/SIP/NVRAM, or touch the known-good legacy kext. Stage22 remains REVIEW_REQUIRED and the activation gate remains BLOCKED pending manual closure of all six ownership/lifecycle contracts.
@@ -164,7 +164,7 @@ Stage44 is a read-only 24H32 Kernel Collection audit of `IO80211InfraInterface::
 Run on the target Mac:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage44-v4-bsd-prepare-finalize-abi-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage44-v4-bsd-prepare-finalize-abi-audit.sh | bash
 ```
 
 The runner stores temporary output only inside the Stage26 source project's `run log/stage44/` directory. Every report part and supporting audit file is retained both in a timestamped `Development/Logs/stage44/<run>/` folder and as a unique stage/timestamp-named file directly under `Development/Logs/`; every upload is read back and SHA-verified. A concise checkpoint is appended to `Development/output.log`. This audit does not close the activation gate: queue registration, TX/RX completion ownership, publication, and teardown still require verified implementation.
@@ -176,7 +176,7 @@ Stage45 is a read-only 24H32 Kernel Collection audit of the additional virtual c
 Run on the target Mac:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage45-v1-bsd-finalize-cleanup-slot-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage45-v1-bsd-finalize-cleanup-slot-audit.sh | bash
 ```
 
 Temporary output stays under the Stage26 source project's `run log/stage45/` directory. Every report part and supporting audit file is saved in a timestamped `Development/Logs/stage45/<run>/` folder and as a unique file directly under `Development/Logs/`; uploads are read back and SHA-verified. A checkpoint is appended to `Development/output.log`. Identifying the callback does not close the activation gate; queue registration, TX/RX completion ownership, publication and full teardown must still be verified.
@@ -188,7 +188,7 @@ Stage46 is a read-only macOS Sequoia 15.8.1 (24H32) Kernel Collection audit of t
 Run on the target Mac:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage46-v2-network-deregistration-pool-ownership-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage46-v2-network-deregistration-pool-ownership-audit.sh | bash
 ```
 
 Temporary output is kept under the Stage26 source project's `run log/stage46/` directory. Reports and supporting evidence are uploaded both to a per-run `Development/Logs/stage46/<run>/` folder and to unique files directly under `Development/Logs/`. Each upload is read back and SHA-verified, and the checkpoint is appended to `Development/output.log`. The activation gate remains blocked until queue registration, TX/RX completion ownership, publication and complete teardown are all verified.
@@ -200,7 +200,7 @@ Stage47 is a read-only macOS Sequoia 15.8.1 (24H32) Kernel Collection audit of t
 Run on the target Mac:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage47-v1-logical-link-queue-teardown-audit.sh | bash
+curl -fsSL https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage47-v1-logical-link-queue-teardown-audit.sh | bash
 ```
 
 Temporary output is kept under the Stage26 source project's `run log/stage47/` directory. Report and ABI audit parts, source context, source fingerprints and upstream verification are uploaded in a timestamped `Development/Logs/stage47/<run>/` folder and as unique files directly under `Development/Logs/`. Each upload is read back and SHA-verified; a checkpoint is appended to `Development/output.log`. The activation gate remains blocked until queue registration, TX/RX completion ownership, publication and safe rollback/teardown are verified.
@@ -212,7 +212,7 @@ Stage48 is a read-only audit of the next layer after Stage47. It discovers and d
 Run on the target Mac:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage48-v1-registration-queue-construction-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage48-v1-registration-queue-construction-audit.sh" | bash
 ```
 
 Temporary output is kept under the Stage26 source project's `run log/stage48/` directory. Report, ABI-audit and source-context parts, source fingerprints and upstream verification are uploaded both to a timestamped `Development/Logs/stage48/<run>/` folder and as unique files directly under `Development/Logs/`. Each upload is read back and SHA-verified; a concise checkpoint is appended to `Development/output.log`. The runner stops if the Stage43 source fingerprints do not match. The activation gate remains blocked: this audit maps Apple's registration and callback ABI but does not implement queue creation, TX/RX completion, interface publication or safe rollback in RTL88WiFi.
@@ -224,7 +224,7 @@ Stage49 is a read-only correlation pass over the Stage26 RTL88WiFi native WCL so
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage49-v2-source-to-abi-correlation-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage49-v2-source-to-abi-correlation-audit.sh" | bash
 ```
 
 V2 corrects the teardown-pattern regular expression that stopped the first runner and uploads the manifest only after all artifact paths are recorded. All temporary files are stored under the Stage26 source project's `run log/stage49/<run>/` directory. The runner appends a checkpoint to `Development/output.log`. It does not edit driver source, build, sign, install or load a kext, modify OpenCore/SIP/NVRAM, or touch the known-good legacy kext. The activation gate remains BLOCKED; Stage49 does not authorize queue registration or hardware testing.
@@ -237,7 +237,7 @@ Stage50 V2 is a read-only source inspection that extracts the actual out-of-line
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage50-v2-registration-callgraph-reachability-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage50-v2-registration-callgraph-reachability-audit.sh" | bash
 ```
 
 Temporary files are stored only under the Stage26 source project's `run log/stage50/<run>/` directory. The runner uploads grouped and unique root-mirror artifacts with Git blob SHA readback verification, then appends a checkpoint to `Development/output.log`. It does not edit driver source, build, sign, install or load a kext, modify OpenCore/SIP/NVRAM, or touch the known-good legacy kext. The activation gate remains BLOCKED; Stage50 is an audit only and does not authorize queue registration or hardware testing.
@@ -250,7 +250,7 @@ Stage51 is a read-only source audit of the relationship between `RTW88WCLControl
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage51-v1-controller-interface-lifecycle-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage51-v1-controller-interface-lifecycle-audit.sh" | bash
 ```
 
 Temporary files are stored only under the Stage26 source project's `run log/stage51/<run>/` directory. The runner uploads grouped and unique root-mirror artifacts with Git blob SHA readback verification, then appends a checkpoint to `Development/output.log`. It does not edit driver source, build, sign, install or load a kext, modify OpenCore/SIP/NVRAM, or touch the known-good legacy kext. The activation gate remains BLOCKED; this audit does not authorize interface registration or hardware testing.
@@ -263,7 +263,7 @@ Stage52 is a read-only audit of the IOKit service/personality contract connectin
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage52-v1-iokit-personality-provider-contract-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage52-v1-iokit-personality-provider-contract-audit.sh" | bash
 ```
 
 Temporary files are stored only under the Stage26 source project's `run log/stage52/<run>/` directory. The runner uploads grouped and unique root-mirror artifacts with Git blob SHA readback verification, then appends a checkpoint to `Development/output.log`. It does not edit driver source, build, sign, install or load a kext, modify OpenCore/SIP/NVRAM, or touch the known-good legacy kext. The activation gate remains BLOCKED; this audit does not authorize interface registration or hardware testing.
@@ -276,7 +276,7 @@ Stage53 V2 is a read-only audit of the exact macOS Sequoia 15.8.1 (24H32) Boot K
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage53-v2-io80211-interface-factory-vtable-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage53-v2-io80211-interface-factory-vtable-audit.sh" | bash
 ```
 
 Temporary files are stored only under the Stage26 source project's `run log/stage53/<run>/` directory. The corrected V2 runner converts the output argument to a pathlib.Path before writing audit artifacts. It uses the pinned WTLKcAbi parser/disassembler, uploads grouped and unique root-mirror artifacts with Git blob SHA readback verification, then appends a checkpoint to `Development/output.log`. It does not edit driver source, build, sign, install or load a kext, modify OpenCore/SIP/NVRAM, or touch the known-good legacy kext. The activation gate remains BLOCKED; this audit does not authorize interface registration or hardware testing.
@@ -289,7 +289,7 @@ Stage54 V2 is a read-only audit of the macOS Sequoia 15.8.1 (24H32) Boot Kernel 
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage54-v2-exact-interface-initializer-factory-lifecycle-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage54-v2-exact-interface-initializer-factory-lifecycle-audit.sh" | bash
 ```
 
 Temporary files are kept under the Stage26 source project's `run log/stage54/<run>/` directory. The corrected V2 runner fixes the method range formatter by supplying both range endpoints. It checks the pinned WTLKcAbi tools and Stage43 source fingerprints, uploads grouped and unique root-mirror artifacts with Git blob SHA readback verification, and then appends a checkpoint to `Development/output.log`. It does not edit driver source, build/sign/install/load a kext, change OpenCore/SIP/NVRAM, or touch the known-good legacy kext. The activation gate remains BLOCKED; this audit does not authorize interface registration or hardware testing.
@@ -302,7 +302,7 @@ Stage55 is a read-only source-to-ABI correlation audit for the Sequoia 15.8.1 (2
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage55-v1-native-factory-registration-reachability-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage55-v1-native-factory-registration-reachability-audit.sh" | bash
 ```
 
 Temporary output remains under the Stage26 source project's `run log/stage55/<run>/` directory. Artifacts are uploaded to grouped and unique root-mirror paths with Git blob SHA readback verification, followed by a checkpoint in `Development/output.log`. The activation gate remains BLOCKED; this is an audit, not an implementation or hardware-test authorization.
@@ -315,7 +315,7 @@ Stage56 is a read-only ownership and callback audit for the native WCL frontend 
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage56-v1-registration-queue-txrx-integration-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage56-v1-registration-queue-txrx-integration-audit.sh" | bash
 ```
 
 Temporary output remains under the Stage26 source project's `run log/stage56/<run>/` directory. Artifacts are uploaded to grouped and unique root-mirror paths with Git blob SHA readback verification, followed by a checkpoint in `Development/output.log`. The activation gate remains BLOCKED; this is an audit, not an implementation or hardware-test authorization.
@@ -328,7 +328,7 @@ Stage57 V2 is a read-only comparison of the exact queue callback/dispatch ABI fr
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage57-v1-skywalk-queue-callback-abi-handoff-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage57-v1-skywalk-queue-callback-abi-handoff-audit.sh" | bash
 ```
 
 Temporary output stays under the Stage26 source project's `run log/stage57/<run>/` directory. Grouped and unique root-mirror artifacts are uploaded with Git blob SHA readback verification, followed by a checkpoint in `Development/output.log`. The activation gate remains BLOCKED; this is an ABI/callback audit, not queue activation or hardware-test authorization.
@@ -340,7 +340,7 @@ Stage58 V2 is a read-only audit of the exact Sequoia 15.8.1 (24H32) registration
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage58-v1-queueset-logicallink-registration-ownership-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage58-v1-queueset-logicallink-registration-ownership-audit.sh" | bash
 ```
 
 Temporary output remains under the Stage26 source project's `run log/stage58/<run>/` directory. Artifacts are uploaded to a timestamped `Development/Logs/stage58/<run>/` folder and as unique root-mirror files; each upload is read back and SHA-verified before a checkpoint is appended to `Development/output.log`. The activation gate remains BLOCKED. This stage is evidence gathering only; it does not authorize queue registration, a kext build, or hardware testing.
@@ -352,7 +352,7 @@ Stage59 is a read-only audit of the exact 24H32 packet-queue virtual methods tha
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage59-v1-packet-queue-dispatch-registration-contract-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage59-v1-packet-queue-dispatch-registration-contract-audit.sh" | bash
 ```
 
 Temporary output remains under the Stage26 source project's `run log/stage59/<run>/` directory. Reports are uploaded to a timestamped `Development/Logs/stage59/<run>/` folder and as unique root-mirror files; each upload is read back and SHA-verified before a checkpoint is appended to `Development/output.log`. The activation gate remains BLOCKED. This is an ABI investigation only; it does not authorize queue registration, a kext build, or hardware testing.
@@ -365,7 +365,7 @@ Stage60 is a read-only follow-up to Stage59. It verifies the Stage59 artifacts b
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage60-v1-itanium-vtable-addresspoint-dispatch-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage60-v1-itanium-vtable-addresspoint-dispatch-audit.sh" | bash
 ```
 
 Temporary output remains under the Stage26 source project's `run log/stage60/<run>/` directory. Reports are uploaded to `Development/Logs/stage60/<run>/` and as unique root-mirror files; each upload is read back and SHA-verified before `Development/output.log` is checkpointed. The activation gate remains BLOCKED; this ABI clarification does not authorize queue registration, a kext build, or hardware testing.
@@ -377,7 +377,7 @@ Stage61 is a read-only continuation of Stage60. It verifies the nine Stage60 pre
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage61-v1-queue-descriptor-classification-record-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage61-v1-queue-descriptor-classification-record-audit.sh" | bash
 ```
 
 Temporary output remains under the Stage26 source project's `run log/stage61/<run>/` directory. Reports are uploaded to `Development/Logs/stage61/<run>/` and as unique root-mirror files; each upload is read back and SHA-verified before `Development/output.log` is checkpointed. The activation gate remains BLOCKED.
@@ -389,7 +389,7 @@ Stage62 is a read-only continuation of Stage61. It verifies the ten Stage61 pred
 Run on the target Intel Hackintosh:
 
 ```bash
-curl -fsSL "https://raw.githubusercontent.com/shammu2bd/BDIX-TV/main/Development/stage62-v1-queueset-logical-link-registration-metadata-audit.sh" | bash
+curl -fsSL "https://raw.githubusercontent.com/shammu2bd/Realtek-WiFi-Native-macOS/main/Development/stage62-v1-queueset-logical-link-registration-metadata-audit.sh" | bash
 ```
 
 Temporary output remains under the Stage26 source project's `run log/stage62/<run>/` directory. Reports are uploaded to `Development/Logs/stage62/<run>/` and as unique root-mirror files; each upload is read back and SHA-verified before `Development/output.log` is checkpointed. The activation gate remains BLOCKED.
