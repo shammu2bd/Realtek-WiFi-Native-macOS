@@ -204,17 +204,6 @@ for member,klass,code in roles:
   calls[member]=None
   call_rows.append("QUEUE="+member+" CLASS="+klass+" TYPECODE="+str(code)+" FACTORY=NOT_FOUND RESULT=REVIEW_REQUIRED")
 values=re.findall(r"^WMM_SERVICE_CLASS_\d+=(0x[0-9a-fA-F]{8})",wmm,re.M)
-checks={
-"BASE_QUEUE_GET_SERVICE_CLASS_DECLARED":"getServiceClass()" in base,
-"BASE_QUEUE_SERVICE_CLASS_MEMBER_DECLARED":"mServiceClass" in base,
-"TX_SUBMISSION_EXPLICIT_SERVICE_CLASS_FACTORY":"withPoolAndServiceClass" in txs and "kern_packet_svc_class_t serviceClass" in txs,
-"TX_COMPLETION_FACTORY_HAS_NO_SERVICE_CLASS_PARAMETER":"withPool(" in txc and "kern_packet_svc_class_t serviceClass" not in txc,
-"RX_SUBMISSION_EXPLICIT_SERVICE_CLASS_PARAMETER":"kern_packet_svc_class_t serviceClass" in rxs,
-"RX_COMPLETION_FACTORY_HAS_NO_SERVICE_CLASS_PARAMETER":"withPool(" in rxc and "kern_packet_svc_class_t serviceClass" not in rxc,
-"FOUR_QUEUE_FACTORIES_FOUND":all(calls[x] is not None for x,_,_ in roles),
-"TYPECODE_CROSSWALK_1_TO_4_REVALIDATED":all(x in cross for x in ["TYPE_CODE=1 TX submission","TYPE_CODE=2 TX completion","TYPE_CODE=3 RX submission","TYPE_CODE=4 RX completion"]),
-"WMM_TABLE_HAS_FOUR_DISTINCT_VALUES":len(values)==4 and len(set(values))==4,
-"NO_DIRECT_PRIVATE_SERVICE_CLASS_FIELD_WRITE":not bool(re.search(r"(?:->|\.)\s*mServiceClass\s*=",cpp+hpp)),
 translation_units=[]
 registration_hits=[]
 for p in src.rglob("*"):
@@ -228,7 +217,18 @@ for p in src.rglob("*"):
   for name in ("registerInfraEthernetInterface","registerNetworkInterface","registerEthernetInterface"):
    for m in re.finditer(r"\b"+name+r"\s*\(",code):
     registration_hits.append(p.relative_to(src).as_posix()+":"+str(code.count("\n",0,m.start())+1)+":"+name)
-"NO_NATIVE_REGISTRATION_CALL":len(registration_hits)==0
+checks={
+"BASE_QUEUE_GET_SERVICE_CLASS_DECLARED":"getServiceClass()" in base,
+"BASE_QUEUE_SERVICE_CLASS_MEMBER_DECLARED":"mServiceClass" in base,
+"TX_SUBMISSION_EXPLICIT_SERVICE_CLASS_FACTORY":"withPoolAndServiceClass" in txs and "kern_packet_svc_class_t serviceClass" in txs,
+"TX_COMPLETION_FACTORY_HAS_NO_SERVICE_CLASS_PARAMETER":"withPool(" in txc and "kern_packet_svc_class_t serviceClass" not in txc,
+"RX_SUBMISSION_EXPLICIT_SERVICE_CLASS_PARAMETER":"kern_packet_svc_class_t serviceClass" in rxs,
+"RX_COMPLETION_FACTORY_HAS_NO_SERVICE_CLASS_PARAMETER":"withPool(" in rxc and "kern_packet_svc_class_t serviceClass" not in rxc,
+"FOUR_QUEUE_FACTORIES_FOUND":all(calls[x] is not None for x,_,_ in roles),
+"TYPECODE_CROSSWALK_1_TO_4_REVALIDATED":all(x in cross for x in ["TYPE_CODE=1 TX submission","TYPE_CODE=2 TX completion","TYPE_CODE=3 RX submission","TYPE_CODE=4 RX completion"]),
+"WMM_TABLE_HAS_FOUR_DISTINCT_VALUES":len(values)==4 and len(set(values))==4,
+"NO_DIRECT_PRIVATE_SERVICE_CLASS_FIELD_WRITE":not bool(re.search(r"(?:->|\.)\s*mServiceClass\s*=",cpp+hpp)),
+"NO_NATIVE_REGISTRATION_CALL":len(registration_hits)==0,
 }
 lines=[
 "STAGE89_QUEUE_SERVICE_CLASS_API_MATRIX",
