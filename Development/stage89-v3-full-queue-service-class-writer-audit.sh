@@ -177,7 +177,7 @@ rxc_init=choose("IOSkywalkRxCompletionQueue","initWithPool",0xffffff800298648a)
 
 def has(ins,pat): return any(re.search(pat,x,re.I) for x in ins)
 def after_base(ins):
- call=next((i for i,x in enumerate(ins) if "call" in x and "rax + 0x240" in x),None)
+ call=next((i for i,x in enumerate(ins) if "call" in x and re.search(r"\+\s*0x240\]",x)),None)
  return ins[call+1:] if call is not None else []
 # Store to the getter field by any base register, not only the known rbx spelling.
 field_refs=[]; field_writes=[]
@@ -208,7 +208,7 @@ base_default=has(base,r"mov\s+dword ptr \[rbx \+ 0xb8\],\s*0xffffffff")
 getter_offset=has(getter,r"mov\s+eax,\s*dword ptr \[rdi \+ 0xb8\]")
 tx_source_plain=bool(tx_match and tx_match.group(1)=="withPool" and "withPoolAndServiceClass" not in tx_match.group(1))
 # RX factory forwards the explicit source scalar; its initializer calls base and has no later field write.
-rx_factory_forwards=has(rx_factory,r"mov\s+ecx,\s*dword ptr \[rbp - 0x2c\]") and has(rx_factory,r"mov\s+r8d,\s*dword ptr \[rbp - 0x2c\]")
+rx_factory_forwards=has(rx_factory,r"mov\s+dword ptr \[rbp - 0x2c\],\s*ecx") and has(rx_factory,r"mov\s+r8d,\s*dword ptr \[rbp - 0x2c\]")
 rx_no_post_base_write=not any(re.search(r"\[[a-z0-9]+\s*\+\s*0xb8\]",x,re.I) for x in after_base(rx_init))
 txc_no_post_base_write=not any(re.search(r"\[[a-z0-9]+\s*\+\s*0xb8\]",x,re.I) for x in after_base(txc_init))
 rxc_no_post_base_write=not any(re.search(r"\[[a-z0-9]+\s*\+\s*0xb8\]",x,re.I) for x in after_base(rxc_init))
