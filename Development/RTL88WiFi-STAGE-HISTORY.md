@@ -35,6 +35,27 @@ Important distinctions:
 - OpenCore has not been changed by these later audits. Preserve the known-good legacy RTL88WiFi setup and existing everyday EFI.
 - The end goal remains a standalone native RTL88WiFi.kext using the macOS Wi-Fi menu, without requiring `IO80211FamilyLegacy.kext` / `IOSkywalkFamily.kext` as bundled dependencies and without blocking `com.apple.iokit.IOSkywalkFamily` in OpenCore. AirportRTW migration is not the chosen solution.
 
+## Source reconciliation after Stage 88 (pre-Stage 89, 2026-11-03)
+
+The Stage26 clean-source import did not include several later source changes that were independently preserved in Stage29b, Stage35T, Stage35V and Stage43 run artifacts. Those changes have now been reconciled into the main source tree using the retained exact patch instructions and target build evidence.
+
+### Backported source corrections
+
+- **Stage29b — separate native target:** restored the explicit `rtl88wifi-native` Makefile target. The normal/default `rtl88wifi` legacy target remains unchanged and does not depend on the native target. Native WCL objects are linked only into the separate native bundle; the legacy IO80211 frontend objects are not included in the native object list.
+- **Native bundle metadata:** added `tools/generate-sequoia-native-plist.py`. It is guarded to macOS 15.8.1 / build 24H32 / x86_64, resolves exact Apple IO80211Family, IOSkywalkFamily and IOPCIFamily versions from the target Mac, removes IO80211FamilyLegacy from the generated native plist, and writes generated metadata under `driver/RTL88WiFi/build/`. It does not alter the legacy source plist or install/load anything.
+- **Stage35T — confirmed warning fixes:** initialized `ltecoex_bckp` in RTW88 `mac.c`, the DBI write `flag` in `pci.c`, and the MDIO write `wflag` in `pci.c`. These are the exact three guarded local initializers covered by the retained Stage35T report.
+- **Stage35V — unaligned-safe TX checksum:** restored the common TX descriptor checksum helper in RTW88 `tx.h` to use aligned local words and `memcpy()`, rather than dereferencing potentially unaligned `__le16 *` / packed descriptor members. The retained Stage35V report records its alignment test passing for 16 offsets × 5 word counts (80 cases), and zero packed-member, conditional-uninitialized and invalid-'`offsetof` warnings.
+- **Stage43 — BSD parameter forwarding:** restored the qualified `IO80211InfraInterface::initBSDInterfaceParameters(params, address)` base call in `RTW88WCLInfraInterface.cpp`, based on the audited 24H32 base implementation and its retained target build report.
+
+### Reconciliation verification and limits
+
+- Live GitHub source checks: **PASS** for the Makefile target separation, native plist generator guards/dependency resolution, Stage35T initializers, Stage35V checksum helper and Stage43 qualified base forwarding.
+- Earlier target-machine evidence: Stage35T native build exit 0; Stage35V native build exit 0 with the targeted packed-member / conditional-uninitialized / invalid-`offsetof` warning counts at zero; Stage43 native build PASS.
+- **A fresh Xcode 16.4 build of the combined current main-branch source has not yet been run.** The new plist generator has not yet been executed on the target Mac. Run the native target on the specified 24H32 machine before treating this reconciled source baseline as build-verified.
+- No source change was made to the missing four-queue pointer array, native registration call, or the four TX/RX callback handoffs. No signing, installation, loading, radio start, SIP/NVRAM, EFI or OpenCore change was performed.
+
+**Status after source reconciliation:** build target restored; previous individually tested fixes backported; integrated native datapath remains incomplete. `IMPLEMENTATION_AUTHORIZED=NO`; `ACTIVATION_GATE=BLOCKED`. The proposed **Stage89 four-queue construction / registration-argument assembly** scope remains unchanged.
+
 ## Stage-by-stage history
 
 ### Stages 1–19 — WCL foundation, packet adapters and Apple ABI evidence
