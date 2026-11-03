@@ -454,7 +454,7 @@ static_assert(sizeof(IOSkywalkEthernetInterface) == 0x110, "24H32 IOSkywalkEther
 // Clang implements offsetof here as an ABI extension; keep the hard 24H32
 // offset assertion, but scope the expected diagnostic to this assertion only.
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Winvalidoffsetof"
+#pragma clang diagnostic ignored "-Winvalid-offsetof"
 static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
 #pragma clang diagnostic pop
 
