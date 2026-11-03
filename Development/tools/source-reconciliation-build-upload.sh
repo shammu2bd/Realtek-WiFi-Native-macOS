@@ -29,7 +29,7 @@ if [ -z "$GH_UPLOAD_TOKEN" ] && command -v security >/dev/null 2>&1; then
   GH_UPLOAD_TOKEN="$(security find-generic-password -a "$USER" -s "$KEYCHAIN_SERVICE" -w 2>/dev/null || true)"
 fi
 if [ -z "$GH_UPLOAD_TOKEN" ] && command -v git >/dev/null 2>&1; then
-  CREDENTIALS="$(printf 'protocol=https\nhost=github.com\n\n' | git credential fill 2>/dev/null || true)"
+  CREDENTIALS="$(printf 'protocol=https\nhost=github.com\n\n' | GIT_TERMINAL_PROMPT=0 git credential fill 2>/dev/null || true)"
   GH_UPLOAD_TOKEN="$(printf '%s\n' "$CREDENTIALS" | sed -n 's/^password=//p' | head -n 1)"
   unset CREDENTIALS
 fi
