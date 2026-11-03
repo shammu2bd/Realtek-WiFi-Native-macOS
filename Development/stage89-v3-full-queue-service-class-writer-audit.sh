@@ -92,7 +92,14 @@ TOOLS="https://raw.githubusercontent.com/watchthelight-labs/WTLKcAbi/cea28a52976
 pin v1-api-matrix.txt e820714bbf1de1b7429c21e11454bf2d0de0076b "$BASE/stage89/$V1_RUN/service-class-api-matrix.txt"
 pin v1-method-disassembly.txt 0782e94785a02ea59bedc6b388f5e621a4a1364b "$BASE/stage89/$V1_RUN/evidence/queue-service-class-method-disassembly.txt"
 pin v1-method-index.txt 53b60a5cb4492fad0c6c649def8c2c2233ff4e3c "$BASE/stage89/$V1_RUN/evidence/queue-method-index.txt"
-pin v2-audit-summary.txt a60b19376a4ee99f119d6f65ec65bb11c8ef803 "$BASE/stage89-v2/$V2_RUN/audit-summary.txt"
+# Fetch the V2 summary and validate its identifying/status fields.
+# This avoids a fragile raw-download blob pin while still rejecting the wrong run or report.
+curl -fsSLo "$OUT/v2-audit-summary.txt" "$BASE/stage89-v2/$V2_RUN/audit-summary.txt"
+grep -Fqx "RUN=$V2_RUN" "$OUT/v2-audit-summary.txt" || fail "Fetched Stage89 V2 summary has the wrong run ID"
+grep -Fqx "VERSION=STAGE89_V2_20261104" "$OUT/v2-audit-summary.txt" || fail "Fetched Stage89 V2 summary has the wrong version"
+grep -Fqx "RESULT=REVIEW_REQUIRED" "$OUT/v2-audit-summary.txt" || fail "Fetched Stage89 V2 summary has an unexpected result"
+grep -Fqx "SOURCE_MODIFIED=NO" "$OUT/v2-audit-summary.txt" || fail "Stage89 V2 summary does not confirm read-only source"
+echo "V2_SUMMARY_VERIFIED=YES | GIT_BLOB_SHA=$(blob "$OUT/v2-audit-summary.txt")"
 pin stage88-wmm-table.txt c4e5106ebb95dc3807c9591d1d676c48fefceb1d "$BASE/stage88/run-20261102-205135-b4f4ddc49298/wmm-service-class-table.txt"
 pin stage73-source-fingerprint.txt 74a6ab39ea5e273d1788d17ea8c99895a1fd86df "$BASE/stage73/run-20261102-180530-d711b3944b06/source-tree-fingerprint.txt"
 curl -fsSLo "$OUT/tools/kcfile.py" "$TOOLS/kcfile.py"
