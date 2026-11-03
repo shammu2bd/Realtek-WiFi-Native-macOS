@@ -1,3 +1,158 @@
+========== RESTORED CHECKPOINT HISTORY: STAGES 1–22 ==========
+HISTORY_DATE=2026-11-03
+TARGET=macOS Sequoia 15.8.1 (24H32) | x86_64 | Intel Hackintosh | PCIe RTL8821CE
+SOURCE_BASELINE=RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+RECONSTRUCTION_STATUS=RECOVERED_FROM_MASTER_HISTORY_AND_RETAINED_ARTIFACTS
+EVIDENCE_NOTE=The pre-existing canonical output.log began at Stage 23. Stages 1–19 below are retrospective summaries recovered from master stage history and saved project artifacts; Stage 20 is supported by its review ledger; Stage 21 is summarized from master history and retained runner; Stage 22 is supported by its retained report. These are restored checkpoints, not original timestamped console transcripts. No missing run IDs or timestamps have been invented.
+SAFETY_NOTE=Audit PASS means only that the audit's stated checks passed. It does not mean native registration, a functioning Wi-Fi service, install/load readiness or RTL8821CE hardware validation.
+KNOWN_GOOD_LEGACY=Preserve the already-working legacy rtl88wifi.kext and everyday EFI. No Stage 1–22 checkpoint authorizes replacing it, changing OpenCore, weakening SIP, or installing/loading the experimental native candidate.
+
+========== STAGE 01 — NATIVE WCL FOUNDATION ==========
+RECORD_TYPE=RECOVERED_BASELINE | STAGE_LABEL=INFERRED_CHRONOLOGICAL_LABEL (the source status document had no literal Stage 1 heading)
+SCOPE=RTW88 radio-bridge concept; bounded serialized WCL event queue; Sequoia 24H32 controller ABI shell; ABI-neutral PCI/MMIO/DMA backend owner; native-controller mbuf TX gate; bounded infrastructure-protocol request decoder.
+RESULT=COMPILE_ONLY_FAIL_CLOSED_SCAFFOLDING
+BOUNDARY=No native IOKit personality, registered interface, live native link, kext load or hardware test. Not linked into the legacy kext.
+
+========== STAGE 02 — TX TERMINAL OUTCOME AND PACKET BOUNDS ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Added optional completion token to RTW88 sk_buff; outputPacketWithCompletion(); atomic terminal claim to arbitrate hardware completion against early free, purge and reset; overflow-safe single-buffer Skywalk packet/buffer range and Ethernet-frame bounds.
+RESULT=RACE_AND_BOUNDS_TESTS_ADDED
+BOUNDARY=Skywalk TX submit deliberately remains kIOReturnNotReady. It does not consume or complete a live Skywalk packet.
+
+========== STAGE 03 — REGISTRATION ABI SAFETY ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Compared public SDK and independent Sequoia private Ethernet-registration declarations; kept opaque RegistrationInfo and ExpansionData opaque; avoided speculative layout or call.
+RESULT=REGISTRATION_REMAINS_FENCED
+FOLLOWUP=Stage 10 later established the target registration return contract as IOReturn. Stage 3's conflicting header observation is historical, not the final ABI conclusion.
+
+========== STAGE 04 — BOUNDED SKYWALK TX ADAPTER ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Added Skywalk-to-RTW88 TX conversion seam and fixed 128-slot completion-ticket table; packet validation and copy into RTW88 mbuf; RTW88 completion publishes a bounded result for deferred draining.
+RESULT=COMPILE_ONLY_ADAPTER
+BOUNDARY=No live queue registration or Skywalk completion API; TX submission remains not-ready.
+
+========== STAGE 05 — BOUNDED RX STAGING ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Added fixed 128-entry MPMC mbuf ring and workloop drain with bounded per-pass processing.
+RESULT=CONCURRENT_PRODUCER_AND_EXACT_ONCE_STAGING_STRESS_TESTED
+BOUNDARY=No native Skywalk packet creation/refill, RX completion or interface publication.
+
+========== STAGE 06 — NATIVE RX PACKET CONVERSION ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Validated conversion from fragmented RTW88 mbuf chains into one-buffer IOSkywalkPacket objects, including packet length/status and memory-segment/range checks.
+RESULT=PACKET_SINK_REJECTED_OR_RECYCLED_PACKET_AT_THIS_STAGE
+BOUNDARY=No enqueuePackets(), registration or BSD publication.
+
+========== STAGE 07 — CONTROLLER-OWNED RX PACKET RETENTION ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Added bounded 128-entry native packet ring and teardown ordering for packets retained by the controller.
+RESULT=OWNERSHIP_STAGING_ONLY
+BOUNDARY=Not an RX completion queue or network-delivery path.
+
+========== STAGE 08 — REGISTRATION METHOD-BODY COLLECTION ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Expanded bounded evidence collector to capture complete registration method bodies and Apple interface start path.
+RESULT=HOST_EXTRACTION_CHECKS_PASS
+FOLLOWUP=Remaining exact-symbol coverage led to Stage 9.
+
+========== STAGE 09 — FORCED REGISTRATION SYMBOLS ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Forced collection of exact mangled registration symbols and inspected suspected interface vtable slot.
+RESULT=SYMBOL_COVERAGE_IMPROVED
+CORRECTION=Initial interpretation of slot 0xc00 was corrected in Stage 10.
+
+========== STAGE 10 — 24H32 REGISTRATION STATUS CONTRACT ==========
+RECORD_TYPE=RECOVERED_ABI_DISASSEMBLY
+SCOPE=Apple interface start calls registerInfraEthernetInterface; wrapper flows into network registration; success is tested as EAX == 0. Suspected vtable slot 0xc00 resolves to setInterfaceOFDMDesense, not registration.
+RESULT=REGISTRATION_RETURN_CONTRACT_IOReturn
+BOUNDARY=Registration calls remain fenced pending queue, packet ownership and rollback evidence.
+
+========== STAGE 11 — REGISTRATIONINFO BUILDER ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Added persistent aligned 0x130-byte builder based on audited initializer; confirmed writes at offsets 0x0c, 0x14, 0x24, 0x40 and hardware MAC at 0x108.
+RESULT=BUILDER_IMPLEMENTED_BUT_NOT_CALLED_FROM_START
+BOUNDARY=No registration invocation; queue, pool, callback and rollback contracts remained open.
+
+========== STAGE 12 — QUEUE AND POOL ABI CAPTURE ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Collected exact method bodies for IOSkywalkPacketQueue, PacketBufferPool, QueueSet and LogicalLink.
+RESULT=INITIAL_PARSER_INCOMPLETE
+FOLLOWUP=Stage 12.1 repaired exact mangled-symbol handling and completed the collection.
+
+========== STAGE 13 — APPLE PCIE PACKET-POOL ABI ==========
+RECORD_TYPE=RECOVERED_ARTIFACT_HISTORY
+SCOPE=Inspected target Apple PCIe packet-pool/provider-specific pool and memory-segment ABI.
+RESULT=REFERENCE_EVIDENCE_ONLY
+BOUNDARY=No guessed provider-specific allocation and no live pool use.
+
+========== STAGE 14 — GENERIC SKYWALK CLASS EVIDENCE ==========
+RECORD_TYPE=RECOVERED_ABI_COLLECTION
+SCOPE=Collected target ABI evidence: 49 vtables, 325 size records, 701 function bodies and eight class method lists.
+RESULT=EVIDENCE_COLLECTION_COMPLETED
+BOUNDARY=Later stages still needed to audit semantics and ownership; no activation authorization.
+
+========== STAGE 15 — PACKET ACCESSOR AUDIT ==========
+RECORD_TYPE=RECOVERED_ABI_AUDIT
+SCOPE=Correlated packet accessor implementations with collected Skywalk class evidence.
+RESULT=ACCESSOR_EVIDENCE_ONLY
+BOUNDARY=No activation authorization.
+
+========== STAGE 16 — PACKET SIZE / OFFSET SEMANTIC AUDIT ==========
+RECORD_TYPE=RECOVERED_ABI_AUDIT
+SCOPE=Compared actual packet and packet-buffer layouts with SDK expectations.
+RESULT=REVIEW_REQUIRED
+FINDING=IOSkywalkPacket actual size 0x70 versus expected 0x78; IOSkywalkPacketBuffer size 0x90 matched.
+BOUNDARY=The IOSkywalkPacket discrepancy was preserved, not silently corrected or treated as a pass.
+
+========== STAGE 17 — FULL METHOD CAPTURE ==========
+RECORD_TYPE=RECOVERED_ABI_COLLECTION
+SCOPE=Captured all 743/743 executable method bodies; recorded 19/19 ownership-fence items; 39 of 782 total symbols were non-code.
+RESULT=METHOD_CAPTURE_COMPLETENESS_PASS
+BOUNDARY=Manual ownership review remained required.
+
+========== STAGE 18 — OWNERSHIP CONTRACT DOSSIERS ==========
+RECORD_TYPE=RECOVERED_REVIEW_ARTIFACT
+SCOPE=Produced six ownership-contract dossiers covering unresolved queue, pool, packet and teardown handoffs.
+RESULT=READY_FOR_MANUAL_REVIEW
+BOUNDARY=Not engineer sign-off and not permission to activate.
+
+========== STAGE 19 — OWNERSHIP REVIEW CHECKPOINT ==========
+RECORD_TYPE=RECOVERED_REVIEW_CHECKPOINT
+SCOPE=Consolidated remaining manual queue, pool, packet and teardown questions from Stage 18 dossiers.
+RESULT=OWNERSHIP_CONTRACTS_OPEN
+BOUNDARY=No queue registration authorization.
+
+========== STAGE 20 — 24H32 QUEUE CONTRACT REVIEW LEDGER ==========
+RECORD_TYPE=RECOVERED_STATIC_REVIEW | DATE=2026-11-02
+EVIDENCE=Development/STAGE20-24H32-queue-contract-review.md
+SCOPE=Correlated Stage 14–17 target ABI evidence with Stage 18–19 ownership dossiers. Reviewed RX completion array-versus-chain paths; RX submission refill/dequeue consumed-count behavior; TX completion worker behavior; packet-pool and memory-segment prepare/complete; registration and cross-queue teardown.
+RESULT=PARTIALLY_RESOLVED_FACTS_WITH_SIX_ACTIVATION_CONTRACTS_STILL_BLOCKED
+BOUNDARY=Static review only, not a new target-Mac run. No source modification, queue registration/enable, packet handoff, BSD publication, radio start, install/load or OpenCore change.
+
+========== STAGE 21 — NATIVE SOURCE-TO-ABI CONTRACT AUDIT ==========
+RECORD_TYPE=RECOVERED_FROM_MASTER_HISTORY_AND_RUNNER
+RUNNER=Development/stage21-native-source-contract-audit.sh
+SCOPE=Inventoried WCL source files and SHA-256 fingerprints; inspected controller/interface start fences; listed registration and queue call sites; inspected Makefile native-target membership; compared native/legacy bundle identity and framework dependencies; checked native executable hash against the Stage29c-v5 build.
+STATUS=REVIEW_REQUIRED
+EVIDENCE_LIMITATION=No distinct Stage21 report or original Stage21 append block was found in the retained Development/output.log snapshot; this entry restores the scope/status documented in the master history and runner, not an invented timestamped run.
+BOUNDARY=Read-only source-to-ABI review. No source edit, queue activation, radio start, install/load or OpenCore change. Manual callback/ownership correlation remained required.
+
+========== STAGE 22 — DEEP SOURCE LIFECYCLE AND OWNERSHIP AUDIT ==========
+RECORD_TYPE=RECOVERED_REPORT_CHECKPOINT
+EVIDENCE=Development/stage22-latest-report.txt
+RUNNER=Development/stage22-deep-source-lifecycle-audit.sh
+SOURCE_FILE_COUNT=20
+SCOPE=Recorded numbered source contexts and SHA-256 hashes for controller/interface start-stop; registration/deregistration; TX/RX callbacks; packet-ticket references; packet-pool and DMA prepare/complete; queue teardown.
+STATUS=REVIEW_REQUIRED
+ACTIVATION_GATE=BLOCKED
+REVIEW_ITEMS=Six areas: RX callback packet owner/consumed-count and partial-error behavior; TX ticket retain/release across completion/cancel/timeout/stop; matching memory/segment prepare-complete and unmap; RegistrationInfo layout and queue ordering/pool roles/rollback; global callback-quiescence/disable/synchronize/finalize/deregister/pool-destruction order; direct versus indirect/vtable/callback reachability.
+SOURCE_CHANGES=NONE | BUILD=NOT_RUN | INSTALL=NOT_RUN | LOAD=NOT_RUN | QUEUE_REGISTRATION=NOT_CALLED | QUEUE_ENABLE=NOT_CALLED | RADIO_START=NOT_RUN | OPENCORE_CHANGE=NONE
+KNOWN_GOOD_LEGACY_KEXT=NOT_TOUCHED
+BOUNDARY=Evidence excerpts support manual review but do not prove runtime ownership or close the activation gate.
+
+========== END RESTORED STAGE 1–22 CHECKPOINT HISTORY ==========
+========== ORIGINAL CANONICAL RUN CHECKPOINTS CONTINUE BELOW: STAGE 23 ONWARD ==========
+
 
 ========== STAGE23 TARGETED DATAPATH AUDIT ==========
 STAGE23_REPORT: Development/stage23-targeted-datapath-audit.txt

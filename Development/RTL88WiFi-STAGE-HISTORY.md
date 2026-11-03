@@ -10,7 +10,7 @@
 This document is the chronological index of the work completed and audited across the earlier “Combine Kext Dependencies” conversations and the current GitHub development runs. It consolidates recovered Stage 1–19 notes, the Stage 20–62 development narrative, and the later Stage 63–88 checkpoints.
 
 - **This file** is the durable stage-by-stage overview and current project checkpoint.
-- [`Development/output.log`](./output.log) is the append-only run checkpoint log. Its older canonical content begins at Stage 23; this master file fills in the recovered earlier history and provides the complete index.
+- [`Development/output.log`](./output.log) is the chronological checkpoint stream. A clearly marked recovered Stage 1–22 section now precedes the original canonical Stage 23-and-later run entries. The restored Stage 1–22 summaries are reconstructed from this master history and retained artifacts; they are not presented as original contemporaneous console transcripts.
 - [`Development/README.md`](./README.md) contains repository operating rules and selected stage run instructions.
 - [`Development/Logs/`](./Logs/) contains the detailed timestamped reports, evidence parts, manifests and run artifacts. Stage-level summaries below do not replace those raw reports.
 
