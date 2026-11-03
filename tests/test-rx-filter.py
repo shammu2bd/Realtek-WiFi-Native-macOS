@@ -5,6 +5,7 @@ ASan/UBSan check malformed inputs. This is not a kernel or hardware test.
 """
 from pathlib import Path
 import subprocess, tempfile
+import shutil
 
 root=Path(__file__).resolve().parents[1]/'driver/RTL88WiFi'
 s=(root/'src/kext/RTW88IEEE80211.cpp').read_text()
@@ -111,7 +112,8 @@ int main(){
 '''
 with tempfile.TemporaryDirectory(prefix='rtw88-rxfilter-') as td:
     p=Path(td);(p/'test.cpp').write_text(prefix+fn('void RTW88IEEE80211::deliverDataFrame(')+'\n'+fn('void RTW88IEEE80211::deAmsdu(')+main)
-    subprocess.run(['xcrun','clang++','-std=c++17','-fsanitize=address,undefined','-fno-sanitize-recover=all','-g',str(p/'test.cpp'),'-o',str(p/'test')],check=True)
+    compiler = ['xcrun', 'clang++'] if shutil.which('xcrun') else ['clang++']
+    subprocess.run(compiler + ['-std=c++17','-fsanitize=address,undefined','-fno-sanitize-recover=all','-g',str(p/'test.cpp'),'-o',str(p/'test')],check=True)
     r=subprocess.run([str(p/'test')],capture_output=True,text=True)
     print('\n'.join(l for l in r.stdout.splitlines() if l.startswith('PASS') or 'trailer check' in l))
     if r.returncode: print(r.stdout[-2000:],r.stderr[-3000:]); raise SystemExit(r.returncode)

@@ -13,6 +13,19 @@ client app is needed.
 > [remaining issues](#remaining-issues) will not be fixed. Keep a bootable EFI
 > backup on USB.
 
+> [!NOTE]
+> **This tree contains unofficial community source updates through 1.0.11.**
+> These include mesh scan/cache fixes, WPA3-SAE disablement with WPA2 fallback
+> for eligible transition networks, open-network host32 association decoding,
+> and Legacy/Skywalk Private Wi-Fi Address GET/SET dispatch for Off/Fixed/Rotating
+> handling. Host-side source tests do not replace an Xcode kernel build or
+> physical Settings-menu verification; 1.0.11 has not been built with Xcode.
+> Treat this as experimental and keep a bootable EFI backup. WPA3-SAE,
+> OWE/Enhanced Open, PMF-required networks, 802.11k/v/r and true 802.11s mesh
+> mode remain unsupported. The driver does not force a country code; macOS
+> currently reports `US` in the supplied diagnostic. See
+> [CHANGELOG.md](CHANGELOG.md).
+
 <p align="center">
   <img src="docs/images/speedtest-2.0.1.png" alt="RTL8821CE speed test: 93.40 Mbps down, 92.45 Mbps up" width="380">
 </p>
@@ -53,7 +66,9 @@ It ends with a report block (without MAC, IP or network name) for a
 
 **Works:** WPA2-Personal, WPA2/WPA3 transition mode (connects as WPA2), open
 networks, 2.4 and 5 GHz (80 MHz), Wi-Fi menu and auto-join, network switching,
-group rekeys, sleep/wake.
+mesh multi-BSS join fallback, and bounded scan-assisted roaming between known
+same-SSID nodes (CoreWiFi still decides whether to roam), group rekeys,
+sleep/wake.
 
 **Doesn't work:** WPA3-only, Enterprise, hidden networks, AirDrop and
 Continuity (AWDL). Bluetooth is a separate device and is not covered. TKIP is
@@ -80,8 +95,15 @@ These are known and will not be fixed:
   affected.
 - **Unsupported security and joins:** WPA3-only (SAE), Enterprise/802.1X,
   OWE, PMF-required networks and joining hidden networks. TKIP is untested.
+- **Roaming limits:** associated background scans now check up to eight
+  candidate channels from CoreWiFi's request and the known same-SSID BSS list.
+  This enables scan-assisted handoff, but CoreWiFi controls the final roam
+  decision and the driver does not force a roam. 802.11k Neighbor Reports,
+  802.11v BSS Transition Management, and 802.11r Fast BSS Transition are not
+  implemented. True 802.11s mesh-point mode is not supported; consumer mesh
+  systems are handled as ordinary infrastructure BSSs sharing an ESS.
 - **Untested hardware and systems:** RTL8822BE/CE, macOS other than Sonoma
-  14.8.9, roaming, and long standby/hibernate.
+  14.8.9, the new connected-scan/roaming path, and long standby/hibernate.
 - **System Information leftovers.** AirDrop and Auto Unlock are listed as
   "Supported" but do not work. Card Type shows the card's PCI subsystem ID,
   not its device ID. RTL8821CE reports no noise value.
@@ -92,8 +114,11 @@ These are known and will not be fixed:
 
 You need a working OpenCore EFI with Lilu. Back up your EFI to USB first.
 
-1. **Copy the kexts.** Copy `AMFIPass`, `IOSkywalkFamily`, `IO80211FamilyLegacy`
-   and `RTL88WiFi` from [`Kexts/`](Kexts) to `EFI/OC/Kexts/`. Disable any other
+1. **Build the current RTL88WiFi kext first.** Follow the Build section below.
+   Copy `AMFIPass`, `IOSkywalkFamily`, and `IO80211FamilyLegacy` from
+   [`Kexts/`](Kexts) to `EFI/OC/Kexts/`, then copy the freshly built
+   `driver/RTL88WiFi/build/out/RTL88WiFi.kext` there. Do not use an older
+   prebuilt `RTL88WiFi.kext` from another EFI or archive. Disable any other
    Wi-Fi kext.
 2. **`Kernel → Add`.** Add the kexts after Lilu, in that order. Executable path:
    `Contents/MacOS/<name>`. For each entry set `MinKernel 23.0.0` and
@@ -131,8 +156,10 @@ Changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## Status
 
-Discontinued: no further development, fixes or releases are planned. The
-source is GPL-2.0, so anyone may fork it and continue.
+The original upstream project was marked discontinued. The 1.0.2–1.0.10
+updates in this tree are unofficial community changes and are not supported by
+the original author. Contributions and hardware reports are welcome, but each
+new build needs its own macOS and access-point testing. The source is GPL-2.0.
 
 Tested on an HP 15-da0003tu (i3-8130U), OpenCore 1.0.7, macOS 14.8.9.
 

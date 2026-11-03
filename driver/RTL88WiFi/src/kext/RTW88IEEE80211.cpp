@@ -1,4 +1,5 @@
 /* Modified by X1REN41L on 2026-10-14 for RTL88WiFi 1.0.1; see the repository NOTICE.md. */
+/* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (AWDL radio policy, mesh join selection); see NOTICE.md. */
 // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 // RTW88IEEE80211.cpp — 802.11 state machine
 
@@ -13,6 +14,8 @@
 #include <sys/mbuf.h>
 #include <string.h>
 #include <sys/random.h>
+#include <kern/clock.h>
+#include <mach/mach_time.h>
 
 /* Debug stage checkpoint — logs message only (no sleep). */
 #define RTW88_STAGE(fmt, ...) IOLog("rtw88: ---- STAGE: " fmt " ----\n", ##__VA_ARGS__)
@@ -34,6 +37,7 @@ void rtw_tx(struct rtw_dev *rtwdev, struct ieee80211_tx_control *control,
 /* PCI probe shim declared in pci.c */
 int  rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
 void rtw_pci_remove(struct pci_dev *pdev);
+int  rtw_regd_set_country(struct rtw_dev *rtwdev, const char alpha2[2]);
 
 /* Exported from the compat layer for hooking */
 void rtw88_set_hw_callbacks(struct rtw88_hw_callbacks *cbs, void *kext_hw);
@@ -558,6 +562,9 @@ bool RTW88IEEE80211::init(RTW88RxDelegate *delegate, struct pci_dev *pci)
     _lock    = IOLockAlloc();
     _bssLock = IOLockAlloc();
     if (!_lock || !_bssLock) return false;
+    _joinFail.clear();
+    _joinTried.clear();
+    _baRecovery.reset();
     _connectTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::connectTCFn,
                                        (thread_call_param_t)this);
     _manualScanTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::manualScanTCFn,
@@ -726,6 +733,7 @@ void RTW88IEEE80211::clearKeys()
 void RTW88IEEE80211::releaseSta()
 {
     _txBaPending = false;
+    _baRecovery.reset();
     if (!_sta)
         return;
 
@@ -868,6 +876,7 @@ IOReturn RTW88IEEE80211::start()
     /* Read MAC address — SET_IEEE80211_PERM_ADDR() copies EFuse MAC into
      * hw->wiphy->perm_addr during rtw_register_hw(); read it from there. */
     memcpy(_macAddr, _hw->wiphy->perm_addr, 6);
+    memcpy(_permanentMacAddr, _hw->wiphy->perm_addr, 6);
     IOLog("rtw88: MAC address: %02x:%02x:%02x:%02x:%02x:%02x\n",
           _macAddr[0], _macAddr[1], _macAddr[2],
           _macAddr[3], _macAddr[4], _macAddr[5]);
@@ -916,6 +925,7 @@ IOReturn RTW88IEEE80211::start()
     _state = RTW88_STATE_IDLE;
     _associatedVisible = false;
     _scanReturnState = RTW88_STATE_IDLE;
+    _scanPartial = false;
     RTW88_STAGE("IEEE80211::start complete — SUCCESS");
     return kIOReturnSuccess;
 
@@ -985,6 +995,7 @@ void RTW88IEEE80211::stop()
     _state  = RTW88_STATE_IDLE;
     _associatedVisible = false;
     _scanReturnState = RTW88_STATE_IDLE;
+    _scanPartial = false;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1005,6 +1016,17 @@ IOReturn RTW88IEEE80211::setReceiveMulticast(bool active)
 
 IOReturn RTW88IEEE80211::setAWDLReceiveMode(bool active)
 {
+    /* Policy gate (1.0.2): do not enter AWDL receive mode, i.e. keep the
+     * normal BSSID/unicast RX filters instead of accepting every frame on the
+     * channel.  Reports success so IO80211 treats the interface as enabled. */
+    if (active && !_awdlRadioAllowed) {
+        if (!_awdlPolicyLogged) {
+            _awdlPolicyLogged = true;
+            IOLog("rtw88: AWDL radio disabled by policy (RTL88WiFiAWDLRadio=false); "
+                  "radio stays on the infrastructure channel\n");
+        }
+        return kIOReturnSuccess;
+    }
     if (!_hw || !_hw->ops || !_hw->ops->configure_filter)
         return kIOReturnNotReady;
 
@@ -1087,6 +1109,9 @@ void RTW88IEEE80211::restoreSTAChannelAfterAWDL()
 
 IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
 {
+    /* Policy gate (1.0.2): never retune the radio away from the AP for AWDL. */
+    if (!_awdlRadioAllowed)
+        return kIOReturnNotReady;
     if (!_powered || !_hw || !_hw->wiphy || channel == 0)
         return kIOReturnNotReady;
 
@@ -1307,9 +1332,11 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
                     doAssociate();
                 } else {
                     IOLog("rtw88: auth rejected by AP status=%u\n", status);
+                    /* Was: silently drop to IDLE, so macOS never learned the
+                     * join failed and retried the same node.  Try the next
+                     * node of the SSID, else report the failure. */
                     _timer->cancelTimeout();
-                    _associatedVisible = false;
-                    _state = RTW88_STATE_IDLE;
+                    joinAttemptFailed("auth-rejected");
                 }
             }
         }
@@ -1363,12 +1390,25 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
                 IOLog("rtw88: %s from AP, reason=%u — disconnecting\n",
                       (stype == 0x00C0) ? "deauth" : "disassoc", reason);
             }
+            const bool lostLinkDuringConnectedScan =
+                (_state == RTW88_STATE_SCANNING &&
+                 _scanReturnState == RTW88_STATE_CONNECTED);
             clearKeys();
             _txBaActive = false;
+            _baRecovery.reset();
             rxBaTeardownAll();
             _associatedVisible = false;
-            _state = RTW88_STATE_IDLE;
-            _scanReturnState = RTW88_STATE_IDLE;
+            if (lostLinkDuringConnectedScan) {
+                /* Keep SCANNING latched until the worker exits.  Resetting the
+                 * state here made scanDone() return early while the worker
+                 * continued channel-hopping after a deauth. */
+                _manualScanAbort = true;
+                _scanReturnState = RTW88_STATE_IDLE;
+            } else {
+                _state = RTW88_STATE_IDLE;
+                _scanReturnState = RTW88_STATE_IDLE;
+                _scanPartial = false;
+            }
             if (_parent)
                 _parent->setLinkStatus(kIONetworkLinkValid);
             /* IO80211/CoreWiFi needs the asynchronous deauth notification,
@@ -1440,7 +1480,9 @@ static void rtw88WriteSuite(uint8_t *p, uint32_t suite)
 
 static bool rtw88RsnSelectCcmpPsk(const uint8_t *rsn, uint8_t len,
                                   uint32_t *pairwise_cipher,
-                                  uint32_t *group_cipher)
+                                  uint32_t *group_cipher,
+                                  bool *has_sae_out = nullptr,
+                                  bool *pmf_required_out = nullptr)
 {
     if (!rsn || len < 8) return false;
     const uint8_t *p = rsn;
@@ -1475,12 +1517,28 @@ static bool rtw88RsnSelectCcmpPsk(const uint8_t *rsn, uint8_t len,
         return false;
 
     bool hasPsk = false;
+    bool hasSae = false;
     for (uint16_t i = 0; i < akmCount; i++, p += 4) {
-        if (rtw88ReadSuite(p) == 0x000FAC02) /* 00-0f-ac:2 PSK */
+        const uint32_t akm = rtw88ReadSuite(p);
+        if (akm == 0x000FAC02)       /* 00-0f-ac:2 PSK */
             hasPsk = true;
+        else if (akm == 0x000FAC08 || /* 00-0f-ac:8 SAE */
+                 akm == 0x000FAC09)   /* 00-0f-ac:9 FT-SAE */
+            hasSae = true;
     }
 
-    if (!hasCcmp || !hasPsk)
+    /* RSN Capabilities follows the AKM list. MFPR (bit 6) means the AP
+     * requires 802.11w protected management frames. Do not claim WPA2 fallback
+     * on such an AP: this driver has no BIP/PMF negotiation or key handling. */
+    bool pmfRequired = false;
+    if ((size_t)(end - p) >= 2) {
+        const uint16_t rsnCaps = (uint16_t)(p[0] | (p[1] << 8));
+        pmfRequired = (rsnCaps & (1U << 6)) != 0;
+    }
+    if (has_sae_out) *has_sae_out = hasSae;
+    if (pmf_required_out) *pmf_required_out = pmfRequired;
+
+    if (!hasCcmp || !hasPsk || pmfRequired)
         return false;
 
     if (group != WLAN_CIPHER_SUITE_CCMP &&
@@ -1607,10 +1665,16 @@ void RTW88IEEE80211::processScanResult(struct sk_buff *skb)
             securityIESeen = true;
             uint32_t pairwise = 0;
             uint32_t group = 0;
-            if (rtw88RsnSelectCcmpPsk(body + 2, len, &pairwise, &group)) {
+            bool hasSae = false;
+            bool pmfRequired = false;
+            const bool usablePsk = rtw88RsnSelectCcmpPsk(
+                body + 2, len, &pairwise, &group, &hasSae, &pmfRequired);
+            bss->rsn_has_sae = hasSae ? 1 : 0;
+            bss->rsn_pmf_required = pmfRequired ? 1 : 0;
+            if (usablePsk) {
                 bss->cipher = pairwise;
                 bss->group_cipher = group;
-                bss->akm = 0x000FAC02; /* PSK */
+                bss->akm = 0x000FAC02; /* WPA2-PSK fallback */
             }
         } else if (id == WLAN_EID_VENDOR_SPECIFIC &&
                    len >= 8 && body[2] == 0x00 && body[3] == 0x50 &&
@@ -1671,6 +1735,8 @@ void RTW88IEEE80211::processScanResult(struct sk_buff *skb)
                 bss->cipher = e->cipher;
                 bss->group_cipher = e->group_cipher;
                 bss->akm = e->akm;
+                bss->rsn_has_sae = e->rsn_has_sae;
+                bss->rsn_pmf_required = e->rsn_pmf_required;
                 // Preserve the coherent security/capability IE set only when
                 // the new observation was incomplete, not after an open AP.
                 if (!iesComplete) {
@@ -2354,6 +2420,7 @@ bool RTW88IEEE80211::abortActiveScan(bool waitForIdle)
         _state = (returnState == RTW88_STATE_IDLE) ?
             RTW88_STATE_IDLE : returnState;
         _scanReturnState = RTW88_STATE_IDLE;
+        _scanPartial = false;
         _manualScanChannelCount = 0;
         _manualScanOnHomeChannel = false;
     }
@@ -2366,7 +2433,8 @@ void RTW88IEEE80211::scanDone(bool aborted)
     // A late firmware completion after timeout must not finish a new join.
     if (_state != RTW88_STATE_SCANNING) return;
     if (_timer) _timer->cancelTimeout();
-    if (!aborted) {
+    const bool partialScan = _scanPartial;
+    if (!aborted && !partialScan) {
         IOLockLock(_bssLock);
         RTW88BSS **link = &_bssList;
         while (*link) {
@@ -2404,6 +2472,7 @@ void RTW88IEEE80211::scanDone(bool aborted)
             RTW88_STATE_IDLE : returnState;
         _scanReturnState = RTW88_STATE_IDLE;
         _manualScanOnHomeChannel = false;
+        _scanPartial = false;
 
         /* A background CoreWiFi scan can leave an unassociated radio on its
          * final scan channel. If AWDL owns the idle PHY, return it to the AWDL
@@ -2462,53 +2531,127 @@ void RTW88IEEE80211::scanDone(bool aborted)
     }
 }
 
-IOReturn RTW88IEEE80211::cmdScan()
+IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
+                                  uint32_t requestedCount)
 {
     _awdlPreparedChannel = 0;
-    /* Physical scans are only safe while unassociated until the manual
-     * scanner can honor CoreWiFi's requested channel subset / availability
-     * windows. RTL88WiFi handles CONNECTED background scans cache-only. */
-    if (_state != RTW88_STATE_IDLE) {
+    const bool connectedScan = (_state == RTW88_STATE_CONNECTED);
+    /* Associated scans are supported only through the bounded software scanner
+     * below.  Authentication/association/disconnect transitions remain busy. */
+    if (_state != RTW88_STATE_IDLE && !connectedScan) {
         IOLog("rtw88: physical scan busy state=%u\n", (unsigned)_state);
         return kIOReturnBusy;
     }
-    if (!_powered || !_hw || !_hw->ops) return kIOReturnNotReady;
-    RTW88State returnState = _state;
-    IOLog("rtw88: scan start returnState=%u connected=%u\n",
-          (unsigned)returnState, returnState == RTW88_STATE_CONNECTED ? 1U : 0U);
+    if (!_powered || !_hw || !_hw->ops || !_hw->wiphy)
+        return kIOReturnNotReady;
+    if (requestedCount > 128)
+        requestedCount = 128;
 
-    IOLockLock(_bssLock);
-    _scanGeneration++;
-    if (_scanGeneration == 0) {
-        _scanGeneration = 1;
-        for (RTW88BSS *b = _bssList; b; b = b->next)
-            b->last_seen_scan = 1;
+    uint16_t meshChannels[RTW88RoamScan::kMaxMeshChannels] = {};
+    uint32_t meshChannelCount = 0;
+    if (connectedScan) {
+        const uint16_t homeChannel = _targetBSS.channel;
+        /* Prioritize channels on which this ESS was previously observed.  A
+         * partial scan can refresh a known mesh BSSID without roaming blindly
+         * through the entire band. */
+        IOLockLock(_bssLock);
+        for (RTW88BSS *b = _bssList;
+             b && meshChannelCount < RTW88RoamScan::kMaxMeshChannels;
+             b = b->next) {
+            if (b->ssid_len != _targetBSS.ssid_len ||
+                memcmp(b->ssid, _targetBSS.ssid, _targetBSS.ssid_len) != 0 ||
+                memcmp(b->bssid, _targetBSS.bssid, sizeof(b->bssid)) == 0 ||
+                (((b->capabilities & 0x10) != 0) !=
+                 ((_targetBSS.capabilities & 0x10) != 0)))
+                continue;
+            const uint32_t age = _scanGeneration - b->last_seen_scan;
+            if (age > 3 ||
+                !RTW88RoamScan::requestedContains(requestedChannels,
+                                                   requestedCount, b->channel))
+                continue;
+            (void)RTW88RoamScan::appendUnique(meshChannels, &meshChannelCount,
+                                               RTW88RoamScan::kMaxMeshChannels,
+                                               b->channel, homeChannel);
+        }
+        IOLockUnlock(_bssLock);
+
+        /* CoreWiFi sometimes supplies channel hints without a BSS result on
+         * those channels yet.  Use remaining budget to discover a newly-added
+         * mesh node, but never exceed the eight-channel off-channel budget. */
+        for (uint32_t i = 0; requestedChannels && i < requestedCount &&
+             meshChannelCount < RTW88RoamScan::kMaxMeshChannels; ++i) {
+            (void)RTW88RoamScan::appendUnique(meshChannels, &meshChannelCount,
+                                               RTW88RoamScan::kMaxMeshChannels,
+                                               requestedChannels[i], homeChannel);
+        }
+        if (meshChannelCount == 0) {
+            IOLog("rtw88: connected scan skipped: no alternate ESS channels cached or requested\n");
+            return kIOReturnNotReady;
+        }
     }
-    IOLockUnlock(_bssLock);
 
-    _scanReturnState = (returnState == RTW88_STATE_CONNECTED) ?
-        returnState : RTW88_STATE_IDLE;
+    const RTW88State returnState = _state;
+    _scanPartial = connectedScan;
+    if (!connectedScan) {
+        IOLockLock(_bssLock);
+        _scanGeneration++;
+        if (_scanGeneration == 0) {
+            _scanGeneration = 1;
+            for (RTW88BSS *b = _bssList; b; b = b->next)
+                b->last_seen_scan = 1;
+        }
+        IOLockUnlock(_bssLock);
+    }
+
+    IOLog("rtw88: scan start returnState=%u connected=%u partial=%u\n",
+          (unsigned)returnState, connectedScan ? 1U : 0U,
+          _scanPartial ? 1U : 0U);
+    _scanReturnState = connectedScan ? RTW88_STATE_CONNECTED : RTW88_STATE_IDLE;
     _state = RTW88_STATE_SCANNING;
 
     // Firmware retains the request until completion; neither object may live on the stack.
-    if (!_scanRequest) _scanRequest = (ieee80211_scan_request *)IOMallocZero(sizeof(*_scanRequest));
-    if (!_scanRequest) { _state = returnState; _scanReturnState = RTW88_STATE_IDLE; return kIOReturnNoMemory; }
+    if (!_scanRequest)
+        _scanRequest = (ieee80211_scan_request *)IOMallocZero(sizeof(*_scanRequest));
+    if (!_scanRequest) {
+        _state = returnState;
+        _scanReturnState = RTW88_STATE_IDLE;
+        _scanPartial = false;
+        return kIOReturnNoMemory;
+    }
     bzero(_scanRequest, sizeof(*_scanRequest));
     auto &req = *_scanRequest;
     auto *chans = _scanRequestChannels;
     int n_chans = 0;
-    
-    if (_hw->wiphy) {
+
+    if (connectedScan) {
+        /* Preserve candidate-channel order from the ESS cache/request list and
+         * map only to channels enabled by this regulatory domain. */
+        for (uint32_t i = 0; i < meshChannelCount; ++i) {
+            bool found = false;
+            for (int bandIndex = 0; bandIndex < NL80211_NUM_BANDS && !found; ++bandIndex) {
+                struct ieee80211_supported_band *band = _hw->wiphy->bands[bandIndex];
+                if (!band) continue;
+                for (int j = 0; j < band->n_channels; ++j) {
+                    struct ieee80211_channel *channel = &band->channels[j];
+                    if (channel->hw_value != meshChannels[i] ||
+                        (channel->flags & IEEE80211_CHAN_DISABLED))
+                        continue;
+                    channel->band = band->band;
+                    chans[n_chans++] = channel;
+                    found = true;
+                    break;
+                }
+            }
+        }
+    } else {
         for (int i = 0; i < NL80211_NUM_BANDS; i++) {
             struct ieee80211_supported_band *band = _hw->wiphy->bands[i];
             if (!band) continue;
             for (int j = 0; j < band->n_channels; j++) {
-                if (n_chans < 256) {
-                    /* Only scan enabled channels */
-                    if (!(band->channels[j].flags & IEEE80211_CHAN_DISABLED)) {
-                        band->channels[j].band = band->band;
-                        chans[n_chans++] = &band->channels[j];
-                    }
+                if (n_chans < 256 &&
+                    !(band->channels[j].flags & IEEE80211_CHAN_DISABLED)) {
+                    band->channels[j].band = band->band;
+                    chans[n_chans++] = &band->channels[j];
                 }
             }
         }
@@ -2518,17 +2661,21 @@ IOReturn RTW88IEEE80211::cmdScan()
         IOLog("rtw88: scan has no enabled channels\n");
         _state = returnState;
         _scanReturnState = RTW88_STATE_IDLE;
+        _scanPartial = false;
         return kIOReturnNotReady;
     }
 
-    const bool firmwareScan = _hw->ops->hw_scan && rtw88_hw_scan_supported(_hw);
-    _scanEngine = firmwareScan ? "firmware" : "software";
+    const bool firmwareScan = !connectedScan && _hw->ops->hw_scan &&
+                              rtw88_hw_scan_supported(_hw);
+    _scanEngine = connectedScan ? "software-connected" :
+                  (firmwareScan ? "firmware" : "software");
     _lastScanChannelCount = (uint32_t)n_chans;
     _scanVisited2GHz = _scanVisited5GHz = 0;
     if (!firmwareScan) {
         if (!_manualScanTC) {
             _state = returnState;
             _scanReturnState = RTW88_STATE_IDLE;
+            _scanPartial = false;
             return kIOReturnNotReady;
         }
 
@@ -2539,25 +2686,23 @@ IOReturn RTW88IEEE80211::cmdScan()
         _manualScanOnHomeChannel = false;
         _rxFrameCount = 0;
 
-        if (!_manualScanFallbackLogged) {
-            IOLog("rtw88: scan offload unavailable, using passive channel scan (%d channels)\n",
-                  n_chans);
+        if (!_manualScanFallbackLogged || connectedScan) {
+            IOLog("rtw88: %s scan using bounded software channel scan (%d channels)\n",
+                  connectedScan ? "connected" : "disconnected", n_chans);
             _manualScanFallbackLogged = true;
         }
         thread_call_enter(_manualScanTC);
 
-        _timeoutMs = (_scanReturnState == RTW88_STATE_CONNECTED) ?
-            30000 : 12000;
+        _timeoutMs = connectedScan ? 30000 : 12000;
         uint64_t d;
         clock_interval_to_deadline(_timeoutMs, kMillisecondScale, &d);
         _timer->wakeAtTime(d);
         return kIOReturnSuccess;
     }
-    
+
     req.req.channels = chans;
     req.req.n_channels = n_chans;
-
-    _rxFrameCount = 0;  /* reset diagnostic counter at scan start */
+    _rxFrameCount = 0;
 
     int hw_scan_ret = _hw->ops->hw_scan(_hw, _vif, &req);
     if (hw_scan_ret != 0) {
@@ -2573,8 +2718,7 @@ IOReturn RTW88IEEE80211::cmdScan()
             _rxFrameCount = 0;
             thread_call_enter(_manualScanTC);
 
-            _timeoutMs = (_scanReturnState == RTW88_STATE_CONNECTED) ?
-                30000 : 12000;
+            _timeoutMs = 12000;
             uint64_t d;
             clock_interval_to_deadline(_timeoutMs, kMillisecondScale, &d);
             _timer->wakeAtTime(d);
@@ -2582,11 +2726,14 @@ IOReturn RTW88IEEE80211::cmdScan()
         }
         _state = returnState;
         _scanReturnState = RTW88_STATE_IDLE;
+        _scanPartial = false;
         return kIOReturnError;
     }
-    /* Timeout: if scan doesn't complete in 10s */
+    /* Timeout: if firmware scan doesn't complete in 10s. */
     _timeoutMs = 10000;
-    uint64_t d; clock_interval_to_deadline(_timeoutMs, kMillisecondScale, &d); _timer->wakeAtTime(d);
+    uint64_t d;
+    clock_interval_to_deadline(_timeoutMs, kMillisecondScale, &d);
+    _timer->wakeAtTime(d);
     return kIOReturnSuccess;
 }
 
@@ -2636,7 +2783,8 @@ void RTW88IEEE80211::runManualScan()
 
         /* Active channels can use a short probe dwell. Passive/DFS channels
          * still need a beacon-listen dwell. */
-        IOSleep(passiveOnly ? 140 : 70);
+        IOSleep(connectedScan ? (passiveOnly ? 140 : 35) :
+                (passiveOnly ? 140 : 70));
         /* Software dwell completed; this is not proof of successful RF RX. */
         if (chan->band == NL80211_BAND_5GHZ) ++_scanVisited5GHz;
         else if (chan->band == NL80211_BAND_2GHZ) ++_scanVisited2GHz;
@@ -2651,22 +2799,205 @@ void RTW88IEEE80211::runManualScan()
 
     _manualScanOnHomeChannel = false;
     rtw88_sw_scan_complete(_hw, _vif);
-    /* scanDone restores/calibrates the home channel and clears AP power-save
-     * once, including an aborted scan, before notifying IO80211. */
-    scanDone(_manualScanAbort);
+    /* Clear this worker's ownership before scanDone: its deferred-join callback
+     * may immediately start a fresh scan.  Clearing these fields afterwards
+     * would erase the next scan's channel list / abort state. */
+    const bool aborted = _manualScanAbort;
     _manualScanAbort = false;
     _manualScanChannelCount = 0;
+
+    /* scanDone restores/calibrates the home channel and clears AP power-save
+     * once, including an aborted scan, before notifying IO80211. */
+    scanDone(aborted);
 }
 
 /* ------------------------------------------------------------------ */
 /*  Connect                                                             */
 /* ------------------------------------------------------------------ */
 
+/* ------------------------------------------------------------------ */
+/*  1.0.2 multi-BSS (mesh) join selection and fallback                  */
+/* ------------------------------------------------------------------ */
+
+static uint64_t rtw88JoinNowUS()
+{
+    uint64_t ns = 0;
+    absolutetime_to_nanoseconds(mach_absolute_time(), &ns);
+    return ns / 1000ULL;
+}
+
+/* Best BSS for an SSID: strongest and freshest, recently failed nodes last
+ * (see RTW88JoinPolicy.hpp).  pinned: only that BSSID.  skipTried: ignore
+ * nodes already attempted in this join.  privacyMatch: -1 any, 0 open only,
+ * 1 protected only.  Ties keep list order.  Caller holds _bssLock. */
+RTW88BSS *RTW88IEEE80211::selectBssLocked(const char *ssid, size_t ssidLen,
+                                          const uint8_t *pinned, bool skipTried,
+                                          int privacyMatch)
+{
+    const uint64_t now = rtw88JoinNowUS();
+    RTW88BSS *best = nullptr;
+    int bestScore = 0;
+    for (RTW88BSS *b = _bssList; b; b = b->next) {
+        if (b->ssid_len != ssidLen || memcmp(b->ssid, ssid, ssidLen) != 0) continue;
+        if (pinned && memcmp(b->bssid, pinned, 6) != 0) continue;
+        if (skipTried && _joinTried.contains(b->bssid)) continue;
+        if (privacyMatch >= 0 && (((b->capabilities & 0x10) != 0) != (privacyMatch != 0))) continue;
+        const int sc = RTW88Join::score(b->rssi, b->channel,
+                                        _scanGeneration - b->last_seen_scan,
+                                        _joinFail.blocked(b->bssid, now));
+        if (!best || sc > bestScore) { best = b; bestScore = sc; }
+    }
+    return best;
+}
+
+/* Pick the BSS for a join request.  Caller holds _bssLock.  A BSSID macOS
+ * named is honoured exactly when it is known; cmdConnect performs one full
+ * cache refresh before reporting a still-missing BSSID.  The one exception,
+ * 1.0.4: if that node is on 2.4 GHz, a same-SSID/security 5 GHz sibling may be
+ * selected only when it is fresh, at least -72 dBm, not recently failed, and
+ * its score is better.  The requested BSSID is remembered so
+ * that a repeated request for it, while this join is in progress, is treated as
+ * the same join (see matchesPendingJoin()) rather than restarting it. */
+RTW88BSS *RTW88IEEE80211::selectBssForJoinLocked(const char *ssid, size_t ssidLen,
+                                                 const uint8_t *pinned, bool *upgraded)
+{
+    *upgraded = false;
+    _joinHasRequested = false;
+    RTW88BSS *target = selectBssLocked(ssid, ssidLen, pinned, false, -1);
+    if (target && pinned && target->channel <= 14 && _prefer5GHzUpgrade) {
+        const uint64_t now = rtw88JoinNowUS();
+        const int targetScore = RTW88Join::score(
+            target->rssi, target->channel,
+            _scanGeneration - target->last_seen_scan,
+            _joinFail.blocked(target->bssid, now));
+        RTW88BSS *best5 = nullptr;
+        int best5Score = targetScore;
+        for (RTW88BSS *b = _bssList; b; b = b->next) {
+            if (b->ssid_len != ssidLen || memcmp(b->ssid, ssid, ssidLen) != 0 ||
+                b->channel <= 14 ||
+                (((b->capabilities & 0x10) != 0) !=
+                 ((target->capabilities & 0x10) != 0)))
+                continue;
+            const uint32_t age = _scanGeneration - b->last_seen_scan;
+            if (age > 1 || b->rssi < RTW88Join::kUsable5GHzDbm ||
+                _joinFail.blocked(b->bssid, now))
+                continue;
+            const int candidateScore = RTW88Join::score(b->rssi, b->channel,
+                                                         age, false);
+            if (candidateScore > best5Score) {
+                best5 = b;
+                best5Score = candidateScore;
+            }
+        }
+        if (best5) {
+            memcpy(_joinRequestedBssid, pinned, 6);
+            _joinHasRequested = true;
+            *upgraded = true;
+            return best5;
+        }
+    }
+    return target;
+}
+
+/* Is there another node of the current SSID we have not tried yet?  Caller
+ * holds _bssLock. */
+bool RTW88IEEE80211::hasUntriedAlternativeLocked()
+{
+    if (_joinTried.count >= RTW88Join::kMaxNodesPerJoin) return false;
+    const int privacy = (_targetBSS.capabilities & 0x10) ? 1 : 0;
+    return selectBssLocked(_targetBSS.ssid, _targetBSS.ssid_len, nullptr, true, privacy) != nullptr;
+}
+
+/* If macOS supplied an association RSN IE that selects CCMP-PSK, that is
+ * authoritative for this attempt even when the lightweight beacon parser
+ * missed or simplified the AP's AKM/cipher list.  Shared by cmdConnect() and
+ * the fallback to another node, which replaces _targetBSS wholesale. */
+void RTW88IEEE80211::applyAssocRsnOverride(bool externalSupplicant, bool havePmk, bool havePassword)
+{
+    if ((externalSupplicant || havePmk || havePassword) && _assocRsnIELen >= 4 &&
+        _assocRsnIE[0] == WLAN_EID_RSN &&
+        (uint16_t)(_assocRsnIE[1] + 2) <= _assocRsnIELen) {
+        uint32_t pairwise = 0, group = 0;
+        bool hasSae = false, pmfRequired = false;
+        const bool usablePsk = rtw88RsnSelectCcmpPsk(
+            _assocRsnIE + 2, _assocRsnIE[1], &pairwise, &group,
+            &hasSae, &pmfRequired);
+        if (hasSae) _targetBSS.rsn_has_sae = 1;
+        if (pmfRequired) _targetBSS.rsn_pmf_required = 1;
+        if (usablePsk) {
+            _targetBSS.cipher = pairwise;
+            _targetBSS.group_cipher = group;
+            _targetBSS.akm = 0x000FAC02;
+        }
+    }
+}
+
+/* The current node failed (rejected auth/assoc, or never answered).  Remember
+ * it, and if another node of the same SSID is available, restart the join
+ * there.  Returns true when a new attempt has been started; false means
+ * "nothing left to try" and the caller reports the failure.  Safe to call
+ * from the RX path, the timer and the connect worker. */
+bool RTW88IEEE80211::retryOtherBss(const char *stage)
+{
+    if (authenticationCancelled() || !_powered) return false;
+
+    const uint64_t now = rtw88JoinNowUS();
+    uint8_t failed[6];
+    memcpy(failed, _targetBSS.bssid, 6);
+    const int privacy = (_targetBSS.capabilities & 0x10) ? 1 : 0;
+
+    IOLockLock(_bssLock);
+    _joinFail.note(failed, now, RTW88Join::kFailHoldUS);
+    RTW88BSS *cand = nullptr;
+    if (_joinTried.count < RTW88Join::kMaxNodesPerJoin)
+        cand = selectBssLocked(_targetBSS.ssid, _targetBSS.ssid_len, nullptr, true, privacy);
+    if (!cand || !_joinTried.add(cand->bssid)) {
+        IOLockUnlock(_bssLock);
+        return false;
+    }
+    memcpy(&_targetBSS, cand, sizeof(_targetBSS));
+    IOLockUnlock(_bssLock);
+
+    _curBssTim = false;
+    _rssi = (_targetBSS.rssi < 0 && _targetBSS.rssi >= -127) ? _targetBSS.rssi : -100;
+    _authAttempts = 0;
+    applyAssocRsnOverride(_externalSupplicant, _pmkProvided, _password[0] != 0);
+
+    IOLog("rtw88: join stage=%s failed on %02x:%02x:%02x:%02x:%02x:%02x -- trying "
+          "%02x:%02x:%02x:%02x:%02x:%02x ch=%u rssi=%d\n", stage,
+          failed[0], failed[1], failed[2], failed[3], failed[4], failed[5],
+          _targetBSS.bssid[0], _targetBSS.bssid[1], _targetBSS.bssid[2],
+          _targetBSS.bssid[3], _targetBSS.bssid[4], _targetBSS.bssid[5],
+          _targetBSS.channel, (int)_targetBSS.rssi);
+
+    if (_timer) _timer->cancelTimeout();
+    _state = RTW88_STATE_AUTHENTICATING;
+    if (_connectTC) thread_call_enter(_connectTC);
+    return true;
+}
+
+/* A join attempt failed: try another node, else tell macOS.  A join that was
+ * cancelled (host disassociate, sleep) is torn down by its canceller. */
+void RTW88IEEE80211::joinAttemptFailed(const char *stage)
+{
+    if (authenticationCancelled()) return;
+    if (!retryOtherBss(stage)) failJoin(stage);
+}
+
 bool RTW88IEEE80211::matchesPendingJoin(const char *ssid, const uint8_t *bssid,
                                             const uint8_t *pmk) const
 {
+    /* While a join is still in progress the driver may already have moved on
+     * from the BSSID macOS asked for to another node of the same SSID; a
+     * repeat ASSOCIATE for the abandoned one is the same join, not a new one
+     * (restarting it would cancel the fallback that is under way). */
+    const bool joining = _state == RTW88_STATE_AUTHENTICATING ||
+                         _state == RTW88_STATE_ASSOCIATING;
+    const bool requested = bssid && _joinHasRequested &&
+                           memcmp(bssid, _joinRequestedBssid, 6) == 0;
     return ssid && strcmp(ssid, _targetBSS.ssid) == 0 &&
-        (!bssid || memcmp(bssid, _targetBSS.bssid, 6) == 0) &&
+        (!bssid || memcmp(bssid, _targetBSS.bssid, 6) == 0 ||
+         (joining && (_joinTried.contains(bssid) || requested))) &&
         (pmk != nullptr) == _pmkProvided &&
         (!pmk || memcmp(pmk, _pmk, sizeof(_pmk)) == 0);
 }
@@ -2675,6 +3006,7 @@ bool RTW88IEEE80211::matchesPendingJoin(const char *ssid, const uint8_t *bssid,
  * never touch RF registers when scan firmware failed to become idle. */
 void RTW88IEEE80211::failJoin(const char *stage)
 {
+    _missingBssRescanAttempted = false;
     IOLog("rtw88: join failed stage=%s attempts=%u\n", stage, _authAttempts);
     __atomic_store_n(&_connectCancelled, true, __ATOMIC_RELEASE);
     if (_timer) _timer->cancelTimeout();
@@ -2682,6 +3014,33 @@ void RTW88IEEE80211::failJoin(const char *stage)
     _state = RTW88_STATE_IDLE;
     if (_parent) _parent->setLinkStatus(kIONetworkLinkValid);
     if (_delegate) _delegate->rtw88Event(kRTW88EventDisconnected, nullptr);
+}
+
+/* 1.0.2 diagnostic: what the AP advertises and what the driver decided, so a
+ * failed join can be explained from the log.  Prints no SSID and no BSSID.
+ * The RSN element is dumped (at most 40 bytes) because its AKM list and
+ * capability bits show at a glance whether the network is WPA2, WPA3
+ * transition or WPA3-only, and whether protected management frames are
+ * required. */
+static void rtw88LogTargetSecurity(const RTW88BSS &b, bool wpa2, bool havePmk)
+{
+    static const char hexd[] = "0123456789abcdef";
+    char hex[2 * 40 + 1] = {};
+    unsigned rsnLen = 0;
+    const int rsn = rtw88IeFind(b.ies, b.ies_len, WLAN_EID_RSN);
+    if (rsn >= 0) {
+        rsnLen = b.ies[rsn + 1];
+        const unsigned dump = rsnLen < 40 ? rsnLen : 40;
+        for (unsigned i = 0; i < dump; i++) {
+            hex[2 * i]     = hexd[b.ies[rsn + 2 + i] >> 4];
+            hex[2 * i + 1] = hexd[b.ies[rsn + 2 + i] & 0x0f];
+        }
+    }
+    const bool rsnxe = rtw88IeFind(b.ies, b.ies_len, 244) >= 0;   /* RSN extension (SAE H2E) */
+    IOLog("rtw88: connect target ch=%u rssi=%d caps=0x%04x cipher=0x%x group=0x%x akm=0x%x "
+          "wpa2=%d pmk=%d rsnLen=%u rsnxe=%d rsn=%s\n",
+          b.channel, (int)b.rssi, b.capabilities, b.cipher, b.group_cipher, b.akm,
+          wpa2, havePmk, rsnLen, rsnxe, rsn >= 0 ? hex : "none");
 }
 
 IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, const uint8_t *pmk,
@@ -2705,6 +3064,8 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
         else bzero(_deferredBSSID, sizeof(_deferredBSSID));
         _deferredExternalSupplicant = externalSupplicant;
         _deferredConnectPending = true;
+        if (_scanReturnState == RTW88_STATE_IDLE)
+            _missingBssRescanAttempted = true;
 
         if (_manualScanChannelCount) {
             /* Do not let autojoin to an early 2.4 GHz result truncate the
@@ -2730,21 +3091,59 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
 
     /* Find the SSID in our BSS list */
     IOLockLock(_bssLock);
-    RTW88BSS *target = nullptr;
     const size_t wantedLen = strnlen(ssid, sizeof(_targetBSS.ssid));
+    _joinTried.clear();
+    /* 1.0.2: best node of the SSID rather than the first list entry; 1.0.4:
+     * only upgrade a requested 2.4 GHz node to a fresh, usable 5 GHz sibling.
+     * A BSSID macOS asks for is honoured exactly when known. If it is missing
+     * (for example, before 5 GHz channels were scanned), perform one full
+     * refresh and retry that exact BSSID. 1.0.2 substituted another node of
+     * the SSID here, which could silently turn a 5 GHz request into 2.4 GHz. */
+    bool upgraded = false;
+    RTW88BSS *target = selectBssForJoinLocked(ssid, wantedLen, bssid, &upgraded);
+    unsigned nodes24 = 0, nodes5 = 0;
     for (RTW88BSS *b = _bssList; b; b = b->next) {
-        if (b->ssid_len == wantedLen &&
-            memcmp(b->ssid, ssid, wantedLen) == 0 &&
-            (!bssid || memcmp(b->bssid, bssid, 6) == 0)) {
-            target = b;
-            break;
-        }
+        if (b->ssid_len != wantedLen || memcmp(b->ssid, ssid, wantedLen) != 0) continue;
+        if (b->channel > 14) nodes5++; else nodes24++;
     }
+    IOLog("rtw88: connect pick pinned=%d nodes24=%u nodes5=%u upgraded=%d -> %s\n",
+          bssid != nullptr, nodes24, nodes5, upgraded,
+          !target ? "none (not in scan cache)" : target->channel > 14 ? "5 GHz" : "2.4 GHz");
     if (!target) {
         IOLockUnlock(_bssLock);
+        if (!_missingBssRescanAttempted) {
+            /* The Apple BSSID may have aged out of our cache while the mesh
+             * steered, or the 5 GHz BSS may not have been scanned yet.  Refresh
+             * all enabled channels once, then retry the exact same SSID/BSSID;
+             * never silently substitute a different node for a pinned request. */
+            _missingBssRescanAttempted = true;
+            strlcpy(_deferredSSID, ssid, sizeof(_deferredSSID));
+            strlcpy(_deferredPassword, password ? password : "",
+                    sizeof(_deferredPassword));
+            _deferredPMKValid = pmk != nullptr;
+            if (pmk) memcpy(_deferredPMK, pmk, sizeof(_deferredPMK));
+            else bzero(_deferredPMK, sizeof(_deferredPMK));
+            _deferredBSSIDValid = bssid != nullptr;
+            if (bssid) memcpy(_deferredBSSID, bssid, sizeof(_deferredBSSID));
+            else bzero(_deferredBSSID, sizeof(_deferredBSSID));
+            _deferredExternalSupplicant = externalSupplicant;
+            _deferredConnectPending = true;
+
+            IOReturn scanRet = cmdScan();
+            if (scanRet == kIOReturnSuccess) {
+                IOLog("rtw88: requested BSS missing from cache; starting one full refresh before join\n");
+                return kIOReturnSuccess;
+            }
+            clearDeferredJoin();
+            IOLog("rtw88: missing-BSS refresh could not start ret=0x%x\n", scanRet);
+            return scanRet;
+        }
+        _missingBssRescanAttempted = false;
         return kIOReturnNotFound;
     }
+    _missingBssRescanAttempted = false;
     memcpy(&_targetBSS, target, sizeof(_targetBSS));
+    _joinTried.add(_targetBSS.bssid);
     _curBssTim = false;
     _rssi = target->rssi < 0 && target->rssi >= -127 ? target->rssi : -100;
     IOLockUnlock(_bssLock);
@@ -2755,17 +3154,18 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
      * for this attempt.  This prevents a perfectly valid WPA2 network from
      * being rejected just because our lightweight beacon parser missed or
      * simplified its AKM/cipher list. */
-    if ((externalSupplicant || pmk || (password && password[0])) && _assocRsnIELen >= 4 &&
-        _assocRsnIE[0] == WLAN_EID_RSN &&
-        (uint16_t)(_assocRsnIE[1] + 2) <= _assocRsnIELen) {
-        uint32_t pairwise = 0, group = 0;
-        if (rtw88RsnSelectCcmpPsk(_assocRsnIE + 2, _assocRsnIE[1],
-                                  &pairwise, &group)) {
-            _targetBSS.cipher = pairwise;
-            _targetBSS.group_cipher = group;
-            _targetBSS.akm = 0x000FAC02;
-        }
+    applyAssocRsnOverride(externalSupplicant, pmk != nullptr, password && password[0]);
+
+    if (_targetBSS.rsn_pmf_required) {
+        IOLog("rtw88: connect refused: AP requires 802.11w PMF/BIP; this driver cannot negotiate it yet\n");
+        return kIOReturnUnsupported;
     }
+    if (_targetBSS.rsn_has_sae && _targetBSS.akm != 0x000FAC02) {
+        IOLog("rtw88: connect refused: AP advertises SAE without a usable PSK transition path; WPA3-SAE is not implemented\n");
+        return kIOReturnUnsupported;
+    }
+    if (_targetBSS.rsn_has_sae && _targetBSS.akm == 0x000FAC02)
+        IOLog("rtw88: WPA2/WPA3 transition BSS: using WPA2-PSK fallback (SAE/PMF not implemented)\n");
 
     if (externalSupplicant) {
         /* Current Apple-RSN backend supports WPA2/CCMP PSK.  Reject only after
@@ -2787,7 +3187,10 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
     _pmkProvided = pmk != nullptr;
     if (pmk) memcpy(_pmk, pmk, sizeof(_pmk));
     strlcpy(_password, password ? password : "", sizeof(_password));
-    _wpa2 = externalSupplicant || (_targetBSS.cipher == WLAN_CIPHER_SUITE_CCMP);
+    _wpa2 = RTW88Join::useWpa2(externalSupplicant,
+                               _targetBSS.cipher == WLAN_CIPHER_SUITE_CCMP,
+                               pmk != nullptr, _targetBSS.capabilities);
+    rtw88LogTargetSecurity(_targetBSS, _wpa2, pmk != nullptr);
     _deauthReason = 0;
     __atomic_store_n(&_connectCancelled, false, __ATOMIC_RELEASE);
     _state = RTW88_STATE_AUTHENTICATING;
@@ -2809,7 +3212,12 @@ void RTW88IEEE80211::doAuthenticate()
 {
     _awdlPreparedChannel = 0;
     if (authenticationCancelled() || !_powered || !_hw || !_vif) return;
-    if (++_authAttempts > 3) { failJoin("auth-retry-limit"); return; }
+    /* 1.0.2: with another node of this SSID still untried, give up on this one
+     * after two silent attempts instead of three, then move on. */
+    IOLockLock(_bssLock);
+    const bool hasAlternative = hasUntriedAlternativeLocked();
+    IOLockUnlock(_bssLock);
+    if (++_authAttempts > (hasAlternative ? 2 : 3)) { joinAttemptFailed("auth-retry-limit"); return; }
 
     IOLog("rtw88: doAuthenticate entry — BSSID %02x:%02x:%02x:%02x:%02x:%02x ch=%u\n",
           _targetBSS.bssid[0], _targetBSS.bssid[1], _targetBSS.bssid[2],
@@ -3081,11 +3489,16 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
 
     if (status != 0) {
         IOLog("rtw88: assoc failed status=%u\n", status);
-        _associatedVisible = false;
-        _state = RTW88_STATE_IDLE;
+        /* Mesh nodes commonly refuse with 1/12/17/30 while band-steering or
+         * full.  Move on to another node, else report the failure (the old
+         * code went quietly IDLE). */
+        joinAttemptFailed("assoc-rejected");
         return;
     }
     IOLog("rtw88: associated! AID=%u\n", aid);
+    IOLockLock(_bssLock);
+    _joinFail.forget(_targetBSS.bssid);   /* this node works: no longer suspect */
+    IOLockUnlock(_bssLock);
     _assocAID = aid;
     /* From this point until a real deauth/disconnect, IO80211 must observe
      * the infrastructure interface as RUN.  The reference IO80211 driver gets this persistence
@@ -3235,10 +3648,10 @@ bool RTW88IEEE80211::buildAssocReq(uint8_t *buf, uint32_t *len)
     hdr->seq_ctrl = cpu_to_le16((uint16_t)(_txSeq++ << 4));
 
     uint8_t *body = buf + sizeof(*hdr);
-    /* Capability: ESS, Short Preamble, and Privacy for encrypted APs. */
-    uint16_t cap = 0x0431;
-    if (_wpa2)
-        cap |= 0x0010;
+    /* Privacy is clear for open networks and set only for WPA2-protected
+     * associations.  0x0431 accidentally included bit 4 in the base value,
+     * making every supposedly open association look protected to the AP. */
+    uint16_t cap = RTW88Join::associationCapability(_wpa2);
     body[0] = (uint8_t)(cap & 0xff);
     body[1] = (uint8_t)(cap >> 8);
     /* Listen interval: 10 */
@@ -3472,6 +3885,7 @@ IOReturn RTW88IEEE80211::cmdInstallExternalKey(bool pairwise, uint8_t keyidx, ui
 void RTW88IEEE80211::clearDeferredJoin()
 {
     _deferredConnectPending = false;
+    _missingBssRescanAttempted = false;
     _deferredPMKValid = false;
     _deferredBSSIDValid = false;
     _deferredExternalSupplicant = false;
@@ -3549,6 +3963,7 @@ IOReturn RTW88IEEE80211::suspendForSystemSleep()
             restoreConnectedChannel();
         _state = returnState == RTW88_STATE_IDLE ? RTW88_STATE_IDLE : returnState;
         _scanReturnState = RTW88_STATE_IDLE;
+        _scanPartial = false;
         _manualScanChannelCount = 0;
         _manualScanOnHomeChannel = false;
     }
@@ -3596,6 +4011,7 @@ IOReturn RTW88IEEE80211::cmdPowerOff()
     _state = RTW88_STATE_IDLE;
     _associatedVisible = false;
     _scanReturnState = RTW88_STATE_IDLE;
+    _scanPartial = false;
     if (_parent)
         _parent->setLinkStatus(kIONetworkLinkValid);
     return kIOReturnSuccess;
@@ -3613,6 +4029,7 @@ void RTW88IEEE80211::doDisconnect()
         _state = RTW88_STATE_IDLE;
         _associatedVisible = false;
         _scanReturnState = RTW88_STATE_IDLE;
+        _scanPartial = false;
         return;
     }
     clearKeys();
@@ -3646,6 +4063,7 @@ void RTW88IEEE80211::doDisconnect()
     _state = RTW88_STATE_IDLE;
     _associatedVisible = false;
     _scanReturnState = RTW88_STATE_IDLE;
+    _scanPartial = false;
     _timer->cancelTimeout();
     if (_parent)
         _parent->setLinkStatus(kIONetworkLinkValid);
@@ -4053,10 +4471,36 @@ bool RTW88IEEE80211::htAllowed() const
 void RTW88IEEE80211::startTxAggregation()
 {
     if (_txBaActive) return;
-    if (!htAllowed()) return;
-    if (!_sta || !_sta->deflink.ht_cap.ht_supported) return;
+    if (!htAllowed() || !_sta || !_sta->deflink.ht_cap.ht_supported) {
+        _baRecovery.cancel();           /* not applicable to this peer: do not keep asking */
+        return;
+    }
     IOLog("rtw88: starting TX A-MPDU — sending ADDBA request (tid=%u)\n", _baTid);
     sendAddbaRequest(_baTid);
+    /* 1.0.6: remember the outcome so a lost, declined or torn-down agreement is
+     * retried (housekeeping()); it used to be asked for exactly once. */
+    const uint64_t now = rtw88JoinNowUS();
+    if (_txBaPending) _baRecovery.onRequestSent(now);
+    else              _baRecovery.onFailed(now);     /* could not even be sent */
+}
+
+/* Called about every 5 s while the radio is up.  Re-negotiates the uplink Block
+ * Ack agreement after the AP declined it, never answered, or tore it down.
+ * Idempotent and safe to skip: a missed tick only delays the next attempt. */
+void RTW88IEEE80211::housekeeping()
+{
+    if (_state != RTW88_STATE_CONNECTED || !_associatedVisible || !_sta || _handshakePending)
+        return;
+    const uint64_t now = rtw88JoinNowUS();
+    if (_txBaPending && _baRecovery.responseOverdue(now)) {
+        _txBaPending = false;
+        _baRecovery.onFailed(now);
+        IOLog("rtw88: TX ADDBA response timed out; will retry\n");
+    }
+    if (!_txBaActive && !_txBaPending && _baRecovery.due(now)) {
+        IOLog("rtw88: re-negotiating TX A-MPDU after a lost or declined agreement\n");
+        startTxAggregation();
+    }
 }
 
 void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
@@ -4100,9 +4544,11 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
         _txBaPending = false;
         if (status == 0 && (param & (1u << 1))) {
             _txBaActive = true;
+            _baRecovery.onAccepted(rtw88JoinNowUS());
             IOLog("rtw88: TX ADDBA accepted (tid=%u) — uplink A-MPDU on\n", tid);
         } else {
-            IOLog("rtw88: TX ADDBA rejected status=%u tid=%u\n", status, tid);
+            _baRecovery.onFailed(rtw88JoinNowUS());
+            IOLog("rtw88: TX ADDBA rejected status=%u tid=%u; will retry\n", status, tid);
         }
         break;
     }
@@ -4114,13 +4560,19 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
         /* initiator=0: AP is the recipient of the agreement it is tearing down
          * — our uplink TX BA, so stop aggregating.  initiator=1: AP is the
          * originator — its downlink BA, so drop our RX reorder buffer. */
-        if (!initiator && tid == _baTid) {
+        const uint16_t reason = (uint16_t)(b[4] | (b[5] << 8));   /* 37 declined, 38 unknown BA, 39 timeout */
+        const bool tore = !initiator && tid == _baTid;
+        const bool wasActive = _txBaActive;
+        if (tore) {
             _txBaActive = false;
             _txBaPending = false;
+            /* 1.0.6: ask again (with backoff) instead of staying un-aggregated forever. */
+            _baRecovery.onTornDown(rtw88JoinNowUS());
         }
         if (initiator)
             rxBaTeardown(tid);
-        IOLog("rtw88: RX DELBA tid=%u initiator=%d\n", tid, initiator);
+        IOLog("rtw88: RX DELBA tid=%u initiator=%d reason=%u uplink_was_active=%d%s\n",
+              tid, initiator, reason, wasActive, tore ? " — will re-negotiate" : "");
         break;
     }
     default:
@@ -4608,7 +5060,7 @@ void RTW88IEEE80211::onTimer()
         break;
 
     case RTW88_STATE_ASSOCIATING:
-        failJoin("assoc-timeout");
+        joinAttemptFailed("assoc-timeout");
         break;
 
     case RTW88_STATE_HANDSHAKING:
@@ -4707,9 +5159,26 @@ IOReturn RTW88IEEE80211::cmdGetBSSList(uint8_t *buf, uint32_t *len)
     return kIOReturnSuccess;
 }
 
+IOReturn RTW88IEEE80211::setRegulatoryCountry(const char alpha2[2])
+{
+    if (!_rtwdev || !alpha2) return kIOReturnNotReady;
+    const int ret = rtw_regd_set_country(_rtwdev, alpha2);
+    if (ret) {
+        IOLog("rtw88: failed to apply host regulatory country %.2s ret=%d\n", alpha2, ret);
+        return kIOReturnError;
+    }
+    IOLog("rtw88: applied host regulatory country %.2s to Realtek power domain\n", alpha2);
+    return kIOReturnSuccess;
+}
+
 void RTW88IEEE80211::getMACAddress(uint8_t *mac)
 {
-    memcpy(mac, _macAddr, 6);
+    if (mac) memcpy(mac, _macAddr, 6);
+}
+
+void RTW88IEEE80211::getPermanentMACAddress(uint8_t *mac)
+{
+    if (mac) memcpy(mac, _permanentMacAddr, 6);
 }
 
 IOReturn RTW88IEEE80211::setMACAddress(const uint8_t *mac)
@@ -4723,15 +5192,16 @@ IOReturn RTW88IEEE80211::setMACAddress(const uint8_t *mac)
 
     /* A station address must not change midway through auth/association. */
     if (_state == RTW88_STATE_CONNECTED || _state == RTW88_STATE_ASSOCIATING ||
-        _state == RTW88_STATE_AUTHENTICATING)
+        _state == RTW88_STATE_AUTHENTICATING || _state == RTW88_STATE_HANDSHAKING ||
+        _state == RTW88_STATE_DISCONNECTING)
         return kIOReturnBusy;
 
-    memcpy(_macAddr, mac, ETH_ALEN);
     if (rtw88_set_station_mac(_hw, _vif, mac) != 0)
         return kIOReturnError;
+    memcpy(_macAddr, mac, ETH_ALEN);
 
-    IOLog("rtw88: STA MAC programmed %02x:%02x:%02x:%02x:%02x:%02x\n",
-          mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+    IOLog("rtw88: STA MAC programmed (locally-administered=%u)\n",
+          (mac[0] & 0x02U) ? 1U : 0U);
     return kIOReturnSuccess;
 }
 

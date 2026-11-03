@@ -1,4 +1,5 @@
 /* Modified by X1REN41L on 2026-10-14 for RTL88WiFi 1.0.1; see the repository NOTICE.md. */
+/* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (noise reporting, AWDL radio policy); see NOTICE.md. */
 /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
  * Native IO80211 controller for the RTL8822BE port.
  */
@@ -6,6 +7,7 @@
 #include "RTL88WiFiInterface.hpp"
 #include "RTW88AssocWire.hpp"
 #include "RTW88UserClient.hpp"
+#include "RTW88LinkMetrics.hpp"
 
 extern "C" {
 #include "../compat/rtw88_compat.h"
@@ -20,6 +22,7 @@ extern "C" void rtw88_trigger_interrupt(void);  /* esta si es la unica con exter
 #include <libkern/copyio.h>               /* copyin/copyout for legacy ioctl bridge */
 #include <sys/errno.h>                    /* EINVAL/EFAULT/ENOMEM */
 #include <libkern/version.h>              /* scan-cache bootstrap compatibility only */
+#include <sys/random.h>                   /* kernel CSPRNG for private station MACs */
 #include <net/kpi_interface.h>            /* ifnet_stat_increment_in/out */
 
 #define IOLog rtw88_candidate_log
@@ -61,17 +64,78 @@ static IOPMPowerState gRTW88PowerStates[kRTW88PowerStateCount] = {
       0, 0, 0, 0, 0, 0, 0, 0 },
 };
 
-/* rtw88 does not measure a noise floor.  8822B/8822C report a per-path RX
- * SNR in PHY status, so derive noise = RSSI - SNR from that measurement.
- * With no SNR (8821C, or no samples yet) noise is reported as unavailable
- * instead of being derived from a constant. */
-static bool rtw88LinkNoise(int rssi, int *noise, int *snr)
+/* APPLE80211_IOC_PRIVATE_MAC (238): the payload behind the "Private Wi-Fi
+ * address" control in Network settings.  The SDK defines only the request
+ * number.  This layout was read from Apple's own driver (AirPort_BrcmNIC::
+ * getPRIVATE_MAC / setPRIVATE_MAC in the IO80211FamilyLegacy bundle) and from
+ * the family's forwarding handlers, which insist on exactly 28 bytes:
+ *   +0x04 enabled     non-zero = private address on
+ *   +0x08 flags       control flags; Apple's driver stores them and returns them
+ *   +0x0C interval_s  rotation interval in seconds; 0 = fixed (no rotation)
+ *   +0x10 mac[6]      the current private address
+ * Apple's driver leaves +0x00 (version) and the rest zero. */
+struct rtw88_private_mac_data {
+    uint32_t version;
+    uint32_t enabled;
+    uint32_t flags;
+    uint32_t interval_s;
+    uint8_t  mac[6];
+    uint8_t  pad[2];
+    uint32_t reserved;
+};
+static_assert(sizeof(rtw88_private_mac_data) == 28, "family handlers require a 28-byte payload");
+
+static constexpr uint32_t kRTW88PrivateMacMaxIntervalS = 0xFFFFFFFFU / 1000U;
+static constexpr uint32_t kRTW88PrivateMacRetryMs = 60000U;
+
+static bool rtw88MacIsZero(const uint8_t mac[6])
+{
+    return !(mac[0] | mac[1] | mac[2] | mac[3] | mac[4] | mac[5]);
+}
+
+static bool rtw88MacIsUnicast(const uint8_t mac[6])
+{
+    return !rtw88MacIsZero(mac) && !(mac[0] & 0x01);
+}
+
+static void rtw88MakeLocallyAdministered(uint8_t mac[6])
+{
+    /* Keep the random payload but set local-admin and clear multicast bits. */
+    mac[0] = (uint8_t)((mac[0] & 0xFCU) | 0x02U);
+}
+
+static void rtw88GeneratePrivateMAC(uint8_t mac[6])
+{
+    read_random(mac, 6);
+    rtw88MakeLocallyAdministered(mac);
+}
+
+/* rtw88 does not measure a noise floor.  Chips that report a per-path RX SNR
+ * (8822B/8822C, and 8821C since 1.0.2) give noise = RSSI - SNR.  When no
+ * plausible SNR is available (idle 2.4 GHz link that only sees CCK beacons,
+ * or no samples yet) fall back to the thermal-noise estimate for the current
+ * channel width instead of reporting "unavailable", which macOS renders as
+ * "0 dBm".  See RTW88LinkMetrics.hpp.  Always succeeds. */
+static void rtw88LinkNoise(int rssi, unsigned widthMHz, int *noise, int *snr,
+                           bool *measured = nullptr)
 {
     int s = 0;
-    if (!rtw88_get_rx_snr(&s)) return false;
-    *snr = s;
-    *noise = rssi - s;
-    return true;
+    const bool haveSnr = rtw88_get_rx_snr(&s);
+    const RTW88Metrics::LinkNoise n = RTW88Metrics::linkNoise(rssi, haveSnr, s, widthMHz);
+    *noise = n.noise;
+    *snr = n.snr;
+    if (measured) *measured = (n.source == RTW88Metrics::kSourceMeasured);
+}
+
+/* Operating width of a scanned BSS (HT/VHT Operation IEs), used only to pick
+ * the thermal-noise estimate for networks we are not connected to. */
+static unsigned rtw88BssWidthMHz(const RTW88BSS &b)
+{
+    RTW88BssOperation op;
+    RTW88IEEE80211::parseBssOperation(b.ies, b.ies_len, &op);
+    if (b.channel > 14 && op.vhtWidth == 1 && op.vhtSeg0 != 0) return 80;
+    if (op.htStaWidth && (op.sco == 1 || op.sco == 3)) return 40;
+    return 20;
 }
 
 /* The port has no channel regulatory database: regulatory_hint() is a stub
@@ -144,7 +208,7 @@ IOWorkLoop *RTL88WiFi::getWorkLoop() const
 
 bool RTL88WiFi::start(IOService *provider)
 {
-    setProperty("DriverBuild", "1.0.1-rtl88wifi-r12-20261014");
+    setProperty("DriverBuild", "1.0.11-rtl88wifi-r22-20261031");
     setProperty("STA_R10_TXQ_GATE", kOSBooleanTrue);
     setProperty("STA_R11_TXQ_STALL_GATE", kOSBooleanTrue);
     setProperty("STA_V19_DARWIN_ENOTSUP_FIX", kOSBooleanTrue);
@@ -225,6 +289,24 @@ bool RTL88WiFi::start(IOService *provider)
     _ieee80211->setEventDelegate(this);
     _ieee80211->setRxDelegate(this);
 
+    /* 1.0.2 AWDL radio policy: read from the matched IOKit personality, so no
+     * new kernel symbol (boot-arg parsing) is needed.  Absent or false means
+     * the AWDL interface exists but never takes the radio off the AP channel. */
+    {
+        OSBoolean *awdlRadio = OSDynamicCast(OSBoolean, getProperty("RTL88WiFiAWDLRadio"));
+        const bool allowAWDL = awdlRadio && awdlRadio->isTrue();
+        _ieee80211->setAWDLRadioAllowed(allowAWDL);
+        setProperty("AWDL_RADIO_POLICY", allowAWDL ? "enabled" : "disabled");
+        IOLog("RTL88WiFi: AWDL radio policy: %s\n", allowAWDL ? "enabled (experimental)" : "disabled (stable default)");
+
+        /* 1.0.4 band policy: default on; RTL88WiFiPrefer5GHz=false in the
+         * personality honours the BSSID macOS asks for exactly. */
+        OSBoolean *p5 = OSDynamicCast(OSBoolean, getProperty("RTL88WiFiPrefer5GHz"));
+        const bool prefer5 = p5 ? p5->isTrue() : true;
+        _ieee80211->setPrefer5GHzUpgrade(prefer5);
+        setProperty("PREFER_5GHZ_POLICY", prefer5 ? "enabled" : "disabled");
+    }
+
     rtw88_force_wifi_only();
 
     IOReturn probeRet = _ieee80211->start();
@@ -294,7 +376,20 @@ bool RTL88WiFi::start(IOService *provider)
     setProperty("DiagnosticLogging", kOSBooleanTrue);
     setProperty("DiagnosticLogCapacity", (uint64_t)32767, 32);
     _diagnosticsTimer->setTimeoutMS(1000);
-    IOLog("RTL88WiFi: 1.0.1 diagnostics enabled; skb cb=80; fixes=memory,wpa,gtk,peer,station,firmware,scan-ies,ap-ie-list,link-reason,rx-filter\n");
+
+    /* Private-address rotation is driven on the controller workloop.  Failure
+     * to allocate this optional timer must not prevent ordinary Wi-Fi use; Fixed
+     * still works through setHardwareAddress(), while Rotating reports a clear
+     * diagnostic and remains safely on its current address. */
+    _privateMacTimer = IOTimerEventSource::timerEventSource(this, &RTL88WiFi::privateMacTimerFired);
+    if (_privateMacTimer && _workLoop->addEventSource(_privateMacTimer) == kIOReturnSuccess) {
+        setProperty("PRIVATE_MAC_TIMER_AVAILABLE", kOSBooleanTrue);
+    } else {
+        if (_privateMacTimer) { _privateMacTimer->release(); _privateMacTimer = nullptr; }
+        setProperty("PRIVATE_MAC_TIMER_AVAILABLE", kOSBooleanFalse);
+        IOLog("RTL88WiFi: PRIVATE_MAC rotation timer unavailable; Fixed mode remains available\n");
+    }
+    IOLog("RTL88WiFi: 1.0.11 diagnostics enabled; fixes=assoc-open-empty-key,private-mac-legacy-and-skywalk-get-set,fixed-rotating-mac,mesh-roam,mesh-cache-refresh\n");
     IOLog("RTL88WiFi: device started successfully\n");
     return true;
 }
@@ -360,6 +455,10 @@ void RTL88WiFi::diagnosticsTimerFired(OSObject *owner, IOTimerEventSource *timer
          * queue stalled or the ifnet output thread waiting on a gate signal. */
         self->releaseTxStall();
         self->kickGatedOutput();
+        /* 1.0.6: upkeep of the connected link (re-negotiates uplink A-MPDU if the
+         * AP tore the Block Ack agreement down).  Inside the same guard as the
+         * hardware reads above, so it cannot race a power transition. */
+        self->_ieee80211->housekeeping();
         rtw88_debug_dump_tx_state_to(toRing);
     }
     __atomic_store_n(&self->_diagnosticsInHardware, false, __ATOMIC_SEQ_CST);
@@ -606,6 +705,14 @@ void RTL88WiFi::releaseDMAEntries()
 void RTL88WiFi::teardown()
 {
     __atomic_store_n(&_shutdown, true, __ATOMIC_RELEASE);
+    if (_privateMacTimer) {
+        _privateMacTimer->disable();
+        _privateMacTimer->cancelTimeout();
+        if (_workLoop) _workLoop->removeEventSource(_privateMacTimer);
+        _privateMacTimer->cancelTimeout();
+        _privateMacTimer->release();
+        _privateMacTimer = nullptr;
+    }
     if (_diagnosticsTimer) {
         /* A callback already running may re-arm after the first cancel;
          * removal waits for the workloop gate, then cancel any re-arm. */
@@ -1095,19 +1202,47 @@ IOReturn RTL88WiFi::setHardwareAddress(const IOEthernetAddress *addr)
     if (!addr || !_ieee80211)
         return kIOReturnBadArgument;
 
-    /* Newer CoreWiFi asks the controller to adopt its per-network private
-     * station address before it submits APPLE80211_IOC_ASSOCIATE.  The default
-     * IOEthernetController implementation returns Unsupported; that aborts the
-     * join before the Realtek association path is reached. */
-    IOReturn ret = _ieee80211->setMACAddress(addr->bytes);
-    if (ret == kIOReturnSuccess) {
-        memcpy(_macAddr.bytes, addr->bytes, sizeof(_macAddr.bytes));
-        IOLog("RTL88WiFi: station MAC updated to %02x:%02x:%02x:%02x:%02x:%02x\n",
-              addr->bytes[0], addr->bytes[1], addr->bytes[2],
-              addr->bytes[3], addr->bytes[4], addr->bytes[5]);
+    /* CoreWiFi calls this before each join.  Honour the PRIVATE_MAC selector:
+     * Off restores the EFuse address; Fixed adopts the host's selected address
+     * (or the address explicitly supplied by PRIVATE_MAC); Rotating uses the
+     * pending rotation when one is due.  Never rotate a live association. */
+    uint8_t desired[6] = {};
+    if (!_privMacEnabled) {
+        _ieee80211->getPermanentMACAddress(desired);
+    } else if (_privMacApplyPending && _privMacAddressValid) {
+        memcpy(desired, _privMacAddress, sizeof(desired));
+    } else if (_privMacRotatePending) {
+        rtw88GeneratePrivateMAC(desired);
     } else {
-        IOLog("RTL88WiFi: station MAC update failed ret=0x%x\n", ret);
+        /* A non-zero address supplied by CoreWiFi is authoritative (Apple's
+         * reference driver copies it unchanged).  Only addresses generated
+         * locally by rtw88GeneratePrivateMAC() are forced to LAA unicast. */
+        memcpy(desired, addr->bytes, sizeof(desired));
     }
+    if (!rtw88MacIsUnicast(desired))
+        return kIOReturnBadArgument;
+
+    IOReturn ret = _ieee80211->setMACAddress(desired);
+    if (ret == kIOReturnSuccess) {
+        memcpy(_macAddr.bytes, desired, sizeof(_macAddr.bytes));
+        if (_privMacEnabled) {
+            memcpy(_privMacAddress, desired, sizeof(_privMacAddress));
+            _privMacAddressValid = true;
+        } else {
+            bzero(_privMacAddress, sizeof(_privMacAddress));
+            _privMacAddressValid = false;
+        }
+        _privMacApplyPending = false;
+        _privMacRotatePending = false;
+        if (_privMacEnabled && _privMacIntervalS)
+            armPrivateMACTimer(_privMacIntervalS * 1000U);
+        IOLog("RTL88WiFi: station MAC programmed (private=%u mode=%s)\n",
+              _privMacEnabled ? 1U : 0U,
+              !_privMacEnabled ? "off" : (_privMacIntervalS ? "rotating" : "fixed"));
+    } else {
+        IOLog("RTL88WiFi: station MAC update deferred/failed ret=0x%x\n", ret);
+    }
+    bzero(desired, sizeof(desired));
     return ret;
 }
 
@@ -1228,8 +1363,13 @@ SInt32 RTL88WiFi::apple80211_ioctl(IO80211Interface *interface,
     const bool currentNetworkBridge = !virtualInterface && isGet &&
         interface && interface == _netif &&
         reqType == APPLE80211_IOC_CURRENT_NETWORK;
+    /* The restored IO80211FamilyLegacy does not forward PRIVATE_MAC (238)
+     * to apple80211Request on this host.  Bridge only the primary interface
+     * and the exact 28-byte payload documented by Apple's own driver. */
+    const bool privateMacBridge = !virtualInterface && interface && interface == _netif &&
+        reqType == APPLE80211_IOC_PRIVATE_MAC;
     if (!scanBridge && !scalarPowerSave && !scalarDisassociate && !channelsBridge &&
-        !currentNetworkBridge) {
+        !currentNetworkBridge && !privateMacBridge) {
         const UInt32 before = __atomic_load_n(&_nativeAssocDispatchCount, __ATOMIC_RELAXED);
         SInt32 sr = super::apple80211_ioctl(interface, virtualInterface, net, cmd, data);
         if (virtualInterface && sr != 0) {
@@ -1302,6 +1442,9 @@ SInt32 RTL88WiFi::apple80211_ioctl(IO80211Interface *interface,
     if (!(void *)reqData) {
         return EFAULT;
     }
+
+    if (privateMacBridge)
+        return handlePrivateMACBSDRequest(cmd, req, "legacy-ioctl");
 
     /* The restored family rejects the host CHANNELS_INFO layout with EINVAL
      * before reaching our handler. Retain this v21 scan-support exception,
@@ -1403,6 +1546,77 @@ SInt32 RTL88WiFi::apple80211_ioctl(IO80211Interface *interface,
     return e ? e : EIO;
 }
 
+/* Private Wi-Fi Address selector 238 travels through split GET/SET dispatchers
+ * on Skywalk-based macOS. The previous bridge covered only the legacy ioctl
+ * and one split SET ingress. Without split GET/SET routing, System Settings
+ * can show the OS-selected mode while the selector remains unavailable. */
+SInt32 RTL88WiFi::handlePrivateMACBSDRequest(unsigned request_type,
+                                               struct apple80211req *req,
+                                               const char *ingress)
+{
+    if (!req || !ingress ||
+        (request_type != SIOCGA80211 && request_type != SIOCSA80211) ||
+        req->req_type != APPLE80211_IOC_PRIVATE_MAC ||
+        req->req_len != sizeof(rtw88_private_mac_data) || !req->req_data)
+        return EINVAL;
+
+    const bool isSet = request_type == SIOCSA80211;
+    rtw88_private_mac_data payload = {};
+    int error = 0;
+    if (isSet) {
+        error = copyin((user_addr_t)req->req_data, &payload, sizeof(payload));
+        if (error) { bzero(&payload, sizeof(payload)); return error; }
+    }
+
+    const SInt32 native = apple80211Request(request_type,
+                                           APPLE80211_IOC_PRIVATE_MAC,
+                                           _netif, &payload);
+    if (native == kIOReturnSuccess) {
+        if (!isSet)
+            error = copyout(&payload, (user_addr_t)req->req_data, sizeof(payload));
+    } else if (native > 0 && native < 256) {
+        error = native;
+    } else {
+        error = errnoFromReturn(native);
+        if (!error) error = EIO;
+    }
+
+    if (isSet)
+        setProperty("STA_PRIVATE_MAC_SET_SEEN", kOSBooleanTrue);
+    else
+        setProperty("STA_PRIVATE_MAC_GET_SEEN", kOSBooleanTrue);
+    setProperty("STA_PRIVATE_MAC_LAST_RET", (uint64_t)(uint32_t)error, 32);
+    IOLog("RTL88WiFi: PRIVATE_MAC %s ingress=%s result=%d\n",
+          isSet ? "SET" : "GET", ingress, error);
+    bzero(&payload, sizeof(payload));
+    return error;
+}
+
+SInt32 RTL88WiFi::apple80211_ioctl_get(IO80211Interface *interface,
+                                       IO80211VirtualInterface *virtualInterface,
+                                       ifnet_t net, void *data)
+{
+    if (data && interface && interface == _netif && !virtualInterface) {
+        auto *req = static_cast<struct apple80211req *>(data);
+        if (req->req_type == APPLE80211_IOC_PRIVATE_MAC)
+            return handlePrivateMACBSDRequest(SIOCGA80211, req, "legacy-split-get");
+    }
+    return super::apple80211_ioctl_get(interface, virtualInterface, net, data);
+}
+
+#if __IO80211_TARGET >= __MAC_10_15
+SInt32 RTL88WiFi::apple80211_ioctl_get(IO80211SkywalkInterface *skywalkInterface,
+                                       void *data)
+{
+    if (data && skywalkInterface &&
+        skywalkInterface == getPrimarySkywalkInterface()) {
+        auto *req = static_cast<struct apple80211req *>(data);
+        if (req->req_type == APPLE80211_IOC_PRIVATE_MAC)
+            return handlePrivateMACBSDRequest(SIOCGA80211, req, "skywalk-split-get");
+    }
+    return super::apple80211_ioctl_get(skywalkInterface, data);
+}
+#endif
 
 #if __IO80211_TARGET >= __MAC_10_15
 namespace {
@@ -1493,7 +1707,11 @@ static bool rtw88AssocPayloadLooksValid(const apple80211_assoc_data *d)
     const uint32_t personal = APPLE80211_AUTHTYPE_WPA_PSK |
                               APPLE80211_AUTHTYPE_WPA2_PSK |
                               APPLE80211_AUTHTYPE_SHA256_PSK;
-    const bool secure = (d->ad_auth_upper & personal) != 0;
+    constexpr uint32_t sae = 0x00000200U;
+    const bool hasWpa2 = (d->ad_auth_upper & APPLE80211_AUTHTYPE_WPA2_PSK) != 0;
+    const bool knownUpper = (d->ad_auth_upper & ~(personal | sae)) == 0;
+    const bool secure = (d->ad_auth_upper & personal) != 0 && knownUpper &&
+                        (!(d->ad_auth_upper & sae) || hasWpa2);
     if (d->ad_auth_lower != APPLE80211_AUTHTYPE_OPEN)
         return false;
     if (d->ad_auth_upper != APPLE80211_AUTHTYPE_NONE && !secure)
@@ -1577,6 +1795,30 @@ SInt32 RTL88WiFi::apple80211_ioctl_set(IO80211Interface *interface,
         }
     }
 
+    /* Some hosts send the 900/908-byte host32 ASSOCIATE envelope through the
+     * split SET hook instead of apple80211_ioctl(). Normalize it here too,
+     * before IO80211FamilyLegacy can reinterpret its 32-bit auth fields as
+     * the Ventura 16-bit structure. */
+    if (data && interface && interface == _netif && !virtualInterface) {
+        auto *req = static_cast<apple80211req *>(data);
+        if (req->req_type == APPLE80211_IOC_ASSOCIATE &&
+            RTW88AssocWire::supportedRequestSize(req->req_len)) {
+            SInt32 ret = 0;
+            if (rtw88TryHostAssociation(this, interface, req, &ret))
+                return ret;
+        }
+    }
+
+    /* PRIVATE_MAC is a small documented payload, but some split SET paths
+     * are rejected by the family before the controller selector is called.
+     * Route only this selector for the primary interface, with exact length
+     * checking and copyin, through the same native handler as the BSD bridge. */
+    if (data && interface && interface == _netif && !virtualInterface) {
+        auto *req = static_cast<apple80211req *>(data);
+        if (req->req_type == APPLE80211_IOC_PRIVATE_MAC)
+            return handlePrivateMACBSDRequest(SIOCSA80211, req, "legacy-split-set");
+    }
+
     /* Let the restored Ventura family do the normal translation first.  This
      * preserves every working scan/Instant-Hotspot/discovery behavior from v15. */
     SInt32 sr = super::apple80211_ioctl_set(interface, virtualInterface,
@@ -1624,6 +1866,12 @@ SInt32 RTL88WiFi::apple80211_ioctl_set(IO80211SkywalkInterface *skywalkInterface
                                            void *data)
 {
     setProperty("STA_SPLIT_ASSOC_SKYWALK_INGRESS", kOSBooleanTrue);
+    if (data && skywalkInterface &&
+        skywalkInterface == getPrimarySkywalkInterface()) {
+        auto *req = static_cast<struct apple80211req *>(data);
+        if (req->req_type == APPLE80211_IOC_PRIVATE_MAC)
+            return handlePrivateMACBSDRequest(SIOCSA80211, req, "skywalk-split-set");
+    }
     RTW88SplitTraceSnapshot splitPre = {};
     rtw88CaptureSplitTrace(data, &splitPre);
     const UInt32 before = __atomic_load_n(&_nativeAssocDispatchCount, __ATOMIC_RELAXED);
@@ -1678,6 +1926,56 @@ SInt32 RTL88WiFi::apple80211Request(unsigned int request_type,
     bool isSet = (request_type == SIOCSA80211);
     if (!data && request_number != APPLE80211_IOC_DISASSOCIATE)
         return kIOReturnBadArgument;
+
+    /* macOS 15/26's restored IO80211 path can deliver the newer 32-bit
+     * ASSOCIATE wire prefix directly to apple80211Request().  The Ventura
+     * apple80211_assoc_data in this SDK uses 16-bit mode/auth fields, so
+     * interpreting that newer payload as the Ventura struct produces the
+     * exact misleading signature seen on hardware (lower=0, upper=1,
+     * ssid_len=0) for an otherwise ordinary open request.  Normalize only
+     * when the complete, strict 32-bit prefix signature validates.  This
+     * branch is only entered for the ASSOCIATE selector, whose payload is
+     * defined by the host as an association request; the decoder reads only
+     * its fixed 108-byte common prefix and never interprets the unknown tail.
+     * Older Ventura payloads do not pass this decoder and keep the existing
+     * native path unchanged. */
+    if (isSet && request_number == APPLE80211_IOC_ASSOCIATE && data) {
+        RTW88AssocWire::Personal fields = {};
+        const bool host32 = RTW88AssocWire::decode(
+            static_cast<const uint8_t *>(data), RTW88AssocWire::PrefixSize, fields);
+        if (host32) {
+            apple80211_assoc_data normalized = {};
+            normalized.version = APPLE80211_VERSION;
+            normalized.ad_mode = (uint16_t)fields.mode;
+            normalized.ad_auth_lower = (uint16_t)fields.lower;
+            normalized.ad_auth_upper = (uint16_t)fields.upper;
+            normalized.ad_ssid_len = fields.ssidLength;
+            memcpy(normalized.ad_ssid, fields.ssid, fields.ssidLength);
+            memcpy(normalized.ad_bssid.octet, fields.bssid, sizeof(fields.bssid));
+            normalized.ad_key.version = APPLE80211_VERSION;
+            normalized.ad_key.key_len = fields.keyLength;
+            normalized.ad_key.key_cipher_type = fields.cipher;
+            if (fields.keyLength)
+                memcpy(normalized.ad_key.key, fields.key, fields.keyLength);
+
+            setProperty("STA_ASSOC_HOST32_TRANSLATED", kOSBooleanTrue);
+            setProperty("STA_ASSOC_HOST32_SSID_LEN", (uint64_t)fields.ssidLength, 32);
+            setProperty("STA_ASSOC_HOST32_AUTH_UPPER", (uint64_t)fields.upper, 32);
+            IOLog("RTL88WiFi: normalized host 32-bit ASSOCIATE payload mode=%u lower=%u upper=0x%x ssidLen=%u keyLen=%u\n",
+                  (unsigned)fields.mode, (unsigned)fields.lower,
+                  (unsigned)fields.upper, (unsigned)fields.ssidLength,
+                  (unsigned)fields.keyLength);
+
+            const SInt32 normalizedRet = handleASSOCIATE(&normalized);
+            setProperty("STA_ASSOC_HOST32_RET", (uint64_t)(uint32_t)normalizedRet, 32);
+            setProperty("STA_ASSOC_NATIVE_RET", (uint64_t)(uint32_t)normalizedRet, 32);
+            RTW88AssocWire::wipe(&normalized, sizeof(normalized));
+            RTW88AssocWire::wipe(&fields, sizeof(fields));
+            return normalizedRet;
+        }
+        RTW88AssocWire::wipe(&fields, sizeof(fields));
+    }
+
     /* GET polling and background scan requests arrive several times per
      * second; keep them out of the bounded diagnostic ring (kprintf above
      * still records every request). */
@@ -1778,38 +2076,38 @@ __attribute__((__noinline__)) SInt32 RTL88WiFi::handleNativeRequest(
         return handleSCAN_REQ(data);
 
     case APPLE80211_IOC_SCAN_REQ_MULTIPLE:
-        /* Ventura may use the multi-SSID scan request even when one network is
-         * requested.  The Realtek backend scans the full channel set, so the
-         * request filters are advisory for now. */
         if (!isSet) return kIOReturnUnsupported;
-        /* CoreWiFi can submit another scan while the hardware scan is still
-         * running.  Do not surface EBUSY: keep the active scan and let its
-         * SCAN_DONE satisfy the coalesced request. */
-        if (_scanInProgress) {
-            IOLog("RTL88WiFi: SCAN_REQ_MULTIPLE coalesced with active scan\n");
-            return kIOReturnSuccess;
-        }
+        if (!data) return kIOReturnBadArgument;
         {
+            auto *d = static_cast<apple80211_scan_multiple_data *>(data);
+            if (d->num_channels > 128) return kIOReturnBadArgument;
+            if (_scanInProgress) {
+                IOLog("RTL88WiFi: SCAN_REQ_MULTIPLE coalesced with active scan\n");
+                return kIOReturnSuccess;
+            }
+
+            uint16_t requested[128] = {};
+            for (uint32_t i = 0; i < d->num_channels; ++i) {
+                if (d->channels[i].channel > 255) return kIOReturnBadArgument;
+                requested[i] = (uint16_t)d->channels[i].channel;
+            }
+
             RTW88StateResult st = {};
-            if (_ieee80211->cmdGetState(&st) == kIOReturnSuccess &&
-                st.state == RTW88_STATE_CONNECTED) {
-                /* Do not channel-hop a live STA.  The manual backend scan
-                 * currently scans the complete channel table rather than the
-                 * CoreWiFi-requested subset, which can keep us off-channel
-                 * long enough for the AP to drop the association.  Satisfy
-                 * connected background scans from the already-maintained BSS
-                 * cache; disconnected scans still perform real RF scanning. */
-                _scanCursor = 0;
+            const bool connected =
+                _ieee80211->cmdGetState(&st) == kIOReturnSuccess &&
+                st.state == RTW88_STATE_CONNECTED;
+            _scanInProgress = true;
+            _scanCursor = 0;
+            IOReturn ret = _ieee80211->cmdScan(requested, d->num_channels);
+            if (ret == kIOReturnNotReady && connected) {
+                /* No alternate channel was known/requested.  Preserve the old
+                 * cache-only completion rather than disrupting a live link. */
+                _scanInProgress = false;
                 UInt32 result = 0;
-                kprintf("RTL88WiFi: SCAN_REQ_MULTIPLE connected cache-only completion\n");
+                kprintf("RTL88WiFi: SCAN_REQ_MULTIPLE connected cache-only completion (no candidate channels)\n");
                 _netif->postMessage(APPLE80211_M_SCAN_DONE, &result, sizeof(result));
                 return kIOReturnSuccess;
             }
-        }
-        _scanInProgress = true;
-        _scanCursor = 0;
-        {
-            IOReturn ret = _ieee80211->cmdScan();
             if (ret) _scanInProgress = false;
             return ret;
         }
@@ -2014,8 +2312,8 @@ __attribute__((__noinline__)) SInt32 RTL88WiFi::handleNativeRequest(
             d->reason = APPLE80211_LINK_DOWN_REASON_DEAUTH;
         } else {
             d->rssi = (uint32_t)st.rssi;
-            int nf = 0, snr = 0;   /* 0 = unknown */
-            rtw88LinkNoise(st.rssi, &nf, &snr);
+            int nf = 0, snr = 0;
+            rtw88LinkNoise(st.rssi, _ieee80211->channelWidthMHz(), &nf, &snr);
             d->nf = (uint16_t)(int16_t)nf;
             d->snr = (uint16_t)snr;
         }
@@ -2123,7 +2421,7 @@ __attribute__((__noinline__)) SInt32 RTL88WiFi::handleNativeRequest(
         if (request_number == APPLE80211_IOC_DRIVER_VERSION) {
             char label[sizeof(d->string)] = {};
             strlcpy(label, chip, sizeof(label));
-            strlcat(label, " (RTL88WiFi 1.0.1)", sizeof(label));
+            strlcat(label, " (RTL88WiFi 1.0.11)", sizeof(label));
             d->string_len = (uint16_t)strlcpy(d->string, label, sizeof(d->string));
         } else {
             d->string_len = (uint16_t)strlcpy(d->string, chip, sizeof(d->string));
@@ -2200,7 +2498,15 @@ __attribute__((__noinline__)) SInt32 RTL88WiFi::handleNativeRequest(
         if (ret) return ret;
         if (st.state != RTW88_STATE_CONNECTED) return 6;
         int nf = 0, snr = 0;
-        if (!rtw88LinkNoise(st.rssi, &nf, &snr)) return kIOReturnNotReady;
+        bool measured = false;
+        rtw88LinkNoise(st.rssi, _ieee80211->channelWidthMHz(), &nf, &snr, &measured);
+        /* Publish where the number comes from, but only when it changes:
+         * CoreWiFi polls this selector often. */
+        static int8_t sLastNoiseSource = -1;
+        if (sLastNoiseSource != (int8_t)measured) {
+            sLastNoiseSource = (int8_t)measured;
+            setProperty("RADIO_NOISE_SOURCE", measured ? "measured" : "estimated");
+        }
         auto *d = static_cast<apple80211_noise_data *>(data);
         bzero(d, sizeof(*d));
         d->version = APPLE80211_VERSION;
@@ -2275,12 +2581,156 @@ __attribute__((__noinline__)) SInt32 RTL88WiFi::handleNativeRequest(
         return kIOReturnSuccess;
     }
 
-
+    case APPLE80211_IOC_PRIVATE_MAC:
+        return handleRequestPRIVATE_MAC(isSet, data);
 
     default:
         return kIOReturnUnsupported;
     }
 }
+
+/* Private Wi-Fi address selector 238.  On modern hosts it is explicitly
+ * bridged around IO80211FamilyLegacy's unsupported selector path.  SET stores
+ * Off/Fixed/Rotating mode, accepts the host-selected address or generates a
+ * locally-administered one, then schedules safe programming on the controller
+ * workloop.  Rotation is deferred while an association or scan is active. */
+__attribute__((__noinline__)) IOReturn RTL88WiFi::handleRequestPRIVATE_MAC(bool isSet, void *data)
+{
+    if (!data) return kIOReturnBadArgument;
+    auto *d = static_cast<rtw88_private_mac_data *>(data);
+    if (isSet) {
+        if (d->interval_s > kRTW88PrivateMacMaxIntervalS)
+            return kIOReturnBadArgument;
+
+        const bool enabled = d->enabled != 0;
+        const bool supplied = rtw88MacIsUnicast(d->mac);
+        _privMacEnabled = enabled;
+        _privMacFlags = d->flags;
+        _privMacIntervalS = enabled ? d->interval_s : 0;
+        _privMacRotatePending = false;
+
+        if (enabled) {
+            if (supplied) {
+                /* Match Apple's privateMACConfig: trust an explicit non-zero
+                 * host-selected unicast address; only generated addresses are
+                 * locally administered by this driver. */
+                memcpy(_privMacAddress, d->mac, sizeof(_privMacAddress));
+            } else if (!_privMacAddressValid) {
+                rtw88GeneratePrivateMAC(_privMacAddress);
+            }
+            _privMacAddressValid = true;
+        } else {
+            bzero(_privMacAddress, sizeof(_privMacAddress));
+            _privMacAddressValid = false;
+        }
+        _privMacApplyPending = true;
+
+        /* Apply on the controller workloop.  If a link or scan is active the
+         * timer retries after teardown; it never changes the MAC mid-link. */
+        if (_privateMacTimer)
+            _privateMacTimer->setTimeoutMS(1);
+        IOLog("RTL88WiFi: PRIVATE_MAC set mode=%s flags=0x%x interval=%us address=%s apply=pending\n",
+              !enabled ? "off" : (_privMacIntervalS ? "rotating" : "fixed"),
+              (unsigned)_privMacFlags, (unsigned)_privMacIntervalS,
+              supplied ? "host-supplied" : (enabled ? "generated" : "factory"));
+        if (enabled && _privMacIntervalS && !_privateMacTimer)
+            IOLog("RTL88WiFi: PRIVATE_MAC rotating requested but timer unavailable; address remains fixed\n");
+        return kIOReturnSuccess;
+    }
+
+    bzero(d, sizeof(*d));
+    d->enabled    = _privMacEnabled ? 1U : 0U;
+    d->flags      = _privMacFlags;
+    d->interval_s = _privMacIntervalS;
+    if (_privMacEnabled && _privMacAddressValid)
+        memcpy(d->mac, _privMacAddress, sizeof(d->mac));
+    else if (_ieee80211)
+        _ieee80211->getMACAddress(d->mac);
+    if (_privMacGets++ < 3)
+        IOLog("RTL88WiFi: PRIVATE_MAC get mode=%s interval=%us pending=%u\n",
+              !_privMacEnabled ? "off" : (_privMacIntervalS ? "rotating" : "fixed"),
+              (unsigned)_privMacIntervalS, _privMacApplyPending ? 1U : 0U);
+    return kIOReturnSuccess;
+}
+
+IOReturn RTL88WiFi::applyPrivateMACAddress(bool rotate)
+{
+    if (!_ieee80211) return kIOReturnNotReady;
+    const RTW88State state = _ieee80211->rawState();
+    if (state == RTW88_STATE_CONNECTED || state == RTW88_STATE_ASSOCIATING ||
+        state == RTW88_STATE_AUTHENTICATING || state == RTW88_STATE_HANDSHAKING ||
+        state == RTW88_STATE_DISCONNECTING || state == RTW88_STATE_SCANNING)
+        return kIOReturnBusy;
+
+    uint8_t desired[6] = {};
+    if (!_privMacEnabled) {
+        _ieee80211->getPermanentMACAddress(desired);
+    } else if (rotate || !_privMacAddressValid) {
+        rtw88GeneratePrivateMAC(desired);
+    } else {
+        memcpy(desired, _privMacAddress, sizeof(desired));
+    }
+    if (!rtw88MacIsUnicast(desired)) {
+        bzero(desired, sizeof(desired));
+        return kIOReturnBadArgument;
+    }
+
+    const IOReturn ret = _ieee80211->setMACAddress(desired);
+    if (ret == kIOReturnSuccess) {
+        memcpy(_macAddr.bytes, desired, sizeof(_macAddr.bytes));
+        if (_privMacEnabled) {
+            memcpy(_privMacAddress, desired, sizeof(_privMacAddress));
+            _privMacAddressValid = true;
+        } else {
+            bzero(_privMacAddress, sizeof(_privMacAddress));
+            _privMacAddressValid = false;
+        }
+        _privMacApplyPending = false;
+        _privMacRotatePending = false;
+        IOLog("RTL88WiFi: PRIVATE_MAC applied mode=%s\n",
+              !_privMacEnabled ? "off" : (_privMacIntervalS ? "rotating" : "fixed"));
+    }
+    bzero(desired, sizeof(desired));
+    return ret;
+}
+
+void RTL88WiFi::armPrivateMACTimer(UInt32 milliseconds)
+{
+    if (_privateMacTimer && !_shutdown && milliseconds)
+        _privateMacTimer->setTimeoutMS(milliseconds);
+}
+
+void RTL88WiFi::privateMacTimerFired(OSObject *owner, IOTimerEventSource *timer)
+{
+    RTL88WiFi *self = OSDynamicCast(RTL88WiFi, owner);
+    if (!self || !timer || self->_shutdown || !self->_ieee80211) return;
+
+    /* A timer tick with no pending SET means the requested rotation interval
+     * expired.  Do nothing for a settled Off/Fixed mode.  Defer a live-link
+     * rotation and retry after disassociation. */
+    if (!self->_privMacApplyPending && !self->_privMacRotatePending &&
+        (!self->_privMacEnabled || self->_privMacIntervalS == 0))
+        return;
+    const bool rotate = self->_privMacEnabled &&
+        (self->_privMacRotatePending ||
+         (!self->_privMacApplyPending && self->_privMacIntervalS != 0));
+    if (rotate) self->_privMacRotatePending = true;
+
+    const IOReturn ret = self->applyPrivateMACAddress(rotate);
+    if (ret == kIOReturnBusy) {
+        self->armPrivateMACTimer(kRTW88PrivateMacRetryMs);
+        return;
+    }
+    if (ret != kIOReturnSuccess) {
+        IOLog("RTL88WiFi: PRIVATE_MAC apply failed ret=0x%x; retrying\n", ret);
+        self->armPrivateMACTimer(kRTW88PrivateMacRetryMs);
+        return;
+    }
+
+    if (self->_privMacEnabled && self->_privMacIntervalS)
+        self->armPrivateMACTimer(self->_privMacIntervalS * 1000U);
+}
+
 
 /* IO80211FamilyLegacy re-enters the dispatcher while posting COUNTRY_CODE
  * changes. v24 reserved 0x1210 bytes on EVERY call, exhausting the kernel
@@ -2440,6 +2890,19 @@ __attribute__((__noinline__)) IOReturn RTL88WiFi::handleRequestCOUNTRY_CODE(bool
             if (d->cc[0] != 'x' && d->cc[0] != 'X') {
                 memcpy(_countryCode, d->cc, sizeof(_countryCode));
                 _countryCode[APPLE80211_MAX_CC_LEN - 1] = 0;
+                IOLog("RTL88WiFi: active regulatory country supplied by Apple80211: %.2s\n",
+                      _countryCode);
+                char alpha2[2] = {(char)_countryCode[0], (char)_countryCode[1]};
+                for (unsigned i = 0; i < 2; ++i) {
+                    if (alpha2[i] >= 'a' && alpha2[i] <= 'z')
+                        alpha2[i] = (char)(alpha2[i] - 'a' + 'A');
+                }
+                if (alpha2[0] >= 'A' && alpha2[0] <= 'Z' &&
+                    alpha2[1] >= 'A' && alpha2[1] <= 'Z' && _ieee80211) {
+                    IOReturn regRet = _ieee80211->setRegulatoryCountry(alpha2);
+                    if (regRet != kIOReturnSuccess)
+                        IOLog("RTL88WiFi: host country update failed ret=0x%x\n", regRet);
+                }
                 if (_netif) _netif->postMessage(APPLE80211_M_COUNTRY_CODE_CHANGED);
             }
             return kIOReturnSuccess;
@@ -2618,6 +3081,12 @@ IOReturn RTL88WiFi::handleAUTH_TYPE(bool set, struct apple80211_authtype_data *d
 IOReturn RTL88WiFi::handleASSOCIATE(struct apple80211_assoc_data *d)
 {
     setProperty("STA_INTERNAL_RSN_MODE", kOSBooleanTrue);
+    setProperty("STA_ASSOCIATE_RESULT_VALID", kOSBooleanFalse);
+    auto finish = [this](IOReturn result) -> IOReturn {
+        setProperty("STA_ASSOCIATE_CMD_RET", (uint64_t)(uint32_t)result, 32);
+        setProperty("STA_ASSOCIATE_RESULT_VALID", kOSBooleanTrue);
+        return result;
+    };
     kprintf("RTL88WiFi: handleASSOCIATE ENTER data=%p (internal RSN)\n", d);
     // Metadata only: never publish SSID, BSSID, PMK or password bytes.
     if (d) {
@@ -2629,28 +3098,54 @@ IOReturn RTL88WiFi::handleASSOCIATE(struct apple80211_assoc_data *d)
         setProperty("STA_ASSOC_INPUT_KEY_LEN", (uint64_t)d->ad_key.key_len, 32);
     }
 
-    if (!d || d->version != APPLE80211_VERSION ||
-        !d->ad_ssid_len || d->ad_ssid_len > APPLE80211_MAX_SSID_LEN)
-        return kIOReturnBadArgument;
+    if (!d) {
+        IOLog("RTL88WiFi: ASSOCIATE invalid payload: null data pointer\n");
+        return finish(kIOReturnBadArgument);
+    }
+    if (d->version != APPLE80211_VERSION ||
+        !d->ad_ssid_len || d->ad_ssid_len > APPLE80211_MAX_SSID_LEN) {
+        IOLog("RTL88WiFi: ASSOCIATE invalid payload header version=%u mode=%u lower=%u upper=0x%x ssidLen=%u keyLen=%u; check host ABI translation\n",
+              (unsigned)d->version, (unsigned)d->ad_mode,
+              (unsigned)d->ad_auth_lower, (unsigned)d->ad_auth_upper,
+              (unsigned)d->ad_ssid_len, (unsigned)d->ad_key.key_len);
+        return finish(kIOReturnBadArgument);
+    }
 
     char ssid[APPLE80211_MAX_SSID_LEN + 1] = {};
     memcpy(ssid, d->ad_ssid, d->ad_ssid_len);
     if (strnlen(ssid, sizeof(ssid)) != d->ad_ssid_len)
-        return kIOReturnUnsupported;
+        return finish(kIOReturnUnsupported);
 
     const uint8_t emptyBssid[APPLE80211_ADDR_LEN] = {};
     const uint8_t *bssid = memcmp(d->ad_bssid.octet, emptyBssid,
                                   APPLE80211_ADDR_LEN) ? d->ad_bssid.octet : nullptr;
 
+    /* 1.0.4: every request is logged (lengths and flags only, no key bytes), and
+     * so is the reason for every early refusal below, so a failed join leaves
+     * evidence in the kernel log even if macOS then reconnects elsewhere.
+     * upper bits: 2 WPA-PSK, 8 WPA2-PSK, 0x80 PSK-SHA256, 0x200 WPA3-SAE. */
+    IOLog("RTL88WiFi: ASSOCIATE request lower=%u upper=0x%x keylen=%u ssidLen=%u pinned=%d\n",
+          (unsigned)d->ad_auth_lower, (unsigned)d->ad_auth_upper,
+          (unsigned)d->ad_key.key_len, (unsigned)d->ad_ssid_len, bssid != nullptr);
+
     const uint32_t personalMask =
         APPLE80211_AUTHTYPE_WPA_PSK |
         APPLE80211_AUTHTYPE_WPA2_PSK |
         APPLE80211_AUTHTYPE_SHA256_PSK;
-    const bool secure = (d->ad_auth_upper & personalMask) != 0;
+    constexpr uint32_t saeMask = 0x00000200U;
+    const bool saeRequested = (d->ad_auth_upper & saeMask) != 0;
+    const bool hasWpa2 = (d->ad_auth_upper & APPLE80211_AUTHTYPE_WPA2_PSK) != 0;
+    const bool knownUpper = (d->ad_auth_upper & ~(personalMask | saeMask)) == 0;
+    const bool secure = (d->ad_auth_upper & personalMask) != 0 && knownUpper &&
+                        (!saeRequested || hasWpa2);
 
     if (d->ad_auth_lower != APPLE80211_AUTHTYPE_OPEN ||
-        (d->ad_auth_upper != APPLE80211_AUTHTYPE_NONE && !secure))
-        return kIOReturnUnsupported;
+        (d->ad_auth_upper != APPLE80211_AUTHTYPE_NONE && !secure)) {
+        IOLog("RTL88WiFi: ASSOCIATE refused: auth lower=%u upper=0x%x is not open/PSK "
+              "(WPA3-SAE or another unsupported type)\n",
+              (unsigned)d->ad_auth_lower, (unsigned)d->ad_auth_upper);
+        return finish(kIOReturnUnsupported);
+    }
 
     /* Proven Ventura path (0.4.0 -> 1.0.0): IO80211 supplies the 32-byte
      * association PMK in ad_key.  Keep the 4-way handshake inside rtw88.
@@ -2660,7 +3155,9 @@ IOReturn RTL88WiFi::handleASSOCIATE(struct apple80211_assoc_data *d)
     if (secure) {
         if (d->ad_key.key_len != 32) {
             setProperty("STA_ASSOCIATE_BAD_PMK_LEN", (uint64_t)d->ad_key.key_len, 32);
-            return kIOReturnUnsupported;
+            IOLog("RTL88WiFi: ASSOCIATE refused: key length %u, a 32-byte PMK is required\n",
+                  (unsigned)d->ad_key.key_len);
+            return finish(kIOReturnUnsupported);
         }
         pmk = d->ad_key.key;
 
@@ -2668,7 +3165,7 @@ IOReturn RTL88WiFi::handleASSOCIATE(struct apple80211_assoc_data *d)
 
     // Validate the open-network key before tearing down an existing link.
     if (!secure && d->ad_key.key_len != 0)
-        return kIOReturnUnsupported;
+        return finish(kIOReturnUnsupported);
 
     RTW88StateResult current = {};
     if (_ieee80211->cmdGetState(&current) == kIOReturnSuccess &&
@@ -2678,16 +3175,20 @@ IOReturn RTL88WiFi::handleASSOCIATE(struct apple80211_assoc_data *d)
          current.state == RTW88_STATE_CONNECTED)) {
         bool same = _ieee80211->matchesPendingJoin(ssid, bssid, pmk);
         setProperty("ASSOCIATE_COALESCED", same ? kOSBooleanTrue : kOSBooleanFalse);
-        if (same) return kIOReturnSuccess;
+        if (same) return finish(kIOReturnSuccess);
         // A valid new ASSOCIATE supersedes the old attempt/link. Drain its
         // authentication worker and remove old keys/STA before setting the
         // new request's RSN IE (doDisconnect clears the previous IE).
         IOReturn disconnectRet = _ieee80211->cmdDisconnect();
-        if (disconnectRet != kIOReturnSuccess) return disconnectRet;
+        if (disconnectRet != kIOReturnSuccess) return finish(disconnectRet);
     }
 
     _authLower = d->ad_auth_lower;
-    _authUpper = d->ad_auth_upper;
+    /* Keep WPA3-SAE disabled.  On transition BSSes retain only the WPA2-PSK
+     * selection; SAE-only and unknown AKMs have already been rejected. */
+    _authUpper = d->ad_auth_upper & ~saeMask;
+    if (saeRequested)
+        IOLog("RTL88WiFi: WPA3-SAE disabled; using WPA2-PSK transition fallback\n");
     _ieee80211->clearAssocRsnIE();
     if (secure) {
         /* Ventura's legacy struct names the 16-bit RSN length slot `pad`.
@@ -2698,11 +3199,11 @@ IOReturn RTL88WiFi::handleASSOCIATE(struct apple80211_assoc_data *d)
             rsnLen = (uint16_t)d->ad_rsn_ie[1] + 2;
         if (rsnLen >= 2 && rsnLen <= APPLE80211_MAX_RSN_IE_LEN) {
             IOReturn rsnRet = _ieee80211->cmdSetAssocRsnIE(d->ad_rsn_ie, rsnLen);
-            if (rsnRet != kIOReturnSuccess) return rsnRet;
+            if (rsnRet != kIOReturnSuccess) return finish(rsnRet);
         }
     } else {
         if (d->ad_key.key_len != 0)
-            return kIOReturnUnsupported;
+            return finish(kIOReturnUnsupported);
         _ieee80211->clearAssocRsnIE();
     }
 
@@ -2710,14 +3211,13 @@ IOReturn RTL88WiFi::handleASSOCIATE(struct apple80211_assoc_data *d)
     _rsnHandshakeReported = false;
     setProperty("STA_ASSOCIATE_BEFORE_RAW_STATE", (uint64_t)_ieee80211->rawState(), 32);
     IOReturn ret = _ieee80211->cmdConnect(ssid, nullptr, pmk, bssid, false);
-    setProperty("STA_ASSOCIATE_CMD_RET", (uint64_t)(uint32_t)ret, 32);
     setProperty("STA_ASSOCIATE_AFTER_RAW_STATE", (uint64_t)_ieee80211->rawState(), 32);
     if (ret == kIOReturnSuccess)
         setProperty("STA_ASSOCIATE_ACCEPTED", kOSBooleanTrue);
 
     IOLog("RTL88WiFi: ASSOCIATE internal-RSN ssid=%s secure=%d keylen=%u ret=0x%x\n",
           ssid, secure, d->ad_key.key_len, ret);
-    return ret;
+    return finish(ret);
 }
 
 IOReturn RTL88WiFi::handleRSN_IE(bool set, struct apple80211_rsn_ie_data *d)
@@ -2863,17 +3363,27 @@ IOReturn RTL88WiFi::handleSCAN_REQ(void *data)
         IOLog("RTL88WiFi: SCAN_REQ coalesced with active scan\n");
         return kIOReturnSuccess;
     }
+
+    uint16_t requested[APPLE80211_MAX_CHANNELS] = {};
+    for (uint32_t i = 0; i < d->num_channels; ++i) {
+        if (d->channels[i].channel > 255) return kIOReturnBadArgument;
+        requested[i] = (uint16_t)d->channels[i].channel;
+    }
+
     RTW88StateResult st = {};
-    if (_ieee80211->cmdGetState(&st) == kIOReturnSuccess &&
-        st.state == RTW88_STATE_CONNECTED) {
-        _scanCursor = 0;
+    const bool connected =
+        _ieee80211->cmdGetState(&st) == kIOReturnSuccess &&
+        st.state == RTW88_STATE_CONNECTED;
+    _scanInProgress = true;
+    _scanCursor = 0;
+    IOReturn ret = _ieee80211->cmdScan(requested, d->num_channels);
+    if (ret == kIOReturnNotReady && connected) {
+        _scanInProgress = false;
         UInt32 result = 0;
-        kprintf("RTL88WiFi: SCAN_REQ connected cache-only completion\n");
+        kprintf("RTL88WiFi: SCAN_REQ connected cache-only completion (no candidate channels)\n");
         _netif->postMessage(APPLE80211_M_SCAN_DONE, &result, sizeof(result));
         return kIOReturnSuccess;
     }
-    _scanInProgress = true; _scanCursor = 0;
-    IOReturn ret = _ieee80211->cmdScan();
     if (ret) _scanInProgress = false;
     return ret;
 }
@@ -2891,11 +3401,17 @@ void RTL88WiFi::fillScanResultFromBSS(const RTW88BSS &b, struct apple80211_scan_
                            APPLE80211_C_FLAG_20MHZ |
         (b.channel <= 14 ? APPLE80211_C_FLAG_2GHZ : APPLE80211_C_FLAG_5GHZ);
 
-    /* No per-BSS noise/SNR measurement exists for scanned networks:
-     * report 0 (unknown).  CURRENT_NETWORK fills the measured link value. */
-    d->asr_noise = 0;
+    /* No per-BSS noise measurement exists for scanned networks.  Report the
+     * thermal-noise estimate for the BSS's width (never 0) so System
+     * Information's other-networks list is not full of "0 dBm" noise.
+     * CURRENT_NETWORK overwrites this with the link's own value. */
+    {
+        const RTW88Metrics::LinkNoise nz =
+            RTW88Metrics::linkNoise(b.rssi, false, 0, rtw88BssWidthMHz(b));
+        d->asr_noise = (int16_t)nz.noise;
+        d->asr_snr = (int16_t)nz.snr;
+    }
     d->asr_rssi = b.rssi;
-    d->asr_snr = 0;
     d->asr_beacon_int = (int16_t)b.beacon_interval;
     d->asr_cap = (int16_t)b.capabilities;
     d->asr_age = 0;
@@ -3072,10 +3588,9 @@ IOReturn RTL88WiFi::handleCURRENT_NETWORK(struct apple80211_scan_result *out)
 
     fillScanResultFromBSS(current, out, true);
     int nf = 0, snr = 0;
-    if (rtw88LinkNoise(out->asr_rssi, &nf, &snr)) {
-        out->asr_noise = (int16_t)nf;
-        out->asr_snr = (int16_t)snr;
-    }
+    rtw88LinkNoise(out->asr_rssi, _ieee80211->channelWidthMHz(), &nf, &snr);
+    out->asr_noise = (int16_t)nf;
+    out->asr_snr = (int16_t)snr;
     kprintf("RTL88WiFi: CURRENT_NETWORK ssid_len=%u channel=%u rssi=%d ies=%d\n",
           out->asr_ssid_len, out->asr_channel.channel,
           out->asr_rssi, out->asr_ie_len);

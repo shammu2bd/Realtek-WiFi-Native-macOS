@@ -17,6 +17,14 @@ Individual source files keep their SPDX license identifiers and copyright
 notices. Files changed for RTL88WiFi carry a "Modified by X1REN41L" line with
 the date; the full change history is in the Git log and `CHANGELOG.md`.
 
+Versions 1.0.2 to 1.0.6 are unofficial community modifications and was not made by the
+original author. Files it changed carry an additional "Modified on 2026-10-23
+for RTL88WiFi 1.0.2" line, and the new files `RTW88JoinPolicy.hpp`,
+`RTW88LinkMetrics.hpp` and `RTW88BaPolicy.hpp` carry an "Added on" line. This includes a
+three-line change to the vendored `rtw8821c.c` (reading RX SNR), which is why
+the 1.0.0-era "rtw88 source unchanged" statement in `docs/` no longer holds for
+this version.
+
 ## Separately licensed parts
 
 - Kernel SDK headers in `driver/RTL88WiFi/MacKernelSDK/` keep their own

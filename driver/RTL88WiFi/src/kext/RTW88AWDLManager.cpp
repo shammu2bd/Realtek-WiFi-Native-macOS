@@ -1,4 +1,5 @@
 /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+/* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (AWDL radio policy, mesh join selection); see NOTICE.md. */
 #include <IOKit/80211/IO80211Controller.h>
 #include <IOKit/80211/IO80211VirtualInterface.h>
 #include <IOKit/80211/apple80211_ioctl.h>
@@ -780,6 +781,7 @@ void RTW88AWDLManager::publishStats()
     if (!_owner) return;
     const char *plane = !_awdlInterface ? "no-interface" :
         !_syncEnabled ? "sync-disabled" :
+        (_backend && !_backend->awdlRadioAllowed()) ? "radio-disabled-by-policy" :
         !_airTemplate ? "waiting-io80211" :
         !_nativeSchedule ? "io80211-template" :
         (_appleControlMask & ~kAppleCtlVIF) ? "hybrid-bootstrap" : "driver-bootstrap";
@@ -844,6 +846,17 @@ bool RTW88AWDLManager::tick()
 {
     return awdlGated<bool>(_workLoop, _owner, [&]() -> bool {
     if (!_backend || !_syncEnabled || !_awdlInterface || !_txBuffer) return false;
+    if (!_backend->awdlRadioAllowed()) {
+        /* Radio policy (1.0.2): AWDL never owns the PHY, so there is no window
+         * to schedule.  Release whatever IO80211 queued (the enqueue paths
+         * re-arm us on demand) and do NOT re-arm: no 2-25 ms timer, no social
+         * channel sweeps, no off-channel excursions. */
+        flushData();
+        flushActions();
+        const uint64_t t = nowUS();
+        if (t >= _lastStatsUS + 1000000ULL) { publishStats(); _lastStatsUS = t; }
+        return false;
+    }
     uint64_t now = nowUS();
     if (!_airTemplate) {
         if (!_fallbackDeadlineUS) _fallbackDeadlineUS = now + 1500000ULL;

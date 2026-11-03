@@ -8,6 +8,7 @@ malformed inputs. This is not a kernel or hardware test.
 """
 from pathlib import Path
 import re, subprocess, tempfile
+import shutil
 
 root=Path(__file__).resolve().parents[1]/'driver/RTL88WiFi'
 s=(root/'src/kext/RTW88IEEE80211.cpp').read_text()
@@ -152,7 +153,8 @@ with tempfile.TemporaryDirectory(prefix='rtw88-scanssid-') as td:
     p=Path(td)
     src=prefix+fn('static uint32_t rtw88ReadSuite(')+'\n'+fn('static bool rtw88RsnSelectCcmpPsk(')+'\n'+fn('static bool rtw88SsidIsBlank(')+'\n'+fn('static int rtw88IeFind(')+'\n'+fn('static void rtw88RestoreSsidIe(')+'\n'+fn('void RTW88IEEE80211::processScanResult(')+main
     (p/'test.cpp').write_text(src)
-    subprocess.run(['xcrun','clang++','-std=c++17','-fsanitize=address,undefined','-fno-sanitize-recover=all','-g',str(p/'test.cpp'),'-o',str(p/'test')],check=True)
+    compiler = ['xcrun', 'clang++'] if shutil.which('xcrun') else ['clang++']
+    subprocess.run(compiler + ['-std=c++17','-fsanitize=address,undefined','-fno-sanitize-recover=all','-g',str(p/'test.cpp'),'-o',str(p/'test')],check=True)
     r=subprocess.run([str(p/'test')],capture_output=True,text=True)
     print('\n'.join(l for l in r.stdout.splitlines() if l.startswith('PASS')))
     if r.returncode: print(r.stdout[-2000:],r.stderr[-3000:]); raise SystemExit(r.returncode)

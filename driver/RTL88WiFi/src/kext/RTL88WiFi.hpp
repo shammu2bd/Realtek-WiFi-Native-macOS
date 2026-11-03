@@ -19,6 +19,7 @@
 #include <IOKit/80211/IO80211P2PInterface.h>
 #include <IOKit/pci/IOPCIDevice.h>
 #include <IOKit/IOInterruptEventSource.h>
+#include <IOKit/IOTimerEventSource.h>
 #include <IOKit/IOMemoryDescriptor.h>
 #include <IOKit/IOBufferMemoryDescriptor.h>
 #include <IOKit/IOWorkLoop.h>
@@ -105,6 +106,7 @@ class RTL88WiFi : public IO80211Controller, public RTW88EventDelegate, public RT
 
 public:
     static void diagnosticsTimerFired(OSObject *owner, IOTimerEventSource *timer);
+    static void privateMacTimerFired(OSObject *owner, IOTimerEventSource *timer);
     static void awdlTimerFired(OSObject *owner, IOTimerEventSource *timer);
     /* IOService */
     bool     init(OSDictionary *props) override;
@@ -155,6 +157,15 @@ public:
                                       int request_number,
                                       IO80211Interface *interface,
                                       void *data) override;
+    /* PRIVATE_MAC selector 238 is queried through both Legacy and Skywalk
+     * split GET entry points on recent macOS releases. */
+    virtual SInt32 apple80211_ioctl_get(IO80211Interface *interface,
+                                        IO80211VirtualInterface *virtualInterface,
+                                        ifnet_t net, void *data) override;
+#if __IO80211_TARGET >= __MAC_10_15
+    virtual SInt32 apple80211_ioctl_get(IO80211SkywalkInterface *skywalkInterface,
+                                        void *data) override;
+#endif
 
 #if __IO80211_TARGET >= __MAC_10_15
     /* Sonoma+ with the restored Ventura Legacy/Skywalk stack sends the join
@@ -217,6 +228,11 @@ private:
     __attribute__((__noinline__)) SInt32 handleNativeRequest(unsigned int request_type, int request_number, IO80211Interface *interface, void *data);
     __attribute__((__noinline__)) IOReturn handleRequestCOUNTRY_CODE(bool isSet, void *data);
     __attribute__((__noinline__)) IOReturn handleRequestPHY_MODE(bool isSet, void *data);
+    __attribute__((__noinline__)) IOReturn handleRequestPRIVATE_MAC(bool isSet, void *data);
+    SInt32 handlePrivateMACBSDRequest(unsigned request_type, struct apple80211req *req,
+                                      const char *ingress);
+    IOReturn applyPrivateMACAddress(bool rotate);
+    void armPrivateMACTimer(UInt32 milliseconds);
     __attribute__((__noinline__)) IOReturn handleRequestRATE(bool isSet, void *data);
     __attribute__((__noinline__)) IOReturn handleRequestRATE_SET(bool isSet, void *data);
     __attribute__((__noinline__)) IOReturn handleRequestCHANNELS_INFO(bool isSet, void *data);
@@ -243,9 +259,18 @@ private:
 
     apple80211_scan_result _scanResult = {};
     uint32_t _scanCursor = 0;
+    /* 1.0.5: APPLE80211_IOC_PRIVATE_MAC state; see handleRequestPRIVATE_MAC(). */
+    bool     _privMacEnabled = true;
+    uint32_t _privMacFlags = 0;
+    uint32_t _privMacIntervalS = 0;
+    uint32_t _privMacGets = 0;
+    uint8_t  _privMacAddress[6] = {};
+    bool     _privMacAddressValid = false;
+    bool     _privMacApplyPending = false;
+    bool     _privMacRotatePending = false;
     uint32_t _authLower = APPLE80211_AUTHTYPE_OPEN;
     uint32_t _authUpper = APPLE80211_AUTHTYPE_NONE;
-    uint8_t  _countryCode[APPLE80211_MAX_CC_LEN] = {'Z', 'Z', 0};
+    uint8_t  _countryCode[APPLE80211_MAX_CC_LEN] = {'Z', 'Z', 0}; /* unknown until Apple80211 supplies the device's active country */
     RTW88RoamProfileBandData _roamProfile = {};
     bool _roamProfileValid = false;
 
@@ -279,6 +304,7 @@ private:
     RTW88IEEE80211         *_ieee80211   = nullptr;  /* reused as-is from rtw88 core */
 
     IOTimerEventSource *_diagnosticsTimer = nullptr;
+    IOTimerEventSource *_privateMacTimer = nullptr;
     char *_diagnosticsBuffer = nullptr;
     uint64_t _diagnosticsSamples = 0;
     /* Last periodic sample written to the diagnostic ring (r8 throttle). */

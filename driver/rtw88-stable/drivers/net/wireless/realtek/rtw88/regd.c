@@ -336,34 +336,69 @@ void rtw_regd_notifier(struct wiphy *wiphy, struct regulatory_request *request);
 int rtw_regd_init(struct rtw_dev *rtwdev)
 {
 	struct wiphy *wiphy = rtwdev->hw->wiphy;
-	const struct rtw_regulatory *chip_reg;
 
 	if (!wiphy)
 		return -EINVAL;
 
 	wiphy->reg_notifier = rtw_regd_notifier;
 
-	chip_reg = rtw_reg_find_by_name(rtwdev->efuse.country_code);
-	if (!rtw_reg_is_ww(chip_reg)) {
-		rtwdev->regd.state = RTW_REGD_STATE_PROGRAMMED;
-
-		/* Set REGULATORY_STRICT_REG before ieee80211_register_hw(),
-		 * stack will wait for regulatory_hint() and consider it
-		 * as the superset for our regulatory rule.
-		 */
-		wiphy->regulatory_flags |= REGULATORY_STRICT_REG;
-		wiphy->regulatory_flags |= REGULATORY_COUNTRY_IE_IGNORE;
-	} else {
-		rtwdev->regd.state = RTW_REGD_STATE_WORLDWIDE;
-	}
+	/* Do not promote the adapter's factory/efuse country to the active
+	 * host country.  This macOS port receives the current regulatory
+	 * country through Apple80211 COUNTRY_CODE; the Linux regulatory_hint()
+	 * compatibility layer is not a source of location information here.
+	 * Start in the conservative worldwide domain and let the host's
+	 * country-code operation control the channels exposed to IO80211.
+	 */
+	rtwdev->regd.state = RTW_REGD_STATE_WORLDWIDE;
 
 	rtwdev->regd.regulatory = &rtw_reg_ww;
 	rtwdev->regd.dfs_region = NL80211_DFS_UNSET;
 	rtw_dbg_regd_dump(rtwdev, "regd init state %d: ", rtwdev->regd.state);
 
+	/* This port starts without an adapter/efuse country override. */
+	wiphy->regulatory_flags &= ~REGULATORY_STRICT_REG;
+	wiphy->regulatory_flags &= ~REGULATORY_COUNTRY_IE_IGNORE;
+
 	rtw_regd_apply_hw_cap_flags(wiphy);
 	return 0;
 }
+
+/* Apply the active two-letter country supplied by the macOS Apple80211
+ * COUNTRY_CODE request.  Unlike rtw_regd_hint(), this is a direct host bridge:
+ * the Linux regulatory_hint() compatibility function is a stub in this port.
+ */
+int rtw_regd_set_country(struct rtw_dev *rtwdev, const char alpha2[2])
+{
+	struct wiphy *wiphy;
+	struct rtw_regd next = {0};
+
+	if (!rtwdev || !rtwdev->hw || !alpha2)
+		return -EINVAL;
+	wiphy = rtwdev->hw->wiphy;
+	if (!wiphy)
+		return -EINVAL;
+
+	next.regulatory = rtw_reg_find_by_name(alpha2);
+	next.dfs_region = NL80211_DFS_UNSET;
+	if (rtw_reg_is_ww(next.regulatory))
+		next.state = RTW_REGD_STATE_WORLDWIDE;
+	else
+		next.state = RTW_REGD_STATE_SETTING;
+
+	mutex_lock(&rtwdev->mutex);
+	if (rtw_reg_is_ww(next.regulatory))
+		wiphy->regulatory_flags &= ~REGULATORY_COUNTRY_IE_IGNORE;
+	else
+		wiphy->regulatory_flags |= REGULATORY_COUNTRY_IE_IGNORE;
+	rtwdev->regd = next;
+	rtw_phy_adaptivity_set_mode(rtwdev);
+	rtw_phy_set_tx_power_level(rtwdev, rtwdev->hal.current_channel);
+	mutex_unlock(&rtwdev->mutex);
+
+	rtw_dbg_regd_dump(rtwdev, "host country: ");
+	return 0;
+}
+EXPORT_SYMBOL(rtw_regd_set_country);
 
 /* call this after ieee80211_register_hw() */
 int rtw_regd_hint(struct rtw_dev *rtwdev)

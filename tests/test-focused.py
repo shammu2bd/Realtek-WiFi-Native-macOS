@@ -333,8 +333,8 @@ def station_checks(tmp):
 #include <stddef.h>
 #define ETH_ALEN 6
 typedef uint8_t u8;
-typedef pthread_t thread_t;
-static thread_t current_thread(void){ return pthread_self(); }
+typedef uintptr_t thread_t;
+static thread_t current_thread(void){ return (uintptr_t)pthread_self(); }
 static void IOSleep(unsigned ms){ usleep(ms*1000); }
 static int timeouts = 0;
 static void rtw88_candidate_log(const char *f, ...){ if(strstr(f,"timed out")) timeouts++; }
@@ -348,7 +348,7 @@ struct ieee80211_vif { uint8_t addr[ETH_ALEN]; };
 struct ieee80211_sta { uint8_t addr[ETH_ALEN]; long drv_priv[8]; };
 static struct ieee80211_hw *g_rtw88_hw;
 static uint32_t g_rtw88_rx_poll_active = 0;
-static thread_t g_rtw88_rx_poll_thread = NULL;
+static thread_t g_rtw88_rx_poll_thread = 0;
 static struct ieee80211_vif *g_rtw88_sta_vif = NULL;
 static struct ieee80211_sta *g_rtw88_sta = NULL;
 ''' + '\n'.join(parts) + r'''

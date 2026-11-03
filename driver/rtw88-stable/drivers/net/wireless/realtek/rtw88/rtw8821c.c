@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 /* Copyright(c) 2018-2019  Realtek Corporation
  */
+/* Modified on 2026-10-23 for RTL88WiFi 1.0.2: read RX SNR in PHY status page 1; see NOTICE.md. */
 
 #include "main.h"
 #include "coex.h"
@@ -654,6 +655,12 @@ static void query_phy_status_page1(struct rtw_dev *rtwdev, u8 *phy_status,
 	pkt_stat->rx_power[RF_PATH_A] = GET_PHY_STAT_P1_PWDB_A(phy_status) - 110;
 	pkt_stat->rssi = rtw_phy_rf_power_2_rssi(pkt_stat->rx_power, 1);
 	dm_info->rssi[RF_PATH_A] = pkt_stat->rssi;
+	/* RTL88WiFi: the 8821C PHY status page 1 carries the same per-path RX
+	 * SNR dword as the 8822C (GET_PHY_STAT_P1_RXSNR_A is defined in
+	 * rtw8821c.h), but this parser never read it, so dm_info->rx_snr stayed
+	 * 0 and macOS showed no noise value.  Units are 0.5 dB, as for 8822C. */
+	pkt_stat->rx_snr[RF_PATH_A] = GET_PHY_STAT_P1_RXSNR_A(phy_status);
+	dm_info->rx_snr[RF_PATH_A] = pkt_stat->rx_snr[RF_PATH_A] >> 1;
 	pkt_stat->bw = bw;
 	pkt_stat->signal_power = max(pkt_stat->rx_power[RF_PATH_A],
 				     min_rx_power);
