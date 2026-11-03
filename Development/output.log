@@ -1,0 +1,637 @@
+
+========== STAGE23 TARGETED DATAPATH AUDIT ==========
+STAGE23_REPORT: Development/stage23-targeted-datapath-audit.txt
+STAGE23_REPORT_BLOB_SHA: 33f8d579cde19fa66080256cecd492f60bf28b4f
+STAGE23_REPORT_BYTES: 208142
+STAGE23_STATUS: REVIEW_REQUIRED
+ACTIVATION_GATE: BLOCKED
+SOURCE_CHANGES: NONE | BUILD: NOT RUN | INSTALL: NOT RUN | LOAD: NOT RUN | OPENCORE_CHANGE: NONE
+KNOWN_GOOD_LEGACY_KEXT: NOT TOUCHED
+
+========== STAGE25 SOURCE-COMPLETE TX / DMA AUDIT ==========
+STAGE25_REPORT: Development/stage25-source-complete-tx-dma-audit.txt
+STAGE25_REPORT_BLOB_SHA: ef7635c50ae5f52ab7ef18cb76a6a63d3992f413
+STAGE25_REPORT_BYTES: 267943
+STAGE25_STATUS: REVIEW_REQUIRED
+ACTIVATION_GATE: BLOCKED
+SOURCE_CHANGES: NONE | BUILD: NOT RUN | INSTALL: NOT RUN | LOAD: NOT RUN | OPENCORE_CHANGE: NONE
+KNOWN_GOOD_LEGACY_KEXT: NOT TOUCHED
+
+========== STAGE28 RTW88 SKB TERMINAL OWNERSHIP ==========
+STAGE28_REPORT: Development/stage28-rtw88-skb-terminal-ownership-audit.txt
+STAGE28_REPORT_BLOB_SHA: 6d32a8c843142bdb2b22183dbbf89bc7f1f35fc5
+STAGE28_REPORT_BYTES: 345819
+STAGE28_STATUS: REVIEW_REQUIRED
+ACTIVATION_GATE: BLOCKED
+SOURCE_CHANGES: NONE | BUILD: NOT RUN | INSTALL: NOT RUN | LOAD: NOT RUN | OPENCORE_CHANGE: NONE
+KNOWN_GOOD_LEGACY_KEXT: NOT TOUCHED
+
+========== STAGE30 RTW88 TX IMPLEMENTATION TRACE ==========
+STAGE30_REPORT_MANIFEST: Development/stage30-rtw88-tx-implementation-manifest.txt
+STAGE30_MANIFEST_BLOB_SHA: 9b6dbe27f96813a6fe2e407d8ccc9a5540f6b88d
+STAGE30_REPORT_BYTES: 622892
+STAGE30_REPORT_PARTS: 2
+STAGE30_STATUS: REVIEW_REQUIRED
+ACTIVATION_GATE: BLOCKED
+SOURCE_CHANGES: NONE | BUILD: NOT RUN | INSTALL: NOT RUN | LOAD: NOT RUN | OPENCORE_CHANGE: NONE
+KNOWN_GOOD_LEGACY_KEXT: NOT TOUCHED
+
+========== STAGE31 FULL-TREE TX CONTRACT TESTS ==========
+STAGE31_REPORT_MANIFEST: Development/stage31-full-tree-tx-contract-tests-manifest.txt
+STAGE31_MANIFEST_BLOB_SHA: a65d4db1b6df8f190b2ea54ba0fc7c2b7f7fee8c
+STAGE31_REPORT_BYTES: 875366
+STAGE31_REPORT_PARTS: 3
+STAGE31_STATUS: REVIEW_REQUIRED
+ACTIVATION_GATE: BLOCKED
+SOURCE_CHANGES: NONE | BUILD: NOT RUN | INSTALL: NOT RUN | LOAD: NOT RUN | OPENCORE_CHANGE: NONE
+KNOWN_GOOD_LEGACY_KEXT: NOT TOUCHED
+
+========== STAGE32 COMBINED TX INTEGRATION AUDIT ==========
+STAGE32_REPORT_MANIFEST: Development/stage32-combined-tx-integration-manifest.txt
+STAGE32_MANIFEST_BLOB_SHA: 330eecf918b55e3424320854034ce6aad9d2e15c
+STAGE32_REPORT_BYTES: 1997087
+STAGE32_REPORT_PARTS: 6
+STAGE32_STATUS: REVIEW_REQUIRED
+ACTIVATION_GATE: BLOCKED
+SOURCE_CHANGES: NONE | BUILD: NOT RUN | INSTALL: NOT RUN | LOAD: NOT RUN | OPENCORE_CHANGE: NONE
+KNOWN_GOOD_LEGACY_KEXT: NOT TOUCHED
+========== STAGE 43 BSD PARAMETER FORWARDING ==========
+STAGE43_RUN: run-20261102-040558
+STAGE43_CHANGE: RTW88WCLInfraInterface::initBSDInterfaceParameters now forwards to the verified IO80211InfraInterface 24H32 base implementation
+STAGE43_SOURCE_SHA256: 2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+STAGE43_NATIVE_BUILD: PASS
+STAGE43_INSTALL: NOT_RUN | LOAD: NOT_RUN | CODESIGN: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — queue registration, TX/RX completion ownership, publication and teardown remain open
+STAGE43_REPORTS: Development/Logs/stage43/run-20261102-040558/
+=======================================================
+========== STAGE 44 BSD PREPARE / FINALIZE ABI AUDIT ==========
+STAGE44_RUN: run-20261102-100836-5554bbfd0af8
+STAGE44_SCOPE: exact IO80211InfraInterface::prepareBSDInterface and inherited finalizeBSDInterface vtable/disassembly review
+STAGE43_SOURCE_BASELINE: 2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+STAGE44_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — this audit does not implement or activate queue registration, TX/RX completion, publication, or teardown
+STAGE44_LOGS: Development/Logs/stage44/run-20261102-100836-5554bbfd0af8/ and unique files directly under Development/Logs/
+==============================================================
+========== STAGE 45 BSD FINALIZE CLEANUP SLOT AUDIT ==========
+STAGE45_RUN: run-20261102-101549-1b79be98d4ea
+STAGE45_SCOPE: inherited IOSkywalkNetworkInterface::finalizeBSDInterface virtual cleanup target at vtable offset 0x858, class-specific ownership and teardown review
+STAGE43_SOURCE_BASELINE: 2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+STAGE45_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — identifying the Apple cleanup callback does not implement queue registration, TX/RX completion, publication, or driver teardown
+STAGE45_LOGS: Development/Logs/stage45/run-20261102-101549-1b79be98d4ea/ and unique files directly under Development/Logs/
+==============================================================
+========== STAGE 46 NETWORK DEREGISTRATION / POOL OWNERSHIP AUDIT ==========
+STAGE46_RUN: run-20261102-102916-604e99bf7c32
+STAGE46_SCOPE: IOSkywalkNetworkInterface::deregisterNetworkInterface, IOSkywalkLogicalLink and IOSkywalkPacketBufferPool ownership and teardown ordering review
+STAGE43_SOURCE_BASELINE: 2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+STAGE46_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — identifying Apple's deregistration and pool-release order does not implement queue registration, TX/RX completion ownership, publication, or driver teardown
+STAGE46_LOGS: Development/Logs/stage46/run-20261102-102916-604e99bf7c32/ and unique files directly under Development/Logs/
+==============================================================
+========== STAGE 47 LOGICAL-LINK / QUEUE-SET / TX-RX TEARDOWN AUDIT ==========
+STAGE47_RUN: run-20261102-113242-ae14b45342fc
+STAGE47_SCOPE: IOSkywalkNetworkInterface::deleteLogicalLink, IOSkywalkLogicalLink/IOSkywalkQueueSet attach-detach, TX/RX queue teardown and pool-release ordering
+STAGE43_SOURCE_BASELINE: 2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+STAGE47_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — mapping logical-link and queue-set teardown does not implement queue registration, TX/RX completion ownership, publication, or driver rollback
+STAGE47_LOGS: Development/Logs/stage47/run-20261102-113242-ae14b45342fc/ and unique files directly under Development/Logs/
+==============================================================
+========== STAGE 48 REGISTRATION / QUEUE-CONSTRUCTION / CALLBACK AUDIT ==========
+STAGE48_RUN: run-20261102-115133-c4f9565a517a
+STAGE48_SCOPE: IO80211InfraInterface::registerInfraEthernetInterface, IOSkywalkEthernetInterface registration wrappers, queue-set construction, packet-queue constructors and TX/RX callback-bearing methods
+STAGE43_SOURCE_BASELINE: 2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+STAGE48_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — this audit maps Apple's registration and callback ABI; it does not implement queue creation, TX/RX completion, publication or safe rollback in RTL88WiFi
+STAGE48_LOGS: Development/Logs/stage48/run-20261102-115133-c4f9565a517a/ and unique files directly under Development/Logs/
+==============================================================
+========== STAGE 49 SOURCE-TO-ABI CORRELATION ==========
+STAGE49_RUN: run-20261102-122652-fc6a55d99118
+STAGE49_SCOPE: read-only correlation of native registration-info, queue construction/order, pool ownership, callback wiring, TX/RX datapath and rollback against Stage48 24H32 ABI evidence
+STAGE49_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — source-pattern correlation is not proof of safe queue activation; manual ABI/ownership review and implementation remain required
+STAGE49_LOGS: Development/Logs/stage49/run-20261102-122652-fc6a55d99118/ and unique files directly under Development/Logs/
+========================================================
+========== STAGE 50 REGISTRATION CALL-GRAPH / CALLBACK REACHABILITY ==========
+STAGE50_RUN: run-20261102-123837-7ca0eca6e02f
+STAGE50_VERSION: STAGE50_V1_20261102
+STAGE50_SCOPE: exact native method bodies, registration API call sites, QueueSet/LogicalLink construction, TX/RX callback reachability and pinned Stage48 ABI evidence
+STAGE50_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — direct source call-graph audit only; queue registration and TX/RX datapath remain unapproved until missing edges and rollback are implemented and reviewed
+STAGE50_LOGS: Development/Logs/stage50/run-20261102-123837-7ca0eca6e02f/ and unique files directly under Development/Logs/
+===============================================================
+========== STAGE 50 REGISTRATION CALL-GRAPH / CALLBACK REACHABILITY ==========
+STAGE50_RUN: run-20261102-124442-a9b4b83d7295
+STAGE50_VERSION: STAGE50_V2_20261102
+STAGE50_SCOPE: exact native method bodies, registration API call sites, QueueSet/LogicalLink construction, TX/RX callback reachability and pinned Stage48 ABI evidence
+STAGE50_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — direct source call-graph audit only; queue registration and TX/RX datapath remain unapproved until missing edges and rollback are implemented and reviewed
+STAGE50_LOGS: Development/Logs/stage50/run-20261102-124442-a9b4b83d7295/ and unique files directly under Development/Logs/
+===============================================================
+========== STAGE 51 CONTROLLER / INTERFACE OWNERSHIP AND LIFECYCLE AUDIT ==========
+STAGE51_RUN: run-20261102-125002-c08308fb6081
+STAGE51_VERSION: STAGE51_V1_20261102
+STAGE51_SCOPE: exact controller/interface method bodies, object creation, radio attachment, primary interface publication references and start/stop/free ordering
+STAGE51_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — lifecycle inspection only; it does not implement registration, connect callbacks or authorize hardware testing
+STAGE51_LOGS: Development/Logs/stage51/run-20261102-125002-c08308fb6081/ and unique files directly under Development/Logs/
+====================================================================
+========== STAGE 52 IOKIT PERSONALITY / PROVIDER CONTRACT AUDIT ==========
+STAGE52_RUN: run-20261102-125515-55388073f143
+STAGE52_VERSION: STAGE52_V1_20261102
+STAGE52_SCOPE: IOKit personality keys, class/metaclass declarations, IO80211 provider init, controller linkage and interface publication references
+STAGE52_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — provider/personality audit only; no registration implementation or hardware-test authorization
+STAGE52_LOGS: Development/Logs/stage52/run-20261102-125515-55388073f143/ and unique files directly under Development/Logs/
+====================================================================
+========== STAGE 53 IO80211 INTERFACE FACTORY / VTABLE AUDIT ==========
+STAGE53_RUN: run-20261102-130406-23ab158090aa
+STAGE53_VERSION: STAGE53_V2_20261102
+STAGE53_SCOPE: target 24H32 BootKC class/vtable and method audit for IO80211 controller, Skywalk/infra interfaces, primary interface getter and Apple reference registration path
+STAGE53_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — framework ABI audit only; no driver registration implementation or hardware-test authorization
+STAGE53_LOGS: Development/Logs/stage53/run-20261102-130406-23ab158090aa/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 54 EXACT INTERFACE INITIALIZER / FACTORY / LIFECYCLE AUDIT ==========
+STAGE54_RUN: run-20261102-132405-fb0df18fd221
+STAGE54_VERSION: STAGE54_V2_20261102
+STAGE54_SCOPE: exact IO80211SkywalkInterface provider initializer, interface/controller lifecycle methods, primary-interface getter and AppleBCMWLANCore factory/start lifecycle methods
+STAGE54_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — read-only ABI and call-path evidence; no driver registration implementation or hardware-test authorization
+STAGE54_LOGS: Development/Logs/stage54/run-20261102-132405-fb0df18fd221/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 55 NATIVE SOURCE / FACTORY / REGISTRATION REACHABILITY AUDIT ==========
+STAGE55_RUN: run-20261102-133625-3722213f0755
+STAGE55_VERSION: STAGE55_V1_20261102
+STAGE55_SCOPE: correlate Stage54 verified initializer/factory/lifecycle ABI methods with native controller/interface construction, attach, publication, registration and packet callback edges
+STAGE55_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — source crosswalk only; this does not implement registration or connect packet callbacks
+STAGE55_LOGS: Development/Logs/stage55/run-20261102-133625-3722213f0755/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 56 REGISTRATION / QUEUE / TX-RX DATAPATH AUDIT ==========
+STAGE56_RUN: run-20261102-134535-d4dcecdcf6bf
+STAGE56_VERSION: STAGE56_V1_20261102
+STAGE56_SCOPE: detailed RegistrationInfo helper, queue constructor callback arguments, TX completion sink, RX consumer sink and native controller wiring
+STAGE56_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — source audit only; no datapath enablement or hardware-test authorization
+STAGE56_LOGS: Development/Logs/stage56/run-20261102-134535-d4dcecdcf6bf/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 57 SKYWALK QUEUE CALLBACK ABI / ADAPTER HANDOFF AUDIT ==========
+STAGE57_RUN: run-20261102-140635-1b9b1c59aed9
+STAGE57_VERSION: STAGE57_V2_20261102
+STAGE57_SCOPE: 24H32 queue constructor and dispatch ABI, action signatures, TX completion ticket handoff and RX networking sink wiring
+STAGE57_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — ABI/callback crosswalk only; no queue registration implementation or hardware-test authorization
+STAGE57_LOGS: Development/Logs/stage57/run-20261102-140635-1b9b1c59aed9/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 58 QUEUESET / LOGICALLINK REGISTRATION AND OWNERSHIP AUDIT ==========
+STAGE58_RUN: run-20261102-142615-ad956065f011
+STAGE58_VERSION: STAGE58_V1_20261102
+STAGE58_SCOPE: 24H32 interface registration, queue-type classification, QueueSet/LogicalLink metadata, queue ownership and rollback
+STAGE58_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — registration/ownership audit only; no queue activation or hardware-test authorization
+STAGE58_LOGS: Development/Logs/stage58/run-20261102-142615-ad956065f011/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 58 QUEUESET / LOGICALLINK REGISTRATION AND OWNERSHIP AUDIT ==========
+STAGE58_RUN: run-20261102-143451-43ae9daec178
+STAGE58_VERSION: STAGE58_V2_20261102
+STAGE58_SCOPE: 24H32 interface registration, queue dispatch-slot resolution, QueueSet/LogicalLink metadata, queue ownership and rollback
+STAGE58_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — registration/ownership audit only; no queue activation or hardware-test authorization
+STAGE58_LOGS: Development/Logs/stage58/run-20261102-143451-43ae9daec178/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 59 PACKET-QUEUE VIRTUAL DISPATCH / REGISTRATION CONTRACT AUDIT ==========
+STAGE59_RUN: run-20261102-144540-b7f7850cbe02
+STAGE59_VERSION: STAGE59_V1_20261102
+STAGE59_SCOPE: 24H32 packet-queue vtable/getFreeSpace contract, QueueSet indirect-dispatch callsite, SDK declarations and native registration reachability
+STAGE59_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — dispatch/registration ABI audit only; no queue activation or hardware-test authorization
+STAGE59_LOGS: Development/Logs/stage59/run-20261102-144540-b7f7850cbe02/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 60 ITANIUM VTABLE ADDRESS-POINT / QUEUESET DISPATCH AUDIT ==========
+STAGE60_RUN: run-20261102-150246-056583bdc528
+STAGE60_VERSION: STAGE60_V1_20261102
+STAGE60_SCOPE: 24H32 _ZTV prefix/address-point correction for QueueSet [vptr+0x218], performCommand ABI and implementation crosswalk
+STAGE60_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — dispatch target resolved; native registration and TX/RX completion handoff remain open
+STAGE60_LOGS: Development/Logs/stage60/run-20261102-150246-056583bdc528/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 61 QUEUE DESCRIPTOR / QUEUESET CLASSIFICATION AUDIT ==========
+STAGE61_RUN: run-20261102-152354-434ec3c3ae26
+STAGE61_VERSION: STAGE61_V1_20261102
+STAGE61_SCOPE: 24H32 performCommand 16-byte queue descriptor fields, queue-type IDs and QueueSet per-type arrays/counts
+STAGE61_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — ABI grouping classified; native registration and TX/RX completion ownership remain open
+STAGE61_LOGS: Development/Logs/stage61/run-20261102-152354-434ec3c3ae26/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 62 QUEUESET / LOGICALLINK REGISTRATION METADATA AUDIT ==========
+STAGE62_RUN: run-20261102-161032-d54adc732d87
+STAGE62_VERSION: STAGE62_V2_20261102
+STAGE62_SCOPE: 24H32 QueueSetInfo_s control-word and LogicalLinkInfo_s caller/callee transaction/ownership trace
+STAGE62_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — private registration metadata traced; native queue registration and TX/RX packet ownership remain open
+STAGE62_LOGS: Development/Logs/stage62/run-20261102-161032-d54adc732d87/ and unique files directly under Development/Logs/
+==================================================================
+========== STAGE 63 NATIVE FOUR-QUEUE / REGISTRATION ARGUMENT AUDIT ==========
+STAGE63_RUN: run-20261102-162123-d7577a1a3dff
+STAGE63_VERSION: STAGE63_V2_20261102
+STAGE63_SCOPE: native four-queue construction, RegistrationInfo preparation, callback and Apple registration argument readiness
+STAGE63_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — native registration call and TX/RX packet ownership handoff remain unimplemented
+STAGE63_LOGS: Development/Logs/stage63/run-20261102-162123-d7577a1a3dff/
+==================================================================
+========== STAGE 64 FOUR-QUEUE CALLBACK / OWNERSHIP DISPATCH AUDIT ==========
+STAGE64_RUN: run-20261102-163320-6a2d28788a13
+STAGE64_VERSION: STAGE64_V1_20261102
+STAGE64_SCOPE: native TX/RX queue callback bodies and Apple checkForWork dispatch paths
+STAGE64_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — callbacks do not yet complete TX/RX packet ownership and hardware completion handoff
+STAGE64_LOGS: Development/Logs/stage64/run-20261102-163320-6a2d28788a13/
+==================================================================
+========== STAGE 65 APPLE QUEUE CALLBACK DISPATCH TARGET AUDIT ==========
+STAGE65_RUN: run-20261102-164949-2151a8b9670a
+STAGE65_VERSION: STAGE65_V1_20261102
+STAGE65_SCOPE: Apple TX/RX queue callback dispatch helpers and TxSubmission virtual targets
+STAGE65_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — Apple internal callback helpers are being traced; RTL88WiFi packet ownership handoff remains unimplemented
+STAGE65_LOGS: Development/Logs/stage65/run-20261102-164949-2151a8b9670a/
+==================================================================
+========== STAGE 66 APPLE QUEUE CALLBACK REGISTRATION / PACKET LIFECYCLE AUDIT ==========
+STAGE66_RUN: run-20261102-170400-52c2a2c1997c
+STAGE66_VERSION: STAGE66_V1_20261102
+STAGE66_SCOPE: four queue initWithPool callbacks, PacketQueue base init dispatch and TX/RX packet lifecycle methods
+STAGE66_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — packet ownership/hardware completion implementation still requires a separate reviewed change
+STAGE66_LOGS: Development/Logs/stage66/run-20261102-170400-52c2a2c1997c/
+==================================================================
+========== STAGE 67 FAILURE REPORT ==========
+STAGE67_FAILURE_RUN: run-20261102-171001-bbf2feec7f17
+STAGE67_VERSION: STAGE67_V1_20261102
+STAGE67_EXIT_CODE: 2
+STAGE67_FAILURE_CLASS: POST_AUDIT_ARTIFACT_GATE
+STAGE67_AUDIT_SUMMARY: PASS — 19/19 methods; packet vtable 3/3; pool vtable 1/1
+STAGE67_FAILED_COMMAND: missing Stage67 artifact: dispatch-edge-inventory.txt
+STAGE67_FAILURE_REPORT: Development/Logs/stage67/run-20261102-171001-bbf2feec7f17/failure-report.txt
+STAGE67_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+=============================================
+========== STAGE 67 PACKET / POOL VTABLE COMPLETION AND RECYCLE AUDIT ==========
+STAGE67_RUN: run-20261102-171710-99c47690d787
+STAGE67_VERSION: STAGE67_V1_20261102
+STAGE67_SCOPE: packet vtable targets, pool recycle dispatch, packet completion and RX enqueue lifecycle methods
+STAGE67_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — packet ownership implementation and hardware testing remain unauthorized
+STAGE67_LOGS: Development/Logs/stage67/run-20261102-171710-99c47690d787/
+==================================================================
+========== STAGE 68 SKYWALK PACKET-BUFFER PREPARATION / POOL AUDIT ==========
+STAGE68_RUN: run-20261102-172350-25eb343ad74b
+STAGE68_VERSION: STAGE68_V1_20261102
+STAGE68_SCOPE: packet buffer vtable target, acquire/setPacket methods, pool allocation and packet preparation dispatch
+STAGE68_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — packet buffer lifetime and hardware queue ownership still require a reviewed implementation
+STAGE68_LOGS: Development/Logs/stage68/run-20261102-172350-25eb343ad74b/
+==================================================================
+========== STAGE 69 SKYWALK PACKET-BUFFER LIFECYCLE / MEMORY-SEGMENT AUDIT ==========
+STAGE69_RUN: run-20261102-172739-c3f4b42353af
+STAGE69_VERSION: STAGE69_V1_20261102
+STAGE69_SCOPE: packet-buffer prepare/complete vtable targets, handle lookup/acquire, packet attachment, disposal and pool release lifecycle
+STAGE69_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — packet ownership and device queue handoff still require a reviewed implementation
+STAGE69_LOGS: Development/Logs/stage69/run-20261102-172739-c3f4b42353af/
+==================================================================
+========== STAGE 70 CORRECTED ITANIUM VTABLE ADDRESS-POINT AUDIT ==========
+STAGE70_RUN: run-20261102-173755-eb9da21f3b1c
+STAGE70_VERSION: STAGE70_V1_20261102
+STAGE70_SCOPE: corrected all Stage65–69 virtual call target indices using Itanium _ZTV+0x10 primary address-point rule
+STAGE70_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — ABI target correction only; native registration and TX/RX ownership implementation remain open
+STAGE70_LOGS: Development/Logs/stage70/run-20261102-173755-eb9da21f3b1c/
+==================================================================
+========== STAGE 71 FAILURE REPORT ==========
+STAGE71_FAILURE_RUN: run-20261102-174607-3f2880c9ea17
+STAGE71_VERSION: STAGE71_V1_20261102
+STAGE71_EXIT_CODE: 1
+STAGE71_FAILED_LINE: 22
+STAGE71_FAILED_COMMAND: python3 - "$SRC" "$BOOTKC" "$CACHE" "$OBJDUMP" "$OUT" "$PREV"  <<'PY'
+import hashlib,os,pathlib,re,subprocess,sys
+src=pathlib.Path(sys.argv[1]); boot=sys.argv[2]; cache=pathlib.Path(sys.argv[3]); obj=sys.argv[4]; out=pathlib.Path(sys.argv[5]); prev=pathlib.Path(sys.argv[6])
+sys.path.insert(0,str(out/"tools")); from kcfile import KC
+os.environ["LLVM_OBJDUMP"]=obj
+def addr(x):
+ if isinstance(x,int): return x
+ if x is None: return 0
+ s=str(x).strip()
+ if s.lower().startswith("0x"): return int(s,16)
+ if re.fullmatch(r"[0-9a-fA-F]+",s): return int(s,16)
+ return int(s,0)
+fp_items={
+ "src/kext/wcl24h32/RTW88WCLInfraInterface.cpp":"2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b",
+ "src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp":"63a6a038ef7513312c686199b00e8cf45a16d251c7792ab03d2f5986f9fd84fb",
+ "src/kext/wcl24h32/RTW88WCLInfraInterface.hpp":"9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4"}
+fp=[]; source_ok=True
+for rel,want in fp_items.items():
+ p=src/rel; got=hashlib.sha256(p.read_bytes()).hexdigest() if p.is_file() else "MISSING"; ok=got==want; source_ok &= ok
+ fp += ["FILE="+rel,"EXPECTED_SHA256="+want,"ACTUAL_SHA256="+got,"RESULT="+("MATCH" if ok else "MISMATCH")]
+fp.append("STAGE43_SOURCE_CONTINUITY="+("PASS" if source_ok else "REVIEW_REQUIRED"))
+(out/"source-fingerprint.txt").write_text("\n".join(fp)+"\n")
+if not source_ok: raise SystemExit("Stage43 source baseline changed")
+
+specs=[
+ ("STAGE65","stage65-apple-queue-helper-disassembly.txt",0x1d8,"OBJECT_VPTR","call","IOSkywalkTxSubmissionQueue"),
+ ("STAGE65","stage65-apple-queue-helper-disassembly.txt",0x1e0,"OBJECT_VPTR","call","IOSkywalkTxSubmissionQueue"),
+ # This operand is the actual _ZTV symbol address in R11/R10, not an object's vptr.
+ ("STAGE66","stage65-apple-queue-helper-disassembly.txt",0x240,"STATIC_ZTV_BASE","call","IOSkywalkPacketQueue"),
+ ("STAGE67","stage67-apple-packet-ownership-disassembly.txt",0x140,"OBJECT_VPTR","call","IOSkywalkPacket"),
+ ("STAGE67","stage67-apple-packet-ownership-disassembly.txt",0x198,"OBJECT_VPTR","call","IOSkywalkPacket"),
+ ("STAGE67","stage67-apple-packet-ownership-disassembly.txt",0x1e0,"OBJECT_VPTR","call","IOSkywalkPacket"),
+ ("STAGE67","stage67-apple-packet-ownership-disassembly.txt",0x148,"OBJECT_VPTR","call","IOSkywalkPacketBufferPool"),
+ ("STAGE68","stage68-apple-packet-buffer-disassembly.txt",0x140,"OBJECT_VPTR","call","IOSkywalkPacketBuffer"),
+ ("STAGE68","stage68-apple-packet-buffer-disassembly.txt",0x190,"OBJECT_VPTR","load","IOSkywalkPacket"),
+ ("STAGE69","stage69-apple-packet-buffer-lifecycle-disassembly.txt",0x120,"OBJECT_VPTR","load","IOSkywalkPacketBuffer"),
+ ("STAGE69","stage69-apple-packet-buffer-lifecycle-disassembly.txt",0x128,"OBJECT_VPTR","load","IOSkywalkPacketBuffer"),
+ ("STAGE69","stage69-apple-packet-buffer-lifecycle-disassembly.txt",0x148,"OBJECT_VPTR","call","IOSkywalkPacketBuffer")]
+kc=KC(boot); provenance=["STAGE71_CALLSITE_POINTER_PROVENANCE",
+ "RULE=KC.vtable() begins at _ZTV; primary object vptr is _ZTV+0x10",
+ "OBJECT_VPTR_INDEX=(object_vptr_offset+0x10)/8",
+ "STATIC_ZTV_BASE_INDEX=(symbol_relative_offset)/8"]
+matrix=["STAGE71_RECONCILED_VTABLE_TARGET_MATRIX"]; issues=[]; resolved=[]
+for stage,file,off,mode,op,cls in specs:
+ lines=(prev/file).read_text(errors="replace").splitlines()
+ if op=="call": pat=re.compile(r"call\s+qword ptr \[([a-z0-9]+)\s*\+\s*0x%x\]"%off,re.I)
+ else: pat=re.compile(r"mov\s+rax,\s*qword ptr \[rax\s*\+\s*0x%x\]"%off,re.I)
+ hits=[i for i,x in enumerate(lines) if pat.search(x)]
+ if not hits:
+  issues.append("CALLSITE_NOT_FOUND_%s_0x%x"%(stage,off))
+  provenance.append("PROVENANCE stage=%s class=%s offset=0x%x mode=%s count=0 result=FAIL"%(stage,cls,off,mode))
+  continue
+ mode_ok=True
+ if mode=="STATIC_ZTV_BASE":
+  for i in hits:
+   reg=pat.search(lines[i]).group(1)
+   before="\n".join(lines[max(0,i-16):i])
+   if not re.search(r"lea\s+"+reg+r",.*<__ZTV20IOSkywalkPacketQueue>",before,re.I):
+    mode_ok=False
+  index=off//8
+ else:
+  for i in hits:
+   before="\n".join(lines[max(0,i-12):i])
+   if op=="call": reg=pat.search(lines[i]).group(1)
+   else: reg="rax"
+   if not re.search(r"mov\s+"+reg+r",\s*qword ptr \[[a-z0-9]+\]",before,re.I):
+    mode_ok=False
+  index=(off+0x10)//8
+ provenance.append("PROVENANCE stage=%s class=%s offset=0x%x mode=%s count=%d vptr_or_ZTV_base_verified=%s index=%d result=%s"%(
+  stage,cls,off,mode,len(hits),"YES" if mode_ok else "NO",index,"PASS" if mode_ok else "FAIL"))
+ if not mode_ok:
+  issues.append("POINTER_PROVENANCE_UNPROVEN_%s_0x%x"%(stage,off)); matrix.append("UNRESOLVED stage=%s class=%s offset=0x%x mode=%s"%(stage,cls,off,mode)); continue
+ vt=kc.vtable(cls)
+ if not vt or len(vt)<=index:
+  issues.append("VTABLE_NOT_FOUND_OR_SHORT_%s_0x%x"%(cls,off)); matrix.append("UNRESOLVED class=%s index=%d"%(cls,index)); continue
+ stage70_index=(off+0x10)//8
+ old_target=vt[stage70_index][2] if len(vt)>stage70_index else 0
+ old_symbol=vt[stage70_index][3] if len(vt)>stage70_index else "OUT_OF_RANGE"
+ _,raw,target,name=vt[index]; target=addr(target)
+ owner=kc.owner(target) or kc.sym_owner.get(target) or "UNKNOWN"; sym_owner=kc.sym_owner.get(target) or "UNKNOWN"
+ ok=bool(target) and owner!="UNKNOWN" and owner==sym_owner
+ matrix.append("TARGET stage=%s class=%s offset=0x%x mode=%s stage70_index=%d stage70_target=0x%x stage70_symbol=%s reconciled_index=%d reconciled_symbol_offset=0x%x target=0x%x owner=%s symbol_owner=%s symbol=%s result=%s"%(
+  stage,cls,off,mode,stage70_index,old_target,old_symbol,index,index*8,target,owner,sym_owner,name,"PASS" if ok else "REVIEW_REQUIRED"))
+ if ok: resolved.append((stage,cls,off,mode,index,target,owner,name))
+ else: issues.append("TARGET_OWNER_UNRESOLVED_%s_0x%x"%(stage,off))
+(out/"callsite-pointer-provenance.txt").write_text("\n".join(provenance)+"\n")
+(out/"vtable-target-reconciliation-matrix.txt").write_text("\n".join(matrix)+"\n")
+
+unique={}
+for r in resolved: unique.setdefault(r[5],(r[1],r[7],r[6]))
+carved={}
+for owner in sorted({v[2] for v in unique.values()}):
+ p=cache/(re.sub(r"[^A-Za-z0-9_.-]","_",owner)+".macho"); kc.carve(owner,str(p)); carved[owner]=p
+dis=[]; status=[]
+for va,(cls,nm,owner) in sorted(unique.items()):
+ nxt=kc.next_sym(va); end=addr(nxt) if nxt else va+0x1000
+ if end<=va or end>va+0x20000: end=va+0x1000
+ p=subprocess.run([obj,"-d","-M","intel","--no-show-raw-insn","--start-address=0x%x"%va,"--stop-address=0x%x"%end,str(carved[owner])],capture_output=True,text=True)
+ n=sum(1 for line in p.stdout.splitlines() if re.match(r"^\s*[0-9a-fA-F]+:",line)); ok=p.returncode==0 and n>0
+ status.append("METHOD address=0x%x class=%s symbol=%s owner=%s instructions=%d result=%s"%(va,cls,nm,owner,n,"PASS" if ok else "REVIEW_REQUIRED"))
+ if not ok: issues.append("DISASSEMBLY_FAILED_0x%x"%va)
+ dis += ["\n===== RECONCILED TARGET class=%s symbol=%s address=0x%x owner=%s ====="%(cls,nm,va,owner),"OBJDUMP_EXIT=%d INSTRUCTIONS=%d"%(p.returncode,n),"DISASSEMBLY_BEGIN",p.stdout[:70000].rstrip(),"DISASSEMBLY_END"]
+(out/"method-status.txt").write_text("\n".join(status)+"\n")
+(out/"reconciled-vtable-target-disassembly.txt").write_text("\n".join(dis)+"\n")
+all_dis=bool(status) and all("result=PASS" in x for x in status)
+summary=[
+ "STAGE71_CALLSITE_AWARE_ITANIUM_VTABLE_RECONCILIATION_AUDIT","TARGET=15.8.1/24H32/x86_64",
+ "STAGE70_PREDECESSOR=8/8_PINS_PASS","STAGE60_ADDRESSPOINT_PRECEDENT=PIN_PASS",
+ "STAGE65_TO_69_CALLSITE_DISASSEMBLIES=5/5_PINS_PASS",
+ "STAGE43_SOURCE_CONTINUITY="+("PASS" if source_ok else "REVIEW_REQUIRED"),
+ "VIRTUAL_TARGETS_RECONCILED=%d/%d"%(len(resolved),len(specs)),
+ "OBJECT_VPTR_TARGETS=%d"%sum(x[3]=="OBJECT_VPTR" for x in resolved),
+ "STATIC_ZTV_BASE_TARGETS=%d"%sum(x[3]=="STATIC_ZTV_BASE" for x in resolved),
+ "STAGE66_STATIC_ZTV_PLUS_0x240=INDEX_72_INITWITHPOOL_EXPECTED",
+ "UNIQUE_TARGETS_DISASSEMBLED=%d"%len(unique),
+ "TARGET_DISASSEMBLY_PASS=%d"%sum("result=PASS" in x for x in status),
+ "STAGE70_STAGE66_TARGET=SUPERSEDED_STATIC_BASE_NOT_OBJECT_VPTR",
+ "ISSUES="+(",".join(issues) if issues else "NONE"),
+ "SOURCE_MODIFIED=NO","BUILD=NOT_RUN","CODESIGN=NOT_RUN","KEXT_INSTALL=NOT_RUN","KEXT_LOAD=NOT_RUN",
+ "OPENCORE_MODIFIED=NO","SIP_NVRAM_MODIFIED=NO","HARDWARE_TEST=NOT_RUN",
+ "RESULT="+("PASS" if source_ok and len(resolved)==len(specs) and all_dis and not issues else "REVIEW_REQUIRED"),
+ "ACTIVATION_GATE=BLOCKED"]
+(out/"audit-summary.txt").write_text("\n".join(summary)+"\n")
+report=[
+ "========== STAGE 71 CALLSITE-AWARE ITANIUM VTABLE RECONCILIATION ==========",
+ "VERSION=STAGE71_V1_20261102","RUN="+out.name,"TARGET=15.8.1/24H32/x86_64",
+ "PREDECESSOR=Stage70 corrected-index audit plus pinned Stage65–69 raw caller disassemblies",
+ "PURPOSE=classify each vtable operand as an object-vptr displacement or direct _ZTV-base displacement before index correction",
+ "KEY_CORRECTION=Stage65 queue initialization loads __ZTV20IOSkywalkPacketQueue directly and calls [ZTV+0x240]; use index 72 without another +0x10",
+ "SCOPE=read-only pointer provenance, target reconciliation and corrected target disassembly",
+ "SOURCE_MODIFIED=NO","BUILD=NOT_RUN","INSTALL=NOT_RUN","LOAD=NOT_RUN","OPENCORE_CHANGE=NONE","",
+ *summary,"",
+ "CAUTION=only callsites with verified operand provenance are accepted; target semantics remain grounded in their exact method bodies",
+ "ACTIVATION_GATE=BLOCKED","========== END STAGE 71 =========="]
+(out/"report.txt").write_text("\n".join(report)+"\n")
+print("\n".join(summary))
+if not source_ok or len(resolved)!=len(specs) or not all_dis or issues: raise SystemExit("Stage71 callsite-aware vtable reconciliation requires review")
+PY
+
+STAGE71_FAILURE_REPORT: Development/Logs/stage71/run-20261102-174607-3f2880c9ea17/failure-report.txt
+STAGE71_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+==============================================
+========== STAGE 71 CALLSITE-AWARE ITANIUM VTABLE RECONCILIATION ==========
+STAGE71_RUN: run-20261102-175229-49906f891bf4
+STAGE71_VERSION: STAGE71_V2_20261102
+STAGE71_SCOPE: distinguish object-vptr offsets from direct _ZTV-base offsets and reconcile Stage64–69 virtual targets
+STAGE71_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — ABI target reconciliation only; native registration and TX/RX ownership implementation remain open
+STAGE71_LOGS: Development/Logs/stage71/run-20261102-175229-49906f891bf4/
+==================================================================
+========== STAGE 72 CALLEE CONTRACT / CALLBACK HANDOFF AUDIT ==========
+STAGE72_RUN: run-20261102-180101-2f24c05d158d
+STAGE72_VERSION: STAGE72_V1_20261102
+STAGE72_SCOPE: verify 12 reconciled Apple callee bodies and RTL88WiFi callback ownership handoff gaps
+STAGE72_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — callback TX/RX ownership handoff and queue registration remain incomplete
+STAGE72_LOGS: Development/Logs/stage72/run-20261102-180101-2f24c05d158d/
+==================================================================
+========== STAGE 73 TX/RX OWNERSHIP PATH INVENTORY ==========
+STAGE73_RUN: run-20261102-180530-d711b3944b06
+STAGE73_VERSION: STAGE73_V1_20261102
+STAGE73_SCOPE: map native queue callbacks, TX/RX adapters, packet ownership and teardown dependencies
+STAGE73_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — no TX/RX callback handoff or native queue registration implemented by this inventory
+STAGE73_LOGS: Development/Logs/stage73/run-20261102-180530-d711b3944b06/
+==================================================================
+========== STAGE 74 REGISTRATION / CALLBACK WIRING AUDIT ==========
+STAGE74_RUN: run-20261102-181437-4023b97e1165
+STAGE74_VERSION: STAGE74_V1_20261103
+STAGE74_SCOPE: verify 24H32 RegistrationInfo boundary, queue constructors, callback wiring and teardown order from unchanged source files
+STAGE74_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — this is a source wiring audit; it does not register or activate Skywalk queues
+STAGE74_LOGS: Development/Logs/stage74/run-20261102-181437-4023b97e1165/
+==================================================================
+========== STAGE 75 REGISTRATION PAYLOAD / QUEUE ARGUMENT AUDIT ==========
+STAGE75_RUN: run-20261102-182045-29fbc9d32933
+STAGE75_VERSION: STAGE75_V1_20261103
+STAGE75_SCOPE: inspect 24H32 RegistrationInfo payload, native queue-array argument contract, registration callsites and rollback lifecycle
+STAGE75_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — registration and callback handoff implementation remain incomplete
+STAGE75_LOGS: Development/Logs/stage75/run-20261102-182045-29fbc9d32933/
+==========================================================================\n========== STAGE 76 STARTUP / PUBLICATION GATE ==========\nSTAGE76_RUN: run-20261102-182650-26c858a60bed\nSTAGE76_VERSION: STAGE76_V1_20261103\nSTAGE76_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE\nACTIVATION_GATE: BLOCKED — read-only startup gate audit\nSTAGE76_LOGS: Development/Logs/stage76/run-20261102-182650-26c858a60bed/\n=========================================================\n\n========== STAGE 77 CALLBACK / OWNERSHIP AUDIT ==========\nSTAGE77_RUN: run-20261102-182715-f8a47365a98b\nSTAGE77_VERSION: STAGE77_V1_20261103\nSTAGE77_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE\nACTIVATION_GATE: BLOCKED — four callback handoffs remain incomplete\nSTAGE77_LOGS: Development/Logs/stage77/run-20261102-182715-f8a47365a98b/\n=========================================================\n\n========== STAGE 78 IMPLEMENTATION READINESS ==========\nSTAGE78_RUN: run-20261102-182749-501d7134ab5e\nSTAGE78_VERSION: STAGE78_V1_20261103\nSTAGE78_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE\nACTIVATION_GATE: BLOCKED — registration and TX/RX datapath are still incomplete\nSTAGE78_LOGS: Development/Logs/stage78/run-20261102-182749-501d7134ab5e/\n=======================================================\n
+========== STAGE 79 REGISTRATION WRAPPER FLOW ==========
+STAGE79_RUN: run-20261102-185618-e15eed178161
+STAGE79_VERSION: STAGE79_V2_20261103
+STAGE79_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — driver registration callsite remains absent
+STAGE79_LOGS: Development/Logs/stage79/run-20261102-185618-e15eed178161/
+========================================================
+========== STAGE 80 QUEUE TYPECODE CROSSWALK ==========
+STAGE80_RUN: run-20261102-185641-e10688bb526c
+STAGE80_VERSION: STAGE80_V2_20261103
+STAGE80_PREDECESSOR_STAGE79_RUN: run-20261102-185618-e15eed178161
+STAGE80_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+ACTIVATION_GATE: BLOCKED — the driver queue-pointer array and native registration call remain absent
+STAGE80_LOGS: Development/Logs/stage80/run-20261102-185641-e10688bb526c/
+=======================================================
+========== STAGE 81 IMPLEMENTATION CONTRACT ==========
+STAGE81_RUN: run-20261102-185709-fd14368de84c
+STAGE81_VERSION: STAGE81_V2_20261103
+STAGE81_PREDECESSOR_STAGE79_RUN: run-20261102-185618-e15eed178161
+STAGE81_PREDECESSOR_STAGE80_RUN: run-20261102-185641-e10688bb526c
+STAGE81_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+IMPLEMENTATION_AUTHORIZED: NO | ACTIVATION_GATE: BLOCKED
+STAGE81_LOGS: Development/Logs/stage81/run-20261102-185709-fd14368de84c/
+======================================================
+========== STAGE 82 REGISTRATION WRAPPER ABI ==========
+STAGE82_RUN: run-20261102-191910-fcdbcb8f8330
+STAGE82_VERSION: STAGE82_V1_20261103
+STAGE82_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+WRAPPER_ARGUMENT_FLOW: REVALIDATED | ACTIVATION_GATE: BLOCKED
+STAGE82_LOGS: Development/Logs/stage82/run-20261102-191910-fcdbcb8f8330/
+=======================================================
+========== STAGE 83 PRIVATE METADATA BOUNDS ==========
+STAGE83_RUN: run-20261102-191932-a14ab7312413
+STAGE83_VERSION: STAGE83_V1_20261103
+STAGE83_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+PRIVATE_METADATA: ACCESS BOUNDS CLASSIFIED | FORMAL SIZES UNRESOLVED
+STAGE83_LOGS: Development/Logs/stage83/run-20261102-191932-a14ab7312413/
+======================================================
+========== STAGE 82 REGISTRATION WRAPPER ABI ==========
+STAGE82_RUN: run-20261102-192209-4127dc7d4c59
+STAGE82_VERSION: STAGE82_V1_20261103
+STAGE82_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+WRAPPER_ARGUMENT_FLOW: REVALIDATED | ACTIVATION_GATE: BLOCKED
+STAGE82_LOGS: Development/Logs/stage82/run-20261102-192209-4127dc7d4c59/
+=======================================================
+========== STAGE 83 PRIVATE METADATA BOUNDS ==========
+STAGE83_RUN: run-20261102-192230-558fb15a35f6
+STAGE83_VERSION: STAGE83_V1_20261103
+STAGE83_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+PRIVATE_METADATA: ACCESS BOUNDS CLASSIFIED | FORMAL SIZES UNRESOLVED
+STAGE83_LOGS: Development/Logs/stage83/run-20261102-192230-558fb15a35f6/
+======================================================
+========== STAGE 84 QUEUE ARRAY / WMM GATE ==========
+STAGE84_RUN: run-20261102-193200-e76f13819412
+STAGE84_VERSION: STAGE84_V2_20261103
+STAGE84_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+QUEUE_POINTER_ARRAY: NOT_FOUND | NATIVE_REGISTRATION_CALL: NOT_FOUND | ACTIVATION_GATE: BLOCKED
+STAGE84_LOGS: Development/Logs/stage84/run-20261102-193200-e76f13819412/
+=====================================================
+========== STAGE 85 WMM PREDICATE BODY ==========
+STAGE85_RUN: run-20261102-194932-c74efe86b7a2
+STAGE85_VERSION: STAGE85_V1_20261103
+STAGE85_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+WMM_PREDICATE_BODY: DISASSEMBLED | ACCEPTANCE_RULE: REVIEW_REQUIRED | ACTIVATION_GATE: BLOCKED
+STAGE85_LOGS: Development/Logs/stage85/run-20261102-194932-c74efe86b7a2/
+=================================================
+========== STAGE 86 QUEUE ARRAY SOURCE INVENTORY ==========
+STAGE86_RUN: run-20261102-195002-c0128045b2f5
+STAGE86_VERSION: STAGE86_V1_20261103
+STAGE86_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+QUEUE_ARRAY_SOURCE: CANDIDATE_FOUND_REQUIRES_REVIEW
+NATIVE_REGISTRATION_CALLS: 6
+ACTIVATION_GATE: BLOCKED
+STAGE86_LOGS: Development/Logs/stage86/run-20261102-195002-c0128045b2f5/
+============================================================
+========== STAGE 87 IMPLEMENTATION READINESS ==========
+STAGE87_RUN: run-20261102-195029-27814d70dd8a
+STAGE87_VERSION: STAGE87_V1_20261103
+STAGE87_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+EVIDENCE_CHAIN: STAGES_82_83_84_85_86_PASS | IMPLEMENTATION_AUTHORIZED: NO | ACTIVATION_GATE: BLOCKED
+STAGE87_LOGS: Development/Logs/stage87/run-20261102-195029-27814d70dd8a/
+=======================================================
+========== STAGE 86 QUEUE ARRAY SOURCE INVENTORY ==========
+STAGE86_RUN: run-20261102-200209-8d0c76706877
+STAGE86_VERSION: STAGE86_V1_20261103
+STAGE86_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+QUEUE_ARRAY_SOURCE: NOT_FOUND
+NATIVE_REGISTRATION_CALLS: 0
+ACTIVATION_GATE: BLOCKED
+STAGE86_LOGS: Development/Logs/stage86/run-20261102-200209-8d0c76706877/
+============================================================
+========== STAGE 86 QUEUE ARRAY SOURCE INVENTORY ==========
+STAGE86_RUN: run-20261102-202104-815672f9da41
+STAGE86_VERSION: STAGE86_V2_20261103
+STAGE86_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+QUEUE_ARRAY_SOURCE: NOT_FOUND
+NATIVE_REGISTRATION_CALLS: 0
+ACTIVATION_GATE: BLOCKED
+STAGE86_LOGS: Development/Logs/stage86/run-20261102-202104-815672f9da41/
+============================================================
+========== STAGE 87 IMPLEMENTATION READINESS ==========
+STAGE87_RUN: run-20261102-204302-3a82c4215f89
+STAGE87_VERSION: STAGE87_V2_20261103
+STAGE87_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+EVIDENCE_CHAIN: STAGES_82_83_84_85_86_PASS | IMPLEMENTATION_AUTHORIZED: NO | ACTIVATION_GATE: BLOCKED
+STAGE87_LOGS: Development/Logs/stage87/run-20261102-204302-3a82c4215f89/
+=======================================================
+========== STAGE 88 WMM VALUES / QUEUE ARRAY LIFETIME ==========
+STAGE88_RUN: run-20261102-205135-b4f4ddc49298
+STAGE88_VERSION: STAGE88_V1_20261103
+STAGE88_SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE
+WMM_TABLE_DECODE: PASS
+QUEUE_ARRAY_LIFETIME: ABI_SUPPORTED
+DRIVER_QUEUE_POINTER_ARRAY: NOT_IMPLEMENTED
+ACTIVATION_GATE: BLOCKED
+STAGE88_LOGS: Development/Logs/stage88/run-20261102-205135-b4f4ddc49298/
+=================================================================
+
+========== MASTER STAGE HISTORY INDEX (2026-11-03) ==========
+HISTORY_FILE: Development/RTL88WiFi-STAGE-HISTORY.md
+HISTORY_BLOB_SHA: f7ec9bd430b5724860f6c79649917e6f452ec4dc
+HISTORY_COVERAGE: STAGE_1_TO_STAGE_88
+LATEST_RECORDED_STAGE: 88 V1 (run-20261102-205135-b4f4ddc49298)
+IMPLEMENTATION_AUTHORIZED: NO
+ACTIVATION_GATE: BLOCKED
+NATIVE_REGISTRATION_CALL: NOT_FOUND_IN_STAGE86_V2_AND_STAGE88_SOURCE_REVIEW
+TX_RX_CALLBACK_HANDOFFS: INCOMPLETE
+SOURCE_INSTALL_LOAD_OPENCORE_CHANGE: NONE_IN_STAGES_44_TO_88
+NOTES: Stage 1–19 recovered from saved prior artifacts; Stages 33–34, 36–42 and 76–78 retain grouped summaries where individual detail was unavailable. See master history provenance notes.
+============================================================
+
+========== IMPLEMENTATION ROADMAP PUBLISHED (2026-11-03) ==========
+ROADMAP_FILE: Development/RTL88WiFi-ROADMAP-STAGE89-101.md
+ROADMAP_BLOB_SHA: 18875b6ca5e0b2108e9bdab3957916999da6a685
+ROADMAP_RANGE: STAGE89_TO_STAGE101
+PROPOSED_NEXT_STAGE: 89 — FOUR-QUEUE CONSTRUCTION / REGISTRATION-ARGUMENT ASSEMBLY
+ROADMAP_GATES: A_IMPLEMENTATION_COMPLETENESS | B_INTEGRATED_LIFECYCLE | C_TEST_ENVIRONMENT | D_HARDWARE_VALIDATION
+IMPLEMENTATION_AUTHORIZED: NO
+ACTIVATION_GATE: BLOCKED
+MASTER_HISTORY_FILE: Development/RTL88WiFi-STAGE-HISTORY.md
+MASTER_HISTORY_BLOB_SHA: 8fdee038b232c3636291a0668517b1377464ea49
+NOTES: Roadmap is a proposed plan only. No source activation, signing, install/load or OpenCore change is authorized by publication.
+====================================================================
