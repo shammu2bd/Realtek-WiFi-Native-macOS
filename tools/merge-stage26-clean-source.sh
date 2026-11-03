@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-REPO="https://github.com/shammu2bd/Realtek-WIFI-Native-macOS.git"
+REPO="https://github.com/shammu2bd/Realtek-WiFi-Native-macOS.git"
 ZIPNAME="RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source.zip"
 SHA_EXPECTED="a381763935b7b8ada545eb4c1f6a4ad8e440a79097d3da57cb4673c08f7319db"
 fail(){ echo "ERROR: $*" >&2; exit 1; }
