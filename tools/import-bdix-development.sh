@@ -162,8 +162,25 @@ say "Verifying the imported history and Stage88 checkpoint"
 grep -q "STAGE88_RUN:" "$DEST/Development/output.log" || fail "Destination output.log has no Stage88 checkpoint"
 cmp "$SRC/TRANSFER-MANIFEST.sha256" "$DEST/Development/TRANSFER-MANIFEST.sha256" >/dev/null || fail "Transfer manifest copy mismatch"
 
-OLD_REFS="$(grep -RIl --include='*.sh' --include='*.bash' --include='*.zsh' --include='*.py' --include='*.command' "$SOURCE_REPO" "$DEST/Development" 2>/dev/null | wc -l | tr -d ' ')"
-[[ "$OLD_REFS" == "0" ]] || fail "Some active scripts still reference the old repository name"
+python3 - "$DEST/Development" "$SOURCE_REPO" <<'PY'
+import pathlib, sys
+root = pathlib.Path(sys.argv[1])
+old = sys.argv[2]
+allowed = {".sh", ".bash", ".zsh", ".py", ".command"}
+matches = []
+for p in root.rglob("*"):
+    if p.is_file() and p.suffix.lower() in allowed:
+        try:
+            if old in p.read_text(encoding="utf-8"):
+                matches.append(p.relative_to(root).as_posix())
+        except (UnicodeDecodeError, OSError):
+            pass
+if matches:
+    print("OLD_REPOSITORY_REFERENCES_REMAIN:")
+    print("\n".join(matches))
+    raise SystemExit(1)
+print("OLD_REPOSITORY_REFERENCES_REMAIN=0")
+PY
 
 git -C "$DEST" add -A -- Development
 say "Reviewing the staged transfer"
