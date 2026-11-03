@@ -252,6 +252,26 @@ flow=[
 ]
 for k,v in checks.items(): flow.append("CHECK="+k+" RESULT="+("PASS" if v else "REVIEW_REQUIRED"))
 pathlib.Path(flow_out).write_text("\n".join(flow)+"\n")
+# Preserve the exact instructions that support the factory-to-getter conclusion.
+key_methods=[
+ ("BASE_QUEUE_INIT","IOSkywalkPacketQueue",0xffffff8002980860),
+ ("GET_SERVICE_CLASS_GETTER","IOSkywalkPacketQueue",0xffffff8002980bb0),
+ ("TX_SUBMISSION_PLAIN_WITHPOOL_WRAPPER","IOSkywalkTxSubmissionQueue",0xffffff80029840c2),
+ ("TX_SUBMISSION_CORE_WITHPOOL_FACTORY","IOSkywalkTxSubmissionQueue",0xffffff8002983ff0),
+ ("TX_SUBMISSION_INIT","IOSkywalkTxSubmissionQueue",0xffffff80029840e8),
+ ("RX_SUBMISSION_WITHPOOL_FACTORY","IOSkywalkRxSubmissionQueue",0xffffff8002985724),
+ ("RX_SUBMISSION_INIT","IOSkywalkRxSubmissionQueue",0xffffff80029857ee),
+ ("TX_COMPLETION_INIT","IOSkywalkTxCompletionQueue",0xffffff8002989e96),
+ ("RX_COMPLETION_INIT","IOSkywalkRxCompletionQueue",0xffffff800298648a)]
+excerpt=[]
+for label,cls,va in key_methods:
+ body=methods[(cls,va)]["ins"]
+ excerpt.append("===== "+label+" CLASS="+cls+" ADDRESS=0x%016x ====="%va)
+ excerpt.extend(body)
+key_path=evidence/"key-method-disassembly-excerpts.txt"
+key_path.write_text("\n".join(excerpt)+"\n")
+import shutil
+shutil.copy2(key_path,pathlib.Path(flow_out).parent/"key-method-disassembly-excerpts.txt")
 summary=[
 "STAGE89_V3_FULL_QUEUE_SERVICE_CLASS_WRITER_AUDIT",
 "VERSION=STAGE89_V3_20261104",
@@ -305,7 +325,7 @@ PY
 
 mkdir -p "$OUT"
 # Include source evidence and all reports in GitHub's per-run archive.
-for f in source-tree-revalidation.txt queue-class-method-index.txt service-class-field-write-scan.txt factory-argument-flow.txt audit-summary.txt report.txt; do
+for f in source-tree-revalidation.txt queue-class-method-index.txt service-class-field-write-scan.txt factory-argument-flow.txt key-method-disassembly-excerpts.txt audit-summary.txt report.txt; do
  upload "$OUT/$f" "Development/Logs/stage89-v3/$RUN/$f"
 done
 python3 - "$OUT" <<'PY'
