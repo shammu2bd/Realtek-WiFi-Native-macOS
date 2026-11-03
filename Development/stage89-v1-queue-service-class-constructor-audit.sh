@@ -215,7 +215,20 @@ checks={
 "TYPECODE_CROSSWALK_1_TO_4_REVALIDATED":all(x in cross for x in ["TYPE_CODE=1 TX submission","TYPE_CODE=2 TX completion","TYPE_CODE=3 RX submission","TYPE_CODE=4 RX completion"]),
 "WMM_TABLE_HAS_FOUR_DISTINCT_VALUES":len(values)==4 and len(set(values))==4,
 "NO_DIRECT_PRIVATE_SERVICE_CLASS_FIELD_WRITE":not bool(re.search(r"(?:->|\.)\s*mServiceClass\s*=",cpp+hpp)),
-"NO_NATIVE_REGISTRATION_CALL":not bool(re.search(r"\b(?:registerInfraEthernetInterface|registerNetworkInterface|registerEthernetInterface)\s*\(",cpp))
+translation_units=[]
+registration_hits=[]
+for p in src.rglob("*"):
+ if p.is_file() and p.suffix.lower() in {".cpp",".cc",".mm"}:
+  raw=p.read_text(errors="replace")
+  code=re.sub(r"/\*.*?\*/",lambda m:"\n"*m.group(0).count("\n"),raw,flags=re.S)
+  code=re.sub(r"//[^\n]*","",code)
+  code=re.sub(r'"(?:\\.|[^"\\])*"','""',code)
+  code=re.sub(r"'(?:\\.|[^'\\])*'","''",code)
+  translation_units.append(p)
+  for name in ("registerInfraEthernetInterface","registerNetworkInterface","registerEthernetInterface"):
+   for m in re.finditer(r"\b"+name+r"\s*\(",code):
+    registration_hits.append(p.relative_to(src).as_posix()+":"+str(code.count("\n",0,m.start())+1)+":"+name)
+"NO_NATIVE_REGISTRATION_CALL":len(registration_hits)==0
 }
 lines=[
 "STAGE89_QUEUE_SERVICE_CLASS_API_MATRIX",
@@ -232,6 +245,8 @@ lines=[
 "CURRENT_SOURCE_RX_COMPLETION_CALL="+str(calls["_rxCompletion"]),
 "CURRENT_SOURCE_RX_SUBMISSION_SERVICE_CLASS="+(re.search(r"static_cast<kern_packet_svc_class_t>\(([^)]+)\)",calls["_rxSubmission"][1]).group(1) if calls["_rxSubmission"] and re.search(r"static_cast<kern_packet_svc_class_t>\(([^)]+)\)",calls["_rxSubmission"][1]) else "NOT_FOUND"),
 "WMM_REQUIRED_VALUES="+(",".join(values) if len(values)==4 else "UNRESOLVED")]
+"IMPLEMENTATION_TRANSLATION_UNITS_SCANNED="+str(len(translation_units)),
+"REGISTRATION_CALL_LIKE_HITS="+(";".join(registration_hits) if registration_hits else "NONE")]
 lines.extend(call_rows)
 for name,ok in checks.items(): lines.append("CHECK="+name+" RESULT="+("PASS" if ok else "REVIEW_REQUIRED"))
 api_out.write_text("\n".join(lines)+"\n")
