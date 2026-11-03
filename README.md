@@ -23,8 +23,7 @@ client app is needed.
 > Treat this as experimental and keep a bootable EFI backup. WPA3-SAE,
 > OWE/Enhanced Open, PMF-required networks, 802.11k/v/r and true 802.11s mesh
 > mode remain unsupported. The driver does not force a country code; macOS
-> currently reports `US` in the supplied diagnostic. See
-> [CHANGELOG.md](CHANGELOG.md) and [CHANGELOG-1.0.11.md](CHANGELOG-1.0.11.md).
+> currently reports `US` in the supplied diagnostic. See [CHANGELOG.md](CHANGELOG.md) for the consolidated release history.
 
 <p align="center">
   <img src="docs/images/speedtest-2.0.1.png" alt="RTL8821CE speed test: 93.40 Mbps down, 92.45 Mbps up" width="380">
@@ -68,6 +67,7 @@ see [`docs/SEQUOIA-15.8.1-24H32-ABI-REVIEW.md`](docs/SEQUOIA-15.8.1-24H32-ABI-RE
 and the implementation plan in
 [`docs/SEQUOIA-15.8.1-24H32-WCL-PORT.md`](docs/SEQUOIA-15.8.1-24H32-WCL-PORT.md).
 The collection script remains available for a new capture after any OS update.
+Stage-specific application notes are organized in [docs/stage-guides/](docs/stage-guides/README.md).
 Do not remove the current legacy OpenCore dependencies or Skywalk block while
 booting the existing 1.0.11 kext.
 
