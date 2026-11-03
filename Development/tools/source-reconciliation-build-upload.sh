@@ -6,7 +6,7 @@ umask 077
 
 REPO="shammu2bd/Realtek-WiFi-Native-macOS"
 BRANCH="main"
-SOURCE_COMMIT="c2240b4d89f77314e023473b8c1ccfa042dbb565"
+SOURCE_COMMIT="7100f5a9e90ecff28942074625b6a5e745455b87"
 PROJECT="${PROJECT_DIR:-$HOME/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source}"
 KEYCHAIN_SERVICE="realtek-wifi-native-macos-upload"
 RAW_BASE="https://raw.githubusercontent.com/${REPO}/${SOURCE_COMMIT}"
