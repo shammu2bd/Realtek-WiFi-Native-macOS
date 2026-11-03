@@ -159,6 +159,7 @@ export GITHUB_RUN_ID="$RUN_ID"
 export GITHUB_BUILD_RESULT="$BUILD_RESULT"
 export GITHUB_BUILD_STATUS="$BUILD_STATUS"
 export GITHUB_SOURCE_COMMIT="$SOURCE_COMMIT"
+set +e
 python3 - "$BUILD_LOG" "$RUN_DIR/build-summary.txt" "$RUN_DIR/source-reconciliation.txt" <<'PY'
 import base64
 import hashlib
@@ -302,6 +303,7 @@ print("UPLOADED_SUMMARY: https://github.com/" + repo + "/blob/" + branch + "/" +
 print("OUTPUT_LOG_STATUS: " + output_status)
 PY
 UPLOAD_STATUS=$?
+set -e
 unset GH_UPLOAD_TOKEN GITHUB_UPLOAD_TOKEN
 
 if [ "$UPLOAD_STATUS" -ne 0 ]; then
