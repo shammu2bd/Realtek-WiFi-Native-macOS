@@ -1311,7 +1311,7 @@ static void rtw_dbi_write8(struct rtw_dev *rtwdev, u16 addr, u8 data)
 {
 	u16 write_addr;
 	u16 remainder = addr & ~(BITS_DBI_WREN | BITS_DBI_ADDR_MASK);
-	u8 flag;
+	u8 flag = 0;
 	u8 cnt;
 
 	write_addr = addr & BITS_DBI_ADDR_MASK;
@@ -1358,7 +1358,7 @@ static int rtw_dbi_read8(struct rtw_dev *rtwdev, u16 addr, u8 *value)
 static void rtw_mdio_write(struct rtw_dev *rtwdev, u8 addr, u16 data, bool g1)
 {
 	u8 page;
-	u8 wflag;
+	u8 wflag = 0;
 	u8 cnt;
 
 	rtw_write16(rtwdev, REG_MDIO_V1, data);
