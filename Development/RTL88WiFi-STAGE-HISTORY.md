@@ -224,3 +224,19 @@ The combined native-target build for run `run-20261103T141742Z-1d68ac92-597` com
 - Activation gate: **BLOCKED**; the four queue registration/callback handoffs remain incomplete.
 
 This follow-up corrects the source but does not treat the previous successful link as proof of a warning-clean build or a loadable/working driver.
+
+
+## Stage35X2 corrected native rebuild — 2026-11-03
+
+The follow-up run `run-20261103T142730Z-21d6ddbf-c1f` used source commit `7100f5a9e90ecff28942074625b6a5e745455b87` and rebuilt the isolated `rtl88wifi-native` target successfully.
+
+- Build: **PASS**, exit code 0; `RTL88WiFiNative.kext` synchronized and reported `NATIVE OK`.
+- Uploaded native build log: `Development/Logs/source-reconciliation/run-20261103T142730Z-21d6ddbf-c1f/native-build.log`.
+- Local build-log SHA-256 recorded by the uploader: `f51b40366a4d0f92159abd2964da9e7de387b013ad83505e4cad8c43b3dde042`.
+- Log review: **zero** occurrences of the unknown-warning-group / invalid-ABI-\`offsetof\` diagnostic pair after correcting the pragma to `-Winvalid-offsetof`.
+- Remaining diagnostics: 1,071 compiler warning lines across macro redefinitions, signedness/precision conversions, pointer sign, shadow, visibility and extern-C compatibility. This is a successful build, **not warning-free**.
+- No fatal compiler/linker errors detected in the uploaded log.
+- Bundle installation, loading, signing, radio tests and OpenCore changes: **NOT RUN**.
+- Stage89 readiness gate: still **BLOCKED**. The four queue registration/callback handoffs are still incomplete.
+
+This rebuild validates the spelling correction only; it does not establish a loadable or hardware-functional native driver.
