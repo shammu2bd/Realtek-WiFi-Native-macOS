@@ -1,0 +1,36 @@
+STAGE89_V2_SERVICE_CLASS_FIELD_WRITE_MATRIX
+TARGET=macOS_15.8.1_24H32_x86_64
+STAGE89_V1_RUN=run-20261103-211403-2ef027376f6e
+GETTER_FIELD_OFFSET=0xb8
+GETTER_READ_INSTRUCTION=ffffff8002980bb4:      	mov	eax, dword ptr [rdi + 0xb8]
+BASE_DEFAULT_SERVICE_CLASS=0xffffffff
+BASE_DEFAULT_STORE=ffffff80029808d8:      	mov	dword ptr [rbx + 0xb8], 0xffffffff
+TX_SUBMISSION_FIELD_WRITE=ffffff8002984160:      	mov	dword ptr [rbx + 0xb8], r15d
+TX_SUBMISSION_WRITE_ORIGIN=incoming_EDX_first_numeric_argument_to_initWithPool
+TX_COMPLETION_FIELD_WRITE=NONE_IN_CAPTURED_INIT
+RX_SUBMISSION_FIELD_WRITE=NONE_IN_CAPTURED_INIT
+RX_COMPLETION_FIELD_WRITE=NONE_IN_CAPTURED_INIT
+TX_SUBMISSION_FACTORY_SOURCE_CALL=('withPool', '_txPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0')
+TX_COMPLETION_FACTORY_SOURCE_CALL=('withPool', '_txPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::txCompletionAction, this, 0')
+RX_SUBMISSION_FACTORY_SOURCE_CALL=('withPool', '_rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0), this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0')
+RX_COMPLETION_FACTORY_SOURCE_CALL=('withPool', '_rxPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0')
+TX_SUBMISSION_FACTORY_REGISTER_FLOW=ffffff8002984022:      	call	0xffffff8000a4be90 <_uuid_unparse_upper+0xffffff8000a4be90> | ffffff8002984037:      	call	0xffffff80029807b6 <__ZN20IOSkywalkPacketQueueC2EPK11OSMetaClass> | ffffff8002984049:      	call	0xffffff8000a4a700 <_uuid_unparse_upper+0xffffff8000a4a700> | ffffff8002984057:      	mov	edx, dword ptr [rbp + 0x20] | ffffff800298405d:      	mov	r8d, r13d | ffffff8002984060:      	mov	r9, qword ptr [rbp - 0x30] | ffffff8002984064:      	mov	r10d, dword ptr [rbp + 0x18] | ffffff800298406a:      	push	qword ptr [rbp + 0x10] | ffffff8002984073:      	call	qword ptr [rax + 0x2a8] | ffffff8002984087:      	call	qword ptr [rax + 0x28]
+TX_COMPLETION_FACTORY_REGISTER_FLOW=ffffff8002989e1e:      	call	0xffffff8000a4be90 <_uuid_unparse_upper+0xffffff8000a4be90> | ffffff8002989e33:      	call	0xffffff80029807b6 <__ZN20IOSkywalkPacketQueueC2EPK11OSMetaClass> | ffffff8002989e45:      	call	0xffffff8000a4a700 <_uuid_unparse_upper+0xffffff8000a4a700> | ffffff8002989e53:      	mov	edx, r14d | ffffff8002989e5d:      	mov	r9, qword ptr [rbp - 0x38] | ffffff8002989e61:      	mov	r10d, dword ptr [rbp + 0x10] | ffffff8002989e6a:      	call	qword ptr [rax + 0x2b0] | ffffff8002989e7e:      	call	qword ptr [rax + 0x28]
+RX_SUBMISSION_FACTORY_REGISTER_FLOW=ffffff8002985755:      	call	0xffffff8000a4be90 <_uuid_unparse_upper+0xffffff8000a4be90> | ffffff800298576a:      	call	0xffffff80029807b6 <__ZN20IOSkywalkPacketQueueC2EPK11OSMetaClass> | ffffff800298577c:      	call	0xffffff8000a4a700 <_uuid_unparse_upper+0xffffff8000a4a700> | ffffff800298578e:      	mov	edx, r14d | ffffff8002985794:      	mov	r8d, dword ptr [rbp - 0x2c] | ffffff8002985798:      	mov	r9, qword ptr [rbp - 0x38] | ffffff800298579c:      	mov	r10d, dword ptr [rbp + 0x18] | ffffff80029857a2:      	push	qword ptr [rbp + 0x10] | ffffff80029857a8:      	call	qword ptr [rax + 0x2a0] | ffffff80029857bc:      	call	qword ptr [rax + 0x28]
+RX_COMPLETION_FACTORY_REGISTER_FLOW=ffffff8002986412:      	call	0xffffff8000a4be90 <_uuid_unparse_upper+0xffffff8000a4be90> | ffffff8002986427:      	call	0xffffff80029807b6 <__ZN20IOSkywalkPacketQueueC2EPK11OSMetaClass> | ffffff8002986439:      	call	0xffffff8000a4a700 <_uuid_unparse_upper+0xffffff8000a4a700> | ffffff8002986447:      	mov	edx, r14d | ffffff8002986451:      	mov	r9, qword ptr [rbp - 0x38] | ffffff8002986455:      	mov	r10d, dword ptr [rbp + 0x10] | ffffff800298645e:      	call	qword ptr [rax + 0x2b0] | ffffff8002986472:      	call	qword ptr [rax + 0x28]
+WMM_REQUIRED_VALUES=0x00100080,0x00000000,0x00380100,0x00400180
+SOURCE_PRIVATE_FIELD_WRITE=NONE_FOUND
+SERVICE_CLASS_ASSIGNMENT=NOT_PROVEN_FOR_ALL_FOUR_QUEUES
+NOTE=The TX submission initializer's field store is fed from its incoming EDX register; public header parameter naming and factory wrapper argument flow still require semantic reconciliation.
+NOTE=The three captured completion/refill initializers show no write to offset 0xb8 after calling the base initializer; investigate alternate supported construction or setter paths before assigning values.
+NOTE=The base sentinel is not one of the four Stage88 WMM values and must not be treated as a valid WMM class.
+CHECK=GETTER_READS_FIELD_0XB8 RESULT=PASS
+CHECK=BASE_INIT_WRITES_0XFFFFFFFF_TO_0XB8 RESULT=PASS
+CHECK=TX_SUBMISSION_INIT_HAS_0XB8_FIELD_STORE RESULT=PASS
+CHECK=TX_SUBMISSION_STORE_SOURCE_REGISTER_IDENTIFIED RESULT=PASS
+CHECK=TX_COMPLETION_INIT_HAS_NO_0XB8_FIELD_STORE RESULT=PASS
+CHECK=RX_SUBMISSION_INIT_HAS_NO_0XB8_FIELD_STORE RESULT=PASS
+CHECK=RX_COMPLETION_INIT_HAS_NO_0XB8_FIELD_STORE RESULT=PASS
+CHECK=FOUR_WMM_VALUES_PRESENT_AND_DISTINCT RESULT=PASS
+CHECK=SOURCE_DOES_NOT_DIRECTLY_WRITE_PRIVATE_FIELD RESULT=PASS
+CHECK=ALL_FOUR_SOURCE_FACTORY_CALLS_FOUND RESULT=PASS
