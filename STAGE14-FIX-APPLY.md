@@ -26,7 +26,7 @@ tools/collect-sequoia-abi-24H32-stage14.sh build/sequoia-abi-24H32-stage14
 ```
 
 The wrapper overwrites `~/Desktop/output.log` and updates
-`shammu2bd/Realtek-WIFI-Native-macOS/output.log` after the command finishes. A successful
+`shammu2bd/BDIX-TV/output.log` after the command finishes. A successful
 collector run also creates
 `build/sequoia-abi-24H32-stage14/RTL88WiFi-Sequoia-24H32-stage14-generic-skywalk-segment-packet-kcabi.tar.gz`.
 Upload that archive separately to the repository root; `runlog` syncs only the

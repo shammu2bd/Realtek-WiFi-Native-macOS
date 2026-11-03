@@ -84,4 +84,4 @@ ARCHIVE="$OUT_DIR/RTL88WiFi-Sequoia-24H32-stage14-generic-skywalk-segment-packet
 (cd "$OUT_DIR" && /usr/bin/tar -czf "$ARCHIVE" 24H32)
 /usr/bin/shasum -a 256 "$ARCHIVE"
 printf '\nCreated Stage 14 ABI archive:\n%s\n' "$ARCHIVE"
-printf 'Upload this archive to the GitHub repository root. When run through the runlog shell helper, ~/Desktop/output.log is automatically committed to shammu2bd/Realtek-WIFI-Native-macOS.\n'
+printf 'Upload this archive to the GitHub repository root. When run through the runlog shell helper, ~/Desktop/output.log is automatically committed to shammu2bd/BDIX-TV.\n'

@@ -1,0 +1,41 @@
+{
+  "firmware": {
+    "embedded_blobs_verified": [
+      {
+        "name": "rtw8821c_fw.bin",
+        "compressed": 56993,
+        "original": 139472,
+        "crc32": "d0a2b137"
+      },
+      {
+        "name": "rtw8822b_fw.bin",
+        "compressed": 87223,
+        "original": 161240,
+        "crc32": "87f81761"
+      },
+      {
+        "name": "rtw8822c_fw.bin",
+        "compressed": 92712,
+        "original": 202600,
+        "crc32": "ef5020dd"
+      }
+    ],
+    "malformed_metadata": [
+      "ok.bin LOADED",
+      "short_orig.bin REJECTED",
+      "long_orig.bin REJECTED",
+      "truncated.bin REJECTED",
+      "junk.bin REJECTED",
+      "zero_orig.bin REJECTED",
+      "zero_comp.bin REJECTED",
+      "null.bin REJECTED",
+      "huge.bin REJECTED",
+      "LIVE 0 0"
+    ],
+    "allocation_balance": "zero live allocations after release"
+  },
+  "peer_caps": "passed: 2x2 AP intersected to RTL8821C 1x1 (HT LDPC/RX-STBC cleared, VHT RX-STBC cleared, MCS masks limited to 1SS), band/NULL/VHT-without-HT handling, truncated/short/duplicate IEs, response-over-cache priority, 50,000 fuzz inputs under ASan/UBSan",
+  "station_registry": "passed: lookup/iteration/vif/localaddr matching, foreign-station unregister no-op, unregister waits for an RX poll holding the pointer, 3,000 register/unregister/free cycles against a live RX lookup thread under ASan, self-unregister inside poll, bounded timeout returns false",
+  "diagnostic_ring": "passed: pre-init drop, empty/NULL/zero-capacity, record format with ticks, repeated snapshots are non-consuming, small-capacity truncation, long message bounded, 150 KB stream keeps newest 32,767 bytes in order with exact byte counter, consuming reader drains without resetting counter",
+  "timer_power_teardown": "source-structure review passed: teardown sets shutdown, disables, cancels, removes (gate wait), cancels any re-arm, releases, then frees buffer; callback checks shutdown and publishes hardware access before re-checking PM/DMA flags; sleep and wake set the PM flag then wait for in-flight diagnostic reads before touching hardware; LPS is compiled off for RTW88_MACOS. Not executed against IOKit."
+}

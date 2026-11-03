@@ -1,7 +1,7 @@
 # Stage 15 run checklist
 
 From the Stage 14 project root, run through the `runlog` helper so the log is
-saved on the Desktop and committed to `shammu2bd/Realtek-WIFI-Native-macOS`:
+saved on the Desktop and committed to `shammu2bd/BDIX-TV`:
 
 ```sh
 python3 tests/test-skywalk-packet-access-stage15.py && \

@@ -272,7 +272,7 @@ def source_checks(project_root: Path) -> list[dict]:
             "RTW88WCLPacketSpanIsValid", "UINT64_MAX - span.dataOffset",
             "UINT64_MAX - relative", "UINTPTR_MAX")) and
             a.find("RTW88WCLResolvePacketBufferAddress") < copy_pos and copy_pos >= 0),
-        ("packet and buffer data offsets/lengths are verified before copy",
+        ("packet and buffer data offsets/lengths are verified before copy", 
             0 <= a.find("setDataOffsetAndLength") < copy_pos and
             0 <= a.find("buffer->getDataLength() != packetLength") < copy_pos),
         ("completion status is set before packet is handed to caller",

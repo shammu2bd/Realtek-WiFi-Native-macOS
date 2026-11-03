@@ -55,7 +55,7 @@ From the extracted Stage 14 project root:
 
 Use the `runlog` command installed in the one-time setup so the same
 `~/Desktop/output.log` is overwritten and committed to
-`shammu2bd/Realtek-WIFI-Native-macOS` after every run:
+`shammu2bd/BDIX-TV` after every run:
 
 ```sh
 runlog bash -lc '

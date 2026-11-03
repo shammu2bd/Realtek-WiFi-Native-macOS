@@ -2,7 +2,7 @@
 
 ## Archive verification
 
-The supplied archive `RTL88WiFi-Sequoia-24H32-kcabi.tar.gz` was retrieved from the public `shammu2bd/Realtek-WIFI-Native-macOS` repository, decompressed, and its tar directory parsed successfully.
+The supplied archive `RTL88WiFi-Sequoia-24H32-kcabi.tar.gz` was retrieved from the public `shammu2bd/BDIX-TV` repository, decompressed, and its tar directory parsed successfully.
 
 - Compressed archive size: 402,248 bytes (about 393 KiB)
 - Archive entries: 486

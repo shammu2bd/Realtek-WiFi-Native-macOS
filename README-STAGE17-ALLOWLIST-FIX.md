@@ -25,7 +25,7 @@ set -e
   "$OVERLAY" tools/run-stage17.sh
 ```
 
-This uses the project's existing automatic overlay applier and `runlog` helper. The runner will write `output.log` and upload the Stage 17 diagnostic/result archive to `shammu2bd/Realtek-WIFI-Native-macOS`.
+This uses the project's existing automatic overlay applier and `runlog` helper. The runner will write `output.log` and upload the Stage 17 diagnostic/result archive to `shammu2bd/BDIX-TV`.
 
 ## Acceptance criteria
 

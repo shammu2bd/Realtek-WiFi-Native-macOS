@@ -27,7 +27,7 @@ echo "Stage 18 overlay SHA-256: $ACTUAL"
   "$OVERLAY" tools/run-stage18.sh
 ```
 
-The existing `apply-overlay-and-run.sh` extracts the ZIP into the project, then launches Stage 18. The runner finds the newest Stage 17 archive and requires the Stage 14/15/16 prerequisites. It executes the regression test and builds a read-only dossier. When the configured `runlog` helper is available, it uploads `output.log` and the Stage 18 `.tar.gz` archive to `shammu2bd/Realtek-WIFI-Native-macOS`.
+The existing `apply-overlay-and-run.sh` extracts the ZIP into the project, then launches Stage 18. The runner finds the newest Stage 17 archive and requires the Stage 14/15/16 prerequisites. It executes the regression test and builds a read-only dossier. When the configured `runlog` helper is available, it uploads `output.log` and the Stage 18 `.tar.gz` archive to `shammu2bd/BDIX-TV`.
 
 ## Expected outcome
 

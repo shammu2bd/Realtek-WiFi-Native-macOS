@@ -243,7 +243,7 @@ IOReturn RTW88WCLController::releaseNativeResources()
         _skywalkQueues = nullptr;
     }
 
-
+    
 
     /* RTW88IEEE80211 owns the compat callback context; destroy it before
      * rtw88_compat_exit() and before relinquishing the global hardware lease. */

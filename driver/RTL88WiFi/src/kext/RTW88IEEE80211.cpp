@@ -1737,7 +1737,7 @@ void RTW88IEEE80211::processScanResult(struct sk_buff *skb)
     const bool ssidNamed = bss->ssid_len != 0;
     if (ssidNamed && (le16_to_cpu(hdr->frame_control) & 0x00f0) == 0x0080)
         bss->beacon_named = 1;
-
+    
     if (bss->channel == 0 && bss->freq) {
         int f = bss->freq;
         if (f == 2484)
@@ -5163,7 +5163,7 @@ IOReturn RTW88IEEE80211::cmdGetState(struct RTW88StateResult *result)
     memcpy(result->ssid, _targetBSS.ssid, sizeof(result->ssid));
     memcpy(result->bssid, _targetBSS.bssid, sizeof(result->bssid));
     result->channel = _targetBSS.channel;
-
+    
     memcpy(result->mac_addr, _macAddr, 6);
 
     rtw88_get_fw_version(_rtwdev, &result->fw_version, &result->fw_sub_version);
@@ -5200,7 +5200,7 @@ IOReturn RTW88IEEE80211::cmdGetBSSList(uint8_t *buf, uint32_t *len)
         *len = 0;
         return kIOReturnSuccess;
     }
-
+    
     uint32_t written = 4; // reserve first 4 bytes for total length
 
     IOLockLock(_bssLock);

@@ -6,13 +6,12 @@ Wi-Fi menu, auto-joins and reconnects after sleep. SIP stays enabled, and no
 client app is needed.
 
 > [!IMPORTANT]
-> The original upstream legacy driver was marked discontinued after version 1.0.1.
-> This repository contains unofficial community source updates through 1.0.11 and
-> experimental native WCL porting work for macOS Sequoia 15.8.1 (24H32). Stage26
-> is source and ABI-audit work only, not a completed or hardware-validated native
-> WCL kext. Do not remove the legacy IO80211FamilyLegacy / IOSkywalkFamily
-> dependencies or the OpenCore Skywalk block when booting the existing legacy
-> kext. Keep a bootable EFI backup.
+> **Discontinued.** Development stopped after version 1.0.0. Version 1.0.1 is
+> a final maintenance release that only corrects what System Information
+> reports (transmit rate, noise, channel widths, supported channels); see
+> [CHANGELOG](CHANGELOG.md). The driver stays usable as is, but the
+> [remaining issues](#remaining-issues) will not be fixed. Keep a bootable EFI
+> backup on USB.
 
 > [!NOTE]
 > **This tree contains unofficial community source updates through 1.0.11.**
@@ -25,7 +24,7 @@ client app is needed.
 > OWE/Enhanced Open, PMF-required networks, 802.11k/v/r and true 802.11s mesh
 > mode remain unsupported. The driver does not force a country code; macOS
 > currently reports `US` in the supplied diagnostic. See
-> [CHANGELOG.md](CHANGELOG.md).
+> [CHANGELOG.md](CHANGELOG.md) and [CHANGELOG-1.0.11.md](CHANGELOG-1.0.11.md).
 
 <p align="center">
   <img src="docs/images/speedtest-2.0.1.png" alt="RTL8821CE speed test: 93.40 Mbps down, 92.45 Mbps up" width="380">
@@ -179,7 +178,7 @@ Changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## Status
 
-The original upstream project was marked discontinued. The 1.0.2–1.0.11
+The original upstream project was marked discontinued. The 1.0.2–1.0.10
 updates in this tree are unofficial community changes and are not supported by
 the original author. Contributions and hardware reports are welcome, but each
 new build needs its own macOS and access-point testing. The source is GPL-2.0.

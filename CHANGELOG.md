@@ -1,5 +1,3 @@
-# Changelog
-
 ## Sequoia WCL development — Stage 12.1 (2026-11-01; ABI collector parser repair)
 
 - Accept exact Itanium mangled symbol tokens embedded in kcabi method-list rows.
@@ -7,6 +5,8 @@
 - Preserve and identify temporary pass data when Stage 12 extraction fails.
 - Expand parser regression tests for inline symbols and index fallback.
 - No kext datapath or registration behavior changed.
+
+# Changelog
 
 ## Sequoia WCL development — Stage 12 (2026-11-01; ABI evidence collector)
 
@@ -32,170 +32,61 @@ completion, and radio start remain disabled. No macOS kernel build or runtime
 Wi-Fi validation is claimed. Details:
 [Stage 11 ABI notes](docs/24H32-SKYWALK-REGISTRATION-INFO-STAGE11.md).
 
-## RTL88WiFi 1.0.11 — Private Wi-Fi Address Skywalk dispatch
+## 1.0.11 — 2026-10-31 (unofficial community fix, not by the original author)
 
-Build identity: `1.0.11-rtl88wifi-r22-20261031`. This is an unofficial
-community source update. The macOS kernel extension has not been built with
-Apple’s Xcode kernel toolchain or tested against the Settings UI on physical
-hardware. Host-side tests check selector dispatch structure and the existing
-Off/Fixed/Rotating state machine.
+Build identity `1.0.11-rtl88wifi-r22-20261031`. Host-side source tests cover
+the selector routing and existing mode logic; **no macOS kernel build or
+physical Settings-menu test has been performed**. Details:
+[CHANGELOG-1.0.11.md](CHANGELOG-1.0.11.md).
 
-### Changes
+- Adds the missing Skywalk split GET handler for `APPLE80211_IOC_PRIVATE_MAC`
+  (selector 238), plus the Skywalk split SET handler. Adds the corresponding
+  Legacy split GET override and routes all paths through the same strict
+  28-byte payload validator and Off/Fixed/Rotating state handler.
+- Adds explicit GET/SET ingress diagnostics (`PRIVATE_MAC GET/SET ingress=...`)
+  so the next report can show whether System Settings reached the controller.
+- Keeps the working open-network association fix, WPA2, scan/roaming behavior,
+  country passthrough and aggregation logic unchanged. WPA3-SAE remains disabled.
+- Does not invent a capability bit or force a country code. If macOS management
+  profiles restrict the setting, the driver cannot override that host policy.
 
-- **Skywalk GET:** adds `apple80211_ioctl_get(IO80211SkywalkInterface *, void *)`
-  and routes primary-interface selector 238 to the private-MAC GET handler.
-- **Skywalk SET:** routes selector 238 through the same strict 28-byte payload
-  adapter in the Skywalk-only split SET ingress.
-- **Legacy split GET:** adds the corresponding `IO80211Interface` GET override.
-- **Unified marshalling:** legacy ioctl, Legacy split GET/SET, and Skywalk split
-  GET/SET use one checked copyin/copyout adapter. Other selectors and virtual
-  interfaces continue to the family implementation.
-- **Diagnostics:** records `STA_PRIVATE_MAC_GET_SEEN`,
-  `STA_PRIVATE_MAC_SET_SEEN`, `STA_PRIVATE_MAC_LAST_RET` and logs the exact
-  ingress name without logging the MAC address.
+## 1.0.10 — 2026-10-31 (unofficial community fix, not by the original author)
 
-### Why this change
+Build identity `1.0.10-rtl88wifi-r21-20261031`. Host-side tests cover the open
+ASSOCIATE decoder and PRIVATE_MAC mode handler; **no macOS kernel build or
+physical Wi-Fi test has been performed**. Details:
+[CHANGELOG-1.0.10.md](CHANGELOG-1.0.10.md).
 
-Version 1.0.10 had a 28-byte selector handler and a Legacy BSD ioctl bridge, but
-its source did not override the Skywalk split GET method and did not process
-selector 238 in the Skywalk-only split SET method. That left a likely modern
-macOS request path unhandled. This release fills those missing hooks. It is a
-source-level diagnosis based on the available IO80211Controller SDK method
-signatures and the user’s report showing no PRIVATE_MAC GET/SET events.
+- Accepts the version-0 empty key object used by an open-network host32
+  ASSOCIATE request, preventing the observed `lower=0, upper=1, ssidLen=0`
+  Ventura-ABI misinterpretation. WPA2 key validation remains strict.
+- Adds a narrowly scoped modern Apple80211 PRIVATE_MAC GET/SET bridge plus
+  Off/Fixed/Rotating handling. Rotations occur only when the radio is idle;
+  active joins and links are not disrupted. Host-supplied addresses are kept
+  unchanged; locally generated addresses are unicast and locally administered.
+- Does not force a country code. macOS currently supplies `US`; this build
+  preserves host regulatory selection rather than falsely forcing `BD`.
+- WPA3-SAE remains disabled, WPA2 remains supported, and mesh/roaming changes
+  from prior builds are retained.
 
-### What is not claimed
+## 1.0.9 — 2026-10-31 (unofficial community fix, not by the original author)
 
-- This cannot override an MDM/configuration-profile restriction. Apple documents
-  that a managed Mac may not allow this setting to be changed.
-- This release does not add an undocumented CARD_CAPABILITIES bit.
-- The dropdown becoming active and MAC changing correctly still require testing
-  on the user's macOS version and adapter.
-- WPA3-SAE remains disabled. Existing open Wi-Fi and WPA2 paths are preserved.
-- Country code is not forced to US or BD.
+Build identity `1.0.9-rtl88wifi-r20-20261031`. **Host tests only; no macOS
+kernel build or physical Wi-Fi test has been performed.** Details:
+[CHANGELOG-1.0.9.md](CHANGELOG-1.0.9.md).
 
-### Validation
-
-Host-side Python tests can verify source routing and the mode-state handler.
-A real Xcode/macOS kernel build, Skywalk callback confirmation, System Settings
-menu test, Off/Fixed/Rotating MAC transition test, and MDM-policy check remain
-necessary. Keep a bootable EFI backup before installing.
-
-## RTL88WiFi 1.0.10 — open association and Private Wi-Fi Address modes
-
-Build identity: `1.0.10-rtl88wifi-r21-20261031`. This is an unofficial
-community source update. The macOS kernel extension has not been built with
-Apple's Xcode kernel toolchain or tested on physical Wi-Fi hardware; host tests
-cover the changed decoder and PRIVATE_MAC handler only.
-
-### Changes
-
-- **Open-network association:** the newer 32-bit ASSOCIATE decoder now accepts
-  an empty key object whose embedded key-version is zero, as supplied for an
-  unsecured network. WPA2 still requires a version-1 key object and 32-byte
-  PMK. This addresses the observed host request that otherwise fell through
-  to the Ventura 16-bit parser and appeared as `lower=0, upper=1, ssidLen=0`.
-- **PRIVATE_MAC transport:** added a narrowly scoped 28-byte GET/SET bridge for
-  selector 238 on the primary interface where the restored family rejects the
-  selector before forwarding it to the controller. The split SET hook uses the
-  same validated payload handler.
-- **Private Wi-Fi Address modes:** Off restores the EFuse/permanent station
-  MAC; Fixed retains the host-supplied address or generates one if none is
-  supplied; Rotating generates a new locally administered unicast address at
-  the requested interval. Host-supplied unicast addresses are preserved as
-  supplied, matching Apple's reference behavior.
-- **Safe rotation:** changes are serialized through an IOKit workloop timer.
-  A rotation that expires during a scan, authentication, association or an
-  active link is deferred and retried rather than changing the station MAC
-  mid-session. The requested interval is range-checked before milliseconds
-  conversion.
-- **MAC privacy in logs:** the backend no longer prints every full station
-  address when programming it.
-- **Country code:** no country is forced or hardcoded. The driver continues to
-  use a valid regulatory country delivered by Apple80211 and reports the host
-  value; this release does not make macOS replace its currently reported `US`
-  with `BD`.
-- **Security:** WPA3-SAE remains disabled; WPA2 and eligible transition-mode
-  WPA2 fallback remain. This release does not implement OWE, SAE, PMF/BIP,
-  or 802.11k/v/r.
-
-### Validation
-
-- `test-assoc-wire.py`: host32 open/no-key version-0 decode, 22-byte SSID,
-  legacy misread reproduction, WPA2 and transition tests.
-- `test-private-mac.py`: 28-byte ABI, Off/Fixed/Rotating state, supplied and
-  generated addresses, interval bounds, pending workloop apply and source
-  bridge guards.
-- No macOS kernel compilation or over-the-air join validation was possible in
-  this build environment. Treat the archive as experimental and retain a
-  bootable EFI backup.
-
-## RTL88WiFi 1.0.9 — host association ABI and open-network fix
-
-Build identity: `1.0.9-rtl88wifi-r20-20261031`. This is an unofficial community
-source update, not an upstream release. It has not been built with Apple's
-macOS kernel SDK or verified against a physical access point in this
-environment.
-
-### Fixed / changed
-
-- **Decode the newer 32-bit host ASSOCIATE payload.** The macOS 15/26 restored
-  IO80211 path can pass a 32-bit field layout directly to the native
-  `apple80211Request` callback. The driver previously interpreted it as the
-  older Ventura structure, whose mode/auth fields are 16-bit. For an open
-  network this produced the observed false values `auth lower=0`,
-  `auth upper=1`, `SSID length=0`, causing the handler to reject the request
-  before it reached the open-system association code. The new path validates
-  the 108-byte common prefix with the existing strict `RTW88AssocWire` decoder,
-  translates it to the legacy internal structure, and then uses the existing
-  join path. The unknown request tail is not parsed.
-- **WPA3-SAE remains disabled.** SAE-only requests remain rejected. A transition
-  request may use the existing WPA2-PSK fallback only when WPA2-PSK is present
-  and the decoded request includes the expected PMK.
-- **Diagnostics are corrected.** A lower-auth value other than `1` is no longer
-  automatically labelled WPA3. An empty SSID and the exact `lower=0 / upper=1`
-  signature are reported as a possible 32-bit/16-bit ABI mismatch, not as proof
-  of SAE. Early-rejected association headers are logged with lengths and flags
-  only. The report now distinguishes a current result from a stale return value.
-- **Country behavior remains host-driven.** The driver has no forced US or BD
-  default. It continues to apply a valid country code supplied by Apple80211;
-  this release does not claim to correct a country code that macOS itself
-  reports as `US`.
-
-### Validation
-
-- Association wire decoder tests pass, including a regression reproducing the
-  exact `lower=0 / upper=1 / SSID length=0` misread and verifying that the
-  32-bit open request decodes to `lower=1 / upper=0 / SSID length=3`.
-- Join-report tests pass.
-- Roaming scan-policy source tests pass.
-- Apple-only tests requiring `xcrun`/Xcode could not run in the Linux build
-  environment. One unrelated test also hits a Linux `thread_t`/`NULL` type
-  incompatibility. The macOS kext build and hardware join test remain required.
-
-## RTL88WiFi 1.0.8 — open-network and WPA3-transition handling
-
-### Fixed
-
-- Corrected the Association Request Capability Information field. The old base value `0x0431` set the 802.11 Privacy bit even for open networks. Open joins now use `0x0421`; protected WPA2 joins use `0x0431`.
-- Made the WPA2 selection policy require the BSS Privacy capability bit. A stale RSN hint or an unexpected PMK can no longer turn a genuinely open BSS into a protected association.
-- Extended RSN AKM inspection to identify SAE/FT-SAE and the PMF Required (MFPR) bit.
-- Added WPA2-PSK fallback for WPA2/WPA3 transition BSSs only when the AP permits a non-PMF WPA2 association.
-- Rejects SAE-only or PMF-required networks clearly, because this driver does not yet implement SAE commit/confirm, PMF negotiation, or BIP management-frame keys.
-- Allows the known WPA2-PSK + WPA3-SAE transition auth mask through the newer host association bridge, while keeping SAE-only requests unsupported.
-
-### Security support status
-
-- Open: supported by the open-system authentication path; association Privacy bit is now clear.
-- WPA2-Personal (CCMP-PSK): supported by the existing PSK/4-way handshake path.
-- WPA2/WPA3 transition: WPA2-PSK fallback only, where PSK is advertised and PMF is optional.
-- WPA3-Personal (SAE-only): **not implemented**.
-- PMF-required networks: **not implemented; rejected deliberately**.
-
-This release does not claim full WPA3 support. Real WPA3-Personal needs a complete SAE exchange and PMF/BIP support, not just an RSN AKM flag.
-
-### Validation
-
-The host tests for association-wire parsing and join/security policy pass. The full macOS kernel extension build and hardware association tests still need to be run on macOS with Xcode and a supported PCIe adapter. Two unrelated host tests depend on Apple-only SDK facilities and cannot run in the Linux test container.
+- Decodes the newer 32-bit ASSOCIATE payload before it reaches the older
+  16-bit Ventura structure handler. This fixes the specific malformed open
+  join signature observed on hardware (`lower=0`, `upper=1`, `ssidLen=0`).
+- Keeps WPA3-SAE disabled, preserves WPA2-PSK fallback for eligible transition
+  requests, and corrects diagnostic interpretation so a non-open lower-auth
+  value alone is not misreported as SAE.
+- Records early association-header rejections and validates the freshness of
+  the reported join result, preventing an old successful WPA2 result from
+  being presented as the result of a newer failed attempt.
+- Country selection remains dynamic: no US or BD country is hardcoded. The
+  driver follows a valid country supplied by Apple80211; if macOS supplies US,
+  the driver reports and applies US rather than inventing BD.
 
 ## 1.0.7 — 2026-10-31 (unofficial community fix, not by the original author)
 

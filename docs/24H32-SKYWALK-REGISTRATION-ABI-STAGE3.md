@@ -1,6 +1,6 @@
 # Sequoia 15.8.1 (24H32) Skywalk registration ABI audit — Stage 3
 
-**Target:** macOS 15.8.1, Darwin build 24H32, Intel x86_64
+**Target:** macOS 15.8.1, Darwin build 24H32, Intel x86_64  
 **Purpose:** prevent the native WCL path from registering or publishing an
 interface using an unverified private Skywalk registration contract.
 
@@ -8,7 +8,7 @@ interface using an unverified private Skywalk registration contract.
 
 ### Facts recorded from the target machine's ABI archive review
 
-The ABI review for the archive in `shammu2bd/Realtek-WIFI-Native-macOS` records these target
+The ABI review for the archive in `shammu2bd/BDIX-TV` records these target
 facts: Darwin 24.6.0 / `xnu-11417.140.69.712.69`, x86_64, and the following
 class sizes / vtable spans:
 
