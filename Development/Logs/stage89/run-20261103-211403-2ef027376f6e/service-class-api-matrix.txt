@@ -1,0 +1,31 @@
+STAGE89_QUEUE_SERVICE_CLASS_API_MATRIX
+TARGET=macOS_15.8.1_24H32_x86_64
+BASE_GETTER_SIGNATURE=kern_packet_svc_class_t getServiceClass();
+BASE_MEMBER_DECLARATION=kern_packet_svc_class_t mServiceClass;
+TX_SUBMISSION_SERVICE_CLASS_FACTORY=static IOSkywalkTxSubmissionQueue * withPoolAndServiceClass( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+TX_COMPLETION_FACTORY=static IOSkywalkTxCompletionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxCompletionQueueAction action, void * refCon, IOOptionBits options );
+RX_SUBMISSION_FACTORY=static IOSkywalkRxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+RX_COMPLETION_FACTORY=static IOSkywalkRxCompletionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkRxCompletionQueueAction action, void * refCon, IOOptionBits options );
+CURRENT_SOURCE_TX_SUBMISSION_CALL=('withPool', '_txPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0')
+CURRENT_SOURCE_TX_COMPLETION_CALL=('withPool', '_txPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::txCompletionAction, this, 0')
+CURRENT_SOURCE_RX_SUBMISSION_CALL=('withPool', '_rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0), this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0')
+CURRENT_SOURCE_RX_COMPLETION_CALL=('withPool', '_rxPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0')
+CURRENT_SOURCE_RX_SUBMISSION_SERVICE_CLASS=0
+WMM_REQUIRED_VALUES=0x00100080,0x00000000,0x00380100,0x00400180
+IMPLEMENTATION_TRANSLATION_UNITS_SCANNED=18
+REGISTRATION_CALL_LIKE_HITS=NONE
+QUEUE=_txSubmission CLASS=IOSkywalkTxSubmissionQueue TYPECODE=1 FACTORY=withPool ARGUMENTS=_txPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0 RESULT=FOUND
+QUEUE=_txCompletion CLASS=IOSkywalkTxCompletionQueue TYPECODE=2 FACTORY=withPool ARGUMENTS=_txPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::txCompletionAction, this, 0 RESULT=FOUND
+QUEUE=_rxSubmission CLASS=IOSkywalkRxSubmissionQueue TYPECODE=3 FACTORY=withPool ARGUMENTS=_rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0), this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0 RESULT=FOUND
+QUEUE=_rxCompletion CLASS=IOSkywalkRxCompletionQueue TYPECODE=4 FACTORY=withPool ARGUMENTS=_rxPool, kQueueCapacity, 0, this, &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0 RESULT=FOUND
+CHECK=BASE_QUEUE_GET_SERVICE_CLASS_DECLARED RESULT=PASS
+CHECK=BASE_QUEUE_SERVICE_CLASS_MEMBER_DECLARED RESULT=PASS
+CHECK=TX_SUBMISSION_EXPLICIT_SERVICE_CLASS_FACTORY RESULT=PASS
+CHECK=TX_COMPLETION_FACTORY_HAS_NO_SERVICE_CLASS_PARAMETER RESULT=PASS
+CHECK=RX_SUBMISSION_EXPLICIT_SERVICE_CLASS_PARAMETER RESULT=PASS
+CHECK=RX_COMPLETION_FACTORY_HAS_NO_SERVICE_CLASS_PARAMETER RESULT=PASS
+CHECK=FOUR_QUEUE_FACTORIES_FOUND RESULT=PASS
+CHECK=TYPECODE_CROSSWALK_1_TO_4_REVALIDATED RESULT=PASS
+CHECK=WMM_TABLE_HAS_FOUR_DISTINCT_VALUES RESULT=PASS
+CHECK=NO_DIRECT_PRIVATE_SERVICE_CLASS_FIELD_WRITE RESULT=PASS
+CHECK=NO_NATIVE_REGISTRATION_CALL RESULT=PASS
