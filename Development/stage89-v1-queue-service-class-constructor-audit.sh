@@ -17,7 +17,7 @@ while i < len(lines):
             j += 1
         if j >= len(lines):
             raise SystemExit("ERROR: unterminated quoted Python here-document near line %d" % (i + 1))
-        blocks.append((i + 1, "\\n".join(lines[start:j])))
+        blocks.append((i + 1, "\n".join(lines[start:j])))
         i = j
     i += 1
 for line_no, source in blocks:
