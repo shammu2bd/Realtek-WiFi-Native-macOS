@@ -317,9 +317,13 @@ IOReturn RTW88WCLInfraInterface::disable(unsigned int options)
 SInt32 RTW88WCLInfraInterface::initBSDInterfaceParameters(
     ifnet_init_eparams *params, sockaddr_dl **address)
 {
-    (void)params;
-    (void)address;
-    return kIOReturnUnsupported;
+    /*
+     * Stage42 confirmed that the 24H32 IO80211InfraInterface implementation
+     * forwards to IO80211SkywalkInterface::initBSDInterfaceParameters().
+     * Use a qualified base call so this override does not recurse through
+     * virtual dispatch. Apple retains ownership of the BSD parameter setup.
+     */
+    return IO80211InfraInterface::initBSDInterfaceParameters(params, address);
 }
 
 IOReturn RTW88WCLInfraInterface::setMacAddress(ether_addr &address)
