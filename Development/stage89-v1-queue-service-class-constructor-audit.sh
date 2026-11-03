@@ -5,12 +5,13 @@ set -Eeuo pipefail
 
 # Parse every quoted Python here-document before touching the source tree or GitHub.
 python3 - "$0" <<'PY'
-import ast, pathlib, sys
+import ast, pathlib, re, sys
 lines = pathlib.Path(sys.argv[1]).read_text(errors="replace").splitlines()
 blocks = []
 i = 0
 while i < len(lines):
-    if "<<'PY'" in lines[i]:
+    if re.search(r"<<'PY'\s*$", lines[i]):
+
         start = i + 1
         j = start
         while j < len(lines) and lines[j] != "PY":
