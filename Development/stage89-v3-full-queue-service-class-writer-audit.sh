@@ -43,8 +43,10 @@ print(hashlib.sha1(b"blob "+str(len(b)).encode()+b"\0"+b).hexdigest())
 PY
 }
 pin(){
+ local actual
  curl -fsSLo "$OUT/$1" "$3"
- [[ "$(blob "$OUT/$1")" == "$2" ]] || fail "Pinned evidence mismatch: $1"
+ actual="$(blob "$OUT/$1")"
+ [[ "$actual" == "$2" ]] || fail "Pinned evidence mismatch: $1 | expected=$2 | actual=$actual | source=$3"
 }
 upload(){
  local f="$1" remote="$2" payload="$OUT/upload-payload.json" want put got
