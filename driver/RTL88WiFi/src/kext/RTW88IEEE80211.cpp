@@ -49,6 +49,13 @@ extern const struct rtw_chip_info rtw8821c_hw_spec;
 
 } /* extern "C" */
 
+/* Completion tokens are allocated with the compat slab allocator and must be
+ * released with its matching kfree() wrapper. */
+static void rtw88_release_skb_tx_completion_token(void *token)
+{
+    kfree(token);
+}
+
 #define IOLog rtw88_candidate_log
 
 /* ------------------------------------------------------------------ */
@@ -1236,6 +1243,18 @@ void RTW88IEEE80211::handleInterrupt()
 
 UInt32 RTW88IEEE80211::outputPacket(mbuf_t m)
 {
+    return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
+}
+
+UInt32 RTW88IEEE80211::outputPacketWithCompletion(
+    mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie)
+{
+    if (!m) {
+        if (callback)
+            callback(context, cookie, false);
+        return kIOReturnOutputDropped;
+    }
+
     /* Need an associated STA before data frames can be sent. */
     bool connected = (_state == RTW88_STATE_CONNECTED) ||
                      (_state == RTW88_STATE_SCANNING &&
@@ -1244,6 +1263,8 @@ UInt32 RTW88IEEE80211::outputPacket(mbuf_t m)
                        _manualScanOnHomeChannel));
     if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
         mbuf_freem(m);
+        if (callback)
+            callback(context, cookie, false);
         return kIOReturnOutputDropped;
     }
 
@@ -1255,13 +1276,19 @@ UInt32 RTW88IEEE80211::outputPacket(mbuf_t m)
             mbuf_copydata(m, 0, sizeof(eh), eh) != 0 ||
             (uint16_t)((eh[12] << 8) | eh[13]) != ETH_P_PAE) {
             mbuf_freem(m);
+            if (callback)
+                callback(context, cookie, false);
             return kIOReturnOutputDropped;
         }
     }
 
-    /* txDataFrame() encapsulates the Ethernet frame as an 802.11 data frame
-     * and consumes (frees) the mbuf in all paths. */
-    return txDataFrame(m) ? kIOReturnOutputSuccess : kIOReturnOutputDropped;
+    /* txDataFrame() consumes m in all paths. Once its skb is handed to rtw88,
+     * the completion callback follows that skb until either the PCI TX status
+     * callback or an early free/reset path reports its terminal outcome. */
+    const bool submitted = txDataFrame(m, callback, context, cookie);
+    if (!submitted && callback)
+        callback(context, cookie, false);
+    return submitted ? kIOReturnOutputSuccess : kIOReturnOutputDropped;
 }
 
 /* ------------------------------------------------------------------ */
@@ -1710,7 +1737,7 @@ void RTW88IEEE80211::processScanResult(struct sk_buff *skb)
     const bool ssidNamed = bss->ssid_len != 0;
     if (ssidNamed && (le16_to_cpu(hdr->frame_control) & 0x00f0) == 0x0080)
         bss->beacon_named = 1;
-    
+
     if (bss->channel == 0 && bss->freq) {
         int f = bss->freq;
         if (f == 2484)
@@ -2230,6 +2257,10 @@ void RTW88IEEE80211::reorderTimerFired(OSObject *owner, IOTimerEventSource *)
 void RTW88IEEE80211::txStatus(struct sk_buff *skb)
 {
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+    const bool transmitted =
+        (info->flags & (IEEE80211_TX_STAT_ACK |
+                        IEEE80211_TX_STAT_NOACK_TRANSMITTED)) != 0;
+    rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
     if (!(info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS))
         return;
 
@@ -2529,6 +2560,13 @@ void RTW88IEEE80211::scanDone(bool aborted)
         bzero(password, sizeof(password));
         if (joinRet != kIOReturnSuccess) failJoin("deferred-connect");
     }
+}
+
+IOReturn RTW88IEEE80211::cmdAbortScan()
+{
+    if (_state != RTW88_STATE_SCANNING)
+        return kIOReturnSuccess;
+    return abortActiveScan(true) ? kIOReturnSuccess : kIOReturnBusy;
 }
 
 IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
@@ -3577,6 +3615,12 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
             BSS_CHANGED_ASSOC | BSS_CHANGED_QOS);
     }
 
+    /* Notify WCL at the raw 802.11 association boundary. For the internal
+     * WPA2 path this precedes the four-way handshake; Connected is emitted
+     * only after M3 installs keys and the controlled port becomes usable. */
+    if (_delegate)
+        _delegate->rtw88Event(kRTW88EventAssocDone, nullptr);
+
     if (_wpa2 && !_externalSupplicant) {
         _state = RTW88_STATE_HANDSHAKING;
         IOLog("rtw88: WPA2 — waiting for EAPOL M1\n");
@@ -3604,17 +3648,19 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
         if (!_wpa2)
             startTxAggregation();
         _timer->cancelTimeout();
-        if (_externalSupplicant)
+        if (_externalSupplicant) {
             IOLog("rtw88: associated — Apple RSN active; waiting for PTK/GTK before link-up\n");
+        } else if (!_wpa2 && _delegate) {
+            /* Native WCL consumes a complete-connect event, not an external
+             * supplicant's raw association event. Open networks are ready as
+             * soon as the backend enters CONNECTED. */
+            _delegate->rtw88Event(kRTW88EventConnected, nullptr);
+        }
     }
 
-    /* External Apple-RSN mode needs ASSOC_DONE at raw 802.11 association so
-     * EAPOLController can take over.  The proven RTL8822BE path uses the
-     * internal rtw88 supplicant instead: there CoreWiFi is notified from
-     * RTL88WiFi::setLinkStatus() only after the controlled port is usable
-     * (open immediately, WPA2 after the 4-way handshake). */
-    if (_externalSupplicant && _delegate)
-        _delegate->rtw88Event(kRTW88EventAssocDone, nullptr);
+    /* The native WCL interface receives ASSOC_DONE above for both open and
+     * protected networks. The separate CONNECTED event follows when the
+     * controlled port is actually ready. */
 }
 
 bool RTW88IEEE80211::buildAuthReq(uint8_t *buf, uint32_t *len)
@@ -4265,6 +4311,8 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             _parent->setLinkStatus(kIONetworkLinkActive | kIONetworkLinkValid);
         if (!duplicate) startTxAggregation();   /* keys are installed — negotiate uplink A-MPDU */
         IOLog("rtw88: WPA2 connected! gtk_len=%u gtk_idx=%u\n", gtk_len, gtk_idx);
+        if (!_externalSupplicant && _delegate)
+            _delegate->rtw88Event(kRTW88EventConnected, nullptr);
     }
 }
 
@@ -4835,7 +4883,10 @@ void RTW88IEEE80211::deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
     _parent->injectRxAWDLFrame(m);
 }
 
-bool RTW88IEEE80211::txDataFrame(mbuf_t m)
+bool RTW88IEEE80211::txDataFrame(mbuf_t m,
+                                  RTW88TxCompletionCallback callback,
+                                  void *completionContext,
+                                  void *completionCookie)
 {
     if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta) {
         if (m) mbuf_freem(m);
@@ -4959,6 +5010,27 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m)
         info->flags |= IEEE80211_TX_CTL_REQ_TX_STATUS;
     if (protected_frame)
         info->control.hw_key = _ptkConf;
+
+    if (callback) {
+        struct rtw88_skb_tx_completion_token *token =
+            (struct rtw88_skb_tx_completion_token *)kzalloc(
+                sizeof(*token), GFP_ATOMIC);
+        if (!token) {
+            kfree_skb(skb);
+            mbuf_freem(m);
+            return false;
+        }
+        token->callback = callback;
+        token->release = rtw88_release_skb_tx_completion_token;
+        token->context = completionContext;
+        token->cookie = completionCookie;
+        if (!rtw88_skb_tx_completion_bind(&skb->tx_completion, token)) {
+            kfree(token);
+            kfree_skb(skb);
+            mbuf_freem(m);
+            return false;
+        }
+    }
 
     struct ieee80211_tx_control ctrl = { .sta = _sta };
     _hw->ops->tx(_hw, &ctrl, skb);
@@ -5091,7 +5163,7 @@ IOReturn RTW88IEEE80211::cmdGetState(struct RTW88StateResult *result)
     memcpy(result->ssid, _targetBSS.ssid, sizeof(result->ssid));
     memcpy(result->bssid, _targetBSS.bssid, sizeof(result->bssid));
     result->channel = _targetBSS.channel;
-    
+
     memcpy(result->mac_addr, _macAddr, 6);
 
     rtw88_get_fw_version(_rtwdev, &result->fw_version, &result->fw_sub_version);
@@ -5128,7 +5200,7 @@ IOReturn RTW88IEEE80211::cmdGetBSSList(uint8_t *buf, uint32_t *len)
         *len = 0;
         return kIOReturnSuccess;
     }
-    
+
     uint32_t written = 4; // reserve first 4 bytes for total length
 
     IOLockLock(_bssLock);

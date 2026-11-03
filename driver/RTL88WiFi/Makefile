@@ -337,9 +337,28 @@ AIRPORT_KEXT_SRCS := \
     $(KEXT_SRC)/RTL88WiFi.cpp \
     $(KEXT_SRC)/RTL88WiFiAWDL.cpp \
     $(KEXT_SRC)/RTW88AWDLManager.cpp \
-    $(KEXT_SRC)/RTL88WiFiInterface.cpp
+    $(KEXT_SRC)/RTL88WiFiInterface.cpp \
+    $(KEXT_SRC)/RTW88WCLRadioBridge.cpp \
+    $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
 
 AIRPORT_KEXT_OBJS := $(patsubst $(KEXT_SRC)/%.cpp, $(BUILD_DIR)/airport/%.o, $(AIRPORT_KEXT_SRCS))
+
+# Compile-only Sequoia 24H32 controller ABI slice. This object is deliberately
+# NOT linked into the legacy/bridge Kext: its IO80211Controller declaration has
+# a different vtable ABI from the legacy header used by the active target.
+WCL24H32_CONTROLLER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLController.cpp
+WCL24H32_CONTROLLER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLController.o
+WCL24H32_INFRA_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLInfraInterface.cpp
+WCL24H32_INFRA_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLInfraInterface.o
+WCL24H32_PCI_BACKEND_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.cpp
+WCL24H32_PCI_BACKEND_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLPCIBackend.o
+WCL24H32_SKYWALK_QUEUES_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.cpp
+WCL24H32_SKYWALK_QUEUES_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkQueues.o
+WCL24H32_TX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+WCL24H32_TX_ADAPTER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkTxAdapter.o
+WCL24H32_RX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
+WCL24H32_RX_ADAPTER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+WCL24H32_CXXFLAGS := $(KEXT_CXXFLAGS) -D__IO80211_TARGET=__MAC_15_2 -I$(KEXT_SRC)/wcl24h32
 
 AIRPORT_KMOD_OBJ := $(BUILD_DIR)/airport/kmod_info.o
 
@@ -350,8 +369,90 @@ AIRPORT_LDFLAGS := \
     $(MKSDK)/Library/x86_64/libkmod.a \
     -Xlinker -undefined -Xlinker dynamic_lookup
 
-.PHONY: rtl88wifi
-rtl88wifi: $(AIRPORT_OUT_BIN)
+.PHONY: rtl88wifi rtl88wifi-wcl-controller-abi-check wcl-abi-audit-24h32
+rtl88wifi: $(AIRPORT_OUT_BIN) rtl88wifi-wcl-controller-abi-check
+
+# Emit complete 24H32 registration/deregistration function bodies and their
+# Apple call paths directly to stdout. The user can append this report to the
+# one project-root output.log after the normal build for focused ABI review.
+ABI_ARCHIVE ?= $(HOME)/Downloads/RTL88WiFi-Sequoia-24H32-kcabi.tar.gz
+wcl-abi-audit-24h32:
+	@test -r "$(ABI_ARCHIVE)" || { echo "ERROR: ABI archive not readable: $(ABI_ARCHIVE)"; exit 2; }
+	@echo "  WCL-ABI AUDIT  Sequoia 24H32 registration and call paths"
+	python3 $(PROJ_ROOT)/../../tools/audit-skywalk-registration-24H32.py "$(ABI_ARCHIVE)" --full-registration-asm --stdout
+
+# Compile the native Sequoia 24H32 controller/interface and ABI-neutral PCI
+# owner independently. All objects stay out of AIRPORT_ALL_OBJS: the active
+# Kext still includes the legacy IO80211Controller declaration and must not
+# mix the incompatible ABI. The controller now owns the PCI backend and RTW88
+# state-machine object in a staged, fail-closed lifecycle.
+rtl88wifi-wcl-controller-abi-check: $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+
+$(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCL24H32InterfaceABI.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLMbufRing.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCL24H32ABI.hpp \
+    $(KEXT_SRC)/RTW88IEEE80211.hpp \
+    | $(BUILD_DIR)/wcl24h32
+	@echo "  WCL-ABI CXX  RTW88WCLController.cpp (24H32, bounded RX packet owner; compile-only)"
+	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+
+$(WCL24H32_INFRA_OBJ): $(WCL24H32_INFRA_SRC) \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLInfraInterface.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLRegistrationInfo.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLRequestDecoder.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCL24H32InterfaceABI.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
+    $(KEXT_SRC)/RTW88WCLRadioBridge.hpp \
+    $(KEXT_SRC)/RTW88WCLWorkQueue.hpp \
+    | $(BUILD_DIR)/wcl24h32
+	@echo "  WCL-ABI CXX  RTW88WCLInfraInterface.cpp (24H32, compile-only)"
+	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+
+$(WCL24H32_PCI_BACKEND_OBJ): $(WCL24H32_PCI_BACKEND_SRC) \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
+    $(KEXT_SRC)/RTW88IEEE80211.hpp \
+    $(KEXT_SRC)/../compat/rtw88_compat.h \
+    | $(BUILD_DIR)/wcl24h32
+	@echo "  WCL-ABI CXX  RTW88WCLPCIBackend.cpp (ABI-neutral, compile-only)"
+	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+
+$(WCL24H32_SKYWALK_QUEUES_OBJ): $(WCL24H32_SKYWALK_QUEUES_SRC) \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketView.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
+    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkFamily.h \
+    | $(BUILD_DIR)/wcl24h32
+	@echo "  WCL-ABI CXX  RTW88WCLSkywalkQueues.cpp (24H32, unregistered queues)"
+	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+
+$(WCL24H32_TX_ADAPTER_OBJ): $(WCL24H32_TX_ADAPTER_SRC) \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLTxCompletionSlots.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketView.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
+    $(KEXT_SRC)/RTW88IEEE80211.hpp \
+    | $(BUILD_DIR)/wcl24h32
+	@echo "  WCL-ABI CXX  RTW88WCLSkywalkTxAdapter.cpp (24H32, mbuf copy + deferred completion; compile-only)"
+	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+
+
+$(WCL24H32_RX_ADAPTER_OBJ): $(WCL24H32_RX_ADAPTER_SRC) \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLMbufRing.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
+    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkNetworkPacket.h \
+    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkMemorySegment.h \
+    | $(BUILD_DIR)/wcl24h32
+	@echo "  WCL-ABI CXX  RTW88WCLSkywalkRxAdapter.cpp (24H32, pool-backed RX conversion; compile-only)"
+	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/wcl24h32:
+	mkdir -p $@
 
 $(AIRPORT_OUT_BIN): $(AIRPORT_ALL_OBJS) $(AIRPORT_KEXT_SKEL)/Contents/Info.plist | $(AIRPORT_OUT_KEXT)/Contents/MacOS
 	@echo "  LD   $(notdir $@)"
@@ -375,7 +476,10 @@ $(AIRPORT_OUT_KEXT)/Contents/MacOS:
 	mkdir -p $@
 
 # Rebuild objects when one of their headers changes.
-DEPFILES = $(ALL_OBJS:.o=.d) $(AIRPORT_KEXT_OBJS:.o=.d) $(AIRPORT_KMOD_OBJ:.o=.d)
+DEPFILES = $(ALL_OBJS:.o=.d) $(AIRPORT_KEXT_OBJS:.o=.d) $(AIRPORT_KMOD_OBJ:.o=.d) \
+           $(WCL24H32_CONTROLLER_OBJ:.o=.d) $(WCL24H32_INFRA_OBJ:.o=.d) \
+           $(WCL24H32_PCI_BACKEND_OBJ:.o=.d) $(WCL24H32_SKYWALK_QUEUES_OBJ:.o=.d) \
+           $(WCL24H32_TX_ADAPTER_OBJ:.o=.d) $(WCL24H32_RX_ADAPTER_OBJ:.o=.d)
 -include $(DEPFILES)
 
 # Compiler flags and ABI macros in this file affect every object.

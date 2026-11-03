@@ -65,7 +65,7 @@ public:
     virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
 
     static IOSkywalkRxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );
-    virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options )
+    virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );
     virtual void free() APPLE_KEXT_OVERRIDE;
 
     void addReporters( IOService * target, OSSet * set );
@@ -91,12 +91,12 @@ protected:
     thread_call_t mRetryDequeueThread; // 224
     uint64_t _reserved0; // 232
     UInt32 mQueueId; // 240
-    UInt32 ; // 244
-    UInt32 ; // 248
-    UInt32 ; // 252
-    UInt32 ; // 256
-    UInt32 ; // 260
-    UInt32 ; // 264
+    UInt32 _reserved244; // 244
+    UInt32 _reserved248; // 248
+    UInt32 _reserved252; // 252
+    UInt32 _reserved256; // 256
+    UInt32 _reserved260; // 260
+    UInt32 _reserved264; // 264
     uint64_t _reserved1[2]; // 272
 };
 

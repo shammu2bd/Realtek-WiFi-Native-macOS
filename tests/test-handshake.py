@@ -53,9 +53,21 @@ struct Ops{decltype(&hardwareKey) set_key=hardwareKey;};
 struct HW{Ops*ops;};
 struct Timer{void wakeAtTime(uint64_t){} void cancelTimeout(){}};
 struct Parent{void setLinkStatus(unsigned){}};
+enum RTW88Event { kRTW88EventScanDone, kRTW88EventAssocDone, kRTW88EventDeauth,
+                  kRTW88EventDisconnected, kRTW88EventRSSIChanged, kRTW88EventConnected };
+struct RTW88EventDelegate { virtual void rtw88Event(RTW88Event, void*) = 0; };
+struct EventRecorder final : RTW88EventDelegate {
+ unsigned assoc=0, connected=0, disconnected=0;
+ void rtw88Event(RTW88Event e, void*) override {
+  if(e==kRTW88EventAssocDone) assoc++;
+  if(e==kRTW88EventConnected) connected++;
+  if(e==kRTW88EventDisconnected) disconnected++;
+ }
+};
 class RTW88IEEE80211{
 public:
  HW*_hw;void*_vif=nullptr,*_sta=nullptr;Timer*_timer;Parent*_parent;
+ RTW88EventDelegate *_delegate=nullptr; bool _externalSupplicant=false;
  uint8_t _pmk[32]={1},_ptk[64]={},_gtk[32]={},_anonce[32]={},_snonce[32]={},_replayCtr[8]={},_installedM3ReplayCtr[8]={},_ccmpTxPn[6]={},_macAddr[6]={1,2,3,4,5,6};
  ieee80211_key_conf *_ptkConf=nullptr,*_gtkConf=nullptr;
  bool _snonceValid=false,_m3KeysInstalled=false,_handshakePending=false,_associatedVisible=false,_eapolTxProtect=false;
@@ -93,12 +105,13 @@ int main(){
  const uint8_t wrapped[]={0x1f,0xa6,0x8b,0x0a,0x81,0x12,0xb4,0x47,0xae,0xf3,0x4b,0xd8,0xfb,0x5a,0x7b,0x82,0x9d,0x3e,0x86,0x23,0x71,0xd2,0xcf,0xe5};
  const uint8_t plain[]={0,0x11,0x22,0x33,0x44,0x55,0x66,0x77,0x88,0x99,0xaa,0xbb,0xcc,0xdd,0xee,0xff};
  uint8_t out[256];uint16_t outlen=0;assert(aes_unwrap_128(kek,wrapped,24,out,&outlen));assert(outlen==16&&memcmp(out,plain,16)==0);
- Ops ops;HW hw{&ops};Timer timer;Parent parent;RTW88IEEE80211 c;c._hw=&hw;c._timer=&timer;c._parent=&parent;
+ Ops ops;HW hw{&ops};Timer timer;Parent parent;EventRecorder events;
+ RTW88IEEE80211 c;c._hw=&hw;c._timer=&timer;c._parent=&parent;c._delegate=&events;
  uint8_t nonce[32];memset(nonce,42,32);
- auto m1=message(c,0x008a,1,nonce,false);c.handleEAPOL(m1.data(),m1.size());checkWire(c,2);
+ auto m1=message(c,0x008a,1,nonce,false);c.handleEAPOL(m1.data(),m1.size());checkWire(c,2);assert(events.connected==0);
  uint8_t snonce[32],ptk[64];memcpy(snonce,c._snonce,32);memcpy(ptk,c._ptk,64);
  c.handleEAPOL(m1.data(),m1.size());assert(randomCalls==1&&memcmp(snonce,c._snonce,32)==0&&memcmp(ptk,c._ptk,64)==0);checkWire(c,2);
- auto m3=message(c,0x03ca,2,nonce,true);c.handleEAPOL(m3.data(),m3.size());assert(installs==1&&c._state==5);checkWire(c,4);
+ auto m3=message(c,0x03ca,2,nonce,true);c.handleEAPOL(m3.data(),m3.size());assert(installs==1&&c._state==5&&events.connected==1);checkWire(c,4);
  c._ccmpTxPn[0]=77;
  c.handleEAPOL(m3.data(),m3.size());assert(installs==1&&c._ccmpTxPn[0]==77&&c.aggregationStarts==1);checkWire(c,4);
  auto newer=message(c,0x03ca,3,nonce,true);c.handleEAPOL(newer.data(),newer.size());assert(installs==1&&c._ccmpTxPn[0]==77);checkWire(c,4);

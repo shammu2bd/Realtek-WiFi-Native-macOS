@@ -1,6 +1,38 @@
 # Changelog
 
-## 1.0.11 — Private Wi-Fi Address Skywalk dispatch
+## Sequoia WCL development — Stage 12.1 (2026-11-01; ABI collector parser repair)
+
+- Accept exact Itanium mangled symbol tokens embedded in kcabi method-list rows.
+- Add class-owned `INDEX.txt` fallback when method lists contain no mangled tokens.
+- Preserve and identify temporary pass data when Stage 12 extraction fails.
+- Expand parser regression tests for inline symbols and index fallback.
+- No kext datapath or registration behavior changed.
+
+## Sequoia WCL development — Stage 12 (2026-11-01; ABI evidence collector)
+
+Adds a two-pass, read-only Sequoia 24H32 `kcabi` collector. It first reads
+method lists, then expands the disassembly reference to every exact method in
+`IOSkywalkPacketQueue`, `IOSkywalkPacketBufferPool`, `IOSkywalkQueueSet`, and
+`IOSkywalkLogicalLink`, preserving the existing registration ABI targets.
+Host tests validate symbol extraction and seed-reference preservation. No
+Skywalk queue/pool creation, ownership transfer, registration call, BSD
+publication, RX delivery, or TX completion is enabled. Details:
+[Stage 12 ABI notes](docs/24H32-SKYWALK-QUEUE-POOL-ABI-STAGE12.md).
+
+## Sequoia WCL development — Stage 11 (2026-11-01; compile-only)
+
+Adds persistent 8-byte-aligned `0x130`-byte opaque `RegistrationInfo` storage
+and a guarded builder that calls the audited 24H32 initializer before applying
+only the post-initializer writes observed in Apple's caller. Host C++/Python
+tests verify the storage, byte preservation, and fail-closed integration.
+
+The builder remains disconnected from `start()`. Registration calls, Skywalk
+queue activation, pool ownership transfer, BSD publication, RX delivery, TX
+completion, and radio start remain disabled. No macOS kernel build or runtime
+Wi-Fi validation is claimed. Details:
+[Stage 11 ABI notes](docs/24H32-SKYWALK-REGISTRATION-INFO-STAGE11.md).
+
+## RTL88WiFi 1.0.11 — Private Wi-Fi Address Skywalk dispatch
 
 Build identity: `1.0.11-rtl88wifi-r22-20261031`. This is an unofficial
 community source update. The macOS kernel extension has not been built with
@@ -8,7 +40,7 @@ Apple’s Xcode kernel toolchain or tested against the Settings UI on physical
 hardware. Host-side tests check selector dispatch structure and the existing
 Off/Fixed/Rotating state machine.
 
-## Changes
+### Changes
 
 - **Skywalk GET:** adds `apple80211_ioctl_get(IO80211SkywalkInterface *, void *)`
   and routes primary-interface selector 238 to the private-MAC GET handler.
@@ -22,7 +54,7 @@ Off/Fixed/Rotating state machine.
   `STA_PRIVATE_MAC_SET_SEEN`, `STA_PRIVATE_MAC_LAST_RET` and logs the exact
   ingress name without logging the MAC address.
 
-## Why this change
+### Why this change
 
 Version 1.0.10 had a 28-byte selector handler and a Legacy BSD ioctl bridge, but
 its source did not override the Skywalk split GET method and did not process
@@ -31,7 +63,7 @@ macOS request path unhandled. This release fills those missing hooks. It is a
 source-level diagnosis based on the available IO80211Controller SDK method
 signatures and the user’s report showing no PRIVATE_MAC GET/SET events.
 
-## What is not claimed
+### What is not claimed
 
 - This cannot override an MDM/configuration-profile restriction. Apple documents
   that a managed Mac may not allow this setting to be changed.
@@ -41,21 +73,21 @@ signatures and the user’s report showing no PRIVATE_MAC GET/SET events.
 - WPA3-SAE remains disabled. Existing open Wi-Fi and WPA2 paths are preserved.
 - Country code is not forced to US or BD.
 
-## Validation
+### Validation
 
 Host-side Python tests can verify source routing and the mode-state handler.
 A real Xcode/macOS kernel build, Skywalk callback confirmation, System Settings
 menu test, Off/Fixed/Rotating MAC transition test, and MDM-policy check remain
 necessary. Keep a bootable EFI backup before installing.
 
-## 1.0.10 — open association and Private Wi-Fi Address modes
+## RTL88WiFi 1.0.10 — open association and Private Wi-Fi Address modes
 
 Build identity: `1.0.10-rtl88wifi-r21-20261031`. This is an unofficial
 community source update. The macOS kernel extension has not been built with
 Apple's Xcode kernel toolchain or tested on physical Wi-Fi hardware; host tests
 cover the changed decoder and PRIVATE_MAC handler only.
 
-## Changes
+### Changes
 
 - **Open-network association:** the newer 32-bit ASSOCIATE decoder now accepts
   an empty key object whose embedded key-version is zero, as supplied for an
@@ -86,7 +118,7 @@ cover the changed decoder and PRIVATE_MAC handler only.
   WPA2 fallback remain. This release does not implement OWE, SAE, PMF/BIP,
   or 802.11k/v/r.
 
-## Validation
+### Validation
 
 - `test-assoc-wire.py`: host32 open/no-key version-0 decode, 22-byte SSID,
   legacy misread reproduction, WPA2 and transition tests.
@@ -97,14 +129,14 @@ cover the changed decoder and PRIVATE_MAC handler only.
   this build environment. Treat the archive as experimental and retain a
   bootable EFI backup.
 
-## 1.0.9 — host association ABI and open-network fix
+## RTL88WiFi 1.0.9 — host association ABI and open-network fix
 
 Build identity: `1.0.9-rtl88wifi-r20-20261031`. This is an unofficial community
 source update, not an upstream release. It has not been built with Apple's
 macOS kernel SDK or verified against a physical access point in this
 environment.
 
-## Fixed / changed
+### Fixed / changed
 
 - **Decode the newer 32-bit host ASSOCIATE payload.** The macOS 15/26 restored
   IO80211 path can pass a 32-bit field layout directly to the native
@@ -129,7 +161,7 @@ environment.
   this release does not claim to correct a country code that macOS itself
   reports as `US`.
 
-## Validation
+### Validation
 
 - Association wire decoder tests pass, including a regression reproducing the
   exact `lower=0 / upper=1 / SSID length=0` misread and verifying that the
@@ -140,9 +172,9 @@ environment.
   environment. One unrelated test also hits a Linux `thread_t`/`NULL` type
   incompatibility. The macOS kext build and hardware join test remain required.
 
-## 1.0.8 — open-network and WPA3-transition handling
+## RTL88WiFi 1.0.8 — open-network and WPA3-transition handling
 
-## Fixed
+### Fixed
 
 - Corrected the Association Request Capability Information field. The old base value `0x0431` set the 802.11 Privacy bit even for open networks. Open joins now use `0x0421`; protected WPA2 joins use `0x0431`.
 - Made the WPA2 selection policy require the BSS Privacy capability bit. A stale RSN hint or an unexpected PMK can no longer turn a genuinely open BSS into a protected association.
@@ -151,7 +183,7 @@ environment.
 - Rejects SAE-only or PMF-required networks clearly, because this driver does not yet implement SAE commit/confirm, PMF negotiation, or BIP management-frame keys.
 - Allows the known WPA2-PSK + WPA3-SAE transition auth mask through the newer host association bridge, while keeping SAE-only requests unsupported.
 
-## Security support status
+### Security support status
 
 - Open: supported by the open-system authentication path; association Privacy bit is now clear.
 - WPA2-Personal (CCMP-PSK): supported by the existing PSK/4-way handshake path.
@@ -161,7 +193,7 @@ environment.
 
 This release does not claim full WPA3 support. Real WPA3-Personal needs a complete SAE exchange and PMF/BIP support, not just an RSN AKM flag.
 
-## Validation
+### Validation
 
 The host tests for association-wire parsing and join/security policy pass. The full macOS kernel extension build and hardware association tests still need to be run on macOS with Xcode and a supported PCIe adapter. Two unrelated host tests depend on Apple-only SDK facilities and cannot run in the Linux test container.
 

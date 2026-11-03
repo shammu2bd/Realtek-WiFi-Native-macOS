@@ -9,6 +9,7 @@ travel with the source.
 RTL88WiFi is a derived work of GPL-2.0 licensed source:
 
 - the AirPort_RTW88 native IO80211 driver (source release of 2026-09, GPLv2);
+- the Sequoia 24H32 WCL ABI method/layout research documented by AirportRTW (GPLv2);
 - the rtw88 macOS port it was built on;
 - the Linux kernel `rtw88` driver, dual licensed GPL-2.0 OR BSD-3-Clause
   (`driver/rtw88-stable/COPYING`).

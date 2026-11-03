@@ -88,28 +88,28 @@ public:
     IOSkywalkPacketDirection getTransferDirection();
     bool clearTransferDirection( IOSkywalkPacketDirection direction );
 
-    void setSlotReference( void * ref );
-    void * getSlotReference();
     virtual UInt32 getPacketType();
     virtual kern_buflet_t acquireWithPacketHandle( kern_packet_t handle, IOOptionBits options );
     void cancelCompletionCallback();
     virtual void disposePacket();
 
 protected:
-    void *                      mReserved;      // 32
-    kern_packet_t               mPacketHandle;  // 40
-    IOSkywalkPacketBuffer    ** mPacketBuffers; // 48
-    IOSkywalkPacketQueue      * mSourceQueue;   // 56
-    IOSkywalkPacketBufferPool * mBufferPool;    // 64
-    kern_buflet_t               mBuflet;        // 72
+    void *                      mReserved;      // 32 (0x20)
+    kern_packet_t               mPacketHandle;  // 40 (0x28)
+    IOSkywalkPacketBuffer    ** mPacketBuffers; // 48 (0x30)
+    IOSkywalkPacketQueue      * mSourceQueue;   // 56 (0x38)
+    IOSkywalkPacketBufferPool * mBufferPool;    // 64 (0x40)
+    kern_buflet_t               mBuflet;        // 72 (0x48)
 
-    uint64_t                 _reserved0;         // 80
-    UInt32                   mPacketState;       // 88 - 0 on complete, 1 on acquire, 2 on prepare
-    UInt32                   mMaxNumBuffers;     // 92
-    UInt32                   mActualNumBuffers;  // 96
-    kern_packet_idx_t        mPacketIndex;       // 100
-    IOSkywalkPacketDirection mTransferDirection; // 104
-    void *                   mSlotReference;     // 112
+    uint64_t                 _reserved0;         // 80 (0x50)
+    UInt32                   mPacketState;       // 88 (0x58) - state access observed in 24H32
+    UInt32                   _unknownFlags;      // 92 (0x5c) - observed bit use; semantic name not confirmed
+    UInt32                   mMaxNumBuffers;     // 96 (0x60) - initialized from pool descriptor
+    UInt32                   mActualNumBuffers;  // 100 (0x64) - read by both 24H32 count methods
+    kern_packet_idx_t        mPacketIndex;       // 104 (0x68) - initialized from packet descriptor
+    IOSkywalkPacketDirection mTransferDirection; // 108 (0x6c) - set/get/clear in 24H32
+    // 24H32 IOSkywalkPacket instance size is 0x70; no member exists at 0x70.
+    // The older SDK slot-reference field/accessors are not in this build's class method list.
 };
 
 #endif

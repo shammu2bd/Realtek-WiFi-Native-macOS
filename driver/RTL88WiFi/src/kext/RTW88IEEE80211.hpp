@@ -40,6 +40,8 @@ enum RTW88Event {
     kRTW88EventDeauth,
     kRTW88EventDisconnected,
     kRTW88EventRSSIChanged,
+    /* Complete controlled-port transition (open association or WPA2 M3). */
+    kRTW88EventConnected,
 };
 
 class RTW88EventDelegate {
@@ -170,6 +172,9 @@ enum RTW88State {
 /* ------------------------------------------------------------------ */
 /*  RTW88IEEE80211                                                       */
 /* ------------------------------------------------------------------ */
+typedef void (*RTW88TxCompletionCallback)(void *context, void *cookie,
+                                           bool transmitted);
+
 class RTW88IEEE80211 : public OSObject {
 public:
     RTW88EventDelegate *_delegate = nullptr;
@@ -213,6 +218,12 @@ public:
     void      powerOff();    /* disable: rtw_core_stop */
     void      handleInterrupt();
     UInt32    outputPacket(mbuf_t m);
+    /* Optional hardware completion hook for native packet adapters. The
+     * callback may run in interrupt/teardown context and must only enqueue a
+     * bounded completion record; it must not call Skywalk directly. */
+    UInt32    outputPacketWithCompletion(mbuf_t m,
+                                         RTW88TxCompletionCallback callback,
+                                         void *context, void *cookie);
     bool      txRawManagementFrame(const uint8_t *frame, uint32_t len);
     /* Native AWDL Ethernet -> 802.11 direct data encapsulation. Consumes m. */
     bool      txAWDLDataFrame(mbuf_t m);
@@ -234,6 +245,9 @@ public:
      * Disconnected scans retain the normal full-channel discovery behavior. */
     IOReturn  cmdScan(const uint16_t *requestedChannels = nullptr,
                       uint32_t requestedCount = 0);
+    /* Native WCL scan-abort entry point. Uses the existing bounded abort
+     * primitive so scan and join state remain owned by the RTW88 backend. */
+    IOReturn  cmdAbortScan();
     IOReturn  cmdConnect(const char *ssid, const char *password, const uint8_t *pmk = nullptr,
                          const uint8_t *bssid = nullptr, bool externalSupplicant = false);
     IOReturn  cmdInstallExternalKey(bool pairwise, uint8_t keyidx, uint32_t cipher,
@@ -347,7 +361,10 @@ private:
     bool      txMgmtFrame(const uint8_t *frame, uint32_t len);
     bool      txNullFunc(bool powerSave);
     bool      txProbeRequest();
-    bool      txDataFrame(mbuf_t m);
+    bool      txDataFrame(mbuf_t m,
+                          RTW88TxCompletionCallback callback = nullptr,
+                          void *completionContext = nullptr,
+                          void *completionCookie = nullptr);
     bool      tryDeliverAWDLDataFrame(struct sk_buff *skb);
     void      deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
                                   uint16_t ethertype,

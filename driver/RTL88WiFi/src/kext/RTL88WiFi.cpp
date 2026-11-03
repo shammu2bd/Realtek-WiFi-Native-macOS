@@ -4052,6 +4052,11 @@ void RTL88WiFi::rtw88Event(RTW88Event ev, void *data)
         setProperty("STA_DISCONNECTED_EVENT", kOSBooleanTrue);
         _netif->postMessage(APPLE80211_M_LINK_CHANGED);
         break;
+    case kRTW88EventConnected:
+        // The legacy frontend already publishes connection readiness through
+        // setLinkStatus(). This backend event is consumed by the native WCL
+        // frontend, so deliberately do not post a duplicate legacy message.
+        break;
     case kRTW88EventRSSIChanged:   _netif->postMessage(APPLE80211_M_LINK_QUALITY); break;
     default: break;
     }

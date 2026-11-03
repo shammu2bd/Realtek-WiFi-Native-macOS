@@ -6,12 +6,13 @@ Wi-Fi menu, auto-joins and reconnects after sleep. SIP stays enabled, and no
 client app is needed.
 
 > [!IMPORTANT]
-> **Discontinued.** Development stopped after version 1.0.0. Version 1.0.1 is
-> a final maintenance release that only corrects what System Information
-> reports (transmit rate, noise, channel widths, supported channels); see
-> [CHANGELOG](CHANGELOG.md). The driver stays usable as is, but the
-> [remaining issues](#remaining-issues) will not be fixed. Keep a bootable EFI
-> backup on USB.
+> The original upstream legacy driver was marked discontinued after version 1.0.1.
+> This repository contains unofficial community source updates through 1.0.11 and
+> experimental native WCL porting work for macOS Sequoia 15.8.1 (24H32). Stage26
+> is source and ABI-audit work only, not a completed or hardware-validated native
+> WCL kext. Do not remove the legacy IO80211FamilyLegacy / IOSkywalkFamily
+> dependencies or the OpenCore Skywalk block when booting the existing legacy
+> kext. Keep a bootable EFI backup.
 
 > [!NOTE]
 > **This tree contains unofficial community source updates through 1.0.11.**
@@ -48,6 +49,28 @@ same card managed 7 Mbps and kept disconnecting.
 | Sequoia 15 / Tahoe 26 | 🟡 Same setup, needs reports |
 | Ventura 13.7.7–13.7.8 | 🟡 Add only `RTL88WiFi.kext` (no other kexts or Block entry), needs reports |
 | Monterey and older | ❌ |
+
+### Sequoia 15.8.1: native WCL port in progress
+
+The current 1.0.11 kext still targets the Ventura `IO80211FamilyLegacy` ABI.
+It must continue using its matching legacy networking stack until a new native
+WCL frontend is implemented and validated. Removing dependency keys or changing
+OpenCore entries alone will not make the current binary compatible with
+Sequoia's in-box Wi-Fi stack.
+
+The intended port keeps this project's Realtek firmware, PCI/DMA code, rate
+control, aggregation, and `RTW88IEEE80211` TX/RX backend. Only the Apple-facing
+Wi-Fi controller, WCL interface, and Skywalk packet/event integration are to be
+reworked. The target machine reported macOS 15.8.1 build 24H32.
+
+This workbench does not yet contain a completed native WCL kext. The exact
+macOS 15.8.1 / 24H32 / x86_64 ABI archive has now been received and reviewed;
+see [`docs/SEQUOIA-15.8.1-24H32-ABI-REVIEW.md`](docs/SEQUOIA-15.8.1-24H32-ABI-REVIEW.md)
+and the implementation plan in
+[`docs/SEQUOIA-15.8.1-24H32-WCL-PORT.md`](docs/SEQUOIA-15.8.1-24H32-WCL-PORT.md).
+The collection script remains available for a new capture after any OS update.
+Do not remove the current legacy OpenCore dependencies or Skywalk block while
+booting the existing 1.0.11 kext.
 
 PCIe only; USB and SDIO adapters are not supported. Confirmed machines are
 listed in [docs/COMPATIBILITY.md](docs/COMPATIBILITY.md).
@@ -156,7 +179,7 @@ Changes: [CHANGELOG.md](CHANGELOG.md).
 
 ## Status
 
-The original upstream project was marked discontinued. The 1.0.2–1.0.10
+The original upstream project was marked discontinued. The 1.0.2–1.0.11
 updates in this tree are unofficial community changes and are not supported by
 the original author. Contributions and hardware reports are welcome, but each
 new build needs its own macOS and access-point testing. The source is GPL-2.0.
@@ -166,3 +189,11 @@ Tested on an HP 15-da0003tu (i3-8130U), OpenCore 1.0.7, macOS 14.8.9.
 ## License
 
 GPL-2.0. See [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).
+
+### Sequoia 15.8.1 ABI collection helper
+
+For the native WCL porting work on macOS 15.8.1 (24H32), see
+`docs/SEQUOIA-15.8.1-24H32-WCL-PORT.md`. If the ABI collector reports
+`llvm-objdump not found`, install Homebrew LLVM 20 with `brew install llvm@20`;
+the updated helper auto-detects it. See
+`docs/LLVM-OBJDUMP-TROUBLESHOOTING.md`.

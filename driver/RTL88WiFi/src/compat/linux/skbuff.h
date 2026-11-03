@@ -5,6 +5,7 @@
 #include "types.h"
 #include "slab.h"
 #include "spinlock.h"
+#include "skbuff_tx_completion.h"
 #include <string.h>
 
 /*
@@ -37,6 +38,11 @@ struct sk_buff {
 
     /* Reference to mbuf for kext use */
     void       *mbuf_ref;
+
+    /* Optional native-WCL packet completion token. The callback is invoked
+     * once either when the PCI TX status arrives or when any path frees this
+     * skb before normal completion. It must be non-blocking/IRQ-safe. */
+    struct rtw88_skb_tx_completion tx_completion;
 };
 
 /* sk_buff_head — queue */
@@ -146,6 +152,11 @@ static inline struct sk_buff *netdev_alloc_skb_ip_align(void *dev, u32 size)
 static inline void kfree_skb(struct sk_buff *skb)
 {
     if (skb) {
+        /* A reset, queue purge or early TX rejection can free an skb without
+         * reaching txStatus(). Report that terminal outcome before memory is
+         * reclaimed; the atomic claim prevents a completion/free race from
+         * notifying the packet owner twice. */
+        rtw88_skb_tx_completion_report(&skb->tx_completion, false);
         kfree(skb->head);
         kfree(skb);
     }

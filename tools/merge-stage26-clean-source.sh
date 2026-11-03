@@ -109,7 +109,7 @@ for p in dst.rglob("*"):
     if p.name == "output.log" or p.suffix in (".pyc",".pyo"): continue
     try: old = p.read_text(encoding="utf-8")
     except (UnicodeDecodeError,OSError): continue
-    new = old.replace("shammu2bd/BDIX-TV","shammu2bd/Realtek-WIFI-Native-macOS")
+    new = old.replace("shammu2bd/Realtek-WIFI-Native-macOS","shammu2bd/Realtek-WIFI-Native-macOS")
     if new != old: p.write_text(new,encoding="utf-8"); refs += 1
 print("PASS: README and unified changelog")
 print("PASS: Old repository references updated:", refs)
