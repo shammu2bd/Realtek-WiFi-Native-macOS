@@ -118,3 +118,8 @@ Each future stage should append a compact entry to `Development/output.log` cont
 
 **Roadmap checkpoint:** 2026-11-03 — proposed next stage: **Stage 89 (Four-queue construction and registration-argument assembly)**.  
 **Current authorization:** `IMPLEMENTATION_AUTHORIZED=NO`; this roadmap itself does not authorize source activation, signing, installation, loading or OpenCore changes.
+
+
+## Stage 89 execution note — 2026-11-04
+
+The first Stage 89 pass is a read-only constructor ABI review before pointer-array implementation. Stage 88 established the four numeric WMM service-class values and the synchronous caller-array lifetime contract, but the current queue API headers expose explicit service-class constructor arguments only on TX submission and RX submission. TX completion and RX completion do not expose the same parameter. Therefore the target 24H32 `getServiceClass`, `withPool`, and `initWithPool` method bodies must be captured and reviewed before assigning the four values or materializing the array. Do not write directly to `mServiceClass` based only on a copied header layout. The Stage 89 V1 runner is `Development/stage89-v1-queue-service-class-constructor-audit.sh`; expected first-pass status is `REVIEW_REQUIRED` until method semantics have been reviewed. No registration, build, install, load, signing or OpenCore change is part of this first pass.
