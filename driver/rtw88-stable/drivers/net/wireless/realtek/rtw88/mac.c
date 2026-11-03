@@ -787,7 +787,7 @@ static int __rtw_download_firmware(struct rtw_dev *rtwdev,
 	struct rtw_backup_info bckp[DLFW_RESTORE_REG_NUM];
 	const u8 *data = fw->firmware->data;
 	u32 size = fw->firmware->size;
-	u32 ltecoex_bckp;
+	u32 ltecoex_bckp = 0;
 	int ret;
 
 	if (!check_firmware_size(data, size))
