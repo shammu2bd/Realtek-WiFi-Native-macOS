@@ -451,6 +451,55 @@ $(WCL24H32_RX_ADAPTER_OBJ): $(WCL24H32_RX_ADAPTER_SRC) \
 	@echo "  WCL-ABI CXX  RTW88WCLSkywalkRxAdapter.cpp (24H32, pool-backed RX conversion; compile-only)"
 	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
 
+# Stage29b: isolated native Sequoia target. The standard rtl88wifi target above
+# remains the working legacy bundle; this target is explicitly opt-in and never
+# links the legacy IO80211Controller/interface frontend objects.
+NATIVE_KEXT_SKEL := $(BUILD_DIR)/native-skeleton/RTL88WiFiNative.kext
+NATIVE_INFO_PLIST := $(NATIVE_KEXT_SKEL)/Contents/Info.plist
+NATIVE_OUT_KEXT := $(OUT_DIR)/RTL88WiFiNative.kext
+NATIVE_OUT_BIN := $(NATIVE_OUT_KEXT)/Contents/MacOS/RTL88WiFiNative
+NATIVE_CORE_OBJ_DIR := $(BUILD_DIR)/native
+NATIVE_PLIST_GENERATOR := $(PROJ_ROOT)/../../tools/generate-sequoia-native-plist.py
+NATIVE_CORE_HEADERS := $(wildcard $(KEXT_SRC)/*.hpp) $(wildcard $(KEXT_SRC)/wcl24h32/*.hpp)
+NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88HwOps.o RTW88WCLRadioBridge.o RTW88WCLWorkQueue.o)
+NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
+
+.PHONY: rtl88wifi-native native-plist
+rtl88wifi-native: $(NATIVE_OUT_BIN)
+
+# Resolve exact native Apple framework versions on the target 24H32 Mac. This
+# generated skeleton is kept under build/ and does not alter the legacy plist.
+native-plist: $(NATIVE_INFO_PLIST)
+
+$(BUILD_DIR)/native-skeleton:
+	mkdir -p $@
+
+$(NATIVE_INFO_PLIST): $(PROJ_ROOT)/RTL88WiFi.kext/Contents/Info.plist \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
+    $(NATIVE_PLIST_GENERATOR) | $(BUILD_DIR)/native-skeleton
+	@echo "  NATIVE PLIST  RTL88WiFiNative.kext (macOS 15.8.1 / 24H32)"
+	python3 $(NATIVE_PLIST_GENERATOR) --base-plist "$<" \
+	    --controller-header "$(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp" \
+	    --output "$@"
+
+$(NATIVE_CORE_OBJ_DIR):
+	mkdir -p $@
+
+$(NATIVE_CORE_OBJ_DIR)/%.o: $(KEXT_SRC)/%.cpp $(NATIVE_CORE_HEADERS) | $(NATIVE_CORE_OBJ_DIR)
+	@echo "  NATIVE CXX  $< (24H32 isolated RTW88 core object)"
+	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+
+$(NATIVE_OUT_KEXT)/Contents/MacOS:
+	mkdir -p $@
+
+$(NATIVE_OUT_BIN): $(NATIVE_ALL_OBJS) $(NATIVE_INFO_PLIST) | $(NATIVE_OUT_KEXT)/Contents/MacOS
+	@echo "  NATIVE LD   $(notdir $@)"
+	$(LD) $(NATIVE_LDFLAGS) -o $@ $(NATIVE_ALL_OBJS)
+	@echo "  NATIVE SYNC $(NATIVE_OUT_KEXT)"
+	rsync -a --exclude='MacOS' $(NATIVE_KEXT_SKEL)/ $(NATIVE_OUT_KEXT)/
+	@echo "  NATIVE OK   $(NATIVE_OUT_KEXT)"
+
 $(BUILD_DIR)/wcl24h32:
 	mkdir -p $@
 
