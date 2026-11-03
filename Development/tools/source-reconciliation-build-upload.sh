@@ -7,9 +7,9 @@ umask 077
 REPO="shammu2bd/Realtek-WiFi-Native-macOS"
 BRANCH="main"
 SOURCE_COMMIT="c2240b4d89f77314e023473b8c1ccfa042dbb565"
-PROJECT="\${PROJECT_DIR:-$HOME/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source}"
+PROJECT="${PROJECT_DIR:-$HOME/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source}"
 KEYCHAIN_SERVICE="realtek-wifi-native-macos-upload"
-RAW_BASE="https://raw.githubusercontent.com/\${REPO}/\${SOURCE_COMMIT}"
+RAW_BASE="https://raw.githubusercontent.com/${REPO}/${SOURCE_COMMIT}"
 
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 2; }
 
@@ -21,7 +21,7 @@ command -v python3 >/dev/null 2>&1 || die "python3 is required"
 command -v make >/dev/null 2>&1 || die "make is required"
 
 # Resolve GitHub authentication without printing or writing the token to a file.
-GH_UPLOAD_TOKEN="\${GH_TOKEN:-\${GITHUB_TOKEN:-}}"
+GH_UPLOAD_TOKEN="${GH_TOKEN:-${GITHUB_TOKEN:-}}"
 if [ -z "$GH_UPLOAD_TOKEN" ] && command -v gh >/dev/null 2>&1; then
   GH_UPLOAD_TOKEN="$(gh auth token 2>/dev/null || true)"
 fi
@@ -35,7 +35,7 @@ if [ -z "$GH_UPLOAD_TOKEN" ] && command -v git >/dev/null 2>&1; then
 fi
 if [ -z "$GH_UPLOAD_TOKEN" ]; then
   printf '%s\n' "No saved GitHub write credential was found."
-  printf '%s\n' "Enter a fine-grained GitHub token with Contents: Read and write access to \${REPO}."
+  printf '%s\n' "Enter a fine-grained GitHub token with Contents: Read and write access to ${REPO}."
   printf '%s' "Token (hidden; saved only in macOS Keychain): "
   IFS= read -r -s GH_UPLOAD_TOKEN < /dev/tty || true
   printf '\n'
@@ -48,7 +48,7 @@ fi
 STAMP="$(date -u '+%Y%m%dT%H%M%SZ')"
 UUID_PART="$(uuidgen 2>/dev/null | tr '[:upper:]' '[:lower:]' | cut -c1-12)"
 [ -n "$UUID_PART" ] || UUID_PART="$$"
-RUN_ID="run-\${STAMP}-\${UUID_PART}"
+RUN_ID="run-${STAMP}-${UUID_PART}"
 RUN_DIR="$PROJECT/run log/source-reconciliation/$RUN_ID"
 DOWNLOAD_DIR="$RUN_DIR/downloaded"
 BACKUP_DIR="$RUN_DIR/backup"
@@ -67,7 +67,7 @@ FILES=(
 printf 'RUN_ID: %s\nPROJECT: %s\nSOURCE_COMMIT: %s\n' "$RUN_ID" "$PROJECT" "$SOURCE_COMMIT" | tee "$RUN_DIR/run-metadata.txt"
 
 # Download every pinned source first. Do not partially replace the tree on a download failure.
-for REL in "\${FILES[@]}"; do
+for REL in "${FILES[@]}"; do
   DEST="$DOWNLOAD_DIR/$REL"
   mkdir -p "$(dirname "$DEST")" || die "Cannot create download folder for $REL"
   printf 'Downloading %s\n' "$REL"
@@ -76,7 +76,7 @@ for REL in "\${FILES[@]}"; do
 done
 
 # Back up the local originals, then apply the seven reconciled files.
-for REL in "\${FILES[@]}"; do
+for REL in "${FILES[@]}"; do
   LOCAL="$PROJECT/$REL"
   DOWNLOADED="$DOWNLOAD_DIR/$REL"
   mkdir -p "$(dirname "$LOCAL")" "$(dirname "$BACKUP_DIR/$REL")" || die "Cannot prepare path for $REL"
@@ -99,7 +99,7 @@ done
   echo "OPENCORE_CHANGE: NONE"
   echo
   echo "SHA256 OF SYNCHRONIZED FILES:"
-  for REL in "\${FILES[@]}"; do
+  for REL in "${FILES[@]}"; do
     shasum -a 256 "$PROJECT/$REL"
   done
 } > "$RUN_DIR/source-reconciliation.txt"
@@ -117,7 +117,7 @@ set +e
   echo "END_UTC: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
   exit "$RESULT"
 ) 2>&1 | tee "$BUILD_LOG"
-BUILD_STATUS=\${PIPESTATUS[0]}
+BUILD_STATUS=${PIPESTATUS[0]}
 set -e
 
 if [ "$BUILD_STATUS" -eq 0 ]; then
