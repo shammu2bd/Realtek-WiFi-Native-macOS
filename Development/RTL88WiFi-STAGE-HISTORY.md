@@ -208,3 +208,19 @@ Keep all new work fail-closed until those contracts are implemented and reviewed
 
 ---
 **Master history checkpoint: 2026-11-03 — last completed recorded stage: 88.**
+
+
+## Stage35X2 follow-up — compiler diagnostic spelling correction (2026-11-03)
+
+The combined native-target build for run `run-20261103T141742Z-1d68ac92-597` completed with exit code 0 and produced `build/out/RTL88WiFiNative.kext`. Review of its uploaded compiler log found that the scoped offset diagnostic suppression was not active: the source used `-Winvalidoffsetof`, while the compiler reports the diagnostic under `-Winvalid-offsetof`. The compiler consequently emitted an unknown-warning-option notice and retained the non-standard-layout offsetof warning (observed in both translation units that include the ABI header).
+
+- Evidence log: `Development/Logs/source-reconciliation/run-20261103T141742Z-1d68ac92-597/`
+- Build log SHA-256: `24a8e44f6a0bd078a89cfe1651a185ea1d1490926e64bca638fde5e151cf219d`
+- Original build: `PASS` (exit 0), but **not warning-clean**.
+- Correction: changed only the pragma spelling to `-Winvalid-offsetof`; hard `0x108` offset and `0x110` size assertions remain unchanged.
+- Correction commit: `7100f5a9e90ecff28942074625b6a5e745455b87`.
+- Follow-up native rebuild: **PENDING**.
+- Install/load/signing/OpenCore change: **NONE**.
+- Activation gate: **BLOCKED**; the four queue registration/callback handoffs remain incomplete.
+
+This follow-up corrects the source but does not treat the previous successful link as proof of a warning-clean build or a loadable/working driver.
