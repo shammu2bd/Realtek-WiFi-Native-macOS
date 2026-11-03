@@ -364,7 +364,7 @@ done
 python3 - "$OUT" <<'PY'
 import hashlib,pathlib,sys
 root=pathlib.Path(sys.argv[1])
-rows=["STAGE89_V3_MANIFEST","RUN="+root.name,"TARGET=15.8.1/24H32/x86_64","SOURCE_MODIFIED=NO","BUILD=NOT_RUN","INSTALL=NOT_RUN","LOAD=NOT_RUN","OPENCORE_CHANGE=NONE","ACTIVATION_GATE=BLOCKED"]
+rows=["STAGE89_V3C_MANIFEST","RUN="+root.name,"TARGET=15.8.1/24H32/x86_64","SOURCE_MODIFIED=NO","BUILD=NOT_RUN","INSTALL=NOT_RUN","LOAD=NOT_RUN","OPENCORE_CHANGE=NONE","ACTIVATION_GATE=BLOCKED"]
 for p in sorted(root.iterdir()):
  if p.is_file() and p.name not in {"manifest.txt","upload-payload.json","upload-response.json","output-preflight.json"}:
   rows.append("ARTIFACT|"+p.name+"|"+hashlib.sha1(b"blob "+str(p.stat().st_size).encode()+b"\0"+p.read_bytes()).hexdigest())
@@ -389,7 +389,7 @@ entry=(
 "STAGE89_V3C_RUN: "+run+"\n"
 "STAGE89_V3C_VERSION: STAGE89_V3C_20261104\n"
 "SOURCE_TREE_REVALIDATION: "+val("SOURCE_TREE_REVALIDATION")+"\n"
-"QUEUE_CLASS_METHODS_DISASSEMBLED: "+val("QUEUE_CLASS_METHODS_DISASSEMBLED")+"\n"
+"QUEUE_CLASS_EXECUTABLE_METHODS_DISASSEMBLED: "+val("QUEUE_CLASS_EXECUTABLE_METHODS_DISASSEMBLED")+"\n"
 "BASE_DEFAULT_SERVICE_CLASS: "+val("BASE_DEFAULT_SERVICE_CLASS")+"\n"
 "TX_SUBMISSION_CONSTRUCTED_GET_SERVICE_CLASS: "+val("TX_SUBMISSION_CONSTRUCTED_GET_SERVICE_CLASS")+"\n"
 "RX_SUBMISSION_GETTER_FIELD_AFTER_INIT: "+val("RX_SUBMISSION_GETTER_FIELD_AFTER_INIT")+"\n"
@@ -398,10 +398,10 @@ entry=(
 "QUEUE_CLASS_FIELD_WRITES: "+val("QUEUE_CLASS_FIELD_WRITES")+"\n"
 "UNEXPECTED_FIELD_WRITERS: "+val("UNEXPECTED_FIELD_WRITERS")+"\n"
 "FOUR_QUEUE_WMM_MAPPING: "+val("FOUR_QUEUE_WMM_MAPPING")+"\n"
-"STAGE89_V3_RESULT: "+val("RESULT")+"\n"
+"STAGE89_V3C_RESULT: "+val("RESULT")+"\n"
 "SOURCE_MODIFIED: NO | BUILD: NOT_RUN | INSTALL: NOT_RUN | LOAD: NOT_RUN | OPENCORE_CHANGE: NONE\n"
 "ACTIVATION_GATE: BLOCKED\n"
-"STAGE89_V3_LOGS: Development/Logs/stage89-v3/"+run+"/\n"
+"STAGE89_V3C_LOGS: Development/Logs/stage89-v3c/"+run+"/\n"
 "=========================================================================\n"
 )
 new=old.rstrip()+entry
