@@ -1,5 +1,9 @@
 # Host validation
 
+## Stage-specific host test artifacts
+
+The Stage 18 synthetic regression result is retained in [results/STAGE18-HOST-TEST-RESULTS.txt](results/STAGE18-HOST-TEST-RESULTS.txt). It is a host-side fixture result, not a target-Mac evidence dossier and not permission to activate the native datapath.
+
 These ten suites exercise the actual driver functions with host substitutes
 for kernel/hardware services, using ASan/UBSan. They cover firmware bounds,
 HT/VHT peer capabilities, station lifetime, diagnostic buffers, WPA2
@@ -70,10 +74,10 @@ python3 tests/test-wcl-registration-abi-extractor-stage8.py
 ```
 
 On the target Sequoia 24H32 Mac, append complete registration and caller
-function disassemblies to the project-root `output.log` with:
+function disassemblies to the canonical `Development/output.log` with:
 
 ```sh
-make wcl-abi-audit-24h32 2>&1 | tee -a ../../output.log
+make wcl-abi-audit-24h32 2>&1 | tee -a ../../Development/output.log
 ```
 
 
@@ -92,7 +96,7 @@ bash -n tools/collect-sequoia-abi-24H32-stage12.sh
 Run the actual collector only on macOS Sequoia 15.8.1 / Darwin 24H32 x86_64:
 
 ```sh
-tools/collect-sequoia-abi-24H32-stage12.sh build/sequoia-abi-24H32-stage12 2>&1 | tee output.log
+tools/collect-sequoia-abi-24H32-stage12.sh build/sequoia-abi-24H32-stage12 2>&1 | tee Development/output.log
 ```
 
 This stage gathers queue/pool lifecycle evidence only. It does not implement or
