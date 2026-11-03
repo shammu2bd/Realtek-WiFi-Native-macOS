@@ -3,7 +3,7 @@
 # READ ONLY: no source edits, build, signing, install/load, SIP/NVRAM or OpenCore changes.
 set -Eeuo pipefail
 REPO="shammu2bd/Realtek-WiFi-Native-macOS"
-ROOT="$HOME/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source"
+ROOT="$HOME/Downloads/Realtek-WiFi-Native-macOS-Main (Local)"
 SRC="$ROOT/driver/RTL88WiFi"
 BOOTKC="/System/Library/KernelCollections/BootKernelExtensions.kc"
 RUN="run-$(date -u '+%Y%m%d-%H%M%S')-$(python3 -c 'import secrets;print(secrets.token_hex(6))')"
@@ -225,7 +225,7 @@ checks={
 "RX_SUBMISSION_EXPLICIT_SERVICE_CLASS_PARAMETER":"kern_packet_svc_class_t serviceClass" in rxs,
 "RX_COMPLETION_FACTORY_HAS_NO_SERVICE_CLASS_PARAMETER":"withPool(" in rxc and "kern_packet_svc_class_t serviceClass" not in rxc,
 "FOUR_QUEUE_FACTORIES_FOUND":all(calls[x] is not None for x,_,_ in roles),
-"TYPECODE_CROSSWALK_1_TO_4_REVALIDATED":all(x in cross for x in ["TYPE_CODE=1 TX submission","TYPE_CODE=2 TX completion","TYPE_CODE=3 RX submission","TYPE_CODE=4 RX completion"]),
+"TYPECODE_CROSSWALK_1_TO_4_REVALIDATED":all(x in cross for x in ["TYPECODE_1=IOSkywalkTxSubmissionQueue","TYPECODE_2=IOSkywalkTxCompletionQueue","TYPECODE_3=IOSkywalkRxSubmissionQueue","TYPECODE_4=IOSkywalkRxCompletionQueue"]),
 "WMM_TABLE_HAS_FOUR_DISTINCT_VALUES":len(values)==4 and len(set(values))==4,
 "NO_DIRECT_PRIVATE_SERVICE_CLASS_FIELD_WRITE":not bool(re.search(r"(?:->|\.)\s*mServiceClass\s*=",cpp+hpp)),
 "NO_NATIVE_REGISTRATION_CALL":len(registration_hits)==0,
@@ -244,7 +244,7 @@ lines=[
 "CURRENT_SOURCE_RX_SUBMISSION_CALL="+str(calls["_rxSubmission"]),
 "CURRENT_SOURCE_RX_COMPLETION_CALL="+str(calls["_rxCompletion"]),
 "CURRENT_SOURCE_RX_SUBMISSION_SERVICE_CLASS="+(re.search(r"static_cast<kern_packet_svc_class_t>\(([^)]+)\)",calls["_rxSubmission"][1]).group(1) if calls["_rxSubmission"] and re.search(r"static_cast<kern_packet_svc_class_t>\(([^)]+)\)",calls["_rxSubmission"][1]) else "NOT_FOUND"),
-"WMM_REQUIRED_VALUES="+(",".join(values) if len(values)==4 else "UNRESOLVED")]
+"WMM_REQUIRED_VALUES="+(",".join(values) if len(values)==4 else "UNRESOLVED"),
 "IMPLEMENTATION_TRANSLATION_UNITS_SCANNED="+str(len(translation_units)),
 "REGISTRATION_CALL_LIKE_HITS="+(";".join(registration_hits) if registration_hits else "NONE")]
 lines.extend(call_rows)
