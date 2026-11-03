@@ -291,7 +291,6 @@ def publish_report(token: str, run_id: str, report: str):
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=pathlib.Path, default=DEFAULT_ROOT)
-    parser.add_argument("--dry-run", action="store_true", help="Report differences without uploading.")
     args = parser.parse_args()
 
     root = args.root.expanduser().resolve()
@@ -312,9 +311,7 @@ def main() -> int:
     print("LOCAL_SOURCE_FILES: " + str(len(local_files)))
     print("SKIPPED_LOCAL_ITEMS: " + str(len(skipped)))
 
-    token = None if args.dry_run else get_token()
-    if args.dry_run:
-        raise SyncError("--dry-run is a local inventory only; use the normal command for the authenticated GitHub comparison and sync.")
+    token = get_token()
 
     head_sha = get_branch_head(token)
     base_tree, remote_files = get_tree(token, head_sha)
