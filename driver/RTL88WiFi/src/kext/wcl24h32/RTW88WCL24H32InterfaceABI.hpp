@@ -450,7 +450,13 @@ public:
     ExpansionData *mExpansionData2;
 };
 static_assert(sizeof(IOSkywalkEthernetInterface) == 0x110, "24H32 IOSkywalkEthernetInterface ABI");
+// This kernel ABI class is polymorphic and therefore not standard-layout.
+// Clang implements offsetof here as an ABI extension; keep the hard 24H32
+// offset assertion, but scope the expected diagnostic to this assertion only.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Winvalidoffsetof"
 static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
+#pragma clang diagnostic pop
 
 struct TxPacketRequest {
     uint16_t unk1, t, mU, mM, pkt_cnt, unk2, unk3, unk4;
