@@ -790,3 +790,37 @@ MASTER_HISTORY_FILE: Development/RTL88WiFi-STAGE-HISTORY.md
 MASTER_HISTORY_BLOB_SHA: 8fdee038b232c3636291a0668517b1377464ea49
 NOTES: Roadmap is a proposed plan only. No source activation, signing, install/load or OpenCore change is authorized by publication.
 ====================================================================
+
+ 
+========== SOURCE BASELINE RECONCILIATION — PRE-STAGE89 ==========
+DATE: 2026-11-03
+MAIN_REPOSITORY: shammu2bd/Realtek-WiFi-Native-macOS
+SCOPE: compare current Stage26 import with retained Stage29b / Stage35T / Stage35V / Stage43 source patches and target build evidence
+STAGE29B_NATIVE_TARGET: RESTORED — explicit rtl88wifi-native target; default legacy rtl88wifi recipe unchanged
+NATIVE_PLIST_GENERATOR: ADDED — exact 15.8.1 / 24H32 / x86_64 guard; framework versions resolved from target Mac; generated plist stays under build/
+STAGE35T_SOURCE_FIXES: RESTORED — mac.c ltecoex_bckp=0; pci.c DBI flag=0; pci.c MDIO wflag=0
+STAGE35V_SOURCE_FIX: RESTORED — tx.h checksum helper uses memcpy and aligned locals for unaligned buffers
+STAGE43_SOURCE_FIX: RESTORED — qualified IO80211InfraInterface::initBSDInterfaceParameters base forwarding
+LIVE_GITHUB_SOURCE_CHECKS: PASS
+PREVIOUS_TARGET_BUILD_EVIDENCE: Stage35T EXIT=0; Stage35V EXIT=0; Stage43 PASS (individual historical revisions)
+COMBINED_CURRENT_MAIN_BUILD: NOT_RUN — requires user's macOS 15.8.1 / 24H32 / x86_64 + Xcode 16.4
+NATIVE_PLIST_GENERATOR_EXECUTION: NOT_RUN_IN_THIS_ENVIRONMENT
+LEGACY_TARGET_DEFAULT_AND_RECIPE: PRESERVED
+INSTALL: NOT_RUN | LOAD: NOT_RUN | CODESIGN: NOT_RUN | RADIO_START: NOT_RUN | OPENCORE_CHANGE: NONE
+FOUR_QUEUE_POINTER_ARRAY: NOT_IMPLEMENTED
+NATIVE_REGISTRATION_CALL: NOT_IMPLEMENTED
+TX_SUBMISSION_HANDOFF: INCOMPLETE
+TX_COMPLETION_HANDOFF: INCOMPLETE
+RX_REFILL_HANDOFF: INCOMPLETE
+RX_NETWORK_DELIVERY_HANDOFF: INCOMPLETE
+IMPLEMENTATION_AUTHORIZED: NO
+ACTIVATION_GATE: BLOCKED
+NEXT_ROADMAP_STAGE: 89 — FOUR-QUEUE CONSTRUCTION / REGISTRATION-ARGUMENT ASSEMBLY
+RECONCILIATION_COMMITS:
+- Stage43 BSD forwarding: c7128cad6c9c315959f4e63eb300a4bb89baf98c
+- Stage35T mac.c initializer: 356125cee16295675cf414429d40fa3f85a6f0f6
+- Stage35T pci.c initializers: 90352822786118f50665e267208b4018c6772f46
+- Stage35V tx.h checksum: 88507ff5d8e0158e9b79b0e3ec6de6e5f2232ab6
+- Native plist generator: a6e67eae8453d7525a658248ecd04c9bd66ff4a7
+- Native Makefile target: b2049a7f6c3279354e6ffc03e4304b522a668c8f
+==============================================================
