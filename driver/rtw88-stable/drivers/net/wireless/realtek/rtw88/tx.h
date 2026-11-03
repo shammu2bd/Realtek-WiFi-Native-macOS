@@ -119,16 +119,24 @@ static inline
 void fill_txdesc_checksum_common(u8 *txdesc, size_t words)
 {
 	__le16 chksum = 0;
-	__le16 *data = (__le16 *)(txdesc);
-	struct rtw_tx_desc *tx_desc = (struct rtw_tx_desc *)txdesc;
+	u8 *checksum_ptr = txdesc + (7 * sizeof(__le32));
+	__le32 checksum_word;
 
-	le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+	memcpy(&checksum_word, checksum_ptr, sizeof(checksum_word));
+	le32p_replace_bits(&checksum_word, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+	memcpy(checksum_ptr, &checksum_word, sizeof(checksum_word));
 
-	while (words--)
-		chksum ^= *data++;
+	while (words--) {
+		__le16 data;
+		memcpy(&data, txdesc, sizeof(data));
+		chksum ^= data;
+		txdesc += sizeof(data);
+	}
 
-	le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+	memcpy(&checksum_word, checksum_ptr, sizeof(checksum_word));
+	le32p_replace_bits(&checksum_word, __le16_to_cpu(chksum),
 			   RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+	memcpy(checksum_ptr, &checksum_word, sizeof(checksum_word));
 }
 
 static inline void rtw_tx_fill_txdesc_checksum(struct rtw_dev *rtwdev,
