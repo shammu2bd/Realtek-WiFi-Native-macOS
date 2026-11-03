@@ -1,0 +1,16 @@
+STAGE51_CONTROLLER_INTERFACE_LIFECYCLE_MATRIX
+PRESENT means a target token/reference appears inside the specified exact method body.
+ABSENT means no such direct body edge was found in the scanned source. It is not proof that no indirect path exists.
+controller start -> constructs native infra interface: ABSENT
+controller start -> calls infra attachRadio: ABSENT
+controller start -> installs primary Skywalk interface: ABSENT
+controller start -> prepares/starts infra interface: ABSENT
+infra start -> controller binding or PCI backend startup: ABSENT
+infra init -> superclass IO80211 Skywalk init: PRESENT
+infra free/stop -> detachRadio: PRESENT
+controller start -> creates queue owner: PRESENT
+controller start -> creates RX adapter: PRESENT
+controller stop -> releaseNativeResources: PRESENT
+interface registration-preparation routine is invoked from lifecycle: ABSENT
+INFRA_INTERFACE_METHODS=attachRadio,bpfTap,clearRegistrationInfo,detachRadio,disable,enable,free,getAssocState,getCHANNEL,getController,getHardwareAddress,getHardwareAssists,getRSSI,getSUPPORTED_CHANNELS,handleRTW88WCLRadioEvent,hwConfigNicProxyData,init,initBSDInterfaceParameters,isChipInterfaceReady,isDebounceOnGoing,linkState,maybePublishConnected,postConnectionComplete,postWCLMessage,prepareRegistrationInfo,publishScanResults,scanResultMatches,setCIPHER_KEY,setCLEAR_PMKSA_CACHE,setHardwareAddress,setLinkState,setMacAddress,setWCL_ASSOCIATE,setWCL_JOIN_ABORT,setWCL_LEAVE_NETWORK,setWCL_LINK_STATE_UPDATE,setWCL_LINK_UP_DONE,setWCL_SCAN_ABORT,setWCL_SCAN_REQ,start,stop
+CONTROLLER_METHODS=activatePacketPath,allocateInputPacket,bindRadioBackend,createWorkLoop,enterPacketPath,free,getCARD_CAPABILITIES,getCOUNTRY_CODE,getDRIVER_VERSION,getFaultReporterFromDriver,getHARDWARE_VERSION,getLogger,getPOWER,getRxWorkLoop,getWorkLoop,handleCardSpecific,init,injectRxFrame,isCommandProhibited,leavePacketPath,outputPacket,quiescePacketPath,recycleStagedRxPackets,releaseNativeResources,rtw88Event,rtw88WCLResumeTransmit,setCOUNTRY_CODE,setGET_DEBUG_INFO,setLinkStatus,setPOWER,stagedRxFrame,start,stop,unbindRadioBackend

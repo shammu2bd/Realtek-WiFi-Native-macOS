@@ -1,0 +1,11 @@
+STAGE60_QUEUESET_CALLSITE_TO_CXX_MEMBER_SIGNATURE
+CALLSITE_COUNT=2
+CALL_ARGS=RDI:this, RSI:command(0x10000), RDX:data pointer, RCX:dataSize(0x10)
+SDK_PROTOTYPE=performCommand(UInt32 command, void * data, size_t dataSize)
+RESOLUTION=[vptr+0x218] maps to _ZTV+0x228 / KC index 69 after the 0x10-byte prefix
+LIMIT=private semantic meaning of command 0x10000 and its 16-byte payload is not inferred
+TARGET class=IOSkywalkPacketQueue address=0xffffff8002980c5a owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN20IOSkywalkPacketQueue14performCommandEjPvm
+TARGET class=IOSkywalkTxSubmissionQueue address=0xffffff8002984f90 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN26IOSkywalkTxSubmissionQueue14performCommandEjPvm
+TARGET class=IOSkywalkTxCompletionQueue address=0xffffff800298a276 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN26IOSkywalkTxCompletionQueue14performCommandEjPvm
+TARGET class=IOSkywalkRxSubmissionQueue address=0xffffff8002985dba owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN26IOSkywalkRxSubmissionQueue14performCommandEjPvm
+TARGET class=IOSkywalkRxCompletionQueue address=0xffffff8002986b24 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN26IOSkywalkRxCompletionQueue14performCommandEjPvm

@@ -1,0 +1,467 @@
+STAGE82_REGISTRATION_WRAPPER_ABI_ARGUMENT_FLOW
+TARGET=macOS_15.8.1_24H32_x86_64
+METHOD_EVIDENCE=Stage79 pinned Apple 24H32 disassembly
+
+===== INFRA RELEVANT INSTRUCTIONS =====
+push	rbp
+mov	rbp, rsp
+push	r15
+push	r14
+push	r13
+push	r12
+push	rbx
+sub	rsp, 0x58
+mov	r12, r9
+mov	r15d, ecx
+mov	r13, rsi
+mov	rbx, rdi
+test	rsi, rsi
+mov	qword ptr [rbp - 0x80], r8
+mov	qword ptr [rbp - 0x78], rdx
+je	0xffffff80022dd14a <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x17c>
+mov	rax, qword ptr [rbx + 0x118]
+cmp	byte ptr [rax + 0x3c60], 0x0
+je	0xffffff80022dd14a <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x17c>
+mov	rax, qword ptr [rbx + 0x110]
+cmp	dword ptr [rax + 0x58], 0x1
+jne	0xffffff80022dd14a <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x17c>
+mov	rax, qword ptr [rbx]
+mov	rdi, rbx
+call	qword ptr [rax + 0xcf0]
+movabs	r14, 0xffffffffffff
+and	r14, rax
+mov	rcx, rax
+mov	qword ptr [rbp - 0x60], rax
+mov	rax, r14
+shr	rax, 0x8
+mov	rdx, rax
+mov	qword ptr [rbp - 0x58], rax
+mov	rax, r14
+shr	rax, 0x10
+mov	rdi, rax
+mov	qword ptr [rbp - 0x50], rax
+mov	rax, r14
+shr	rax, 0x18
+mov	r11, rax
+mov	qword ptr [rbp - 0x40], rax
+mov	rax, r14
+shr	rax, 0x20
+mov	r10, rax
+mov	qword ptr [rbp - 0x38], rax
+shr	r14, 0x28
+movzx	esi, byte ptr [r13 + 0x108]
+mov	eax, 0xff
+and	ecx, eax
+mov	qword ptr [rbp - 0x48], rcx
+mov	qword ptr [rbp - 0x68], r12
+mov	r12d, edx
+and	r12d, eax
+mov	qword ptr [rbp - 0x70], r15
+mov	r15d, edi
+and	r15d, eax
+and	r11d, eax
+and	r10d, eax
+movzx	edx, byte ptr [r13 + 0x109]
+movzx	ecx, byte ptr [r13 + 0x10a]
+movzx	r8d, byte ptr [r13 + 0x10b]
+movzx	r9d, byte ptr [r13 + 0x10c]
+movzx	eax, byte ptr [r13 + 0x10d]
+mov	qword ptr [rbp - 0x30], rax
+sub	rsp, 0x8
+lea	rdi, [rip + 0xbe26d] ## 0xffffff800239b34e <___FUNCTION__._ZN21IO80211InfraInterface12setLQMConfigEP23apple80211_lqm_config_t+0x213>
+xor	eax, eax
+push	r14
+push	r10
+push	r11
+push	r15
+mov	r15, qword ptr [rbp - 0x70]
+push	r12
+mov	r12, qword ptr [rbp - 0x68]
+push	qword ptr [rbp - 0x48]
+push	qword ptr [rbp - 0x30]
+call	0xffffff8000ab6560 <_vsnprintf+0xffffff8000ab6560>
+mov	rdx, qword ptr [rbp - 0x78]
+mov	r8, qword ptr [rbp - 0x80]
+add	rsp, 0x40
+mov	rax, qword ptr [rbp - 0x60]
+mov	byte ptr [r13 + 0x108], al
+mov	rax, qword ptr [rbp - 0x58]
+mov	byte ptr [r13 + 0x109], al
+mov	rax, qword ptr [rbp - 0x50]
+mov	byte ptr [r13 + 0x10a], al
+mov	rax, qword ptr [rbp - 0x40]
+mov	byte ptr [r13 + 0x10b], al
+mov	rax, qword ptr [rbp - 0x38]
+mov	byte ptr [r13 + 0x10c], al
+mov	byte ptr [r13 + 0x10d], r14b
+sub	rsp, 0x8
+mov	rdi, rbx
+mov	rsi, r13
+mov	ecx, r15d
+mov	r9, r12
+push	0x0
+call	0xffffff8002988078 <__ZZN20IO80211P2PSupervisor4freeEvE20kalloc_type_view_181+0x581cf8>
+add	rsp, 0x10
+mov	r14d, eax
+mov	rax, qword ptr [rbx]
+mov	rdi, rbx
+call	qword ptr [rax + 0xd08]
+test	rax, rax
+je	0xffffff80022dd196 <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x1c8>
+mov	rax, qword ptr [rbx]
+mov	rdi, rbx
+call	qword ptr [rax + 0xd08]
+mov	rdi, rax
+mov	esi, 0x1
+call	0xffffff80031d421c <__ZZN20IO80211P2PSupervisor4freeEvE20kalloc_type_view_181+0xdcde9c>
+test	al, al
+jne	0xffffff80022dd1a8 <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x1da>
+mov	eax, r14d
+add	rsp, 0x58
+pop	rbx
+pop	r12
+pop	r13
+pop	r14
+pop	r15
+pop	rbp
+ret
+mov	rax, qword ptr [rbx]
+mov	rdi, rbx
+call	qword ptr [rax + 0xd08]
+mov	qword ptr [rbp - 0x38], rax
+mov	rax, qword ptr [rbx + 0x110]
+mov	eax, dword ptr [rax + 0x58]
+mov	dword ptr [rbp - 0x40], eax
+movzx	eax, byte ptr [r13 + 0x108]
+mov	qword ptr [rbp - 0x70], rax
+movzx	eax, byte ptr [r13 + 0x109]
+mov	qword ptr [rbp - 0x68], rax
+movzx	eax, byte ptr [r13 + 0x10a]
+mov	qword ptr [rbp - 0x60], rax
+movzx	eax, byte ptr [r13 + 0x10b]
+mov	qword ptr [rbp - 0x58], rax
+movzx	eax, byte ptr [r13 + 0x10c]
+mov	qword ptr [rbp - 0x50], rax
+movzx	eax, byte ptr [r13 + 0x10d]
+mov	qword ptr [rbp - 0x48], rax
+mov	rdi, r13
+call	0xffffff800048cb00 <_vsnprintf+0xffffff800048cb00>
+mov	qword ptr [rbp - 0x30], rax
+mov	rdi, qword ptr [rbp - 0x78]
+call	0xffffff800048cb00 <_vsnprintf+0xffffff800048cb00>
+mov	r13, rax
+mov	rdi, qword ptr [rbp - 0x80]
+call	0xffffff800048cb00 <_vsnprintf+0xffffff800048cb00>
+mov	rbx, r15
+mov	r15, rax
+mov	rdi, r12
+call	0xffffff800048cb00 <_vsnprintf+0xffffff800048cb00>
+mov	r10, rax
+sub	rsp, 0x8
+lea	rsi, [rip + 0xbe186] ## 0xffffff800239b3d0 <___FUNCTION__._ZN21IO80211InfraInterface12setLQMConfigEP23apple80211_lqm_config_t+0x295>
+lea	rdx, [rip + 0xbe1fd] ## 0xffffff800239b44e <___FUNCTION__._ZN21IO80211InfraInterface12setLQMConfigEP23apple80211_lqm_config_t+0x313>
+mov	rdi, qword ptr [rbp - 0x38]
+mov	ecx, 0x111b
+mov	r8d, r14d
+mov	r9d, dword ptr [rbp - 0x40]
+xor	eax, eax
+push	r10
+push	r15
+push	r13
+push	qword ptr [rbp - 0x30]
+push	rbx
+push	qword ptr [rbp - 0x48]
+push	qword ptr [rbp - 0x50]
+push	qword ptr [rbp - 0x58]
+push	qword ptr [rbp - 0x60]
+push	qword ptr [rbp - 0x68]
+push	qword ptr [rbp - 0x70]
+call	0xffffff80031d252e <__ZZN20IO80211P2PSupervisor4freeEvE20kalloc_type_view_181+0xdcc1ae>
+add	rsp, 0x60
+jmp	0xffffff80022dd196 <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x1c8>
+nop
+
+===== ETHERNET RELEVANT INSTRUCTIONS =====
+push	rbp
+mov	rbp, rsp
+push	r15
+push	r14
+push	r13
+push	r12
+push	rbx
+sub	rsp, 0x18
+mov	qword ptr [rbp - 0x30], r9
+mov	r14, r8
+mov	r15d, ecx
+mov	r12, rdx
+mov	r13, rdi
+call	0xffffff8002987fe4 <__ZN26IOSkywalkEthernetInterface20copyRegistrationInfoEPKNS_16RegistrationInfoE>
+test	eax, eax
+je	0xffffff80029880b2 <__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0x3a>
+mov	ebx, eax
+mov	rdi, r13
+xor	esi, esi
+call	0xffffff80029880e8 <__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj>
+mov	eax, ebx
+jmp	0xffffff80029880d8 <__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0x60>
+mov	rax, qword ptr [r13 + 0x108]
+mov	rsi, qword ptr [rax]
+mov	dword ptr [rsp], 0x0
+mov	rdi, r13
+mov	rdx, r12
+mov	ecx, r15d
+mov	r8, r14
+mov	r9, qword ptr [rbp - 0x30]
+call	0xffffff8002981d7e <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j>
+add	rsp, 0x18
+pop	rbx
+pop	r12
+pop	r13
+pop	r14
+pop	r15
+pop	rbp
+ret
+nop
+
+===== QUEUE_ARRAY RELEVANT INSTRUCTIONS =====
+push	rbp
+mov	rbp, rsp
+push	r15
+push	r14
+push	r13
+push	r12
+push	rbx
+sub	rsp, 0x78
+mov	qword ptr [rbp - 0x98], r9
+mov	r14, r8
+mov	eax, ecx
+mov	r13, rdx
+mov	r15, rsi
+mov	r12, rdi
+mov	rcx, qword ptr [rip + 0x2536d] ## 0xffffff80029a7118 <_uuid_unparse_upper+0xffffff80029a7118>
+mov	rcx, qword ptr [rcx]
+mov	qword ptr [rbp - 0x30], rcx
+lea	rsi, [rip + 0x24f1f] ## 0xffffff80029a6cd8 <__ZL19kReportChannelNames.rel+0x30>
+lea	rdi, [rbp - 0x80]
+mov	ecx, 0xa
+rep		movsq	qword ptr es:[rdi], qword ptr [rsi]
+mov	dword ptr [rbp - 0x84], 0x3
+mov	ebx, eax
+mov	rdi, rdx
+mov	rsi, rbx
+call	0xffffff800298ac44 <__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem>
+test	al, al
+je	0xffffff8002981dea <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0x6c>
+mov	dword ptr [rbp - 0x84], 0xb
+lea	rdx, [rbp - 0x84]
+mov	rdi, r13
+mov	rsi, rbx
+call	0xffffff800298a81c <__ZN17IOSkywalkQueueSet16createWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE>
+mov	qword ptr [rbp - 0x90], rax
+test	rax, rax
+je	0xffffff8002981e64 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0xe6>
+lea	rdx, [rbp - 0x80]
+mov	dword ptr [rdx], 0x1
+lea	rdi, [rbp - 0x90]
+mov	esi, 0x1
+call	0xffffff80029839c6 <__ZN20IOSkywalkLogicalLink18createWithQueueSetEPP17IOSkywalkQueueSetmPNS_17LogicalLinkInfo_sE>
+test	rax, rax
+je	0xffffff8002981e6b <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0xed>
+mov	r13, rax
+mov	rdi, r12
+mov	rsi, r15
+mov	rdx, rax
+mov	rcx, r14
+mov	r8, qword ptr [rbp - 0x98]
+call	0xffffff8002981eac <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j>
+mov	ebx, eax
+mov	rdi, qword ptr [rbp - 0x90]
+test	rdi, rdi
+je	0xffffff8002981e57 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0xd9>
+mov	rax, qword ptr [rdi]
+call	qword ptr [rax + 0x28]
+mov	qword ptr [rbp - 0x90], 0x0
+jmp	0xffffff8002981e7c <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0xfe>
+mov	ebx, 0xe00002c2
+jmp	0xffffff8002981e86 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0x108>
+mov	r13, qword ptr [rbp - 0x90]
+mov	ebx, 0xe00002c2
+test	r13, r13
+je	0xffffff8002981e86 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0x108>
+mov	rax, qword ptr [r13]
+mov	rdi, r13
+call	qword ptr [rax + 0x28]
+mov	rax, qword ptr [rip + 0x2528b] ## 0xffffff80029a7118 <_uuid_unparse_upper+0xffffff80029a7118>
+mov	rax, qword ptr [rax]
+cmp	rax, qword ptr [rbp - 0x30]
+jne	0xffffff8002981ea7 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0x129>
+mov	eax, ebx
+add	rsp, 0x78
+pop	rbx
+pop	r12
+pop	r13
+pop	r14
+pop	r15
+pop	rbp
+ret
+call	0xffffff8000383150 <_uuid_unparse_upper+0xffffff8000383150>
+
+===== LOGICAL_LINK RELEVANT INSTRUCTIONS =====
+push	rbp
+mov	rbp, rsp
+push	r15
+push	r14
+push	r13
+push	r12
+push	rbx
+sub	rsp, 0x28
+mov	qword ptr [rbp - 0x48], r8
+mov	qword ptr [rbp - 0x40], rcx
+mov	r13, rdx
+mov	r12, rsi
+mov	r14, rdi
+mov	rdi, rdx
+call	0xffffff8002983ce8 <__ZN20IOSkywalkLogicalLink23getLogicalLinkNexusInfoEv>
+mov	ebx, 0xe00002c2
+test	r12, r12
+je	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+cmp	dword ptr [r12 + 0x4], 0x108
+jb	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+cmp	dword ptr [r12], 0x1
+jne	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+test	r13, r13
+je	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+cmp	dword ptr [r12 + 0x14], 0x400
+ja	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+mov	r15, rax
+mov	rax, qword ptr [rbp - 0x40]
+or	rax, qword ptr [rbp - 0x48]
+je	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+lea	rdi, [rip + 0x359d2] ## 0xffffff80029b7900 <__ZZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_jE20kalloc_type_view_220>
+call	0xffffff8000ab5930 <_uuid_unparse_upper+0xffffff8000ab5930>
+mov	rcx, qword ptr [r14 + 0xb8]
+mov	qword ptr [rcx], rax
+test	rax, rax
+je	0xffffff80029820c1 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x215>
+mov	edx, 0x108
+mov	rdi, rax
+mov	rsi, r12
+call	0xffffff8000101080 <_uuid_unparse_upper+0xffffff8000101080>
+mov	rax, qword ptr [r14]
+mov	rdi, r14
+call	qword ptr [rax + 0x9e0]
+test	rax, rax
+je	0xffffff80029820a2 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x1f6>
+mov	qword ptr [rbp - 0x38], rax
+mov	rax, qword ptr [r14]
+mov	rdi, r14
+call	qword ptr [rax + 0x9e8]
+mov	dword ptr [rbp - 0x2c], eax
+mov	rax, qword ptr [r14]
+lea	rsi, [rip + 0x22fd6] ## 0xffffff80029a4f5e <_uuid_unparse_upper+0xffffff80029a4f5e>
+mov	rdi, r14
+mov	rdx, qword ptr [rbp - 0x38]
+call	qword ptr [rax + 0x270]
+test	al, al
+je	0xffffff80029820a2 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x1f6>
+cmp	dword ptr [rbp - 0x2c], 0x0
+js	0xffffff8002981fc6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x11a>
+mov	edx, dword ptr [rbp - 0x2c]
+mov	rax, qword ptr [r14]
+lea	rsi, [rip + 0x23030] ## 0xffffff80029a4fe0 <_uuid_unparse_upper+0xffffff80029a4fe0>
+mov	rdi, r14
+mov	ecx, 0x20
+call	qword ptr [rax + 0x280]
+test	al, al
+je	0xffffff80029820a2 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x1f6>
+mov	eax, dword ptr [r12 + 0x24]
+mov	rcx, qword ptr [r14 + 0xb8]
+mov	dword ptr [rcx + 0x30], eax
+mov	eax, dword ptr [r12 + 0x28]
+mov	dword ptr [rcx + 0x34], eax
+cmp	byte ptr [r15 + 0x4], 0x0
+je	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+mov	qword ptr [rbp - 0x38], r14
+xor	r12d, r12d
+xor	r14d, r14d
+mov	rdi, r13
+mov	rsi, r12
+call	0xffffff8002983cf2 <__ZN20IOSkywalkLogicalLink11getQueueSetEm>
+mov	rdi, rax
+call	0xffffff800298b05a <__ZN17IOSkywalkQueueSet20getQueueSetNexusInfoEv>
+mov	al, byte ptr [rax]
+and	al, 0x1
+add	r14b, al
+inc	r12
+movzx	eax, byte ptr [r15 + 0x4]
+cmp	r12, rax
+jb	0xffffff8002981ff2 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x146>
+cmp	r14b, 0x1
+jne	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+mov	rdi, r13
+call	0xffffff8002983dc8 <__ZN20IOSkywalkLogicalLink21setDefaultLogicalLinkEv>
+mov	rdi, r13
+mov	r14, qword ptr [rbp - 0x38]
+mov	rsi, r14
+call	0xffffff8002983d14 <__ZN20IOSkywalkLogicalLink12setInterfaceEP18IOSkywalkInterface>
+xor	ebx, ebx
+mov	edi, 0x1
+xor	esi, esi
+xor	edx, edx
+call	0xffffff8000a75660 <_uuid_unparse_upper+0xffffff8000a75660>
+mov	qword ptr [r14 + 0xc0], rax
+mov	rcx, qword ptr [rax]
+mov	rdi, rax
+mov	rsi, r13
+call	qword ptr [rcx + 0x1b0]
+mov	rdi, qword ptr [rbp - 0x48]
+test	rdi, rdi
+mov	rax, qword ptr [rbp - 0x40]
+mov	r15, rax
+cmovne	r15, rdi
+test	rax, rax
+cmovne	rdi, rax
+test	rdi, rdi
+je	0xffffff800298208b <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x1df>
+mov	qword ptr [r14 + 0x98], rdi
+mov	rax, qword ptr [rdi]
+call	qword ptr [rax + 0x20]
+test	r15, r15
+je	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+mov	qword ptr [r14 + 0xa0], r15
+mov	rax, qword ptr [r15]
+mov	rdi, r15
+call	qword ptr [rax + 0x20]
+jmp	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+mov	rax, qword ptr [r14 + 0xb8]
+mov	rsi, qword ptr [rax]
+mov	qword ptr [rax], 0x0
+lea	rdi, [rip + 0x35886] ## 0xffffff80029b7940 <__ZZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_jE20kalloc_type_view_288>
+call	0xffffff8000ab5a60 <_uuid_unparse_upper+0xffffff8000ab5a60>
+jmp	0xffffff80029820c6 <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j+0x21a>
+mov	ebx, 0xe00002bd
+mov	eax, ebx
+add	rsp, 0x28
+pop	rbx
+pop	r12
+pop	r13
+pop	r14
+pop	r15
+pop	rbp
+ret
+nop
+CHECK=INFRA_ENTRY_CAPTURES_INFO_QUEUE_COUNT_AND_POOLS RESULT=PASS
+CHECK=INFRA_FORWARDS_ALL_SIX_REGISTER_ARGUMENTS RESULT=PASS
+CHECK=INFRA_FINAL_STACK_OPTION_ZERO RESULT=PASS
+CHECK=ETHERNET_ENTRY_PRESERVES_ARRAY_COUNT_AND_POOLS RESULT=PASS
+CHECK=ETHERNET_LOADS_COPIED_REGISTRATION_INFO RESULT=PASS
+CHECK=ETHERNET_FORWARDS_ARRAY_COUNT_AND_TWO_POOLS RESULT=PASS
+CHECK=ETHERNET_FINAL_OPTION_ZERO RESULT=PASS
+CHECK=ARRAY_OVERLOAD_PASSES_QUEUE_POINTER_AND_COUNT_TO_WMM RESULT=PASS
+CHECK=ARRAY_OVERLOAD_SETS_QUEUESET_CONTROL_0X3_OR_0XB RESULT=PASS
+CHECK=ARRAY_OVERLOAD_CREATES_ONE_LOGICAL_LINK RESULT=PASS
+CHECK=ARRAY_OVERLOAD_CALLS_LOGICAL_LINK_REGISTRATION RESULT=PASS
+CHECK=LOGICAL_LINK_OVERLOAD_CHECKS_REGISTRATION_INFO_VERSION_AND_SIZE RESULT=PASS
+CHECK=LOGICAL_LINK_OVERLOAD_COPIES_0X108_REGISTRATION_INFO_BYTES RESULT=PASS
+NOTE=Stage79's original literal-string checks are superseded by instruction-pattern and call-target checks in this audit.
+LIMIT=This validates Apple's wrapper argument forwarding only; it does not create a driver registration callsite or prove private metadata formal sizes.

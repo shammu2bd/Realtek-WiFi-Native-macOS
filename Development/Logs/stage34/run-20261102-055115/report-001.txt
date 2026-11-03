@@ -1,0 +1,2590 @@
+ 
+    2087: 	return ret;
+    2088: }
+    2089: 
+    2090: static int rtw_hw_scan_update_probe_req(struct rtw_dev *rtwdev,
+    2091: 					struct rtw_vif *rtwvif)
+  ...
+    2094: 	struct sk_buff_head list;
+    2095: 	struct sk_buff *skb, *tmp;
+    2096: 	u8 num = req->n_ssids, i, bands = 0;
+    2097: 	int ret;
+    2098: 
+    2099: 	skb_queue_head_init(&list);
+    2100: 	for (i = 0; i < num; i++) {
+    2101: 		skb = ieee80211_probereq_get(rtwdev->hw, rtwvif->mac_addr,
+    2102: 					     req->ssids[i].ssid,
+    2103: 					     req->ssids[i].ssid_len,
+    2104: 					     req->ie_len);
+    2105: 		if (!skb) {
+  ...
+    2109: 		ret = rtw_append_probe_req_ie(rtwdev, skb, &list, &bands,
+    2110: 					      rtwvif);
+    2111: 		if (ret)
+    2112: 			goto out;
+    2113: 
+    2114: 		kfree_skb(skb);
+    2115: 	}
+    2116: 
+    2117: 	return _rtw_hw_scan_update_probe_req(rtwdev, num * bands, &list);
+    2118: 
+    2119: out:
+    2120: 	skb_queue_walk_safe(&list, skb, tmp)
+    2121: 		kfree_skb(skb);
+    2122: 
+    2123: 	return ret;
+    2124: }
+    2125: 
+    2126: static int rtw_add_chan_info(struct rtw_dev *rtwdev, struct rtw_chan_info *info,
+    2127: 			     struct rtw_chan_list *list, u8 *buf)
+[DMA_ORDER] matches=16
+  ...
+    1302: 	u8 *pkt_desc;
+    1303: 
+    1304: 	rtw_tx_rsvd_page_pkt_info_update(rtwdev, &pkt_info, skb, type);
+    1305: 	pkt_desc = skb_push(skb, chip->tx_pkt_desc_sz);
+    1306: 	memset(pkt_desc, 0, chip->tx_pkt_desc_sz);
+    1307: 	rtw_tx_fill_tx_desc(rtwdev, &pkt_info, skb);
+    1308: }
+    1309: 
+    1310: static inline u8 rtw_len_to_page(unsigned int len, u16 page_size)
+    1311: {
+    1312: 	return DIV_ROUND_UP(len, page_size);
+    1313: }
+  ...
+    1623: {
+    1624: 	const struct rtw_chip_info *chip = rtwdev->chip;
+    1625: 	struct ieee80211_hw *hw = rtwdev->hw;
+    1626: 	struct rtw_rsvd_page *rsvd_pkt;
+    1627: 	struct sk_buff *iter;
+    1628: 	u16 page_size, page_margin, tx_desc_sz;
+    1629: 	u8 total_page = 0;
+    1630: 	u32 page = 0;
+    1631: 	u8 *buf;
+    1632: 	int ret;
+    1633: 
+    1634: 	page_size = chip->page_size;
+    1635: 	tx_desc_sz = chip->tx_pkt_desc_sz;
+    1636: 	page_margin = page_size - tx_desc_sz;
+    1637: 
+    1638: 	ret = __rtw_build_rsvd_page_from_vifs(rtwdev);
+    1639: 	if (ret) {
+    1640: 		rtw_err(rtwdev,
+    1641: 			"failed to build rsvd page from vifs, ret %d\n", ret);
+    1642: 		return NULL;
+  ...
+    1647: 		if (!iter) {
+    1648: 			rtw_err(rtwdev, "failed to build rsvd packet\n");
+    1649: 			goto release_skb;
+    1650: 		}
+    1651: 
+    1652: 		/* Fill the tx_desc for the rsvd pkt that requires one.
+    1653: 		 * And iter->len will be added with size of tx_desc_sz.
+    1654: 		 */
+    1655: 		if (rsvd_pkt->add_txdesc)
+    1656: 			rtw_fill_rsvd_page_desc(rtwdev, iter, rsvd_pkt->type);
+    1657: 
+    1658: 		rsvd_pkt->skb = iter;
+    1659: 		rsvd_pkt->page = total_page;
+    1660: 
+    1661: 		/* Reserved page is downloaded via TX path, and TX path will
+    1662: 		 * generate a tx_desc at the header to describe length of
+    1663: 		 * the buffer. If we are not counting page numbers with the
+    1664: 		 * size of tx_desc added at the first rsvd_pkt (usually a
+    1665: 		 * beacon, firmware default refer to the first page as the
+    1666: 		 * content of beacon), we could generate a buffer which size
+    1667: 		 * is smaller than the actual size of the whole rsvd_page
+    1668: 		 */
+    1669: 		if (total_page == 0) {
+    1670: 			if (rsvd_pkt->type != RSVD_BEACON &&
+    1671: 			    rsvd_pkt->type != RSVD_DUMMY) {
+    1672: 				rtw_err(rtwdev, "first page should be a beacon\n");
+    1673: 				goto release_skb;
+    1674: 			}
+    1675: 			total_page += rtw_len_to_page(iter->len + tx_desc_sz,
+    1676: 						      page_size);
+    1677: 		} else {
+    1678: 			total_page += rtw_len_to_page(iter->len, page_size);
+    1679: 		}
+    1680: 	}
+    1681: 
+  ...
+    1691: 
+    1692: 	/* Copy the content of each rsvd_pkt to the buf, and they should
+    1693: 	 * be aligned to the pages.
+    1694: 	 *
+    1695: 	 * Note that the first rsvd_pkt is a beacon no matter what vif->type.
+    1696: 	 * And that rsvd_pkt does not require tx_desc because when it goes
+    1697: 	 * through TX path, the TX path will generate one for it.
+    1698: 	 */
+    1699: 	list_for_each_entry(rsvd_pkt, &rtwdev->rsvd_page_list, build_list) {
+    1700: 		rtw_rsvd_page_list_to_buf(rtwdev, page_size, page_margin,
+    1701: 					  page, buf, rsvd_pkt);
+    1702: 		if (page == 0)
+    1703: 			page += rtw_len_to_page(rsvd_pkt->skb->len +
+    1704: 						tx_desc_sz, page_size);
+    1705: 		else
+    1706: 			page += rtw_len_to_page(rsvd_pkt->skb->len, page_size);
+    1707: 
+    1708: 		kfree_skb(rsvd_pkt->skb);
+    1709: 		rsvd_pkt->skb = NULL;
+    1710: 	}
+  ...
+    1773: 		rtw_err(rtwdev, "failed to download drv rsvd page\n");
+    1774: 		goto free;
+    1775: 	}
+    1776: 
+    1777: 	/* The last thing is to download the *ONLY* beacon again, because
+    1778: 	 * the previous tx_desc is to describe the total rsvd page. Download
+    1779: 	 * the beacon again to replace the TX desc header, and we will get
+    1780: 	 * a correct tx_desc for the beacon in the rsvd page.
+    1781: 	 */
+    1782: 	ret = rtw_download_beacon(rtwdev);
+    1783: 	if (ret) {
+    1784: 		rtw_err(rtwdev, "failed to download beacon\n");
+    1785: 		goto free;
+    1786: 	}
+  ...
+    2032: 					 struct sk_buff_head *probe_req_list)
+    2033: {
+    2034: 	const struct rtw_chip_info *chip = rtwdev->chip;
+    2035: 	struct sk_buff *skb, *tmp;
+    2036: 	u16 pg_addr = rtwdev->fifo.rsvd_h2c_info_addr, loc;
+    2037: 	u8 tx_desc_sz = chip->tx_pkt_desc_sz;
+    2038: 	u16 page_size = chip->page_size;
+    2039: 	u8 page_offset = 1, *buf;
+    2040: 	u16 buf_offset = page_size * page_offset;
+    2041: 	unsigned int pkt_len;
+    2042: 	u8 page_cnt, pages;
+    2043: 	int ret;
+  ...
+    2051: 
+    2052: 	buf = kzalloc(page_size * pages, GFP_KERNEL);
+    2053: 	if (!buf)
+    2054: 		return -ENOMEM;
+    2055: 
+    2056: 	buf_offset -= tx_desc_sz;
+    2057: 	skb_queue_walk_safe(probe_req_list, skb, tmp) {
+    2058: 		skb_unlink(skb, probe_req_list);
+    2059: 		rtw_fill_rsvd_page_desc(rtwdev, skb, RSVD_PROBE_REQ);
+    2060: 		if (skb->len > page_size * page_cnt) {
+    2061: 			ret = -EINVAL;
+    2062: 			goto out;
+    2063: 		}
+    2064: 
+    2065: 		memcpy(buf + buf_offset, skb->data, skb->len);
+    2066: 		pkt_len = skb->len - tx_desc_sz;
+    2067: 		loc = pg_addr - rtwdev->fifo.rsvd_boundary + page_offset;
+    2068: 		__rtw_fw_update_pkt(rtwdev, RTW_PACKET_PROBE_REQ, pkt_len, loc);
+    2069: 
+    2070: 		buf_offset += page_cnt * page_size;
+    2071: 		page_offset += page_cnt;
+    2072: 		kfree_skb(skb);
+[SKYWALK_LIFETIME] matches=7
+  ...
+     360: 	switch (c2h->id) {
+     361: 	case C2H_BT_MP_INFO:
+     362: 		rtw_coex_info_response(rtwdev, skb);
+     363: 		break;
+     364: 	case C2H_WLAN_RFON:
+     365: 		complete(&rtwdev->lps_leave_check);
+     366: 		dev_kfree_skb_any(skb);
+     367: 		break;
+     368: 	case C2H_SCAN_RESULT:
+     369: 		complete(&rtwdev->fw_scan_density);
+     370: 		rtw_fw_scan_result(rtwdev, c2h->payload, len);
+     371: 		dev_kfree_skb_any(skb);
+     372: 		break;
+     373: 	default:
+     374: 		/* pass offset for further operation */
+     375: 		*((u32 *)skb->cb) = pkt_offset;
+  ...
+    2259: 
+    2260: 	rtwdev->hal.rcr &= ~BIT_CBSSID_BCN;
+    2261: 	rtw_write32(rtwdev, REG_RCR, rtwdev->hal.rcr);
+    2262: }
+    2263: 
+    2264: void rtw_hw_scan_complete(struct rtw_dev *rtwdev, struct ieee80211_vif *vif,
+    2265: 			  bool aborted)
+    2266: {
+    2267: 	struct cfg80211_scan_info info = {
+    2268: 		.aborted = aborted,
+    2269: 	};
+    2270: 	struct rtw_hw_scan_info *scan_info = &rtwdev->scan_info;
+  ...
+    2276: 		return;
+    2277: 
+    2278: 	rtwdev->hal.rcr |= BIT_CBSSID_BCN;
+    2279: 	rtw_write32(rtwdev, REG_RCR, rtwdev->hal.rcr);
+    2280: 
+    2281: 	rtw_core_scan_complete(rtwdev, vif, true);
+    2282: 
+    2283: 	rtwvif = (struct rtw_vif *)vif->drv_priv;
+    2284: 	if (chan)
+    2285: 		rtw_store_op_chan(rtwdev, false);
+    2286: 	rtw_phy_set_tx_power_level(rtwdev, hal->current_channel);
+    2287: 	ieee80211_wake_queues(rtwdev->hw);
+    2288: 	ieee80211_scan_completed(rtwdev->hw, &info);
+    2289: 
+    2290: 	rtwvif->scan_req = NULL;
+    2291: 	rtwvif->scan_ies = NULL;
+    2292: 	rtwdev->scan_info.scanning_vif = NULL;
+    2293: }
+    2294: 
+  ...
+    2356: 
+    2357: 	if (!rtw_fw_feature_check(&rtwdev->fw, FW_FEATURE_SCAN_OFFLOAD))
+    2358: 		return;
+    2359: 
+    2360: 	rtw_hw_scan_offload(rtwdev, vif, false);
+    2361: 	rtw_hw_scan_complete(rtwdev, vif, true);
+    2362: }
+    2363: 
+    2364: void rtw_hw_scan_status_report(struct rtw_dev *rtwdev, struct sk_buff *skb)
+    2365: {
+    2366: 	struct ieee80211_vif *vif = rtwdev->scan_info.scanning_vif;
+    2367: 	struct rtw_c2h_cmd *c2h;
+  ...
+    2372: 		return;
+    2373: 
+    2374: 	c2h = get_c2h_from_skb(skb);
+    2375: 	rc = GET_SCAN_REPORT_RETURN_CODE(c2h->payload);
+    2376: 	aborted = rc != RTW_SCAN_REPORT_SUCCESS;
+    2377: 	rtw_hw_scan_complete(rtwdev, vif, aborted);
+    2378: 
+    2379: 	if (aborted)
+    2380: 		rtw_dbg(rtwdev, RTW_DBG_HW_SCAN, "HW scan aborted with code: %d\n", rc);
+    2381: }
+    2382: 
+    2383: void rtw_store_op_chan(struct rtw_dev *rtwdev, bool backup)
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h | bytes=37238 | sha256=45a1bf5213eec95cd450a54bc50caa5652c959dd2b644684ec7447b278f6e701 | git_tracked=no ===
+[SKYWALK_LIFETIME] matches=1
+  ...
+     888: void rtw_fw_adaptivity(struct rtw_dev *rtwdev);
+     889: void rtw_store_op_chan(struct rtw_dev *rtwdev, bool backup);
+     890: void rtw_clear_op_chan(struct rtw_dev *rtwdev);
+     891: void rtw_hw_scan_start(struct rtw_dev *rtwdev, struct ieee80211_vif *vif,
+     892: 		       struct ieee80211_scan_request *req);
+     893: void rtw_hw_scan_complete(struct rtw_dev *rtwdev, struct ieee80211_vif *vif,
+     894: 			  bool aborted);
+     895: int rtw_hw_scan_offload(struct rtw_dev *rtwdev, struct ieee80211_vif *vif,
+     896: 			bool enable);
+     897: void rtw_hw_scan_status_report(struct rtw_dev *rtwdev, struct sk_buff *skb);
+     898: void rtw_hw_scan_chan_switch(struct rtw_dev *rtwdev, struct sk_buff *skb);
+     899: void rtw_hw_scan_abort(struct rtw_dev *rtwdev);
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h | bytes=6864 | sha256=6d50e103fdb69df2e333be92237262f753f92f3ac8e3e37255dfedb0e3801cd7 | git_tracked=no ===
+[STOP_REMOVE] matches=2
+  ...
+      53: static inline int rtw_hci_start(struct rtw_dev *rtwdev)
+      54: {
+      55: 	return rtwdev->hci.ops->start(rtwdev);
+      56: }
+      57: 
+      58: static inline void rtw_hci_stop(struct rtw_dev *rtwdev)
+      59: {
+      60: 	rtwdev->hci.ops->stop(rtwdev);
+      61: }
+      62: 
+      63: static inline void rtw_hci_deep_ps(struct rtw_dev *rtwdev, bool enter)
+      64: {
+      65: 	rtwdev->hci.ops->deep_ps(rtwdev, enter);
+      66: }
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c | bytes=36471 | sha256=df03d3957767e926a5a7493024bbdd90f50af35362518147761d49641980c6d8 | git_tracked=no ===
+[DMA_ORDER] matches=2
+  ...
+     531: 					  u8 bckp_num)
+     532: {
+     533: 	rtw_restore_reg(rtwdev, bckp, bckp_num);
+     534: }
+     535: 
+     536: #define TX_DESC_SIZE 48
+     537: 
+     538: static int send_firmware_pkt_rsvd_page(struct rtw_dev *rtwdev, u16 pg_addr,
+     539: 				       const u8 *data, u32 size)
+     540: {
+     541: 	u8 *buf;
+     542: 	int ret;
+  ...
+     554: send_firmware_pkt(struct rtw_dev *rtwdev, u16 pg_addr, const u8 *data, u32 size)
+     555: {
+     556: 	int ret;
+     557: 
+     558: 	if (rtw_hci_type(rtwdev) == RTW_HCI_TYPE_USB &&
+     559: 	    !((size + TX_DESC_SIZE) & (512 - 1)))
+     560: 		size += 1;
+     561: 
+     562: 	ret = send_firmware_pkt_rsvd_page(rtwdev, pg_addr, data, size);
+     563: 	if (ret)
+     564: 		rtw_err(rtwdev, "failed to download rsvd page\n");
+     565: 
+[SKYWALK_LIFETIME] matches=1
+  ...
+     607: 	}
+     608: 
+     609: 	ch0_ctrl |= size & BIT_MASK_DDMACH0_DLEN;
+     610: 
+     611: 	if (iddma_enable(rtwdev, ocp_src, OCPBASE_RXBUF_FW_88XX, ch0_ctrl)) {
+     612: 		rtw_dbg(rtwdev, RTW_DBG_FW, "busy to complete ddma\n");
+     613: 		return -EBUSY;
+     614: 	}
+     615: 
+     616: 	return 0;
+     617: }
+     618: 
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c | bytes=25473 | sha256=c72a38098dddf4f4ae447bb60cd0c2a6842df250714bd58fa8be0aa0471bebcc | git_tracked=no ===
+[OPS_TABLE] matches=1
+  ...
+     942: 
+     943: 	if (changed & IEEE80211_RC_BW_CHANGED)
+     944: 		ieee80211_queue_work(rtwdev->hw, &si->rc_work);
+     945: }
+     946: 
+     947: const struct ieee80211_ops rtw_ops = {
+     948: 	.add_chanctx = ieee80211_emulate_add_chanctx,
+     949: 	.remove_chanctx = ieee80211_emulate_remove_chanctx,
+     950: 	.change_chanctx = ieee80211_emulate_change_chanctx,
+     951: 	.switch_vif_chanctx = ieee80211_emulate_switch_vif_chanctx,
+     952: 	.tx			= rtw_ops_tx,
+     953: 	.wake_tx_queue		= rtw_ops_wake_tx_queue,
+[TX_CALL_GRAPH] matches=1
+  ...
+      24: 	if (!test_bit(RTW_FLAG_RUNNING, rtwdev->flags)) {
+      25: 		ieee80211_free_txskb(hw, skb);
+      26: 		return;
+      27: 	}
+      28: 
+      29: 	rtw_tx(rtwdev, control, skb);
+      30: }
+      31: 
+      32: static void rtw_ops_wake_tx_queue(struct ieee80211_hw *hw,
+      33: 				  struct ieee80211_txq *txq)
+      34: {
+      35: 	struct rtw_dev *rtwdev = hw->priv;
+[TX_TERMINAL] matches=1
+  ...
+      20: 		       struct sk_buff *skb)
+      21: {
+      22: 	struct rtw_dev *rtwdev = hw->priv;
+      23: 
+      24: 	if (!test_bit(RTW_FLAG_RUNNING, rtwdev->flags)) {
+      25: 		ieee80211_free_txskb(hw, skb);
+      26: 		return;
+      27: 	}
+      28: 
+      29: 	rtw_tx(rtwdev, control, skb);
+      30: }
+      31: 
+[IRQ_DRAIN] matches=1
+  ...
+      75: {
+      76: 	struct rtw_dev *rtwdev = hw->priv;
+      77: 	int ret = 0;
+      78: 
+      79: 	/* let previous ips work finish to ensure we don't leave ips twice */
+      80: 	cancel_work_sync(&rtwdev->ips_work);
+      81: 
+      82: 	mutex_lock(&rtwdev->mutex);
+      83: 
+      84: 	rtw_leave_lps_deep(rtwdev);
+      85: 
+      86: 	if ((changed & IEEE80211_CONF_CHANGE_IDLE) &&
+[SKYWALK_LIFETIME] matches=5
+  ...
+     683: 	mutex_lock(&rtwdev->mutex);
+     684: 	rtw_core_scan_start(rtwdev, rtwvif, mac_addr, false);
+     685: 	mutex_unlock(&rtwdev->mutex);
+     686: }
+     687: 
+     688: static void rtw_ops_sw_scan_complete(struct ieee80211_hw *hw,
+     689: 				     struct ieee80211_vif *vif)
+     690: {
+     691: 	struct rtw_dev *rtwdev = hw->priv;
+     692: 
+     693: 	mutex_lock(&rtwdev->mutex);
+     694: 	rtw_core_scan_complete(rtwdev, vif, false);
+     695: 	mutex_unlock(&rtwdev->mutex);
+     696: }
+     697: 
+     698: static void rtw_ops_mgd_prepare_tx(struct ieee80211_hw *hw,
+     699: 				   struct ieee80211_vif *vif,
+     700: 				   struct ieee80211_prep_tx_info *info)
+  ...
+     866: 
+     867: 	device_set_wakeup_enable(rtwdev->dev, enabled);
+     868: }
+     869: #endif
+     870: 
+     871: static void rtw_reconfig_complete(struct ieee80211_hw *hw,
+     872: 				  enum ieee80211_reconfig_type reconfig_type)
+     873: {
+     874: 	struct rtw_dev *rtwdev = hw->priv;
+     875: 
+     876: 	mutex_lock(&rtwdev->mutex);
+     877: 	if (reconfig_type == IEEE80211_RECONFIG_TYPE_RESTART)
+  ...
+     967: 	.set_tim		= rtw_ops_set_tim,
+     968: 	.set_key		= rtw_ops_set_key,
+     969: 	.ampdu_action		= rtw_ops_ampdu_action,
+     970: 	.can_aggregate_in_amsdu	= rtw_ops_can_aggregate_in_amsdu,
+     971: 	.sw_scan_start		= rtw_ops_sw_scan_start,
+     972: 	.sw_scan_complete	= rtw_ops_sw_scan_complete,
+     973: 	.mgd_prepare_tx		= rtw_ops_mgd_prepare_tx,
+     974: 	.set_rts_threshold	= rtw_ops_set_rts_threshold,
+     975: 	.sta_statistics		= rtw_ops_sta_statistics,
+     976: 	.flush			= rtw_ops_flush,
+     977: 	.set_bitrate_mask	= rtw_ops_set_bitrate_mask,
+     978: 	.set_antenna		= rtw_ops_set_antenna,
+     979: 	.get_antenna		= rtw_ops_get_antenna,
+     980: 	.reconfig_complete	= rtw_reconfig_complete,
+     981: 	.hw_scan		= rtw_ops_hw_scan,
+     982: 	.cancel_hw_scan		= rtw_ops_cancel_hw_scan,
+     983: 	.link_sta_rc_update	= rtw_ops_sta_rc_update,
+     984: 	.set_sar_specs          = rtw_ops_set_sar_specs,
+     985: #ifdef CONFIG_PM
+     986: 	.suspend		= rtw_ops_suspend,
+[STOP_REMOVE] matches=2
+  ...
+      60: 	mutex_unlock(&rtwdev->mutex);
+      61: 
+      62: 	return ret;
+      63: }
+      64: 
+      65: static void rtw_ops_stop(struct ieee80211_hw *hw, bool suspend)
+      66: {
+      67: 	struct rtw_dev *rtwdev = hw->priv;
+      68: 
+      69: 	mutex_lock(&rtwdev->mutex);
+      70: 	rtw_core_stop(rtwdev);
+      71: 	mutex_unlock(&rtwdev->mutex);
+      72: }
+      73: 
+      74: static int rtw_ops_config(struct ieee80211_hw *hw, int radio_idx, u32 changed)
+      75: {
+      76: 	struct rtw_dev *rtwdev = hw->priv;
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c | bytes=68023 | sha256=fa28844e52fa8a3915abc349f06cb34071de5507582a51ab607e605f4102fdaa | git_tracked=no ===
+[OPS_TABLE] matches=1
+  ...
+     915: 	}
+     916: 
+     917: 	rtw_phy_set_tx_power_level(rtwdev, center_chan);
+     918: 
+     919: 	/* if the channel isn't set for scanning, we will do RF calibration
+     920: 	 * in ieee80211_ops::mgd_prepare_tx(). Performing the calibration
+     921: 	 * during scanning on each channel takes too long.
+     922: 	 */
+     923: 	if (!test_bit(RTW_FLAG_SCANNING, rtwdev->flags))
+     924: 		rtwdev->need_rfk = true;
+     925: }
+     926: 
+[TX_TERMINAL] matches=7
+  ...
+     327: 	struct sk_buff *skb, *tmp;
+     328: 
+     329: 	skb_queue_walk_safe(&rtwdev->c2h_queue, skb, tmp) {
+     330: 		skb_unlink(skb, &rtwdev->c2h_queue);
+     331: 		rtw_fw_c2h_cmd_handle(rtwdev, skb);
+     332: 		dev_kfree_skb_any(skb);
+     333: 	}
+     334: }
+     335: 
+     336: static void rtw_ips_work(struct work_struct *work)
+     337: {
+     338: 	struct rtw_dev *rtwdev = container_of(work, struct rtw_dev, ips_work);
+  ...
+    2179: 	INIT_WORK(&rtwdev->c2h_work, rtw_c2h_work);
+    2180: 	INIT_WORK(&rtwdev->ips_work, rtw_ips_work);
+    2181: 	INIT_WORK(&rtwdev->fw_recovery_work, rtw_fw_recovery_work);
+    2182: 	INIT_WORK(&rtwdev->update_beacon_work, rtw_fw_update_beacon_work);
+    2183: 	INIT_WORK(&rtwdev->ba_work, rtw_txq_ba_work);
+    2184: 	skb_queue_head_init(&rtwdev->c2h_queue);
+    2185: 	skb_queue_head_init(&rtwdev->coex.queue);
+    2186: 	skb_queue_head_init(&rtwdev->tx_report.queue);
+    2187: 
+    2188: 	spin_lock_init(&rtwdev->txq_lock);
+    2189: 	spin_lock_init(&rtwdev->tx_report.q_lock);
+    2190: 
+    2191: 	mutex_init(&rtwdev->mutex);
+    2192: 	mutex_init(&rtwdev->hal.tx_power_mutex);
+  ...
+    2247: 		release_firmware(wow_fw->firmware);
+    2248: 
+    2249: 	destroy_workqueue(rtwdev->tx_wq);
+    2250: 	timer_delete_sync(&rtwdev->tx_report.purge_timer);
+    2251: 	spin_lock_irqsave(&rtwdev->tx_report.q_lock, flags);
+    2252: 	skb_queue_purge(&rtwdev->tx_report.queue);
+    2253: 	spin_unlock_irqrestore(&rtwdev->tx_report.q_lock, flags);
+    2254: 	skb_queue_purge(&rtwdev->coex.queue);
+    2255: 	skb_queue_purge(&rtwdev->c2h_queue);
+    2256: 
+    2257: 	list_for_each_entry_safe(rsvd_pkt, tmp, &rtwdev->rsvd_page_list,
+    2258: 				 build_list) {
+    2259: 		list_del(&rsvd_pkt->build_list);
+    2260: 		kfree(rsvd_pkt);
+    2261: 	}
+[IRQ_DRAIN] matches=3
+  ...
+     394: {
+     395: 	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
+     396: 	struct ieee80211_vif *vif = si->vif;
+     397: 	int i;
+     398: 
+     399: 	cancel_work_sync(&si->rc_work);
+     400: 
+     401: 	if (vif->type != NL80211_IFTYPE_STATION || sta->tdls)
+     402: 		rtw_release_macid(rtwdev, si->mac_id);
+     403: 	if (fw_exist)
+     404: 		rtw_fw_media_status_report(rtwdev, si->mac_id, false);
+     405: 
+  ...
+    1570: 	clear_bit(RTW_FLAG_RUNNING, rtwdev->flags);
+    1571: 	clear_bit(RTW_FLAG_FW_RUNNING, rtwdev->flags);
+    1572: 
+    1573: 	mutex_unlock(&rtwdev->mutex);
+    1574: 
+    1575: 	cancel_work_sync(&rtwdev->c2h_work);
+    1576: 	cancel_work_sync(&rtwdev->update_beacon_work);
+    1577: 	cancel_delayed_work_sync(&rtwdev->watch_dog_work);
+    1578: 	cancel_delayed_work_sync(&coex->bt_relink_work);
+    1579: 	cancel_delayed_work_sync(&coex->bt_reenable_work);
+    1580: 	cancel_delayed_work_sync(&coex->defreeze_work);
+    1581: 	cancel_delayed_work_sync(&coex->wl_remain_work);
+    1582: 	cancel_delayed_work_sync(&coex->bt_remain_work);
+[SKYWALK_REGISTER] matches=1
+  ...
+    2484: 	if (enable) {
+    2485: 		rtw_write32_set(rtwdev, REG_BCN_CTRL, BIT_EN_BCN_FUNCTION);
+    2486: 		rtw_write8_clr(rtwdev, REG_TXPAUSE, BIT_HIGH_QUEUE);
+    2487: 	} else {
+    2488: 		rtw_write32_clr(rtwdev, REG_BCN_CTRL, BIT_EN_BCN_FUNCTION);
+    2489: 		rtw_write8_set(rtwdev, REG_TXPAUSE, BIT_HIGH_QUEUE);
+    2490: 	}
+    2491: }
+    2492: 
+    2493: void rtw_set_ampdu_factor(struct rtw_dev *rtwdev, struct ieee80211_vif *vif,
+    2494: 			  struct ieee80211_bss_conf *bss_conf)
+    2495: {
+[SKYWALK_LIFETIME] matches=5
+  ...
+     220: 
+     221: /* process TX/RX statistics periodically for hardware,
+     222:  * the information helps hardware to enhance performance
+     223:  */
+     224: /* macOS: full dynamic processing requires station iteration. Until that
+     225:  * compatibility layer is complete, keep the Linux periodic watchdog off. */
+     226: extern bool rtw88_disable_watchdog_work;
+     227: 
+     228: static void rtw_watch_dog_work(struct work_struct *work)
+     229: {
+     230: 	struct rtw_dev *rtwdev = container_of(work, struct rtw_dev,
+     231: 					      watch_dog_work.work);
+  ...
+    1497: 	set_bit(RTW_FLAG_SCANNING, rtwdev->flags);
+    1498: 
+    1499: 	rtw_phy_dig_set_max_coverage(rtwdev);
+    1500: }
+    1501: 
+    1502: void rtw_core_scan_complete(struct rtw_dev *rtwdev, struct ieee80211_vif *vif,
+    1503: 			    bool hw_scan)
+    1504: {
+    1505: 	struct rtw_vif *rtwvif = vif ? (struct rtw_vif *)vif->drv_priv : NULL;
+    1506: 	u32 config = 0;
+    1507: 
+    1508: 	if (!rtwvif)
+  ...
+    1539: 
+    1540: 	/* rcr reset after powered on */
+    1541: 	rtw_write32(rtwdev, REG_RCR, rtwdev->hal.rcr);
+    1542: 
+    1543: 	/* IO80211's power-save selector is not mac80211 cfg.ps. Until that
+    1544: 	 * translation is complete, keep firmware LPS/deep-LPS and Linux dynamic
+    1545: 	 * watchdog transitions out of the live macOS datapath. */
+    1546: 	rtwdev->ps_enabled = false;
+    1547: 	clear_bit(RTW_FLAG_LEISURE_PS, rtwdev->flags);
+    1548: 	clear_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags);
+    1549: 	if (!rtw88_disable_watchdog_work)
+    1550: 		ieee80211_queue_delayed_work(rtwdev->hw, &rtwdev->watch_dog_work,
+  ...
+    1825: 	struct rtw_fw_state *fw = context;
+    1826: 	struct rtw_dev *rtwdev = fw->rtwdev;
+    1827: 
+    1828: 	if (!firmware || !firmware->data) {
+    1829: 		rtw_err(rtwdev, "failed to request firmware\n");
+    1830: 		complete_all(&fw->completion);
+    1831: 		return;
+    1832: 	}
+    1833: 
+    1834: 	fw->firmware = firmware;
+    1835: 	update_firmware_info(rtwdev, fw);
+    1836: 	complete_all(&fw->completion);
+    1837: 
+    1838: 	rtw_info(rtwdev, "%sFirmware version %u.%u.%u, H2C version %u\n",
+    1839: 		 fw->type == RTW_WOWLAN_FW ? "WOW " : "",
+    1840: 		 fw->version, fw->sub_version, fw->sub_index, fw->h2c_version);
+    1841: }
+    1842: 
+[STOP_REMOVE] matches=3
+  ...
+    1555: 	return 0;
+    1556: }
+    1557: 
+    1558: void rtw_power_off(struct rtw_dev *rtwdev)
+    1559: {
+    1560: 	rtw_hci_stop(rtwdev);
+    1561: 	rtw_coex_power_off_setting(rtwdev);
+    1562: 	rtw_mac_power_off(rtwdev);
+    1563: }
+    1564: EXPORT_SYMBOL(rtw_power_off);
+    1565: 
+    1566: void rtw_core_stop(struct rtw_dev *rtwdev)
+    1567: {
+    1568: 	struct rtw_coex *coex = &rtwdev->coex;
+    1569: 
+    1570: 	clear_bit(RTW_FLAG_RUNNING, rtwdev->flags);
+    1571: 	clear_bit(RTW_FLAG_FW_RUNNING, rtwdev->flags);
+    1572: 
+  ...
+    2013: 	return 0;
+    2014: }
+    2015: 
+    2016: static void rtw_chip_efuse_disable(struct rtw_dev *rtwdev)
+    2017: {
+    2018: 	rtw_hci_stop(rtwdev);
+    2019: 	rtw_mac_power_off(rtwdev);
+    2020: }
+    2021: 
+    2022: static int rtw_chip_efuse_info_setup(struct rtw_dev *rtwdev)
+    2023: {
+    2024: 	struct rtw_efuse *efuse = &rtwdev->efuse;
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h | bytes=49190 | sha256=f7681400b4762612a5382a762f1200def7312da3c45dc2000bd9d0cac7d709a4 | git_tracked=no ===
+[BUILD_SOURCES] matches=3
+  ...
+    1926: 	u32 feature;
+    1927: 	u32 feature_ext;
+    1928: 	enum rtw_fw_type type;
+    1929: };
+    1930: 
+    1931: enum rtw_sar_sources {
+    1932: 	RTW_SAR_SOURCE_NONE,
+    1933: 	RTW_SAR_SOURCE_COMMON,
+    1934: };
+    1935: 
+    1936: enum rtw_sar_bands {
+    1937: 	RTW_SAR_BAND_0,
+  ...
+    1941: 	RTW_SAR_BAND_4,
+    1942: 
+    1943: 	RTW_SAR_BAND_NR,
+    1944: };
+    1945: 
+    1946: /* the union is reserved for other kinds of SAR sources
+    1947:  * which might not re-use same format with array common.
+    1948:  */
+    1949: union rtw_sar_cfg {
+    1950: 	s8 common[RTW_SAR_BAND_NR];
+    1951: };
+    1952: 
+    1953: struct rtw_sar {
+    1954: 	enum rtw_sar_sources src;
+    1955: 	union rtw_sar_cfg cfg[RTW_RF_PATH_MAX][RTW_RATE_SECTION_NUM];
+    1956: };
+    1957: 
+    1958: struct rtw_hal {
+    1959: 	u32 rcr;
+    1960: 
+[OPS_TABLE] matches=1
+  ...
+      42: 
+      43: extern bool rtw_bf_support;
+      44: extern bool rtw_disable_lps_deep_mode;
+      45: extern unsigned int rtw_debug_mask;
+      46: extern bool rtw_edcca_enabled;
+      47: extern const struct ieee80211_ops rtw_ops;
+      48: 
+      49: #define RTW_MAX_CHANNEL_NUM_2G 14
+      50: #define RTW_MAX_CHANNEL_NUM_5G 49
+      51: 
+      52: struct rtw_dev;
+      53: struct rtw_debugfs;
+[DMA_ORDER] matches=1
+  ...
+     902: 			       bool is_tx2_path);
+     903: 	void (*config_txrx_mode)(struct rtw_dev *rtwdev, u8 tx_path,
+     904: 				 u8 rx_path, bool is_tx2_path);
+     905: 	void (*led_set)(struct led_classdev *led, enum led_brightness brightness);
+     906: 	/* for USB/SDIO only */
+     907: 	void (*fill_txdesc_checksum)(struct rtw_dev *rtwdev,
+     908: 				     struct rtw_tx_pkt_info *pkt_info,
+     909: 				     u8 *txdesc);
+     910: 
+     911: 	/* for coex */
+     912: 	void (*coex_set_init)(struct rtw_dev *rtwdev);
+     913: 	void (*coex_set_ant_switch)(struct rtw_dev *rtwdev,
+[SKYWALK_LIFETIME] matches=2
+  ...
+    1419: 
+    1420: struct rtw_coex_hid {
+    1421: 	u8 hid_handle;
+    1422: 	u8 hid_vendor;
+    1423: 	u8 hid_name[COEX_BT_HIDINFO_NAME];
+    1424: 	bool hid_info_completed;
+    1425: 	bool is_game_hid;
+    1426: };
+    1427: 
+    1428: struct rtw_coex_hid_handle_list {
+    1429: 	u8 cmd_id;
+    1430: 	u8 len;
+  ...
+    2242: void rtw_tx_report_purge_timer(struct timer_list *t);
+    2243: void rtw_update_sta_info(struct rtw_dev *rtwdev, struct rtw_sta_info *si,
+    2244: 			 bool reset_ra_mask);
+    2245: void rtw_core_scan_start(struct rtw_dev *rtwdev, struct rtw_vif *rtwvif,
+    2246: 			 const u8 *mac_addr, bool hw_scan);
+    2247: void rtw_core_scan_complete(struct rtw_dev *rtwdev, struct ieee80211_vif *vif,
+    2248: 			    bool hw_scan);
+    2249: int rtw_core_start(struct rtw_dev *rtwdev);
+    2250: void rtw_power_off(struct rtw_dev *rtwdev);
+    2251: void rtw_core_stop(struct rtw_dev *rtwdev);
+    2252: int rtw_chip_info_setup(struct rtw_dev *rtwdev);
+    2253: int rtw_core_init(struct rtw_dev *rtwdev);
+[STOP_REMOVE] matches=1
+  ...
+    2246: 			 const u8 *mac_addr, bool hw_scan);
+    2247: void rtw_core_scan_complete(struct rtw_dev *rtwdev, struct ieee80211_vif *vif,
+    2248: 			    bool hw_scan);
+    2249: int rtw_core_start(struct rtw_dev *rtwdev);
+    2250: void rtw_power_off(struct rtw_dev *rtwdev);
+    2251: void rtw_core_stop(struct rtw_dev *rtwdev);
+    2252: int rtw_chip_info_setup(struct rtw_dev *rtwdev);
+    2253: int rtw_core_init(struct rtw_dev *rtwdev);
+    2254: void rtw_core_deinit(struct rtw_dev *rtwdev);
+    2255: int rtw_register_hw(struct rtw_dev *rtwdev, struct ieee80211_hw *hw);
+    2256: void rtw_unregister_hw(struct rtw_dev *rtwdev, struct ieee80211_hw *hw);
+    2257: u16 rtw_desc_to_bitrate(u8 desc_rate);
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c | bytes=52798 | sha256=609dd80f41c66364e71762708bee25886c44d66dec3dc9bee39fe15500aebf83 | git_tracked=no ===
+[BUILD_SOURCES] matches=2
+  ...
+    1645: 		goto err_out;
+    1646: 	}
+    1647: 
+    1648: 	ret = rtw_pci_init(rtwdev);
+    1649: 	if (ret) {
+    1650: 		rtw_err(rtwdev, "failed to allocate pci resources\n");
+    1651: 		goto err_io_unmap;
+    1652: 	}
+    1653: 
+    1654: 	return 0;
+    1655: 
+    1656: err_io_unmap:
+  ...
+    1867: 		goto err_deinit_core;
+    1868: 	}
+    1869: 
+    1870: 	ret = rtw_pci_setup_resource(rtwdev, pdev);
+    1871: 	if (ret) {
+    1872: 		rtw_err(rtwdev, "failed to setup pci resources\n");
+    1873: 		goto err_pci_declaim;
+    1874: 	}
+    1875: 
+    1876: 	ret = rtw_pci_napi_init(rtwdev);
+    1877: 	if (ret) {
+    1878: 		rtw_err(rtwdev, "failed to setup NAPI\n");
+[TX_CALL_GRAPH] matches=4
+  ...
+     801: 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++)
+     802: 		if (test_and_clear_bit(queue, rtwpci->tx_queued))
+     803: 			rtw_pci_tx_kick_off_queue(rtwdev, queue);
+     804: }
+     805: 
+     806: static int rtw_pci_tx_write_data(struct rtw_dev *rtwdev,
+     807: 				 struct rtw_tx_pkt_info *pkt_info,
+     808: 				 struct sk_buff *skb,
+     809: 				 enum rtw_tx_queue_type queue)
+     810: {
+     811: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     812: 	const struct rtw_chip_info *chip = rtwdev->chip;
+  ...
+     883: 
+     884: 	skb = rtw_tx_write_data_rsvd_page_get(rtwdev, &pkt_info, buf, size);
+     885: 	if (!skb)
+     886: 		return -ENOMEM;
+     887: 
+     888: 	ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_BCN);
+     889: 	if (ret) {
+     890: 		rtw_err(rtwdev, "failed to write rsvd page data\n");
+     891: 		return ret;
+     892: 	}
+     893: 
+     894: 	/* reserved pages go through beacon queue */
+  ...
+     907: 
+     908: 	skb = rtw_tx_write_data_h2c_get(rtwdev, &pkt_info, buf, size);
+     909: 	if (!skb)
+     910: 		return -ENOMEM;
+     911: 
+     912: 	ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_H2C);
+     913: 	if (ret) {
+     914: 		rtw_err(rtwdev, "failed to write h2c data\n");
+     915: 		return ret;
+     916: 	}
+     917: 
+     918: 	rtw_pci_tx_kick_off_queue(rtwdev, RTW_TX_QUEUE_H2C);
+  ...
+     927: 	enum rtw_tx_queue_type queue = rtw_tx_queue_mapping(skb);
+     928: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     929: 	struct rtw_pci_tx_ring *ring;
+     930: 	int ret;
+     931: 
+     932: 	ret = rtw_pci_tx_write_data(rtwdev, pkt_info, skb, queue);
+     933: 	if (ret)
+     934: 		return ret;
+     935: 
+     936: 	ring = &rtwpci->tx_rings[queue];
+     937: 	spin_lock_bh(&rtwpci->irq_lock);
+     938: 	if (avail_desc(ring->r.wp, ring->r.rp, ring->r.len) < 2) {
+[TX_TERMINAL] matches=9
+  ...
+     109: 		__skb_unlink(skb, &tx_ring->queue);
+     110: 		tx_data = rtw_pci_get_tx_data(skb);
+     111: 		dma = tx_data->dma;
+     112: 
+     113: 		dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+     114: 		dev_kfree_skb_any(skb);
+     115: 	}
+     116: }
+     117: 
+     118: static void rtw_pci_free_tx_ring(struct rtw_dev *rtwdev,
+     119: 				 struct rtw_pci_tx_ring *tx_ring)
+     120: {
+  ...
+     144: 		if (!skb)
+     145: 			continue;
+     146: 
+     147: 		dma = *((dma_addr_t *)skb->cb);
+     148: 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+     149: 		dev_kfree_skb(skb);
+     150: 		rx_ring->buf[i] = NULL;
+     151: 	}
+     152: }
+     153: 
+     154: static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+     155: 				 struct rtw_pci_rx_ring *rx_ring)
+  ...
+     199: 	if (!head) {
+     200: 		rtw_err(rtwdev, "failed to allocate tx ring\n");
+     201: 		return -ENOMEM;
+     202: 	}
+     203: 
+     204: 	skb_queue_head_init(&tx_ring->queue);
+     205: 	tx_ring->r.head = head;
+     206: 	tx_ring->r.dma = dma;
+     207: 	tx_ring->r.len = len;
+     208: 	tx_ring->r.desc_size = desc_size;
+     209: 	tx_ring->r.wp = 0;
+     210: 	tx_ring->r.rp = 0;
+  ...
+     286: 		memset(skb->data, 0, buf_sz);
+     287: 		rx_ring->buf[i] = skb;
+     288: 		ret = rtw_pci_reset_rx_desc(rtwdev, skb, rx_ring, i, desc_size);
+     289: 		if (ret) {
+     290: 			allocated = i;
+     291: 			dev_kfree_skb_any(skb);
+     292: 			goto err_out;
+     293: 		}
+     294: 	}
+     295: 
+     296: 	rx_ring->r.dma = dma;
+     297: 	rx_ring->r.len = len;
+  ...
+     306: 		skb = rx_ring->buf[i];
+     307: 		if (!skb)
+     308: 			continue;
+     309: 		dma = *((dma_addr_t *)skb->cb);
+     310: 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+     311: 		dev_kfree_skb_any(skb);
+     312: 		rx_ring->buf[i] = NULL;
+     313: 	}
+     314: 	dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+     315: 
+     316: 	rtw_err(rtwdev, "failed to init rx buffer\n");
+     317: 
+  ...
+     681: 		return;
+     682: 
+     683: 	tx_data = rtw_pci_get_tx_data(prev);
+     684: 	dma = tx_data->dma;
+     685: 	dma_unmap_single(&rtwpci->pdev->dev, dma, prev->len, DMA_TO_DEVICE);
+     686: 	dev_kfree_skb_any(prev);
+     687: }
+     688: 
+     689: static void rtw_pci_dma_check(struct rtw_dev *rtwdev,
+     690: 			      struct rtw_pci_rx_ring *rx_ring,
+     691: 			      u32 idx)
+     692: {
+  ...
+     855: 	tx_data->dma = dma;
+     856: 	tx_data->sn = pkt_info->sn;
+     857: 
+     858: 	spin_lock_bh(&rtwpci->irq_lock);
+     859: 
+     860: 	skb_queue_tail(&ring->queue, skb);
+     861: 
+     862: 	if (queue == RTW_TX_QUEUE_BCN)
+     863: 		goto out_unlock;
+     864: 
+     865: 	/* update write-index, and kick it off later */
+     866: 	set_bit(queue, rtwpci->tx_queued);
+  ...
+     996: 		dma_unmap_single(&rtwpci->pdev->dev, tx_data->dma, skb->len,
+     997: 				 DMA_TO_DEVICE);
+     998: 
+     999: 		/* just free command packets from host to card */
+    1000: 		if (hw_queue == RTW_TX_QUEUE_H2C) {
+    1001: 			dev_kfree_skb_irq(skb);
+    1002: 			continue;
+    1003: 		}
+    1004: 
+    1005: 		if (ring->queue_stopped &&
+    1006: 		    avail_desc(ring->r.wp, rp_idx, ring->r.len) > 4) {
+    1007: 			q_map = skb_get_queue_mapping(skb);
+  ...
+    1027: 			info->flags |= IEEE80211_TX_STAT_NOACK_TRANSMITTED;
+    1028: 		else
+    1029: 			info->flags |= IEEE80211_TX_STAT_ACK;
+    1030: 
+    1031: 		ieee80211_tx_info_clear_status(info);
+    1032: 		ieee80211_tx_status_irqsafe(hw, skb);
+    1033: 	}
+    1034: 
+    1035: 	ring->r.rp = cur_rp;
+    1036: }
+    1037: 
+    1038: /*
+[DMA_IMPL] matches=2
+  ...
+     223: 
+     224: 	if (!skb)
+     225: 		return -EINVAL;
+     226: 
+     227: 	dma = dma_map_single(&pdev->dev, skb->data, buf_sz, DMA_FROM_DEVICE);
+     228: 	if (dma_mapping_error(&pdev->dev, dma))
+     229: 		return -EBUSY;
+     230: 
+     231: 	*((dma_addr_t *)skb->cb) = dma;
+     232: 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+     233: 						     idx * desc_sz);
+     234: 	memset(buf_desc, 0, sizeof(*buf_desc));
+  ...
+     833: 	memset(pkt_desc, 0, tx_pkt_desc_sz);
+     834: 	pkt_info->qsel = rtw_pci_get_tx_qsel(skb, queue);
+     835: 	rtw_tx_fill_tx_desc(rtwdev, pkt_info, skb);
+     836: 	dma = dma_map_single(&rtwpci->pdev->dev, skb->data, skb->len,
+     837: 			     DMA_TO_DEVICE);
+     838: 	if (dma_mapping_error(&rtwpci->pdev->dev, dma))
+     839: 		return -EBUSY;
+     840: 
+     841: 	/* after this we got dma mapped, there is no way back */
+     842: 	buf_desc = get_tx_buffer_desc(ring, tx_buf_desc_sz);
+     843: 	memset(buf_desc, 0, tx_buf_desc_sz);
+     844: 	psb_len = (skb->len - 1) / 128 + 1;
+[DMA_ORDER] matches=37
+  ...
+      26: module_param_named(disable_aspm, rtw_pci_disable_aspm, bool, 0644);
+      27: MODULE_PARM_DESC(disable_msi, "Set Y to disable MSI interrupt support");
+      28: MODULE_PARM_DESC(disable_aspm, "Set Y to disable PCI ASPM support");
+      29: 
+      30: static const u32 rtw_pci_tx_queue_idx_addr[] = {
+      31: 	[RTW_TX_QUEUE_BK]	= RTK_PCI_TXBD_IDX_BKQ,
+      32: 	[RTW_TX_QUEUE_BE]	= RTK_PCI_TXBD_IDX_BEQ,
+      33: 	[RTW_TX_QUEUE_VI]	= RTK_PCI_TXBD_IDX_VIQ,
+      34: 	[RTW_TX_QUEUE_VO]	= RTK_PCI_TXBD_IDX_VOQ,
+      35: 	[RTW_TX_QUEUE_MGMT]	= RTK_PCI_TXBD_IDX_MGMTQ,
+      36: 	[RTW_TX_QUEUE_HI0]	= RTK_PCI_TXBD_IDX_HI0Q,
+      37: 	[RTW_TX_QUEUE_H2C]	= RTK_PCI_TXBD_IDX_H2CQ,
+      38: };
+      39: 
+      40: static u8 rtw_pci_get_tx_qsel(struct sk_buff *skb,
+      41: 			      enum rtw_tx_queue_type queue)
+      42: {
+      43: 	switch (queue) {
+      44: 	case RTW_TX_QUEUE_BCN:
+      45: 		return TX_DESC_QSEL_BEACON;
+      46: 	case RTW_TX_QUEUE_H2C:
+      47: 		return TX_DESC_QSEL_H2C;
+      48: 	case RTW_TX_QUEUE_MGMT:
+      49: 		return TX_DESC_QSEL_MGMT;
+      50: 	case RTW_TX_QUEUE_HI0:
+      51: 		return TX_DESC_QSEL_HIGH;
+      52: 	default:
+      53: 		return skb->priority;
+      54: 	}
+      55: };
+      56: 
+      57: static u8 rtw_pci_read8(struct rtw_dev *rtwdev, u32 addr)
+  ...
+     244: {
+     245: 	struct device *dev = rtwdev->dev;
+     246: 	struct rtw_pci_rx_buffer_desc *buf_desc;
+     247: 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+     248: 
+     249: 	dma_sync_single_for_device(dev, dma, buf_sz, DMA_FROM_DEVICE);
+     250: 
+     251: 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+     252: 						     idx * desc_sz);
+     253: 	memset(buf_desc, 0, sizeof(*buf_desc));
+     254: 	buf_desc->buf_size = cpu_to_le16(RTK_PCI_RX_BUF_SIZE);
+     255: 	buf_desc->dma = cpu_to_le32(dma);
+  ...
+     323: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     324: 	struct rtw_pci_tx_ring *tx_ring;
+     325: 	struct rtw_pci_rx_ring *rx_ring;
+     326: 	const struct rtw_chip_info *chip = rtwdev->chip;
+     327: 	int i = 0, j = 0, tx_alloced = 0, rx_alloced = 0;
+     328: 	int tx_desc_size, rx_desc_size;
+     329: 	u32 len;
+     330: 	int ret;
+     331: 
+     332: 	tx_desc_size = chip->tx_buf_desc_sz;
+     333: 
+     334: 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+     335: 		tx_ring = &rtwpci->tx_rings[i];
+     336: 		len = max_num_of_tx_queue(i);
+     337: 		ret = rtw_pci_init_tx_ring(rtwdev, tx_ring, tx_desc_size, len);
+     338: 		if (ret)
+     339: 			goto out;
+     340: 	}
+     341: 
+     342: 	rx_desc_size = chip->rx_buf_desc_sz;
+     343: 
+  ...
+     407: 
+     408: 	tmp = rtw_read8(rtwdev, RTK_PCI_CTRL + 3);
+     409: 	rtw_write8(rtwdev, RTK_PCI_CTRL + 3, tmp | 0xf7);
+     410: 
+     411: 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BCN].r.dma;
+     412: 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BCNQ, dma);
+     413: 
+     414: 	if (!rtw_chip_wcpu_8051(rtwdev)) {
+     415: 		len = rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.len;
+     416: 		dma = rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.dma;
+     417: 		rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.rp = 0;
+     418: 		rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.wp = 0;
+     419: 		rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_H2CQ, len & TRX_BD_IDX_MASK);
+     420: 		rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_H2CQ, dma);
+     421: 	}
+     422: 
+     423: 	len = rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.len;
+     424: 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.dma;
+     425: 	rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.rp = 0;
+     426: 	rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.wp = 0;
+     427: 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_BKQ, len & TRX_BD_IDX_MASK);
+     428: 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BKQ, dma);
+     429: 
+     430: 	len = rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.len;
+     431: 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.dma;
+     432: 	rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.rp = 0;
+     433: 	rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.wp = 0;
+     434: 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_BEQ, len & TRX_BD_IDX_MASK);
+     435: 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BEQ, dma);
+     436: 
+     437: 	len = rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.len;
+     438: 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.dma;
+     439: 	rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.rp = 0;
+     440: 	rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.wp = 0;
+     441: 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_VOQ, len & TRX_BD_IDX_MASK);
+     442: 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_VOQ, dma);
+     443: 
+     444: 	len = rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.len;
+     445: 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.dma;
+     446: 	rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.rp = 0;
+     447: 	rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.wp = 0;
+     448: 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_VIQ, len & TRX_BD_IDX_MASK);
+     449: 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_VIQ, dma);
+     450: 
+     451: 	len = rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.len;
+     452: 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.dma;
+     453: 	rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.rp = 0;
+     454: 	rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.wp = 0;
+     455: 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_MGMTQ, len & TRX_BD_IDX_MASK);
+     456: 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_MGMTQ, dma);
+     457: 
+     458: 	len = rtwpci->tx_rings[RTW_TX_QUEUE_HI0].r.len;
+     459: 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_HI0].r.dma;
+     460: 	rtwpci->tx_rings[RTW_TX_QUEUE_HI0].r.rp = 0;
+     461: 	rtwpci->tx_rings[RTW_TX_QUEUE_HI0].r.wp = 0;
+     462: 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_HI0Q, len & TRX_BD_IDX_MASK);
+     463: 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_HI0Q, dma);
+     464: 
+     465: 	len = rtwpci->rx_rings[RTW_RX_QUEUE_MPDU].r.len;
+     466: 	dma = rtwpci->rx_rings[RTW_RX_QUEUE_MPDU].r.dma;
+     467: 	rtwpci->rx_rings[RTW_RX_QUEUE_MPDU].r.rp = 0;
+     468: 	rtwpci->rx_rings[RTW_RX_QUEUE_MPDU].r.wp = 0;
+     469: 	rtw_write16(rtwdev, RTK_PCI_RXBD_NUM_MPDUQ, len & TRX_BD_IDX_MASK);
+     470: 	rtw_write32(rtwdev, RTK_PCI_RXBD_DESA_MPDUQ, dma);
+     471: 
+     472: 	/* reset read/write point */
+     473: 	rtw_write32(rtwdev, RTK_PCI_TXBD_RWPTR_CLR, 0xffffffff);
+     474: 
+     475: 	/* reset H2C Queue index in a single write */
+     476: 	if (rtw_chip_wcpu_3081(rtwdev))
+     477: 		rtw_write32_set(rtwdev, RTK_PCI_TXBD_H2CQ_CSR,
+     478: 				BIT_CLR_H2CQ_HOST_IDX | BIT_CLR_H2CQ_HW_IDX);
+     479: }
+     480: 
+     481: static void rtw_pci_reset_trx_ring(struct rtw_dev *rtwdev)
+     482: {
+     483: 	rtw_pci_reset_buf_desc(rtwdev);
+  ...
+     830: 		return -ENOSPC;
+     831: 
+     832: 	pkt_desc = skb_push(skb, chip->tx_pkt_desc_sz);
+     833: 	memset(pkt_desc, 0, tx_pkt_desc_sz);
+     834: 	pkt_info->qsel = rtw_pci_get_tx_qsel(skb, queue);
+     835: 	rtw_tx_fill_tx_desc(rtwdev, pkt_info, skb);
+     836: 	dma = dma_map_single(&rtwpci->pdev->dev, skb->data, skb->len,
+     837: 			     DMA_TO_DEVICE);
+     838: 	if (dma_mapping_error(&rtwpci->pdev->dev, dma))
+     839: 		return -EBUSY;
+     840: 
+     841: 	/* after this we got dma mapped, there is no way back */
+     842: 	buf_desc = get_tx_buffer_desc(ring, tx_buf_desc_sz);
+     843: 	memset(buf_desc, 0, tx_buf_desc_sz);
+     844: 	psb_len = (skb->len - 1) / 128 + 1;
+     845: 	if (queue == RTW_TX_QUEUE_BCN)
+     846: 		psb_len |= 1 << RTK_PCI_TXBD_OWN_OFFSET;
+     847: 
+     848: 	buf_desc[0].psb_len = cpu_to_le16(psb_len);
+     849: 	buf_desc[0].buf_size = cpu_to_le16(tx_pkt_desc_sz);
+     850: 	buf_desc[0].dma = cpu_to_le32(dma);
+     851: 	buf_desc[1].buf_size = cpu_to_le16(size);
+     852: 	buf_desc[1].dma = cpu_to_le32(dma + tx_pkt_desc_sz);
+  ...
+     890: 		rtw_err(rtwdev, "failed to write rsvd page data\n");
+     891: 		return ret;
+     892: 	}
+     893: 
+     894: 	/* reserved pages go through beacon queue */
+     895: 	reg_bcn_work = rtw_read8(rtwdev, RTK_PCI_TXBD_BCN_WORK);
+     896: 	reg_bcn_work |= BIT_PCI_BCNQ_FLAG;
+     897: 	rtw_write8(rtwdev, RTK_PCI_TXBD_BCN_WORK, reg_bcn_work);
+     898: 
+     899: 	return 0;
+     900: }
+     901: 
+     902: static int rtw_pci_write_data_h2c(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+     903: {
+  ...
+    1135: 
+    1136: 	while (count--) {
+    1137: 		rtw_pci_dma_check(rtwdev, ring, cur_rp);
+    1138: 		skb = ring->buf[cur_rp];
+    1139: 		dma = *((dma_addr_t *)skb->cb);
+    1140: 		dma_sync_single_for_cpu(rtwdev->dev, dma, RTK_PCI_RX_BUF_SIZE,
+    1141: 					DMA_FROM_DEVICE);
+    1142: 		rx_desc = skb->data;
+    1143: 		rtw_rx_query_rx_desc(rtwdev, rx_desc, &pkt_stat, &rx_status);
+    1144: 
+    1145: 		/* offset from rx_desc to payload */
+    1146: 		pkt_offset = pkt_desc_sz + pkt_stat.drv_info_sz +
+[IRQ] matches=3
+  ...
+    1687: 	.write32 = rtw_pci_write32,
+    1688: 	.write_data_rsvd_page = rtw_pci_write_data_rsvd_page,
+    1689: 	.write_data_h2c = rtw_pci_write_data_h2c,
+    1690: };
+    1691: 
+    1692: static int rtw_pci_request_irq(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+    1693: {
+    1694: 	unsigned int flags = PCI_IRQ_INTX;
+    1695: 	int ret;
+    1696: 
+    1697: 	if (!rtw_disable_msi)
+    1698: 		flags |= PCI_IRQ_MSI;
+  ...
+    1701: 	if (ret < 0) {
+    1702: 		rtw_err(rtwdev, "failed to alloc PCI irq vectors\n");
+    1703: 		return ret;
+    1704: 	}
+    1705: 
+    1706: 	ret = devm_request_threaded_irq(rtwdev->dev, pdev->irq,
+    1707: 					rtw_pci_interrupt_handler,
+    1708: 					rtw_pci_interrupt_threadfn,
+    1709: 					IRQF_SHARED, KBUILD_MODNAME, rtwdev);
+    1710: 	if (ret) {
+    1711: 		rtw_err(rtwdev, "failed to request irq %d\n", ret);
+    1712: 		pci_free_irq_vectors(pdev);
+  ...
+    1896: 	if (ret) {
+    1897: 		rtw_err(rtwdev, "failed to register hw\n");
+    1898: 		goto err_destroy_pci;
+    1899: 	}
+    1900: 
+    1901: 	ret = rtw_pci_request_irq(rtwdev, pdev);
+    1902: 	if (ret) {
+    1903: 		ieee80211_unregister_hw(hw);
+    1904: 		goto err_destroy_pci;
+    1905: 	}
+    1906: 
+    1907: 	return 0;
+[IRQ_DRAIN] matches=8
+  ...
+     567: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     568: 
+     569: 	if (!test_and_clear_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+     570: 		return;
+     571: 
+     572: 	napi_synchronize(&rtwpci->napi);
+     573: 	napi_disable(&rtwpci->napi);
+     574: }
+     575: 
+     576: static int rtw_pci_start(struct rtw_dev *rtwdev)
+     577: {
+     578: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     579: 
+  ...
+     595: 	spin_lock_bh(&rtwpci->irq_lock);
+     596: 	rtwpci->running = false;
+     597: 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+     598: 	spin_unlock_bh(&rtwpci->irq_lock);
+     599: 
+     600: 	synchronize_irq(pdev->irq);
+     601: 	rtw_pci_napi_stop(rtwdev);
+     602: 
+     603: 	spin_lock_bh(&rtwpci->irq_lock);
+     604: 	rtw_pci_dma_release(rtwdev, rtwpci);
+     605: 	spin_unlock_bh(&rtwpci->irq_lock);
+     606: }
+  ...
+    1707: 					rtw_pci_interrupt_handler,
+    1708: 					rtw_pci_interrupt_threadfn,
+    1709: 					IRQF_SHARED, KBUILD_MODNAME, rtwdev);
+    1710: 	if (ret) {
+    1711: 		rtw_err(rtwdev, "failed to request irq %d\n", ret);
+    1712: 		pci_free_irq_vectors(pdev);
+    1713: 	}
+    1714: 
+    1715: 	return ret;
+    1716: }
+    1717: 
+    1718: static void rtw_pci_free_irq(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+    1719: {
+    1720: 	devm_free_irq(rtwdev->dev, pdev->irq, rtwdev);
+    1721: 	pci_free_irq_vectors(pdev);
+    1722: }
+    1723: 
+    1724: static int rtw_pci_napi_poll(struct napi_struct *napi, int budget)
+    1725: {
+    1726: 	struct rtw_pci *rtwpci = container_of(napi, struct rtw_pci, napi);
+    1727: 	struct rtw_dev *rtwdev = container_of((void *)rtwpci, struct rtw_dev,
+  ...
+    1936: 	rtwdev = hw->priv;
+    1937: 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+    1938: 
+    1939: 	rtw_unregister_hw(rtwdev, hw);
+    1940: 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+    1941: 	rtw_pci_free_irq(rtwdev, pdev);
+    1942: 	rtw_pci_napi_deinit(rtwdev);
+    1943: 	rtw_pci_destroy(rtwdev, pdev);
+    1944: 	rtw_pci_declaim(rtwdev, pdev);
+    1945: 	rtw_core_deinit(rtwdev);
+    1946: 	ieee80211_free_hw(hw);
+    1947: 	pci_set_drvdata(pdev, NULL);
+[SKYWALK_REGISTER] matches=2
+  ...
+     470: 	rtw_write32(rtwdev, RTK_PCI_RXBD_DESA_MPDUQ, dma);
+     471: 
+     472: 	/* reset read/write point */
+     473: 	rtw_write32(rtwdev, RTK_PCI_TXBD_RWPTR_CLR, 0xffffffff);
+     474: 
+     475: 	/* reset H2C Queue index in a single write */
+     476: 	if (rtw_chip_wcpu_3081(rtwdev))
+     477: 		rtw_write32_set(rtwdev, RTK_PCI_TXBD_H2CQ_CSR,
+     478: 				BIT_CLR_H2CQ_HOST_IDX | BIT_CLR_H2CQ_HW_IDX);
+     479: }
+     480: 
+     481: static void rtw_pci_reset_trx_ring(struct rtw_dev *rtwdev)
+  ...
+     861: 
+     862: 	if (queue == RTW_TX_QUEUE_BCN)
+     863: 		goto out_unlock;
+     864: 
+     865: 	/* update write-index, and kick it off later */
+     866: 	set_bit(queue, rtwpci->tx_queued);
+     867: 	if (++ring->r.wp >= ring->r.len)
+     868: 		ring->r.wp = 0;
+     869: 
+     870: out_unlock:
+     871: 	spin_unlock_bh(&rtwpci->irq_lock);
+     872: 
+[SKYWALK_LIFETIME] matches=2
+  ...
+    1739: 		if (work_done_once == 0)
+    1740: 			break;
+    1741: 		work_done += work_done_once;
+    1742: 	}
+    1743: 	if (work_done < budget) {
+    1744: 		napi_complete_done(napi, work_done);
+    1745: 		spin_lock_bh(&rtwpci->irq_lock);
+    1746: 		if (rtwpci->running)
+    1747: 			rtw_pci_enable_interrupt(rtwdev, rtwpci, false);
+    1748: 		spin_unlock_bh(&rtwpci->irq_lock);
+    1749: 		/* When ISR happens during polling and before napi_complete
+    1750: 		 * while no further data is received. Data on the dma_ring will
+    1751: 		 * not be processed immediately. Check whether dma ring is
+    1752: 		 * empty and perform napi_schedule accordingly.
+    1753: 		 */
+    1754: 		if (rtw_pci_get_hw_rx_ring_nr(rtwdev, rtwpci))
+    1755: 			napi_schedule(napi);
+[STOP_REMOVE] matches=27
+  ...
+      94: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+      95: 
+      96: 	writel(val, rtwpci->mmap + addr);
+      97: }
+      98: 
+      99: static void rtw_pci_free_tx_ring_skbs(struct rtw_dev *rtwdev,
+     100: 				      struct rtw_pci_tx_ring *tx_ring)
+     101: {
+     102: 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+     103: 	struct rtw_pci_tx_data *tx_data;
+     104: 	struct sk_buff *skb, *tmp;
+     105: 	dma_addr_t dma;
+  ...
+     113: 		dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+     114: 		dev_kfree_skb_any(skb);
+     115: 	}
+     116: }
+     117: 
+     118: static void rtw_pci_free_tx_ring(struct rtw_dev *rtwdev,
+     119: 				 struct rtw_pci_tx_ring *tx_ring)
+     120: {
+     121: 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+     122: 	u8 *head = tx_ring->r.head;
+     123: 	u32 len = tx_ring->r.len;
+     124: 	int ring_sz = len * tx_ring->r.desc_size;
+     125: 
+     126: 	rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+     127: 
+     128: 	/* free the ring itself */
+     129: 	dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+     130: 	tx_ring->r.head = NULL;
+     131: }
+     132: 
+     133: static void rtw_pci_free_rx_ring_skbs(struct rtw_dev *rtwdev,
+     134: 				      struct rtw_pci_rx_ring *rx_ring)
+     135: {
+     136: 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+     137: 	struct sk_buff *skb;
+     138: 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+     139: 	dma_addr_t dma;
+  ...
+     149: 		dev_kfree_skb(skb);
+     150: 		rx_ring->buf[i] = NULL;
+     151: 	}
+     152: }
+     153: 
+     154: static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+     155: 				 struct rtw_pci_rx_ring *rx_ring)
+     156: {
+     157: 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+     158: 	u8 *head = rx_ring->r.head;
+     159: 	int ring_sz = rx_ring->r.desc_size * rx_ring->r.len;
+     160: 
+     161: 	rtw_pci_free_rx_ring_skbs(rtwdev, rx_ring);
+     162: 
+     163: 	dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+     164: }
+     165: 
+     166: static void rtw_pci_free_trx_ring(struct rtw_dev *rtwdev)
+     167: {
+     168: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     169: 	struct rtw_pci_tx_ring *tx_ring;
+     170: 	struct rtw_pci_rx_ring *rx_ring;
+     171: 	int i;
+     172: 
+     173: 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+     174: 		tx_ring = &rtwpci->tx_rings[i];
+     175: 		rtw_pci_free_tx_ring(rtwdev, tx_ring);
+     176: 	}
+     177: 
+     178: 	for (i = 0; i < RTK_MAX_RX_QUEUE_NUM; i++) {
+     179: 		rx_ring = &rtwpci->rx_rings[i];
+     180: 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+     181: 	}
+     182: }
+     183: 
+     184: static int rtw_pci_init_tx_ring(struct rtw_dev *rtwdev,
+     185: 				struct rtw_pci_tx_ring *tx_ring,
+     186: 				u8 desc_size, u32 len)
+  ...
+     309: 		dma = *((dma_addr_t *)skb->cb);
+     310: 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+     311: 		dev_kfree_skb_any(skb);
+     312: 		rx_ring->buf[i] = NULL;
+     313: 	}
+     314: 	dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+     315: 
+     316: 	rtw_err(rtwdev, "failed to init rx buffer\n");
+     317: 
+     318: 	return ret;
+     319: }
+     320: 
+  ...
+     353: 
+     354: out:
+     355: 	tx_alloced = i;
+     356: 	for (i = 0; i < tx_alloced; i++) {
+     357: 		tx_ring = &rtwpci->tx_rings[i];
+     358: 		rtw_pci_free_tx_ring(rtwdev, tx_ring);
+     359: 	}
+     360: 
+     361: 	rx_alloced = j;
+     362: 	for (j = 0; j < rx_alloced; j++) {
+     363: 		rx_ring = &rtwpci->rx_rings[j];
+     364: 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+     365: 	}
+     366: 
+     367: 	return ret;
+     368: }
+     369: 
+     370: static void rtw_pci_deinit(struct rtw_dev *rtwdev)
+     371: {
+     372: 	rtw_pci_free_trx_ring(rtwdev);
+     373: }
+     374: 
+     375: static int rtw_pci_init(struct rtw_dev *rtwdev)
+     376: {
+     377: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     378: 	int ret = 0;
+  ...
+     546: 	enum rtw_tx_queue_type queue;
+     547: 
+     548: 	rtw_pci_reset_trx_ring(rtwdev);
+     549: 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++) {
+     550: 		tx_ring = &rtwpci->tx_rings[queue];
+     551: 		rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+     552: 	}
+     553: }
+     554: 
+     555: static void rtw_pci_napi_start(struct rtw_dev *rtwdev)
+     556: {
+     557: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  ...
+     560: 		return;
+     561: 
+     562: 	napi_enable(&rtwpci->napi);
+     563: }
+     564: 
+     565: static void rtw_pci_napi_stop(struct rtw_dev *rtwdev)
+     566: {
+     567: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     568: 
+     569: 	if (!test_and_clear_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+     570: 		return;
+     571: 
+  ...
+     585: 	spin_unlock_bh(&rtwpci->irq_lock);
+     586: 
+     587: 	return 0;
+     588: }
+     589: 
+     590: static void rtw_pci_stop(struct rtw_dev *rtwdev)
+     591: {
+     592: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+     593: 	struct pci_dev *pdev = rtwpci->pdev;
+     594: 
+     595: 	spin_lock_bh(&rtwpci->irq_lock);
+     596: 	rtwpci->running = false;
+     597: 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+     598: 	spin_unlock_bh(&rtwpci->irq_lock);
+     599: 
+     600: 	synchronize_irq(pdev->irq);
+     601: 	rtw_pci_napi_stop(rtwdev);
+     602: 
+     603: 	spin_lock_bh(&rtwpci->irq_lock);
+     604: 	rtw_pci_dma_release(rtwdev, rtwpci);
+     605: 	spin_unlock_bh(&rtwpci->irq_lock);
+     606: }
+     607: 
+  ...
+    1049: 	if (sw_wp) *sw_wp = ring->r.wp;
+    1050: 	if (sw_rp) *sw_rp = ring->r.rp;
+    1051: 	if (qlen)  *qlen  = skb_queue_len(&ring->queue);
+    1052: }
+    1053: 
+    1054: /* Free descriptor slots in the BE TX ring.  Used by the kext output path to
+    1055:  * decide when to apply backpressure (stall) instead of letting a full ring
+    1056:  * drop frames.  Lock-free read: wp is written only by the (serialized) TX
+    1057:  * submit path, rp only by tx_isr; a momentarily stale rp just yields a
+    1058:  * conservative (smaller) avail, which is safe. */
+    1059: u32 rtw88_be_ring_avail(struct rtw_dev *rtwdev)
+    1060: {
+  ...
+    1670: 	.tx_write = rtw_pci_tx_write,
+    1671: 	.tx_kick_off = rtw_pci_tx_kick_off,
+    1672: 	.flush_queues = rtw_pci_flush_queues,
+    1673: 	.setup = rtw_pci_setup,
+    1674: 	.start = rtw_pci_start,
+    1675: 	.stop = rtw_pci_stop,
+    1676: 	.deep_ps = rtw_pci_deep_ps,
+    1677: 	.link_ps = rtw_pci_link_ps,
+    1678: 	.interface_cfg = rtw_pci_interface_cfg,
+    1679: 	.dynamic_rx_agg = NULL,
+    1680: 	.write_firmware_page = rtw_write_firmware_page,
+    1681: 
+  ...
+    1779: 
+    1780: static void rtw_pci_napi_deinit(struct rtw_dev *rtwdev)
+    1781: {
+    1782: 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+    1783: 
+    1784: 	rtw_pci_napi_stop(rtwdev);
+    1785: 	netif_napi_del(&rtwpci->napi);
+    1786: 	if (rtwpci->netdev) {
+    1787: 		free_netdev(rtwpci->netdev);
+    1788: 		rtwpci->netdev = NULL;
+    1789: 	}
+    1790: }
+  ...
+    1922: 
+    1923: 	return ret;
+    1924: }
+    1925: EXPORT_SYMBOL(rtw_pci_probe);
+    1926: 
+    1927: void rtw_pci_remove(struct pci_dev *pdev)
+    1928: {
+    1929: 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+    1930: 	struct rtw_dev *rtwdev;
+    1931: 	struct rtw_pci *rtwpci;
+    1932: 
+    1933: 	if (!hw)
+  ...
+    1944: 	rtw_pci_declaim(rtwdev, pdev);
+    1945: 	rtw_core_deinit(rtwdev);
+    1946: 	ieee80211_free_hw(hw);
+    1947: 	pci_set_drvdata(pdev, NULL);
+    1948: }
+    1949: EXPORT_SYMBOL(rtw_pci_remove);
+    1950: 
+    1951: void rtw_pci_shutdown(struct pci_dev *pdev)
+    1952: {
+    1953: 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+    1954: 	struct rtw_dev *rtwdev;
+    1955: 	const struct rtw_chip_info *chip;
+    1956: 
+    1957: 	if (!hw)
+  ...
+    1963: 	if (chip->ops->shutdown)
+    1964: 		chip->ops->shutdown(rtwdev);
+    1965: 
+    1966: 	pci_set_power_state(pdev, PCI_D3hot);
+    1967: }
+    1968: EXPORT_SYMBOL(rtw_pci_shutdown);
+    1969: 
+    1970: MODULE_AUTHOR("Realtek Corporation");
+    1971: MODULE_DESCRIPTION("Realtek PCI 802.11ac wireless driver");
+    1972: MODULE_LICENSE("Dual BSD/GPL");
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h | bytes=6806 | sha256=49129551f28352e1edd567199261893a84f4d451d3fec3af04909085b41c219d | git_tracked=no ===
+[DMA_ORDER] matches=30
+  ...
+       5: #ifndef __RTK_PCI_H_
+       6: #define __RTK_PCI_H_
+       7: 
+       8: #include "main.h"
+       9: 
+      10: #define RTK_DEFAULT_TX_DESC_NUM 128
+      11: #define RTK_BEQ_TX_DESC_NUM	256
+      12: 
+      13: #define RTK_MAX_RX_DESC_NUM	512
+      14: /* 11K + rx desc size */
+      15: #define RTK_PCI_RX_BUF_SIZE	(11454 + 24)
+      16: 
+      17: #define RTK_PCI_CTRL		0x300
+  ...
+      39: #define BIT_L1_SW_EN		BIT(3)
+      40: #define BIT_CLKREQ_N_PAD	BIT(0)
+      41: #define RTK_PCIE_CLKDLY_CTRL	0x0725
+      42: 
+      43: #define BIT_PCI_BCNQ_FLAG	BIT(4)
+      44: #define RTK_PCI_TXBD_DESA_BCNQ	0x308
+      45: #define RTK_PCI_TXBD_DESA_H2CQ	0x1320
+      46: #define RTK_PCI_TXBD_DESA_MGMTQ	0x310
+      47: #define RTK_PCI_TXBD_DESA_BKQ	0x330
+      48: #define RTK_PCI_TXBD_DESA_BEQ	0x328
+      49: #define RTK_PCI_TXBD_DESA_VIQ	0x320
+      50: #define RTK_PCI_TXBD_DESA_VOQ	0x318
+      51: #define RTK_PCI_TXBD_DESA_HI0Q	0x340
+      52: #define RTK_PCI_RXBD_DESA_MPDUQ	0x338
+      53: 
+      54: #define TRX_BD_IDX_MASK		GENMASK(11, 0)
+      55: #define TRX_BD_HW_IDX_MASK	GENMASK(27, 16)
+      56: 
+      57: /* BCNQ is specialized for rsvd page, does not need to specify a number */
+      58: #define RTK_PCI_TXBD_NUM_H2CQ	0x1328
+      59: #define RTK_PCI_TXBD_NUM_MGMTQ	0x380
+      60: #define RTK_PCI_TXBD_NUM_BKQ	0x38A
+      61: #define RTK_PCI_TXBD_NUM_BEQ	0x388
+      62: #define RTK_PCI_TXBD_NUM_VIQ	0x386
+      63: #define RTK_PCI_TXBD_NUM_VOQ	0x384
+      64: #define RTK_PCI_TXBD_NUM_HI0Q	0x38C
+      65: #define RTK_PCI_RXBD_NUM_MPDUQ	0x382
+      66: #define RTK_PCI_TXBD_IDX_H2CQ	0x132C
+      67: #define RTK_PCI_TXBD_IDX_MGMTQ	0x3B0
+      68: #define RTK_PCI_TXBD_IDX_BKQ	0x3AC
+      69: #define RTK_PCI_TXBD_IDX_BEQ	0x3A8
+      70: #define RTK_PCI_TXBD_IDX_VIQ	0x3A4
+      71: #define RTK_PCI_TXBD_IDX_VOQ	0x3A0
+      72: #define RTK_PCI_TXBD_IDX_HI0Q	0x3B8
+      73: #define RTK_PCI_RXBD_IDX_MPDUQ	0x3B4
+      74: 
+      75: #define RTK_PCI_TXBD_RWPTR_CLR	0x39C
+      76: #define RTK_PCI_TXBD_H2CQ_CSR	0x1330
+      77: 
+      78: #define BIT_CLR_H2CQ_HOST_IDX	BIT(16)
+      79: #define BIT_CLR_H2CQ_HW_IDX	BIT(8)
+      80: 
+      81: #define RTK_PCI_HIMR0		0x0B0
+      82: #define RTK_PCI_HISR0		0x0B4
+  ...
+     157: 		return rp - wp - 1;
+     158: 	else
+     159: 		return len - wp + rp - 1;
+     160: }
+     161: 
+     162: #define RTK_PCI_TXBD_OWN_OFFSET 15
+     163: #define RTK_PCI_TXBD_BCN_WORK	0x383
+     164: 
+     165: struct rtw_pci_tx_buffer_desc {
+     166: 	__le16 buf_size;
+     167: 	__le16 psb_len;
+     168: 	__le32 dma;
+     169: };
+  ...
+     241: {
+     242: 	u32 max_num;
+     243: 
+     244: 	switch (queue) {
+     245: 	case RTW_TX_QUEUE_BE:
+     246: 		max_num = RTK_BEQ_TX_DESC_NUM;
+     247: 		break;
+     248: 	case RTW_TX_QUEUE_BCN:
+     249: 		max_num = 1;
+     250: 		break;
+     251: 	default:
+     252: 		max_num = RTK_DEFAULT_TX_DESC_NUM;
+     253: 		break;
+     254: 	}
+     255: 
+     256: 	return max_num;
+     257: }
+     258: 
+[STOP_REMOVE] matches=2
+  ...
+     232: 
+     233: extern const struct dev_pm_ops rtw_pm_ops;
+     234: extern const struct pci_error_handlers rtw_pci_err_handler;
+     235: 
+     236: int rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+     237: void rtw_pci_remove(struct pci_dev *pdev);
+     238: void rtw_pci_shutdown(struct pci_dev *pdev);
+     239: 
+     240: static inline u32 max_num_of_tx_queue(u8 queue)
+     241: {
+     242: 	u32 max_num;
+     243: 
+     244: 	switch (queue) {
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/ps.c | bytes=8525 | sha256=d303849f450715d5f054ac2345f1cb16df92107b1c792456521e3aa6e74b6be3 | git_tracked=no ===
+[STOP_REMOVE] matches=1
+  ...
+      29: 	if (!test_bit(RTW_FLAG_POWERON, rtwdev->flags))
+      30: 		return 0;
+      31: 
+      32: 	rtw_coex_ips_notify(rtwdev, COEX_IPS_ENTER);
+      33: 
+      34: 	rtw_core_stop(rtwdev);
+      35: 	rtw_hci_link_ps(rtwdev, true);
+      36: 
+      37: 	return 0;
+      38: }
+      39: 
+      40: static void rtw_restore_port_cfg_iter(void *data, struct ieee80211_vif *vif)
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c | bytes=63613 | sha256=86130e6fb10f85b658cccfa4872d660ea3908373f7ffd58257382cb111b8f014 | git_tracked=no ===
+[DMA_ORDER] matches=3
+  ...
+    1231: 		ledcfg &= ~BIT_LED2_SV;
+    1232: 
+    1233: 	rtw_write32(rtwdev, REG_LED_CFG, ledcfg);
+    1234: }
+    1235: 
+    1236: static void rtw8821c_fill_txdesc_checksum(struct rtw_dev *rtwdev,
+    1237: 					  struct rtw_tx_pkt_info *pkt_info,
+    1238: 					  u8 *txdesc)
+    1239: {
+    1240: 	fill_txdesc_checksum_common(txdesc, 16);
+    1241: }
+    1242: 
+    1243: static const struct rtw_pwr_seq_cmd trans_carddis_to_cardemu_8821c[] = {
+    1244: 	{0x0086,
+    1245: 	 RTW_PWR_CUT_ALL_MSK,
+    1246: 	 RTW_PWR_INTF_SDIO_MSK,
+  ...
+    1683: 	.pwr_track		= rtw8821c_pwr_track,
+    1684: 	.config_bfee		= rtw8821c_bf_config_bfee,
+    1685: 	.set_gid_table		= rtw_bf_set_gid_table,
+    1686: 	.cfg_csi_rate		= rtw_bf_cfg_csi_rate,
+    1687: 	.led_set		= rtw8821c_led_set,
+    1688: 	.fill_txdesc_checksum	= rtw8821c_fill_txdesc_checksum,
+    1689: 
+    1690: 	.coex_set_init		= rtw8821c_coex_cfg_init,
+    1691: 	.coex_set_ant_switch	= rtw8821c_coex_cfg_ant_switch,
+    1692: 	.coex_set_gnt_fix	= rtw8821c_coex_cfg_gnt_fix,
+    1693: 	.coex_set_gnt_debug	= rtw8821c_coex_cfg_gnt_debug,
+    1694: 	.coex_set_rfe_type	= rtw8821c_coex_cfg_rfe_type,
+[SKYWALK_REGISTER] matches=1
+  ...
+     826: 	/* enable PTA (3-wire function form BT side) */
+     827: 	rtw_write32_set(rtwdev, REG_GPIO_MUXCFG, BIT_BT_PTA_EN);
+     828: 	rtw_write32_set(rtwdev, REG_GPIO_MUXCFG, BIT_PO_BT_PTA_PINS);
+     829: 
+     830: 	/* enable PTA (tx/rx signal form WiFi side) */
+     831: 	rtw_write8_set(rtwdev, REG_QUEUE_CTRL, BIT_PTA_WL_TX_EN);
+     832: 	/* wl tx signal to PTA not case EDCCA */
+     833: 	rtw_write8_clr(rtwdev, REG_QUEUE_CTRL, BIT_PTA_EDCCA_EN);
+     834: 	/* GNT_BT=1 while select both */
+     835: 	rtw_write16_set(rtwdev, REG_BT_COEX_V2, BIT_GNT_BT_POLARITY);
+     836: 
+     837: 	/* beacon queue always hi-pri  */
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c | bytes=944 | sha256=cb66db0f20a231579aaacfb154af9c51171b09ba8e0654bd86fc6ef2f7dfd1c5 | git_tracked=no ===
+[STOP_REMOVE] matches=2
+  ...
+      22: 
+      23: static struct pci_driver rtw_8821ce_driver = {
+      24: 	.name = KBUILD_MODNAME,
+      25: 	.id_table = rtw_8821ce_id_table,
+      26: 	.probe = rtw_pci_probe,
+      27: 	.remove = rtw_pci_remove,
+      28: 	.driver.pm = &rtw_pm_ops,
+      29: 	.shutdown = rtw_pci_shutdown,
+      30: 	.err_handler  = &rtw_pci_err_handler,
+      31: };
+      32: module_pci_driver(rtw_8821ce_driver);
+      33: 
+      34: MODULE_AUTHOR("Realtek Corporation");
+      35: MODULE_DESCRIPTION("Realtek 802.11ac wireless 8821ce driver");
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822b.c | bytes=78920 | sha256=8888cf22bbdfcb0f3577647aa4446f9c9ace943d0327b42f4ebf41c6b8cdf90b | git_tracked=no ===
+[DMA_ORDER] matches=3
+  ...
+    1586: 		ledcfg &= ~BIT_LED2_SV;
+    1587: 
+    1588: 	rtw_write32(rtwdev, REG_LED_CFG, ledcfg);
+    1589: }
+    1590: 
+    1591: static void rtw8822b_fill_txdesc_checksum(struct rtw_dev *rtwdev,
+    1592: 					  struct rtw_tx_pkt_info *pkt_info,
+    1593: 					  u8 *txdesc)
+    1594: {
+    1595: 	size_t words = 32 / 2; /* calculate the first 32 bytes (16 words) */
+    1596: 
+    1597: 	fill_txdesc_checksum_common(txdesc, words);
+    1598: }
+    1599: 
+    1600: static const struct rtw_pwr_seq_cmd trans_carddis_to_cardemu_8822b[] = {
+    1601: 	{0x0086,
+    1602: 	 RTW_PWR_CUT_ALL_MSK,
+    1603: 	 RTW_PWR_INTF_SDIO_MSK,
+  ...
+    2169: 	.set_gid_table		= rtw_bf_set_gid_table,
+    2170: 	.cfg_csi_rate		= rtw_bf_cfg_csi_rate,
+    2171: 	.adaptivity_init	= rtw8822b_adaptivity_init,
+    2172: 	.adaptivity		= rtw8822b_adaptivity,
+    2173: 	.led_set		= rtw8822b_led_set,
+    2174: 	.fill_txdesc_checksum	= rtw8822b_fill_txdesc_checksum,
+    2175: 
+    2176: 	.coex_set_init		= rtw8822b_coex_cfg_init,
+    2177: 	.coex_set_ant_switch	= rtw8822b_coex_cfg_ant_switch,
+    2178: 	.coex_set_gnt_fix	= rtw8822b_coex_cfg_gnt_fix,
+    2179: 	.coex_set_gnt_debug	= rtw8822b_coex_cfg_gnt_debug,
+    2180: 	.coex_set_rfe_type	= rtw8822b_coex_cfg_rfe_type,
+[SKYWALK_REGISTER] matches=1
+  ...
+    1113: 	/* enable PTA (3-wire function form BT side) */
+    1114: 	rtw_write32_set(rtwdev, REG_GPIO_MUXCFG, BIT_BT_PTA_EN);
+    1115: 	rtw_write32_set(rtwdev, REG_GPIO_MUXCFG, BIT_PO_BT_PTA_PINS);
+    1116: 
+    1117: 	/* enable PTA (tx/rx signal form WiFi side) */
+    1118: 	rtw_write8_set(rtwdev, REG_QUEUE_CTRL, BIT_PTA_WL_TX_EN);
+    1119: 	/* wl tx signal to PTA not case EDCCA */
+    1120: 	rtw_write8_clr(rtwdev, REG_QUEUE_CTRL, BIT_PTA_EDCCA_EN);
+    1121: 	/* GNT_BT=1 while select both */
+    1122: 	rtw_write16_set(rtwdev, REG_BT_COEX_V2, BIT_GNT_BT_POLARITY);
+    1123: }
+    1124: 
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822be.c | bytes=841 | sha256=c6ceb74c7cfb962a9afe0c84ff81f119b6e14e125e30cf48f21396e7787d986c | git_tracked=no ===
+[STOP_REMOVE] matches=2
+  ...
+      18: 
+      19: static struct pci_driver rtw_8822be_driver = {
+      20: 	.name = KBUILD_MODNAME,
+      21: 	.id_table = rtw_8822be_id_table,
+      22: 	.probe = rtw_pci_probe,
+      23: 	.remove = rtw_pci_remove,
+      24: 	.driver.pm = &rtw_pm_ops,
+      25: 	.shutdown = rtw_pci_shutdown,
+      26: 	.err_handler  = &rtw_pci_err_handler,
+      27: };
+      28: module_pci_driver(rtw_8822be_driver);
+      29: 
+      30: MODULE_AUTHOR("Realtek Corporation");
+      31: MODULE_DESCRIPTION("Realtek 802.11ac wireless 8822be driver");
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822c.c | bytes=166185 | sha256=1541a3b0e215c425b91b54e7ead391aa1bcbf8bfae021c563208de98aee058be | git_tracked=no ===
+[DMA_ORDER] matches=3
+  ...
+    4555: 		ledcfg &= ~BIT_LED2_SV;
+    4556: 
+    4557: 	rtw_write32(rtwdev, REG_LED_CFG, ledcfg);
+    4558: }
+    4559: 
+    4560: static void rtw8822c_fill_txdesc_checksum(struct rtw_dev *rtwdev,
+    4561: 					  struct rtw_tx_pkt_info *pkt_info,
+    4562: 					  u8 *txdesc)
+    4563: {
+    4564: 	const struct rtw_chip_info *chip = rtwdev->chip;
+    4565: 	size_t words;
+    4566: 
+    4567: 	words = (pkt_info->pkt_offset * 8 + chip->tx_pkt_desc_sz) / 2;
+    4568: 
+    4569: 	fill_txdesc_checksum_common(txdesc, words);
+    4570: }
+    4571: 
+    4572: static const struct rtw_pwr_seq_cmd trans_carddis_to_cardemu_8822c[] = {
+    4573: 	{0x0086,
+    4574: 	 RTW_PWR_CUT_ALL_MSK,
+    4575: 	 RTW_PWR_INTF_SDIO_MSK,
+  ...
+    4985: 	.cfo_init		= rtw8822c_cfo_init,
+    4986: 	.cfo_track		= rtw8822c_cfo_track,
+    4987: 	.config_tx_path		= rtw8822c_config_tx_path,
+    4988: 	.config_txrx_mode	= rtw8822c_config_trx_mode,
+    4989: 	.led_set		= rtw8822c_led_set,
+    4990: 	.fill_txdesc_checksum	= rtw8822c_fill_txdesc_checksum,
+    4991: 
+    4992: 	.coex_set_init		= rtw8822c_coex_cfg_init,
+    4993: 	.coex_set_ant_switch	= NULL,
+    4994: 	.coex_set_gnt_fix	= rtw8822c_coex_cfg_gnt_fix,
+    4995: 	.coex_set_gnt_debug	= rtw8822c_coex_cfg_gnt_debug,
+    4996: 	.coex_set_rfe_type	= rtw8822c_coex_cfg_rfe_type,
+[SKYWALK_REGISTER] matches=1
+  ...
+    2933: 	/* enable PTA (3-wire function form BT side) */
+    2934: 	rtw_write32_set(rtwdev, REG_GPIO_MUXCFG, BIT_BT_PTA_EN);
+    2935: 	rtw_write32_set(rtwdev, REG_GPIO_MUXCFG, BIT_PO_BT_PTA_PINS);
+    2936: 
+    2937: 	/* enable PTA (tx/rx signal form WiFi side) */
+    2938: 	rtw_write8_set(rtwdev, REG_QUEUE_CTRL, BIT_PTA_WL_TX_EN);
+    2939: 	/* wl tx signal to PTA not case EDCCA */
+    2940: 	rtw_write8_clr(rtwdev, REG_QUEUE_CTRL, BIT_PTA_EDCCA_EN);
+    2941: 	/* GNT_BT=1 while select both */
+    2942: 	rtw_write16_set(rtwdev, REG_BT_COEX_V2, BIT_GNT_BT_POLARITY);
+    2943: 	/* BT_CCA = ~GNT_WL_BB, not or GNT_BT_BB, LTE_Rx */
+    2944: 	rtw_write8_clr(rtwdev, REG_DUMMY_PAGE4_V1, BIT_BTCCA_CTRL);
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822ce.c | bytes=944 | sha256=116063ebc8b8b8e2d309e8496fcdd247db255031eee09b20415ec7830cd2b7b2 | git_tracked=no ===
+[STOP_REMOVE] matches=2
+  ...
+      22: 
+      23: static struct pci_driver rtw_8822ce_driver = {
+      24: 	.name = KBUILD_MODNAME,
+      25: 	.id_table = rtw_8822ce_id_table,
+      26: 	.probe = rtw_pci_probe,
+      27: 	.remove = rtw_pci_remove,
+      28: 	.driver.pm = &rtw_pm_ops,
+      29: 	.shutdown = rtw_pci_shutdown,
+      30: 	.err_handler  = &rtw_pci_err_handler,
+      31: };
+      32: module_pci_driver(rtw_8822ce_driver);
+      33: 
+      34: MODULE_AUTHOR("Realtek Corporation");
+      35: MODULE_DESCRIPTION("Realtek 802.11ac wireless 8822ce driver");
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/sdio.h | bytes=6063 | sha256=9684d8b68266d0bd70fb59fd81605ca90c548f1aca30c5a38502203829f488cd | git_tracked=no ===
+[STOP_REMOVE] matches=1
+  ...
+     164: extern const struct dev_pm_ops rtw_sdio_pm_ops;
+     165: 
+     166: int rtw_sdio_probe(struct sdio_func *sdio_func,
+     167: 		   const struct sdio_device_id *id);
+     168: void rtw_sdio_remove(struct sdio_func *sdio_func);
+     169: void rtw_sdio_shutdown(struct sdio_func *sdio_func);
+     170: 
+     171: static inline bool rtw_sdio_is_sdio30_supported(struct rtw_dev *rtwdev)
+     172: {
+     173: 	struct rtw_sdio *rtwsdio = (struct rtw_sdio *)rtwdev->priv;
+     174: 
+     175: 	return rtwsdio->sdio3_bus_mode;
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c | bytes=21780 | sha256=508c239d2eb89902cae4d931bc7fd22097d14737839b9d3bb0b3a00343006bde | git_tracked=no ===
+[TX_CALL_GRAPH] matches=1
+  ...
+     579: 
+     580: 	return skb;
+     581: }
+     582: EXPORT_SYMBOL(rtw_tx_write_data_h2c_get);
+     583: 
+     584: void rtw_tx(struct rtw_dev *rtwdev,
+     585: 	    struct ieee80211_tx_control *control,
+     586: 	    struct sk_buff *skb)
+     587: {
+     588: 	struct rtw_tx_pkt_info pkt_info = {0};
+     589: 	int ret;
+     590: 
+[TX_TERMINAL] matches=4
+  ...
+     189: 	rtw_warn(rtwdev, "failed to get tx report from firmware\n");
+     190: 
+     191: 	spin_lock_irqsave(&tx_report->q_lock, flags);
+     192: 	rtw88_candidate_log("rtw88: TX report expired pending=%u; ACK unknown\n",
+     193:                             skb_queue_len(&tx_report->queue));
+     194: 	skb_queue_purge(&tx_report->queue);
+     195: 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+     196: }
+     197: 
+     198: void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn)
+     199: {
+     200: 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  ...
+     204: 	/* pass sn to tx report handler through driver data */
+     205: 	drv_data = (u8 *)IEEE80211_SKB_CB(skb)->status.status_driver_data;
+     206: 	*drv_data = sn;
+     207: 
+     208: 	spin_lock_irqsave(&tx_report->q_lock, flags);
+     209: 	__skb_queue_tail(&tx_report->queue, skb);
+     210: 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+     211: 
+     212: 	mod_timer(&tx_report->purge_timer, jiffies + RTW_TX_PROBE_TIMEOUT);
+     213: }
+     214: EXPORT_SYMBOL(rtw_tx_report_enqueue);
+     215: 
+  ...
+     223: 	if (acked)
+     224: 		info->flags |= IEEE80211_TX_STAT_ACK;
+     225: 	else
+     226: 		info->flags &= ~IEEE80211_TX_STAT_ACK;
+     227: 
+     228: 	ieee80211_tx_status_irqsafe(rtwdev->hw, skb);
+     229: }
+     230: 
+     231: void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src)
+     232: {
+     233: 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+     234: 	struct rtw_c2h_cmd *c2h;
+  ...
+     598: 	rtw_hci_tx_kick_off(rtwdev);
+     599: 
+     600: 	return;
+     601: 
+     602: out:
+     603: 	ieee80211_free_txskb(rtwdev->hw, skb);
+     604: }
+     605: 
+     606: static void rtw_txq_check_agg(struct rtw_dev *rtwdev,
+     607: 			      struct rtw_txq *rtwtxq,
+     608: 			      struct sk_buff *skb)
+     609: {
+[DMA_ORDER] matches=39
+  ...
+      30: 			rtwvif->stats.tx_cnt++;
+      31: 		}
+      32: 	}
+      33: }
+      34: 
+      35: void rtw_tx_fill_tx_desc(struct rtw_dev *rtwdev,
+      36: 			 struct rtw_tx_pkt_info *pkt_info, struct sk_buff *skb)
+      37: {
+      38: 	struct rtw_tx_desc *tx_desc = (struct rtw_tx_desc *)skb->data;
+      39: 	bool more_data = false;
+      40: 
+      41: 	if (pkt_info->qsel == TX_DESC_QSEL_HIGH)
+      42: 		more_data = true;
+      43: 
+      44: 	tx_desc->w0 = le32_encode_bits(pkt_info->tx_pkt_size, RTW_TX_DESC_W0_TXPKTSIZE) |
+      45: 		      le32_encode_bits(pkt_info->offset, RTW_TX_DESC_W0_OFFSET) |
+      46: 		      le32_encode_bits(pkt_info->bmc, RTW_TX_DESC_W0_BMC) |
+      47: 		      le32_encode_bits(pkt_info->ls, RTW_TX_DESC_W0_LS) |
+      48: 		      le32_encode_bits(pkt_info->dis_qselseq, RTW_TX_DESC_W0_DISQSELSEQ);
+      49: 
+      50: 	tx_desc->w1 = le32_encode_bits(pkt_info->mac_id, RTW_TX_DESC_W1_MACID) |
+      51: 		      le32_encode_bits(pkt_info->qsel, RTW_TX_DESC_W1_QSEL) |
+      52: 		      le32_encode_bits(pkt_info->rate_id, RTW_TX_DESC_W1_RATE_ID) |
+      53: 		      le32_encode_bits(pkt_info->sec_type, RTW_TX_DESC_W1_SEC_TYPE) |
+      54: 		      le32_encode_bits(pkt_info->pkt_offset, RTW_TX_DESC_W1_PKT_OFFSET) |
+      55: 		      le32_encode_bits(more_data, RTW_TX_DESC_W1_MORE_DATA);
+      56: 
+      57: 	tx_desc->w2 = le32_encode_bits(pkt_info->ampdu_en, RTW_TX_DESC_W2_AGG_EN) |
+      58: 		      le32_encode_bits(pkt_info->report, RTW_TX_DESC_W2_SPE_RPT) |
+      59: 		      le32_encode_bits(pkt_info->ampdu_density, RTW_TX_DESC_W2_AMPDU_DEN) |
+      60: 		      le32_encode_bits(pkt_info->bt_null, RTW_TX_DESC_W2_BT_NULL);
+      61: 
+      62: 	tx_desc->w3 = le32_encode_bits(pkt_info->hw_ssn_sel, RTW_TX_DESC_W3_HW_SSN_SEL) |
+      63: 		      le32_encode_bits(pkt_info->use_rate, RTW_TX_DESC_W3_USE_RATE) |
+      64: 		      le32_encode_bits(pkt_info->dis_rate_fallback, RTW_TX_DESC_W3_DISDATAFB) |
+      65: 		      le32_encode_bits(pkt_info->rts, RTW_TX_DESC_W3_USE_RTS) |
+      66: 		      le32_encode_bits(pkt_info->nav_use_hdr, RTW_TX_DESC_W3_NAVUSEHDR) |
+      67: 		      le32_encode_bits(pkt_info->ampdu_factor, RTW_TX_DESC_W3_MAX_AGG_NUM);
+      68: 
+      69: 	tx_desc->w4 = le32_encode_bits(pkt_info->rate, RTW_TX_DESC_W4_DATARATE);
+      70: 
+      71: 	if (rtwdev->chip->old_datarate_fb_limit)
+      72: 		tx_desc->w4 |= le32_encode_bits(0x1f, RTW_TX_DESC_W4_DATARATE_FB_LIMIT);
+      73: 
+      74: 	tx_desc->w5 = le32_encode_bits(pkt_info->short_gi, RTW_TX_DESC_W5_DATA_SHORT) |
+      75: 		      le32_encode_bits(pkt_info->bw, RTW_TX_DESC_W5_DATA_BW) |
+      76: 		      le32_encode_bits(pkt_info->ldpc, RTW_TX_DESC_W5_DATA_LDPC) |
+      77: 		      le32_encode_bits(pkt_info->stbc, RTW_TX_DESC_W5_DATA_STBC);
+      78: 
+      79: 	tx_desc->w6 = le32_encode_bits(pkt_info->sn, RTW_TX_DESC_W6_SW_DEFINE);
+      80: 
+      81: 	tx_desc->w8 = le32_encode_bits(pkt_info->en_hwseq, RTW_TX_DESC_W8_EN_HWSEQ);
+      82: 
+      83: 	tx_desc->w9 = le32_encode_bits(pkt_info->seq, RTW_TX_DESC_W9_SW_SEQ);
+      84: 
+      85: 	if (pkt_info->rts) {
+      86: 		tx_desc->w4 |= le32_encode_bits(DESC_RATE24M, RTW_TX_DESC_W4_RTSRATE);
+      87: 		tx_desc->w5 |= le32_encode_bits(1, RTW_TX_DESC_W5_DATA_RTS_SHORT);
+      88: 	}
+      89: 
+      90: 	if (pkt_info->tim_offset)
+      91: 		tx_desc->w9 |= le32_encode_bits(1, RTW_TX_DESC_W9_TIM_EN) |
+      92: 			       le32_encode_bits(pkt_info->tim_offset, RTW_TX_DESC_W9_TIM_OFFSET);
+      93: }
+      94: EXPORT_SYMBOL(rtw_tx_fill_tx_desc);
+      95: 
+      96: static u8 get_tx_ampdu_factor(struct ieee80211_sta *sta)
+      97: {
+      98: 	u8 exp = sta->deflink.ht_cap.ampdu_factor;
+      99: 
+     100: 	/* the least ampdu factor is 8K, and the value in the tx desc is the
+  ...
+     489: 
+     490: 	/* A beacon or dummy reserved page packet indicates that it is the first
+     491: 	 * reserved page, and the qsel of it will be set in each hci.
+     492: 	 */
+     493: 	if (type != RSVD_BEACON && type != RSVD_DUMMY)
+     494: 		pkt_info->qsel = TX_DESC_QSEL_MGMT;
+     495: 
+     496: 	rtw_tx_pkt_info_update_rate(rtwdev, pkt_info, skb, true);
+     497: 
+     498: 	bmc = is_broadcast_ether_addr(hdr->addr1) ||
+     499: 	      is_multicast_ether_addr(hdr->addr1);
+     500: 	pkt_info->bmc = bmc;
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h | bytes=4562 | sha256=5f0c1dc2c8e9dbcdfece4e34c264bd24731ab6a3ff28011f9ddb09cb695aaa46 | git_tracked=no ===
+[TX_CALL_GRAPH] matches=1
+  ...
+      82: 	TX_DESC_QSEL_H2C	= 19,
+      83: };
+      84: 
+      85: enum rtw_rsvd_packet_type;
+      86: 
+      87: void rtw_tx(struct rtw_dev *rtwdev,
+      88: 	    struct ieee80211_tx_control *control,
+      89: 	    struct sk_buff *skb);
+      90: void rtw_txq_init(struct rtw_dev *rtwdev, struct ieee80211_txq *txq);
+      91: void rtw_txq_cleanup(struct rtw_dev *rtwdev, struct ieee80211_txq *txq);
+      92: void rtw_tx_work(struct work_struct *w);
+      93: void __rtw_tx_work(struct rtw_dev *rtwdev);
+[DMA_ORDER] matches=66
+  ...
+       7: 
+       8: #define RTK_TX_MAX_AGG_NUM_MASK		0x1f
+       9: 
+      10: #define RTW_TX_PROBE_TIMEOUT		msecs_to_jiffies(500)
+      11: 
+      12: struct rtw_tx_desc {
+      13: 	__le32 w0;
+      14: 	__le32 w1;
+      15: 	__le32 w2;
+      16: 	__le32 w3;
+      17: 	__le32 w4;
+      18: 	__le32 w5;
+  ...
+      20: 	__le32 w7;
+      21: 	__le32 w8;
+      22: 	__le32 w9;
+      23: } __packed;
+      24: 
+      25: #define RTW_TX_DESC_W0_TXPKTSIZE GENMASK(15, 0)
+      26: #define RTW_TX_DESC_W0_OFFSET GENMASK(23, 16)
+      27: #define RTW_TX_DESC_W0_BMC BIT(24)
+      28: #define RTW_TX_DESC_W0_LS BIT(26)
+      29: #define RTW_TX_DESC_W0_DISQSELSEQ BIT(31)
+      30: #define RTW_TX_DESC_W1_MACID GENMASK(7, 0)
+      31: #define RTW_TX_DESC_W1_QSEL GENMASK(12, 8)
+      32: #define RTW_TX_DESC_W1_RATE_ID GENMASK(20, 16)
+      33: #define RTW_TX_DESC_W1_SEC_TYPE GENMASK(23, 22)
+      34: #define RTW_TX_DESC_W1_PKT_OFFSET GENMASK(28, 24)
+      35: #define RTW_TX_DESC_W1_MORE_DATA BIT(29)
+      36: #define RTW_TX_DESC_W2_AGG_EN BIT(12)
+      37: #define RTW_TX_DESC_W2_SPE_RPT BIT(19)
+      38: #define RTW_TX_DESC_W2_AMPDU_DEN GENMASK(22, 20)
+      39: #define RTW_TX_DESC_W2_BT_NULL BIT(23)
+      40: #define RTW_TX_DESC_W3_HW_SSN_SEL GENMASK(7, 6)
+      41: #define RTW_TX_DESC_W3_USE_RATE BIT(8)
+      42: #define RTW_TX_DESC_W3_DISDATAFB BIT(10)
+      43: #define RTW_TX_DESC_W3_USE_RTS BIT(12)
+      44: #define RTW_TX_DESC_W3_NAVUSEHDR BIT(15)
+      45: #define RTW_TX_DESC_W3_MAX_AGG_NUM GENMASK(21, 17)
+      46: #define RTW_TX_DESC_W4_DATARATE GENMASK(6, 0)
+      47: #define RTW_TX_DESC_W4_DATARATE_FB_LIMIT GENMASK(12, 8)
+      48: #define RTW_TX_DESC_W4_RTSRATE GENMASK(28, 24)
+      49: #define RTW_TX_DESC_W5_DATA_SHORT BIT(4)
+      50: #define RTW_TX_DESC_W5_DATA_BW GENMASK(6, 5)
+      51: #define RTW_TX_DESC_W5_DATA_LDPC BIT(7)
+      52: #define RTW_TX_DESC_W5_DATA_STBC GENMASK(9, 8)
+      53: #define RTW_TX_DESC_W5_DATA_RTS_SHORT BIT(12)
+      54: #define RTW_TX_DESC_W6_SW_DEFINE GENMASK(11, 0)
+      55: #define RTW_TX_DESC_W7_TXDESC_CHECKSUM GENMASK(15, 0)
+      56: #define RTW_TX_DESC_W7_DMA_TXAGG_NUM GENMASK(31, 24)
+      57: #define RTW_TX_DESC_W8_EN_HWSEQ BIT(15)
+      58: #define RTW_TX_DESC_W9_SW_SEQ GENMASK(23, 12)
+      59: #define RTW_TX_DESC_W9_TIM_EN BIT(7)
+      60: #define RTW_TX_DESC_W9_TIM_OFFSET GENMASK(6, 0)
+      61: 
+      62: enum rtw_tx_desc_queue_select {
+      63: 	TX_DESC_QSEL_TID0	= 0,
+      64: 	TX_DESC_QSEL_TID1	= 1,
+      65: 	TX_DESC_QSEL_TID2	= 2,
+      66: 	TX_DESC_QSEL_TID3	= 3,
+      67: 	TX_DESC_QSEL_TID4	= 4,
+      68: 	TX_DESC_QSEL_TID5	= 5,
+      69: 	TX_DESC_QSEL_TID6	= 6,
+      70: 	TX_DESC_QSEL_TID7	= 7,
+      71: 	TX_DESC_QSEL_TID8	= 8,
+      72: 	TX_DESC_QSEL_TID9	= 9,
+      73: 	TX_DESC_QSEL_TID10	= 10,
+      74: 	TX_DESC_QSEL_TID11	= 11,
+      75: 	TX_DESC_QSEL_TID12	= 12,
+      76: 	TX_DESC_QSEL_TID13	= 13,
+      77: 	TX_DESC_QSEL_TID14	= 14,
+      78: 	TX_DESC_QSEL_TID15	= 15,
+      79: 	TX_DESC_QSEL_BEACON	= 16,
+      80: 	TX_DESC_QSEL_HIGH	= 17,
+      81: 	TX_DESC_QSEL_MGMT	= 18,
+      82: 	TX_DESC_QSEL_H2C	= 19,
+      83: };
+      84: 
+      85: enum rtw_rsvd_packet_type;
+      86: 
+      87: void rtw_tx(struct rtw_dev *rtwdev,
+      88: 	    struct ieee80211_tx_control *control,
+  ...
+      93: void __rtw_tx_work(struct rtw_dev *rtwdev);
+      94: void rtw_tx_pkt_info_update(struct rtw_dev *rtwdev,
+      95: 			    struct rtw_tx_pkt_info *pkt_info,
+      96: 			    struct ieee80211_sta *sta,
+      97: 			    struct sk_buff *skb);
+      98: void rtw_tx_fill_tx_desc(struct rtw_dev *rtwdev,
+      99: 			 struct rtw_tx_pkt_info *pkt_info, struct sk_buff *skb);
+     100: void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn);
+     101: void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src);
+     102: void rtw_tx_rsvd_page_pkt_info_update(struct rtw_dev *rtwdev,
+     103: 				      struct rtw_tx_pkt_info *pkt_info,
+     104: 				      struct sk_buff *skb,
+  ...
+     114: 
+     115: enum rtw_tx_queue_type rtw_tx_ac_to_hwq(enum ieee80211_ac_numbers ac);
+     116: enum rtw_tx_queue_type rtw_tx_queue_mapping(struct sk_buff *skb);
+     117: 
+     118: static inline
+     119: void fill_txdesc_checksum_common(u8 *txdesc, size_t words)
+     120: {
+     121: 	__le16 chksum = 0;
+     122: 	__le16 *data = (__le16 *)(txdesc);
+     123: 	struct rtw_tx_desc *tx_desc = (struct rtw_tx_desc *)txdesc;
+     124: 
+     125: 	le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+     126: 
+     127: 	while (words--)
+     128: 		chksum ^= *data++;
+     129: 
+     130: 	le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+     131: 			   RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+     132: }
+     133: 
+     134: static inline void rtw_tx_fill_txdesc_checksum(struct rtw_dev *rtwdev,
+     135: 					       struct rtw_tx_pkt_info *pkt_info,
+     136: 					       u8 *txdesc)
+     137: {
+     138: 	const struct rtw_chip_info *chip = rtwdev->chip;
+     139: 
+     140: 	chip->ops->fill_txdesc_checksum(rtwdev, pkt_info, txdesc);
+     141: }
+     142: 
+     143: #endif
+
+=== tests/rtw88_skb_tx_completion_test.cpp | bytes=4216 | sha256=bd3ea69e385f1da959a36d22e01e277807c96300bfede1ab9f0c478bf0c5d368 | git_tracked=no ===
+[TX_TERMINAL] matches=2
+  ...
+      64:     rtw88_skb_tx_completion state{};
+      65:     Capture capture;
+      66:     int cookie = 8;
+      67:     capture.expectedCookie = &cookie;
+      68:     assert(rtw88_skb_tx_completion_bind(&state, makeToken(&capture, &cookie)));
+      69:     assert(rtw88_skb_tx_completion_report(&state, false)); // kfree_skb path
+      70:     assert(capture.calls.load() == 1);
+      71:     assert(capture.sent.load() == 0);
+      72:     assert(capture.dropped.load() == 1);
+      73:     assert(capture.releases.load() == 1);
+      74: }
+      75: 
+  ...
+     110:     assert(rtw88_skb_tx_completion_bind(state, makeToken(&capture, &cookie)));
+     111: 
+     112:     auto *claimed = rtw88_skb_tx_completion_claim(state);
+     113:     assert(claimed != nullptr);
+     114:     assert(rtw88_skb_tx_completion_claim(state) == nullptr); // concurrent free loses
+     115:     delete state; // equivalent to kfree_skb reclaiming the skb
+     116: 
+     117:     assert(rtw88_skb_tx_completion_dispatch(claimed, true));
+     118:     assert(capture.calls.load() == 1);
+     119:     assert(capture.sent.load() == 1);
+     120:     assert(capture.dropped.load() == 0);
+     121:     assert(capture.releases.load() == 1);
+
+=== tests/wcl-event-ring-test.cpp | bytes=2572 | sha256=5ac782ed9b46c95d146db2bfd4aeac5dd40f9e0292afb2e443d31db5d781c8d0 | git_tracked=no ===
+[STOP_REMOVE] matches=1
+  ...
+       1: /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+       2:  * Host-side tests for the allocation-free WCL event ring.
+       3:  */
+       4: #include "../driver/RTL88WiFi/src/kext/RTW88WCLRadioEventRing.hpp"
+       5: 
+       6: #include <cassert>
+       7: #include <cstdint>
+       8: #include <cstdio>
+
+=== tests/wcl_registration_info_stage11_test.cpp | bytes=2886 | sha256=ebf49fc664967aaaad12818de25096d809501f959c2e99a5771301cf9f6f82ac | git_tracked=no ===
+[SKYWALK_REGISTER] matches=5
+  ...
+       1: #include "../driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp"
+       2: 
+       3: #include <stdio.h>
+       4: 
+       5: using namespace RTW88WCLRegistrationInfo24H32;
+       6: 
+       7: static bool inRange(size_t offset, size_t start, size_t length)
+       8: {
+       9:     return offset >= start && offset < start + length;
+      10: }
+      11: 
+  ...
+      28:         fprintf(stderr, "Apple 24H32 opaque writes do not match the audited values\n");
+      29:         return 2;
+      30:     }
+      31: 
+      32:     /* The writer must preserve all bytes not explicitly written by Apple's
+      33:      * producer. This protects the opaque values populated by initRegistrationInfo.
+      34:      */
+      35:     for (size_t i = 0; i < sizeof(storage.bytes); ++i) {
+      36:         const bool written =
+      37:             inRange(i, kOpaqueSlot0C, sizeof(uint32_t)) ||
+      38:             inRange(i, kOpaqueSlot14, sizeof(uint32_t)) ||
+      39:             inRange(i, kOpaqueSlot24, sizeof(uint64_t)) ||
+  ...
+      44:             return 3;
+      45:         }
+      46:     }
+      47: 
+      48:     if (matchesApple24H32Template(storage, address)) {
+      49:         fprintf(stderr, "template accepted without initRegistrationInfo header\n");
+      50:         return 4;
+      51:     }
+      52: 
+      53:     storeU64(storage, 0, kVersionAndSize);
+      54:     if (!matchesApple24H32Template(storage, address)) {
+      55:         fprintf(stderr, "template rejected after exact 24H32 header was set\n");
+  ...
+      70:             fprintf(stderr, "clear left a nonzero byte\n");
+      71:             return 8;
+      72:         }
+      73:     }
+      74: 
+      75:     puts("PASS: 0x130-byte aligned opaque RegistrationInfo storage");
+      76:     puts("PASS: exact 24H32 Apple producer overrides and six-byte address copy");
+      77:     puts("PASS: all unlisted initializer-owned bytes remain untouched");
+      78:     puts("PASS: version/size header validation and clear");
+      79:     return 0;
+      80: }
+
+=== tests/wcl_tx_completion_slots_test.cpp | bytes=4078 | sha256=b3230ef7ce8025a6ea418d0e0ce53d081bf0bccf57ffe14a29ce2a672a2a9b56 | git_tracked=no ===
+[SKYWALK_LIFETIME] matches=15
+  ...
+       8: #include <vector>
+       9: #include <sched.h>
+      10: 
+      11: struct WorkItem {
+      12:     uint32_t id;
+      13:     std::atomic<uint32_t> completed{0};
+      14: };
+      15: 
+      16: static void testCapacityAndExactlyOnce()
+      17: {
+      18:     RTW88WCLTxCompletionSlots<4> pool;
+      19:     pool.reset();
+  ...
+      25:     auto *d = pool.reserve(&values[3]);
+      26:     assert(a && b && c && d);
+      27:     assert(pool.reserve(&values[4]) == nullptr);
+      28:     assert(pool.outstandingCount() == 4);
+      29: 
+      30:     assert(RTW88WCLTxCompletionSlots<4>::complete(a, true));
+      31:     assert(!RTW88WCLTxCompletionSlots<4>::complete(a, false));
+      32:     assert(RTW88WCLTxCompletionSlots<4>::complete(b, false));
+      33:     assert(RTW88WCLTxCompletionSlots<4>::complete(c, true));
+      34:     assert(RTW88WCLTxCompletionSlots<4>::complete(d, true));
+      35: 
+      36:     uint32_t seen = 0;
+      37:     bool sawSuccess = false;
+      38:     bool sawDrop = false;
+      39:     while (auto *ticket = pool.claimCompleted()) {
+      40:         auto *value = static_cast<int *>(RTW88WCLTxCompletionSlots<4>::packet(ticket));
+      41:         assert(value >= &values[0] && value <= &values[3]);
+      42:         if (RTW88WCLTxCompletionSlots<4>::transmitted(ticket))
+      43:             sawSuccess = true;
+      44:         else
+      45:             sawDrop = true;
+      46:         RTW88WCLTxCompletionSlots<4>::finish(ticket);
+      47:         ++seen;
+      48:     }
+      49:     assert(seen == 4 && sawSuccess && sawDrop);
+      50:     assert(!pool.hasOutstanding());
+      51: }
+      52: 
+      53: static void testConcurrentProducersAndConsumer()
+      54: {
+      55:     constexpr uint32_t kThreads = 12;
+      56:     constexpr uint32_t kPerThread = 2500;
+  ...
+      74:                 auto *item = &work[id];
+      75:                 RTW88WCLTxCompletionSlots<128>::Ticket *ticket = nullptr;
+      76:                 while (!(ticket = pool.reserve(item)))
+      77:                     sched_yield();
+      78:                 const bool transmitted = ((id * 7U) % 5U) != 0;
+      79:                 while (!RTW88WCLTxCompletionSlots<128>::complete(ticket, transmitted))
+      80:                     sched_yield();
+      81:                 produced.fetch_add(1, std::memory_order_relaxed);
+      82:             }
+      83:         });
+      84:     }
+      85: 
+      86:     while (drained.load(std::memory_order_acquire) < kTotal) {
+      87:         auto *ticket = pool.claimCompleted();
+      88:         if (!ticket) {
+      89:             sched_yield();
+      90:             continue;
+      91:         }
+      92:         auto *item = static_cast<WorkItem *>(
+      93:             RTW88WCLTxCompletionSlots<128>::packet(ticket));
+      94:         assert(item != nullptr && item->id < kTotal);
+      95:         const uint32_t expected = ((item->id * 7U) % 5U) != 0 ? 1U : 0U;
+      96:         assert(RTW88WCLTxCompletionSlots<128>::transmitted(ticket) == (expected != 0));
+      97:         uint32_t notCompleted = 0;
+      98:         assert(item->completed.compare_exchange_strong(
+      99:             notCompleted, 1, std::memory_order_acq_rel));
+     100:         RTW88WCLTxCompletionSlots<128>::finish(ticket);
+     101:         drained.fetch_add(1, std::memory_order_release);
+     102:     }
+     103: 
+     104:     for (auto &producer : producers)
+     105:         producer.join();
+     106:     assert(produced.load(std::memory_order_acquire) == kTotal);
+     107:     assert(drained.load(std::memory_order_acquire) == kTotal);
+     108:     assert(!pool.hasOutstanding());
+     109:     for (const auto &item : work)
+     110:         assert(item.completed.load(std::memory_order_acquire) == 1);
+     111: }
+     112: 
+     113: int main()
+     114: {
+     115:     testCapacityAndExactlyOnce();
+     116:     testConcurrentProducersAndConsumer();
+
+=== TARGETED REVIEW QUESTIONS ===
+C1 OPS/TX BINDING: identify the live active TX callback and its registration/dispatch. A function declaration, Linux reference implementation or unreferenced ops table is not proof.
+C2 TX OWNERSHIP: trace accepted, rejected, ring-full, map failure, hardware completion, firmware TX report timeout, reset and remove. Distinguish skb release/status from Skywalk packet completion; prove exactly one terminal event.
+C3 DMA REGISTRATION: enumerate every definition/assignment of rtw88_dma_ops and _dma_ops; verify translation-unit/linkage and active backend. Prove all six callbacks are valid before first DMA allocation and remain alive until final unmap/free.
+C4 DMA CORRECTNESS: prove CPU↔device visibility, bounce-buffer copy direction, sync-for-device semantics, descriptor publication barrier and MMIO doorbell order. Check mapping-error and mask behavior.
+C5 IRQ QUIESCE: trace interrupt source creation/enable, hardware mask, event source disable/remove, synchronize, threaded handler/work drain and object lifetime before freeing rings/backend.
+C6 SKYwalk REGISTRATION: prove actual RegistrationInfo/interface registration and queue/ring binding; queue allocation alone is not active datapath. Trace rollback and deregistration.
+C7 STOP/RESET/REMOVE: prove bus mastering/DMA is stopped and fenced before freeing descriptors/bounce maps; ensure restart reinitializes callbacks and queues.
+
+=== GIT HYGIENE ===
+git status --short exit=128
+(no output)
+git status stderr=fatal: not a git repository (or any of the parent directories): .git
+git diff --check exit=129
+(no whitespace errors)
+git diff stderr=warning: Not a git repository. Use --no-index to compare two paths outside a working tree
+usage: git diff --no-index [<options>] <path> <path>
+
+Diff output format options
+    -p, --patch           generate patch
+    -s, --no-patch        suppress diff output
+    -u                    generate patch
+    -U, --unified[=<n>]   generate diffs with <n> lines context
+    -W, --function-context
+                          generate diffs with <n> lines context
+    --raw                 generate the diff in raw format
+    --patch-with-raw      synonym for '-p --raw'
+    --patch-with-stat     synonym for '-p --stat'
+    --numstat             machine friendly --stat
+    --shortstat           output only the last line of --stat
+    -X, --dirstat[=<param1,param2>...]
+                          output the distribution of relative amount of changes for each sub-directory
+    --cumulative          synonym for --dirstat=cumulative
+    --dirstat-by-file[=<param1,param2>...]
+                          synonym for --dirstat=files,param1,param2...
+    --check               warn if changes introduce conflict markers or whitespace errors
+    --summary             condensed summary such as creations, renames and mode changes
+    --name-only           show only names of changed files
+    --name-status         show only names and status of changed files
+    --stat[=<width>[,<name-width>[,<count>]]]
+                          generate diffstat
+    --stat-width <width>  generate diffstat with a given width
+    --stat-name-width <width>
+                          generate diffstat with a given name width
+    --stat-graph-width <width>
+                          generate diffstat with a given graph width
+    --stat-count <count>  generate diffstat with limited lines
+    --compact-summary     generate compact summary in diffstat
+    --binary              output a binary diff that can be applied
+    --full-index          show full pre- and post-image object names on the "index" lines
+    --color[=<when>]      show colored diff
+    --ws-error-highlight <kind>
+                          highlight whitespace errors in the 'context', 'old' or 'new' lines in the diff
+    -z                    do not munge pathnames and use NULs as output field terminators in --raw or --numstat
+    --abbrev[=<n>]        use <n> digits to display object names
+    --src-prefix <prefix>
+                          show the given source prefix instead of "a/"
+    --dst-prefix <prefix>
+                          show the given destination prefix instead of "b/"
+    --line-prefix <prefix>
+                          prepend an additional prefix to every line of output
+    --no-prefix           do not show any source or destination prefix
+    --inter-hunk-context <n>
+                          show context between diff hunks up to the specified number of lines
+    --output-indicator-new <char>
+                          specify the character to indicate a new line instead of '+'
+    --output-indicator-old <char>
+                          specify the character to indicate an old line instead of '-'
+    --output-indicator-context <char>
+                          specify the character to indicate a context instead of ' '
+
+Diff rename options
+    -B, --break-rewrites[=<n>[/<m>]]
+                          break complete rewrite changes into pairs of delete and create
+    -M, --find-renames[=<n>]
+                          detect renames
+    -D, --irreversible-delete
+                          omit the preimage for deletes
+    -C, --find-copies[=<n>]
+                          detect copies
+    --find-copies-harder  use unmodified files as source to find copies
+    --no-renames          disable rename detection
+    --rename-empty        use empty blobs as rename source
+    --follow              continue listing the history of a file beyond renames
+    -l <n>                prevent rename/copy detection if the number of rename/copy targets exceeds given limit
+
+Diff algorithm options
+    --minimal             produce the smallest possible diff
+    -w, --ignore-all-space
+                          ignore whitespace when comparing lines
+    -b, --ignore-space-change
+                          ignore changes in amount of whitespace
+    --ignore-space-at-eol
+                          ignore changes in whitespace at EOL
+    --ignore-cr-at-eol    ignore carrier-return at the end of line
+    --ignore-blank-lines  ignore changes whose lines are all blank
+    -I, --ignore-matching-lines <regex>
+                          ignore changes whose all lines match <regex>
+    --indent-heuristic    heuristic to shift diff hunk boundaries for easy reading
+    --patience            generate diff using the "patience diff" algorithm
+    --histogram           generate diff using the "histogram diff" algorithm
+    --diff-algorithm <algorithm>
+                          choose a diff algorithm
+    --anchored <text>     generate diff using the "anchored diff" algorithm
+    --word-diff[=<mode>]  show word diff, using <mode> to delimit changed words
+    --word-diff-regex <regex>
+                          use <regex> to decide what a word is
+    --color-words[=<regex>]
+                          equivalent to --word-diff=color --word-diff-regex=<regex>
+    --color-moved[=<mode>]
+                          moved lines of code are colored differently
+    --color-moved-ws <mode>
+                          how white spaces are ignored in --color-moved
+
+Other diff options
+    --relative[=<prefix>]
+                          when run from subdir, exclude changes outside and show relative paths
+    -a, --text            treat all files as text
+    -R                    swap two inputs, reverse the diff
+    --exit-code           exit with 1 if there were differences, 0 otherwise
+    --quiet               disable all output of the program
+    --ext-diff            allow an external diff helper to be executed
+    --textconv            run external text conversion filters when comparing binary files
+    --ignore-submodules[=<when>]
+                          ignore changes to submodules in the diff generation
+    --submodule[=<format>]
+                          specify how differences in submodules are shown
+    --ita-invisible-in-index
+                          hide 'git add -N' entries from the index
+    --ita-visible-in-index
+                          treat 'git add -N' entries as real in the index
+    -S <string>           look for differences that change the number of occurrences of the specified string
+    -G <regex>            look for differences that change the number of occurrences of the specified regex
+    --pickaxe-all         show all changes in the changeset with -S or -G
+    --pickaxe-regex       treat <string> in -S as extended POSIX regular expression
+    -O <file>             control the order in which files appear in the output
+    --rotate-to <path>    show the change in the specified path first
+    --skip-to <path>      skip the output to the specified path
+    --find-object <object-id>
+                          look for differences that change the number of occurrences of the specified object
+    --diff-filter [(A|C|D|M|R|T|U|X|B)...[*]]
+                          select files by diff type
+    --output <file>       output to a specific file
+NOTE: a source file absent from git ls-files is not committed/tracked in this checkout; verify the exact source revision before relying on GitHub-only review.
+
+=== SCAN COUNTS ===
+BUILD_SOURCES: 87
+OPS_TABLE: 12
+TX_CALL_GRAPH: 27
+TX_TERMINAL: 120
+DMA_GLOBALS: 26
+DMA_IMPL: 41
+DMA_ORDER: 208
+IRQ: 48
+IRQ_DRAIN: 57
+SKYWALK_REGISTER: 96
+SKYWALK_LIFETIME: 171
+STOP_REMOVE: 152
+
+=== READ ERRORS ===
+NONE
+
+=== STAGE34 RESULT ===
+STATIC_SCAN: PASS
+INTEGRATION_GATES: REVIEW_REQUIRED — manual call-graph, ownership, DMA, IRQ and ABI review remains required.
+ACTIVATION_GATE: BLOCKED — do not install/load experimental Kext or modify OpenCore.
+NO SOURCE FILES WERE MODIFIED BY THIS SCRIPT.

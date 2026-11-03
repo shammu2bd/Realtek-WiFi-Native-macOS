@@ -1,0 +1,23 @@
+STAGE52_PROVIDER_AND_PERSONALITY_MATRIX
+PRESENT means a direct token/reference appears in the extracted method body or parsed plist entry.
+A missing source edge does not prove the Apple framework has no internal factory path.
+infra provider-init calls IO80211SkywalkInterface::init(provider,address): PRESENT
+infra provider-init casts provider to RTW88WCLController: PRESENT
+infra attachRadio obtains provider controller workloop: PRESENT
+infra attachRadio attaches radio and work queue to bridge: PRESENT
+infra getController returns stored provider controller: PRESENT
+infra start returns false: PRESENT
+controller start creates infra-interface object: ABSENT
+controller start sets primary Skywalk interface: ABSENT
+controller start prepares or starts infra protocol: ABSENT
+controller free retains resources on cleanup failure: PRESENT
+PLIST_PERSONALITY: file=RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8822BE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8822CE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8821CE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=RTL88WiFiNative.kext/Contents/Info.plist name=RTL88WiFiNative_8821CE IOClass='RTW88WCLController' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=build/out/RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8822BE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=build/out/RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8822CE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=build/out/RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8821CE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=build/out/RTL88WiFiNative.kext/Contents/Info.plist name=RTL88WiFiNative_8821CE IOClass='RTW88WCLController' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+METHODS_EXTRACTED=9
+METHODS_REQUESTED=9

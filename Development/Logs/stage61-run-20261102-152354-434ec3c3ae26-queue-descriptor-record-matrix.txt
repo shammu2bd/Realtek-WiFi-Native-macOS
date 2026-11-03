@@ -1,0 +1,14 @@
+STAGE61_QUEUE_DESCRIPTOR_RECORD_LAYOUT
+CALL=performCommand(command=0x10000, data=descriptor, dataSize=0x10)
+RECORD_LAYOUT=uint32_t typeCode @ +0x00; uint32_t capacity @ +0x04; IOSkywalkPacketBufferPool* @ +0x08
+CALLER_ZEROES_ALL_16_BYTES_BEFORE_QUERY=PASS
+CALLSITE_COUNTS=command:2 size:2 dispatch:2
+TYPE_CODES=1 TX submission; 2 TX completion; 3 RX submission; 4 RX completion
+CAPACITY=written by TX submission and RX completion; remains zero for TX completion and RX submission
+POOL_POINTER=all four concrete queue overrides write their associated pool at +0x08
+PRIVATE_QUEUESETINFO_ARGUMENT=distinct from this per-queue 16-byte query record
+
+TYPE_CODE=1 CLASS=IOSkywalkTxSubmissionQueue LABEL=TX_SUBMISSION TYPE_STORE=PASS CAPACITY_FIELD=explicit queue capacity POOL_POINTER_AT_PLUS_8=PASS RESULT=PASS
+TYPE_CODE=2 CLASS=IOSkywalkTxCompletionQueue LABEL=TX_COMPLETION TYPE_STORE=PASS CAPACITY_FIELD=zero-initialized (not written by override) POOL_POINTER_AT_PLUS_8=PASS RESULT=PASS
+TYPE_CODE=3 CLASS=IOSkywalkRxSubmissionQueue LABEL=RX_SUBMISSION TYPE_STORE=PASS CAPACITY_FIELD=zero-initialized (not written by override) POOL_POINTER_AT_PLUS_8=PASS RESULT=PASS
+TYPE_CODE=4 CLASS=IOSkywalkRxCompletionQueue LABEL=RX_COMPLETION TYPE_STORE=PASS CAPACITY_FIELD=explicit queue capacity POOL_POINTER_AT_PLUS_8=PASS RESULT=PASS

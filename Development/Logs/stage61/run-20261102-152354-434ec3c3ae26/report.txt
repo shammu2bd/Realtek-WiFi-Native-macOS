@@ -1,0 +1,28 @@
+========== STAGE 61 QUEUE DESCRIPTOR / QUEUESET CLASSIFICATION AUDIT ==========
+VERSION=STAGE61_V1_20261102
+RUN=run-20261102-152354-434ec3c3ae26
+TARGET=15.8.1/24H32/x86_64
+PREDECESSOR=Stage60 V1 run-20261102-150246-056583bdc528
+PURPOSE=decode QueueSet's 16-byte performCommand query record and four queue-kind dispatch/grouping tables
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+
+FINDING=QueueSet queries each queue with command 0x10000 and a 16-byte output record.
+RECORD=uint32 type code at +0, uint32 capacity at +4, packet-buffer-pool pointer at +8.
+TYPE_CODES=1 TX submission; 2 TX completion; 3 RX submission; 4 RX completion.
+GROUPING=QueueSet uses the returned type code for four count buckets and then four per-kind queue arrays.
+PRIVATE_QUEUESETINFO=the QueueSetInfo_s init argument is separate; this stage does not invent its field layout.
+LIMIT=This is Apple 24H32 ABI observation, not an implementation plan or permission to register native queues.
+ACTIVATION_GATE=BLOCKED — interface registration, callback handoff, packet ownership and teardown integration remain open.
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+SIP_NVRAM_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+========== END STAGE 61 ==========

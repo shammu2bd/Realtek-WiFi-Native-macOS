@@ -1,0 +1,2905 @@
+========== STAGE 35I: NATIVE BACKEND / DMA INITIALIZATION TRACE ==========
+timestamp_utc=2026-11-02T00:39:15Z
+host=DESKTOP-65R32QP.localdomain
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+mode=read-only source and existing artifact inspection
+
+--- Source snapshots ---
+SOURCE path=Makefile bytes=20888 sha256=17030272d8f5592fcffecfa7bc3d8ba36973fac57db1ab159d4fb960706a7f8d
+SOURCE path=src/kext/RTW88HwOps.cpp bytes=4321 sha256=3984d76592346bf3e9050195045a69f37328ccedc3b957ee23bc51ed22fae3d1
+MISSING_SOURCE=src/kext/RTW88HwOps.hpp
+SOURCE path=src/kext/RTW88IEEE80211.cpp bytes=213719 sha256=5e7994b25a47d8748a096c68324fd80f859f460d489e7902baf2959046b14110
+SOURCE path=src/kext/RTW88IEEE80211.hpp bytes=26628 sha256=1c1b768a862e0b5dcc525c90c0daeeb3b5cd2f6d9c76885714f11cc53c5dbc34
+SOURCE path=src/kext/RTL88WiFi.cpp bytes=174612 sha256=1aba5df922d448205fbe60b9d80f7d9cdb50208e6dd0eb5382f862bea4352744
+SOURCE path=src/kext/RTL88WiFi.hpp bytes=19764 sha256=b8356afef165afc3d2d473f80355eacf1c2184a7557e8dba63a7c28225bce66a
+SOURCE path=src/kext/wcl24h32/RTW88WCLController.cpp bytes=20358 sha256=2c67658a50b40ec65cc400fbc7f13295d054e95a039aaf7060a65457c6087059
+SOURCE path=src/kext/wcl24h32/RTW88WCLController.hpp bytes=5330 sha256=740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee
+SOURCE path=src/kext/wcl24h32/RTW88WCLPCIBackend.cpp bytes=16613 sha256=2253d451b3242035510d21c317782a8e9f24ef46bd154b2ad842c713c296e9a4
+SOURCE path=src/kext/wcl24h32/RTW88WCLPCIBackend.hpp bytes=3737 sha256=67e9ac69e2177754d617633f5f44274c5bfd6a7c8e1f27d85ade26e38da91c90
+SOURCE path=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp bytes=28857 sha256=20f8fcf3be99c797a28df29612a765a1b6d362dbc032e6045a7113d7f2ec82e1
+SOURCE path=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp bytes=17853 sha256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4
+SOURCE path=src/compat/linux/dma-mapping.h bytes=5265 sha256=27120e81f01b6b35ae209318cd0ffbac02e96a5b9cb73957dfcb0b12082af630
+SOURCE path=src/compat/linux/pci.h bytes=9960 sha256=22a0946f50969fa58d96a243b8ef6137b788f7329e2af295f8d67312e53ba9c8
+
+--- Lifecycle and DMA function map (line-numbered matches) ---
+src/kext/RTW88HwOps.cpp:88:void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+src/kext/RTW88HwOps.cpp:97:g_pci_dev_instance->freeCoherent(size, cpu_addr,
+src/kext/RTW88HwOps.cpp:106:void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+src/kext/RTW88HwOps.cpp:130:struct rtw88_dma_alloc_ops _dma_ops = {
+src/kext/RTW88HwOps.cpp:133:.map_single = compat_dma_map,
+src/kext/RTW88HwOps.cpp:134:.unmap_single = compat_dma_unmap,
+src/kext/RTW88IEEE80211.cpp:37:/* PCI probe shim declared in pci.c */
+src/kext/RTW88IEEE80211.cpp:541:/*  Factory / init / free                                               */
+src/kext/RTW88IEEE80211.cpp:544:RTW88IEEE80211 *RTW88IEEE80211::create(RTW88PCIDevice *dev, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.cpp:547:if (obj && !obj->init(dev, pci)) {
+src/kext/RTW88IEEE80211.cpp:557:if (obj && !obj->init(delegate, pci)) {
+src/kext/RTW88IEEE80211.cpp:564:bool RTW88IEEE80211::init(RTW88RxDelegate *delegate, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.cpp:566:if (!super::init()) return false;
+src/kext/RTW88IEEE80211.cpp:613:bool RTW88IEEE80211::init(RTW88PCIDevice *dev, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.cpp:615:if (!super::init()) return false;
+src/kext/RTW88IEEE80211.cpp:667:void RTW88IEEE80211::free()
+src/kext/RTW88IEEE80211.cpp:702:super::free();
+src/kext/RTW88IEEE80211.cpp:828:/*  start / stop                                                        */
+src/kext/RTW88IEEE80211.cpp:831:IOReturn RTW88IEEE80211::start()
+src/kext/RTW88IEEE80211.cpp:833:RTW88_STAGE("IEEE80211::start entered");
+src/kext/RTW88IEEE80211.cpp:844:IOLog("rtw88: unknown PCI device %04x — cannot probe\n", _pcidev->device);
+src/kext/RTW88IEEE80211.cpp:879:IOLog("rtw88: probe returned incomplete hardware state\n");
+src/kext/RTW88IEEE80211.cpp:898:IOLog("rtw88: failed to allocate STA interface\n");
+src/kext/RTW88IEEE80211.cpp:910:if (!_hw->ops->start) {
+src/kext/RTW88IEEE80211.cpp:911:IOLog("rtw88: driver has no start operation\n");
+src/kext/RTW88IEEE80211.cpp:914:RTW88_STAGE("calling hw->ops->start");
+src/kext/RTW88IEEE80211.cpp:915:ret = _hw->ops->start(_hw);
+src/kext/RTW88IEEE80211.cpp:916:RTW88_STAGE("hw->ops->start returned %d", ret);
+src/kext/RTW88IEEE80211.cpp:918:IOLog("rtw88: hw->ops->start failed: %d\n", ret);
+src/kext/RTW88IEEE80211.cpp:936:RTW88_STAGE("IEEE80211::start complete — SUCCESS");
+src/kext/RTW88IEEE80211.cpp:940:if (_powered && _hw && _hw->ops && _hw->ops->stop) {
+src/kext/RTW88IEEE80211.cpp:941:_hw->ops->stop(_hw, false);
+src/kext/RTW88IEEE80211.cpp:957:void RTW88IEEE80211::stop()
+src/kext/RTW88IEEE80211.cpp:959:IOLog("rtw88: IEEE80211 stop\n");
+src/kext/RTW88IEEE80211.cpp:995:if (_powered && _hw && _hw->ops && _hw->ops->stop)
+src/kext/RTW88IEEE80211.cpp:996:_hw->ops->stop(_hw, false);
+src/kext/RTW88IEEE80211.cpp:1198:if (!_hw || !_hw->ops || !_hw->ops->start) return kIOReturnNotReady;
+src/kext/RTW88IEEE80211.cpp:1199:int ret = _hw->ops->start(_hw);
+src/kext/RTW88IEEE80211.cpp:1220:if (_hw && _hw->ops && _hw->ops->stop)
+src/kext/RTW88IEEE80211.cpp:1221:_hw->ops->stop(_hw, false);
+src/kext/RTW88IEEE80211.cpp:1233:void RTW88IEEE80211::handleInterrupt()
+src/kext/RTW88IEEE80211.cpp:1287:* callback or an early free/reset path reports its terminal outcome. */
+src/kext/RTW88IEEE80211.cpp:1341:case 0x0050: /* probe response */
+src/kext/RTW88IEEE80211.cpp:1658:/* Parse beacon/probe-resp minimal fields */
+src/kext/RTW88IEEE80211.cpp:1718:/* Copy all IEs, except the padding some APs append to probe
+src/kext/RTW88IEEE80211.cpp:1786:/* A probe response has no TIM. Keep the TIM learned from this
+src/kext/RTW88IEEE80211.cpp:1788:* Not for a hidden AP: its name only comes from probe responses. */
+src/kext/RTW88IEEE80211.cpp:2124:/* Deliberately do NOT cancel _reorderTimer here: teardown can run on a
+src/kext/RTW88IEEE80211.cpp:2526:* scanning, start that already-accepted join immediately afterwards. */
+src/kext/RTW88IEEE80211.cpp:2644:IOLog("rtw88: scan start returnState=%u connected=%u partial=%u\n",
+src/kext/RTW88IEEE80211.cpp:2822:/* Active channels can use a short probe dwell. Passive/DFS channels
+src/kext/RTW88IEEE80211.cpp:2841:* may immediately start a fresh scan.  Clearing these fields afterwards
+src/kext/RTW88IEEE80211.cpp:3176:IOLog("rtw88: missing-BSS refresh could not start ret=0x%x\n", scanRet);
+src/kext/RTW88IEEE80211.cpp:3961:IOLog("rtw88: DISASSOCIATE acknowledged during disconnected scan (no link teardown)\n");
+src/kext/RTW88IEEE80211.cpp:3973:IOLog("rtw88: DISASSOCIATE aborting connected background scan before teardown\n");
+src/kext/RTW88IEEE80211.cpp:3982:* "Unexpected link down" and start auto-join, which then tore down the
+src/kext/RTW88IEEE80211.cpp:3995:* not wait for a background scan timeout: stop its worker synchronously,
+src/kext/RTW88IEEE80211.cpp:4609:* — our uplink TX BA, so stop aggregating.  initiator=1: AP is the
+src/kext/RTW88IEEE80211.cpp:4941:* dedicated per-TID space so the BlockAck window stays gap-free; non-QoS
+src/kext/RTW88IEEE80211.hpp:7:*  - Drives the Linux rtw88 driver (rtw_core_start/stop, rtw_tx, etc.)
+src/kext/RTW88IEEE80211.hpp:76:extern struct rtw88_dma_alloc_ops _dma_ops;
+src/kext/RTW88IEEE80211.hpp:88:virtual void  *allocCoherent(size_t size, IOPhysicalAddress *phys) = 0;
+src/kext/RTW88IEEE80211.hpp:89:virtual void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) = 0;
+src/kext/RTW88IEEE80211.hpp:184:static RTW88IEEE80211 *create(RTW88PCIDevice *dev, struct pci_dev *pci);
+src/kext/RTW88IEEE80211.hpp:187:bool      init(RTW88PCIDevice *dev, struct pci_dev *pci);
+src/kext/RTW88IEEE80211.hpp:188:bool      init(RTW88RxDelegate *delegate, struct pci_dev *pci);
+src/kext/RTW88IEEE80211.hpp:189:void      free() override;
+src/kext/RTW88IEEE80211.hpp:192:IOReturn  start();       /* probe: chip info, efuse, register hw */
+src/kext/RTW88IEEE80211.hpp:193:void      stop();        /* full teardown */
+src/kext/RTW88IEEE80211.hpp:219:void      handleInterrupt();
+src/kext/RTW88IEEE80211.hpp:222:* callback may run in interrupt/teardown context and must only enqueue a
+src/kext/RTW88IEEE80211.hpp:455:* separate scan implementation, so preserve the request and start it as
+src/kext/RTW88IEEE80211.hpp:511:/* Separate SN space for QoS data (TID 0) so the BlockAck window is gap-free */
+src/kext/RTW88IEEE80211.hpp:527:* (flush timer, disconnect teardown), so guarded by _rxBaLock.  Frames are
+src/kext/RTL88WiFi.cpp:186:bool RTL88WiFi::init(OSDictionary *props)
+src/kext/RTL88WiFi.cpp:188:return super::init(props);
+src/kext/RTL88WiFi.cpp:192:* start() calls this virtual before RTL88WiFi::start() continues; using an
+src/kext/RTL88WiFi.cpp:209:bool RTL88WiFi::start(IOService *provider)
+src/kext/RTL88WiFi.cpp:216:IOLog("RTL88WiFi: start\n");
+src/kext/RTL88WiFi.cpp:222:if (!super::start(provider)) {
+src/kext/RTL88WiFi.cpp:233:return failStart(provider, "failed to allocate DMA locks");
+src/kext/RTL88WiFi.cpp:252:rtw88_dma_ops       = &_dma_ops;
+src/kext/RTL88WiFi.cpp:260:return failStart(provider, "failed to allocate compat PCI device");
+src/kext/RTL88WiFi.cpp:271:/* super::start() has already called our createWorkLoop().  The reference IO80211 driver
+src/kext/RTL88WiFi.cpp:272:* relies on that controller-owned IO80211WorkLoop; do not create a second
+src/kext/RTL88WiFi.cpp:275:return failStart(provider, "IO80211 workloop unavailable after super::start");
+src/kext/RTL88WiFi.cpp:277:if (!setupInterrupt()) {
+src/kext/RTL88WiFi.cpp:287:return failStart(provider, "failed to create IEEE80211 state machine");
+src/kext/RTL88WiFi.cpp:312:IOReturn probeRet = _ieee80211->start();
+src/kext/RTL88WiFi.cpp:314:IOLog("RTL88WiFi: probe failed (0x%08x)\n", probeRet);
+src/kext/RTL88WiFi.cpp:315:return failStart(provider, "IEEE80211 start failed");
+src/kext/RTL88WiFi.cpp:320:if (!_awdlManager || !_awdlManager->init(_ieee80211, _workLoop, this, &RTL88WiFi::awdlTimerFired))
+src/kext/RTL88WiFi.cpp:335:* Calling init/attach directly bypasses the controller's lifecycle. */
+src/kext/RTL88WiFi.cpp:336:IOLog("RTL88WiFi: calling attachInterface (AirportItlwm lifecycle, attach=true)\n");
+src/kext/RTL88WiFi.cpp:338:* attach=true because matching/registration can be synchronous: make the
+src/kext/RTL88WiFi.cpp:367:// Attach on a later workloop turn, after start/publication has completed.
+src/kext/RTL88WiFi.cpp:381:* to allocate this optional timer must not prevent ordinary Wi-Fi use; Fixed
+src/kext/RTL88WiFi.cpp:485:IOLog("RTL88WiFi: start failed: %s\n", reason ? reason : "unknown error");
+src/kext/RTL88WiFi.cpp:488:* stop while the controller workloop, interface and backend still exist.
+src/kext/RTL88WiFi.cpp:489:* Releasing those first can leave super::stop() touching freed state. */
+src/kext/RTL88WiFi.cpp:491:super::stop(provider);
+src/kext/RTL88WiFi.cpp:494:teardown();
+src/kext/RTL88WiFi.cpp:498:bool RTL88WiFi::setupInterrupt()
+src/kext/RTL88WiFi.cpp:503:this, &RTL88WiFi::handleInterrupt),
+src/kext/RTL88WiFi.cpp:506:IOLog("RTL88WiFi: failed to create interrupt event source\n");
+src/kext/RTL88WiFi.cpp:517:void RTL88WiFi::handleInterrupt(IOInterruptEventSource *src, int count)
+src/kext/RTL88WiFi.cpp:546:void *RTL88WiFi::allocCoherent(size_t size, IOPhysicalAddress *phys)
+src/kext/RTL88WiFi.cpp:578:void RTL88WiFi::freeCoherent(size_t size, void *virt, IOPhysicalAddress phys)
+src/kext/RTL88WiFi.cpp:598:IOLog("RTL88WiFi: freeCoherent: virt %p not found\n", virt);
+src/kext/RTL88WiFi.cpp:705:void RTL88WiFi::teardown()
+src/kext/RTL88WiFi.cpp:730:/* Stop asynchronous output-queue wakeups before interface teardown. */
+src/kext/RTL88WiFi.cpp:742:_ieee80211->stop();
+src/kext/RTL88WiFi.cpp:792:rtw88_dma_ops = nullptr;
+src/kext/RTL88WiFi.cpp:973:void RTL88WiFi::stop(IOService *provider)
+src/kext/RTL88WiFi.cpp:975:/* The reference IO80211 driver calls IO80211Controller::stop() before releasing its
+src/kext/RTL88WiFi.cpp:977:* teardown cannot observe a freed IO80211WorkLoop or Realtek backend. */
+src/kext/RTL88WiFi.cpp:979:super::stop(provider);
+src/kext/RTL88WiFi.cpp:982:teardown();
+src/kext/RTL88WiFi.cpp:985:void RTL88WiFi::free()
+src/kext/RTL88WiFi.cpp:987:teardown();
+src/kext/RTL88WiFi.cpp:988:super::free();
+src/kext/RTL88WiFi.cpp:1115:if (!interface->init(this)) {
+src/kext/RTL88WiFi.cpp:1116:IOLog("RTL88WiFi: createInterface IO80211Interface::init failed\n");
+src/kext/RTL88WiFi.cpp:1127:* interface configuration.  The medium table is published in start()
+src/kext/RTL88WiFi.cpp:1128:* before attachInterface(), not created during the attach callback. */
+src/kext/RTL88WiFi.cpp:2629:* timer retries after teardown; it never changes the MAC mid-link. */
+src/kext/RTL88WiFi.cpp:2950:* the controller's normal enable path once, explicitly, after attach.
+src/kext/RTL88WiFi.cpp:2995:* attach/configure/name sequence. This calls createVirtualInterface(),
+src/kext/RTL88WiFi.cpp:3243:* total) and expects the associated AP's beacon/probe-response IE list,
+src/kext/RTL88WiFi.cpp:3342:IOLog("RTL88WiFi: DISASSOCIATE acknowledged during disconnected scan (no teardown)\n");
+src/kext/RTL88WiFi.cpp:3450:/* Populate real supported rates from beacon/probe IEs. */
+src/kext/RTL88WiFi.cpp:3491:* row is not supported here (no directed probe), so skip such entries,
+src/kext/RTL88WiFi.cpp:3536:* The reference IO80211 driver actually hands over the full beacon/probe IE blob
+src/kext/RTL88WiFi.cpp:3675:* allocated; enable() restores bus mastering for a reversible stop. */
+src/kext/RTL88WiFi.cpp:3705:/* Read once by IO80211Interface::init() as its per-AC dequeue limit. */
+src/kext/RTL88WiFi.cpp:3942:* failure return it is safer not to double-free an ambiguously
+src/kext/RTL88WiFi.hpp:112:bool     init(OSDictionary *props) override;
+src/kext/RTL88WiFi.hpp:113:bool     start(IOService *provider) override;
+src/kext/RTL88WiFi.hpp:114:void     stop(IOService *provider) override;
+src/kext/RTL88WiFi.hpp:115:void     free() override;
+src/kext/RTL88WiFi.hpp:337:* cache so an RF-empty environment cannot create a tight rescan loop. */
+src/kext/RTL88WiFi.hpp:348:* RTW88IEEE80211::create(), causando "pci bus timeout" en cada
+src/kext/RTL88WiFi.hpp:355:bool setupInterrupt();
+src/kext/RTL88WiFi.hpp:357:void teardown();
+src/kext/RTL88WiFi.hpp:359:void handleInterrupt(IOInterruptEventSource *src, int count);
+src/kext/RTL88WiFi.hpp:370:void  *allocCoherent(size_t size, IOPhysicalAddress *phys) override;
+src/kext/RTL88WiFi.hpp:371:void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) override;
+src/kext/wcl24h32/RTW88WCLController.cpp:19:bool RTW88WCLController::init(OSDictionary *properties)
+src/kext/wcl24h32/RTW88WCLController.cpp:21:if (!super::init(properties))
+src/kext/wcl24h32/RTW88WCLController.cpp:50:bool RTW88WCLController::start(IOService *provider)
+src/kext/wcl24h32/RTW88WCLController.cpp:54:if (!super::start(provider))
+src/kext/wcl24h32/RTW88WCLController.cpp:79:if (!_pciBackend->init()) {
+src/kext/wcl24h32/RTW88WCLController.cpp:95:* private timers/workloop only; it does not probe or power the chip. */
+src/kext/wcl24h32/RTW88WCLController.cpp:121:if (!_skywalkQueues || !_skywalkQueues->init()) {
+src/kext/wcl24h32/RTW88WCLController.cpp:142:if (!_rxAdapter || !_rxAdapter->init(
+src/kext/wcl24h32/RTW88WCLController.cpp:156:/* Publication fence: do not probe or power the radio until Skywalk packet
+src/kext/wcl24h32/RTW88WCLController.cpp:157:* registration, RX/TX rings, packet metadata and teardown are implemented.
+src/kext/wcl24h32/RTW88WCLController.cpp:166:IOLog("rtl88wifi-wcl: start-failure cleanup incomplete (0x%08x); retaining native resources\n",
+src/kext/wcl24h32/RTW88WCLController.cpp:172:super::stop(provider);
+src/kext/wcl24h32/RTW88WCLController.cpp:178:void RTW88WCLController::stop(IOService *provider)
+src/kext/wcl24h32/RTW88WCLController.cpp:182:IOLog("rtl88wifi-wcl: stop cleanup incomplete (0x%08x); deferring superclass stop and retaining resources\n",
+src/kext/wcl24h32/RTW88WCLController.cpp:187:super::stop(provider);
+src/kext/wcl24h32/RTW88WCLController.cpp:203:* _radioStarted false; preserve this ordering when native radio start is
+src/kext/wcl24h32/RTW88WCLController.cpp:206:_radio->stop();
+src/kext/wcl24h32/RTW88WCLController.cpp:220:* stop() waits out an active checkForWork() and releases all staged mbufs. */
+src/kext/wcl24h32/RTW88WCLController.cpp:222:_rxAdapter->stop();
+src/kext/wcl24h32/RTW88WCLController.cpp:230:* stop/free attempt can retry rather than releasing live packet memory. */
+src/kext/wcl24h32/RTW88WCLController.cpp:265:void RTW88WCLController::free()
+src/kext/wcl24h32/RTW88WCLController.cpp:271:/* Do not release the workloop or call super::free() while any child,
+src/kext/wcl24h32/RTW88WCLController.cpp:280:super::free();
+src/kext/wcl24h32/RTW88WCLController.cpp:544:* individually, dispose the pool's packet set as one teardown
+src/kext/wcl24h32/RTW88WCLController.hpp:6:* not start the radio or publish an interface until the Skywalk datapath is
+src/kext/wcl24h32/RTW88WCLController.hpp:28:bool init(OSDictionary *properties) override;
+src/kext/wcl24h32/RTW88WCLController.hpp:29:bool start(IOService *provider) override;
+src/kext/wcl24h32/RTW88WCLController.hpp:30:void stop(IOService *provider) override;
+src/kext/wcl24h32/RTW88WCLController.hpp:31:void free() override;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:20:bool RTW88WCLPCIBackend::init()
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:22:if (!super::init())
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:106:rtw88_dma_ops = &_dma_ops;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:120:&RTW88WCLPCIBackend::handleInterrupt),
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:154:* running so close/free cannot reclaim DMA mappings. */
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:169:/* Caller contract: RTW88IEEE80211::stop() must already have synchronized
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:261:rtw88_dma_ops = nullptr;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:266:void RTW88WCLPCIBackend::free()
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:274:IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\n",
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:283:super::free();
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:330:void *RTW88WCLPCIBackend::allocCoherent(size_t size,
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:380:void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:400:IOLog("rtl88wifi-wcl: freeCoherent: unknown virtual address %p\n",
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:463:* racing a concurrent unmap/free against the original buffer pointer. */
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:481:void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:7:* this object and must stop RTW88IEEE80211 before setRadioRunning(false) and
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:32:bool init() override;
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:33:void free() override;
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:41:/* The caller must first stop RTW88IEEE80211 so it can no longer issue
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:60:void *allocCoherent(size_t size, IOPhysicalAddress *physical) override;
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:61:void freeCoherent(size_t size, void *virtualAddress,
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:72:void handleInterrupt(IOInterruptEventSource *source, int count);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:139:bool RTW88WCLInfraInterface::init()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:141:if (!super::init())
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:157:bool RTW88WCLInfraInterface::init(IOService *provider, ether_addr *address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:159:if (!provider || !address || !super::init())
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:166:if (!IO80211SkywalkInterface::init(provider, address))
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:187:if (!queue->init(this, workLoop, this)) {
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:192:IOReturn status = _bridge.attach(radio, queue);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:194:queue->stop();
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:207:* must stop the radio before destroying its backend object. */
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:208:_bridge.detach();
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:210:_workQueue->stop();
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:221:void RTW88WCLInfraInterface::free()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:226:super::free();
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262:bool RTW88WCLInfraInterface::start(IOService *provider)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:274:void RTW88WCLInfraInterface::stop(IOService *provider)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:280:super::stop(provider);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:540:* being silently converted into active probe transmission. */
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:26:bool init() override;
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:27:bool init(IOService *provider, ether_addr *address) override;
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:28:void free() override;
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:29:bool start(IOService *provider) override;
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:30:void stop(IOService *provider) override;
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:281:* builder is staged but not called from start() until queue/pool ownership
+src/compat/linux/dma-mapping.h:19:* The C driver code calls these helpers; the kext installs rtw88_dma_ops
+src/compat/linux/dma-mapping.h:20:* before probe so the fallback path never runs in production.
+src/compat/linux/dma-mapping.h:27:dma_addr_t (*map_single)(struct device *dev, void *ptr,
+src/compat/linux/dma-mapping.h:29:void       (*unmap_single)(struct device *dev, dma_addr_t addr,
+src/compat/linux/dma-mapping.h:37:extern struct rtw88_dma_alloc_ops *rtw88_dma_ops;
+src/compat/linux/dma-mapping.h:39:static inline void *dma_alloc_coherent(struct device *dev, size_t size,
+src/compat/linux/dma-mapping.h:42:if (rtw88_dma_ops && rtw88_dma_ops->alloc_coherent)
+src/compat/linux/dma-mapping.h:43:return rtw88_dma_ops->alloc_coherent(dev, size, dma_handle, flag);
+src/compat/linux/dma-mapping.h:53:if (rtw88_dma_ops && rtw88_dma_ops->free_coherent) {
+src/compat/linux/dma-mapping.h:54:rtw88_dma_ops->free_coherent(dev, size, cpu_addr, dma_handle);
+src/compat/linux/dma-mapping.h:60:static inline dma_addr_t dma_map_single(struct device *dev, void *ptr,
+src/compat/linux/dma-mapping.h:63:if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+src/compat/linux/dma-mapping.h:64:return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+src/compat/linux/dma-mapping.h:68:static inline void dma_unmap_single(struct device *dev, dma_addr_t addr,
+src/compat/linux/dma-mapping.h:71:if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+src/compat/linux/dma-mapping.h:72:rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+src/compat/linux/dma-mapping.h:79:if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_cpu)
+src/compat/linux/dma-mapping.h:80:rtw88_dma_ops->sync_single_for_cpu(dev, addr, size, dir);
+src/compat/linux/dma-mapping.h:87:if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_device)
+src/compat/linux/dma-mapping.h:88:rtw88_dma_ops->sync_single_for_device(dev, addr, size, dir);
+src/compat/linux/dma-mapping.h:92:static inline int dma_set_mask(struct device *dev, u64 mask)              { return 0; }
+src/compat/linux/pci.h:16:* rtw88_pci_ops pointer set at driver start.
+src/compat/linux/pci.h:242:/* IRQ alloc/free */
+src/compat/linux/pci.h:278:int (*probe)(struct pci_dev *, const struct pci_device_id *);
+
+--- Native-to-legacy coupling references ---
+src/kext/RTW88HwOps.cpp:11:RTW88HwOps *g_pci_dev_instance = nullptr;
+src/kext/RTW88HwOps.cpp:15:if (!g_pci_dev_instance) { *val = 0xff; return -1; }
+src/kext/RTW88HwOps.cpp:16:*val = g_pci_dev_instance->pciReadByte(where);
+src/kext/RTW88HwOps.cpp:22:if (!g_pci_dev_instance) { *val = 0xffff; return -1; }
+src/kext/RTW88HwOps.cpp:23:*val = g_pci_dev_instance->pciReadWord(where);
+src/kext/RTW88HwOps.cpp:29:if (!g_pci_dev_instance) { *val = 0xffffffff; return -1; }
+src/kext/RTW88HwOps.cpp:30:*val = g_pci_dev_instance->pciReadDword(where);
+src/kext/RTW88HwOps.cpp:36:if (!g_pci_dev_instance) return -1;
+src/kext/RTW88HwOps.cpp:37:g_pci_dev_instance->pciWriteByte(where, val);
+src/kext/RTW88HwOps.cpp:43:if (!g_pci_dev_instance) return -1;
+src/kext/RTW88HwOps.cpp:44:g_pci_dev_instance->pciWriteWord(where, val);
+src/kext/RTW88HwOps.cpp:50:if (!g_pci_dev_instance) return -1;
+src/kext/RTW88HwOps.cpp:51:g_pci_dev_instance->pciWriteDword(where, val);
+src/kext/RTW88HwOps.cpp:57:return g_pci_dev_instance ? (void *)g_pci_dev_instance->mmioBase() : nullptr;
+src/kext/RTW88HwOps.cpp:66:return g_pci_dev_instance ? g_pci_dev_instance->pciFindCapability(cap) : 0;
+src/kext/RTW88HwOps.cpp:86:if (!g_pci_dev_instance) return nullptr;
+src/kext/RTW88HwOps.cpp:88:void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+src/kext/RTW88HwOps.cpp:96:if (g_pci_dev_instance)
+src/kext/RTW88HwOps.cpp:97:g_pci_dev_instance->freeCoherent(size, cpu_addr,
+src/kext/RTW88HwOps.cpp:103:if (!g_pci_dev_instance || !ptr) return 0;
+src/kext/RTW88HwOps.cpp:106:void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+src/kext/RTW88HwOps.cpp:109:g_pci_dev_instance->setBounceOrigVA(phys, ptr);
+src/kext/RTW88HwOps.cpp:117:if (g_pci_dev_instance)
+src/kext/RTW88HwOps.cpp:118:g_pci_dev_instance->freeCoherentByPhys((IOPhysicalAddress)addr);
+src/kext/RTW88HwOps.cpp:124:if (dir == 0 && g_pci_dev_instance)
+src/kext/RTW88HwOps.cpp:125:g_pci_dev_instance->syncBounceForCpu((IOPhysicalAddress)addr, size);
+src/kext/RTW88HwOps.cpp:130:struct rtw88_dma_alloc_ops _dma_ops = {
+src/kext/RTW88IEEE80211.cpp:9:#include "RTW88PCIDevice.hpp"
+src/kext/RTW88IEEE80211.cpp:544:RTW88IEEE80211 *RTW88IEEE80211::create(RTW88PCIDevice *dev, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.cpp:554:RTW88IEEE80211 *RTW88IEEE80211::createAirport(RTW88RxDelegate *delegate, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.cpp:564:bool RTW88IEEE80211::init(RTW88RxDelegate *delegate, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.cpp:613:bool RTW88IEEE80211::init(RTW88PCIDevice *dev, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.hpp:10:*  - Delivers decrypted data frames as Ethernet to RTW88PCIDevice
+src/kext/RTW88IEEE80211.hpp:53:class RTW88PCIDevice;
+src/kext/RTW88IEEE80211.hpp:56:* directo a metodos de RTW88PCIDevice via g_pci_dev_instance (tipado a
+src/kext/RTW88IEEE80211.hpp:57:* esa clase). Ahora cualquiera de los dos kexts (RTW88PCIDevice o
+src/kext/RTW88IEEE80211.hpp:58:* RTL88WiFi) puede implementarla, y g_pci_dev_instance pasa a ser
+src/kext/RTW88IEEE80211.hpp:61:* adentro de RTW88PCIDevice; ahora la comparten ambas clases. */
+src/kext/RTW88IEEE80211.hpp:72:extern RTW88HwOps *g_pci_dev_instance;
+src/kext/RTW88IEEE80211.hpp:76:extern struct rtw88_dma_alloc_ops _dma_ops;
+src/kext/RTW88IEEE80211.hpp:99:* asumia directamente RTW88PCIDevice, lo cual rompia el link en
+src/kext/RTW88IEEE80211.hpp:184:static RTW88IEEE80211 *create(RTW88PCIDevice *dev, struct pci_dev *pci);
+src/kext/RTW88IEEE80211.hpp:187:bool      init(RTW88PCIDevice *dev, struct pci_dev *pci);
+src/kext/RTW88IEEE80211.hpp:191:/* Called by RTW88PCIDevice */
+src/kext/RTL88WiFi.cpp:17:extern "C" void rtw88_trigger_interrupt(void);  /* esta si es la unica con extern "C" real, ver RTW88PCIDevice.cpp */  /* struct RTW88StateResult vive aca */
+src/kext/RTL88WiFi.cpp:180:if (g_pci_dev_instance)
+src/kext/RTL88WiFi.cpp:181:g_pci_dev_instance->resumeTxIfStalled();
+src/kext/RTL88WiFi.cpp:248:/* Instalar callbacks compartidos de compat (mismos que usa RTW88PCIDevice,
+src/kext/RTL88WiFi.cpp:250:g_pci_dev_instance = this;
+src/kext/RTL88WiFi.cpp:252:rtw88_dma_ops       = &_dma_ops;
+src/kext/RTL88WiFi.cpp:285:_ieee80211 = RTW88IEEE80211::createAirport(this, _compatPciDev);
+src/kext/RTL88WiFi.cpp:789:if (g_pci_dev_instance == this) {
+src/kext/RTL88WiFi.cpp:790:g_pci_dev_instance = nullptr;
+src/kext/RTL88WiFi.cpp:792:rtw88_dma_ops = nullptr;
+src/kext/RTL88WiFi.hpp:212:/* RTW88RxDelegate — antes RTW88IEEE80211 asumia un RTW88PCIDevice*
+src/kext/RTL88WiFi.hpp:348:* RTW88IEEE80211::create(), causando "pci bus timeout" en cada
+src/kext/RTL88WiFi.hpp:349:* acceso a registro. Replica lo que ya hace RTW88PCIDevice. */
+src/kext/wcl24h32/RTW88WCLController.cpp:101:RTW88IEEE80211 *radio = RTW88IEEE80211::createAirport(this, compatPCI);
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:97:if (!__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:106:rtw88_dma_ops = &_dma_ops;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:257:if (__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:261:rtw88_dma_ops = nullptr;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:486:if (!_radioRunning || !g_pci_dev_instance ||
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:487:__atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+src/compat/linux/dma-mapping.h:19:* The C driver code calls these helpers; the kext installs rtw88_dma_ops
+src/compat/linux/dma-mapping.h:37:extern struct rtw88_dma_alloc_ops *rtw88_dma_ops;
+src/compat/linux/dma-mapping.h:42:if (rtw88_dma_ops && rtw88_dma_ops->alloc_coherent)
+src/compat/linux/dma-mapping.h:43:return rtw88_dma_ops->alloc_coherent(dev, size, dma_handle, flag);
+src/compat/linux/dma-mapping.h:53:if (rtw88_dma_ops && rtw88_dma_ops->free_coherent) {
+src/compat/linux/dma-mapping.h:54:rtw88_dma_ops->free_coherent(dev, size, cpu_addr, dma_handle);
+src/compat/linux/dma-mapping.h:63:if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+src/compat/linux/dma-mapping.h:64:return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+src/compat/linux/dma-mapping.h:71:if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+src/compat/linux/dma-mapping.h:72:rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+src/compat/linux/dma-mapping.h:79:if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_cpu)
+src/compat/linux/dma-mapping.h:80:rtw88_dma_ops->sync_single_for_cpu(dev, addr, size, dir);
+src/compat/linux/dma-mapping.h:87:if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_device)
+src/compat/linux/dma-mapping.h:88:rtw88_dma_ops->sync_single_for_device(dev, addr, size, dir);
+src/compat/linux/pci.h:15:* DMA, interrupts) are provided by RTW88PCIDevice via the global
+
+--- Critical source excerpts ---
+
+### src/kext/RTW88HwOps.cpp
+[lines 1-137]
+   1 // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+   2 // Hardware shims shared by the Ethernet and Airport controller frontends.
+   3 
+   4 #include "RTW88IEEE80211.hpp"
+   5 #include <IOKit/IOLib.h>
+   6 
+   7 extern "C" {
+   8 #include "../compat/rtw88_compat.h"
+   9 }
+  10 
+  11 RTW88HwOps *g_pci_dev_instance = nullptr;
+  12 
+  13 static int compat_pci_read_config_byte(struct pci_dev *, int where, u8 *val)
+  14 {
+  15     if (!g_pci_dev_instance) { *val = 0xff; return -1; }
+  16     *val = g_pci_dev_instance->pciReadByte(where);
+  17     return 0;
+  18 }
+  19 
+  20 static int compat_pci_read_config_word(struct pci_dev *, int where, u16 *val)
+  21 {
+  22     if (!g_pci_dev_instance) { *val = 0xffff; return -1; }
+  23     *val = g_pci_dev_instance->pciReadWord(where);
+  24     return 0;
+  25 }
+  26 
+  27 static int compat_pci_read_config_dword(struct pci_dev *, int where, u32 *val)
+  28 {
+  29     if (!g_pci_dev_instance) { *val = 0xffffffff; return -1; }
+  30     *val = g_pci_dev_instance->pciReadDword(where);
+  31     return 0;
+  32 }
+  33 
+  34 static int compat_pci_write_config_byte(struct pci_dev *, int where, u8 val)
+  35 {
+  36     if (!g_pci_dev_instance) return -1;
+  37     g_pci_dev_instance->pciWriteByte(where, val);
+  38     return 0;
+  39 }
+  40 
+  41 static int compat_pci_write_config_word(struct pci_dev *, int where, u16 val)
+  42 {
+  43     if (!g_pci_dev_instance) return -1;
+  44     g_pci_dev_instance->pciWriteWord(where, val);
+  45     return 0;
+  46 }
+  47 
+  48 static int compat_pci_write_config_dword(struct pci_dev *, int where, u32 val)
+  49 {
+  50     if (!g_pci_dev_instance) return -1;
+  51     g_pci_dev_instance->pciWriteDword(where, val);
+  52     return 0;
+  53 }
+  54 
+  55 static void *compat_ioremap(struct pci_dev *, int, size_t)
+  56 {
+  57     return g_pci_dev_instance ? (void *)g_pci_dev_instance->mmioBase() : nullptr;
+  58 }
+  59 
+  60 static void compat_iounmap(struct pci_dev *, void *) {}
+  61 static int compat_enable_msi(struct pci_dev *) { return 0; }
+  62 static void compat_disable_msi(struct pci_dev *) {}
+  63 
+  64 static int compat_pci_find_capability(struct pci_dev *, int cap)
+  65 {
+  66     return g_pci_dev_instance ? g_pci_dev_instance->pciFindCapability(cap) : 0;
+  67 }
+  68 
+  69 struct pci_ops_rtw88 _pci_io_ops = {
+  70     .read_config_byte = compat_pci_read_config_byte,
+  71     .read_config_word = compat_pci_read_config_word,
+  72     .read_config_dword = compat_pci_read_config_dword,
+  73     .write_config_byte = compat_pci_write_config_byte,
+  74     .write_config_word = compat_pci_write_config_word,
+  75     .write_config_dword = compat_pci_write_config_dword,
+  76     .ioremap = compat_ioremap,
+  77     .iounmap = compat_iounmap,
+  78     .enable_msi = compat_enable_msi,
+  79     .disable_msi = compat_disable_msi,
+  80     .pci_find_capability = compat_pci_find_capability,
+  81 };
+  82 
+  83 static void *compat_dma_alloc(struct device *, size_t size,
+  84                               dma_addr_t *dma_handle, gfp_t)
+  85 {
+  86     if (!g_pci_dev_instance) return nullptr;
+  87     IOPhysicalAddress phys = 0;
+  88     void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+  89     if (dma_handle) *dma_handle = (dma_addr_t)phys;
+  90     return virt;
+  91 }
+  92 
+  93 static void compat_dma_free(struct device *, size_t size, void *cpu_addr,
+  94                             dma_addr_t dma_handle)
+  95 {
+  96     if (g_pci_dev_instance)
+  97         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+  98                                          (IOPhysicalAddress)dma_handle);
+  99 }
+ 100 
+ 101 static dma_addr_t compat_dma_map(struct device *, void *ptr, size_t size, int dir)
+ 102 {
+ 103     if (!g_pci_dev_instance || !ptr) return 0;
+ 104 
+ 105     IOPhysicalAddress phys = 0;
+ 106     void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+ 107     if (!bounce) return 0;
+ 108 
+ 109     g_pci_dev_instance->setBounceOrigVA(phys, ptr);
+ 110     if (dir == 1 || dir == 2)
+ 111         memcpy(bounce, ptr, size);
+ 112     return (dma_addr_t)phys;
+ 113 }
+ 114 
+ 115 static void compat_dma_unmap(struct device *, dma_addr_t addr, size_t, int)
+ 116 {
+ 117     if (g_pci_dev_instance)
+ 118         g_pci_dev_instance->freeCoherentByPhys((IOPhysicalAddress)addr);
+ 119 }
+ 120 
+ 121 static void compat_dma_sync_cpu(struct device *, dma_addr_t addr,
+ 122                                 size_t size, int dir)
+ 123 {
+ 124     if (dir == 0 && g_pci_dev_instance)
+ 125         g_pci_dev_instance->syncBounceForCpu((IOPhysicalAddress)addr, size);
+ 126 }
+ 127 
+ 128 static void compat_dma_sync_dev(struct device *, dma_addr_t, size_t, int) {}
+ 129 
+ 130 struct rtw88_dma_alloc_ops _dma_ops = {
+ 131     .alloc_coherent = compat_dma_alloc,
+ 132     .free_coherent = compat_dma_free,
+ 133     .map_single = compat_dma_map,
+ 134     .unmap_single = compat_dma_unmap,
+ 135     .sync_single_for_cpu = compat_dma_sync_cpu,
+ 136     .sync_single_for_device = compat_dma_sync_dev,
+ 137 };
+
+### src/kext/RTW88IEEE80211.cpp
+[lines 1-35]
+   1 /* Modified by X1REN41L on 2026-10-14 for RTL88WiFi 1.0.1; see the repository NOTICE.md. */
+   2 /* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (AWDL radio policy, mesh join selection); see NOTICE.md. */
+   3 // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+   4 // RTW88IEEE80211.cpp — 802.11 state machine
+   5 
+   6 #include "RTW88IEEE80211.hpp"
+   7 #include "RTW88AWDLProtocol.hpp"
+   8 #include "RTW88MgmtValidation.hpp"
+   9 #include "RTW88PCIDevice.hpp"
+  10 #include "RTW88UserClient.hpp"
+  11 
+  12 #include <IOKit/IOLib.h>
+  13 #include <IOKit/IOService.h>
+  14 #include <sys/mbuf.h>
+  15 #include <string.h>
+  16 #include <sys/random.h>
+  17 #include <kern/clock.h>
+  18 #include <mach/mach_time.h>
+  19 
+  20 /* Debug stage checkpoint — logs message only (no sleep). */
+  21 #define RTW88_STAGE(fmt, ...) IOLog("rtw88: ---- STAGE: " fmt " ----\n", ##__VA_ARGS__)
+  22 
+  23 /* Chain-safe packet mbuf builder (defined below). */
+  24 static mbuf_t rtw88_make_packet_mbuf(const void *src, uint32_t len);
+  25 
+  26 extern "C" {
+  27 #include "../compat/rtw88_compat.h"
+  28 
+  29 /* Linux driver public API */
+  30 int  rtw_core_init(struct rtw_dev *rtwdev);
+  31 void rtw_core_deinit(struct rtw_dev *rtwdev);
+  32 int  rtw_core_start(struct rtw_dev *rtwdev);
+  33 void rtw_core_stop(struct rtw_dev *rtwdev);
+  34 void rtw_tx(struct rtw_dev *rtwdev, struct ieee80211_tx_control *control,
+  35             struct sk_buff *skb);
+[lines 520-660]
+ 520 
+ 521 void RTW88IEEE80211::compat_rx_frame(void *kext_hw, struct sk_buff *skb)
+ 522 {
+ 523     RTW88IEEE80211 *self = (RTW88IEEE80211 *)kext_hw;
+ 524     if (self) self->rxFrame(skb);
+ 525 }
+ 526 
+ 527 void RTW88IEEE80211::compat_tx_status(void *kext_hw, struct sk_buff *skb)
+ 528 {
+ 529     RTW88IEEE80211 *self = (RTW88IEEE80211 *)kext_hw;
+ 530     if (self) self->txStatus(skb);
+ 531     kfree_skb(skb);
+ 532 }
+ 533 
+ 534 void RTW88IEEE80211::compat_scan_done(void *kext_hw, bool aborted)
+ 535 {
+ 536     RTW88IEEE80211 *self = (RTW88IEEE80211 *)kext_hw;
+ 537     if (self) self->scanDone(aborted);
+ 538 }
+ 539 
+ 540 /* ------------------------------------------------------------------ */
+ 541 /*  Factory / init / free                                               */
+ 542 /* ------------------------------------------------------------------ */
+ 543 
+ 544 RTW88IEEE80211 *RTW88IEEE80211::create(RTW88PCIDevice *dev, struct pci_dev *pci)
+ 545 {
+ 546     RTW88IEEE80211 *obj = new RTW88IEEE80211;
+ 547     if (obj && !obj->init(dev, pci)) {
+ 548         obj->release();
+ 549         return nullptr;
+ 550     }
+ 551     return obj;
+ 552 }
+ 553 
+ 554 RTW88IEEE80211 *RTW88IEEE80211::createAirport(RTW88RxDelegate *delegate, struct pci_dev *pci)
+ 555 {
+ 556     RTW88IEEE80211 *obj = new RTW88IEEE80211;
+ 557     if (obj && !obj->init(delegate, pci)) {
+ 558         obj->release();
+ 559         return nullptr;
+ 560     }
+ 561     return obj;
+ 562 }
+ 563 
+ 564 bool RTW88IEEE80211::init(RTW88RxDelegate *delegate, struct pci_dev *pci)
+ 565 {
+ 566     if (!super::init()) return false;
+ 567     _parent = delegate;
+ 568     _pcidev = pci;
+ 569     _lock    = IOLockAlloc();
+ 570     _bssLock = IOLockAlloc();
+ 571     if (!_lock || !_bssLock) return false;
+ 572     _joinFail.clear();
+ 573     _joinTried.clear();
+ 574     _baRecovery.reset();
+ 575     _connectTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::connectTCFn,
+ 576                                        (thread_call_param_t)this);
+ 577     _manualScanTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::manualScanTCFn,
+ 578                                          (thread_call_param_t)this);
+ 579     if (!_connectTC || !_manualScanTC) return false;
+ 580     /* Install callbacks into compat layer */
+ 581     static struct rtw88_hw_callbacks cbs = {
+ 582         .rx_frame  = RTW88IEEE80211::compat_rx_frame,
+ 583         .tx_status = RTW88IEEE80211::compat_tx_status,
+ 584         .scan_done = RTW88IEEE80211::compat_scan_done,
+ 585     };
+ 586     rtw88_set_hw_callbacks(&cbs, this);
+ 587     /* Set up workloop / timer for state machine */
+ 588     _wl = IOWorkLoop::workLoop();
+ 589     if (!_wl) return false;
+ 590     _gate = IOCommandGate::commandGate(this);
+ 591     if (!_gate) return false;
+ 592     if (_wl->addEventSource(_gate) != kIOReturnSuccess) return false;
+ 593     _timer = IOTimerEventSource::timerEventSource(this,
+ 594         &RTW88IEEE80211::timerFired);
+ 595     if (!_timer) return false;
+ 596     if (_wl->addEventSource(_timer) != kIOReturnSuccess) return false;
+ 597     /* RX A-MPDU reorder: lock + hole-flush timer.  The timer lives on the
+ 598      * RX/interrupt workloop (not _wl) so reorder-released frames and normal RX
+ 599      * frames are delivered from the same thread — injectRxFrame's queue+
+ 600      * flush is not safe against concurrent callers. */
+ 601     _rxBaLock = IOLockAlloc();
+ 602     if (!_rxBaLock) return false;
+ 603     IOWorkLoop *rxwl = _parent ? _parent->getRxWorkLoop() : nullptr;
+ 604     if (!rxwl) return false;
+ 605     _reorderTimer = IOTimerEventSource::timerEventSource(this,
+ 606         &RTW88IEEE80211::reorderTimerFired);
+ 607     if (!_reorderTimer) return false;
+ 608     if (rxwl->addEventSource(_reorderTimer) != kIOReturnSuccess) return false;
+ 609     IOLog("rtw88: RTW88IEEE80211 initialized\n");
+ 610     return true;
+ 611 }
+ 612 
+ 613 bool RTW88IEEE80211::init(RTW88PCIDevice *dev, struct pci_dev *pci)
+ 614 {
+ 615     if (!super::init()) return false;
+ 616     _parent = dev;
+ 617     _pcidev = pci;
+ 618 
+ 619     _lock    = IOLockAlloc();
+ 620     _bssLock = IOLockAlloc();
+ 621     if (!_lock || !_bssLock) return false;
+ 622 
+ 623     _connectTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::connectTCFn,
+ 624                                        (thread_call_param_t)this);
+ 625     _manualScanTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::manualScanTCFn,
+ 626                                           (thread_call_param_t)this);
+ 627     if (!_connectTC || !_manualScanTC) return false;
+ 628 
+ 629     /* Install callbacks into compat layer */
+ 630     static struct rtw88_hw_callbacks cbs = {
+ 631         .rx_frame  = RTW88IEEE80211::compat_rx_frame,
+ 632         .tx_status = RTW88IEEE80211::compat_tx_status,
+ 633         .scan_done = RTW88IEEE80211::compat_scan_done,
+ 634     };
+ 635     rtw88_set_hw_callbacks(&cbs, this);
+ 636 
+ 637     /* Set up workloop / timer for state machine */
+ 638     _wl = IOWorkLoop::workLoop();
+ 639     if (!_wl) return false;
+ 640 
+ 641     _gate = IOCommandGate::commandGate(this);
+ 642     if (!_gate) return false;
+ 643     if (_wl->addEventSource(_gate) != kIOReturnSuccess) return false;
+ 644 
+ 645     _timer = IOTimerEventSource::timerEventSource(this,
+ 646         &RTW88IEEE80211::timerFired);
+ 647     if (!_timer) return false;
+ 648     if (_wl->addEventSource(_timer) != kIOReturnSuccess) return false;
+ 649 
+ 650     /* RX A-MPDU reorder: lock + hole-flush timer.  The timer lives on the
+ 651      * RX/interrupt workloop (not _wl) so reorder-released frames and normal RX
+ 652      * frames are delivered from the same thread — injectRxFrame's queue+flush
+ 653      * is not safe against concurrent callers. */
+ 654     _rxBaLock = IOLockAlloc();
+ 655     if (!_rxBaLock) return false;
+ 656     IOWorkLoop *rxwl = _parent ? _parent->getRxWorkLoop() : nullptr;
+ 657     if (!rxwl) return false;
+ 658     _reorderTimer = IOTimerEventSource::timerEventSource(this,
+ 659         &RTW88IEEE80211::reorderTimerFired);
+ 660     if (!_reorderTimer) return false;
+
+### src/kext/wcl24h32/RTW88WCLController.cpp
+[lines 1-260]
+   1 /* SPDX-License-Identifier: GPL-2.0-only
+   2  * Sequoia 24H32 native IO80211Controller with staged backend ownership.
+   3  */
+   4 #include "RTW88WCLController.hpp"
+   5 #include "RTW88WCL24H32InterfaceABI.hpp"
+   6 #include "RTW88WCLSkywalkQueues.hpp"
+   7 #include "RTW88WCLSkywalkRxAdapter.hpp"
+   8 #include "../RTW88IEEE80211.hpp"
+   9 
+  10 #include <IOKit/pci/IOPCIDevice.h>
+  11 
+  12 #include <IOKit/IOLib.h>
+  13 #include <IOKit/network/IOOutputQueue.h>
+  14 #include <libkern/c++/OSMetaClass.h>
+  15 
+  16 #define super IO80211Controller
+  17 OSDefineMetaClassAndStructors(RTW88WCLController, IO80211Controller)
+  18 
+  19 bool RTW88WCLController::init(OSDictionary *properties)
+  20 {
+  21     if (!super::init(properties))
+  22         return false;
+  23     _workLoop = nullptr;
+  24     _packetPathInterface = nullptr;
+  25     _packetPathState = kPacketPathDisabled;
+  26     _packetPathInFlight = 0;
+  27     _pciBackend = nullptr;
+  28     _skywalkQueues = nullptr;
+  29     _rxAdapter = nullptr;
+  30     _stagedRxPackets.reset();
+  31     _radio = nullptr;
+  32     _baseStarted = false;
+  33     _radioStarted = false;
+  34     return true;
+  35 }
+  36 
+  37 bool RTW88WCLController::createWorkLoop()
+  38 {
+  39     if (_workLoop)
+  40         return true;
+  41     _workLoop = IOWorkLoop::workLoop();
+  42     return _workLoop != nullptr;
+  43 }
+  44 
+  45 IOWorkLoop *RTW88WCLController::getWorkLoop() const
+  46 {
+  47     return _workLoop;
+  48 }
+  49 
+  50 bool RTW88WCLController::start(IOService *provider)
+  51 {
+  52     if (!provider || _baseStarted || _pciBackend || _radio)
+  53         return false;
+  54     if (!super::start(provider))
+  55         return false;
+  56     _baseStarted = true;
+  57 
+  58     /* Stage A: the controller workloop must exist before acquiring a PCI
+  59      * backend or registering any interrupt source. */
+  60     if (!createWorkLoop()) {
+  61         IOLog("rtl88wifi-wcl: controller workloop creation failed\n");
+  62         goto fail;
+  63     }
+  64 
+  65     /* Stage B: this native personality must be matched directly to a PCI
+  66      * provider. The backend retains it and owns BAR2/MMIO/DMA resources. */
+  67     {
+  68         IOPCIDevice *pci = OSDynamicCast(IOPCIDevice, provider);
+  69         if (!pci) {
+  70             IOLog("rtl88wifi-wcl: provider is not an IOPCIDevice\n");
+  71             goto fail;
+  72         }
+  73 
+  74         _pciBackend = new RTW88WCLPCIBackend;
+  75         if (!_pciBackend) {
+  76             IOLog("rtl88wifi-wcl: PCI backend allocation failed\n");
+  77             goto fail;
+  78         }
+  79         if (!_pciBackend->init()) {
+  80             _pciBackend->release();
+  81             _pciBackend = nullptr;
+  82             IOLog("rtl88wifi-wcl: PCI backend initialization failed\n");
+  83             goto fail;
+  84         }
+  85 
+  86         const IOReturn openStatus = _pciBackend->open(pci, _workLoop, this);
+  87         if (openStatus != kIOReturnSuccess) {
+  88             IOLog("rtl88wifi-wcl: PCI backend open failed: 0x%08x\n",
+  89                   openStatus);
+  90             goto fail;
+  91         }
+  92 
+  93         /* Stage C: instantiate the RTW88 state machine against the backend's
+  94          * compat pci_dev. This installs callback context and allocates its
+  95          * private timers/workloop only; it does not probe or power the chip. */
+  96         struct pci_dev *compatPCI = _pciBackend->compatPCIDevice();
+  97         if (!compatPCI) {
+  98             IOLog("rtl88wifi-wcl: backend did not provide a compat PCI device\n");
+  99             goto fail;
+ 100         }
+ 101         RTW88IEEE80211 *radio = RTW88IEEE80211::createAirport(this, compatPCI);
+ 102         if (!radio) {
+ 103             IOLog("rtl88wifi-wcl: RTW88 state-machine allocation failed\n");
+ 104             goto fail;
+ 105         }
+ 106         radio->setEventDelegate(this);
+ 107         const IOReturn bindStatus = bindRadioBackend(radio);
+ 108         radio->release();
+ 109         if (bindStatus != kIOReturnSuccess) {
+ 110             IOLog("rtl88wifi-wcl: RTW88 state-machine bind failed: 0x%08x\n",
+ 111                   bindStatus);
+ 112             goto fail;
+ 113         }
+ 114     }
+ 115 
+ 116     /* Stage D: reserve native Skywalk queue/pool objects while the PCI and
+ 117      * RTW88 owners are still available for orderly unwind. These objects are
+ 118      * intentionally not registered or scheduled until packet descriptor
+ 119      * conversion and hardware completion correlation are implemented. */
+ 120     _skywalkQueues = new RTW88WCLSkywalkQueues;
+ 121     if (!_skywalkQueues || !_skywalkQueues->init()) {
+ 122         if (_skywalkQueues) {
+ 123             _skywalkQueues->release();
+ 124             _skywalkQueues = nullptr;
+ 125         }
+ 126         IOLog("rtl88wifi-wcl: Skywalk queue owner allocation failed\n");
+ 127         goto fail;
+ 128     }
+ 129     {
+ 130         const IOReturn queueStatus = _skywalkQueues->createQueues();
+ 131         if (queueStatus != kIOReturnSuccess) {
+ 132             IOLog("rtl88wifi-wcl: Skywalk queue/pool allocation failed: 0x%08x\n",
+ 133                   queueStatus);
+ 134             goto fail;
+ 135         }
+ 136     }
+ 137 
+ 138     /* Stage E: bind the RX workloop consumer to the now-owned 4 KiB RX pool.
+ 139      * It copies frames into native packet buffers, but its sink remains
+ 140      * rejecting until the registration/completion ABI is closed. */
+ 141     _rxAdapter = new RTW88WCLSkywalkRxAdapter;
+ 142     if (!_rxAdapter || !_rxAdapter->init(
+ 143             this, _workLoop, _skywalkQueues->rxPacketPool(),
+ 144             &RTW88WCLController::stagedRxFrame, this)) {
+ 145         if (_rxAdapter) {
+ 146             _rxAdapter->release();
+ 147             _rxAdapter = nullptr;
+ 148         }
+ 149         IOLog("rtl88wifi-wcl: RX packet adapter initialization failed\n");
+ 150         goto fail;
+ 151     }
+ 152 
+ 153     provider->setProperty("RTW88WCLControllerStage",
+ 154                            "PCI, RTW88 and pool-backed RX packet conversion staged; datapath pending");
+ 155 
+ 156     /* Publication fence: do not probe or power the radio until Skywalk packet
+ 157      * registration, RX/TX rings, packet metadata and teardown are implemented.
+ 158      * Starting it sooner would produce frames without a safe delivery path. */
+ 159     IOLog("rtl88wifi-wcl: backend lifecycle staged; refusing publication until Skywalk datapath is ready\n");
+ 160     goto fail;
+ 161 
+ 162 fail:
+ 163     {
+ 164         const IOReturn cleanupStatus = releaseNativeResources();
+ 165         if (cleanupStatus != kIOReturnSuccess) {
+ 166             IOLog("rtl88wifi-wcl: start-failure cleanup incomplete (0x%08x); retaining native resources\n",
+ 167                   cleanupStatus);
+ 168             return false;
+ 169         }
+ 170     }
+ 171     if (_baseStarted) {
+ 172         super::stop(provider);
+ 173         _baseStarted = false;
+ 174     }
+ 175     return false;
+ 176 }
+ 177 
+ 178 void RTW88WCLController::stop(IOService *provider)
+ 179 {
+ 180     const IOReturn cleanupStatus = releaseNativeResources();
+ 181     if (cleanupStatus != kIOReturnSuccess) {
+ 182         IOLog("rtl88wifi-wcl: stop cleanup incomplete (0x%08x); deferring superclass stop and retaining resources\n",
+ 183               cleanupStatus);
+ 184         return;
+ 185     }
+ 186     if (_baseStarted) {
+ 187         super::stop(provider);
+ 188         _baseStarted = false;
+ 189     }
+ 190 }
+ 191 
+ 192 IOReturn RTW88WCLController::releaseNativeResources()
+ 193 {
+ 194     const IOReturn packetPathStatus = quiescePacketPath();
+ 195     if (packetPathStatus != kIOReturnSuccess) {
+ 196         IOLog("rtl88wifi-wcl: packet path quiesce deferred: 0x%08x\n",
+ 197               packetPathStatus);
+ 198         return packetPathStatus; // Keep the radio, interface and PCI callbacks alive.
+ 199     }
+ 200 
+ 201     /* Stop the RTW88 RX/TX producer before removing its deferred consumers or
+ 202      * disabling PCI interrupts. The staged path currently leaves
+ 203      * _radioStarted false; preserve this ordering when native radio start is
+ 204      * enabled after queue registration. */
+ 205     if (_radio && _radioStarted) {
+ 206         _radio->stop();
+ 207         _radioStarted = false;
+ 208     }
+ 209 
+ 210     if (_pciBackend && _pciBackend->isRadioRunning()) {
+ 211         const IOReturn fenceStatus = _pciBackend->setRadioRunning(false);
+ 212         if (fenceStatus != kIOReturnSuccess) {
+ 213             IOLog("rtl88wifi-wcl: PCI interrupt/bus-master fence failed: 0x%08x\n",
+ 214                   fenceStatus);
+ 215             return fenceStatus; // Keep callbacks, mappings and DMA owner alive on failure.
+ 216         }
+ 217     }
+ 218 
+ 219     /* Remove the RX workloop source only after the RTW88 producer is stopped.
+ 220      * stop() waits out an active checkForWork() and releases all staged mbufs. */
+ 221     if (_rxAdapter) {
+ 222         _rxAdapter->stop();
+ 223         _rxAdapter->release();
+ 224         _rxAdapter = nullptr;
+ 225     }
+ 226 
+ 227     /* The RX adapter transfers accepted native packets into the controller's
+ 228      * bounded ready ring. Recycle those packets while their pool still exists;
+ 229      * on a pool error, retain the queue owner and PCI/backend context so a later
+ 230      * stop/free attempt can retry rather than releasing live packet memory. */
+ 231     const IOReturn recycleStatus = recycleStagedRxPackets();
+ 232     if (recycleStatus != kIOReturnSuccess) {
+ 233         IOLog("rtl88wifi-wcl: staged RX packet recycle deferred: 0x%08x\n",
+ 234               recycleStatus);
+ 235         return recycleStatus;
+ 236     }
+ 237 
+ 238     /* Skywalk packet pools/queues are released only after both the mbuf staging
+ 239      * adapter and the prepared-packet ownership ring have been drained. */
+ 240     if (_skywalkQueues) {
+ 241         _skywalkQueues->destroyQueues();
+ 242         _skywalkQueues->release();
+ 243         _skywalkQueues = nullptr;
+ 244     }
+ 245 
+ 246     
+ 247 
+ 248     /* RTW88IEEE80211 owns the compat callback context; destroy it before
+ 249      * rtw88_compat_exit() and before relinquishing the global hardware lease. */
+ 250     unbindRadioBackend();
+ 251 
+ 252     if (_pciBackend) {
+ 253         const IOReturn closeStatus = _pciBackend->close();
+ 254         if (closeStatus != kIOReturnSuccess) {
+ 255             IOLog("rtl88wifi-wcl: PCI backend close deferred: 0x%08x\n",
+ 256                   closeStatus);
+ 257             return closeStatus;
+ 258         }
+ 259         _pciBackend->release();
+ 260         _pciBackend = nullptr;
+[lines 260-520]
+ 260         _pciBackend = nullptr;
+ 261     }
+ 262     return kIOReturnSuccess;
+ 263 }
+ 264 
+ 265 void RTW88WCLController::free()
+ 266 {
+ 267     const IOReturn cleanupStatus = releaseNativeResources();
+ 268     if (cleanupStatus != kIOReturnSuccess) {
+ 269         IOLog("rtl88wifi-wcl: controller shutdown incomplete (0x%08x); quarantining controller and retaining workloop/resources\n",
+ 270               cleanupStatus);
+ 271         /* Do not release the workloop or call super::free() while any child,
+ 272          * packet pool, or PCI/DMA resource may still reference this controller.
+ 273          * This deliberately leaks the object rather than risking a UAF/DMA UAF. */
+ 274         return;
+ 275     }
+ 276     if (_workLoop) {
+ 277         _workLoop->release();
+ 278         _workLoop = nullptr;
+ 279     }
+ 280     super::free();
+ 281 }
+ 282 
+ 283 bool RTW88WCLController::isCommandProhibited(int command)
+ 284 {
+ 285     (void)command;
+ 286     return true; // No WCL interface is published by this ABI-only slice.
+ 287 }
+ 288 
+ 289 SInt32 RTW88WCLController::handleCardSpecific(IO80211SkywalkInterface *interface,
+ 290                                                unsigned long command,
+ 291                                                void *data, bool set)
+ 292 {
+ 293     (void)interface; (void)command; (void)data; (void)set;
+ 294     return kIOReturnUnsupported;
+ 295 }
+ 296 
+ 297 IOReturn RTW88WCLController::getDRIVER_VERSION(IO80211SkywalkInterface *interface,
+ 298                                                 apple80211_version_data *data)
+ 299 {
+ 300     (void)interface;
+ 301     if (!data)
+ 302         return kIOReturnBadArgument;
+ 303     bzero(data, sizeof(*data));
+ 304     data->version = APPLE80211_VERSION;
+ 305     static const char version[] = "RTL88WiFi WCL 24H32 (development)";
+ 306     data->string_len = static_cast<uint16_t>(sizeof(version) - 1);
+ 307     memcpy(data->string, version, sizeof(version));
+ 308     return kIOReturnSuccess;
+ 309 }
+ 310 
+ 311 IOReturn RTW88WCLController::getHARDWARE_VERSION(IO80211SkywalkInterface *interface,
+ 312                                                   apple80211_version_data *data)
+ 313 {
+ 314     (void)interface;
+ 315     if (data)
+ 316         bzero(data, sizeof(*data));
+ 317     return data ? kIOReturnNotReady : kIOReturnBadArgument;
+ 318 }
+ 319 
+ 320 IOReturn RTW88WCLController::getCARD_CAPABILITIES(IO80211SkywalkInterface *interface,
+ 321                                                    apple80211_capability_data *data)
+ 322 {
+ 323     (void)interface;
+ 324     if (!data)
+ 325         return kIOReturnBadArgument;
+ 326     bzero(data, sizeof(*data));
+ 327     data->version = APPLE80211_VERSION;
+ 328     /* Do not advertise unsupported modes or ciphers before the radio owner
+ 329      * and InfraProtocol capabilities are wired up. */
+ 330     return kIOReturnNotReady;
+ 331 }
+ 332 
+ 333 IOReturn RTW88WCLController::getPOWER(IO80211SkywalkInterface *interface,
+ 334                                        apple80211_power_data *data)
+ 335 {
+ 336     (void)interface;
+ 337     if (!data)
+ 338         return kIOReturnBadArgument;
+ 339     bzero(data, sizeof(*data));
+ 340     data->version = APPLE80211_VERSION;
+ 341     return kIOReturnNotReady;
+ 342 }
+ 343 
+ 344 IOReturn RTW88WCLController::setPOWER(IO80211SkywalkInterface *interface,
+ 345                                        apple80211_power_data *data)
+ 346 {
+ 347     (void)interface;
+ 348     return data ? kIOReturnNotReady : kIOReturnBadArgument;
+ 349 }
+ 350 
+ 351 IOReturn RTW88WCLController::getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+ 352                                               apple80211_country_code_data *data)
+ 353 {
+ 354     (void)interface;
+ 355     if (!data)
+ 356         return kIOReturnBadArgument;
+ 357     bzero(data, sizeof(*data));
+ 358     data->version = APPLE80211_VERSION;
+ 359     return kIOReturnNotReady;
+ 360 }
+ 361 
+ 362 IOReturn RTW88WCLController::setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+ 363                                               apple80211_country_code_data *data)
+ 364 {
+ 365     (void)interface;
+ 366     return data ? kIOReturnNotReady : kIOReturnBadArgument;
+ 367 }
+ 368 
+ 369 IOReturn RTW88WCLController::setGET_DEBUG_INFO(IO80211SkywalkInterface *interface,
+ 370                                                 apple80211_debug_command *data)
+ 371 {
+ 372     (void)interface;
+ 373     return data ? kIOReturnUnsupported : kIOReturnBadArgument;
+ 374 }
+ 375 
+ 376 CCLogStream *RTW88WCLController::getLogger() const
+ 377 {
+ 378     return nullptr;
+ 379 }
+ 380 
+ 381 CommonFaultReporter *RTW88WCLController::getFaultReporterFromDriver()
+ 382 {
+ 383     return nullptr;
+ 384 }
+ 385 
+ 386 
+ 387 bool RTW88WCLController::enterPacketPath()
+ 388 {
+ 389     if (__atomic_load_n(&_packetPathState, __ATOMIC_ACQUIRE) !=
+ 390         kPacketPathActive)
+ 391         return false;
+ 392 
+ 393     __atomic_add_fetch(&_packetPathInFlight, 1U, __ATOMIC_ACQ_REL);
+ 394     if (__atomic_load_n(&_packetPathState, __ATOMIC_ACQUIRE) ==
+ 395         kPacketPathActive)
+ 396         return true;
+ 397 
+ 398     __atomic_sub_fetch(&_packetPathInFlight, 1U, __ATOMIC_ACQ_REL);
+ 399     return false;
+ 400 }
+ 401 
+ 402 void RTW88WCLController::leavePacketPath()
+ 403 {
+ 404     __atomic_sub_fetch(&_packetPathInFlight, 1U, __ATOMIC_ACQ_REL);
+ 405 }
+ 406 
+ 407 IOReturn RTW88WCLController::activatePacketPath(
+ 408     IO80211SkywalkInterface *interface)
+ 409 {
+ 410     if (!interface)
+ 411         return kIOReturnBadArgument;
+ 412     if (!_radio || !_radioStarted || !_pciBackend || !_pciBackend->isOpen())
+ 413         return kIOReturnNotReady;
+ 414 
+ 415     uint32_t expected = kPacketPathDisabled;
+ 416     if (!__atomic_compare_exchange_n(&_packetPathState, &expected,
+ 417                                      kPacketPathBinding, false,
+ 418                                      __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+ 419         return kIOReturnBusy;
+ 420 
+ 421     interface->retain();
+ 422     _packetPathInterface = interface;
+ 423     __atomic_store_n(&_packetPathState, kPacketPathActive, __ATOMIC_RELEASE);
+ 424     IOLog("rtl88wifi-wcl: native mbuf packet handoff enabled\n");
+ 425     return kIOReturnSuccess;
+ 426 }
+ 427 
+ 428 IOReturn RTW88WCLController::quiescePacketPath()
+ 429 {
+ 430     for (;;) {
+ 431         uint32_t state = __atomic_load_n(&_packetPathState, __ATOMIC_ACQUIRE);
+ 432         if (state == kPacketPathDisabled)
+ 433             return kIOReturnSuccess;
+ 434         if (state == kPacketPathBinding)
+ 435             return kIOReturnBusy;
+ 436         if (state == kPacketPathActive) {
+ 437             uint32_t expected = kPacketPathActive;
+ 438             if (!__atomic_compare_exchange_n(&_packetPathState, &expected,
+ 439                                              kPacketPathQuiescing, false,
+ 440                                              __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+ 441                 continue;
+ 442         } else if (state != kPacketPathQuiescing) {
+ 443             return kIOReturnBusy;
+ 444         }
+ 445         break;
+ 446     }
+ 447 
+ 448     if (__atomic_load_n(&_packetPathInFlight, __ATOMIC_ACQUIRE) != 0)
+ 449         return kIOReturnBusy;
+ 450 
+ 451     uint32_t expected = kPacketPathQuiescing;
+ 452     if (!__atomic_compare_exchange_n(&_packetPathState, &expected,
+ 453                                      kPacketPathReleasing, false,
+ 454                                      __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+ 455         return kIOReturnBusy;
+ 456 
+ 457     IO80211SkywalkInterface *interface = _packetPathInterface;
+ 458     _packetPathInterface = nullptr;
+ 459     if (interface)
+ 460         interface->release();
+ 461     __atomic_store_n(&_packetPathState, kPacketPathDisabled, __ATOMIC_RELEASE);
+ 462     return kIOReturnSuccess;
+ 463 }
+ 464 
+ 465 UInt32 RTW88WCLController::outputPacket(mbuf_t packet, void *param)
+ 466 {
+ 467     (void)param;
+ 468     if (!packet)
+ 469         return kIOReturnOutputDropped;
+ 470 
+ 471     if (!enterPacketPath()) {
+ 472         mbuf_freem(packet);
+ 473         return kIOReturnOutputDropped;
+ 474     }
+ 475 
+ 476     /* RTW88IEEE80211::outputPacket consumes the mbuf on every return path. */
+ 477     const UInt32 result = _radio ? _radio->outputPacket(packet)
+ 478                                  : kIOReturnOutputDropped;
+ 479     leavePacketPath();
+ 480     return result;
+ 481 }
+ 482 
+ 483 void RTW88WCLController::rtw88WCLResumeTransmit()
+ 484 {
+ 485     /* RTW88's internal TX queues resume independently. The future Skywalk
+ 486      * submission queue will connect its wakeup here after ring registration. */
+ 487 }
+ 488 
+ 489 void RTW88WCLController::rtw88Event(RTW88Event event, void *data)
+ 490 {
+ 491     (void)event;
+ 492     (void)data;
+ 493     /* WCL notifications are withheld until interface registration succeeds. */
+ 494 }
+ 495 
+ 496 mbuf_t RTW88WCLController::allocateInputPacket(uint32_t length)
+ 497 {
+ 498     if (length < 14 || length > RTW88WCLSkywalkRxAdapter::kMaximumFrameLength ||
+ 499         !_radio || !_rxAdapter || !enterPacketPath())
+ 500         return nullptr;
+ 501 
+ 502     /* IO80211Controller inherits the IONetworkController packet allocator.
+ 503      * Keep its mbuf metadata initialization rather than hand-rolling m_len. */
+ 504     mbuf_t packet = allocatePacket(length);
+ 505     leavePacketPath();
+ 506     return packet;
+ 507 }
+ 508 
+ 509 void RTW88WCLController::injectRxFrame(mbuf_t packet)
+ 510 {
+ 511     if (!packet)
+ 512         return;
+ 513 
+ 514     if (!_rxAdapter || !enterPacketPath()) {
+ 515         mbuf_freem(packet);
+ 516         return;
+ 517     }
+ 518 
+ 519     /* enqueueFrame consumes the mbuf on both success and failure. The native
+ 520      * RX completion queue is not registered yet, so the workloop sink below
+
+### src/kext/wcl24h32/RTW88WCLPCIBackend.cpp
+[lines 1-310]
+   1 /* SPDX-License-Identifier: GPL-2.0-only
+   2  * ABI-neutral PCI/MMIO/DMA owner for the native Sequoia WCL frontend.
+   3  */
+   4 #include "RTW88WCLPCIBackend.hpp"
+   5 
+   6 #include <IOKit/IOLib.h>
+   7 #include <libkern/c++/OSMetaClass.h>
+   8 #include <kern/thread.h>
+   9 #include <string.h>
+  10 
+  11 extern "C" {
+  12 #include "../../compat/rtw88_compat.h"
+  13 void rtw88_trigger_interrupt(void);
+  14 boolean_t preemption_enabled(void);
+  15 }
+  16 
+  17 #define super OSObject
+  18 OSDefineMetaClassAndStructors(RTW88WCLPCIBackend, OSObject)
+  19 
+  20 bool RTW88WCLPCIBackend::init()
+  21 {
+  22     if (!super::init())
+  23         return false;
+  24     _pciDev = nullptr;
+  25     _mmioMap = nullptr;
+  26     _mmioBase = nullptr;
+  27     _interruptSource = nullptr;
+  28     _workLoop = nullptr;
+  29     _compatPciDev = nullptr;
+  30     _client = nullptr;
+  31     _dmaLock = nullptr;
+  32     _pendingFreeLock = nullptr;
+  33     _dmaList = nullptr;
+  34     _dmaPendingFree = nullptr;
+  35     _compatLeaseHeld = false;
+  36     _compatInitialized = false;
+  37     _opened = false;
+  38     _radioRunning = false;
+  39     return true;
+  40 }
+  41 
+  42 IOReturn RTW88WCLPCIBackend::open(IOPCIDevice *provider,
+  43                                   IOWorkLoop *workLoop,
+  44                                   RTW88WCLPCIBackendClient *client)
+  45 {
+  46     if (!provider || !workLoop)
+  47         return kIOReturnBadArgument;
+  48     if (_opened || _pciDev || _compatLeaseHeld)
+  49         return kIOReturnBusy;
+  50 
+  51     _pciDev = provider;
+  52     _pciDev->retain();
+  53     _workLoop = workLoop;
+  54     _workLoop->retain();
+  55     _client = client;
+  56 
+  57     _dmaLock = IOSimpleLockAlloc();
+  58     _pendingFreeLock = IOSimpleLockAlloc();
+  59     if (!_dmaLock || !_pendingFreeLock) {
+  60         closeResources();
+  61         return kIOReturnNoMemory;
+  62     }
+  63 
+  64     _pciDev->setMemoryEnable(true);
+  65     _pciDev->setBusMasterEnable(true);
+  66     const UInt16 enabledCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+  67     if ((enabledCommand & 0x0006U) != 0x0006U) {
+  68         IOLog("rtl88wifi-wcl: PCI memory/bus-master enable failed (command=0x%04x)\n",
+  69               enabledCommand);
+  70         closeResources();
+  71         return kIOReturnNotReady;
+  72     }
+  73 
+  74     /* rtw88's PCI backend maps BAR2 (the Linux driver uses bar_id=2). */
+  75     _mmioMap = _pciDev->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress2);
+  76     if (!_mmioMap || !_mmioMap->getVirtualAddress() || !_mmioMap->getLength()) {
+  77         IOLog("rtl88wifi-wcl: unable to map a usable BAR2\n");
+  78         closeResources();
+  79         return kIOReturnNoResources;
+  80     }
+  81     _mmioBase = reinterpret_cast<volatile void *>(_mmioMap->getVirtualAddress());
+  82 
+  83     _compatPciDev = static_cast<struct pci_dev *>(IOMallocZero(sizeof(*_compatPciDev)));
+  84     if (!_compatPciDev) {
+  85         closeResources();
+  86         return kIOReturnNoMemory;
+  87     }
+  88     _compatPciDev->vendor = _pciDev->configRead16(0x00);
+  89     _compatPciDev->device = _pciDev->configRead16(0x02);
+  90     _compatPciDev->kext_dev = this;
+  91     _compatPciDev->resource[2] = reinterpret_cast<resource_size_t>(_mmioBase);
+  92     _compatPciDev->resource_len[2] = static_cast<resource_size_t>(_mmioMap->getLength());
+  93 
+  94     /* The compat layer has process-global callbacks, so acquire this lease
+  95      * before publishing the function tables or starting its workqueues. */
+  96     RTW88HwOps *expectedOwner = nullptr;
+  97     if (!__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+  98                                      static_cast<RTW88HwOps *>(this), false,
+  99                                      __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE)) {
+ 100         IOLog("rtl88wifi-wcl: RTW88 compat hardware lease is already owned\n");
+ 101         closeResources();
+ 102         return kIOReturnBusy;
+ 103     }
+ 104     _compatLeaseHeld = true;
+ 105     rtw88_pci_io_ops = &_pci_io_ops;
+ 106     rtw88_dma_ops = &_dma_ops;
+ 107 
+ 108     const int compatStatus = rtw88_compat_init();
+ 109     if (compatStatus != 0) {
+ 110         IOLog("rtl88wifi-wcl: compat runtime initialization failed (%d)\n",
+ 111               compatStatus);
+ 112         closeResources();
+ 113         return kIOReturnNoResources;
+ 114     }
+ 115     _compatInitialized = true;
+ 116 
+ 117     _interruptSource = IOInterruptEventSource::interruptEventSource(
+ 118         this,
+ 119         OSMemberFunctionCast(IOInterruptEventSource::Action, this,
+ 120                              &RTW88WCLPCIBackend::handleInterrupt),
+ 121         _pciDev, 0);
+ 122     if (!_interruptSource ||
+ 123         _workLoop->addEventSource(_interruptSource) != kIOReturnSuccess) {
+ 124         IOLog("rtl88wifi-wcl: unable to register PCI interrupt event source\n");
+ 125         closeResources();
+ 126         return kIOReturnNoResources;
+ 127     }
+ 128     _interruptSource->disable();
+ 129 
+ 130     _opened = true;
+ 131     IOLog("rtl88wifi-wcl: PCI backend acquired %04x:%04x, BAR2=%p length=0x%llx\n",
+ 132           _compatPciDev->vendor, _compatPciDev->device, (void *)_mmioBase,
+ 133           static_cast<unsigned long long>(_mmioMap->getLength()));
+ 134     return kIOReturnSuccess;
+ 135 }
+ 136 
+ 137 IOReturn RTW88WCLPCIBackend::setRadioRunning(bool running)
+ 138 {
+ 139     if (!_opened || !_pciDev || !_interruptSource)
+ 140         return kIOReturnNotReady;
+ 141     if (_radioRunning == running)
+ 142         return kIOReturnSuccess;
+ 143 
+ 144     if (running) {
+ 145         _pciDev->setMemoryEnable(true);
+ 146         _pciDev->setBusMasterEnable(true);
+ 147         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+ 148         if ((command & 0x0006U) != 0x0006U) {
+ 149             _interruptSource->disable();
+ 150             _pciDev->setBusMasterEnable(false);
+ 151             const UInt16 rollbackCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+ 152             if (rollbackCommand & 0x0004U) {
+ 153                 /* Bus mastering may still be active. Keep the backend marked
+ 154                  * running so close/free cannot reclaim DMA mappings. */
+ 155                 _radioRunning = true;
+ 156                 IOLog("rtl88wifi-wcl: partial PCI enable rollback failed (command=0x%04x); DMA resources quarantined\n",
+ 157                       rollbackCommand);
+ 158             } else {
+ 159                 _radioRunning = false;
+ 160                 _pciDev->setMemoryEnable(false);
+ 161             }
+ 162             return kIOReturnNotReady;
+ 163         }
+ 164         _radioRunning = true;
+ 165         _interruptSource->enable();
+ 166         return kIOReturnSuccess;
+ 167     }
+ 168 
+ 169     /* Caller contract: RTW88IEEE80211::stop() must already have synchronized
+ 170      * its interrupt/NAPI workers and stopped device DMA before this call. */
+ 171     _interruptSource->disable();
+ 172     _pciDev->setBusMasterEnable(false);
+ 173     const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+ 174     if (command & 0x0004U) {
+ 175         IOLog("rtl88wifi-wcl: PCI bus-master fence did not stick (command=0x%04x)\n",
+ 176               command);
+ 177         return kIOReturnNotReady;
+ 178     }
+ 179     _radioRunning = false;
+ 180     if (preemption_enabled())
+ 181         drainPendingFree();
+ 182     return kIOReturnSuccess;
+ 183 }
+ 184 
+ 185 IOReturn RTW88WCLPCIBackend::close()
+ 186 {
+ 187     if (_radioRunning)
+ 188         return kIOReturnBusy;
+ 189     closeResources();
+ 190     return kIOReturnSuccess;
+ 191 }
+ 192 
+ 193 void RTW88WCLPCIBackend::closeResources()
+ 194 {
+ 195     if (_interruptSource) {
+ 196         _interruptSource->disable();
+ 197         if (_workLoop)
+ 198             _workLoop->removeEventSource(_interruptSource);
+ 199         _interruptSource->release();
+ 200         _interruptSource = nullptr;
+ 201     }
+ 202 
+ 203     /* Stop all compat work before reclaiming DMA buffers and releasing the
+ 204      * callbacks they may invoke. The RTW88 core must already be stopped. */
+ 205     if (_compatInitialized) {
+ 206         rtw88_compat_exit();
+ 207         _compatInitialized = false;
+ 208     }
+ 209 
+ 210     if (preemption_enabled())
+ 211         drainPendingFree();
+ 212     releaseDMAEntries();
+ 213 
+ 214     clearCompatLease();
+ 215 
+ 216     if (_pciDev) {
+ 217         _pciDev->setBusMasterEnable(false);
+ 218         _pciDev->setMemoryEnable(false);
+ 219     }
+ 220     if (_compatPciDev) {
+ 221         IOFree(_compatPciDev, sizeof(*_compatPciDev));
+ 222         _compatPciDev = nullptr;
+ 223     }
+ 224     if (_mmioMap) {
+ 225         _mmioMap->release();
+ 226         _mmioMap = nullptr;
+ 227     }
+ 228     _mmioBase = nullptr;
+ 229 
+ 230     if (_workLoop) {
+ 231         _workLoop->release();
+ 232         _workLoop = nullptr;
+ 233     }
+ 234     if (_pciDev) {
+ 235         _pciDev->release();
+ 236         _pciDev = nullptr;
+ 237     }
+ 238     if (_pendingFreeLock) {
+ 239         IOSimpleLockFree(_pendingFreeLock);
+ 240         _pendingFreeLock = nullptr;
+ 241     }
+ 242     if (_dmaLock) {
+ 243         IOSimpleLockFree(_dmaLock);
+ 244         _dmaLock = nullptr;
+ 245     }
+ 246 
+ 247     _client = nullptr;
+ 248     _radioRunning = false;
+ 249     _opened = false;
+ 250 }
+ 251 
+ 252 void RTW88WCLPCIBackend::clearCompatLease()
+ 253 {
+ 254     if (!_compatLeaseHeld)
+ 255         return;
+ 256     RTW88HwOps *expectedOwner = static_cast<RTW88HwOps *>(this);
+ 257     if (__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+ 258                                     static_cast<RTW88HwOps *>(nullptr), false,
+ 259                                     __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE)) {
+ 260         rtw88_pci_io_ops = nullptr;
+ 261         rtw88_dma_ops = nullptr;
+ 262     }
+ 263     _compatLeaseHeld = false;
+ 264 }
+ 265 
+ 266 void RTW88WCLPCIBackend::free()
+ 267 {
+ 268     if (_pciDev) {
+ 269         if (_interruptSource)
+ 270             _interruptSource->disable();
+ 271         _pciDev->setBusMasterEnable(false);
+ 272         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+ 273         if (command & 0x0004U) {
+ 274             IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\n",
+ 275                   command);
+ 276             /* Keep this object, DMA descriptors, MMIO map, locks, and PCI
+ 277              * reference alive until hardware bus mastering is demonstrably off. */
+ 278             return;
+ 279         }
+ 280     }
+ 281     _radioRunning = false;
+ 282     closeResources();
+ 283     super::free();
+ 284 }
+ 285 
+ 286 uint64_t RTW88WCLPCIBackend::mmioLength() const
+ 287 {
+ 288     return _mmioMap ? static_cast<uint64_t>(_mmioMap->getLength()) : 0;
+ 289 }
+ 290 
+ 291 UInt8 RTW88WCLPCIBackend::pciReadByte(int offset)
+ 292 {
+ 293     return _pciDev ? _pciDev->configRead8(static_cast<UInt8>(offset)) : 0xff;
+ 294 }
+ 295 
+ 296 UInt16 RTW88WCLPCIBackend::pciReadWord(int offset)
+ 297 {
+ 298     return _pciDev ? _pciDev->configRead16(static_cast<UInt8>(offset)) : 0xffff;
+ 299 }
+ 300 
+ 301 UInt32 RTW88WCLPCIBackend::pciReadDword(int offset)
+ 302 {
+ 303     return _pciDev ? _pciDev->configRead32(static_cast<UInt8>(offset)) : 0xffffffffU;
+ 304 }
+ 305 
+ 306 void RTW88WCLPCIBackend::pciWriteByte(int offset, UInt8 value)
+ 307 {
+ 308     if (_pciDev) _pciDev->configWrite8(static_cast<UInt8>(offset), value);
+ 309 }
+ 310 
+[lines 310-537]
+ 310 
+ 311 void RTW88WCLPCIBackend::pciWriteWord(int offset, UInt16 value)
+ 312 {
+ 313     if (_pciDev) _pciDev->configWrite16(static_cast<UInt8>(offset), value);
+ 314 }
+ 315 
+ 316 void RTW88WCLPCIBackend::pciWriteDword(int offset, UInt32 value)
+ 317 {
+ 318     if (_pciDev) _pciDev->configWrite32(static_cast<UInt8>(offset), value);
+ 319 }
+ 320 
+ 321 int RTW88WCLPCIBackend::pciFindCapability(int capability)
+ 322 {
+ 323     if (!_pciDev || capability < 0 || capability > 0xff)
+ 324         return 0;
+ 325     UInt8 offset = 0;
+ 326     return _pciDev->findPCICapability(static_cast<UInt8>(capability), &offset)
+ 327                ? static_cast<int>(offset) : 0;
+ 328 }
+ 329 
+ 330 void *RTW88WCLPCIBackend::allocCoherent(size_t size,
+ 331                                          IOPhysicalAddress *physical)
+ 332 {
+ 333     if (physical) *physical = 0;
+ 334     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+ 335         return nullptr;
+ 336     if (preemption_enabled())
+ 337         drainPendingFree();
+ 338 
+ 339     IOBufferMemoryDescriptor *descriptor =
+ 340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+ 341             kernel_task,
+ 342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+ 343                 kIOMemoryKernelUserShared,
+ 344             size, 0x00000000FFFFFFF0ULL);
+ 345     if (!descriptor)
+ 346         return nullptr;
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+ 381                                       IOPhysicalAddress physical)
+ 382 {
+ 383     (void)size;
+ 384     (void)physical;
+ 385     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+ 386         return;
+ 387 
+ 388     IOSimpleLockLock(_dmaLock);
+ 389     RTW88DMAEntry **previous = &_dmaList;
+ 390     RTW88DMAEntry *entry = _dmaList;
+ 391     while (entry && entry->virt != virtualAddress) {
+ 392         previous = &entry->next;
+ 393         entry = entry->next;
+ 394     }
+ 395     if (entry)
+ 396         *previous = entry->next;
+ 397     IOSimpleLockUnlock(_dmaLock);
+ 398 
+ 399     if (!entry) {
+ 400         IOLog("rtl88wifi-wcl: freeCoherent: unknown virtual address %p\n",
+ 401               virtualAddress);
+ 402         return;
+ 403     }
+ 404     if (preemption_enabled()) {
+ 405         freeDMAList(entry);
+ 406     } else {
+ 407         IOSimpleLockLock(_pendingFreeLock);
+ 408         entry->next = _dmaPendingFree;
+ 409         _dmaPendingFree = entry;
+ 410         IOSimpleLockUnlock(_pendingFreeLock);
+ 411     }
+ 412 }
+ 413 
+ 414 void RTW88WCLPCIBackend::freeCoherentByPhys(IOPhysicalAddress physical)
+ 415 {
+ 416     if (!_dmaLock || !_pendingFreeLock || !physical)
+ 417         return;
+ 418 
+ 419     IOSimpleLockLock(_dmaLock);
+ 420     RTW88DMAEntry **previous = &_dmaList;
+ 421     RTW88DMAEntry *entry = _dmaList;
+ 422     while (entry && entry->phys != physical) {
+ 423         previous = &entry->next;
+ 424         entry = entry->next;
+ 425     }
+ 426     if (entry)
+ 427         *previous = entry->next;
+ 428     IOSimpleLockUnlock(_dmaLock);
+ 429 
+ 430     if (!entry)
+ 431         return;
+ 432     if (preemption_enabled()) {
+ 433         freeDMAList(entry);
+ 434     } else {
+ 435         IOSimpleLockLock(_pendingFreeLock);
+ 436         entry->next = _dmaPendingFree;
+ 437         _dmaPendingFree = entry;
+ 438         IOSimpleLockUnlock(_pendingFreeLock);
+ 439     }
+ 440 }
+ 441 
+ 442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+ 443                                          void *originalAddress)
+ 444 {
+ 445     if (!_dmaLock || !physical)
+ 446         return;
+ 447     IOSimpleLockLock(_dmaLock);
+ 448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+ 455 }
+ 456 
+ 457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+ 458                                           size_t size)
+ 459 {
+ 460     if (!_dmaLock || !dmaAddress || !size)
+ 461         return;
+ 462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+ 463      * racing a concurrent unmap/free against the original buffer pointer. */
+ 464     IOSimpleLockLock(_dmaLock);
+ 465     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 466         if (entry->phys == dmaAddress && entry->orig_va && entry->virt) {
+ 467             const size_t copyLength = size < entry->size ? size : entry->size;
+ 468             memcpy(entry->orig_va, entry->virt, copyLength);
+ 469             break;
+ 470         }
+ 471     }
+ 472     IOSimpleLockUnlock(_dmaLock);
+ 473 }
+ 474 
+ 475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+ 476 {
+ 477     if (_client)
+ 478         _client->rtw88WCLResumeTransmit();
+ 479 }
+ 480 
+ 481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+ 482                                           int count)
+ 483 {
+ 484     (void)source;
+ 485     (void)count;
+ 486     if (!_radioRunning || !g_pci_dev_instance ||
+ 487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+ 488             static_cast<RTW88HwOps *>(this))
+ 489         return;
+ 490     if (preemption_enabled())
+ 491         drainPendingFree();
+ 492     rtw88_trigger_interrupt();
+ 493 }
+ 494 
+ 495 void RTW88WCLPCIBackend::drainPendingFree()
+ 496 {
+ 497     if (!_pendingFreeLock)
+ 498         return;
+ 499     IOSimpleLockLock(_pendingFreeLock);
+ 500     RTW88DMAEntry *list = _dmaPendingFree;
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+ 506 void RTW88WCLPCIBackend::releaseDMAEntries()
+ 507 {
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+
+### src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+[lines 1-260]
+   1 /* SPDX-License-Identifier: GPL-2.0-only
+   2  * RTL88WiFi native Sequoia 24H32 IO80211InfraProtocol implementation slice.
+   3  *
+   4  * This translation unit is compile-only for now. It must remain separate from
+   5  * the legacy Airport/IO80211FamilyLegacy translation units until the native
+   6  * controller owns PCI/MMIO/DMA and the Skywalk datapath is integrated.
+   7  */
+   8 #include "RTW88WCLController.hpp"
+   9 #include "RTW88WCLInfraInterface.hpp"
+  10 
+  11 #include <IOKit/IOLib.h>
+  12 #include <libkern/c++/OSMetaClass.h>
+  13 #include <string.h>
+  14 
+  15 #define super IO80211InfraProtocol
+  16 OSDefineMetaClassAndStructors(RTW88WCLInfraInterface, IO80211InfraProtocol)
+  17 
+  18 namespace {
+  19 enum : unsigned int {
+  20     kWCLMessageDeauth = 203,
+  21     kWCLMessageAssocComplete = 211,
+  22     kWCLMessageConnectComplete = 213,
+  23     kWCLMessageJoinAbortComplete = 214,
+  24     kWCLMessageLinkStatus = 216,
+  25     kWCLMessageLqmUpdate = 39,
+  26     kWCLMessageScanResult = 201,
+  27     kWCLMessageScanDone = 237
+  28 };
+  29 
+  30 struct RTW88WCLBeaconMetadata {
+  31     uint32_t ieLength;
+  32     uint16_t channelSpec;
+  33     uint8_t ssid[32];
+  34     uint8_t ssidLength;
+  35     uint8_t channel;
+  36     uint8_t reserved0;
+  37     uint8_t bssid[6];
+  38     uint8_t reserved1;
+  39     int32_t rssi;
+  40     int16_t noise;
+  41     int16_t snr;
+  42     uint16_t interval;
+  43     uint16_t capability;
+  44     uint32_t flags;
+  45 };
+  46 static_assert(sizeof(RTW88WCLBeaconMetadata) == 64,
+  47               "Sequoia WCL beacon message header size");
+  48 
+  49 enum : uint32_t {
+  50     kWCLBeaconSSIDPresent = 1U << 1,
+  51     kWCLBeaconRSSIValid = 1U << 14
+  52 };
+  53 
+  54 struct RTW88WCLAssociationEvent {
+  55     uint16_t status;
+  56     uint16_t reason;
+  57     uint8_t mlo;
+  58     uint8_t bssid[6];
+  59     uint8_t reserved;
+  60     uint32_t mloData[2];
+  61     int32_t driverStatus;
+  62     int32_t driverReason;
+  63 };
+  64 static_assert(sizeof(RTW88WCLAssociationEvent) == 28,
+  65               "Sequoia WCL association event size");
+  66 
+  67 struct RTW88WCLConnectionPeer {
+  68     uint8_t bssid[6];
+  69     uint16_t reserved;
+  70     int32_t driverStatus;
+  71     int32_t driverReason;
+  72 };
+  73 static_assert(sizeof(RTW88WCLConnectionPeer) == 16,
+  74               "Sequoia WCL connection peer size");
+  75 
+  76 struct RTW88WCLConnectionEvent {
+  77     uint16_t status;
+  78     uint16_t reason;
+  79     RTW88WCLConnectionPeer peers[10];
+  80 };
+  81 static_assert(sizeof(RTW88WCLConnectionEvent) == 164,
+  82               "Sequoia WCL connection event size");
+  83 
+  84 struct RTW88WCLLinkStatusEvent {
+  85     uint8_t bssid[6];
+  86     uint8_t up;
+  87     uint8_t reserved;
+  88     int32_t reason;
+  89 };
+  90 static_assert(sizeof(RTW88WCLLinkStatusEvent) == 12,
+  91               "Sequoia WCL link status event size");
+  92 
+  93 struct RTW88WCLLqmUpdate {
+  94     uint8_t rssiValid;
+  95     uint8_t reserved[3];
+  96     int32_t rssi;
+  97     uint8_t tail[0x150 - 8];
+  98 };
+  99 static_assert(sizeof(RTW88WCLLqmUpdate) == 0x150,
+ 100               "Sequoia WCL LQM update size");
+ 101 
+ 102 static bool isZeroAddress(const uint8_t *address, size_t length)
+ 103 {
+ 104     if (!address) return true;
+ 105     uint8_t aggregate = 0;
+ 106     for (size_t i = 0; i < length; ++i) aggregate |= address[i];
+ 107     return aggregate == 0;
+ 108 }
+ 109 
+ 110 static bool validInformationElements(const uint8_t *ies, size_t length)
+ 111 {
+ 112     if (length && !ies) return false;
+ 113     size_t offset = 0;
+ 114     while (offset < length) {
+ 115         if (length - offset < 2) return false;
+ 116         const size_t elementLength = ies[offset + 1];
+ 117         if (elementLength > length - offset - 2) return false;
+ 118         offset += 2 + elementLength;
+ 119     }
+ 120     return true;
+ 121 }
+ 122 
+ 123 /* WCL's 24H32 setCIPHER_KEY path carries PMK/PMKSA/MSK semantics. It is not
+ 124  * the legacy PTK/GTK key slot. The current RTW88 WCL path supplies the PMK in
+ 125  * ASSOCIATE and runs the internal WPA2 handshake; enterprise PMKSA insertion
+ 126  * is not implemented here, so setCIPHER_KEY must fail closed. */
+ 127 
+ 128 static uint16_t channelFlags(const RTW88Channel &channel)
+ 129 {
+ 130     uint32_t flags = APPLE80211_C_FLAG_20MHZ;
+ 131     flags |= channel.number <= 14 ? APPLE80211_C_FLAG_2GHZ
+ 132                                   : APPLE80211_C_FLAG_5GHZ;
+ 133     if (channel.radar) flags |= APPLE80211_C_FLAG_DFS;
+ 134     if (!channel.passive && !channel.radar) flags |= APPLE80211_C_FLAG_ACTIVE;
+ 135     return static_cast<uint16_t>(flags);
+ 136 }
+ 137 } // namespace
+ 138 
+ 139 bool RTW88WCLInfraInterface::init()
+ 140 {
+ 141     if (!super::init())
+ 142         return false;
+ 143     clearRegistrationInfo();
+ 144     _controller = nullptr;
+ 145     _workQueue = nullptr;
+ 146     _scanFilter = {};
+ 147     bzero(_targetBSSID, sizeof(_targetBSSID));
+ 148     _scanActive = false;
+ 149     _activeScanGeneration = 0;
+ 150     _activeJoinGeneration = 0;
+ 151     _assocNotified = false;
+ 152     _connectNotified = false;
+ 153     _stopping = false;
+ 154     return true;
+ 155 }
+ 156 
+ 157 bool RTW88WCLInfraInterface::init(IOService *provider, ether_addr *address)
+ 158 {
+ 159     if (!provider || !address || !super::init())
+ 160         return false;
+ 161 
+ 162     _controller = OSDynamicCast(RTW88WCLController, provider);
+ 163     if (!_controller)
+ 164         return false;
+ 165 
+ 166     if (!IO80211SkywalkInterface::init(provider, address))
+ 167         return false;
+ 168 
+ 169     clearRegistrationInfo();
+ 170     return true;
+ 171 }
+ 172 
+ 173 IOReturn RTW88WCLInfraInterface::attachRadio(RTW88IEEE80211 *radio)
+ 174 {
+ 175     if (!radio || !_controller)
+ 176         return kIOReturnBadArgument;
+ 177     if (_bridge.isAttached() || _workQueue)
+ 178         return kIOReturnBusy;
+ 179 
+ 180     IOWorkLoop *workLoop = _controller->getWorkLoop();
+ 181     if (!workLoop)
+ 182         return kIOReturnNotReady;
+ 183 
+ 184     RTW88WCLWorkQueue *queue = new RTW88WCLWorkQueue;
+ 185     if (!queue)
+ 186         return kIOReturnNoMemory;
+ 187     if (!queue->init(this, workLoop, this)) {
+ 188         queue->release();
+ 189         return kIOReturnNoResources;
+ 190     }
+ 191 
+ 192     IOReturn status = _bridge.attach(radio, queue);
+ 193     if (status != kIOReturnSuccess) {
+ 194         queue->stop();
+ 195         queue->release();
+ 196         return status;
+ 197     }
+ 198     _workQueue = queue;
+ 199     _stopping = false;
+ 200     return kIOReturnSuccess;
+ 201 }
+ 202 
+ 203 void RTW88WCLInfraInterface::detachRadio()
+ 204 {
+ 205     _stopping = true;
+ 206     /* Quiesce the producer first, then remove the work source. The controller
+ 207      * must stop the radio before destroying its backend object. */
+ 208     _bridge.detach();
+ 209     if (_workQueue) {
+ 210         _workQueue->stop();
+ 211         _workQueue->release();
+ 212         _workQueue = nullptr;
+ 213     }
+ 214     _scanActive = false;
+ 215     _activeScanGeneration = 0;
+ 216     _activeJoinGeneration = 0;
+ 217     _assocNotified = false;
+ 218     _connectNotified = false;
+ 219 }
+ 220 
+ 221 void RTW88WCLInfraInterface::free()
+ 222 {
+ 223     clearRegistrationInfo();
+ 224     detachRadio();
+ 225     _controller = nullptr;
+ 226     super::free();
+ 227 }
+ 228 
+ 229 void RTW88WCLInfraInterface::clearRegistrationInfo()
+ 230 {
+ 231     RTW88WCLRegistrationInfo24H32::clear(_registrationInfo);
+ 232     _registrationInfoPrepared = false;
+ 233 }
+ 234 
+ 235 bool RTW88WCLInfraInterface::prepareRegistrationInfo(const ether_addr &address)
+ 236 {
+ 237     using namespace RTW88WCLRegistrationInfo24H32;
+ 238 
+ 239     clearRegistrationInfo();
+ 240     auto *info = reinterpret_cast<IOSkywalkEthernetInterface::RegistrationInfo *>(
+ 241         _registrationInfo.bytes);
+ 242 
+ 243     /* 24H32 initRegistrationInfo requires option 1 and the exact 0x130 size.
+ 244      * It supplies the other opaque slots through this interface's virtual
+ 245      * hooks; do not replace it with a guessed local structure initializer.
+ 246      */
+ 247     if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+ 248         clearRegistrationInfo();
+ 249         return false;
+ 250     }
+ 251 
+ 252     if (!applyAppleProducerWrites(_registrationInfo, address.octet) ||
+ 253         !matchesApple24H32Template(_registrationInfo, address.octet)) {
+ 254         clearRegistrationInfo();
+ 255         return false;
+ 256     }
+ 257 
+ 258     _registrationInfoPrepared = true;
+ 259     return true;
+ 260 }
+
+### src/compat/linux/dma-mapping.h
+[lines 1-141]
+   1 /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+   2 #ifndef _RTW88_COMPAT_DMA_MAPPING_H
+   3 #define _RTW88_COMPAT_DMA_MAPPING_H
+   4 
+   5 #include "types.h"
+   6 #include "slab.h"
+   7 
+   8 #define DMA_BIT_MASK(n)   ((u64)((n) < 64 ? (1ULL << (n)) - 1 : ~0ULL))
+   9 #define DMA_FROM_DEVICE    0
+  10 #define DMA_TO_DEVICE      1
+  11 #define DMA_BIDIRECTIONAL  2
+  12 #define DMA_NONE           3
+  13 
+  14 struct device;  /* forward decl */
+  15 
+  16 /*
+  17  * On macOS, DMA coherent memory is allocated by the kext using
+  18  * IOBufferMemoryDescriptor (kIOMemoryPhysicallyContiguous).
+  19  * The C driver code calls these helpers; the kext installs rtw88_dma_ops
+  20  * before probe so the fallback path never runs in production.
+  21  */
+  22 struct rtw88_dma_alloc_ops {
+  23     void      *(*alloc_coherent)(struct device *dev, size_t size,
+  24                                   dma_addr_t *dma_handle, gfp_t flag);
+  25     void       (*free_coherent)(struct device *dev, size_t size,
+  26                                  void *cpu_addr, dma_addr_t dma_handle);
+  27     dma_addr_t (*map_single)(struct device *dev, void *ptr,
+  28                               size_t size, int direction);
+  29     void       (*unmap_single)(struct device *dev, dma_addr_t addr,
+  30                                 size_t size, int direction);
+  31     void       (*sync_single_for_cpu)(struct device *dev, dma_addr_t addr,
+  32                                        size_t size, int dir);
+  33     void       (*sync_single_for_device)(struct device *dev, dma_addr_t addr,
+  34                                           size_t size, int dir);
+  35 };
+  36 
+  37 extern struct rtw88_dma_alloc_ops *rtw88_dma_ops;
+  38 
+  39 static inline void *dma_alloc_coherent(struct device *dev, size_t size,
+  40                                         dma_addr_t *dma_handle, gfp_t flag)
+  41 {
+  42     if (rtw88_dma_ops && rtw88_dma_ops->alloc_coherent)
+  43         return rtw88_dma_ops->alloc_coherent(dev, size, dma_handle, flag);
+  44     /* Fallback: plain kernel allocation (not DMA-safe) */
+  45     void *ptr = kzalloc(size, GFP_KERNEL);
+  46     if (ptr) *dma_handle = (dma_addr_t)(uintptr_t)ptr;
+  47     return ptr;
+  48 }
+  49 
+  50 static inline void dma_free_coherent(struct device *dev, size_t size,
+  51                                       void *cpu_addr, dma_addr_t dma_handle)
+  52 {
+  53     if (rtw88_dma_ops && rtw88_dma_ops->free_coherent) {
+  54         rtw88_dma_ops->free_coherent(dev, size, cpu_addr, dma_handle);
+  55         return;
+  56     }
+  57     kfree(cpu_addr);
+  58 }
+  59 
+  60 static inline dma_addr_t dma_map_single(struct device *dev, void *ptr,
+  61                                           size_t size, int direction)
+  62 {
+  63     if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+  64         return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+  65     return (dma_addr_t)(uintptr_t)ptr;
+  66 }
+  67 
+  68 static inline void dma_unmap_single(struct device *dev, dma_addr_t addr,
+  69                                      size_t size, int direction)
+  70 {
+  71     if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+  72         rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+  73 }
+  74 
+  75 static inline void dma_sync_single_for_cpu(struct device *dev,
+  76                                              dma_addr_t addr,
+  77                                              size_t size, int dir)
+  78 {
+  79     if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_cpu)
+  80         rtw88_dma_ops->sync_single_for_cpu(dev, addr, size, dir);
+  81 }
+  82 
+  83 static inline void dma_sync_single_for_device(struct device *dev,
+  84                                                 dma_addr_t addr,
+  85                                                 size_t size, int dir)
+  86 {
+  87     if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_device)
+  88         rtw88_dma_ops->sync_single_for_device(dev, addr, size, dir);
+  89 }
+  90 
+  91 static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask) { return 0; }
+  92 static inline int dma_set_mask(struct device *dev, u64 mask)              { return 0; }
+  93 static inline int dma_set_coherent_mask(struct device *dev, u64 mask)     { return 0; }
+  94 
+  95 /* Match what compat_dma_map actually returns on failure: it returns 0 when
+  96  * the bounce-buffer alloc fails.  Treat BOTH 0 and -1 as errors so the
+  97  * driver doesn't silently program HW descriptors with bogus DMA addresses
+  98  * (which corrupts the TX ring state — wp advances, HW chews garbage and
+  99  * advances rp, eventually deadlocking at wp+1 == rp). */
+ 100 static inline bool dma_mapping_error(struct device *dev, dma_addr_t addr)
+ 101 {
+ 102     return addr == 0 || addr == (dma_addr_t)-1;
+ 103 }
+ 104 
+ 105 /* Page abstraction for RX ring allocations */
+ 106 struct page {
+ 107     void      *virt;
+ 108     dma_addr_t phys;
+ 109 };
+ 110 
+ 111 static inline struct page *alloc_page(gfp_t flags)
+ 112 {
+ 113     /* Allocate struct page + 4096-byte data in one chunk */
+ 114     struct page *p = (struct page *)kzalloc(sizeof(*p) + 4096, flags);
+ 115     if (p) {
+ 116         p->virt = (void *)((char *)p + sizeof(*p));
+ 117         p->phys = (dma_addr_t)(uintptr_t)p->virt;
+ 118     }
+ 119     return p;
+ 120 }
+ 121 
+ 122 static inline void __free_page(struct page *page)
+ 123 {
+ 124     kfree(page);
+ 125 }
+ 126 
+ 127 static inline void *page_address(struct page *page)
+ 128 {
+ 129     return page ? page->virt : NULL;
+ 130 }
+ 131 
+ 132 static inline dma_addr_t dma_map_page(struct device *dev, struct page *page,
+ 133                                        size_t offset, size_t size, int dir)
+ 134 {
+ 135     return page->phys + offset;
+ 136 }
+ 137 
+ 138 static inline void dma_unmap_page(struct device *dev, dma_addr_t addr,
+ 139                                    size_t size, int dir) {}
+ 140 
+ 141 #endif /* _RTW88_COMPAT_DMA_MAPPING_H */
+
+### src/kext/RTL88WiFi.cpp
+[lines 220-275]
+ 220         return false;
+ 221     }
+ 222     if (!super::start(provider)) {
+ 223         _pciDev = nullptr;
+ 224         return false;
+ 225     }
+ 226     _superStarted = true;
+ 227     _pciDev->retain();
+ 228 
+ 229     /* Locks para tracking DMA -- antes faltaban por completo */
+ 230     _dmaLock = IOSimpleLockAlloc();
+ 231     _pendingFreeLock = IOSimpleLockAlloc();
+ 232     if (!_dmaLock || !_pendingFreeLock)
+ 233         return failStart(provider, "failed to allocate DMA locks");
+ 234 
+ 235     /* Habilitar bus mastering y espacio de memoria */
+ 236     _pciDev->setBusMasterEnable(true);
+ 237     _pciDev->setMemoryEnable(true);
+ 238 
+ 239     /* Mapear BAR2 -- rtw88 hardcodea bar_id=2 en pci.c */
+ 240     _mmioMap = _pciDev->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress2);
+ 241     if (!_mmioMap) {
+ 242         return failStart(provider, "failed to map BAR2");
+ 243     }
+ 244     _mmioBase = (volatile void *)_mmioMap->getVirtualAddress();
+ 245     IOLog("RTL88WiFi: BAR2 mapped at %p, size 0x%llx\n",
+ 246           (void *)_mmioBase, (unsigned long long)_mmioMap->getLength());
+ 247 
+ 248     /* Instalar callbacks compartidos de compat (mismos que usa RTW88PCIDevice,
+ 249      * ahora apuntando a esta instancia via el puntero generico RTW88HwOps*) */
+ 250     g_pci_dev_instance = this;
+ 251     rtw88_pci_io_ops    = &_pci_io_ops;
+ 252     rtw88_dma_ops       = &_dma_ops;
+ 253 
+ 254     if (rtw88_compat_init() != 0)
+ 255         return failStart(provider, "compat initialization failed");
+ 256     _compatInitialized = true;
+ 257 
+ 258     _compatPciDev = (struct pci_dev *)IOMallocZero(sizeof(struct pci_dev));
+ 259     if (!_compatPciDev)
+ 260         return failStart(provider, "failed to allocate compat PCI device");
+ 261 
+ 262     _compatPciDev->vendor  = _pciDev->configRead16(0x00);
+ 263     _compatPciDev->device  = _pciDev->configRead16(0x02);
+ 264     _compatPciDev->kext_dev = this;
+ 265     _compatPciDev->resource[2]     = (resource_size_t)_mmioBase;
+ 266     _compatPciDev->resource_len[2] = (resource_size_t)_mmioMap->getLength();
+ 267 
+ 268     IOLog("RTL88WiFi: PCI device %04x:%04x\n",
+ 269           _compatPciDev->vendor, _compatPciDev->device);
+ 270 
+ 271     /* super::start() has already called our createWorkLoop().  The reference IO80211 driver
+ 272      * relies on that controller-owned IO80211WorkLoop; do not create a second
+ 273      * parallel loop here. */
+ 274     if (!_workLoop)
+ 275         return failStart(provider, "IO80211 workloop unavailable after super::start");
+[lines 480-535]
+ 480         IOSleep(1);
+ 481 }
+ 482 
+ 483 bool RTL88WiFi::failStart(IOService *provider, const char *reason)
+ 484 {
+ 485     IOLog("RTL88WiFi: start failed: %s\n", reason ? reason : "unknown error");
+ 486 
+ 487     /* Match IO80211/IONetworkController ownership ordering: IO80211 must
+ 488      * stop while the controller workloop, interface and backend still exist.
+ 489      * Releasing those first can leave super::stop() touching freed state. */
+ 490     if (_superStarted) {
+ 491         super::stop(provider);
+ 492         _superStarted = false;
+ 493     }
+ 494     teardown();
+ 495     return false;
+ 496 }
+ 497 
+ 498 bool RTL88WiFi::setupInterrupt()
+ 499 {
+ 500     _intrSrc = IOInterruptEventSource::interruptEventSource(
+ 501         this,
+ 502         OSMemberFunctionCast(IOInterruptEventSource::Action,
+ 503                              this, &RTL88WiFi::handleInterrupt),
+ 504         _pciDev, 0);
+ 505     if (!_intrSrc) {
+ 506         IOLog("RTL88WiFi: failed to create interrupt event source\n");
+ 507         return false;
+ 508     }
+ 509     if (_workLoop->addEventSource(_intrSrc) != kIOReturnSuccess) {
+ 510         _intrSrc->release();
+ 511         _intrSrc = nullptr;
+ 512         return false;
+ 513     }
+ 514     return true;
+ 515 }
+ 516 
+ 517 void RTL88WiFi::handleInterrupt(IOInterruptEventSource *src, int count)
+ 518 {
+ 519     (void)src; (void)count;
+ 520     /* Controller workloop is a safe thread context. Retire DMA descriptors
+ 521      * deferred by a previous IRQ/NAPI pass before handling more traffic. */
+ 522     if (preemption_enabled())
+ 523         drainPendingFree();
+ 524     if (!__atomic_load_n(&_dmaStopped, __ATOMIC_ACQUIRE) &&
+ 525         !__atomic_load_n(&_pmTransition, __ATOMIC_ACQUIRE) && _ieee80211)
+ 526         rtw88_trigger_interrupt();
+ 527 }
+ 528 
+ 529 UInt8 RTL88WiFi::pciReadByte(int offset)   { return _pciDev->configRead8((UInt8)offset); }
+ 530 UInt16 RTL88WiFi::pciReadWord(int offset)  { return _pciDev->configRead16((UInt8)offset); }
+ 531 UInt32 RTL88WiFi::pciReadDword(int offset) { return _pciDev->configRead32((UInt8)offset); }
+ 532 void RTL88WiFi::pciWriteByte(int offset, UInt8 val)   { _pciDev->configWrite8((UInt8)offset, val); }
+ 533 void RTL88WiFi::pciWriteWord(int offset, UInt16 val)  { _pciDev->configWrite16((UInt8)offset, val); }
+ 534 void RTL88WiFi::pciWriteDword(int offset, UInt32 val) { _pciDev->configWrite32((UInt8)offset, val); }
+ 535 
+[lines 760-815]
+ 760 
+ 761     drainPendingFree();
+ 762     releaseDMAEntries();
+ 763 
+ 764     if (_compatInitialized) {
+ 765         rtw88_compat_exit();
+ 766         _compatInitialized = false;
+ 767     }
+ 768 
+ 769     if (_intrSrc) {
+ 770         if (_workLoop)
+ 771             _workLoop->removeEventSource(_intrSrc);
+ 772         _intrSrc->release();
+ 773         _intrSrc = nullptr;
+ 774     }
+ 775     if (_workLoop) {
+ 776         _workLoop->release();
+ 777         _workLoop = nullptr;
+ 778     }
+ 779     if (_compatPciDev) {
+ 780         IOFree(_compatPciDev, sizeof(*_compatPciDev));
+ 781         _compatPciDev = nullptr;
+ 782     }
+ 783     if (_mmioMap) {
+ 784         _mmioMap->release();
+ 785         _mmioMap = nullptr;
+ 786         _mmioBase = nullptr;
+ 787     }
+ 788 
+ 789     if (g_pci_dev_instance == this) {
+ 790         g_pci_dev_instance = nullptr;
+ 791         rtw88_pci_io_ops = nullptr;
+ 792         rtw88_dma_ops = nullptr;
+ 793     }
+ 794 
+ 795     if (_pciDev) {
+ 796         _pciDev->setBusMasterEnable(false);
+ 797         _pciDev->release();
+ 798         _pciDev = nullptr;
+ 799     }
+ 800 
+ 801     if (_pendingFreeLock) {
+ 802         IOSimpleLockFree(_pendingFreeLock);
+ 803         _pendingFreeLock = nullptr;
+ 804     }
+ 805     if (_dmaLock) {
+ 806         IOSimpleLockFree(_dmaLock);
+ 807         _dmaLock = nullptr;
+ 808     }
+ 809 }
+ 810 
+ 811 IOReturn RTL88WiFi::registerWithPolicyMaker(IOService *policyMaker)
+ 812 {
+ 813     if (!policyMaker)
+ 814         return kIOReturnBadArgument;
+ 815 
+
+--- Makefile native and legacy source/object lists ---
+158:KEXT_SRCS := \
+334:AIRPORT_KEXT_SRCS := \
+344:AIRPORT_KEXT_OBJS := $(patsubst $(KEXT_SRC)/%.cpp, $(BUILD_DIR)/airport/%.o, $(AIRPORT_KEXT_SRCS))
+354:WCL24H32_PCI_BACKEND_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLPCIBackend.o
+462:NATIVE_CORE_SRCS := $(KEXT_SRC)/RTW88IEEE80211.cpp $(KEXT_SRC)/RTW88HwOps.cpp $(KEXT_SRC)/RTW88WCLRadioBridge.cpp $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+464:NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88HwOps.o RTW88WCLRadioBridge.o RTW88WCLWorkQueue.o)
+465:NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+469:rtl88wifi-native: $(NATIVE_OUT_BIN)
+481:$(NATIVE_OUT_BIN): $(NATIVE_ALL_OBJS) $(NATIVE_KEXT_SKEL)/Contents/Info.plist | $(NATIVE_OUT_KEXT)/Contents/MacOS
+
+--- Existing object and binary symbol audit (may be stale) ---
+ARTIFACT path=build/native/RTW88IEEE80211.o exists=True
+ bytes=127256 mtime_epoch=1793569466 sha256=2694d9eda3fa6fc9aeded1fbd20708924ed699808df2504b0edd4ba4596af424
+ file=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88IEEE80211.o: Mach-O 64-bit object x86_64
+ nm_undefined_exit=0
+ selected_undefined_symbol_count=0
+ selected_defined_or_global_symbol_count=122
+ G 000000000000a940 T __ZN14RTW88IEEE8021110cmdConnectEPKcS1_PKhS3_b
+ G 0000000000012280 T __ZN14RTW88IEEE8021110cmdGetRSSIEPi
+ G 000000000000fad0 T __ZN14RTW88IEEE8021110cmdPowerOnEv
+ G 0000000000017a78 S __ZN14RTW88IEEE8021110gMetaClassE
+ G 0000000000002d60 T __ZN14RTW88IEEE8021110installKeyEPP18ieee80211_key_confbhjPKhh
+ G 0000000000002c10 T __ZN14RTW88IEEE8021110releaseStaEv
+ G 0000000000015918 S __ZN14RTW88IEEE8021110superClassE
+ G 0000000000002650 T __ZN14RTW88IEEE8021110timerFiredEP8OSObjectP18IOTimerEventSource
+ G 00000000000043a0 T __ZN14RTW88IEEE8021110txNullFuncEb
+ G 00000000000120a0 T __ZN14RTW88IEEE8021111cmdGetStateEP16RTW88StateResult
+ G 000000000000f9c0 T __ZN14RTW88IEEE8021111cmdPowerOffEv
+ G 0000000000002610 T __ZN14RTW88IEEE8021111connectTCFnEPvS0_
+ G 00000000000127e0 T __ZN14RTW88IEEE8021111copyScanBSSEjP8RTW88BSS
+ G 0000000000006fa0 T __ZN14RTW88IEEE8021111doAssociateEv
+ G 0000000000008fc0 T __ZN14RTW88IEEE8021111handleEAPOLEPKhj
+ G 0000000000004e20 T __ZN14RTW88IEEE8021111txDataFrameEP6__mbufPFvPvS2_bES2_S2_
+ G 000000000000dce0 T __ZN14RTW88IEEE8021111txMgmtFrameEPKhj
+ G 000000000000dbc0 T __ZN14RTW88IEEE8021112buildAuthReqEPhPj
+ G 000000000000b330 T __ZN14RTW88IEEE8021112cmdAbortScanEv
+ G 0000000000012a70 T __ZN14RTW88IEEE8021112copyChannelsEP12RTW88ChanneljPj
+ G 0000000000003a30 T __ZN14RTW88IEEE8021112doDisconnectEv
+ G 00000000000112b0 T __ZN14RTW88IEEE8021112housekeepingEv
+ G 0000000000004b80 T __ZN14RTW88IEEE8021112outputPacketEP6__mbuf
+ G 0000000000009f00 T __ZN14RTW88IEEE8021112rxBaTeardownEh
+ G 00000000000100e0 T __ZN14RTW88IEEE8021112sendEAPOLKeyEiPKhbbb
+ G 000000000000de40 T __ZN14RTW88IEEE8021113buildAssocReqEPhPj
+ G 000000000000f7e0 T __ZN14RTW88IEEE8021113cmdDisconnectEv
+ G 0000000000012300 T __ZN14RTW88IEEE8021113cmdGetBSSListEPhPj
+ G 0000000000002230 T __ZN14RTW88IEEE8021113createAirportEP15RTW88RxDelegateP7pci_dev
+ G 00000000000125d0 T __ZN14RTW88IEEE8021113getMACAddressEPh
+ G 0000000000006240 T __ZN14RTW88IEEE8021113processRxDataEP7sk_buff
+ G 00000000000057f0 T __ZN14RTW88IEEE8021113processRxMgmtEP7sk_buff
+ G 000000000000ccf0 T __ZN14RTW88IEEE8021113retryOtherBssEPKc
+ G 000000000000c050 T __ZN14RTW88IEEE8021113runManualScanEv
+ G 0000000000012670 T __ZN14RTW88IEEE8021113setMACAddressEPKh
+ G 00000000000128d0 T __ZN14RTW88IEEE8021114copyCurrentBSSEP8RTW88BSS
+ G 000000000000d720 T __ZN14RTW88IEEE8021114doAuthenticateEv
+ G 0000000000002630 T __ZN14RTW88IEEE8021114manualScanTCFnEPvS0_
+ G 0000000000008360 T __ZN14RTW88IEEE8021114rxReorderInputEhP7sk_bufft
+ G 00000000000040b0 T __ZN14RTW88IEEE8021114setAWDLAddressEPKh
+ G 00000000000045e0 T __ZN14RTW88IEEE8021114setAWDLChannelEt
+ G 000000000000c2c0 T __ZN14RTW88IEEE8021114txProbeRequestEv
+ G 000000000000a7c0 T __ZN14RTW88IEEE8021115abortActiveScanEb
+ G 000000000000f340 T __ZN14RTW88IEEE8021115clearAssocRsnIEEv
+ G 00000000000013b0 T __ZN14RTW88IEEE8021115compat_rx_frameEPvP7sk_buff
+ G 0000000000009cb0 T __ZN14RTW88IEEE8021115deliverEthernetEPKhS1_tS1_j
+ G 0000000000004b60 T __ZN14RTW88IEEE8021115handleInterruptEv
+ G 0000000000002d20 T __ZN14RTW88IEEE8021115rxBaTeardownAllEv
+ G 000000000000c540 T __ZN14RTW88IEEE8021115selectBssLockedEPKcmPKhbi
+ G 0000000000011560 T __ZN14RTW88IEEE8021115txAWDLDataFrameEP6__mbuf
+ G 000000000000f260 T __ZN14RTW88IEEE8021116cmdSetAssocRsnIEEPKht
+ G 00000000000018a0 T __ZN14RTW88IEEE8021116compat_scan_doneEPvb
+ G 0000000000001550 T __ZN14RTW88IEEE8021116compat_tx_statusEPvP7sk_buff
+ G 0000000000008790 T __ZN14RTW88IEEE8021116deliverDataFrameEP7sk_buff
+ G 0000000000007880 T __ZN14RTW88IEEE8021116handleBackActionEPKhj
+ G 0000000000010e40 T __ZN14RTW88IEEE8021116sendAddbaRequestEh
+ G 000000000000d360 T __ZN14RTW88IEEE8021117clearDeferredJoinEv
+ G 00000000000070f0 T __ZN14RTW88IEEE8021117joinAttemptFailedEPKc
+ G 000000000000a430 T __ZN14RTW88IEEE8021117parseBssOperationEPKhtP17RTW88BssOperation
+ G 00000000000064a0 T __ZN14RTW88IEEE8021117processScanResultEP7sk_buff
+ G 0000000000002690 T __ZN14RTW88IEEE8021117reorderTimerFiredEP8OSObjectP18IOTimerEventSource
+ G 000000000000a090 T __ZN14RTW88IEEE8021117rxReorderArmTimerEv
+ G 0000000000011030 T __ZN14RTW88IEEE8021117sendAddbaResponseEhhttt
+ G 0000000000003d40 T __ZN14RTW88IEEE8021118setAWDLReceiveModeEb
+ G 000000000000f010 T __ZN14RTW88IEEE8021118startTxAggregationEv
+ G 0000000000011be0 T __ZN14RTW88IEEE8021119deliverAWDLEthernetEPKhS1_tS1_j
+ G 000000000000a0f0 T __ZN14RTW88IEEE8021119rxReorderFlushStaleEv
+ G 00000000000041d0 T __ZN14RTW88IEEE8021119setConnectedChandefEP17ieee80211_channel
+ G 0000000000003c70 T __ZN14RTW88IEEE8021119setReceiveMulticastEb
+ G 00000000000039d0 T __ZN14RTW88IEEE8021120cancelAuthenticationEv
+ G 0000000000007140 T __ZN14RTW88IEEE8021120processAssocResponseEP7sk_buff
+ G 0000000000012540 T __ZN14RTW88IEEE8021120setRegulatoryCountryEPKc
+ G 0000000000010b30 T __ZN14RTW88IEEE8021120txRawManagementFrameEPKhj
+ G 000000000000cbc0 T __ZN14RTW88IEEE8021121applyAssocRsnOverrideEbbb
+ G 000000000000f620 T __ZN14RTW88IEEE8021121cmdInstallExternalKeyEbhjPKhh
+ G 000000000000f8e0 T __ZN14RTW88IEEE8021121suspendForSystemSleepEv
+ G 0000000000012620 T __ZN14RTW88IEEE8021122getPermanentMACAddressEPh
+ G 000000000000c8d0 T __ZN14RTW88IEEE8021122selectBssForJoinLockedEPKcmPKhPb
+ G 000000000000a5c0 T __ZN14RTW88IEEE8021123restoreConnectedChannelEv
+ G 0000000000005f30 T __ZN14RTW88IEEE8021123tryDeliverAWDLDataFrameEP7sk_buff
+ G 0000000000004bb0 T __ZN14RTW88IEEE8021126outputPacketWithCompletionEP6__mbufPFvPvS2_bES2_S2_
+ G 0000000000003ed0 T __ZN14RTW88IEEE8021126restoreSTAChannelAfterAWDLEv
+ G 000000000000cb40 T __ZN14RTW88IEEE8021127hasUntriedAlternativeLockedEv
+ G 00000000000026e0 T __ZN14RTW88IEEE802114freeEv
+ G 0000000000001f90 T __ZN14RTW88IEEE802114initEP14RTW88PCIDeviceP7pci_dev
+ G 00000000000022a0 T __ZN14RTW88IEEE802114initEP15RTW88RxDelegateP7pci_dev
+ G 0000000000003700 T __ZN14RTW88IEEE802114stopEv
+ G 00000000000031b0 T __ZN14RTW88IEEE802115startEv
+ G 0000000000001f20 T __ZN14RTW88IEEE802116createEP14RTW88PCIDeviceP7pci_dev
+ G 000000000000b380 T __ZN14RTW88IEEE802117cmdScanEPKtj
+ G 0000000000008e50 T __ZN14RTW88IEEE802117deAmsduEPKhj
+ G 0000000000011f50 T __ZN14RTW88IEEE802117onTimerEv
+ G 0000000000004970 T __ZN14RTW88IEEE802117powerOnEv
+ G 00000000000013f0 T __ZN14RTW88IEEE802117rxFrameEP7sk_buff
+ G 000000000000b270 T __ZN14RTW88IEEE802118failJoinEPKc
+ G 0000000000004ac0 T __ZN14RTW88IEEE802118powerOffEv
+ G 00000000000018e0 T __ZN14RTW88IEEE802118scanDoneEb
+ G 0000000000001590 T __ZN14RTW88IEEE802118txStatusEP7sk_buff
+ G 0000000000000020 T __ZN14RTW88IEEE802119MetaClassC1Ev
+ G 0000000000000a20 T __ZN14RTW88IEEE802119MetaClassC2Ev
+ G 00000000000029e0 T __ZN14RTW88IEEE802119clearKeysEv
+ G 0000000000011e50 T __ZN14RTW88IEEE802119mbufToSkbEP6__mbuf
+ G 0000000000015910 S __ZN14RTW88IEEE802119metaClassE
+ G 0000000000009dc0 T __ZN14RTW88IEEE802119rxBaSetupEhtt
+ G 0000000000011f20 T __ZN14RTW88IEEE802119skbToMbufEP7sk_buff
+ G 0000000000000950 T __ZN14RTW88IEEE80211C1EPK11OSMetaClass
+ G 0000000000000aa0 T __ZN14RTW88IEEE80211C1Ev
+ G 0000000000000070 T __ZN14RTW88IEEE80211C2EPK11OSMetaClass
+ G 0000000000000ac0 T __ZN14RTW88IEEE80211C2Ev
+ G 00000000000009d0 T __ZN14RTW88IEEE80211D0Ev
+ G 00000000000009a0 T __ZN14RTW88IEEE80211D1Ev
+ G 0000000000000980 T __ZN14RTW88IEEE80211D2Ev
+ G 0000000000000a00 T __ZNK14RTW88IEEE8021112getMetaClassEv
+ G 000000000000f380 T __ZNK14RTW88IEEE8021113copyTargetIEsEPhjPj
+ G 0000000000004100 T __ZNK14RTW88IEEE8021115canTransmitAWDLEv
+ G 000000000000f470 T __ZNK14RTW88IEEE8021115copyTargetRsnIEEPhtPt
+ G 000000000000d1e0 T __ZNK14RTW88IEEE8021118matchesPendingJoinEPKcPKhS3_
+ G 00000000000122d0 T __ZNK14RTW88IEEE802115txNSSEv
+ G 0000000000000a70 T __ZNK14RTW88IEEE802119MetaClass5allocEv
+ G 000000000000a570 T __ZNK14RTW88IEEE802119htAllowedEv
+ G 0000000000015920 S __ZTV14RTW88IEEE80211
+ G 0000000000015a50 S __ZTVN14RTW88IEEE802119MetaClassE
+ARTIFACT path=build/native/RTW88HwOps.o exists=True
+ bytes=3320 mtime_epoch=1793569465 sha256=ad19e9b4f9e244f716bd0138d78921fffd4802ee81c22519bdeba4ed62e90297
+ file=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88HwOps.o: Mach-O 64-bit object x86_64
+ nm_undefined_exit=0
+ selected_undefined_symbol_count=0
+ selected_defined_or_global_symbol_count=2
+ G 0000000000000568 D __dma_ops
+ G 0000000000000510 D __pci_io_ops
+ARTIFACT path=build/wcl24h32/RTW88WCLController.o exists=True
+ bytes=58272 mtime_epoch=1793569466 sha256=d45bed983805a8347a810501484d6f67f09a3909685a5082c2530486f90d9a2e
+ file=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o: Mach-O 64-bit object x86_64
+ nm_undefined_exit=0
+ selected_undefined_symbol_count=14
+ U __ZN14RTW88IEEE8021112outputPacketEP6__mbuf
+ U __ZN14RTW88IEEE8021113createAirportEP15RTW88RxDelegateP7pci_dev
+ U __ZN14RTW88IEEE802114stopEv
+ U __ZN18RTW88WCLPCIBackend15setRadioRunningEb
+ U __ZN18RTW88WCLPCIBackend4openEP11IOPCIDeviceP10IOWorkLoopP24RTW88WCLPCIBackendClient
+ U __ZN18RTW88WCLPCIBackend5closeEv
+ U __ZN18RTW88WCLPCIBackendC1Ev
+ U __ZN21RTW88WCLSkywalkQueues12createQueuesEv
+ U __ZN21RTW88WCLSkywalkQueues13destroyQueuesEv
+ U __ZN21RTW88WCLSkywalkQueuesC1Ev
+ U __ZN24RTW88WCLSkywalkRxAdapter12enqueueFrameEP6__mbuf
+ U __ZN24RTW88WCLSkywalkRxAdapter4initEP8OSObjectP10IOWorkLoopP25IOSkywalkPacketBufferPoolPFbP15IOSkywalkPacketPvES8_
+ U __ZN24RTW88WCLSkywalkRxAdapter4stopEv
+ U __ZN24RTW88WCLSkywalkRxAdapterC1Ev
+ selected_defined_or_global_symbol_count=76
+ G                  U __ZN14RTW88IEEE8021112outputPacketEP6__mbuf
+ G                  U __ZN14RTW88IEEE8021113createAirportEP15RTW88RxDelegateP7pci_dev
+ G                  U __ZN14RTW88IEEE802114stopEv
+ G 00000000000036c8 S __ZN18RTW88WCLController10gMetaClassE
+ G 00000000000018d0 T __ZN18RTW88WCLController10rtw88EventE10RTW88EventPv
+ G 0000000000001fe0 S __ZN18RTW88WCLController10superClassE
+ G 0000000000001800 T __ZN18RTW88WCLController12outputPacketEP6__mbufPv
+ G 0000000000001da0 T __ZN18RTW88WCLController13getRxWorkLoopEv
+ G 00000000000019e0 T __ZN18RTW88WCLController13injectRxFrameEP6__mbuf
+ G 0000000000001de0 T __ZN18RTW88WCLController13setLinkStatusEj
+ G 0000000000000d00 T __ZN18RTW88WCLController13stagedRxFrameEP15IOSkywalkPacketPv
+ G 0000000000000750 T __ZN18RTW88WCLController14createWorkLoopEv
+ G 0000000000001600 T __ZN18RTW88WCLController15enterPacketPathEv
+ G 0000000000001510 T __ZN18RTW88WCLController15getCOUNTRY_CODEEP23IO80211SkywalkInterfaceP28apple80211_country_code_data
+ G 0000000000001690 T __ZN18RTW88WCLController15leavePacketPathEv
+ G 0000000000001560 T __ZN18RTW88WCLController15setCOUNTRY_CODEEP23IO80211SkywalkInterfaceP28apple80211_country_code_data
+ G 0000000000000c70 T __ZN18RTW88WCLController16bindRadioBackendEP14RTW88IEEE80211
+ G 0000000000001370 T __ZN18RTW88WCLController17getDRIVER_VERSIONEP23IO80211SkywalkInterfaceP23apple80211_version_data
+ G 0000000000000fc0 T __ZN18RTW88WCLController17quiescePacketPathEv
+ G 0000000000001590 T __ZN18RTW88WCLController17setGET_DEBUG_INFOEP23IO80211SkywalkInterfaceP24apple80211_debug_command
+ G 00000000000016d0 T __ZN18RTW88WCLController18activatePacketPathEP23IO80211SkywalkInterface
+ G 0000000000001340 T __ZN18RTW88WCLController18handleCardSpecificEP23IO80211SkywalkInterfacemPvb
+ G 0000000000001250 T __ZN18RTW88WCLController18unbindRadioBackendEv
+ G 0000000000001920 T __ZN18RTW88WCLController19allocateInputPacketEj
+ G 00000000000013f0 T __ZN18RTW88WCLController19getHARDWARE_VERSIONEP23IO80211SkywalkInterfaceP23apple80211_version_data
+ G 0000000000001320 T __ZN18RTW88WCLController19isCommandProhibitedEi
+ G 0000000000001440 T __ZN18RTW88WCLController20getCARD_CAPABILITIESEP23IO80211SkywalkInterfaceP26apple80211_capability_data
+ G 0000000000001150 T __ZN18RTW88WCLController22recycleStagedRxPacketsEv
+ G 0000000000000d50 T __ZN18RTW88WCLController22releaseNativeResourcesEv
+ G 00000000000018a0 T __ZN18RTW88WCLController22rtw88WCLResumeTransmitEv
+ G 00000000000015e0 T __ZN18RTW88WCLController26getFaultReporterFromDriverEv
+ G 00000000000012a0 T __ZN18RTW88WCLController4freeEv
+ G 0000000000000600 T __ZN18RTW88WCLController4initEP12OSDictionary
+ G 0000000000000f50 T __ZN18RTW88WCLController4stopEP9IOService
+ G 00000000000007d0 T __ZN18RTW88WCLController5startEP9IOService
+ G 0000000000001490 T __ZN18RTW88WCLController8getPOWEREP23IO80211SkywalkInterfaceP21apple80211_power_data
+ G 00000000000014e0 T __ZN18RTW88WCLController8setPOWEREP23IO80211SkywalkInterfaceP21apple80211_power_data
+ G 0000000000000020 T __ZN18RTW88WCLController9MetaClassC1Ev
+ G 0000000000000430 T __ZN18RTW88WCLController9MetaClassC2Ev
+ G 0000000000001fd8 S __ZN18RTW88WCLController9metaClassE
+ G 0000000000000250 T __ZN18RTW88WCLControllerC1EPK11OSMetaClass
+ G 00000000000004b0 T __ZN18RTW88WCLControllerC1Ev
+ G 0000000000000070 T __ZN18RTW88WCLControllerC2EPK11OSMetaClass
+ G 00000000000004d0 T __ZN18RTW88WCLControllerC2Ev
+ G 0000000000000380 T __ZN18RTW88WCLControllerD0Ev
+ G 00000000000002d0 T __ZN18RTW88WCLControllerD1Ev
+ G 0000000000000280 T __ZN18RTW88WCLControllerD2Ev
+ G                  U __ZN18RTW88WCLPCIBackend15setRadioRunningEb
+ G                  U __ZN18RTW88WCLPCIBackend4openEP11IOPCIDeviceP10IOWorkLoopP24RTW88WCLPCIBackendClient
+ G                  U __ZN18RTW88WCLPCIBackend5closeEv
+ G                  U __ZN18RTW88WCLPCIBackendC1Ev
+ G                  U __ZN21RTW88WCLSkywalkQueues12createQueuesEv
+ G                  U __ZN21RTW88WCLSkywalkQueues13destroyQueuesEv
+ G                  U __ZN21RTW88WCLSkywalkQueuesC1Ev
+ G                  U __ZN24RTW88WCLSkywalkRxAdapter12enqueueFrameEP6__mbuf
+ G                  U __ZN24RTW88WCLSkywalkRxAdapter4initEP8OSObjectP10IOWorkLoopP25IOSkywalkPacketBufferPoolPFbP15IOSkywalkPacketPvES8_
+ G                  U __ZN24RTW88WCLSkywalkRxAdapter4stopEv
+ G                  U __ZN24RTW88WCLSkywalkRxAdapterC1Ev
+ G 00000000000007b0 T __ZNK18RTW88WCLController11getWorkLoopEv
+ G 0000000000000410 T __ZNK18RTW88WCLController12getMetaClassEv
+ G 0000000000000480 T __ZNK18RTW88WCLController9MetaClass5allocEv
+ G 00000000000015c0 T __ZNK18RTW88WCLController9getLoggerEv
+ G 0000000000001fe8 S __ZTV18RTW88WCLController
+ G 0000000000002f48 S __ZTVN18RTW88WCLController9MetaClassE
+ G 00000000000018b0 T __ZThn296_N18RTW88WCLController22rtw88WCLResumeTransmitEv
+ G 00000000000003b0 T __ZThn296_N18RTW88WCLControllerD0Ev
+ G 0000000000000320 T __ZThn296_N18RTW88WCLControllerD1Ev
+ G 00000000000018f0 T __ZThn304_N18RTW88WCLController10rtw88EventE10RTW88EventPv
+ G 00000000000003d0 T __ZThn304_N18RTW88WCLControllerD0Ev
+ G 0000000000000340 T __ZThn304_N18RTW88WCLControllerD1Ev
+ G 0000000000001dc0 T __ZThn312_N18RTW88WCLController13getRxWorkLoopEv
+ G 0000000000001a50 T __ZThn312_N18RTW88WCLController13injectRxFrameEP6__mbuf
+ G 0000000000001e00 T __ZThn312_N18RTW88WCLController13setLinkStatusEj
+ G 00000000000019b0 T __ZThn312_N18RTW88WCLController19allocateInputPacketEj
+ G 00000000000003f0 T __ZThn312_N18RTW88WCLControllerD0Ev
+ G 0000000000000360 T __ZThn312_N18RTW88WCLControllerD1Ev
+ARTIFACT path=build/wcl24h32/RTW88WCLPCIBackend.o exists=True
+ bytes=20768 mtime_epoch=1793569466 sha256=0f825cefb16b8739dc467178813e5fd84fe6dd3d2ceda16a1bc25e80ae6e43b9
+ file=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLPCIBackend.o: Mach-O 64-bit object x86_64
+ nm_undefined_exit=0
+ selected_undefined_symbol_count=5
+ U __ZN22IOInterruptEventSource20interruptEventSourceEP8OSObjectPFvS1_PS_iEP9IOServicei
+ U __dma_ops
+ U __pci_io_ops
+ U _rtw88_dma_ops
+ U _rtw88_pci_io_ops
+ selected_defined_or_global_symbol_count=60
+ G 00000000000024c8 S __ZN18RTW88WCLPCIBackend10gMetaClassE
+ G 0000000000001e30 S __ZN18RTW88WCLPCIBackend10superClassE
+ G 0000000000001920 T __ZN18RTW88WCLPCIBackend11freeDMAListEP13RTW88DMAEntry
+ G 0000000000001100 T __ZN18RTW88WCLPCIBackend11pciReadByteEi
+ G 00000000000011c0 T __ZN18RTW88WCLPCIBackend11pciReadWordEi
+ G 00000000000017f0 T __ZN18RTW88WCLPCIBackend12freeCoherentEmPvy
+ G 0000000000001250 T __ZN18RTW88WCLPCIBackend12pciReadDwordEi
+ G 0000000000001300 T __ZN18RTW88WCLPCIBackend12pciWriteByteEih
+ G 00000000000013b0 T __ZN18RTW88WCLPCIBackend12pciWriteWordEit
+ G 00000000000015c0 T __ZN18RTW88WCLPCIBackend13allocCoherentEmPy
+ G 0000000000001470 T __ZN18RTW88WCLPCIBackend13pciWriteDwordEij
+ G 0000000000000900 T __ZN18RTW88WCLPCIBackend14closeResourcesEv
+ G 0000000000000bb0 T __ZN18RTW88WCLPCIBackend15handleInterruptEP22IOInterruptEventSourcei
+ G 0000000000001b10 T __ZN18RTW88WCLPCIBackend15setBounceOrigVAEyPv
+ G 0000000000000c20 T __ZN18RTW88WCLPCIBackend15setRadioRunningEb
+ G 0000000000000f60 T __ZN18RTW88WCLPCIBackend16clearCompatLeaseEv
+ G 0000000000000e20 T __ZN18RTW88WCLPCIBackend16drainPendingFreeEv
+ G 0000000000001bd0 T __ZN18RTW88WCLPCIBackend16syncBounceForCpuEym
+ G 0000000000001510 T __ZN18RTW88WCLPCIBackend17pciFindCapabilityEi
+ G 0000000000000ec0 T __ZN18RTW88WCLPCIBackend17releaseDMAEntriesEv
+ G 0000000000001d00 T __ZN18RTW88WCLPCIBackend17resumeTxIfStalledEv
+ G 00000000000019d0 T __ZN18RTW88WCLPCIBackend18freeCoherentByPhysEy
+ G 0000000000001000 T __ZN18RTW88WCLPCIBackend4freeEv
+ G 00000000000003f0 T __ZN18RTW88WCLPCIBackend4initEv
+ G 00000000000004a0 T __ZN18RTW88WCLPCIBackend4openEP11IOPCIDeviceP10IOWorkLoopP24RTW88WCLPCIBackendClient
+ G 0000000000000e80 T __ZN18RTW88WCLPCIBackend5closeEv
+ G 0000000000000020 T __ZN18RTW88WCLPCIBackend9MetaClassC1Ev
+ G 0000000000000280 T __ZN18RTW88WCLPCIBackend9MetaClassC2Ev
+ G 0000000000001e28 S __ZN18RTW88WCLPCIBackend9metaClassE
+ G 0000000000000160 T __ZN18RTW88WCLPCIBackendC1EPK11OSMetaClass
+ G 0000000000000300 T __ZN18RTW88WCLPCIBackendC1Ev
+ G 0000000000000070 T __ZN18RTW88WCLPCIBackendC2EPK11OSMetaClass
+ G 0000000000000320 T __ZN18RTW88WCLPCIBackendC2Ev
+ G 0000000000000210 T __ZN18RTW88WCLPCIBackendD0Ev
+ G 00000000000001c0 T __ZN18RTW88WCLPCIBackendD1Ev
+ G 0000000000000190 T __ZN18RTW88WCLPCIBackendD2Ev
+ G 00000000000010b0 T __ZNK18RTW88WCLPCIBackend10mmioLengthEv
+ G 0000000000000260 T __ZNK18RTW88WCLPCIBackend12getMetaClassEv
+ G 00000000000002d0 T __ZNK18RTW88WCLPCIBackend9MetaClass5allocEv
+ G 0000000000001e38 S __ZTV18RTW88WCLPCIBackend
+ G 0000000000002068 S __ZTVN18RTW88WCLPCIBackend9MetaClassE
+ G 0000000000001190 T __ZThn16_N18RTW88WCLPCIBackend11pciReadByteEi
+ G 0000000000001220 T __ZThn16_N18RTW88WCLPCIBackend11pciReadWordEi
+ G 0000000000001990 T __ZThn16_N18RTW88WCLPCIBackend12freeCoherentEmPvy
+ G 00000000000012d0 T __ZThn16_N18RTW88WCLPCIBackend12pciReadDwordEi
+ G 0000000000001380 T __ZThn16_N18RTW88WCLPCIBackend12pciWriteByteEih
+ G 0000000000001430 T __ZThn16_N18RTW88WCLPCIBackend12pciWriteWordEit
+ G 00000000000017c0 T __ZThn16_N18RTW88WCLPCIBackend13allocCoherentEmPy
+ G 00000000000014e0 T __ZThn16_N18RTW88WCLPCIBackend13pciWriteDwordEij
+ G 0000000000001ba0 T __ZThn16_N18RTW88WCLPCIBackend15setBounceOrigVAEyPv
+ G 0000000000001cd0 T __ZThn16_N18RTW88WCLPCIBackend16syncBounceForCpuEym
+ G 0000000000001590 T __ZThn16_N18RTW88WCLPCIBackend17pciFindCapabilityEi
+ G 0000000000001d30 T __ZThn16_N18RTW88WCLPCIBackend17resumeTxIfStalledEv
+ G 0000000000001ae0 T __ZThn16_N18RTW88WCLPCIBackend18freeCoherentByPhysEy
+ G 0000000000000240 T __ZThn16_N18RTW88WCLPCIBackendD0Ev
+ G 00000000000001f0 T __ZThn16_N18RTW88WCLPCIBackendD1Ev
+ G                  U __dma_ops
+ G                  U __pci_io_ops
+ G                  U _rtw88_dma_ops
+ G                  U _rtw88_pci_io_ops
+ARTIFACT path=build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative exists=True
+ bytes=1624760 mtime_epoch=1793569466 sha256=475d2ec90dad4f83aaafdf9ee17a9ffca8c7804951266cf7c41d02e58945cbc9
+ file=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative: Mach-O 64-bit kext bundle x86_64
+ nm_undefined_exit=0
+ selected_undefined_symbol_count=1
+ U __ZN22IOInterruptEventSource20interruptEventSourceEP8OSObjectPFvS1_PS_iEP9IOServicei
+ selected_defined_or_global_symbol_count=438
+ G 000000000005a0b0 T __ZN14RTW88IEEE8021110cmdConnectEPKcS1_PKhS3_b
+ G 00000000000619f0 T __ZN14RTW88IEEE8021110cmdGetRSSIEPi
+ G 000000000005f240 T __ZN14RTW88IEEE8021110cmdPowerOnEv
+ G 0000000000158bc0 S __ZN14RTW88IEEE8021110gMetaClassE
+ G 00000000000524d0 T __ZN14RTW88IEEE8021110installKeyEPP18ieee80211_key_confbhjPKhh
+ G 0000000000052380 T __ZN14RTW88IEEE8021110releaseStaEv
+ G 0000000000154df8 S __ZN14RTW88IEEE8021110superClassE
+ G 0000000000051dc0 T __ZN14RTW88IEEE8021110timerFiredEP8OSObjectP18IOTimerEventSource
+ G 0000000000053b10 T __ZN14RTW88IEEE8021110txNullFuncEb
+ G 0000000000061810 T __ZN14RTW88IEEE8021111cmdGetStateEP16RTW88StateResult
+ G 000000000005f130 T __ZN14RTW88IEEE8021111cmdPowerOffEv
+ G 0000000000051d80 T __ZN14RTW88IEEE8021111connectTCFnEPvS0_
+ G 0000000000061f50 T __ZN14RTW88IEEE8021111copyScanBSSEjP8RTW88BSS
+ G 0000000000056710 T __ZN14RTW88IEEE8021111doAssociateEv
+ G 0000000000058730 T __ZN14RTW88IEEE8021111handleEAPOLEPKhj
+ G 0000000000054590 T __ZN14RTW88IEEE8021111txDataFrameEP6__mbufPFvPvS2_bES2_S2_
+ G 000000000005d450 T __ZN14RTW88IEEE8021111txMgmtFrameEPKhj
+ G 000000000005d330 T __ZN14RTW88IEEE8021112buildAuthReqEPhPj
+ G 000000000005aaa0 T __ZN14RTW88IEEE8021112cmdAbortScanEv
+ G 00000000000621e0 T __ZN14RTW88IEEE8021112copyChannelsEP12RTW88ChanneljPj
+ G 00000000000531a0 T __ZN14RTW88IEEE8021112doDisconnectEv
+ G 0000000000060a20 T __ZN14RTW88IEEE8021112housekeepingEv
+ G 00000000000542f0 T __ZN14RTW88IEEE8021112outputPacketEP6__mbuf
+ G 0000000000059670 T __ZN14RTW88IEEE8021112rxBaTeardownEh
+ G 000000000005f850 T __ZN14RTW88IEEE8021112sendEAPOLKeyEiPKhbbb
+ G 000000000005d5b0 T __ZN14RTW88IEEE8021113buildAssocReqEPhPj
+ G 000000000005ef50 T __ZN14RTW88IEEE8021113cmdDisconnectEv
+ G 0000000000061a70 T __ZN14RTW88IEEE8021113cmdGetBSSListEPhPj
+ G 00000000000519a0 T __ZN14RTW88IEEE8021113createAirportEP15RTW88RxDelegateP7pci_dev
+ G 0000000000061d40 T __ZN14RTW88IEEE8021113getMACAddressEPh
+ G 00000000000559b0 T __ZN14RTW88IEEE8021113processRxDataEP7sk_buff
+ G 0000000000054f60 T __ZN14RTW88IEEE8021113processRxMgmtEP7sk_buff
+ G 000000000005c460 T __ZN14RTW88IEEE8021113retryOtherBssEPKc
+ G 000000000005b7c0 T __ZN14RTW88IEEE8021113runManualScanEv
+ G 0000000000061de0 T __ZN14RTW88IEEE8021113setMACAddressEPKh
+ G 0000000000062040 T __ZN14RTW88IEEE8021114copyCurrentBSSEP8RTW88BSS
+ G 000000000005ce90 T __ZN14RTW88IEEE8021114doAuthenticateEv
+ G 0000000000051da0 T __ZN14RTW88IEEE8021114manualScanTCFnEPvS0_
+ G 0000000000057ad0 T __ZN14RTW88IEEE8021114rxReorderInputEhP7sk_bufft
+ G 0000000000053820 T __ZN14RTW88IEEE8021114setAWDLAddressEPKh
+ G 0000000000053d50 T __ZN14RTW88IEEE8021114setAWDLChannelEt
+ G 000000000005ba30 T __ZN14RTW88IEEE8021114txProbeRequestEv
+ G 0000000000059f30 T __ZN14RTW88IEEE8021115abortActiveScanEb
+ G 000000000005eab0 T __ZN14RTW88IEEE8021115clearAssocRsnIEEv
+ G 0000000000050b20 T __ZN14RTW88IEEE8021115compat_rx_frameEPvP7sk_buff
+ G 0000000000059420 T __ZN14RTW88IEEE8021115deliverEthernetEPKhS1_tS1_j
+ G 00000000000542d0 T __ZN14RTW88IEEE8021115handleInterruptEv
+ G 0000000000052490 T __ZN14RTW88IEEE8021115rxBaTeardownAllEv
+ G 000000000005bcb0 T __ZN14RTW88IEEE8021115selectBssLockedEPKcmPKhbi
+ G 0000000000060cd0 T __ZN14RTW88IEEE8021115txAWDLDataFrameEP6__mbuf
+ G 000000000005e9d0 T __ZN14RTW88IEEE8021116cmdSetAssocRsnIEEPKht
+ G 0000000000051010 T __ZN14RTW88IEEE8021116compat_scan_doneEPvb
+ G 0000000000050cc0 T __ZN14RTW88IEEE8021116compat_tx_statusEPvP7sk_buff
+ G 0000000000057f00 T __ZN14RTW88IEEE8021116deliverDataFrameEP7sk_buff
+ G 0000000000056ff0 T __ZN14RTW88IEEE8021116handleBackActionEPKhj
+ G 00000000000605b0 T __ZN14RTW88IEEE8021116sendAddbaRequestEh
+ G 000000000005cad0 T __ZN14RTW88IEEE8021117clearDeferredJoinEv
+ G 0000000000056860 T __ZN14RTW88IEEE8021117joinAttemptFailedEPKc
+ G 0000000000059ba0 T __ZN14RTW88IEEE8021117parseBssOperationEPKhtP17RTW88BssOperation
+ G 0000000000055c10 T __ZN14RTW88IEEE8021117processScanResultEP7sk_buff
+ G 0000000000051e00 T __ZN14RTW88IEEE8021117reorderTimerFiredEP8OSObjectP18IOTimerEventSource
+ G 0000000000059800 T __ZN14RTW88IEEE8021117rxReorderArmTimerEv
+ G 00000000000607a0 T __ZN14RTW88IEEE8021117sendAddbaResponseEhhttt
+ G 00000000000534b0 T __ZN14RTW88IEEE8021118setAWDLReceiveModeEb
+ G 000000000005e780 T __ZN14RTW88IEEE8021118startTxAggregationEv
+ G 0000000000061350 T __ZN14RTW88IEEE8021119deliverAWDLEthernetEPKhS1_tS1_j
+ G 0000000000059860 T __ZN14RTW88IEEE8021119rxReorderFlushStaleEv
+ G 0000000000053940 T __ZN14RTW88IEEE8021119setConnectedChandefEP17ieee80211_channel
+ G 00000000000533e0 T __ZN14RTW88IEEE8021119setReceiveMulticastEb
+ G 0000000000053140 T __ZN14RTW88IEEE8021120cancelAuthenticationEv
+ G 00000000000568b0 T __ZN14RTW88IEEE8021120processAssocResponseEP7sk_buff
+ G 0000000000061cb0 T __ZN14RTW88IEEE8021120setRegulatoryCountryEPKc
+ G 00000000000602a0 T __ZN14RTW88IEEE8021120txRawManagementFrameEPKhj
+ G 000000000005c330 T __ZN14RTW88IEEE8021121applyAssocRsnOverrideEbbb
+ G 000000000005ed90 T __ZN14RTW88IEEE8021121cmdInstallExternalKeyEbhjPKhh
+ G 000000000005f050 T __ZN14RTW88IEEE8021121suspendForSystemSleepEv
+ G 0000000000061d90 T __ZN14RTW88IEEE8021122getPermanentMACAddressEPh
+ G 000000000005c040 T __ZN14RTW88IEEE8021122selectBssForJoinLockedEPKcmPKhPb
+ G 0000000000059d30 T __ZN14RTW88IEEE8021123restoreConnectedChannelEv
+ G 00000000000556a0 T __ZN14RTW88IEEE8021123tryDeliverAWDLDataFrameEP7sk_buff
+ G 0000000000054320 T __ZN14RTW88IEEE8021126outputPacketWithCompletionEP6__mbufPFvPvS2_bES2_S2_
+ G 0000000000053640 T __ZN14RTW88IEEE8021126restoreSTAChannelAfterAWDLEv
+ G 000000000005c2b0 T __ZN14RTW88IEEE8021127hasUntriedAlternativeLockedEv
+ G 0000000000051e50 T __ZN14RTW88IEEE802114freeEv
+ G 0000000000051700 T __ZN14RTW88IEEE802114initEP14RTW88PCIDeviceP7pci_dev
+ G 0000000000051a10 T __ZN14RTW88IEEE802114initEP15RTW88RxDelegateP7pci_dev
+ G 0000000000052e70 T __ZN14RTW88IEEE802114stopEv
+ G 0000000000052920 T __ZN14RTW88IEEE802115startEv
+ G 0000000000051690 T __ZN14RTW88IEEE802116createEP14RTW88PCIDeviceP7pci_dev
+ G 000000000005aaf0 T __ZN14RTW88IEEE802117cmdScanEPKtj
+ G 00000000000585c0 T __ZN14RTW88IEEE802117deAmsduEPKhj
+ G 00000000000616c0 T __ZN14RTW88IEEE802117onTimerEv
+ G 00000000000540e0 T __ZN14RTW88IEEE802117powerOnEv
+ G 0000000000050b60 T __ZN14RTW88IEEE802117rxFrameEP7sk_buff
+ G 000000000005a9e0 T __ZN14RTW88IEEE802118failJoinEPKc
+ G 0000000000054230 T __ZN14RTW88IEEE802118powerOffEv
+ G 0000000000051050 T __ZN14RTW88IEEE802118scanDoneEb
+ G 0000000000050d00 T __ZN14RTW88IEEE802118txStatusEP7sk_buff
+ G 000000000004f790 T __ZN14RTW88IEEE802119MetaClassC1Ev
+ G 0000000000050190 T __ZN14RTW88IEEE802119MetaClassC2Ev
+ G 0000000000052150 T __ZN14RTW88IEEE802119clearKeysEv
+ G 00000000000615c0 T __ZN14RTW88IEEE802119mbufToSkbEP6__mbuf
+ G 0000000000154df0 S __ZN14RTW88IEEE802119metaClassE
+ G 0000000000059530 T __ZN14RTW88IEEE802119rxBaSetupEhtt
+ G 0000000000061690 T __ZN14RTW88IEEE802119skbToMbufEP7sk_buff
+ G 00000000000500c0 T __ZN14RTW88IEEE80211C1EPK11OSMetaClass
+ G 0000000000050210 T __ZN14RTW88IEEE80211C1Ev
+ G 000000000004f7e0 T __ZN14RTW88IEEE80211C2EPK11OSMetaClass
+ G 0000000000050230 T __ZN14RTW88IEEE80211C2Ev
+ G 0000000000050140 T __ZN14RTW88IEEE80211D0Ev
+ G 0000000000050110 T __ZN14RTW88IEEE80211D1Ev
+ G 00000000000500f0 T __ZN14RTW88IEEE80211D2Ev
+ G 0000000000158bf0 S __ZN17RTW88WCLWorkQueue10gMetaClassE
+ G 00000000001550b8 S __ZN17RTW88WCLWorkQueue10superClassE
+ G 0000000000067390 T __ZN17RTW88WCLWorkQueue12checkForWorkEv
+ G 0000000000066fc0 T __ZN17RTW88WCLWorkQueue13enqueueLockedERK18RTW88WCLRadioEvent
+ G 0000000000066fa0 T __ZN17RTW88WCLWorkQueue16isTelemetryEventERK18RTW88WCLRadioEvent
+ G 00000000000672c0 T __ZN17RTW88WCLWorkQueue20onRTW88WCLRadioEventERK18RTW88WCLRadioEvent
+ G 0000000000066f40 T __ZN17RTW88WCLWorkQueue4freeEv
+ G 0000000000066c80 T __ZN17RTW88WCLWorkQueue4initEP8OSObjectP10IOWorkLoopP25RTW88WCLRadioEventHandler
+ G 0000000000066e20 T __ZN17RTW88WCLWorkQueue4stopEv
+ G 00000000000668b0 T __ZN17RTW88WCLWorkQueue9MetaClassC1Ev
+ G 0000000000066b20 T __ZN17RTW88WCLWorkQueue9MetaClassC2Ev
+ G 00000000001550b0 S __ZN17RTW88WCLWorkQueue9metaClassE
+ G 0000000000066a00 T __ZN17RTW88WCLWorkQueueC1EPK11OSMetaClass
+ G 0000000000066ba0 T __ZN17RTW88WCLWorkQueueC1Ev
+ G 0000000000066900 T __ZN17RTW88WCLWorkQueueC2EPK11OSMetaClass
+ G 0000000000066bc0 T __ZN17RTW88WCLWorkQueueC2Ev
+ G 0000000000066ab0 T __ZN17RTW88WCLWorkQueueD0Ev
+ G 0000000000066a60 T __ZN17RTW88WCLWorkQueueD1Ev
+ G 0000000000066a30 T __ZN17RTW88WCLWorkQueueD2Ev
+ G 0000000000158c18 S __ZN18RTW88WCLController10gMetaClassE
+ G 0000000000069250 T __ZN18RTW88WCLController10rtw88EventE10RTW88EventPv
+ G 00000000001553e0 S __ZN18RTW88WCLController10superClassE
+ G 0000000000069180 T __ZN18RTW88WCLController12outputPacketEP6__mbufPv
+ G 0000000000069720 T __ZN18RTW88WCLController13getRxWorkLoopEv
+ G 0000000000069360 T __ZN18RTW88WCLController13injectRxFrameEP6__mbuf
+ G 0000000000069760 T __ZN18RTW88WCLController13setLinkStatusEj
+ G 0000000000068680 T __ZN18RTW88WCLController13stagedRxFrameEP15IOSkywalkPacketPv
+ G 00000000000680d0 T __ZN18RTW88WCLController14createWorkLoopEv
+ G 0000000000068f80 T __ZN18RTW88WCLController15enterPacketPathEv
+ G 0000000000068e90 T __ZN18RTW88WCLController15getCOUNTRY_CODEEP23IO80211SkywalkInterfaceP28apple80211_country_code_data
+ G 0000000000069010 T __ZN18RTW88WCLController15leavePacketPathEv
+ G 0000000000068ee0 T __ZN18RTW88WCLController15setCOUNTRY_CODEEP23IO80211SkywalkInterfaceP28apple80211_country_code_data
+ G 00000000000685f0 T __ZN18RTW88WCLController16bindRadioBackendEP14RTW88IEEE80211
+ G 0000000000068cf0 T __ZN18RTW88WCLController17getDRIVER_VERSIONEP23IO80211SkywalkInterfaceP23apple80211_version_data
+ G 0000000000068940 T __ZN18RTW88WCLController17quiescePacketPathEv
+ G 0000000000068f10 T __ZN18RTW88WCLController17setGET_DEBUG_INFOEP23IO80211SkywalkInterfaceP24apple80211_debug_command
+ G 0000000000069050 T __ZN18RTW88WCLController18activatePacketPathEP23IO80211SkywalkInterface
+ G 0000000000068cc0 T __ZN18RTW88WCLController18handleCardSpecificEP23IO80211SkywalkInterfacemPvb
+ G 0000000000068bd0 T __ZN18RTW88WCLController18unbindRadioBackendEv
+ G 00000000000692a0 T __ZN18RTW88WCLController19allocateInputPacketEj
+ G 0000000000068d70 T __ZN18RTW88WCLController19getHARDWARE_VERSIONEP23IO80211SkywalkInterfaceP23apple80211_version_data
+ G 0000000000068ca0 T __ZN18RTW88WCLController19isCommandProhibitedEi
+ G 0000000000068dc0 T __ZN18RTW88WCLController20getCARD_CAPABILITIESEP23IO80211SkywalkInterfaceP26apple80211_capability_data
+ G 0000000000068ad0 T __ZN18RTW88WCLController22recycleStagedRxPacketsEv
+ G 00000000000686d0 T __ZN18RTW88WCLController22releaseNativeResourcesEv
+ G 0000000000069220 T __ZN18RTW88WCLController22rtw88WCLResumeTransmitEv
+ G 0000000000068f60 T __ZN18RTW88WCLController26getFaultReporterFromDriverEv
+ G 0000000000068c20 T __ZN18RTW88WCLController4freeEv
+ G 0000000000067f80 T __ZN18RTW88WCLController4initEP12OSDictionary
+ G 00000000000688d0 T __ZN18RTW88WCLController4stopEP9IOService
+ G 0000000000068150 T __ZN18RTW88WCLController5startEP9IOService
+ G 0000000000068e10 T __ZN18RTW88WCLController8getPOWEREP23IO80211SkywalkInterfaceP21apple80211_power_data
+ G 0000000000068e60 T __ZN18RTW88WCLController8setPOWEREP23IO80211SkywalkInterfaceP21apple80211_power_data
+ G 00000000000679a0 T __ZN18RTW88WCLController9MetaClassC1Ev
+ G 0000000000067db0 T __ZN18RTW88WCLController9MetaClassC2Ev
+ G 00000000001553d8 S __ZN18RTW88WCLController9metaClassE
+ G 0000000000067bd0 T __ZN18RTW88WCLControllerC1EPK11OSMetaClass
+ G 0000000000067e30 T __ZN18RTW88WCLControllerC1Ev
+ G 00000000000679f0 T __ZN18RTW88WCLControllerC2EPK11OSMetaClass
+ G 0000000000067e50 T __ZN18RTW88WCLControllerC2Ev
+ G 0000000000067d00 T __ZN18RTW88WCLControllerD0Ev
+ G 0000000000067c50 T __ZN18RTW88WCLControllerD1Ev
+ G 0000000000067c00 T __ZN18RTW88WCLControllerD2Ev
+ G 0000000000158c68 S __ZN18RTW88WCLPCIBackend10gMetaClassE
+ G 0000000000157b08 S __ZN18RTW88WCLPCIBackend10superClassE
+ G 00000000000708c0 T __ZN18RTW88WCLPCIBackend11freeDMAListEP13RTW88DMAEntry
+ G 00000000000700a0 T __ZN18RTW88WCLPCIBackend11pciReadByteEi
+ G 0000000000070160 T __ZN18RTW88WCLPCIBackend11pciReadWordEi
+ G 0000000000070790 T __ZN18RTW88WCLPCIBackend12freeCoherentEmPvy
+ G 00000000000701f0 T __ZN18RTW88WCLPCIBackend12pciReadDwordEi
+ G 00000000000702a0 T __ZN18RTW88WCLPCIBackend12pciWriteByteEih
+ G 0000000000070350 T __ZN18RTW88WCLPCIBackend12pciWriteWordEit
+ G 0000000000070560 T __ZN18RTW88WCLPCIBackend13allocCoherentEmPy
+ G 0000000000070410 T __ZN18RTW88WCLPCIBackend13pciWriteDwordEij
+ G 000000000006f8a0 T __ZN18RTW88WCLPCIBackend14closeResourcesEv
+ G 000000000006fb50 T __ZN18RTW88WCLPCIBackend15handleInterruptEP22IOInterruptEventSourcei
+ G 0000000000070ab0 T __ZN18RTW88WCLPCIBackend15setBounceOrigVAEyPv
+ G 000000000006fbc0 T __ZN18RTW88WCLPCIBackend15setRadioRunningEb
+ G 000000000006ff00 T __ZN18RTW88WCLPCIBackend16clearCompatLeaseEv
+ G 000000000006fdc0 T __ZN18RTW88WCLPCIBackend16drainPendingFreeEv
+ G 0000000000070b70 T __ZN18RTW88WCLPCIBackend16syncBounceForCpuEym
+ G 00000000000704b0 T __ZN18RTW88WCLPCIBackend17pciFindCapabilityEi
+ G 000000000006fe60 T __ZN18RTW88WCLPCIBackend17releaseDMAEntriesEv
+ G 0000000000070ca0 T __ZN18RTW88WCLPCIBackend17resumeTxIfStalledEv
+ G 0000000000070970 T __ZN18RTW88WCLPCIBackend18freeCoherentByPhysEy
+ G 000000000006ffa0 T __ZN18RTW88WCLPCIBackend4freeEv
+ G 000000000006f390 T __ZN18RTW88WCLPCIBackend4initEv
+ G 000000000006f440 T __ZN18RTW88WCLPCIBackend4openEP11IOPCIDeviceP10IOWorkLoopP24RTW88WCLPCIBackendClient
+ G 000000000006fe20 T __ZN18RTW88WCLPCIBackend5closeEv
+ G 000000000006efc0 T __ZN18RTW88WCLPCIBackend9MetaClassC1Ev
+ G 000000000006f220 T __ZN18RTW88WCLPCIBackend9MetaClassC2Ev
+ G 0000000000157b00 S __ZN18RTW88WCLPCIBackend9metaClassE
+ G 000000000006f100 T __ZN18RTW88WCLPCIBackendC1EPK11OSMetaClass
+ G 000000000006f2a0 T __ZN18RTW88WCLPCIBackendC1Ev
+ G 000000000006f010 T __ZN18RTW88WCLPCIBackendC2EPK11OSMetaClass
+ G 000000000006f2c0 T __ZN18RTW88WCLPCIBackendC2Ev
+ G 000000000006f1b0 T __ZN18RTW88WCLPCIBackendD0Ev
+ G 000000000006f160 T __ZN18RTW88WCLPCIBackendD1Ev
+ G 000000000006f130 T __ZN18RTW88WCLPCIBackendD2Ev
+ G 00000000000663a0 T __ZN19RTW88WCLRadioBridge10installKeyEbhjPKhh
+ G 0000000000066760 T __ZN19RTW88WCLRadioBridge10rtw88EventE10RTW88EventPv
+ G 0000000000066430 T __ZN19RTW88WCLRadioBridge11copyScanBSSEjP8RTW88BSS
+ G 00000000000664d0 T __ZN19RTW88WCLRadioBridge12copyChannelsEP12RTW88ChanneljPj
+ G 0000000000065820 T __ZN19RTW88WCLRadioBridge12isValidBSSIDEPKh
+ G 0000000000066130 T __ZN19RTW88WCLRadioBridge12leaveNetworkEv
+ G 00000000000666b0 T __ZN19RTW88WCLRadioBridge13getMACAddressEPh
+ G 00000000000657b0 T __ZN19RTW88WCLRadioBridge13isZeroAddressEPKh
+ G 0000000000066650 T __ZN19RTW88WCLRadioBridge13setMACAddressEPKh
+ G 0000000000066480 T __ZN19RTW88WCLRadioBridge14copyCurrentBSSEP8RTW88BSS
+ G 0000000000066250 T __ZN19RTW88WCLRadioBridge15connectionReadyEv
+ G 0000000000066150 T __ZN19RTW88WCLRadioBridge19setAssociationRSNIEEPKht
+ G 0000000000066710 T __ZN19RTW88WCLRadioBridge20outputEthernetPacketEP6__mbuf
+ G 0000000000066210 T __ZN19RTW88WCLRadioBridge21clearAssociationRSNIEEv
+ G 00000000000656b0 T __ZN19RTW88WCLRadioBridge6attachEP14RTW88IEEE80211P22RTW88WCLRadioEventSink
+ G 00000000000655c0 T __ZN19RTW88WCLRadioBridge6detachEv
+ G 0000000000066530 T __ZN19RTW88WCLRadioBridge7getRSSIEPi
+ G 00000000000665d0 T __ZN19RTW88WCLRadioBridge7powerOnEv
+ G 0000000000066580 T __ZN19RTW88WCLRadioBridge8getStateEP16RTW88StateResult
+ G 0000000000066610 T __ZN19RTW88WCLRadioBridge8powerOffEv
+ G 00000000000660b0 T __ZN19RTW88WCLRadioBridge9abortJoinEv
+ G 0000000000065b10 T __ZN19RTW88WCLRadioBridge9abortScanEv
+ G 0000000000065c70 T __ZN19RTW88WCLRadioBridge9associateEPKhhS1_S1_S1_tbPj
+ G 0000000000065870 T __ZN19RTW88WCLRadioBridge9startScanEPKtjPj
+ G 0000000000065680 T __ZN19RTW88WCLRadioBridgeD0Ev
+ G 0000000000065650 T __ZN19RTW88WCLRadioBridgeD1Ev
+ G 0000000000065590 T __ZN19RTW88WCLRadioBridgeD2Ev
+ G 0000000000158c90 S __ZN21RTW88WCLSkywalkQueues10gMetaClassE
+ G 0000000000157ec8 S __ZN21RTW88WCLSkywalkQueues10superClassE
+ G 0000000000071120 T __ZN21RTW88WCLSkywalkQueues12createQueuesEv
+ G 0000000000071510 T __ZN21RTW88WCLSkywalkQueues13destroyQueuesEv
+ G 00000000000714e0 T __ZN21RTW88WCLSkywalkQueues18rxCompletionActionEP8OSObjectP26IOSkywalkRxCompletionQueuePP15IOSkywalkPacketjPv
+ G 00000000000714b0 T __ZN21RTW88WCLSkywalkQueues18rxSubmissionActionEP8OSObjectP26IOSkywalkRxSubmissionQueuePPK15IOSkywalkPacketjPv
+ G 0000000000071480 T __ZN21RTW88WCLSkywalkQueues18txCompletionActionEP8OSObjectP26IOSkywalkTxCompletionQueuePP15IOSkywalkPacketjPv
+ G 00000000000713a0 T __ZN21RTW88WCLSkywalkQueues18txSubmissionActionEP8OSObjectP26IOSkywalkTxSubmissionQueuePPK15IOSkywalkPacketjPv
+ G 0000000000071700 T __ZN21RTW88WCLSkywalkQueues4freeEv
+ G 00000000000710a0 T __ZN21RTW88WCLSkywalkQueues4initEv
+ G 0000000000070df0 T __ZN21RTW88WCLSkywalkQueues9MetaClassC1Ev
+ G 0000000000070f80 T __ZN21RTW88WCLSkywalkQueues9MetaClassC2Ev
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+
+--- End Stage 35I ---
+ACTUAL_BUILD=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+HARDWARE_TEST=NOT_RUN

@@ -1,0 +1,13 @@
+STAGE88_REGISTRATION_IMPLEMENTATION_CONSTRAINTS
+1. The caller must provide four valid, non-null queue objects and a count matching the supplied array.
+2. Each queue must report one of the four decoded WMM service-class values; the WMM predicate accepts exactly one of each value.
+3. The pointer-array memory must remain valid through the full synchronous registration call because the wrapper traverses it for WMM checking and QueueSet creation.
+4. The captured QueueSet initializer copies queue pointers into its own allocated storage and retains the queue objects; it does not store the caller array base pointer.
+5. Keep driver-side references until registration has completed and teardown has detached callbacks and released the queue objects safely.
+6. On partial construction or registration failure, unwind only objects whose ownership was successfully established; do not double-release objects retained by Apple QueueSet ownership.
+7. QueueSet teardown clears per-queue back-references, releases retained queues and frees its internal pointer storage; coordinate driver teardown with this lifecycle.
+8. Preserve separate TX submission, TX completion, RX submission and RX completion queue roles; the Apple QueueSet classifies supplied queues by performCommand typecode.
+9. Do not proceed to build or activation from this audit alone: native registration and all four TX/RX callback handoffs remain absent.
+WMM_NUMERIC_VALUES=0x00100080,0x00000000,0x00380100,0x00400180
+WMM_SYMBOLIC_ENUM_NAMES=NOT_INFERRED
+SOURCE_MODIFIED=NO

@@ -1,0 +1,124 @@
+STAGE55_GLOBAL_SOURCE_REFERENCE_INVENTORY
+
+REFERENCE=interface_instance_reference
+MATCHES=46
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:9: #include "RTW88WCLInfraInterface.hpp"
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:16: OSDefineMetaClassAndStructors(RTW88WCLInfraInterface, IO80211InfraProtocol)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:139: bool RTW88WCLInfraInterface::init()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:157: bool RTW88WCLInfraInterface::init(IOService *provider, ether_addr *address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:173: IOReturn RTW88WCLInfraInterface::attachRadio(RTW88IEEE80211 *radio)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:203: void RTW88WCLInfraInterface::detachRadio()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:221: void RTW88WCLInfraInterface::free()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:229: void RTW88WCLInfraInterface::clearRegistrationInfo()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:235: bool RTW88WCLInfraInterface::prepareRegistrationInfo(const ether_addr &address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262: bool RTW88WCLInfraInterface::start(IOService *provider)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:274: void RTW88WCLInfraInterface::stop(IOService *provider)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:283: IOReturn RTW88WCLInfraInterface::enable(unsigned int options)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:303: IOReturn RTW88WCLInfraInterface::disable(unsigned int options)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:317: SInt32 RTW88WCLInfraInterface::initBSDInterfaceParameters(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:329: IOReturn RTW88WCLInfraInterface::setMacAddress(ether_addr &address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:334: IOReturn RTW88WCLInfraInterface::getHardwareAddress(ether_addr *address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:341: IOReturn RTW88WCLInfraInterface::setHardwareAddress(ether_addr *address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:347: IO80211Controller *RTW88WCLInfraInterface::getController()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:352: bool RTW88WCLInfraInterface::isChipInterfaceReady()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:357: bool RTW88WCLInfraInterface::isDebounceOnGoing()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:362: IO80211LinkState RTW88WCLInfraInterface::linkState()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:369: bool RTW88WCLInfraInterface::setLinkState(IO80211LinkState state,
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:377: int RTW88WCLInfraInterface::getAssocState()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:382: UInt RTW88WCLInfraInterface::getHardwareAssists()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:387: bool RTW88WCLInfraInterface::bpfTap(unsigned int direction, unsigned int flags)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:394: void RTW88WCLInfraInterface::hwConfigNicProxyData(nicproxy_info_s *info)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:400: IOReturn RTW88WCLInfraInterface::getCHANNEL(apple80211_channel_data *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:419: IOReturn RTW88WCLInfraInterface::getRSSI(apple80211_rssi_data *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:436: IOReturn RTW88WCLInfraInterface::getSUPPORTED_CHANNELS(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:462: IOReturn RTW88WCLInfraInterface::setCIPHER_KEY(apple80211_key *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:475: IOReturn RTW88WCLInfraInterface::setCLEAR_PMKSA_CACHE(void *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:482: IOReturn RTW88WCLInfraInterface::setWCL_LEAVE_NETWORK(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:503: IOReturn RTW88WCLInfraInterface::setWCL_SCAN_ABORT(void *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:510: IOReturn RTW88WCLInfraInterface::setWCL_JOIN_ABORT(void *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:527: IOReturn RTW88WCLInfraInterface::setWCL_SCAN_REQ(apple80211ScanRequest *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:588: IOReturn RTW88WCLInfraInterface::setWCL_ASSOCIATE(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:625: IOReturn RTW88WCLInfraInterface::setWCL_LINK_UP_DONE(void *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:632: IOReturn RTW88WCLInfraInterface::setWCL_LINK_STATE_UPDATE(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:657: bool RTW88WCLInfraInterface::scanResultMatches(const RTW88BSS &bss) const
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:676: IOReturn RTW88WCLInfraInterface::postWCLMessage(unsigned int message,
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:684: void RTW88WCLInfraInterface::publishScanResults(IOReturn status)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:723: void RTW88WCLInfraInterface::postConnectionComplete(uint16_t status,
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:735: void RTW88WCLInfraInterface::maybePublishConnected()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:754: void RTW88WCLInfraInterface::handleRTW88WCLRadioEvent(
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:22: class RTW88WCLInfraInterface final : public IO80211InfraProtocol,
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:24: OSDeclareDefaultStructors(RTW88WCLInfraInterface)
+
+REFERENCE=provider_init_call
+MATCHES=1
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:166: if (!IO80211SkywalkInterface::init(provider, address))
+
+REFERENCE=radio_attach_call
+MATCHES=2
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:173: IOReturn RTW88WCLInfraInterface::attachRadio(RTW88IEEE80211 *radio)
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:244: IOReturn attachRadio(RTW88IEEE80211 *radio);
+
+REFERENCE=primary_interface_getter_or_setter
+MATCHES=4
+MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h:172: virtual IO80211SkywalkInterface* getPrimarySkywalkInterface(void);
+src/kext/RTL88WiFi.cpp:1612: skywalkInterface == getPrimarySkywalkInterface()) {
+src/kext/RTL88WiFi.cpp:1870: skywalkInterface == getPrimarySkywalkInterface()) {
+src/kext/wcl24h32/RTW88WCL24H32ABI.hpp:89: virtual IO80211SkywalkInterface *getPrimarySkywalkInterface();
+
+REFERENCE=interface_prepare_or_start
+MATCHES=6
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:55: virtual IOReturn prepareBSDInterface( ifnet_t interface, IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:70: virtual IOReturn prepareBSDInterface( ifnet_t interface, IOOptionBits options );
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:331: virtual IOReturn prepareBSDInterface(struct __ifnet *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:403: virtual IOReturn prepareBSDInterface(struct __ifnet *, unsigned int) override;
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:487: virtual IOReturn prepareBSDInterface(struct __ifnet *, unsigned int) override;
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:637: virtual IOReturn prepareBSDInterface(struct __ifnet *, unsigned int) override;
+
+REFERENCE=infra_registration
+MATCHES=1
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:687: IOReturn registerInfraEthernetInterface(
+
+REFERENCE=registration_info_init
+MATCHES=5
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:50: bool initRegistrationInfo( RegistrationInfo * info, IOOptionBits options, size_t size );
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:436: bool initRegistrationInfo(RegistrationInfo *, unsigned int, size_t);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:247: if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp:76: * caller after initRegistrationInfo(). The initializer itself remains a
+src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp:93: /* Called only after the kernel initRegistrationInfo() method has returned
+
+REFERENCE=ethernet_registration
+MATCHES=4
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:51: IOReturn registerEthernetInterface( const RegistrationInfo * info, IOSkywalkPacketQueue ** queues, IOOptionBits queueOptions, IOSkywalkPacketBufferPool * pool1, IOSkywalkPacketBufferPool * pool2, IOOptionBits options = 0 );
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:437: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:67: * are not passed to registerEthernetInterface() yet. Skywalk owns their
+
+REFERENCE=network_registration
+MATCHES=3
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:55: IOReturn registerNetworkInterface( const RegistrationInfo * info, IOSkywalkPacketQueue ** queues, IOOptionBits queueOptions, IOSkywalkPacketBufferPool * pool1, IOSkywalkPacketBufferPool * pool2, IOOptionBits options = 0 );
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:322: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:325: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+
+REFERENCE=queue_set_create_or_init
+MATCHES=0
+
+REFERENCE=logical_link_create
+MATCHES=0
+
+REFERENCE=tx_adapter_calls
+MATCHES=5
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76: IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126: uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:32: * the Skywalk packet stays with this adapter until drainCompletions(). */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33: IOReturn submitPacket(IOSkywalkPacket *packet);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39: uint32_t drainCompletions(CompletionSink sink, void *context);
+
+REFERENCE=rx_adapter_calls
+MATCHES=0
+
+REFERENCE=callback_names
+MATCHES=4
+MacKernelSDK/Headers/IOKit/scsi/IOSCSIPrimaryCommandsDevice.h:574: virtual bool		RECEIVE (
+MacKernelSDK/Headers/mach/message.h:694: #define MACH_RCV_OVERWRITE      0x00000000      /* scatter receive (deprecated) */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76: IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33: IOReturn submitPacket(IOSkywalkPacket *packet);

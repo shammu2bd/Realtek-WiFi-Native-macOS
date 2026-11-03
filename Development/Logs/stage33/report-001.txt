@@ -1,0 +1,829 @@
+822b_adaptivity_init,
+    2172: 	.adaptivity		= rtw8822b_adaptivity,
+    2173: 	.led_set		= rtw8822b_led_set,
+    2174: 	.fill_txdesc_checksum	= rtw8822b_fill_txdesc_checksum,
+    2175: 
+    2176: 	.coex_set_init		= rtw8822b_coex_cfg_init,
+    2177: 	.coex_set_ant_switch	= rtw8822b_coex_cfg_ant_switch,
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822be.c | bytes=841 | sha256=c6ceb74c7cfb962a9afe0c84ff81f119b6e14e125e30cf48f21396e7787d986c ===
+[STOP_REMOVE] matches=2
+  ...
+      20: 	.name = KBUILD_MODNAME,
+      21: 	.id_table = rtw_8822be_id_table,
+      22: 	.probe = rtw_pci_probe,
+      23: 	.remove = rtw_pci_remove,
+      24: 	.driver.pm = &rtw_pm_ops,
+      25: 	.shutdown = rtw_pci_shutdown,
+      26: 	.err_handler  = &rtw_pci_err_handler,
+      27: };
+      28: module_pci_driver(rtw_8822be_driver);
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822c.c | bytes=166185 | sha256=1541a3b0e215c425b91b54e7ead391aa1bcbf8bfae021c563208de98aee058be ===
+[OPS_BINDING] matches=1
+  ...
+    5331: };
+    5332: 
+    5333: const struct rtw_chip_info rtw8822c_hw_spec = {
+    5334: 	.ops = &rtw8822c_ops,
+    5335: 	.id = RTW_CHIP_TYPE_8822C,
+    5336: 	.fw_name = "rtw88/rtw8822c_fw.bin",
+    5337: 	.wlan_cpu = RTW_WCPU_3081,
+[DESC_ORDER] matches=3
+  ...
+    4557: 	rtw_write32(rtwdev, REG_LED_CFG, ledcfg);
+    4558: }
+    4559: 
+    4560: static void rtw8822c_fill_txdesc_checksum(struct rtw_dev *rtwdev,
+    4561: 					  struct rtw_tx_pkt_info *pkt_info,
+    4562: 					  u8 *txdesc)
+    4563: {
+  ...
+    4566: 
+    4567: 	words = (pkt_info->pkt_offset * 8 + chip->tx_pkt_desc_sz) / 2;
+    4568: 
+    4569: 	fill_txdesc_checksum_common(txdesc, words);
+    4570: }
+    4571: 
+    4572: static const struct rtw_pwr_seq_cmd trans_carddis_to_cardemu_8822c[] = {
+  ...
+    4987: 	.config_tx_path		= rtw8822c_config_tx_path,
+    4988: 	.config_txrx_mode	= rtw8822c_config_trx_mode,
+    4989: 	.led_set		= rtw8822c_led_set,
+    4990: 	.fill_txdesc_checksum	= rtw8822c_fill_txdesc_checksum,
+    4991: 
+    4992: 	.coex_set_init		= rtw8822c_coex_cfg_init,
+    4993: 	.coex_set_ant_switch	= NULL,
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822ce.c | bytes=944 | sha256=116063ebc8b8b8e2d309e8496fcdd247db255031eee09b20415ec7830cd2b7b2 ===
+[STOP_REMOVE] matches=2
+  ...
+      24: 	.name = KBUILD_MODNAME,
+      25: 	.id_table = rtw_8822ce_id_table,
+      26: 	.probe = rtw_pci_probe,
+      27: 	.remove = rtw_pci_remove,
+      28: 	.driver.pm = &rtw_pm_ops,
+      29: 	.shutdown = rtw_pci_shutdown,
+      30: 	.err_handler  = &rtw_pci_err_handler,
+      31: };
+      32: module_pci_driver(rtw_8822ce_driver);
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/sdio.h | bytes=6063 | sha256=9684d8b68266d0bd70fb59fd81605ca90c548f1aca30c5a38502203829f488cd ===
+[STOP_REMOVE] matches=1
+  ...
+     166: int rtw_sdio_probe(struct sdio_func *sdio_func,
+     167: 		   const struct sdio_device_id *id);
+     168: void rtw_sdio_remove(struct sdio_func *sdio_func);
+     169: void rtw_sdio_shutdown(struct sdio_func *sdio_func);
+     170: 
+     171: static inline bool rtw_sdio_is_sdio30_supported(struct rtw_dev *rtwdev)
+     172: {
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c | bytes=21780 | sha256=508c239d2eb89902cae4d931bc7fd22097d14737839b9d3bb0b3a00343006bde ===
+[TX_ENTRY] matches=1
+  ...
+     581: }
+     582: EXPORT_SYMBOL(rtw_tx_write_data_h2c_get);
+     583: 
+     584: void rtw_tx(struct rtw_dev *rtwdev,
+     585: 	    struct ieee80211_tx_control *control,
+     586: 	    struct sk_buff *skb)
+     587: {
+[SKB_TERMINAL] matches=30
+  ...
+     163: 	return rate;
+     164: }
+     165: 
+     166: static void rtw_tx_report_enable(struct rtw_dev *rtwdev,
+     167: 				 struct rtw_tx_pkt_info *pkt_info)
+     168: {
+     169: 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+     170: 
+     171: 	/* [11:8], reserved, fills with zero
+     172: 	 * [7:2],  tx report sequence number
+     173: 	 * [1:0],  firmware use, fills with zero
+     174: 	 */
+     175: 	pkt_info->sn = (atomic_inc_return(&tx_report->sn) << 2) & 0xfc;
+     176: 	pkt_info->report = true;
+     177: }
+     178: 
+     179: void rtw_tx_report_purge_timer(struct timer_list *t)
+     180: {
+     181: 	struct rtw_dev *rtwdev = timer_container_of(rtwdev, t,
+     182: 						    tx_report.purge_timer);
+     183: 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+     184: 	unsigned long flags;
+     185: 
+     186: 	if (skb_queue_len(&tx_report->queue) == 0)
+     187: 		return;
+     188: 
+     189: 	rtw_warn(rtwdev, "failed to get tx report from firmware\n");
+     190: 
+     191: 	spin_lock_irqsave(&tx_report->q_lock, flags);
+     192: 	rtw88_candidate_log("rtw88: TX report expired pending=%u; ACK unknown\n",
+     193:                             skb_queue_len(&tx_report->queue));
+     194: 	skb_queue_purge(&tx_report->queue);
+     195: 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+     196: }
+     197: 
+     198: void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn)
+     199: {
+     200: 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+     201: 	unsigned long flags;
+     202: 	u8 *drv_data;
+     203: 
+  ...
+     205: 	drv_data = (u8 *)IEEE80211_SKB_CB(skb)->status.status_driver_data;
+     206: 	*drv_data = sn;
+     207: 
+     208: 	spin_lock_irqsave(&tx_report->q_lock, flags);
+     209: 	__skb_queue_tail(&tx_report->queue, skb);
+     210: 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+     211: 
+     212: 	mod_timer(&tx_report->purge_timer, jiffies + RTW_TX_PROBE_TIMEOUT);
+     213: }
+     214: EXPORT_SYMBOL(rtw_tx_report_enqueue);
+     215: 
+     216: static void rtw_tx_report_tx_status(struct rtw_dev *rtwdev,
+     217: 				    struct sk_buff *skb, bool acked)
+     218: {
+     219: 	struct ieee80211_tx_info *info;
+  ...
+     225: 	else
+     226: 		info->flags &= ~IEEE80211_TX_STAT_ACK;
+     227: 
+     228: 	ieee80211_tx_status_irqsafe(rtwdev->hw, skb);
+     229: }
+     230: 
+     231: void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src)
+     232: {
+     233: 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+     234: 	struct rtw_c2h_cmd *c2h;
+     235: 	struct sk_buff *cur, *tmp;
+     236: 	unsigned long flags;
+  ...
+     247: 		st = GET_CCX_REPORT_STATUS_V1(c2h->payload);
+     248: 	}
+     249: 
+     250: 	spin_lock_irqsave(&tx_report->q_lock, flags);
+     251: 	skb_queue_walk_safe(&tx_report->queue, cur, tmp) {
+     252: 		n = (u8 *)IEEE80211_SKB_CB(cur)->status.status_driver_data;
+     253: 		if (*n == sn) {
+     254: 			__skb_unlink(cur, &tx_report->queue);
+     255: 			rtw_tx_report_tx_status(rtwdev, cur, st == 0);
+     256: 			break;
+     257: 		}
+     258: 	}
+     259: 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+     260: }
+     261: 
+     262: static u8 rtw_get_mgmt_rate(struct rtw_dev *rtwdev, struct sk_buff *skb,
+  ...
+     464: 	bmc = is_broadcast_ether_addr(hdr->addr1) ||
+     465: 	      is_multicast_ether_addr(hdr->addr1);
+     466: 
+     467: 	if (info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS)
+     468: 		rtw_tx_report_enable(rtwdev, pkt_info);
+     469: 
+     470: 	pkt_info->bmc = bmc;
+     471: 	rtw_tx_pkt_info_update_sec(rtwdev, pkt_info, skb);
+  ...
+     600: 	return;
+     601: 
+     602: out:
+     603: 	ieee80211_free_txskb(rtwdev->hw, skb);
+     604: }
+     605: 
+     606: static void rtw_txq_check_agg(struct rtw_dev *rtwdev,
+[DESC_ORDER] matches=39
+  ...
+      32: 	}
+      33: }
+      34: 
+      35: void rtw_tx_fill_tx_desc(struct rtw_dev *rtwdev,
+      36: 			 struct rtw_tx_pkt_info *pkt_info, struct sk_buff *skb)
+      37: {
+      38: 	struct rtw_tx_desc *tx_desc = (struct rtw_tx_desc *)skb->data;
+      39: 	bool more_data = false;
+      40: 
+      41: 	if (pkt_info->qsel == TX_DESC_QSEL_HIGH)
+      42: 		more_data = true;
+      43: 
+      44: 	tx_desc->w0 = le32_encode_bits(pkt_info->tx_pkt_size, RTW_TX_DESC_W0_TXPKTSIZE) |
+      45: 		      le32_encode_bits(pkt_info->offset, RTW_TX_DESC_W0_OFFSET) |
+      46: 		      le32_encode_bits(pkt_info->bmc, RTW_TX_DESC_W0_BMC) |
+      47: 		      le32_encode_bits(pkt_info->ls, RTW_TX_DESC_W0_LS) |
+      48: 		      le32_encode_bits(pkt_info->dis_qselseq, RTW_TX_DESC_W0_DISQSELSEQ);
+      49: 
+      50: 	tx_desc->w1 = le32_encode_bits(pkt_info->mac_id, RTW_TX_DESC_W1_MACID) |
+      51: 		      le32_encode_bits(pkt_info->qsel, RTW_TX_DESC_W1_QSEL) |
+      52: 		      le32_encode_bits(pkt_info->rate_id, RTW_TX_DESC_W1_RATE_ID) |
+      53: 		      le32_encode_bits(pkt_info->sec_type, RTW_TX_DESC_W1_SEC_TYPE) |
+      54: 		      le32_encode_bits(pkt_info->pkt_offset, RTW_TX_DESC_W1_PKT_OFFSET) |
+      55: 		      le32_encode_bits(more_data, RTW_TX_DESC_W1_MORE_DATA);
+      56: 
+      57: 	tx_desc->w2 = le32_encode_bits(pkt_info->ampdu_en, RTW_TX_DESC_W2_AGG_EN) |
+      58: 		      le32_encode_bits(pkt_info->report, RTW_TX_DESC_W2_SPE_RPT) |
+      59: 		      le32_encode_bits(pkt_info->ampdu_density, RTW_TX_DESC_W2_AMPDU_DEN) |
+      60: 		      le32_encode_bits(pkt_info->bt_null, RTW_TX_DESC_W2_BT_NULL);
+      61: 
+      62: 	tx_desc->w3 = le32_encode_bits(pkt_info->hw_ssn_sel, RTW_TX_DESC_W3_HW_SSN_SEL) |
+      63: 		      le32_encode_bits(pkt_info->use_rate, RTW_TX_DESC_W3_USE_RATE) |
+      64: 		      le32_encode_bits(pkt_info->dis_rate_fallback, RTW_TX_DESC_W3_DISDATAFB) |
+      65: 		      le32_encode_bits(pkt_info->rts, RTW_TX_DESC_W3_USE_RTS) |
+      66: 		      le32_encode_bits(pkt_info->nav_use_hdr, RTW_TX_DESC_W3_NAVUSEHDR) |
+      67: 		      le32_encode_bits(pkt_info->ampdu_factor, RTW_TX_DESC_W3_MAX_AGG_NUM);
+      68: 
+      69: 	tx_desc->w4 = le32_encode_bits(pkt_info->rate, RTW_TX_DESC_W4_DATARATE);
+      70: 
+      71: 	if (rtwdev->chip->old_datarate_fb_limit)
+      72: 		tx_desc->w4 |= le32_encode_bits(0x1f, RTW_TX_DESC_W4_DATARATE_FB_LIMIT);
+      73: 
+      74: 	tx_desc->w5 = le32_encode_bits(pkt_info->short_gi, RTW_TX_DESC_W5_DATA_SHORT) |
+      75: 		      le32_encode_bits(pkt_info->bw, RTW_TX_DESC_W5_DATA_BW) |
+      76: 		      le32_encode_bits(pkt_info->ldpc, RTW_TX_DESC_W5_DATA_LDPC) |
+      77: 		      le32_encode_bits(pkt_info->stbc, RTW_TX_DESC_W5_DATA_STBC);
+      78: 
+      79: 	tx_desc->w6 = le32_encode_bits(pkt_info->sn, RTW_TX_DESC_W6_SW_DEFINE);
+      80: 
+      81: 	tx_desc->w8 = le32_encode_bits(pkt_info->en_hwseq, RTW_TX_DESC_W8_EN_HWSEQ);
+      82: 
+      83: 	tx_desc->w9 = le32_encode_bits(pkt_info->seq, RTW_TX_DESC_W9_SW_SEQ);
+      84: 
+      85: 	if (pkt_info->rts) {
+      86: 		tx_desc->w4 |= le32_encode_bits(DESC_RATE24M, RTW_TX_DESC_W4_RTSRATE);
+      87: 		tx_desc->w5 |= le32_encode_bits(1, RTW_TX_DESC_W5_DATA_RTS_SHORT);
+      88: 	}
+      89: 
+      90: 	if (pkt_info->tim_offset)
+      91: 		tx_desc->w9 |= le32_encode_bits(1, RTW_TX_DESC_W9_TIM_EN) |
+      92: 			       le32_encode_bits(pkt_info->tim_offset, RTW_TX_DESC_W9_TIM_OFFSET);
+      93: }
+      94: EXPORT_SYMBOL(rtw_tx_fill_tx_desc);
+      95: 
+      96: static u8 get_tx_ampdu_factor(struct ieee80211_sta *sta)
+      97: {
+  ...
+     491: 	 * reserved page, and the qsel of it will be set in each hci.
+     492: 	 */
+     493: 	if (type != RSVD_BEACON && type != RSVD_DUMMY)
+     494: 		pkt_info->qsel = TX_DESC_QSEL_MGMT;
+     495: 
+     496: 	rtw_tx_pkt_info_update_rate(rtwdev, pkt_info, skb, true);
+     497: 
+
+=== driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h | bytes=4562 | sha256=5f0c1dc2c8e9dbcdfece4e34c264bd24731ab6a3ff28011f9ddb09cb695aaa46 ===
+[TX_ENTRY] matches=1
+  ...
+      84: 
+      85: enum rtw_rsvd_packet_type;
+      86: 
+      87: void rtw_tx(struct rtw_dev *rtwdev,
+      88: 	    struct ieee80211_tx_control *control,
+      89: 	    struct sk_buff *skb);
+      90: void rtw_txq_init(struct rtw_dev *rtwdev, struct ieee80211_txq *txq);
+[SKB_TERMINAL] matches=2
+  ...
+      97: 			    struct sk_buff *skb);
+      98: void rtw_tx_fill_tx_desc(struct rtw_dev *rtwdev,
+      99: 			 struct rtw_tx_pkt_info *pkt_info, struct sk_buff *skb);
+     100: void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn);
+     101: void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src);
+     102: void rtw_tx_rsvd_page_pkt_info_update(struct rtw_dev *rtwdev,
+     103: 				      struct rtw_tx_pkt_info *pkt_info,
+     104: 				      struct sk_buff *skb,
+[DESC_ORDER] matches=66
+  ...
+       9: 
+      10: #define RTW_TX_PROBE_TIMEOUT		msecs_to_jiffies(500)
+      11: 
+      12: struct rtw_tx_desc {
+      13: 	__le32 w0;
+      14: 	__le32 w1;
+      15: 	__le32 w2;
+  ...
+      22: 	__le32 w9;
+      23: } __packed;
+      24: 
+      25: #define RTW_TX_DESC_W0_TXPKTSIZE GENMASK(15, 0)
+      26: #define RTW_TX_DESC_W0_OFFSET GENMASK(23, 16)
+      27: #define RTW_TX_DESC_W0_BMC BIT(24)
+      28: #define RTW_TX_DESC_W0_LS BIT(26)
+      29: #define RTW_TX_DESC_W0_DISQSELSEQ BIT(31)
+      30: #define RTW_TX_DESC_W1_MACID GENMASK(7, 0)
+      31: #define RTW_TX_DESC_W1_QSEL GENMASK(12, 8)
+      32: #define RTW_TX_DESC_W1_RATE_ID GENMASK(20, 16)
+      33: #define RTW_TX_DESC_W1_SEC_TYPE GENMASK(23, 22)
+      34: #define RTW_TX_DESC_W1_PKT_OFFSET GENMASK(28, 24)
+      35: #define RTW_TX_DESC_W1_MORE_DATA BIT(29)
+      36: #define RTW_TX_DESC_W2_AGG_EN BIT(12)
+      37: #define RTW_TX_DESC_W2_SPE_RPT BIT(19)
+      38: #define RTW_TX_DESC_W2_AMPDU_DEN GENMASK(22, 20)
+      39: #define RTW_TX_DESC_W2_BT_NULL BIT(23)
+      40: #define RTW_TX_DESC_W3_HW_SSN_SEL GENMASK(7, 6)
+      41: #define RTW_TX_DESC_W3_USE_RATE BIT(8)
+      42: #define RTW_TX_DESC_W3_DISDATAFB BIT(10)
+      43: #define RTW_TX_DESC_W3_USE_RTS BIT(12)
+      44: #define RTW_TX_DESC_W3_NAVUSEHDR BIT(15)
+      45: #define RTW_TX_DESC_W3_MAX_AGG_NUM GENMASK(21, 17)
+      46: #define RTW_TX_DESC_W4_DATARATE GENMASK(6, 0)
+      47: #define RTW_TX_DESC_W4_DATARATE_FB_LIMIT GENMASK(12, 8)
+      48: #define RTW_TX_DESC_W4_RTSRATE GENMASK(28, 24)
+      49: #define RTW_TX_DESC_W5_DATA_SHORT BIT(4)
+      50: #define RTW_TX_DESC_W5_DATA_BW GENMASK(6, 5)
+      51: #define RTW_TX_DESC_W5_DATA_LDPC BIT(7)
+      52: #define RTW_TX_DESC_W5_DATA_STBC GENMASK(9, 8)
+      53: #define RTW_TX_DESC_W5_DATA_RTS_SHORT BIT(12)
+      54: #define RTW_TX_DESC_W6_SW_DEFINE GENMASK(11, 0)
+      55: #define RTW_TX_DESC_W7_TXDESC_CHECKSUM GENMASK(15, 0)
+      56: #define RTW_TX_DESC_W7_DMA_TXAGG_NUM GENMASK(31, 24)
+      57: #define RTW_TX_DESC_W8_EN_HWSEQ BIT(15)
+      58: #define RTW_TX_DESC_W9_SW_SEQ GENMASK(23, 12)
+      59: #define RTW_TX_DESC_W9_TIM_EN BIT(7)
+      60: #define RTW_TX_DESC_W9_TIM_OFFSET GENMASK(6, 0)
+      61: 
+      62: enum rtw_tx_desc_queue_select {
+      63: 	TX_DESC_QSEL_TID0	= 0,
+      64: 	TX_DESC_QSEL_TID1	= 1,
+      65: 	TX_DESC_QSEL_TID2	= 2,
+      66: 	TX_DESC_QSEL_TID3	= 3,
+      67: 	TX_DESC_QSEL_TID4	= 4,
+      68: 	TX_DESC_QSEL_TID5	= 5,
+      69: 	TX_DESC_QSEL_TID6	= 6,
+      70: 	TX_DESC_QSEL_TID7	= 7,
+      71: 	TX_DESC_QSEL_TID8	= 8,
+      72: 	TX_DESC_QSEL_TID9	= 9,
+      73: 	TX_DESC_QSEL_TID10	= 10,
+      74: 	TX_DESC_QSEL_TID11	= 11,
+      75: 	TX_DESC_QSEL_TID12	= 12,
+      76: 	TX_DESC_QSEL_TID13	= 13,
+      77: 	TX_DESC_QSEL_TID14	= 14,
+      78: 	TX_DESC_QSEL_TID15	= 15,
+      79: 	TX_DESC_QSEL_BEACON	= 16,
+      80: 	TX_DESC_QSEL_HIGH	= 17,
+      81: 	TX_DESC_QSEL_MGMT	= 18,
+      82: 	TX_DESC_QSEL_H2C	= 19,
+      83: };
+      84: 
+      85: enum rtw_rsvd_packet_type;
+  ...
+      95: 			    struct rtw_tx_pkt_info *pkt_info,
+      96: 			    struct ieee80211_sta *sta,
+      97: 			    struct sk_buff *skb);
+      98: void rtw_tx_fill_tx_desc(struct rtw_dev *rtwdev,
+      99: 			 struct rtw_tx_pkt_info *pkt_info, struct sk_buff *skb);
+     100: void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn);
+     101: void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src);
+  ...
+     116: enum rtw_tx_queue_type rtw_tx_queue_mapping(struct sk_buff *skb);
+     117: 
+     118: static inline
+     119: void fill_txdesc_checksum_common(u8 *txdesc, size_t words)
+     120: {
+     121: 	__le16 chksum = 0;
+     122: 	__le16 *data = (__le16 *)(txdesc);
+     123: 	struct rtw_tx_desc *tx_desc = (struct rtw_tx_desc *)txdesc;
+     124: 
+     125: 	le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+     126: 
+     127: 	while (words--)
+     128: 		chksum ^= *data++;
+     129: 
+     130: 	le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+     131: 			   RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+     132: }
+     133: 
+     134: static inline void rtw_tx_fill_txdesc_checksum(struct rtw_dev *rtwdev,
+     135: 					       struct rtw_tx_pkt_info *pkt_info,
+     136: 					       u8 *txdesc)
+     137: {
+     138: 	const struct rtw_chip_info *chip = rtwdev->chip;
+     139: 
+     140: 	chip->ops->fill_txdesc_checksum(rtwdev, pkt_info, txdesc);
+     141: }
+     142: 
+     143: #endif
+
+=== tests/rtw88_skb_tx_completion_test.cpp | bytes=4216 | sha256=bd3ea69e385f1da959a36d22e01e277807c96300bfede1ab9f0c478bf0c5d368 ===
+[SKB_TERMINAL] matches=2
+  ...
+      66:     int cookie = 8;
+      67:     capture.expectedCookie = &cookie;
+      68:     assert(rtw88_skb_tx_completion_bind(&state, makeToken(&capture, &cookie)));
+      69:     assert(rtw88_skb_tx_completion_report(&state, false)); // kfree_skb path
+      70:     assert(capture.calls.load() == 1);
+      71:     assert(capture.sent.load() == 0);
+      72:     assert(capture.dropped.load() == 1);
+  ...
+     112:     auto *claimed = rtw88_skb_tx_completion_claim(state);
+     113:     assert(claimed != nullptr);
+     114:     assert(rtw88_skb_tx_completion_claim(state) == nullptr); // concurrent free loses
+     115:     delete state; // equivalent to kfree_skb reclaiming the skb
+     116: 
+     117:     assert(rtw88_skb_tx_completion_dispatch(claimed, true));
+     118:     assert(capture.calls.load() == 1);
+
+=== tests/wcl-event-ring-test.cpp | bytes=2572 | sha256=5ac782ed9b46c95d146db2bfd4aeac5dd40f9e0292afb2e443d31db5d781c8d0 ===
+[SKYWALK_PATH] matches=2
+  ...
+       1: /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+       2:  * Host-side tests for the allocation-free WCL event ring.
+       3:  */
+       4: #include "../driver/RTL88WiFi/src/kext/RTW88WCLRadioEventRing.hpp"
+       5: 
+       6: #include <cassert>
+       7: #include <cstdint>
+  ...
+      15: 
+      16: int main()
+      17: {
+      18:     RTW88WCLRadioEventRing<TestEvent, 4> ring;
+      19:     TestEvent out = {};
+      20: 
+      21:     assert(ring.empty());
+[STOP_REMOVE] matches=1
+  ...
+       1: /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+       2:  * Host-side tests for the allocation-free WCL event ring.
+       3:  */
+       4: #include "../driver/RTL88WiFi/src/kext/RTW88WCLRadioEventRing.hpp"
+       5: 
+
+=== tests/wcl-request-decoder-test.cpp | bytes=4745 | sha256=c9d94710f77d60eac9832e19bde14424304a7336fb7037f2f2d418f1dee64241 ===
+[SKYWALK_PATH] matches=2
+  ...
+       4: #include <string.h>
+       5: #include <vector>
+       6: 
+       7: #include "../driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRequestDecoder.hpp"
+       8: 
+       9: static void put16(uint8_t *p, uint16_t v)
+      10: {
+  ...
+      62: 
+      63: int main()
+      64: {
+      65:     using namespace RTW88WCLRequest;
+      66: 
+      67:     Scan scan = {};
+      68:     std::vector<uint8_t> scanBytes = makeScan();
+
+=== tests/wcl_mbuf_ring_test.cpp | bytes=3340 | sha256=0ffd9bf0bf28ffb5922ecfbb4bdfd52bbf5485f3d7c47df7f645d2ad1218f907 ===
+[SKYWALK_PATH] matches=3
+  ...
+       1: /* SPDX-License-Identifier: GPL-2.0-only */
+       2: #include "../driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLMbufRing.hpp"
+       3: 
+       4: #include <atomic>
+       5: #include <cassert>
+  ...
+      10: 
+      11: static void testCapacityAndWrap()
+      12: {
+      13:     RTW88WCLMbufRing<void *, 4> ring;
+      14:     ring.reset();
+      15:     void *items[5] = {
+      16:         reinterpret_cast<void *>(uintptr_t(1)),
+  ...
+      43:     constexpr uint32_t kProducerCount = 8;
+      44:     constexpr uint32_t kItemsPerProducer = 6000;
+      45:     constexpr uint32_t kTotal = kProducerCount * kItemsPerProducer;
+      46:     RTW88WCLMbufRing<void *, 128> ring;
+      47:     ring.reset();
+      48: 
+      49:     std::vector<std::atomic<uint32_t>> seen(kTotal);
+
+=== tests/wcl_packet_span_test.cpp | bytes=1611 | sha256=cd0affdb1cbcada13cb2be8e31b71183aaac15407d9d035634a2a19d7f855e80 ===
+[SKYWALK_PATH] matches=19
+  ...
+       1: #include <cassert>
+       2: #include <cstdint>
+       3: 
+       4: #include "../driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPacketSpanValidation.hpp"
+       5: 
+       6: static void test_valid_packet()
+       7: {
+       8:     const RTW88WCLPacketSpan span{262144, 2048, 2048, 64, 1500};
+       9:     assert(RTW88WCLPacketSpanIsValid(span));
+      10:     assert(RTW88WCLIsValidEthernetFrameLength(1514, 1984));
+      11: }
+      12: 
+      13: static void test_exact_end_boundaries()
+      14: {
+      15:     const RTW88WCLPacketSpan span{4096, 2048, 2048, 2048, 0};
+      16:     assert(RTW88WCLPacketSpanIsValid(span)); // empty RX buffer at exact end
+      17:     assert(RTW88WCLRangeFits(2048, 2048, 0));
+      18:     assert(RTW88WCLIsValidEthernetFrameLength(2048, 2048));
+      19: }
+      20: 
+      21: static void test_rejects_invalid_offsets_and_lengths()
+      22: {
+      23:     assert(!RTW88WCLPacketSpanIsValid({4096, 4097, 2048, 0, 1}));
+      24:     assert(!RTW88WCLPacketSpanIsValid({4096, 2048, 2048, 2049, 0}));
+      25:     assert(!RTW88WCLPacketSpanIsValid({4096, 2048, 2048, 2000, 100}));
+      26:     assert(!RTW88WCLPacketSpanIsValid({4096, UINT64_MAX - 3, 2048, 0, 1}));
+      27:     assert(!RTW88WCLPacketSpanIsValid({4096, 0, 0, 0, 0}));
+      28:     assert(!RTW88WCLIsValidEthernetFrameLength(13, 2048));
+      29:     assert(!RTW88WCLIsValidEthernetFrameLength(2049, 4096));
+      30:     assert(!RTW88WCLIsValidEthernetFrameLength(1500, 1499));
+      31: }
+      32: 
+      33: static void test_range_arithmetic_does_not_overflow()
+      34: {
+      35:     assert(RTW88WCLRangeFits(UINT64_MAX, UINT64_MAX, 0));
+      36:     assert(!RTW88WCLRangeFits(UINT64_MAX, UINT64_MAX, 1));
+      37:     assert(!RTW88WCLRangeFits(10, 9, UINT64_MAX));
+      38: }
+      39: 
+      40: int main()
+
+=== tests/wcl_registration_info_stage11_test.cpp | bytes=2886 | sha256=ebf49fc664967aaaad12818de25096d809501f959c2e99a5771301cf9f6f82ac ===
+[SKYWALK_PATH] matches=2
+  ...
+       1: #include "../driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp"
+       2: 
+       3: #include <stdio.h>
+       4: 
+       5: using namespace RTW88WCLRegistrationInfo24H32;
+       6: 
+       7: static bool inRange(size_t offset, size_t start, size_t length)
+       8: {
+
+=== tests/wcl_rx_packet_address_test.cpp | bytes=1321 | sha256=2fb040e0d6967640c74c12b707484c812ea3c50a42b17e2d36ab8972272200da ===
+[SKYWALK_PATH] matches=11
+  ...
+       2: #include <cstdint>
+       3: #include <limits>
+       4: 
+       5: #include "../driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPacketSpanValidation.hpp"
+       6: 
+       7: static void test_resolves_valid_rx_span()
+       8: {
+       9:     uintptr_t address = 0;
+      10:     const RTW88WCLPacketSpan span{65536, 4096, 4096, 0, 1514};
+      11:     assert(RTW88WCLResolvePacketBufferAddress(0x100000, span, &address));
+      12:     assert(address == 0x101000);
+      13: }
+      14: 
+      15: static void test_resolves_data_offset()
+      16: {
+      17:     uintptr_t address = 0;
+      18:     const RTW88WCLPacketSpan span{8192, 1024, 4096, 128, 1500};
+      19:     assert(RTW88WCLResolvePacketBufferAddress(0x200000, span, &address));
+      20:     assert(address == 0x200480);
+      21: }
+      22: 
+      23: static void test_rejects_invalid_or_overflowing_address()
+      24: {
+      25:     uintptr_t address = 0;
+      26:     const RTW88WCLPacketSpan valid{8192, 0, 4096, 0, 64};
+      27:     assert(!RTW88WCLResolvePacketBufferAddress(0, valid, &address));
+      28:     assert(!RTW88WCLResolvePacketBufferAddress(
+      29:         static_cast<uint64_t>(UINTPTR_MAX) - 8, valid, &address));
+      30:     const RTW88WCLPacketSpan invalid{4096, 4090, 16, 0, 64};
+      31:     assert(!RTW88WCLResolvePacketBufferAddress(0x100000, invalid, &address));
+      32:     assert(!RTW88WCLResolvePacketBufferAddress(0x100000, valid, nullptr));
+      33: }
+      34: 
+      35: int main()
+
+=== tests/wcl_tx_completion_slots_test.cpp | bytes=4078 | sha256=b3230ef7ce8025a6ea418d0e0ce53d081bf0bccf57ffe14a29ce2a672a2a9b56 ===
+[SKYWALK_PATH] matches=16
+  ...
+       1: /* SPDX-License-Identifier: GPL-2.0-only */
+       2: #include "../driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp"
+       3: 
+       4: #include <atomic>
+       5: #include <cassert>
+  ...
+      15: 
+      16: static void testCapacityAndExactlyOnce()
+      17: {
+      18:     RTW88WCLTxCompletionSlots<4> pool;
+      19:     pool.reset();
+      20: 
+      21:     int values[5] = {0, 1, 2, 3, 4};
+  ...
+      27:     assert(pool.reserve(&values[4]) == nullptr);
+      28:     assert(pool.outstandingCount() == 4);
+      29: 
+      30:     assert(RTW88WCLTxCompletionSlots<4>::complete(a, true));
+      31:     assert(!RTW88WCLTxCompletionSlots<4>::complete(a, false));
+      32:     assert(RTW88WCLTxCompletionSlots<4>::complete(b, false));
+      33:     assert(RTW88WCLTxCompletionSlots<4>::complete(c, true));
+      34:     assert(RTW88WCLTxCompletionSlots<4>::complete(d, true));
+      35: 
+      36:     uint32_t seen = 0;
+      37:     bool sawSuccess = false;
+      38:     bool sawDrop = false;
+      39:     while (auto *ticket = pool.claimCompleted()) {
+      40:         auto *value = static_cast<int *>(RTW88WCLTxCompletionSlots<4>::packet(ticket));
+      41:         assert(value >= &values[0] && value <= &values[3]);
+      42:         if (RTW88WCLTxCompletionSlots<4>::transmitted(ticket))
+      43:             sawSuccess = true;
+      44:         else
+      45:             sawDrop = true;
+      46:         RTW88WCLTxCompletionSlots<4>::finish(ticket);
+      47:         ++seen;
+      48:     }
+      49:     assert(seen == 4 && sawSuccess && sawDrop);
+  ...
+      55:     constexpr uint32_t kThreads = 12;
+      56:     constexpr uint32_t kPerThread = 2500;
+      57:     constexpr uint32_t kTotal = kThreads * kPerThread;
+      58:     RTW88WCLTxCompletionSlots<128> pool;
+      59:     pool.reset();
+      60: 
+      61:     std::vector<WorkItem> work(kTotal);
+  ...
+      72:             for (uint32_t n = 0; n < kPerThread; ++n) {
+      73:                 const uint32_t id = threadIndex * kPerThread + n;
+      74:                 auto *item = &work[id];
+      75:                 RTW88WCLTxCompletionSlots<128>::Ticket *ticket = nullptr;
+      76:                 while (!(ticket = pool.reserve(item)))
+      77:                     sched_yield();
+      78:                 const bool transmitted = ((id * 7U) % 5U) != 0;
+      79:                 while (!RTW88WCLTxCompletionSlots<128>::complete(ticket, transmitted))
+      80:                     sched_yield();
+      81:                 produced.fetch_add(1, std::memory_order_relaxed);
+      82:             }
+  ...
+      90:             continue;
+      91:         }
+      92:         auto *item = static_cast<WorkItem *>(
+      93:             RTW88WCLTxCompletionSlots<128>::packet(ticket));
+      94:         assert(item != nullptr && item->id < kTotal);
+      95:         const uint32_t expected = ((item->id * 7U) % 5U) != 0 ? 1U : 0U;
+      96:         assert(RTW88WCLTxCompletionSlots<128>::transmitted(ticket) == (expected != 0));
+      97:         uint32_t notCompleted = 0;
+      98:         assert(item->completed.compare_exchange_strong(
+      99:             notCompleted, 1, std::memory_order_acq_rel));
+     100:         RTW88WCLTxCompletionSlots<128>::finish(ticket);
+     101:         drained.fetch_add(1, std::memory_order_release);
+     102:     }
+     103: 
+
+=== AUTOMATED CHECKLIST ===
+C1 TX callback: REVIEW_REQUIRED — Find the exact live ieee80211_ops object, its assignment to the active hardware, and the callback target. A function definition or dead ops table is insufficient.
+C2 TX ownership: REVIEW_REQUIRED — For success, ring-full, allocation/map failure, firmware rejection, IRQ completion, timeout, reset and removal: identify the single owner at every branch and exactly one terminal release/status.
+C3 DMA callbacks: REVIEW_REQUIRED — Prove rtw88_dma_ops is fully populated and installed before every probe/allocation path. Reject null/partial callbacks; prove fallback CPU-pointer DMA addresses and fake page DMA addresses are unreachable.
+C4 DMA ordering: REVIEW_REQUIRED — Verify map -> descriptor fill -> sync-for-device/write barrier -> doorbell; completion -> sync-for-CPU -> unmap -> skb terminal disposition. Check coherent allocation and teardown symmetry.
+C5 IRQ lifecycle: REVIEW_REQUIRED — Prove event source/handler setup, disable, hardware interrupt mask, synchronize, bottom-half/work drain, and callback-context lifetime. Verify teardown order before ring memory is freed.
+C6 Skywalk TX: REVIEW_REQUIRED — Trace active 24H32 queue registration/configuration -> packet conversion -> submit -> descriptor -> hardware completion -> completion queue -> packet release; verify backpressure, rollback and stop/deregister.
+C7 stop/reset/remove: REVIEW_REQUIRED — Check bus-master/DMA fence, IRQ quiesce, worker drain, ring teardown and restart ordering; no callback may access freed state.
+
+=== SCAN COUNTS ===
+OPS_BINDING: 18
+TX_ENTRY: 87
+SKB_TERMINAL: 169
+DMA_CALLBACKS: 66
+DMA_UNSAFE: 3
+DESC_ORDER: 321
+IRQ_INSTALL: 43
+IRQ_QUIESCE: 44
+SKYWALK_PATH: 751
+STOP_REMOVE: 86
+
+=== READ ERRORS ===
+NONE
+
+=== LOCAL REPOSITORY HYGIENE ===
+git status --short exit=128
+(clean/no output)
+git status stderr: fatal: not a git repository (or any of the parent directories): .git
+git diff --check exit=129
+(no whitespace errors)
+git diff stderr: warning: Not a git repository. Use --no-index to compare two paths outside a working tree
+usage: git diff --no-index [<options>] <path> <path>
+
+Diff output format options
+    -p, --patch           generate patch
+    -s, --no-patch        suppress diff output
+    -u                    generate patch
+    -U, --unified[=<n>]   generate diffs with <n> lines context
+    -W, --function-context
+                          generate diffs with <n> lines context
+    --raw                 generate the diff in raw format
+    --patch-with-raw      synonym for '-p --raw'
+    --patch-with-stat     synonym for '-p --stat'
+    --numstat             machine friendly --stat
+    --shortstat           output only the last line of --stat
+    -X, --dirstat[=<param1,param2>...]
+                          output the distribution of relative amount of changes for each sub-directory
+    --cumulative          synonym for --dirstat=cumulative
+    --dirstat-by-file[=<param1,param2>...]
+                          synonym for --dirstat=files,param1,param2...
+    --check               warn if changes introduce conflict markers or whitespace errors
+    --summary             condensed summary such as creations, renames and mode changes
+    --name-only           show only names of changed files
+    --name-status         show only names and status of changed files
+    --stat[=<width>[,<name-width>[,<count>]]]
+                          generate diffstat
+    --stat-width <width>  generate diffstat with a given width
+    --stat-name-width <width>
+                          generate diffstat with a given name width
+    --stat-graph-width <width>
+                          generate diffstat with a given graph width
+    --stat-count <count>  generate diffstat with limited lines
+    --compact-summary     generate compact summary in diffstat
+    --binary              output a binary diff that can be applied
+    --full-index          show full pre- and post-image object names on the "index" lines
+    --color[=<when>]      show colored diff
+    --ws-error-highlight <kind>
+                          highlight whitespace errors in the 'context', 'old' or 'new' lines in the diff
+    -z                    do not munge pathnames and use NULs as output field terminators in --raw or --numstat
+    --abbrev[=<n>]        use <n> digits to display object names
+    --src-prefix <prefix>
+                          show the given source prefix instead of "a/"
+    --dst-prefix <prefix>
+                          show the given destination prefix instead of "b/"
+    --line-prefix <prefix>
+                          prepend an additional prefix to every line of output
+    --no-prefix           do not show any source or destination prefix
+    --inter-hunk-context <n>
+                          show context between diff hunks up to the specified number of lines
+    --output-indicator-new <char>
+                          specify the character to indicate a new line instead of '+'
+    --output-indicator-old <char>
+                          specify the character to indicate an old line instead of '-'
+    --output-indicator-context <char>
+                          specify the character to indicate a context instead of ' '
+
+Diff rename options
+    -B, --break-rewrites[=<n>[/<m>]]
+                          break complete rewrite changes into pairs of delete and create
+    -M, --find-renames[=<n>]
+                          detect renames
+    -D, --irreversible-delete
+                          omit the preimage for deletes
+    -C, --find-copies[=<n>]
+                          detect copies
+    --find-copies-harder  use unmodified files as source to find copies
+    --no-renames          disable rename detection
+    --rename-empty        use empty blobs as rename source
+    --follow              continue listing the history of a file beyond renames
+    -l <n>                prevent rename/copy detection if the number of rename/copy targets exceeds given limit
+
+Diff algorithm options
+    --minimal             produce the smallest possible diff
+    -w, --ignore-all-space
+                          ignore whitespace when comparing lines
+    -b, --ignore-space-change
+                          ignore changes in amount of whitespace
+    --ignore-space-at-eol
+                          ignore changes in whitespace at EOL
+    --ignore-cr-at-eol    ignore carrier-return at the end of line
+    --ignore-blank-lines  ignore changes whose lines are all blank
+    -I, --ignore-matching-lines <regex>
+                          ignore changes whose all lines match <regex>
+    --indent-heuristic    heuristic to shift diff hunk boundaries for easy reading
+    --patience            generate diff using the "patience diff" algorithm
+    --histogram           generate diff using the "histogram diff" algorithm
+    --diff-algorithm <algorithm>
+                          choose a diff algorithm
+    --anchored <text>     generate diff using the "anchored diff" algorithm
+    --word-diff[=<mode>]  show word diff, using <mode> to delimit changed words
+    --word-diff-regex <regex>
+                          use <regex> to decide what a word is
+    --color-words[=<regex>]
+                          equivalent to --word-diff=color --word-diff-regex=<regex>
+    --color-moved[=<mode>]
+                          moved lines of code are colored differently
+    --color-moved-ws <mode>
+                          how white spaces are ignored in --color-moved
+
+Other diff options
+    --relative[=<prefix>]
+                          when run from subdir, exclude changes outside and show relative paths
+    -a, --text            treat all files as text
+    -R                    swap two inputs, reverse the diff
+    --exit-code           exit with 1 if there were differences, 0 otherwise
+    --quiet               disable all output of the program
+    --ext-diff            allow an external diff helper to be executed
+    --textconv            run external text conversion filters when comparing binary files
+    --ignore-submodules[=<when>]
+                          ignore changes to submodules in the diff generation
+    --submodule[=<format>]
+                          specify how differences in submodules are shown
+    --ita-invisible-in-index
+                          hide 'git add -N' entries from the index
+    --ita-visible-in-index
+                          treat 'git add -N' entries as real in the index
+    -S <string>           look for differences that change the number of occurrences of the specified string
+    -G <regex>            look for differences that change the number of occurrences of the specified regex
+    --pickaxe-all         show all changes in the changeset with -S or -G
+    --pickaxe-regex       treat <string> in -S as extended POSIX regular expression
+    -O <file>             control the order in which files appear in the output
+    --rotate-to <path>    show the change in the specified path first
+    --skip-to <path>      skip the output to the specified path
+    --find-object <object-id>
+                          look for differences that change the number of occurrences of the specified object
+    --diff-filter [(A|C|D|M|R|T|U|X|B)...[*]]
+                          select files by diff type
+    --output <file>       output to a specific file
+
+=== STAGE33 RESULT ===
+STATIC_SCAN: PASS
+INTEGRATION_GATES: REVIEW_REQUIRED — source-level scan only; human control-flow and ABI review required.
+ACTIVATION_GATE: BLOCKED — do not install/load experimental Kext or modify OpenCore.
+NO SOURCE FILES WERE MODIFIED BY THIS SCRIPT.

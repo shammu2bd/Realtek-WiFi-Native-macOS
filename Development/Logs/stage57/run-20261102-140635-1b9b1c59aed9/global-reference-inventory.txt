@@ -1,0 +1,126 @@
+STAGE57_GLOBAL_QUEUE_AND_ADAPTER_REFERENCE_INVENTORY
+
+REFERENCE=queue_action_binding
+MATCHES_AT_LEAST=12
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:72: &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:78: &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:84: this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:90: &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:147: IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:172: IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:180: IOReturn RTW88WCLSkywalkQueues::rxSubmissionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:189: IOReturn RTW88WCLSkywalkQueues::rxCompletionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:36: static IOReturn txSubmissionAction(OSObject *owner,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:40: static IOReturn txCompletionAction(OSObject *owner,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:44: static IOReturn rxSubmissionAction(OSObject *owner,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:48: static IOReturn rxCompletionAction(OSObject *owner,
+
+REFERENCE=tx_adapter_handoff
+MATCHES_AT_LEAST=12
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76: IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:100: * this ticket. backendCompletion() intentionally does not release it. */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:103: mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:113: void RTW88WCLSkywalkTxAdapter::backendCompletion(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126: uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:127: CompletionSink sink, void *context)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:19: using CompletionSink = void (*)(IOSkywalkPacket *packet,
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:32: * the Skywalk packet stays with this adapter until drainCompletions(). */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33: IOReturn submitPacket(IOSkywalkPacket *packet);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39: uint32_t drainCompletions(CompletionSink sink, void *context);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39: uint32_t drainCompletions(CompletionSink sink, void *context);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:48: static void backendCompletion(void *context, void *cookie,
+
+REFERENCE=rx_adapter_handoff
+MATCHES_AT_LEAST=70
+MacKernelSDK/Headers/DriverKit/IODataQueueDispatchSource.h:207: CheckForWork(bool synchronous) override LOCAL;
+MacKernelSDK/Headers/DriverKit/IODataQueueDispatchSource.h:259: #define IODataQueueDispatchSource_CheckForWork_Args \
+MacKernelSDK/Headers/DriverKit/IODataQueueDispatchSource.h:367: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IODataQueueDispatchSource.h:367: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:71: CheckForWork(bool synchronous) INVOKEREPLY = 0;
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:84: #define IODispatchSource_CheckForWork_ID            0xef19d38d4f945fd0ULL
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:94: #define IODispatchSource_CheckForWork_Args \
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:123: CheckForWork(\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:155: typedef kern_return_t (*CheckForWork_Handler)(OSMetaClassBase * target, IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:155: typedef kern_return_t (*CheckForWork_Handler)(OSMetaClassBase * target, IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:157: CheckForWork_Invoke(const IORPC rpc,\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:159: CheckForWork_Handler func);\
+MacKernelSDK/Headers/DriverKit/IOInterruptDispatchSource.h:138: CheckForWork(bool synchronous) override LOCAL;
+MacKernelSDK/Headers/DriverKit/IOInterruptDispatchSource.h:178: #define IOInterruptDispatchSource_CheckForWork_Args \
+MacKernelSDK/Headers/DriverKit/IOInterruptDispatchSource.h:240: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IOInterruptDispatchSource.h:240: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IOServiceNotificationDispatchSource.h:126: CheckForWork(bool synchronous) override LOCAL;
+MacKernelSDK/Headers/DriverKit/IOServiceNotificationDispatchSource.h:165: #define IOServiceNotificationDispatchSource_CheckForWork_Args \
+MacKernelSDK/Headers/DriverKit/IOServiceNotificationDispatchSource.h:229: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IOServiceNotificationDispatchSource.h:229: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/IOKit/IODMAEventSource.h:89: virtual bool checkForWork(void) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/IOEventSource.h:77: *       All subclasses of IOEventSource that wish to perform work on the work-loop thread are expected to implement the checkForWork() member function. As of Mac OS X, 10.7 (Darwin 11), checkForWork is no longer pure virtual, and should not be overridden if there is no work to be done.
+MacKernelSDK/Headers/IOKit/IOEventSource.h:77: *       All subclasses of IOEventSource that wish to perform work on the work-loop thread are expected to implement the checkForWork() member function. As of Mac OS X, 10.7 (Darwin 11), checkForWork is no longer pure virtual, and should not be overridden if there is no work to be done.
+MacKernelSDK/Headers/IOKit/IOEventSource.h:80: *       checkForWork() is the key method in this class.	 It is called by some work-loop when convienient and is expected to evaluate its internal state and determine if an event has occurred since the last call.  In the case of an event having occurred then the instance defined target(owner)/action will be called.	 The action is stored as an ordinary C function pointer but the first parameter is always the owner.  This means that a C++ member fun
+MacKernelSDK/Headers/IOKit/IOEventSource.h:160: *  be called by the checkForWork member function.	The first parameter of the
+MacKernelSDK/Headers/IOKit/IOEventSource.h:170: /*! @function checkForWork
+MacKernelSDK/Headers/IOKit/IOEventSource.h:180: virtual bool checkForWork();
+MacKernelSDK/Headers/IOKit/IOEventSource.h:248: *  state when checkForWork is called.  Calling this function will cause the
+MacKernelSDK/Headers/IOKit/IOEventSource.h:249: *  work-loop to be signalled so that a checkForWork is performed. */
+MacKernelSDK/Headers/IOKit/IOEventSource.h:255: *  state when checkForWork is called. */
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:119: /*! @function checkForWork
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:123: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:177: *  state when checkForWork is called.  Calling this function will cause the
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:178: *  work-loop to be signalled so that a checkForWork is performed. */
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:184: *  state when checkForWork is called. */
+MacKernelSDK/Headers/IOKit/IOTimerEventSource.h:202: /*! @function checkForWork
+MacKernelSDK/Headers/IOKit/IOTimerEventSource.h:206: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/IOWorkLoop.h:95: *       @abstract Checks if the event source passed in overrides checkForWork() to perform any work.
+MacKernelSDK/Headers/IOKit/IOWorkLoop.h:184: *   event list calling the checkForWork method in each event source.  If an
+MacKernelSDK/Headers/IOKit/IOWorkLoop.h:314: *   walks the event list calling the checkForWork method in each event source.
+MacKernelSDK/Headers/IOKit/bluetooth/IOBluetoothWorkLoop.h:63: /*! @function checkForWork
+MacKernelSDK/Headers/IOKit/bluetooth/IOBluetoothWorkLoop.h:65: *    @discussion This function overrides IOEventSource::checkForWork() so that it does nothing.
+MacKernelSDK/Headers/IOKit/bluetooth/IOBluetoothWorkLoop.h:69: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/bluetooth/IOWorkQueue.h:84: virtual bool     checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h:298: virtual bool checkForWork( void ) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h:67: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h:65: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:49: @field checkForWorkCounter Increment with each call to checkForWork() if enqueueAndCompletePackets() is executed.
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:49: @field checkForWorkCounter Increment with each call to checkForWork() if enqueueAndCompletePackets() is executed.
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:56: UInt64 checkForWorkCounter;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:79: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:144: *   Updated with the value of $link mWorkCounter whenever checkForWork() is called.
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:75: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/sys/kdebugevents.h:1590: {0x5010004, "WL_CheckForWork"},
+src/kext/RTW88WCLWorkQueue.cpp:58: * synchronous with the IOWorkLoop and waits out an active checkForWork(). */
+src/kext/RTW88WCLWorkQueue.cpp:129: * source does the actual callback only in checkForWork() on that loop. */
+src/kext/RTW88WCLWorkQueue.cpp:134: bool RTW88WCLWorkQueue::checkForWork()
+src/kext/RTW88WCLWorkQueue.hpp:26: * Consumer context: IOWorkLoop calls checkForWork(), which drains the ring and
+src/kext/RTW88WCLWorkQueue.hpp:30: * stop() must run outside this event source's active checkForWork()/handler
+src/kext/RTW88WCLWorkQueue.hpp:47: bool checkForWork() override;
+src/kext/wcl24h32/RTW88WCLController.cpp:144: &RTW88WCLController::stagedRxFrame, this)) {
+src/kext/wcl24h32/RTW88WCLController.cpp:220: * stop() waits out an active checkForWork() and releases all staged mbufs. */
+src/kext/wcl24h32/RTW88WCLController.cpp:558: bool RTW88WCLController::stagedRxFrame(
+src/kext/wcl24h32/RTW88WCLController.hpp:89: static bool stagedRxFrame(IOSkywalkPacket *preparedPacket, void *context);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:90: &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:189: IOReturn RTW88WCLSkywalkQueues::rxCompletionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:48: static IOReturn rxCompletionAction(OSObject *owner,
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:169: bool RTW88WCLSkywalkRxAdapter::checkForWork()
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:216: /* Synchronous removal serializes against checkForWork(). The owner
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:38: bool checkForWork() override;
+
+REFERENCE=apple_queue_methods
+MATCHES_AT_LEAST=19
+MacKernelSDK/Headers/IOKit/bluetooth/IOBluetoothHostController.h:307: virtual IOReturn SetACLPacketCompletion(void *);
+MacKernelSDK/Headers/IOKit/network/IOEthernetController.h:771: static void allocatedAVBPacketCompletion(void *context, IOEthernetAVBPacket *packet);
+MacKernelSDK/Headers/IOKit/network/IOEthernetController.h:772: void realtimePoolAVBPacketCompletion(IOEthernetAVBPacket *packet);
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkCloneableNetworkPacket.h:45: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, IOSkywalkPacketDescriptor * desc, IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkMemorySegment.h:62: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, IOSkywalkMemorySegmentDescriptor * desc, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h:67: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, IOSkywalkPacketDescriptor * desc, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketBuffer.h:59: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, IOSkywalkPacketBufferDescriptor * desc, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h:77: virtual void packetCompletion( IOSkywalkPacket * packet, IOSkywalkPacketQueue * queue, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h:83: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 bufferSize, IODirection direction, UInt32 capacity, UInt32 queueId, OSObject * owner, IOEventSource::Action action, void * refCon );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h:70: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkRxCompletionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h:61: virtual void packetCompletion( IOSkywalkPacket * packet, IOSkywalkPacketQueue * queue, IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h:68: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:49: @field checkForWorkCounter Increment with each call to checkForWork() if enqueueAndCompletePackets() is executed.
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:51: @field completeCounter The number of packets completed, updated each time completePackets() is called.
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:75: void completePackets();
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:76: IOReturn enqueueAndCompletePackets( void * packets );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:82: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxCompletionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:70: virtual void packetCompletion( IOSkywalkPacket * packet, IOSkywalkPacketQueue * queue, IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:84: virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );

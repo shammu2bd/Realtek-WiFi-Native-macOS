@@ -1,0 +1,27 @@
+STAGE62_QUEUESET_INFO_S_CALLER_CALLEE_CROSSWALK
+CALLER=IOSkywalkNetworkInterface queue-array registerNetworkInterface overload
+STACK_WORD_ADDRESS=rbp-0x84 (4-byte local is explicitly written before factory call)
+CONTROL_WORD_VALUES=0x3 when WMM sched-model check is false; 0xb when true
+FACTORY=IOSkywalkQueueSet::createWithQueues(queues, queueCount, QueueSetInfo_s*)
+CALLEE=IOSkywalkQueueSet::initWithQueues(queues, queueCount, QueueSetInfo_s*)
+OBSERVED_READS=byte 0 bit 3 test; 32-bit word at offset 0 copied to QueueSet nexus metadata
+OBSERVED_EFFECT=bit 3 gates optional extra QueueSet allocation; other bits are passed through in the copied dword
+SIZE_LIMIT=at least 4 readable bytes are required by this call path; complete private struct size/layout is not proven
+SDK_DECLARATION=not found in Stage61 source inventory; no guessed public layout is emitted
+
+CHECK=QUEUESET_CONTROL_WORD_0x3 RESULT=PASS
+CHECK=QUEUESET_CONTROL_WORD_0xb RESULT=PASS
+CHECK=QUEUESET_INFO_POINTER RESULT=PASS
+CHECK=LOGICAL_LINK_INFO_POINTER RESULT=PASS
+CHECK=LOGICAL_LINK_INFO_10_QWORD_COPY RESULT=PASS
+CHECK=LOGICAL_LINK_INFO_FIRST_DWORD_1 RESULT=PASS
+CHECK=QUEUESET_FACTORY_CALL RESULT=FAIL
+CHECK=LOGICAL_LINK_FACTORY_CALL RESULT=FAIL
+CHECK=REGISTER_LOGICAL_LINK_OVERLOAD RESULT=FAIL
+
+CHECK=CONTROL_WORD_BIT_0x8_TEST RESULT=PASS
+CHECK=CONTROL_WORD_FULL_DWORD_READ RESULT=PASS
+CHECK=CONTROL_WORD_COPIED_TO_NEXUS_METADATA RESULT=PASS
+CHECK=OPTIONAL_EXTRA_NEXUS_ALLOCATION RESULT=PASS
+CHECK=CREATE_WITH_QUEUES_ALLOCATION_SIZE_0x80 RESULT=PASS
+CHECK=CREATE_WITH_QUEUES_FORWARDS_CONTROL_POINTER RESULT=PASS

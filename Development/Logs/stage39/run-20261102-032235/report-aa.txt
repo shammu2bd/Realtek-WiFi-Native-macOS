@@ -1,0 +1,489 @@
+========== STAGE 39: FILESET-AWARE SKYWALK DISASSEMBLY ==========
+script_version=STAGE39_V1_20261102
+timestamp_utc=2026-11-02T03:22:37Z
+product_version=15.8.1
+build_version=24H32
+architecture=x86_64
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+boot_kernel_collection=/System/Library/KernelCollections/BootKernelExtensions.kc
+llvm_objdump=/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump
+upstream_toolkit=watchthelight-labs/WTLKcAbi
+upstream_commit=cea28a5297633118177cee6a75e86d8bc57f1960
+upstream_scope=kcfile.py and disasm.py only; standard-library Python; read-only KC mmap plus temporary carved images
+PREDECESSOR=Stage38 run-20261102-022747
+
+UPSTREAM_GIT_BLOB_kcfile.py=MATCH
+UPSTREAM_GIT_BLOB_SHA_kcfile.py=5d31e8a73e5cb175851e7407529456f223683589
+UPSTREAM_GIT_BLOB_disasm.py=MATCH
+UPSTREAM_GIT_BLOB_SHA_disasm.py=d7777456f4700bc9815e765aed2313093ac133e9
+SOURCE_FINGERPRINT_MATCH=src/kext/RTW88WCLWorkQueue.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/RTW88WCLWorkQueue.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLController.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLController.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+AUDITED_SOURCE_FINGERPRINTS=12
+SOURCE_FINGERPRINT_CONTINUITY=PASS
+
+--- Fileset parser and kernel collection identity ---
+PYTHON_VERSION=3.9.6
+OBJDUMP_VERSION=Apple LLVM version 17.0.0
+BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+FILESET_ENTRY_COUNT=211
+RELEVANT_FILESET_ENTRY=com.apple.iokit.IO80211Family vmaddr=0xffffff8002110000 fileoff=0x2010000
+RELEVANT_FILESET_ENTRY=com.apple.iokit.IOSkywalkFamily vmaddr=0xffffff8002973000 fileoff=0x2873000
+
+--- Exact symbol resolution and fileset ownership ---
+SYMBOL_initRegistrationInfo=0xffffff8002987ed6
+SYMBOL_NAME_initRegistrationInfo=__ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm
+SYMBOL_FILES_OWNER_initRegistrationInfo=com.apple.iokit.IOSkywalkFamily
+ADDRESS_FILES_OWNER_initRegistrationInfo=com.apple.iokit.IOSkywalkFamily
+SEGMENT_initRegistrationInfo=__TEXT vmaddr=0xffffff8002973000 vmsize=0x34000 fileoff=0x2873000 filesize=0x34000 initprot=0x5
+FUNCTION_RANGE_initRegistrationInfo=0xffffff8002987ed6..0xffffff8002987fe4
+SYMBOL_registerEthernetInterface.queue_array=0xffffff8002988078
+SYMBOL_NAME_registerEthernetInterface.queue_array=__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j
+SYMBOL_FILES_OWNER_registerEthernetInterface.queue_array=com.apple.iokit.IOSkywalkFamily
+ADDRESS_FILES_OWNER_registerEthernetInterface.queue_array=com.apple.iokit.IOSkywalkFamily
+SEGMENT_registerEthernetInterface.queue_array=__TEXT vmaddr=0xffffff8002973000 vmsize=0x34000 fileoff=0x2873000 filesize=0x34000 initprot=0x5
+FUNCTION_RANGE_registerEthernetInterface.queue_array=0xffffff8002988078..0xffffff80029880e8
+SYMBOL_registerEthernetInterface.logical_link=NOT_FOUND
+SYMBOL_deregisterEthernetInterface=0xffffff80029880e8
+SYMBOL_NAME_deregisterEthernetInterface=__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj
+SYMBOL_FILES_OWNER_deregisterEthernetInterface=com.apple.iokit.IOSkywalkFamily
+ADDRESS_FILES_OWNER_deregisterEthernetInterface=com.apple.iokit.IOSkywalkFamily
+SEGMENT_deregisterEthernetInterface=__TEXT vmaddr=0xffffff8002973000 vmsize=0x34000 fileoff=0x2873000 filesize=0x34000 initprot=0x5
+FUNCTION_RANGE_deregisterEthernetInterface=0xffffff80029880e8..0xffffff800298813a
+SYMBOL_IO80211InfraInterface.registerInfraEthernetInterface=0xffffff80022dcfce
+SYMBOL_NAME_IO80211InfraInterface.registerInfraEthernetInterface=__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_
+SYMBOL_FILES_OWNER_IO80211InfraInterface.registerInfraEthernetInterface=com.apple.iokit.IO80211Family
+ADDRESS_FILES_OWNER_IO80211InfraInterface.registerInfraEthernetInterface=com.apple.iokit.IO80211Family
+SEGMENT_IO80211InfraInterface.registerInfraEthernetInterface=__TEXT vmaddr=0xffffff8002110000 vmsize=0x2ac000 fileoff=0x2010000 filesize=0x2ac000 initprot=0x5
+FUNCTION_RANGE_IO80211InfraInterface.registerInfraEthernetInterface=0xffffff80022dcfce..0xffffff80022dd28e
+
+--- Bounded disassembly from carved fileset entries ---
+CARVED_OWNER=com.apple.iokit.IO80211Family
+CARVED_PATH=/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IO80211Family.macho
+CARVED_BYTES=66125824
+CARVED_FILE_TYPE=/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IO80211Family.macho: Mach-O 64-bit kext bundle x86_64
+CARVED_OWNER=com.apple.iokit.IOSkywalkFamily
+CARVED_PATH=/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IOSkywalkFamily.macho
+CARVED_BYTES=66125824
+CARVED_FILE_TYPE=/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IOSkywalkFamily.macho: Mach-O 64-bit kext bundle x86_64
+
+=== METHOD initRegistrationInfo ===
+SYMBOL=__ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm
+ADDRESS=0xffffff8002987ed6
+OWNER=com.apple.iokit.IOSkywalkFamily
+IMAGE=/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IOSkywalkFamily.macho
+RANGE=0xffffff8002987ed6..0xffffff8002987fe4
+OBJDUMP_ATTEMPT_1_EXIT=0
+OBJDUMP_ATTEMPT_1_INSTRUCTIONS=71
+OBJDUMP_ATTEMPT_1_STDOUT_BEGIN
+
+/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff8002987ed6 <__ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm>:
+ffffff8002987ed6:      	push	rbp
+ffffff8002987ed7:      	mov	rbp, rsp
+ffffff8002987eda:      	push	r15
+ffffff8002987edc:      	push	r14
+ffffff8002987ede:      	push	r12
+ffffff8002987ee0:      	push	rbx
+ffffff8002987ee1:      	test	rsi, rsi
+ffffff8002987ee4:      	setne	al
+ffffff8002987ee7:      	cmp	edx, 0x1
+ffffff8002987eea:      	sete	dl
+ffffff8002987eed:      	cmp	rcx, 0x130
+ffffff8002987ef4:      	sete	r14b
+ffffff8002987ef8:      	and	r14b, dl
+ffffff8002987efb:      	and	r14b, al
+ffffff8002987efe:      	cmp	r14b, 0x1
+ffffff8002987f02:      	jne	0xffffff8002987fd7 <__ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm+0x101>
+ffffff8002987f08:      	mov	rbx, rsi
+ffffff8002987f0b:      	mov	r15, rdi
+ffffff8002987f0e:      	lea	rdi, [rsi + 0x8]
+ffffff8002987f12:      	mov	esi, 0x128
+ffffff8002987f17:      	call	0xffffff8000101100 <_uuid_unparse_upper+0xffffff8000101100>
+ffffff8002987f1c:      	movabs	rax, 0x13000000001
+ffffff8002987f26:      	mov	qword ptr [rbx], rax
+ffffff8002987f29:      	mov	dword ptr [rbx + 0x14], 0x100
+ffffff8002987f30:      	lea	r12, [rip + 0x27379] ## 0xffffff80029af2b0 <__ZTV25IOSkywalkNetworkInterface>
+ffffff8002987f37:      	mov	rdi, r15
+ffffff8002987f3a:      	call	qword ptr [r12 + 0x9a8]
+ffffff8002987f42:      	test	eax, eax
+ffffff8002987f44:      	mov	ecx, 0x2
+ffffff8002987f49:      	cmovne	ecx, eax
+ffffff8002987f4c:      	mov	dword ptr [rbx + 0x8], ecx
+ffffff8002987f4f:      	mov	rdi, r15
+ffffff8002987f52:      	call	qword ptr [r12 + 0x9b0]
+ffffff8002987f5a:      	mov	dword ptr [rbx + 0xc], eax
+ffffff8002987f5d:      	mov	dword ptr [rbx + 0x24], 0x22
+ffffff8002987f64:      	mov	rdi, r15
+ffffff8002987f67:      	call	qword ptr [r12 + 0x9b8]
+ffffff8002987f6f:      	test	eax, eax
+ffffff8002987f71:      	mov	ecx, 0x20
+ffffff8002987f76:      	cmovne	ecx, eax
+ffffff8002987f79:      	mov	dword ptr [rbx + 0x28], ecx
+ffffff8002987f7c:      	mov	rdi, r15
+ffffff8002987f7f:      	call	qword ptr [r12 + 0x9f0]
+ffffff8002987f87:      	test	rax, rax
+ffffff8002987f8a:      	lea	rcx, [rip + 0x1e400] ## 0xffffff80029a6391 <_uuid_unparse_upper+0xffffff80029a6391>
+ffffff8002987f91:      	cmovne	rcx, rax
+ffffff8002987f95:      	mov	qword ptr [rbx + 0x30], rcx
+ffffff8002987f99:      	mov	rdi, r15
+ffffff8002987f9c:      	call	0xffffff800298315c <__ZN25IOSkywalkNetworkInterface16getBSDUnitNumberEv>
+ffffff8002987fa1:      	mov	dword ptr [rbx + 0x38], eax
+ffffff8002987fa4:      	mov	rdi, r15
+ffffff8002987fa7:      	call	qword ptr [r12 + 0x990]
+ffffff8002987faf:      	test	eax, eax
+ffffff8002987fb1:      	mov	ecx, 0x2e
+ffffff8002987fb6:      	cmovne	ecx, eax
+ffffff8002987fb9:      	mov	dword ptr [rbx + 0x44], ecx
+ffffff8002987fbc:      	mov	rdi, r15
+ffffff8002987fbf:      	call	qword ptr [r12 + 0x980]
+ffffff8002987fc7:      	test	eax, eax
+ffffff8002987fc9:      	mov	ecx, 0x5dc
+ffffff8002987fce:      	cmovne	ecx, eax
+ffffff8002987fd1:      	mov	dword ptr [rbx + 0x48], ecx
+ffffff8002987fd4:      	mov	dword ptr [rbx + 0x4c], ecx
+ffffff8002987fd7:      	mov	eax, r14d
+ffffff8002987fda:      	pop	rbx
+ffffff8002987fdb:      	pop	r12
+ffffff8002987fdd:      	pop	r14
+ffffff8002987fdf:      	pop	r15
+ffffff8002987fe1:      	pop	rbp
+ffffff8002987fe2:      	ret
+ffffff8002987fe3:      	nop
+OBJDUMP_ATTEMPT_1_STDOUT_END
+METHOD_DISASSEMBLY_initRegistrationInfo=PASS
+DETECTED_INSTRUCTION_LINES=71
+
+=== METHOD registerEthernetInterface.queue_array ===
+SYMBOL=__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j
+ADDRESS=0xffffff8002988078
+OWNER=com.apple.iokit.IOSkywalkFamily
+IMAGE=/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IOSkywalkFamily.macho
+RANGE=0xffffff8002988078..0xffffff80029880e8
+OBJDUMP_ATTEMPT_1_EXIT=0
+OBJDUMP_ATTEMPT_1_INSTRUCTIONS=40
+OBJDUMP_ATTEMPT_1_STDOUT_BEGIN
+
+/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff8002988078 <__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j>:
+ffffff8002988078:      	push	rbp
+ffffff8002988079:      	mov	rbp, rsp
+ffffff800298807c:      	push	r15
+ffffff800298807e:      	push	r14
+ffffff8002988080:      	push	r13
+ffffff8002988082:      	push	r12
+ffffff8002988084:      	push	rbx
+ffffff8002988085:      	sub	rsp, 0x18
+ffffff8002988089:      	mov	qword ptr [rbp - 0x30], r9
+ffffff800298808d:      	mov	r14, r8
+ffffff8002988090:      	mov	r15d, ecx
+ffffff8002988093:      	mov	r12, rdx
+ffffff8002988096:      	mov	r13, rdi
+ffffff8002988099:      	call	0xffffff8002987fe4 <__ZN26IOSkywalkEthernetInterface20copyRegistrationInfoEPKNS_16RegistrationInfoE>
+ffffff800298809e:      	test	eax, eax
+ffffff80029880a0:      	je	0xffffff80029880b2 <__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0x3a>
+ffffff80029880a2:      	mov	ebx, eax
+ffffff80029880a4:      	mov	rdi, r13
+ffffff80029880a7:      	xor	esi, esi
+ffffff80029880a9:      	call	0xffffff80029880e8 <__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj>
+ffffff80029880ae:      	mov	eax, ebx
+ffffff80029880b0:      	jmp	0xffffff80029880d8 <__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j+0x60>
+ffffff80029880b2:      	mov	rax, qword ptr [r13 + 0x108]
+ffffff80029880b9:      	mov	rsi, qword ptr [rax]
+ffffff80029880bc:      	mov	dword ptr [rsp], 0x0
+ffffff80029880c3:      	mov	rdi, r13
+ffffff80029880c6:      	mov	rdx, r12
+ffffff80029880c9:      	mov	ecx, r15d
+ffffff80029880cc:      	mov	r8, r14
+ffffff80029880cf:      	mov	r9, qword ptr [rbp - 0x30]
+ffffff80029880d3:      	call	0xffffff8002981d7e <__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j>
+ffffff80029880d8:      	add	rsp, 0x18
+ffffff80029880dc:      	pop	rbx
+ffffff80029880dd:      	pop	r12
+ffffff80029880df:      	pop	r13
+ffffff80029880e1:      	pop	r14
+ffffff80029880e3:      	pop	r15
+ffffff80029880e5:      	pop	rbp
+ffffff80029880e6:      	ret
+ffffff80029880e7:      	nop
+OBJDUMP_ATTEMPT_1_STDOUT_END
+METHOD_DISASSEMBLY_registerEthernetInterface.queue_array=PASS
+DETECTED_INSTRUCTION_LINES=40
+
+=== METHOD deregisterEthernetInterface ===
+SYMBOL=__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj
+ADDRESS=0xffffff80029880e8
+OWNER=com.apple.iokit.IOSkywalkFamily
+IMAGE=/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IOSkywalkFamily.macho
+RANGE=0xffffff80029880e8..0xffffff800298813a
+OBJDUMP_ATTEMPT_1_EXIT=0
+OBJDUMP_ATTEMPT_1_INSTRUCTIONS=28
+OBJDUMP_ATTEMPT_1_STDOUT_BEGIN
+
+/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff80029880e8 <__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj>:
+ffffff80029880e8:      	push	rbp
+ffffff80029880e9:      	mov	rbp, rsp
+ffffff80029880ec:      	push	r15
+ffffff80029880ee:      	push	r14
+ffffff80029880f0:      	push	rbx
+ffffff80029880f1:      	push	rax
+ffffff80029880f2:      	mov	rbx, rdi
+ffffff80029880f5:      	call	0xffffff8002981b54 <__ZN25IOSkywalkNetworkInterface26deregisterNetworkInterfaceEj>
+ffffff80029880fa:      	mov	r14d, eax
+ffffff80029880fd:      	test	eax, eax
+ffffff80029880ff:      	jne	0xffffff800298812c <__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj+0x44>
+ffffff8002988101:      	mov	rax, qword ptr [rbx + 0x108]
+ffffff8002988108:      	mov	rsi, qword ptr [rax]
+ffffff800298810b:      	test	rsi, rsi
+ffffff800298810e:      	je	0xffffff800298812c <__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj+0x44>
+ffffff8002988110:      	xor	r15d, r15d
+ffffff8002988113:      	mov	qword ptr [rax], r15
+ffffff8002988116:      	lea	rdi, [rip + 0x2fee3] ## 0xffffff80029b8000 <__ZZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEjE20kalloc_type_view_239>
+ffffff800298811d:      	call	0xffffff8000ab5a60 <_uuid_unparse_upper+0xffffff8000ab5a60>
+ffffff8002988122:      	mov	rax, qword ptr [rbx + 0x108]
+ffffff8002988129:      	mov	qword ptr [rax], r15
+ffffff800298812c:      	mov	eax, r14d
+ffffff800298812f:      	add	rsp, 0x8
+ffffff8002988133:      	pop	rbx
+ffffff8002988134:      	pop	r14
+ffffff8002988136:      	pop	r15
+ffffff8002988138:      	pop	rbp
+ffffff8002988139:      	ret
+OBJDUMP_ATTEMPT_1_STDOUT_END
+METHOD_DISASSEMBLY_deregisterEthernetInterface=PASS
+DETECTED_INSTRUCTION_LINES=28
+
+=== METHOD IO80211InfraInterface.registerInfraEthernetInterface ===
+SYMBOL=__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_
+ADDRESS=0xffffff80022dcfce
+OWNER=com.apple.iokit.IO80211Family
+IMAGE=/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IO80211Family.macho
+RANGE=0xffffff80022dcfce..0xffffff80022dd28e
+OBJDUMP_ATTEMPT_1_EXIT=0
+OBJDUMP_ATTEMPT_1_INSTRUCTIONS=177
+OBJDUMP_ATTEMPT_1_STDOUT_BEGIN
+
+/Users/shohel/Downloads/Stage39-run-20261102-032235/kc-cache/com.apple.iokit.IO80211Family.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff80022dcfce <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_>:
+ffffff80022dcfce:      	push	rbp
+ffffff80022dcfcf:      	mov	rbp, rsp
+ffffff80022dcfd2:      	push	r15
+ffffff80022dcfd4:      	push	r14
+ffffff80022dcfd6:      	push	r13
+ffffff80022dcfd8:      	push	r12
+ffffff80022dcfda:      	push	rbx
+ffffff80022dcfdb:      	sub	rsp, 0x58
+ffffff80022dcfdf:      	mov	r12, r9
+ffffff80022dcfe2:      	mov	r15d, ecx
+ffffff80022dcfe5:      	mov	r13, rsi
+ffffff80022dcfe8:      	mov	rbx, rdi
+ffffff80022dcfeb:      	test	rsi, rsi
+ffffff80022dcfee:      	mov	qword ptr [rbp - 0x80], r8
+ffffff80022dcff2:      	mov	qword ptr [rbp - 0x78], rdx
+ffffff80022dcff6:      	je	0xffffff80022dd14a <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x17c>
+ffffff80022dcffc:      	mov	rax, qword ptr [rbx + 0x118]
+ffffff80022dd003:      	cmp	byte ptr [rax + 0x3c60], 0x0
+ffffff80022dd00a:      	je	0xffffff80022dd14a <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x17c>
+ffffff80022dd010:      	mov	rax, qword ptr [rbx + 0x110]
+ffffff80022dd017:      	cmp	dword ptr [rax + 0x58], 0x1
+ffffff80022dd01b:      	jne	0xffffff80022dd14a <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x17c>
+ffffff80022dd021:      	mov	rax, qword ptr [rbx]
+ffffff80022dd024:      	mov	rdi, rbx
+ffffff80022dd027:      	call	qword ptr [rax + 0xcf0]
+ffffff80022dd02d:      	movabs	r14, 0xffffffffffff
+ffffff80022dd037:      	and	r14, rax
+ffffff80022dd03a:      	mov	rcx, rax
+ffffff80022dd03d:      	mov	qword ptr [rbp - 0x60], rax
+ffffff80022dd041:      	mov	rax, r14
+ffffff80022dd044:      	shr	rax, 0x8
+ffffff80022dd048:      	mov	rdx, rax
+ffffff80022dd04b:      	mov	qword ptr [rbp - 0x58], rax
+ffffff80022dd04f:      	mov	rax, r14
+ffffff80022dd052:      	shr	rax, 0x10
+ffffff80022dd056:      	mov	rdi, rax
+ffffff80022dd059:      	mov	qword ptr [rbp - 0x50], rax
+ffffff80022dd05d:      	mov	rax, r14
+ffffff80022dd060:      	shr	rax, 0x18
+ffffff80022dd064:      	mov	r11, rax
+ffffff80022dd067:      	mov	qword ptr [rbp - 0x40], rax
+ffffff80022dd06b:      	mov	rax, r14
+ffffff80022dd06e:      	shr	rax, 0x20
+ffffff80022dd072:      	mov	r10, rax
+ffffff80022dd075:      	mov	qword ptr [rbp - 0x38], rax
+ffffff80022dd079:      	shr	r14, 0x28
+ffffff80022dd07d:      	movzx	esi, byte ptr [r13 + 0x108]
+ffffff80022dd085:      	mov	eax, 0xff
+ffffff80022dd08a:      	and	ecx, eax
+ffffff80022dd08c:      	mov	qword ptr [rbp - 0x48], rcx
+ffffff80022dd090:      	mov	qword ptr [rbp - 0x68], r12
+ffffff80022dd094:      	mov	r12d, edx
+ffffff80022dd097:      	and	r12d, eax
+ffffff80022dd09a:      	mov	qword ptr [rbp - 0x70], r15
+ffffff80022dd09e:      	mov	r15d, edi
+ffffff80022dd0a1:      	and	r15d, eax
+ffffff80022dd0a4:      	and	r11d, eax
+ffffff80022dd0a7:      	and	r10d, eax
+ffffff80022dd0aa:      	movzx	edx, byte ptr [r13 + 0x109]
+ffffff80022dd0b2:      	movzx	ecx, byte ptr [r13 + 0x10a]
+ffffff80022dd0ba:      	movzx	r8d, byte ptr [r13 + 0x10b]
+ffffff80022dd0c2:      	movzx	r9d, byte ptr [r13 + 0x10c]
+ffffff80022dd0ca:      	movzx	eax, byte ptr [r13 + 0x10d]
+ffffff80022dd0d2:      	mov	qword ptr [rbp - 0x30], rax
+ffffff80022dd0d6:      	sub	rsp, 0x8
+ffffff80022dd0da:      	lea	rdi, [rip + 0xbe26d] ## 0xffffff800239b34e <___FUNCTION__._ZN21IO80211InfraInterface12setLQMConfigEP23apple80211_lqm_config_t+0x213>
+ffffff80022dd0e1:      	xor	eax, eax
+ffffff80022dd0e3:      	push	r14
+ffffff80022dd0e5:      	push	r10
+ffffff80022dd0e7:      	push	r11
+ffffff80022dd0e9:      	push	r15
+ffffff80022dd0eb:      	mov	r15, qword ptr [rbp - 0x70]
+ffffff80022dd0ef:      	push	r12
+ffffff80022dd0f1:      	mov	r12, qword ptr [rbp - 0x68]
+ffffff80022dd0f5:      	push	qword ptr [rbp - 0x48]
+ffffff80022dd0f8:      	push	qword ptr [rbp - 0x30]
+ffffff80022dd0fb:      	call	0xffffff8000ab6560 <_vsnprintf+0xffffff8000ab6560>
+ffffff80022dd100:      	mov	rdx, qword ptr [rbp - 0x78]
+ffffff80022dd104:      	mov	r8, qword ptr [rbp - 0x80]
+ffffff80022dd108:      	add	rsp, 0x40
+ffffff80022dd10c:      	mov	rax, qword ptr [rbp - 0x60]
+ffffff80022dd110:      	mov	byte ptr [r13 + 0x108], al
+ffffff80022dd117:      	mov	rax, qword ptr [rbp - 0x58]
+ffffff80022dd11b:      	mov	byte ptr [r13 + 0x109], al
+ffffff80022dd122:      	mov	rax, qword ptr [rbp - 0x50]
+ffffff80022dd126:      	mov	byte ptr [r13 + 0x10a], al
+ffffff80022dd12d:      	mov	rax, qword ptr [rbp - 0x40]
+ffffff80022dd131:      	mov	byte ptr [r13 + 0x10b], al
+ffffff80022dd138:      	mov	rax, qword ptr [rbp - 0x38]
+ffffff80022dd13c:      	mov	byte ptr [r13 + 0x10c], al
+ffffff80022dd143:      	mov	byte ptr [r13 + 0x10d], r14b
+ffffff80022dd14a:      	sub	rsp, 0x8
+ffffff80022dd14e:      	mov	rdi, rbx
+ffffff80022dd151:      	mov	rsi, r13
+ffffff80022dd154:      	mov	ecx, r15d
+ffffff80022dd157:      	mov	r9, r12
+ffffff80022dd15a:      	push	0x0
+ffffff80022dd15c:      	call	0xffffff8002988078 <__ZZN20IO80211P2PSupervisor4freeEvE20kalloc_type_view_181+0x581cf8>
+ffffff80022dd161:      	add	rsp, 0x10
+ffffff80022dd165:      	mov	r14d, eax
+ffffff80022dd168:      	mov	rax, qword ptr [rbx]
+ffffff80022dd16b:      	mov	rdi, rbx
+ffffff80022dd16e:      	call	qword ptr [rax + 0xd08]
+ffffff80022dd174:      	test	rax, rax
+ffffff80022dd177:      	je	0xffffff80022dd196 <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x1c8>
+ffffff80022dd179:      	mov	rax, qword ptr [rbx]
+ffffff80022dd17c:      	mov	rdi, rbx
+ffffff80022dd17f:      	call	qword ptr [rax + 0xd08]
+ffffff80022dd185:      	mov	rdi, rax
+ffffff80022dd188:      	mov	esi, 0x1
+ffffff80022dd18d:      	call	0xffffff80031d421c <__ZZN20IO80211P2PSupervisor4freeEvE20kalloc_type_view_181+0xdcde9c>
+ffffff80022dd192:      	test	al, al
+ffffff80022dd194:      	jne	0xffffff80022dd1a8 <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x1da>
+ffffff80022dd196:      	mov	eax, r14d
+ffffff80022dd199:      	add	rsp, 0x58
+ffffff80022dd19d:      	pop	rbx
+ffffff80022dd19e:      	pop	r12
+ffffff80022dd1a0:      	pop	r13
+ffffff80022dd1a2:      	pop	r14
+ffffff80022dd1a4:      	pop	r15
+ffffff80022dd1a6:      	pop	rbp
+ffffff80022dd1a7:      	ret
+ffffff80022dd1a8:      	mov	rax, qword ptr [rbx]
+ffffff80022dd1ab:      	mov	rdi, rbx
+ffffff80022dd1ae:      	call	qword ptr [rax + 0xd08]
+ffffff80022dd1b4:      	mov	qword ptr [rbp - 0x38], rax
+ffffff80022dd1b8:      	mov	rax, qword ptr [rbx + 0x110]
+ffffff80022dd1bf:      	mov	eax, dword ptr [rax + 0x58]
+ffffff80022dd1c2:      	mov	dword ptr [rbp - 0x40], eax
+ffffff80022dd1c5:      	movzx	eax, byte ptr [r13 + 0x108]
+ffffff80022dd1cd:      	mov	qword ptr [rbp - 0x70], rax
+ffffff80022dd1d1:      	movzx	eax, byte ptr [r13 + 0x109]
+ffffff80022dd1d9:      	mov	qword ptr [rbp - 0x68], rax
+ffffff80022dd1dd:      	movzx	eax, byte ptr [r13 + 0x10a]
+ffffff80022dd1e5:      	mov	qword ptr [rbp - 0x60], rax
+ffffff80022dd1e9:      	movzx	eax, byte ptr [r13 + 0x10b]
+ffffff80022dd1f1:      	mov	qword ptr [rbp - 0x58], rax
+ffffff80022dd1f5:      	movzx	eax, byte ptr [r13 + 0x10c]
+ffffff80022dd1fd:      	mov	qword ptr [rbp - 0x50], rax
+ffffff80022dd201:      	movzx	eax, byte ptr [r13 + 0x10d]
+ffffff80022dd209:      	mov	qword ptr [rbp - 0x48], rax
+ffffff80022dd20d:      	mov	rdi, r13
+ffffff80022dd210:      	call	0xffffff800048cb00 <_vsnprintf+0xffffff800048cb00>
+ffffff80022dd215:      	mov	qword ptr [rbp - 0x30], rax
+ffffff80022dd219:      	mov	rdi, qword ptr [rbp - 0x78]
+ffffff80022dd21d:      	call	0xffffff800048cb00 <_vsnprintf+0xffffff800048cb00>
+ffffff80022dd222:      	mov	r13, rax
+ffffff80022dd225:      	mov	rdi, qword ptr [rbp - 0x80]
+ffffff80022dd229:      	call	0xffffff800048cb00 <_vsnprintf+0xffffff800048cb00>
+ffffff80022dd22e:      	mov	rbx, r15
+ffffff80022dd231:      	mov	r15, rax
+ffffff80022dd234:      	mov	rdi, r12
+ffffff80022dd237:      	call	0xffffff800048cb00 <_vsnprintf+0xffffff800048cb00>
+ffffff80022dd23c:      	mov	r10, rax
+ffffff80022dd23f:      	sub	rsp, 0x8
+ffffff80022dd243:      	lea	rsi, [rip + 0xbe186] ## 0xffffff800239b3d0 <___FUNCTION__._ZN21IO80211InfraInterface12setLQMConfigEP23apple80211_lqm_config_t+0x295>
+ffffff80022dd24a:      	lea	rdx, [rip + 0xbe1fd] ## 0xffffff800239b44e <___FUNCTION__._ZN21IO80211InfraInterface12setLQMConfigEP23apple80211_lqm_config_t+0x313>
+ffffff80022dd251:      	mov	rdi, qword ptr [rbp - 0x38]
+ffffff80022dd255:      	mov	ecx, 0x111b
+ffffff80022dd25a:      	mov	r8d, r14d
+ffffff80022dd25d:      	mov	r9d, dword ptr [rbp - 0x40]
+ffffff80022dd261:      	xor	eax, eax
+ffffff80022dd263:      	push	r10
+ffffff80022dd265:      	push	r15
+ffffff80022dd267:      	push	r13
+ffffff80022dd269:      	push	qword ptr [rbp - 0x30]
+ffffff80022dd26c:      	push	rbx
+ffffff80022dd26d:      	push	qword ptr [rbp - 0x48]
+ffffff80022dd270:      	push	qword ptr [rbp - 0x50]
+ffffff80022dd273:      	push	qword ptr [rbp - 0x58]
+ffffff80022dd276:      	push	qword ptr [rbp - 0x60]
+ffffff80022dd279:      	push	qword ptr [rbp - 0x68]
+ffffff80022dd27c:      	push	qword ptr [rbp - 0x70]
+ffffff80022dd27f:      	call	0xffffff80031d252e <__ZZN20IO80211P2PSupervisor4freeEvE20kalloc_type_view_181+0xdcc1ae>
+ffffff80022dd284:      	add	rsp, 0x60
+ffffff80022dd288:      	jmp	0xffffff80022dd196 <__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_+0x1c8>
+ffffff80022dd28d:      	nop
+OBJDUMP_ATTEMPT_1_STDOUT_END
+METHOD_DISASSEMBLY_IO80211InfraInterface.registerInfraEthernetInterface=PASS
+DETECTED_INSTRUCTION_LINES=177
+
+--- Scope note ---
+KC_READER_SOURCE=WTLKcAbi pinned commit cea28a5297633118177cee6a75e86d8bc57f1960
+FILESYSTEM_EFFECTS=only temporary tool files, report and carved images in this Stage39 run directory
+
+--- Runtime context ---
+   53   11 0xffffff8002624000 0x15ff4    0x15ff4    com.apple.iokit.IONetworkingFamily (3.4) 5D3F11B8-802B-3860-8A36-E9334980A117 <9 8 7 6 3 1>
+   55    5 0xffffff8004150000 0xce000    0xce000    com.apple.iokit.IOSkywalkFamily (1.0) 035A9AD9-6CDE-362F-8DEC-B664BC6431EC <54 53 9 8 7 6 3 1>
+   93    1 0xffffff8004645000 0x20a000   0x20a000   com.apple.iokit.IO80211FamilyLegacy (1200.12.2b1) 4C07538B-62EB-3D6D-AEF9-93BCDCF45FAB <92 55 53 27 23 10 9 8 7 6 3 1>
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+SYSTEM_FILES_MODIFIED=NO
+========== END STAGE 39 ==========

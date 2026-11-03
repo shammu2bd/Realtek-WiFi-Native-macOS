@@ -1,0 +1,3303 @@
+========== STAGE 35N: SPECIAL TX / DEFERRED STATUS / TEARDOWN AUDIT ==========
+timestamp_utc=2026-11-02T00:55:07Z
+host=DESKTOP-65R32QP.localdomain
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+mode=read-only source/reference/lifecycle audit
+
+--- Inventory and source fingerprints ---
+SOURCE_FILES_SCANNED=143
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c bytes=52798 sha256=609dd80f41c66364e71762708bee25886c44d66dec3dc9bee39fe15500aebf83
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c bytes=21780 sha256=508c239d2eb89902cae4d931bc7fd22097d14737839b9d3bb0b3a00343006bde
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c bytes=68023 sha256=fa28844e52fa8a3915abc349f06cb34071de5507582a51ab607e605f4102fdaa
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c bytes=25473 sha256=c72a38098dddf4f4ae447bb60cd0c2a6842df250714bd58fa8be0aa0471bebcc
+SOURCE path=src/compat/linux/skbuff.h bytes=9275 sha256=58b5304797d2d1996766072e1deb6f820ecf249547a291f4c167d285373aea67
+SOURCE path=src/compat/linux/skbuff_tx_completion.h bytes=3229 sha256=4a52b0ca7c2d89a844bd3b110f8132c40264d5cd4c0336a6662fb70de6e4a154
+SOURCE path=src/compat/rtw88_compat.c bytes=61127 sha256=c2f72e5d077f87ae3878d8afb1f582076e2068b84566216495c74730a978f490
+SOURCE path=src/kext/RTW88HwOps.cpp bytes=4321 sha256=3984d76592346bf3e9050195045a69f37328ccedc3b957ee23bc51ed22fae3d1
+SOURCE path=src/kext/wcl24h32/RTW88WCLPCIBackend.cpp bytes=16613 sha256=2253d451b3242035510d21c317782a8e9f24ef46bd154b2ad842c713c296e9a4
+SOURCE path=src/kext/RTW88IEEE80211.cpp bytes=213719 sha256=5e7994b25a47d8748a096c68324fd80f859f460d489e7902baf2959046b14110
+SOURCE path=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp bytes=5317 sha256=6d97498a2a4a581be48607cab7de7c53bcc98c62c27a8c440ddfdcd0cac1e9da
+SOURCE path=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp bytes=2030 sha256=6fc48d17bd8def41f971cb195be3a239568cc0ca1ec2fe2fdc09851d5243ef62
+
+--- PCI special-queue writers, dispatch table, and every symbol reference ---
+
+=== PCI TX special queues and caller wiring | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c ===
+MATCH_LINES=36 CONTEXT_WINDOWS=11
+
+[lines 27-84]
+   27 MODULE_PARM_DESC(disable_msi, "Set Y to disable MSI interrupt support");
+   28 MODULE_PARM_DESC(disable_aspm, "Set Y to disable PCI ASPM support");
+   29 
+   30 static const u32 rtw_pci_tx_queue_idx_addr[] = {
+   31 	[RTW_TX_QUEUE_BK]	= RTK_PCI_TXBD_IDX_BKQ,
+   32 	[RTW_TX_QUEUE_BE]	= RTK_PCI_TXBD_IDX_BEQ,
+   33 	[RTW_TX_QUEUE_VI]	= RTK_PCI_TXBD_IDX_VIQ,
+   34 	[RTW_TX_QUEUE_VO]	= RTK_PCI_TXBD_IDX_VOQ,
+   35 	[RTW_TX_QUEUE_MGMT]	= RTK_PCI_TXBD_IDX_MGMTQ,
+   36 	[RTW_TX_QUEUE_HI0]	= RTK_PCI_TXBD_IDX_HI0Q,
+   37 	[RTW_TX_QUEUE_H2C]	= RTK_PCI_TXBD_IDX_H2CQ,
+   38 };
+   39 
+   40 static u8 rtw_pci_get_tx_qsel(struct sk_buff *skb,
+   41 			      enum rtw_tx_queue_type queue)
+   42 {
+   43 	switch (queue) {
+   44 	case RTW_TX_QUEUE_BCN:
+   45 		return TX_DESC_QSEL_BEACON;
+   46 	case RTW_TX_QUEUE_H2C:
+   47 		return TX_DESC_QSEL_H2C;
+   48 	case RTW_TX_QUEUE_MGMT:
+   49 		return TX_DESC_QSEL_MGMT;
+   50 	case RTW_TX_QUEUE_HI0:
+   51 		return TX_DESC_QSEL_HIGH;
+   52 	default:
+   53 		return skb->priority;
+   54 	}
+   55 };
+   56 
+   57 static u8 rtw_pci_read8(struct rtw_dev *rtwdev, u32 addr)
+   58 {
+   59 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+   60 
+   61 	return readb(rtwpci->mmap + addr);
+   62 }
+   63 
+   64 static u16 rtw_pci_read16(struct rtw_dev *rtwdev, u32 addr)
+   65 {
+   66 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+   67 
+   68 	return readw(rtwpci->mmap + addr);
+   69 }
+   70 
+   71 static u32 rtw_pci_read32(struct rtw_dev *rtwdev, u32 addr)
+   72 {
+   73 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+   74 
+   75 	return readl(rtwpci->mmap + addr);
+   76 }
+   77 
+   78 static void rtw_pci_write8(struct rtw_dev *rtwdev, u32 addr, u8 val)
+   79 {
+   80 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+   81 
+   82 	writeb(val, rtwpci->mmap + addr);
+   83 }
+   84 
+
+[lines 89-164]
+   89 	writew(val, rtwpci->mmap + addr);
+   90 }
+   91 
+   92 static void rtw_pci_write32(struct rtw_dev *rtwdev, u32 addr, u32 val)
+   93 {
+   94 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+   95 
+   96 	writel(val, rtwpci->mmap + addr);
+   97 }
+   98 
+   99 static void rtw_pci_free_tx_ring_skbs(struct rtw_dev *rtwdev,
+  100 				      struct rtw_pci_tx_ring *tx_ring)
+  101 {
+  102 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+  103 	struct rtw_pci_tx_data *tx_data;
+  104 	struct sk_buff *skb, *tmp;
+  105 	dma_addr_t dma;
+  106 
+  107 	/* free every skb remained in tx list */
+  108 	skb_queue_walk_safe(&tx_ring->queue, skb, tmp) {
+  109 		__skb_unlink(skb, &tx_ring->queue);
+  110 		tx_data = rtw_pci_get_tx_data(skb);
+  111 		dma = tx_data->dma;
+  112 
+  113 		dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+  114 		dev_kfree_skb_any(skb);
+  115 	}
+  116 }
+  117 
+  118 static void rtw_pci_free_tx_ring(struct rtw_dev *rtwdev,
+  119 				 struct rtw_pci_tx_ring *tx_ring)
+  120 {
+  121 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+  122 	u8 *head = tx_ring->r.head;
+  123 	u32 len = tx_ring->r.len;
+  124 	int ring_sz = len * tx_ring->r.desc_size;
+  125 
+  126 	rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+  127 
+  128 	/* free the ring itself */
+  129 	dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+  130 	tx_ring->r.head = NULL;
+  131 }
+  132 
+  133 static void rtw_pci_free_rx_ring_skbs(struct rtw_dev *rtwdev,
+  134 				      struct rtw_pci_rx_ring *rx_ring)
+  135 {
+  136 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+  137 	struct sk_buff *skb;
+  138 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+  139 	dma_addr_t dma;
+  140 	int i;
+  141 
+  142 	for (i = 0; i < rx_ring->r.len; i++) {
+  143 		skb = rx_ring->buf[i];
+  144 		if (!skb)
+  145 			continue;
+  146 
+  147 		dma = *((dma_addr_t *)skb->cb);
+  148 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+  149 		dev_kfree_skb(skb);
+  150 		rx_ring->buf[i] = NULL;
+  151 	}
+  152 }
+  153 
+  154 static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+  155 				 struct rtw_pci_rx_ring *rx_ring)
+  156 {
+  157 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+  158 	u8 *head = rx_ring->r.head;
+  159 	int ring_sz = rx_ring->r.desc_size * rx_ring->r.len;
+  160 
+  161 	rtw_pci_free_rx_ring_skbs(rtwdev, rx_ring);
+  162 
+  163 	dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+  164 }
+
+[lines 401-456]
+  401 static void rtw_pci_reset_buf_desc(struct rtw_dev *rtwdev)
+  402 {
+  403 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  404 	u32 len;
+  405 	u8 tmp;
+  406 	dma_addr_t dma;
+  407 
+  408 	tmp = rtw_read8(rtwdev, RTK_PCI_CTRL + 3);
+  409 	rtw_write8(rtwdev, RTK_PCI_CTRL + 3, tmp | 0xf7);
+  410 
+  411 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BCN].r.dma;
+  412 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BCNQ, dma);
+  413 
+  414 	if (!rtw_chip_wcpu_8051(rtwdev)) {
+  415 		len = rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.len;
+  416 		dma = rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.dma;
+  417 		rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.rp = 0;
+  418 		rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.wp = 0;
+  419 		rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_H2CQ, len & TRX_BD_IDX_MASK);
+  420 		rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_H2CQ, dma);
+  421 	}
+  422 
+  423 	len = rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.len;
+  424 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.dma;
+  425 	rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.rp = 0;
+  426 	rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.wp = 0;
+  427 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_BKQ, len & TRX_BD_IDX_MASK);
+  428 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BKQ, dma);
+  429 
+  430 	len = rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.len;
+  431 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.dma;
+  432 	rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.rp = 0;
+  433 	rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.wp = 0;
+  434 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_BEQ, len & TRX_BD_IDX_MASK);
+  435 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BEQ, dma);
+  436 
+  437 	len = rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.len;
+  438 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.dma;
+  439 	rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.rp = 0;
+  440 	rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.wp = 0;
+  441 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_VOQ, len & TRX_BD_IDX_MASK);
+  442 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_VOQ, dma);
+  443 
+  444 	len = rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.len;
+  445 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.dma;
+  446 	rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.rp = 0;
+  447 	rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.wp = 0;
+  448 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_VIQ, len & TRX_BD_IDX_MASK);
+  449 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_VIQ, dma);
+  450 
+  451 	len = rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.len;
+  452 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.dma;
+  453 	rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.rp = 0;
+  454 	rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.wp = 0;
+  455 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_MGMTQ, len & TRX_BD_IDX_MASK);
+  456 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_MGMTQ, dma);
+
+[lines 533-589]
+  533 static int rtw_pci_setup(struct rtw_dev *rtwdev)
+  534 {
+  535 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  536 
+  537 	rtw_pci_reset_trx_ring(rtwdev);
+  538 	rtw_pci_dma_reset(rtwdev, rtwpci);
+  539 
+  540 	return 0;
+  541 }
+  542 
+  543 static void rtw_pci_dma_release(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci)
+  544 {
+  545 	struct rtw_pci_tx_ring *tx_ring;
+  546 	enum rtw_tx_queue_type queue;
+  547 
+  548 	rtw_pci_reset_trx_ring(rtwdev);
+  549 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++) {
+  550 		tx_ring = &rtwpci->tx_rings[queue];
+  551 		rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+  552 	}
+  553 }
+  554 
+  555 static void rtw_pci_napi_start(struct rtw_dev *rtwdev)
+  556 {
+  557 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  558 
+  559 	if (test_and_set_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+  560 		return;
+  561 
+  562 	napi_enable(&rtwpci->napi);
+  563 }
+  564 
+  565 static void rtw_pci_napi_stop(struct rtw_dev *rtwdev)
+  566 {
+  567 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  568 
+  569 	if (!test_and_clear_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+  570 		return;
+  571 
+  572 	napi_synchronize(&rtwpci->napi);
+  573 	napi_disable(&rtwpci->napi);
+  574 }
+  575 
+  576 static int rtw_pci_start(struct rtw_dev *rtwdev)
+  577 {
+  578 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  579 
+  580 	rtw_pci_napi_start(rtwdev);
+  581 
+  582 	spin_lock_bh(&rtwpci->irq_lock);
+  583 	rtwpci->running = true;
+  584 	rtw_pci_enable_interrupt(rtwdev, rtwpci, false);
+  585 	spin_unlock_bh(&rtwpci->irq_lock);
+  586 
+  587 	return 0;
+  588 }
+  589 
+
+[lines 594-664]
+  594 
+  595 	spin_lock_bh(&rtwpci->irq_lock);
+  596 	rtwpci->running = false;
+  597 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+  598 	spin_unlock_bh(&rtwpci->irq_lock);
+  599 
+  600 	synchronize_irq(pdev->irq);
+  601 	rtw_pci_napi_stop(rtwdev);
+  602 
+  603 	spin_lock_bh(&rtwpci->irq_lock);
+  604 	rtw_pci_dma_release(rtwdev, rtwpci);
+  605 	spin_unlock_bh(&rtwpci->irq_lock);
+  606 }
+  607 
+  608 static void rtw_pci_deep_ps_enter(struct rtw_dev *rtwdev)
+  609 {
+  610 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  611 	struct rtw_pci_tx_ring *tx_ring;
+  612 	enum rtw_tx_queue_type queue;
+  613 	bool tx_empty = true;
+  614 
+  615 	if (rtw_fw_feature_check(&rtwdev->fw, FW_FEATURE_TX_WAKE))
+  616 		goto enter_deep_ps;
+  617 
+  618 	lockdep_assert_held(&rtwpci->irq_lock);
+  619 
+  620 	/* Deep PS state is not allowed to TX-DMA */
+  621 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++) {
+  622 		/* BCN queue is rsvd page, does not have DMA interrupt
+  623 		 * H2C queue is managed by firmware
+  624 		 */
+  625 		if (queue == RTW_TX_QUEUE_BCN ||
+  626 		    queue == RTW_TX_QUEUE_H2C)
+  627 			continue;
+  628 
+  629 		tx_ring = &rtwpci->tx_rings[queue];
+  630 
+  631 		/* check if there is any skb DMAing */
+  632 		if (skb_queue_len(&tx_ring->queue)) {
+  633 			tx_empty = false;
+  634 			break;
+  635 		}
+  636 	}
+  637 
+  638 	if (!tx_empty) {
+  639 		rtw_dbg(rtwdev, RTW_DBG_PS,
+  640 			"TX path not empty, cannot enter deep power save state\n");
+  641 		return;
+  642 	}
+  643 enter_deep_ps:
+  644 	set_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags);
+  645 	rtw_power_mode_change(rtwdev, true);
+  646 }
+  647 
+  648 static void rtw_pci_deep_ps_leave(struct rtw_dev *rtwdev)
+  649 {
+  650 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  651 
+  652 	lockdep_assert_held(&rtwpci->irq_lock);
+  653 
+  654 	if (test_and_clear_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags))
+  655 		rtw_power_mode_change(rtwdev, false);
+  656 }
+  657 
+  658 static void rtw_pci_deep_ps(struct rtw_dev *rtwdev, bool enter)
+  659 {
+  660 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  661 
+  662 	spin_lock_bh(&rtwpci->irq_lock);
+  663 
+  664 	if (enter && !test_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags))
+
+[lines 740-788]
+  740 			"timed out to flush pci tx ring[%d]\n", pci_q);
+  741 }
+  742 
+  743 static void __rtw_pci_flush_queues(struct rtw_dev *rtwdev, u32 pci_queues,
+  744 				   bool drop)
+  745 {
+  746 	u8 q;
+  747 
+  748 	for (q = 0; q < RTK_MAX_TX_QUEUE_NUM; q++) {
+  749 		/* Unnecessary to flush BCN, H2C and HI tx queues. */
+  750 		if (q == RTW_TX_QUEUE_BCN || q == RTW_TX_QUEUE_H2C ||
+  751 		    q == RTW_TX_QUEUE_HI0)
+  752 			continue;
+  753 
+  754 		if (pci_queues & BIT(q))
+  755 			__pci_flush_queue(rtwdev, q, drop);
+  756 	}
+  757 }
+  758 
+  759 static void rtw_pci_flush_queues(struct rtw_dev *rtwdev, u32 queues, bool drop)
+  760 {
+  761 	u32 pci_queues = 0;
+  762 	u8 i;
+  763 
+  764 	/* If all of the hardware queues are requested to flush,
+  765 	 * flush all of the pci queues.
+  766 	 */
+  767 	if (queues == BIT(rtwdev->hw->queues) - 1) {
+  768 		pci_queues = BIT(RTK_MAX_TX_QUEUE_NUM) - 1;
+  769 	} else {
+  770 		for (i = 0; i < rtwdev->hw->queues; i++)
+  771 			if (queues & BIT(i))
+  772 				pci_queues |= BIT(rtw_tx_ac_to_hwq(i));
+  773 	}
+  774 
+  775 	__rtw_pci_flush_queues(rtwdev, pci_queues, drop);
+  776 }
+  777 
+  778 static void rtw_pci_tx_kick_off_queue(struct rtw_dev *rtwdev,
+  779 				      enum rtw_tx_queue_type queue)
+  780 {
+  781 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  782 	struct rtw_pci_tx_ring *ring;
+  783 	u32 bd_idx;
+  784 
+  785 	ring = &rtwpci->tx_rings[queue];
+  786 	bd_idx = rtw_pci_tx_queue_idx_addr[queue];
+  787 
+  788 	spin_lock_bh(&rtwpci->irq_lock);
+
+[lines 796-970]
+  796 static void rtw_pci_tx_kick_off(struct rtw_dev *rtwdev)
+  797 {
+  798 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  799 	enum rtw_tx_queue_type queue;
+  800 
+  801 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++)
+  802 		if (test_and_clear_bit(queue, rtwpci->tx_queued))
+  803 			rtw_pci_tx_kick_off_queue(rtwdev, queue);
+  804 }
+  805 
+  806 static int rtw_pci_tx_write_data(struct rtw_dev *rtwdev,
+  807 				 struct rtw_tx_pkt_info *pkt_info,
+  808 				 struct sk_buff *skb,
+  809 				 enum rtw_tx_queue_type queue)
+  810 {
+  811 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  812 	const struct rtw_chip_info *chip = rtwdev->chip;
+  813 	struct rtw_pci_tx_ring *ring;
+  814 	struct rtw_pci_tx_data *tx_data;
+  815 	dma_addr_t dma;
+  816 	u32 tx_pkt_desc_sz = chip->tx_pkt_desc_sz;
+  817 	u32 tx_buf_desc_sz = chip->tx_buf_desc_sz;
+  818 	u32 size;
+  819 	u32 psb_len;
+  820 	u8 *pkt_desc;
+  821 	struct rtw_pci_tx_buffer_desc *buf_desc;
+  822 
+  823 	ring = &rtwpci->tx_rings[queue];
+  824 
+  825 	size = skb->len;
+  826 
+  827 	if (queue == RTW_TX_QUEUE_BCN)
+  828 		rtw_pci_release_rsvd_page(rtwpci, ring);
+  829 	else if (!avail_desc(ring->r.wp, ring->r.rp, ring->r.len))
+  830 		return -ENOSPC;
+  831 
+  832 	pkt_desc = skb_push(skb, chip->tx_pkt_desc_sz);
+  833 	memset(pkt_desc, 0, tx_pkt_desc_sz);
+  834 	pkt_info->qsel = rtw_pci_get_tx_qsel(skb, queue);
+  835 	rtw_tx_fill_tx_desc(rtwdev, pkt_info, skb);
+  836 	dma = dma_map_single(&rtwpci->pdev->dev, skb->data, skb->len,
+  837 			     DMA_TO_DEVICE);
+  838 	if (dma_mapping_error(&rtwpci->pdev->dev, dma))
+  839 		return -EBUSY;
+  840 
+  841 	/* after this we got dma mapped, there is no way back */
+  842 	buf_desc = get_tx_buffer_desc(ring, tx_buf_desc_sz);
+  843 	memset(buf_desc, 0, tx_buf_desc_sz);
+  844 	psb_len = (skb->len - 1) / 128 + 1;
+  845 	if (queue == RTW_TX_QUEUE_BCN)
+  846 		psb_len |= 1 << RTK_PCI_TXBD_OWN_OFFSET;
+  847 
+  848 	buf_desc[0].psb_len = cpu_to_le16(psb_len);
+  849 	buf_desc[0].buf_size = cpu_to_le16(tx_pkt_desc_sz);
+  850 	buf_desc[0].dma = cpu_to_le32(dma);
+  851 	buf_desc[1].buf_size = cpu_to_le16(size);
+  852 	buf_desc[1].dma = cpu_to_le32(dma + tx_pkt_desc_sz);
+  853 
+  854 	tx_data = rtw_pci_get_tx_data(skb);
+  855 	tx_data->dma = dma;
+  856 	tx_data->sn = pkt_info->sn;
+  857 
+  858 	spin_lock_bh(&rtwpci->irq_lock);
+  859 
+  860 	skb_queue_tail(&ring->queue, skb);
+  861 
+  862 	if (queue == RTW_TX_QUEUE_BCN)
+  863 		goto out_unlock;
+  864 
+  865 	/* update write-index, and kick it off later */
+  866 	set_bit(queue, rtwpci->tx_queued);
+  867 	if (++ring->r.wp >= ring->r.len)
+  868 		ring->r.wp = 0;
+  869 
+  870 out_unlock:
+  871 	spin_unlock_bh(&rtwpci->irq_lock);
+  872 
+  873 	return 0;
+  874 }
+  875 
+  876 static int rtw_pci_write_data_rsvd_page(struct rtw_dev *rtwdev, u8 *buf,
+  877 					u32 size)
+  878 {
+  879 	struct sk_buff *skb;
+  880 	struct rtw_tx_pkt_info pkt_info = {0};
+  881 	u8 reg_bcn_work;
+  882 	int ret;
+  883 
+  884 	skb = rtw_tx_write_data_rsvd_page_get(rtwdev, &pkt_info, buf, size);
+  885 	if (!skb)
+  886 		return -ENOMEM;
+  887 
+  888 	ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_BCN);
+  889 	if (ret) {
+  890 		rtw_err(rtwdev, "failed to write rsvd page data\n");
+  891 		return ret;
+  892 	}
+  893 
+  894 	/* reserved pages go through beacon queue */
+  895 	reg_bcn_work = rtw_read8(rtwdev, RTK_PCI_TXBD_BCN_WORK);
+  896 	reg_bcn_work |= BIT_PCI_BCNQ_FLAG;
+  897 	rtw_write8(rtwdev, RTK_PCI_TXBD_BCN_WORK, reg_bcn_work);
+  898 
+  899 	return 0;
+  900 }
+  901 
+  902 static int rtw_pci_write_data_h2c(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+  903 {
+  904 	struct sk_buff *skb;
+  905 	struct rtw_tx_pkt_info pkt_info = {0};
+  906 	int ret;
+  907 
+  908 	skb = rtw_tx_write_data_h2c_get(rtwdev, &pkt_info, buf, size);
+  909 	if (!skb)
+  910 		return -ENOMEM;
+  911 
+  912 	ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_H2C);
+  913 	if (ret) {
+  914 		rtw_err(rtwdev, "failed to write h2c data\n");
+  915 		return ret;
+  916 	}
+  917 
+  918 	rtw_pci_tx_kick_off_queue(rtwdev, RTW_TX_QUEUE_H2C);
+  919 
+  920 	return 0;
+  921 }
+  922 
+  923 static int rtw_pci_tx_write(struct rtw_dev *rtwdev,
+  924 			    struct rtw_tx_pkt_info *pkt_info,
+  925 			    struct sk_buff *skb)
+  926 {
+  927 	enum rtw_tx_queue_type queue = rtw_tx_queue_mapping(skb);
+  928 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  929 	struct rtw_pci_tx_ring *ring;
+  930 	int ret;
+  931 
+  932 	ret = rtw_pci_tx_write_data(rtwdev, pkt_info, skb, queue);
+  933 	if (ret)
+  934 		return ret;
+  935 
+  936 	ring = &rtwpci->tx_rings[queue];
+  937 	spin_lock_bh(&rtwpci->irq_lock);
+  938 	if (avail_desc(ring->r.wp, ring->r.rp, ring->r.len) < 2) {
+  939 		ieee80211_stop_queue(rtwdev->hw, skb_get_queue_mapping(skb));
+  940 		ring->queue_stopped = true;
+  941 	}
+  942 	spin_unlock_bh(&rtwpci->irq_lock);
+  943 
+  944 	return 0;
+  945 }
+  946 
+  947 static void rtw_pci_tx_isr(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci,
+  948 			   u8 hw_queue)
+  949 {
+  950 	struct ieee80211_hw *hw = rtwdev->hw;
+  951 	struct ieee80211_tx_info *info;
+  952 	struct rtw_pci_tx_ring *ring;
+  953 	struct rtw_pci_tx_data *tx_data;
+  954 	struct sk_buff *skb;
+  955 	u32 count;
+  956 	u32 bd_idx_addr;
+  957 	u32 bd_idx, cur_rp, rp_idx;
+  958 	u16 q_map;
+  959 
+  960 	ring = &rtwpci->tx_rings[hw_queue];
+  961 
+  962 	bd_idx_addr = rtw_pci_tx_queue_idx_addr[hw_queue];
+  963 	bd_idx = rtw_read32(rtwdev, bd_idx_addr);
+  964 	cur_rp = bd_idx >> 16;
+  965 	cur_rp &= TRX_BD_IDX_MASK;
+  966 	rp_idx = ring->r.rp;
+  967 	if (cur_rp >= ring->r.rp)
+  968 		count = cur_rp - ring->r.rp;
+  969 	else
+  970 		count = ring->r.len - (ring->r.rp - cur_rp);
+
+[lines 990-1038]
+  990 		if (!skb) {
+  991 			rtw_err(rtwdev, "failed to dequeue %d skb TX queue %d, BD=0x%08x, rp %d -> %d\n",
+  992 				count, hw_queue, bd_idx, ring->r.rp, cur_rp);
+  993 			break;
+  994 		}
+  995 		tx_data = rtw_pci_get_tx_data(skb);
+  996 		dma_unmap_single(&rtwpci->pdev->dev, tx_data->dma, skb->len,
+  997 				 DMA_TO_DEVICE);
+  998 
+  999 		/* just free command packets from host to card */
+ 1000 		if (hw_queue == RTW_TX_QUEUE_H2C) {
+ 1001 			dev_kfree_skb_irq(skb);
+ 1002 			continue;
+ 1003 		}
+ 1004 
+ 1005 		if (ring->queue_stopped &&
+ 1006 		    avail_desc(ring->r.wp, rp_idx, ring->r.len) > 4) {
+ 1007 			q_map = skb_get_queue_mapping(skb);
+ 1008 			ieee80211_wake_queue(hw, q_map);
+ 1009 			ring->queue_stopped = false;
+ 1010 		}
+ 1011 
+ 1012 		if (++rp_idx >= ring->r.len)
+ 1013 			rp_idx = 0;
+ 1014 
+ 1015 		skb_pull(skb, rtwdev->chip->tx_pkt_desc_sz);
+ 1016 
+ 1017 		info = IEEE80211_SKB_CB(skb);
+ 1018 
+ 1019 		/* enqueue to wait for tx report */
+ 1020 		if (info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS) {
+ 1021 			rtw_tx_report_enqueue(rtwdev, skb, tx_data->sn);
+ 1022 			continue;
+ 1023 		}
+ 1024 
+ 1025 		/* always ACK for others, then they won't be marked as drop */
+ 1026 		if (info->flags & IEEE80211_TX_CTL_NO_ACK)
+ 1027 			info->flags |= IEEE80211_TX_STAT_NOACK_TRANSMITTED;
+ 1028 		else
+ 1029 			info->flags |= IEEE80211_TX_STAT_ACK;
+ 1030 
+ 1031 		ieee80211_tx_info_clear_status(info);
+ 1032 		ieee80211_tx_status_irqsafe(hw, skb);
+ 1033 	}
+ 1034 
+ 1035 	ring->r.rp = cur_rp;
+ 1036 }
+ 1037 
+ 1038 /*
+
+[lines 1248-1296]
+ 1248 		rtw_pci_tx_isr(rtwdev, rtwpci, RTW_TX_QUEUE_HI0);
+ 1249 	if (irq_status[0] & IMR_BEDOK)
+ 1250 		rtw_pci_tx_isr(rtwdev, rtwpci, RTW_TX_QUEUE_BE);
+ 1251 	if (irq_status[0] & IMR_BKDOK)
+ 1252 		rtw_pci_tx_isr(rtwdev, rtwpci, RTW_TX_QUEUE_BK);
+ 1253 	if (irq_status[0] & IMR_VODOK)
+ 1254 		rtw_pci_tx_isr(rtwdev, rtwpci, RTW_TX_QUEUE_VO);
+ 1255 	if (irq_status[0] & IMR_VIDOK)
+ 1256 		rtw_pci_tx_isr(rtwdev, rtwpci, RTW_TX_QUEUE_VI);
+ 1257 	if (irq_status[3] & IMR_H2CDOK)
+ 1258 		rtw_pci_tx_isr(rtwdev, rtwpci, RTW_TX_QUEUE_H2C);
+ 1259 	if (irq_status[0] & IMR_ROK) {
+ 1260 		rtw_pci_rx_isr(rtwdev);
+ 1261 		rx = true;
+ 1262 	}
+ 1263 	if (unlikely(irq_status[0] & IMR_C2HCMD))
+ 1264 		rtw_fw_c2h_cmd_isr(rtwdev);
+ 1265 
+ 1266 	/* all of the jobs for this interrupt have been done */
+ 1267 	if (rtwpci->running)
+ 1268 		rtw_pci_enable_interrupt(rtwdev, rtwpci, rx);
+ 1269 	spin_unlock_bh(&rtwpci->irq_lock);
+ 1270 
+ 1271 	return IRQ_HANDLED;
+ 1272 }
+ 1273 
+ 1274 static int rtw_pci_io_mapping(struct rtw_dev *rtwdev,
+ 1275 			      struct pci_dev *pdev)
+ 1276 {
+ 1277 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 1278 	unsigned long len;
+ 1279 	u8 bar_id = 2;
+ 1280 	int ret;
+ 1281 
+ 1282 	ret = pci_request_regions(pdev, KBUILD_MODNAME);
+ 1283 	if (ret) {
+ 1284 		rtw_err(rtwdev, "failed to request pci regions\n");
+ 1285 		return ret;
+ 1286 	}
+ 1287 
+ 1288 	len = pci_resource_len(pdev, bar_id);
+ 1289 	rtwpci->mmap = pci_iomap(pdev, bar_id, len);
+ 1290 	if (!rtwpci->mmap) {
+ 1291 		pci_release_regions(pdev);
+ 1292 		rtw_err(rtwdev, "failed to map pci memory\n");
+ 1293 		return -ENOMEM;
+ 1294 	}
+ 1295 
+ 1296 	return 0;
+
+[lines 1659-1727]
+ 1659 err_out:
+ 1660 	return ret;
+ 1661 }
+ 1662 
+ 1663 static void rtw_pci_destroy(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ 1664 {
+ 1665 	rtw_pci_deinit(rtwdev);
+ 1666 	rtw_pci_io_unmapping(rtwdev, pdev);
+ 1667 }
+ 1668 
+ 1669 static const struct rtw_hci_ops rtw_pci_ops = {
+ 1670 	.tx_write = rtw_pci_tx_write,
+ 1671 	.tx_kick_off = rtw_pci_tx_kick_off,
+ 1672 	.flush_queues = rtw_pci_flush_queues,
+ 1673 	.setup = rtw_pci_setup,
+ 1674 	.start = rtw_pci_start,
+ 1675 	.stop = rtw_pci_stop,
+ 1676 	.deep_ps = rtw_pci_deep_ps,
+ 1677 	.link_ps = rtw_pci_link_ps,
+ 1678 	.interface_cfg = rtw_pci_interface_cfg,
+ 1679 	.dynamic_rx_agg = NULL,
+ 1680 	.write_firmware_page = rtw_write_firmware_page,
+ 1681 
+ 1682 	.read8 = rtw_pci_read8,
+ 1683 	.read16 = rtw_pci_read16,
+ 1684 	.read32 = rtw_pci_read32,
+ 1685 	.write8 = rtw_pci_write8,
+ 1686 	.write16 = rtw_pci_write16,
+ 1687 	.write32 = rtw_pci_write32,
+ 1688 	.write_data_rsvd_page = rtw_pci_write_data_rsvd_page,
+ 1689 	.write_data_h2c = rtw_pci_write_data_h2c,
+ 1690 };
+ 1691 
+ 1692 static int rtw_pci_request_irq(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ 1693 {
+ 1694 	unsigned int flags = PCI_IRQ_INTX;
+ 1695 	int ret;
+ 1696 
+ 1697 	if (!rtw_disable_msi)
+ 1698 		flags |= PCI_IRQ_MSI;
+ 1699 
+ 1700 	ret = pci_alloc_irq_vectors(pdev, 1, 1, flags);
+ 1701 	if (ret < 0) {
+ 1702 		rtw_err(rtwdev, "failed to alloc PCI irq vectors\n");
+ 1703 		return ret;
+ 1704 	}
+ 1705 
+ 1706 	ret = devm_request_threaded_irq(rtwdev->dev, pdev->irq,
+ 1707 					rtw_pci_interrupt_handler,
+ 1708 					rtw_pci_interrupt_threadfn,
+ 1709 					IRQF_SHARED, KBUILD_MODNAME, rtwdev);
+ 1710 	if (ret) {
+ 1711 		rtw_err(rtwdev, "failed to request irq %d\n", ret);
+ 1712 		pci_free_irq_vectors(pdev);
+ 1713 	}
+ 1714 
+ 1715 	return ret;
+ 1716 }
+ 1717 
+ 1718 static void rtw_pci_free_irq(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ 1719 {
+ 1720 	devm_free_irq(rtwdev->dev, pdev->irq, rtwdev);
+ 1721 	pci_free_irq_vectors(pdev);
+ 1722 }
+ 1723 
+ 1724 static int rtw_pci_napi_poll(struct napi_struct *napi, int budget)
+ 1725 {
+ 1726 	struct rtw_pci *rtwpci = container_of(napi, struct rtw_pci, napi);
+ 1727 	struct rtw_dev *rtwdev = container_of((void *)rtwpci, struct rtw_dev,
+
+[lines 1840-1888]
+ 1840 	hw = ieee80211_alloc_hw(drv_data_size, &rtw_ops);
+ 1841 	if (!hw) {
+ 1842 		dev_err(&pdev->dev, "failed to allocate hw\n");
+ 1843 		return -ENOMEM;
+ 1844 	}
+ 1845 
+ 1846 	rtwdev = hw->priv;
+ 1847 	rtwdev->hw = hw;
+ 1848 	rtwdev->dev = &pdev->dev;
+ 1849 	rtwdev->chip = (struct rtw_chip_info *)id->driver_data;
+ 1850 	rtwdev->hci.ops = &rtw_pci_ops;
+ 1851 	rtwdev->hci.type = RTW_HCI_TYPE_PCIE;
+ 1852 
+ 1853 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 1854 	atomic_set(&rtwpci->link_usage, 1);
+ 1855 
+ 1856 	ret = rtw_core_init(rtwdev);
+ 1857 	if (ret)
+ 1858 		goto err_release_hw;
+ 1859 
+ 1860 	rtw_dbg(rtwdev, RTW_DBG_PCI,
+ 1861 		"rtw88 pci probe: vendor=0x%4.04X device=0x%4.04X rev=%d\n",
+ 1862 		pdev->vendor, pdev->device, pdev->revision);
+ 1863 
+ 1864 	ret = rtw_pci_claim(rtwdev, pdev);
+ 1865 	if (ret) {
+ 1866 		rtw_err(rtwdev, "failed to claim pci device\n");
+ 1867 		goto err_deinit_core;
+ 1868 	}
+ 1869 
+ 1870 	ret = rtw_pci_setup_resource(rtwdev, pdev);
+ 1871 	if (ret) {
+ 1872 		rtw_err(rtwdev, "failed to setup pci resources\n");
+ 1873 		goto err_pci_declaim;
+ 1874 	}
+ 1875 
+ 1876 	ret = rtw_pci_napi_init(rtwdev);
+ 1877 	if (ret) {
+ 1878 		rtw_err(rtwdev, "failed to setup NAPI\n");
+ 1879 		goto err_pci_declaim;
+ 1880 	}
+ 1881 
+ 1882 	ret = rtw_chip_info_setup(rtwdev);
+ 1883 	if (ret) {
+ 1884 		rtw_err(rtwdev, "failed to setup chip information\n");
+ 1885 		goto err_destroy_pci;
+ 1886 	}
+ 1887 
+ 1888 	/* Disable PCIe ASPM L1 while doing NAPI poll for 8821CE */
+
+--- TX report queue: all queue operations, timer setup, purge and teardown ---
+
+=== Deferred TX report lifecycle | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c ===
+MATCH_LINES=31 CONTEXT_WINDOWS=2
+
+[lines 154-294]
+  154 		default:
+  155 		case IEEE80211_VHT_MCS_SUPPORT_0_9:
+  156 			rate = DESC_RATEVHT2SS_MCS9;
+  157 			break;
+  158 		}
+  159 	} else {
+  160 		rate = DESC_RATEVHT1SS_MCS9;
+  161 	}
+  162 
+  163 	return rate;
+  164 }
+  165 
+  166 static void rtw_tx_report_enable(struct rtw_dev *rtwdev,
+  167 				 struct rtw_tx_pkt_info *pkt_info)
+  168 {
+  169 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  170 
+  171 	/* [11:8], reserved, fills with zero
+  172 	 * [7:2],  tx report sequence number
+  173 	 * [1:0],  firmware use, fills with zero
+  174 	 */
+  175 	pkt_info->sn = (atomic_inc_return(&tx_report->sn) << 2) & 0xfc;
+  176 	pkt_info->report = true;
+  177 }
+  178 
+  179 void rtw_tx_report_purge_timer(struct timer_list *t)
+  180 {
+  181 	struct rtw_dev *rtwdev = timer_container_of(rtwdev, t,
+  182 						    tx_report.purge_timer);
+  183 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  184 	unsigned long flags;
+  185 
+  186 	if (skb_queue_len(&tx_report->queue) == 0)
+  187 		return;
+  188 
+  189 	rtw_warn(rtwdev, "failed to get tx report from firmware\n");
+  190 
+  191 	spin_lock_irqsave(&tx_report->q_lock, flags);
+  192 	rtw88_candidate_log("rtw88: TX report expired pending=%u; ACK unknown\n",
+  193                             skb_queue_len(&tx_report->queue));
+  194 	skb_queue_purge(&tx_report->queue);
+  195 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+  196 }
+  197 
+  198 void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn)
+  199 {
+  200 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  201 	unsigned long flags;
+  202 	u8 *drv_data;
+  203 
+  204 	/* pass sn to tx report handler through driver data */
+  205 	drv_data = (u8 *)IEEE80211_SKB_CB(skb)->status.status_driver_data;
+  206 	*drv_data = sn;
+  207 
+  208 	spin_lock_irqsave(&tx_report->q_lock, flags);
+  209 	__skb_queue_tail(&tx_report->queue, skb);
+  210 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+  211 
+  212 	mod_timer(&tx_report->purge_timer, jiffies + RTW_TX_PROBE_TIMEOUT);
+  213 }
+  214 EXPORT_SYMBOL(rtw_tx_report_enqueue);
+  215 
+  216 static void rtw_tx_report_tx_status(struct rtw_dev *rtwdev,
+  217 				    struct sk_buff *skb, bool acked)
+  218 {
+  219 	struct ieee80211_tx_info *info;
+  220 
+  221 	info = IEEE80211_SKB_CB(skb);
+  222 	ieee80211_tx_info_clear_status(info);
+  223 	if (acked)
+  224 		info->flags |= IEEE80211_TX_STAT_ACK;
+  225 	else
+  226 		info->flags &= ~IEEE80211_TX_STAT_ACK;
+  227 
+  228 	ieee80211_tx_status_irqsafe(rtwdev->hw, skb);
+  229 }
+  230 
+  231 void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src)
+  232 {
+  233 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  234 	struct rtw_c2h_cmd *c2h;
+  235 	struct sk_buff *cur, *tmp;
+  236 	unsigned long flags;
+  237 	u8 sn, st;
+  238 	u8 *n;
+  239 
+  240 	c2h = get_c2h_from_skb(skb);
+  241 
+  242 	if (src == C2H_CCX_TX_RPT) {
+  243 		sn = GET_CCX_REPORT_SEQNUM_V0(c2h->payload);
+  244 		st = GET_CCX_REPORT_STATUS_V0(c2h->payload);
+  245 	} else {
+  246 		sn = GET_CCX_REPORT_SEQNUM_V1(c2h->payload);
+  247 		st = GET_CCX_REPORT_STATUS_V1(c2h->payload);
+  248 	}
+  249 
+  250 	spin_lock_irqsave(&tx_report->q_lock, flags);
+  251 	skb_queue_walk_safe(&tx_report->queue, cur, tmp) {
+  252 		n = (u8 *)IEEE80211_SKB_CB(cur)->status.status_driver_data;
+  253 		if (*n == sn) {
+  254 			__skb_unlink(cur, &tx_report->queue);
+  255 			rtw_tx_report_tx_status(rtwdev, cur, st == 0);
+  256 			break;
+  257 		}
+  258 	}
+  259 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+  260 }
+  261 
+  262 static u8 rtw_get_mgmt_rate(struct rtw_dev *rtwdev, struct sk_buff *skb,
+  263 			    u8 lowest_rate, bool ignore_rate)
+  264 {
+  265 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
+  266 	struct ieee80211_vif *vif = tx_info->control.vif;
+  267 	bool force_lowest = test_bit(RTW_FLAG_FORCE_LOWEST_RATE, rtwdev->flags);
+  268 
+  269 	if (!vif || !vif->bss_conf.basic_rates || ignore_rate || force_lowest)
+  270 		return lowest_rate;
+  271 
+  272 	return __ffs(vif->bss_conf.basic_rates) + lowest_rate;
+  273 }
+  274 
+  275 static void rtw_tx_pkt_info_update_rate(struct rtw_dev *rtwdev,
+  276 					struct rtw_tx_pkt_info *pkt_info,
+  277 					struct sk_buff *skb,
+  278 					bool ignore_rate)
+  279 {
+  280 	if (rtwdev->hal.current_band_type == RTW_BAND_2G) {
+  281 		pkt_info->rate_id = RTW_RATEID_B_20M;
+  282 		pkt_info->rate = rtw_get_mgmt_rate(rtwdev, skb, DESC_RATE1M,
+  283 						   ignore_rate);
+  284 	} else {
+  285 		pkt_info->rate_id = RTW_RATEID_G;
+  286 		pkt_info->rate = rtw_get_mgmt_rate(rtwdev, skb, DESC_RATE6M,
+  287 						   ignore_rate);
+  288 	}
+  289 
+  290 	pkt_info->use_rate = true;
+  291 	pkt_info->dis_rate_fallback = true;
+  292 }
+  293 
+  294 static void rtw_tx_pkt_info_update_sec(struct rtw_dev *rtwdev,
+
+[lines 456-503]
+  456 		rtw_tx_data_pkt_info_update(rtwdev, pkt_info, sta, skb);
+  457 
+  458 	/* Management otherwise defaults to CCK on channel 6. Direct data without
+  459 	 * a peer STA otherwise leaves use_rate clear and inherits AP firmware RA.
+  460 	 * Pin only AWDL; infrastructure Wi-Fi retains its normal rate adaptation. */
+  461 	if (!sta && rtw_tx_is_awdl(skb))
+  462 		rtw_tx_awdl_rate(pkt_info);
+  463 
+  464 	bmc = is_broadcast_ether_addr(hdr->addr1) ||
+  465 	      is_multicast_ether_addr(hdr->addr1);
+  466 
+  467 	if (info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS)
+  468 		rtw_tx_report_enable(rtwdev, pkt_info);
+  469 
+  470 	pkt_info->bmc = bmc;
+  471 	rtw_tx_pkt_info_update_sec(rtwdev, pkt_info, skb);
+  472 	pkt_info->tx_pkt_size = skb->len;
+  473 	pkt_info->offset = chip->tx_pkt_desc_sz;
+  474 	pkt_info->qsel = skb->priority;
+  475 	pkt_info->ls = true;
+  476 
+  477 	/* maybe merge with tx status ? */
+  478 	rtw_tx_stats(rtwdev, vif, skb);
+  479 }
+  480 
+  481 void rtw_tx_rsvd_page_pkt_info_update(struct rtw_dev *rtwdev,
+  482 				      struct rtw_tx_pkt_info *pkt_info,
+  483 				      struct sk_buff *skb,
+  484 				      enum rtw_rsvd_packet_type type)
+  485 {
+  486 	const struct rtw_chip_info *chip = rtwdev->chip;
+  487 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+  488 	bool bmc;
+  489 
+  490 	/* A beacon or dummy reserved page packet indicates that it is the first
+  491 	 * reserved page, and the qsel of it will be set in each hci.
+  492 	 */
+  493 	if (type != RSVD_BEACON && type != RSVD_DUMMY)
+  494 		pkt_info->qsel = TX_DESC_QSEL_MGMT;
+  495 
+  496 	rtw_tx_pkt_info_update_rate(rtwdev, pkt_info, skb, true);
+  497 
+  498 	bmc = is_broadcast_ether_addr(hdr->addr1) ||
+  499 	      is_multicast_ether_addr(hdr->addr1);
+  500 	pkt_info->bmc = bmc;
+  501 	pkt_info->tx_pkt_size = skb->len;
+  502 	pkt_info->offset = chip->tx_pkt_desc_sz;
+  503 	pkt_info->ls = true;
+
+--- RTW88 core lifecycle and HCI dispatch ---
+
+=== Core/HCI lifecycle main.c | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c ===
+MATCH_LINES=11 CONTEXT_WINDOWS=3
+
+[lines 1556-1594]
+ 1556 }
+ 1557 
+ 1558 void rtw_power_off(struct rtw_dev *rtwdev)
+ 1559 {
+ 1560 	rtw_hci_stop(rtwdev);
+ 1561 	rtw_coex_power_off_setting(rtwdev);
+ 1562 	rtw_mac_power_off(rtwdev);
+ 1563 }
+ 1564 EXPORT_SYMBOL(rtw_power_off);
+ 1565 
+ 1566 void rtw_core_stop(struct rtw_dev *rtwdev)
+ 1567 {
+ 1568 	struct rtw_coex *coex = &rtwdev->coex;
+ 1569 
+ 1570 	clear_bit(RTW_FLAG_RUNNING, rtwdev->flags);
+ 1571 	clear_bit(RTW_FLAG_FW_RUNNING, rtwdev->flags);
+ 1572 
+ 1573 	mutex_unlock(&rtwdev->mutex);
+ 1574 
+ 1575 	cancel_work_sync(&rtwdev->c2h_work);
+ 1576 	cancel_work_sync(&rtwdev->update_beacon_work);
+ 1577 	cancel_delayed_work_sync(&rtwdev->watch_dog_work);
+ 1578 	cancel_delayed_work_sync(&coex->bt_relink_work);
+ 1579 	cancel_delayed_work_sync(&coex->bt_reenable_work);
+ 1580 	cancel_delayed_work_sync(&coex->defreeze_work);
+ 1581 	cancel_delayed_work_sync(&coex->wl_remain_work);
+ 1582 	cancel_delayed_work_sync(&coex->bt_remain_work);
+ 1583 	cancel_delayed_work_sync(&coex->wl_connecting_work);
+ 1584 	cancel_delayed_work_sync(&coex->bt_multi_link_remain_work);
+ 1585 	cancel_delayed_work_sync(&coex->wl_ccklock_work);
+ 1586 
+ 1587 	mutex_lock(&rtwdev->mutex);
+ 1588 
+ 1589 	rtwdev->chip->ops->power_off(rtwdev);
+ 1590 }
+ 1591 
+ 1592 static void rtw_init_ht_cap(struct rtw_dev *rtwdev,
+ 1593 			    struct ieee80211_sta_ht_cap *ht_cap)
+ 1594 {
+
+[lines 2150-2217]
+ 2150 
+ 2151 int rtw_core_init(struct rtw_dev *rtwdev)
+ 2152 {
+ 2153 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 2154 	struct rtw_coex *coex = &rtwdev->coex;
+ 2155 	int ret;
+ 2156 
+ 2157 	INIT_LIST_HEAD(&rtwdev->rsvd_page_list);
+ 2158 	INIT_LIST_HEAD(&rtwdev->txqs);
+ 2159 
+ 2160 	timer_setup(&rtwdev->tx_report.purge_timer,
+ 2161 		    rtw_tx_report_purge_timer, 0);
+ 2162 	rtwdev->tx_wq = alloc_workqueue("rtw_tx_wq", WQ_UNBOUND | WQ_HIGHPRI, 0);
+ 2163 	if (!rtwdev->tx_wq) {
+ 2164 		rtw_warn(rtwdev, "alloc_workqueue rtw_tx_wq failed\n");
+ 2165 		return -ENOMEM;
+ 2166 	}
+ 2167 
+ 2168 	INIT_DELAYED_WORK(&rtwdev->watch_dog_work, rtw_watch_dog_work);
+ 2169 	INIT_DELAYED_WORK(&coex->bt_relink_work, rtw_coex_bt_relink_work);
+ 2170 	INIT_DELAYED_WORK(&coex->bt_reenable_work, rtw_coex_bt_reenable_work);
+ 2171 	INIT_DELAYED_WORK(&coex->defreeze_work, rtw_coex_defreeze_work);
+ 2172 	INIT_DELAYED_WORK(&coex->wl_remain_work, rtw_coex_wl_remain_work);
+ 2173 	INIT_DELAYED_WORK(&coex->bt_remain_work, rtw_coex_bt_remain_work);
+ 2174 	INIT_DELAYED_WORK(&coex->wl_connecting_work, rtw_coex_wl_connecting_work);
+ 2175 	INIT_DELAYED_WORK(&coex->bt_multi_link_remain_work,
+ 2176 			  rtw_coex_bt_multi_link_remain_work);
+ 2177 	INIT_DELAYED_WORK(&coex->wl_ccklock_work, rtw_coex_wl_ccklock_work);
+ 2178 	INIT_WORK(&rtwdev->tx_work, rtw_tx_work);
+ 2179 	INIT_WORK(&rtwdev->c2h_work, rtw_c2h_work);
+ 2180 	INIT_WORK(&rtwdev->ips_work, rtw_ips_work);
+ 2181 	INIT_WORK(&rtwdev->fw_recovery_work, rtw_fw_recovery_work);
+ 2182 	INIT_WORK(&rtwdev->update_beacon_work, rtw_fw_update_beacon_work);
+ 2183 	INIT_WORK(&rtwdev->ba_work, rtw_txq_ba_work);
+ 2184 	skb_queue_head_init(&rtwdev->c2h_queue);
+ 2185 	skb_queue_head_init(&rtwdev->coex.queue);
+ 2186 	skb_queue_head_init(&rtwdev->tx_report.queue);
+ 2187 
+ 2188 	spin_lock_init(&rtwdev->txq_lock);
+ 2189 	spin_lock_init(&rtwdev->tx_report.q_lock);
+ 2190 
+ 2191 	mutex_init(&rtwdev->mutex);
+ 2192 	mutex_init(&rtwdev->hal.tx_power_mutex);
+ 2193 
+ 2194 	init_waitqueue_head(&rtwdev->coex.wait);
+ 2195 	init_completion(&rtwdev->lps_leave_check);
+ 2196 	init_completion(&rtwdev->fw_scan_density);
+ 2197 
+ 2198 	rtwdev->sec.total_cam_num = 32;
+ 2199 	rtwdev->hal.current_channel = 1;
+ 2200 	rtwdev->dm_info.fix_rate = U8_MAX;
+ 2201 
+ 2202 	rtw_stats_init(rtwdev);
+ 2203 
+ 2204 	/* default rx filter setting */
+ 2205 	rtwdev->hal.rcr = BIT_APP_FCS | BIT_APP_MIC | BIT_APP_ICV |
+ 2206 			  BIT_PKTCTL_DLEN | BIT_HTC_LOC_CTRL | BIT_APP_PHYSTS |
+ 2207 			  BIT_AB | BIT_AM | BIT_APM;
+ 2208 
+ 2209 	ret = rtw_load_firmware(rtwdev, RTW_NORMAL_FW);
+ 2210 	if (ret) {
+ 2211 		rtw_warn(rtwdev, "no firmware loaded\n");
+ 2212 		goto out;
+ 2213 	}
+ 2214 
+ 2215 	if (chip->wow_fw_name) {
+ 2216 		ret = rtw_load_firmware(rtwdev, RTW_WOWLAN_FW);
+ 2217 		if (ret) {
+
+[lines 2224-2294]
+ 2224 	}
+ 2225 
+ 2226 	return 0;
+ 2227 
+ 2228 out:
+ 2229 	destroy_workqueue(rtwdev->tx_wq);
+ 2230 	return ret;
+ 2231 }
+ 2232 EXPORT_SYMBOL(rtw_core_init);
+ 2233 
+ 2234 void rtw_core_deinit(struct rtw_dev *rtwdev)
+ 2235 {
+ 2236 	struct rtw_fw_state *fw = &rtwdev->fw;
+ 2237 	struct rtw_fw_state *wow_fw = &rtwdev->wow_fw;
+ 2238 	struct rtw_rsvd_page *rsvd_pkt, *tmp;
+ 2239 	unsigned long flags;
+ 2240 
+ 2241 	rtw_wait_firmware_completion(rtwdev);
+ 2242 
+ 2243 	if (fw->firmware)
+ 2244 		release_firmware(fw->firmware);
+ 2245 
+ 2246 	if (wow_fw->firmware)
+ 2247 		release_firmware(wow_fw->firmware);
+ 2248 
+ 2249 	destroy_workqueue(rtwdev->tx_wq);
+ 2250 	timer_delete_sync(&rtwdev->tx_report.purge_timer);
+ 2251 	spin_lock_irqsave(&rtwdev->tx_report.q_lock, flags);
+ 2252 	skb_queue_purge(&rtwdev->tx_report.queue);
+ 2253 	spin_unlock_irqrestore(&rtwdev->tx_report.q_lock, flags);
+ 2254 	skb_queue_purge(&rtwdev->coex.queue);
+ 2255 	skb_queue_purge(&rtwdev->c2h_queue);
+ 2256 
+ 2257 	list_for_each_entry_safe(rsvd_pkt, tmp, &rtwdev->rsvd_page_list,
+ 2258 				 build_list) {
+ 2259 		list_del(&rsvd_pkt->build_list);
+ 2260 		kfree(rsvd_pkt);
+ 2261 	}
+ 2262 
+ 2263 	mutex_destroy(&rtwdev->mutex);
+ 2264 	mutex_destroy(&rtwdev->hal.tx_power_mutex);
+ 2265 }
+ 2266 EXPORT_SYMBOL(rtw_core_deinit);
+ 2267 
+ 2268 int rtw_register_hw(struct rtw_dev *rtwdev, struct ieee80211_hw *hw)
+ 2269 {
+ 2270 	struct rtw_hal *hal = &rtwdev->hal;
+ 2271 	int max_tx_headroom = 0;
+ 2272 	int ret;
+ 2273 
+ 2274 	max_tx_headroom = rtwdev->chip->tx_pkt_desc_sz;
+ 2275 
+ 2276 	if (rtw_hci_type(rtwdev) == RTW_HCI_TYPE_SDIO)
+ 2277 		max_tx_headroom += RTW_SDIO_DATA_PTR_ALIGN;
+ 2278 
+ 2279 	hw->extra_tx_headroom = max_tx_headroom;
+ 2280 	hw->queues = IEEE80211_NUM_ACS;
+ 2281 	hw->txq_data_size = sizeof(struct rtw_txq);
+ 2282 	hw->sta_data_size = sizeof(struct rtw_sta_info);
+ 2283 	hw->vif_data_size = sizeof(struct rtw_vif);
+ 2284 
+ 2285 	ieee80211_hw_set(hw, SIGNAL_DBM);
+ 2286 	ieee80211_hw_set(hw, RX_INCLUDES_FCS);
+ 2287 	ieee80211_hw_set(hw, AMPDU_AGGREGATION);
+ 2288 	ieee80211_hw_set(hw, MFP_CAPABLE);
+ 2289 	ieee80211_hw_set(hw, REPORTS_TX_ACK_STATUS);
+ 2290 	ieee80211_hw_set(hw, SUPPORTS_PS);
+ 2291 	ieee80211_hw_set(hw, SUPPORTS_DYNAMIC_PS);
+ 2292 	ieee80211_hw_set(hw, SUPPORT_FAST_XMIT);
+ 2293 	if (rtwdev->chip->amsdu_in_ampdu)
+ 2294 		ieee80211_hw_set(hw, SUPPORTS_AMSDU_IN_AMPDU);
+
+=== Core/HCI lifecycle mac80211.c | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c ===
+MATCH_LINES=2 CONTEXT_WINDOWS=2
+
+[lines 15-53]
+   15 #include "wow.h"
+   16 #include "sar.h"
+   17 
+   18 static void rtw_ops_tx(struct ieee80211_hw *hw,
+   19 		       struct ieee80211_tx_control *control,
+   20 		       struct sk_buff *skb)
+   21 {
+   22 	struct rtw_dev *rtwdev = hw->priv;
+   23 
+   24 	if (!test_bit(RTW_FLAG_RUNNING, rtwdev->flags)) {
+   25 		ieee80211_free_txskb(hw, skb);
+   26 		return;
+   27 	}
+   28 
+   29 	rtw_tx(rtwdev, control, skb);
+   30 }
+   31 
+   32 static void rtw_ops_wake_tx_queue(struct ieee80211_hw *hw,
+   33 				  struct ieee80211_txq *txq)
+   34 {
+   35 	struct rtw_dev *rtwdev = hw->priv;
+   36 	struct rtw_txq *rtwtxq = (struct rtw_txq *)txq->drv_priv;
+   37 
+   38 	if (!test_bit(RTW_FLAG_RUNNING, rtwdev->flags))
+   39 		return;
+   40 
+   41 	spin_lock_bh(&rtwdev->txq_lock);
+   42 	if (list_empty(&rtwtxq->list))
+   43 		list_add_tail(&rtwtxq->list, &rtwdev->txqs);
+   44 	spin_unlock_bh(&rtwdev->txq_lock);
+   45 
+   46 	/* ensure to dequeue EAPOL (4/4) at the right time */
+   47 	if (txq->ac == IEEE80211_AC_VO)
+   48 		__rtw_tx_work(rtwdev);
+   49 	else
+   50 		queue_work(rtwdev->tx_wq, &rtwdev->tx_work);
+   51 }
+   52 
+   53 static int rtw_ops_start(struct ieee80211_hw *hw)
+
+[lines 60-98]
+   60 	mutex_unlock(&rtwdev->mutex);
+   61 
+   62 	return ret;
+   63 }
+   64 
+   65 static void rtw_ops_stop(struct ieee80211_hw *hw, bool suspend)
+   66 {
+   67 	struct rtw_dev *rtwdev = hw->priv;
+   68 
+   69 	mutex_lock(&rtwdev->mutex);
+   70 	rtw_core_stop(rtwdev);
+   71 	mutex_unlock(&rtwdev->mutex);
+   72 }
+   73 
+   74 static int rtw_ops_config(struct ieee80211_hw *hw, int radio_idx, u32 changed)
+   75 {
+   76 	struct rtw_dev *rtwdev = hw->priv;
+   77 	int ret = 0;
+   78 
+   79 	/* let previous ips work finish to ensure we don't leave ips twice */
+   80 	cancel_work_sync(&rtwdev->ips_work);
+   81 
+   82 	mutex_lock(&rtwdev->mutex);
+   83 
+   84 	rtw_leave_lps_deep(rtwdev);
+   85 
+   86 	if ((changed & IEEE80211_CONF_CHANGE_IDLE) &&
+   87 	    !(hw->conf.flags & IEEE80211_CONF_IDLE)) {
+   88 		ret = rtw_leave_ips(rtwdev);
+   89 		if (ret) {
+   90 			rtw_err(rtwdev, "failed to leave idle state\n");
+   91 			goto out;
+   92 		}
+   93 	}
+   94 
+   95 	if (changed & IEEE80211_CONF_CHANGE_CHANNEL)
+   96 		rtw_set_channel(rtwdev);
+   97 
+   98 	if ((changed & IEEE80211_CONF_CHANGE_IDLE) &&
+
+=== Core/HCI lifecycle pci.c | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c ===
+MATCH_LINES=14 CONTEXT_WINDOWS=8
+
+[lines 156-194]
+  156 {
+  157 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+  158 	u8 *head = rx_ring->r.head;
+  159 	int ring_sz = rx_ring->r.desc_size * rx_ring->r.len;
+  160 
+  161 	rtw_pci_free_rx_ring_skbs(rtwdev, rx_ring);
+  162 
+  163 	dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+  164 }
+  165 
+  166 static void rtw_pci_free_trx_ring(struct rtw_dev *rtwdev)
+  167 {
+  168 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  169 	struct rtw_pci_tx_ring *tx_ring;
+  170 	struct rtw_pci_rx_ring *rx_ring;
+  171 	int i;
+  172 
+  173 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+  174 		tx_ring = &rtwpci->tx_rings[i];
+  175 		rtw_pci_free_tx_ring(rtwdev, tx_ring);
+  176 	}
+  177 
+  178 	for (i = 0; i < RTK_MAX_RX_QUEUE_NUM; i++) {
+  179 		rx_ring = &rtwpci->rx_rings[i];
+  180 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+  181 	}
+  182 }
+  183 
+  184 static int rtw_pci_init_tx_ring(struct rtw_dev *rtwdev,
+  185 				struct rtw_pci_tx_ring *tx_ring,
+  186 				u8 desc_size, u32 len)
+  187 {
+  188 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+  189 	int ring_sz = desc_size * len;
+  190 	dma_addr_t dma;
+  191 	u8 *head;
+  192 
+  193 	if (len > TRX_BD_IDX_MASK) {
+  194 		rtw_err(rtwdev, "len %d exceeds maximum TX entries\n", len);
+
+[lines 362-400]
+  362 	for (j = 0; j < rx_alloced; j++) {
+  363 		rx_ring = &rtwpci->rx_rings[j];
+  364 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+  365 	}
+  366 
+  367 	return ret;
+  368 }
+  369 
+  370 static void rtw_pci_deinit(struct rtw_dev *rtwdev)
+  371 {
+  372 	rtw_pci_free_trx_ring(rtwdev);
+  373 }
+  374 
+  375 static int rtw_pci_init(struct rtw_dev *rtwdev)
+  376 {
+  377 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  378 	int ret = 0;
+  379 
+  380 	rtwpci->irq_mask[0] = IMR_HIGHDOK |
+  381 			      IMR_MGNTDOK |
+  382 			      IMR_BKDOK |
+  383 			      IMR_BEDOK |
+  384 			      IMR_VIDOK |
+  385 			      IMR_VODOK |
+  386 			      IMR_ROK |
+  387 			      IMR_BCNDMAINT_E |
+  388 			      IMR_C2HCMD |
+  389 			      0;
+  390 	rtwpci->irq_mask[1] = IMR_TXFOVW |
+  391 			      0;
+  392 	rtwpci->irq_mask[3] = IMR_H2CDOK |
+  393 			      0;
+  394 	spin_lock_init(&rtwpci->irq_lock);
+  395 	spin_lock_init(&rtwpci->hwirq_lock);
+  396 	ret = rtw_pci_init_trx_ring(rtwdev);
+  397 
+  398 	return ret;
+  399 }
+  400 
+
+[lines 533-571]
+  533 static int rtw_pci_setup(struct rtw_dev *rtwdev)
+  534 {
+  535 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  536 
+  537 	rtw_pci_reset_trx_ring(rtwdev);
+  538 	rtw_pci_dma_reset(rtwdev, rtwpci);
+  539 
+  540 	return 0;
+  541 }
+  542 
+  543 static void rtw_pci_dma_release(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci)
+  544 {
+  545 	struct rtw_pci_tx_ring *tx_ring;
+  546 	enum rtw_tx_queue_type queue;
+  547 
+  548 	rtw_pci_reset_trx_ring(rtwdev);
+  549 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++) {
+  550 		tx_ring = &rtwpci->tx_rings[queue];
+  551 		rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+  552 	}
+  553 }
+  554 
+  555 static void rtw_pci_napi_start(struct rtw_dev *rtwdev)
+  556 {
+  557 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  558 
+  559 	if (test_and_set_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+  560 		return;
+  561 
+  562 	napi_enable(&rtwpci->napi);
+  563 }
+  564 
+  565 static void rtw_pci_napi_stop(struct rtw_dev *rtwdev)
+  566 {
+  567 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  568 
+  569 	if (!test_and_clear_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+  570 		return;
+  571 
+
+[lines 594-632]
+  594 
+  595 	spin_lock_bh(&rtwpci->irq_lock);
+  596 	rtwpci->running = false;
+  597 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+  598 	spin_unlock_bh(&rtwpci->irq_lock);
+  599 
+  600 	synchronize_irq(pdev->irq);
+  601 	rtw_pci_napi_stop(rtwdev);
+  602 
+  603 	spin_lock_bh(&rtwpci->irq_lock);
+  604 	rtw_pci_dma_release(rtwdev, rtwpci);
+  605 	spin_unlock_bh(&rtwpci->irq_lock);
+  606 }
+  607 
+  608 static void rtw_pci_deep_ps_enter(struct rtw_dev *rtwdev)
+  609 {
+  610 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  611 	struct rtw_pci_tx_ring *tx_ring;
+  612 	enum rtw_tx_queue_type queue;
+  613 	bool tx_empty = true;
+  614 
+  615 	if (rtw_fw_feature_check(&rtwdev->fw, FW_FEATURE_TX_WAKE))
+  616 		goto enter_deep_ps;
+  617 
+  618 	lockdep_assert_held(&rtwpci->irq_lock);
+  619 
+  620 	/* Deep PS state is not allowed to TX-DMA */
+  621 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++) {
+  622 		/* BCN queue is rsvd page, does not have DMA interrupt
+  623 		 * H2C queue is managed by firmware
+  624 		 */
+  625 		if (queue == RTW_TX_QUEUE_BCN ||
+  626 		    queue == RTW_TX_QUEUE_H2C)
+  627 			continue;
+  628 
+  629 		tx_ring = &rtwpci->tx_rings[queue];
+  630 
+  631 		/* check if there is any skb DMAing */
+  632 		if (skb_queue_len(&tx_ring->queue)) {
+
+[lines 866-936]
+  866 	set_bit(queue, rtwpci->tx_queued);
+  867 	if (++ring->r.wp >= ring->r.len)
+  868 		ring->r.wp = 0;
+  869 
+  870 out_unlock:
+  871 	spin_unlock_bh(&rtwpci->irq_lock);
+  872 
+  873 	return 0;
+  874 }
+  875 
+  876 static int rtw_pci_write_data_rsvd_page(struct rtw_dev *rtwdev, u8 *buf,
+  877 					u32 size)
+  878 {
+  879 	struct sk_buff *skb;
+  880 	struct rtw_tx_pkt_info pkt_info = {0};
+  881 	u8 reg_bcn_work;
+  882 	int ret;
+  883 
+  884 	skb = rtw_tx_write_data_rsvd_page_get(rtwdev, &pkt_info, buf, size);
+  885 	if (!skb)
+  886 		return -ENOMEM;
+  887 
+  888 	ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_BCN);
+  889 	if (ret) {
+  890 		rtw_err(rtwdev, "failed to write rsvd page data\n");
+  891 		return ret;
+  892 	}
+  893 
+  894 	/* reserved pages go through beacon queue */
+  895 	reg_bcn_work = rtw_read8(rtwdev, RTK_PCI_TXBD_BCN_WORK);
+  896 	reg_bcn_work |= BIT_PCI_BCNQ_FLAG;
+  897 	rtw_write8(rtwdev, RTK_PCI_TXBD_BCN_WORK, reg_bcn_work);
+  898 
+  899 	return 0;
+  900 }
+  901 
+  902 static int rtw_pci_write_data_h2c(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+  903 {
+  904 	struct sk_buff *skb;
+  905 	struct rtw_tx_pkt_info pkt_info = {0};
+  906 	int ret;
+  907 
+  908 	skb = rtw_tx_write_data_h2c_get(rtwdev, &pkt_info, buf, size);
+  909 	if (!skb)
+  910 		return -ENOMEM;
+  911 
+  912 	ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_H2C);
+  913 	if (ret) {
+  914 		rtw_err(rtwdev, "failed to write h2c data\n");
+  915 		return ret;
+  916 	}
+  917 
+  918 	rtw_pci_tx_kick_off_queue(rtwdev, RTW_TX_QUEUE_H2C);
+  919 
+  920 	return 0;
+  921 }
+  922 
+  923 static int rtw_pci_tx_write(struct rtw_dev *rtwdev,
+  924 			    struct rtw_tx_pkt_info *pkt_info,
+  925 			    struct sk_buff *skb)
+  926 {
+  927 	enum rtw_tx_queue_type queue = rtw_tx_queue_mapping(skb);
+  928 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  929 	struct rtw_pci_tx_ring *ring;
+  930 	int ret;
+  931 
+  932 	ret = rtw_pci_tx_write_data(rtwdev, pkt_info, skb, queue);
+  933 	if (ret)
+  934 		return ret;
+  935 
+  936 	ring = &rtwpci->tx_rings[queue];
+
+[lines 1011-1049]
+ 1011 
+ 1012 		if (++rp_idx >= ring->r.len)
+ 1013 			rp_idx = 0;
+ 1014 
+ 1015 		skb_pull(skb, rtwdev->chip->tx_pkt_desc_sz);
+ 1016 
+ 1017 		info = IEEE80211_SKB_CB(skb);
+ 1018 
+ 1019 		/* enqueue to wait for tx report */
+ 1020 		if (info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS) {
+ 1021 			rtw_tx_report_enqueue(rtwdev, skb, tx_data->sn);
+ 1022 			continue;
+ 1023 		}
+ 1024 
+ 1025 		/* always ACK for others, then they won't be marked as drop */
+ 1026 		if (info->flags & IEEE80211_TX_CTL_NO_ACK)
+ 1027 			info->flags |= IEEE80211_TX_STAT_NOACK_TRANSMITTED;
+ 1028 		else
+ 1029 			info->flags |= IEEE80211_TX_STAT_ACK;
+ 1030 
+ 1031 		ieee80211_tx_info_clear_status(info);
+ 1032 		ieee80211_tx_status_irqsafe(hw, skb);
+ 1033 	}
+ 1034 
+ 1035 	ring->r.rp = cur_rp;
+ 1036 }
+ 1037 
+ 1038 /*
+ 1039  * Export BE TX ring software state for the debug poller in rtw88_compat.c.
+ 1040  * We can't include pci.h from compat (include-path shadowing), so this
+ 1041  * helper bridges the gap.
+ 1042  */
+ 1043 void rtw88_get_be_ring_state(struct rtw_dev *rtwdev,
+ 1044 			     u32 *sw_wp, u32 *sw_rp, u32 *qlen)
+ 1045 {
+ 1046 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 1047 	struct rtw_pci_tx_ring *ring = &rtwpci->tx_rings[RTW_TX_QUEUE_BE];
+ 1048 
+ 1049 	if (sw_wp) *sw_wp = ring->r.wp;
+
+[lines 1659-1717]
+ 1659 err_out:
+ 1660 	return ret;
+ 1661 }
+ 1662 
+ 1663 static void rtw_pci_destroy(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ 1664 {
+ 1665 	rtw_pci_deinit(rtwdev);
+ 1666 	rtw_pci_io_unmapping(rtwdev, pdev);
+ 1667 }
+ 1668 
+ 1669 static const struct rtw_hci_ops rtw_pci_ops = {
+ 1670 	.tx_write = rtw_pci_tx_write,
+ 1671 	.tx_kick_off = rtw_pci_tx_kick_off,
+ 1672 	.flush_queues = rtw_pci_flush_queues,
+ 1673 	.setup = rtw_pci_setup,
+ 1674 	.start = rtw_pci_start,
+ 1675 	.stop = rtw_pci_stop,
+ 1676 	.deep_ps = rtw_pci_deep_ps,
+ 1677 	.link_ps = rtw_pci_link_ps,
+ 1678 	.interface_cfg = rtw_pci_interface_cfg,
+ 1679 	.dynamic_rx_agg = NULL,
+ 1680 	.write_firmware_page = rtw_write_firmware_page,
+ 1681 
+ 1682 	.read8 = rtw_pci_read8,
+ 1683 	.read16 = rtw_pci_read16,
+ 1684 	.read32 = rtw_pci_read32,
+ 1685 	.write8 = rtw_pci_write8,
+ 1686 	.write16 = rtw_pci_write16,
+ 1687 	.write32 = rtw_pci_write32,
+ 1688 	.write_data_rsvd_page = rtw_pci_write_data_rsvd_page,
+ 1689 	.write_data_h2c = rtw_pci_write_data_h2c,
+ 1690 };
+ 1691 
+ 1692 static int rtw_pci_request_irq(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ 1693 {
+ 1694 	unsigned int flags = PCI_IRQ_INTX;
+ 1695 	int ret;
+ 1696 
+ 1697 	if (!rtw_disable_msi)
+ 1698 		flags |= PCI_IRQ_MSI;
+ 1699 
+ 1700 	ret = pci_alloc_irq_vectors(pdev, 1, 1, flags);
+ 1701 	if (ret < 0) {
+ 1702 		rtw_err(rtwdev, "failed to alloc PCI irq vectors\n");
+ 1703 		return ret;
+ 1704 	}
+ 1705 
+ 1706 	ret = devm_request_threaded_irq(rtwdev->dev, pdev->irq,
+ 1707 					rtw_pci_interrupt_handler,
+ 1708 					rtw_pci_interrupt_threadfn,
+ 1709 					IRQF_SHARED, KBUILD_MODNAME, rtwdev);
+ 1710 	if (ret) {
+ 1711 		rtw_err(rtwdev, "failed to request irq %d\n", ret);
+ 1712 		pci_free_irq_vectors(pdev);
+ 1713 	}
+ 1714 
+ 1715 	return ret;
+ 1716 }
+ 1717 
+
+[lines 1907-1972]
+ 1907 	return 0;
+ 1908 
+ 1909 err_destroy_pci:
+ 1910 	rtw_pci_napi_deinit(rtwdev);
+ 1911 	rtw_pci_destroy(rtwdev, pdev);
+ 1912 
+ 1913 err_pci_declaim:
+ 1914 	rtw_pci_declaim(rtwdev, pdev);
+ 1915 
+ 1916 err_deinit_core:
+ 1917 	rtw_core_deinit(rtwdev);
+ 1918 
+ 1919 err_release_hw:
+ 1920 	pci_set_drvdata(pdev, NULL);
+ 1921 	ieee80211_free_hw(hw);
+ 1922 
+ 1923 	return ret;
+ 1924 }
+ 1925 EXPORT_SYMBOL(rtw_pci_probe);
+ 1926 
+ 1927 void rtw_pci_remove(struct pci_dev *pdev)
+ 1928 {
+ 1929 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+ 1930 	struct rtw_dev *rtwdev;
+ 1931 	struct rtw_pci *rtwpci;
+ 1932 
+ 1933 	if (!hw)
+ 1934 		return;
+ 1935 
+ 1936 	rtwdev = hw->priv;
+ 1937 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 1938 
+ 1939 	rtw_unregister_hw(rtwdev, hw);
+ 1940 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+ 1941 	rtw_pci_free_irq(rtwdev, pdev);
+ 1942 	rtw_pci_napi_deinit(rtwdev);
+ 1943 	rtw_pci_destroy(rtwdev, pdev);
+ 1944 	rtw_pci_declaim(rtwdev, pdev);
+ 1945 	rtw_core_deinit(rtwdev);
+ 1946 	ieee80211_free_hw(hw);
+ 1947 	pci_set_drvdata(pdev, NULL);
+ 1948 }
+ 1949 EXPORT_SYMBOL(rtw_pci_remove);
+ 1950 
+ 1951 void rtw_pci_shutdown(struct pci_dev *pdev)
+ 1952 {
+ 1953 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+ 1954 	struct rtw_dev *rtwdev;
+ 1955 	const struct rtw_chip_info *chip;
+ 1956 
+ 1957 	if (!hw)
+ 1958 		return;
+ 1959 
+ 1960 	rtwdev = hw->priv;
+ 1961 	chip = rtwdev->chip;
+ 1962 
+ 1963 	if (chip->ops->shutdown)
+ 1964 		chip->ops->shutdown(rtwdev);
+ 1965 
+ 1966 	pci_set_power_state(pdev, PCI_D3hot);
+ 1967 }
+ 1968 EXPORT_SYMBOL(rtw_pci_shutdown);
+ 1969 
+ 1970 MODULE_AUTHOR("Realtek Corporation");
+ 1971 MODULE_DESCRIPTION("Realtek PCI 802.11ac wireless driver");
+ 1972 MODULE_LICENSE("Dual BSD/GPL");
+
+--- skb free helper and token claiming/reporting ---
+
+=== skbuff.h free and completion integration | src/compat/linux/skbuff.h ===
+MATCH_LINES=7 CONTEXT_WINDOWS=3
+
+[lines 1-73]
+    1 /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+    2 #ifndef _RTW88_COMPAT_SKBUFF_H
+    3 #define _RTW88_COMPAT_SKBUFF_H
+    4 
+    5 #include "types.h"
+    6 #include "slab.h"
+    7 #include "spinlock.h"
+    8 #include "skbuff_tx_completion.h"
+    9 #include <string.h>
+   10 
+   11 /*
+   12  * sk_buff shim for rtw88 macOS port.
+   13  *
+   14  * The real implementation in the kext routes through mbuf_t, but the driver
+   15  * C files see this struct. The kext sets up the sk_buff from mbuf data before
+   16  * calling driver TX functions, and converts back on RX.
+   17  */
+   18 struct sk_buff {
+   19     u8       *head;     /* allocation base */
+   20     u8       *data;     /* data pointer */
+   21     u8       *tail;     /* end of data */
+   22     u8       *end;      /* end of allocation */
+   23     u32       len;      /* data length */
+   24     u32       data_len; /* fragment length */
+   25     u16       protocol;
+   26     u8        pkt_type;
+   27     u32       priority;       /* 802.11 TID — becomes the TX-desc qsel */
+   28     u16       queue_mapping;  /* AC index — selects the hw TX ring (ac_to_hwq) */
+   29     u32       ip_summed;
+   30 
+   31     /* Control block — 80 bytes; mac80211.h asserts TX metadata fits. */
+   32     char      cb[80] __attribute__((aligned(8)));
+   33 
+   34     struct list_head list;
+   35 
+   36     /* For DMA — physical address of data */
+   37     dma_addr_t  dma_addr;
+   38 
+   39     /* Reference to mbuf for kext use */
+   40     void       *mbuf_ref;
+   41 
+   42     /* Optional native-WCL packet completion token. The callback is invoked
+   43      * once either when the PCI TX status arrives or when any path frees this
+   44      * skb before normal completion. It must be non-blocking/IRQ-safe. */
+   45     struct rtw88_skb_tx_completion tx_completion;
+   46 };
+   47 
+   48 /* sk_buff_head — queue */
+   49 struct sk_buff_head {
+   50     struct list_head list;
+   51     spinlock_t lock;
+   52     u32 qlen;
+   53 };
+   54 
+   55 static inline void skb_queue_head_init(struct sk_buff_head *list)
+   56 {
+   57     INIT_LIST_HEAD(&list->list);
+   58     spin_lock_init(&list->lock);
+   59     list->qlen = 0;
+   60 }
+   61 
+   62 static inline bool skb_queue_empty(const struct sk_buff_head *list)
+   63 {
+   64     return list_empty(&list->list);
+   65 }
+   66 
+   67 static inline u32 skb_queue_len(const struct sk_buff_head *list)
+   68 {
+   69     return list->qlen;
+   70 }
+   71 
+   72 static inline void skb_queue_tail(struct sk_buff_head *list, struct sk_buff *skb)
+   73 {
+
+[lines 93-131]
+   93 
+   94 static inline void skb_unlink(struct sk_buff *skb, struct sk_buff_head *list)
+   95 {
+   96     spin_lock_bh(&list->lock);
+   97     list_del(&skb->list);
+   98     list->qlen--;
+   99     spin_unlock_bh(&list->lock);
+  100 }
+  101 
+  102 /* forward — kfree_skb defined below */
+  103 static inline void kfree_skb(struct sk_buff *skb);
+  104 
+  105 static inline void skb_queue_purge(struct sk_buff_head *list)
+  106 {
+  107     struct sk_buff *skb;
+  108     while ((skb = skb_dequeue(list)) != NULL)
+  109         kfree_skb(skb);
+  110 }
+  111 
+  112 #define skb_queue_walk_safe(queue, skb, tmp) \
+  113     for ((skb) = container_of((queue)->list.next, struct sk_buff, list), \
+  114          (tmp) = container_of((skb)->list.next, struct sk_buff, list); \
+  115          &(skb)->list != &(queue)->list; \
+  116          (skb) = (tmp), (tmp) = container_of((tmp)->list.next, struct sk_buff, list))
+  117 
+  118 /* Allocate sk_buff with headroom. */
+  119 static inline struct sk_buff *alloc_skb(u32 size, gfp_t priority)
+  120 {
+  121     u32 alloc_size = size + 64; /* extra for head/tail room */
+  122     u8 *data = (u8 *)kmalloc(alloc_size, priority);
+  123     if (!data) return NULL;
+  124 
+  125     struct sk_buff *skb = (struct sk_buff *)kzalloc(sizeof(*skb), priority);
+  126     if (!skb) { kfree(data); return NULL; }
+  127 
+  128     skb->head = data;
+  129     skb->data = data;
+  130     skb->tail = data;
+  131     skb->end  = data + alloc_size;
+
+[lines 142-198]
+  142 static inline struct sk_buff *netdev_alloc_skb(void *dev, u32 size)
+  143 {
+  144     return alloc_skb(size, GFP_ATOMIC);
+  145 }
+  146 
+  147 static inline struct sk_buff *netdev_alloc_skb_ip_align(void *dev, u32 size)
+  148 {
+  149     return alloc_skb(size + 2, GFP_ATOMIC);
+  150 }
+  151 
+  152 static inline void kfree_skb(struct sk_buff *skb)
+  153 {
+  154     if (skb) {
+  155         /* A reset, queue purge or early TX rejection can free an skb without
+  156          * reaching txStatus(). Report that terminal outcome before memory is
+  157          * reclaimed; the atomic claim prevents a completion/free race from
+  158          * notifying the packet owner twice. */
+  159         rtw88_skb_tx_completion_report(&skb->tx_completion, false);
+  160         kfree(skb->head);
+  161         kfree(skb);
+  162     }
+  163 }
+  164 
+  165 static inline void dev_kfree_skb_any(struct sk_buff *skb)
+  166 {
+  167     kfree_skb(skb);
+  168 }
+  169 
+  170 static inline void dev_kfree_skb_irq(struct sk_buff *skb)
+  171 {
+  172     kfree_skb(skb);
+  173 }
+  174 
+  175 static inline void consume_skb(struct sk_buff *skb)
+  176 {
+  177     kfree_skb(skb);
+  178 }
+  179 
+  180 /* Data manipulation */
+  181 static inline u8 *skb_put(struct sk_buff *skb, u32 len)
+  182 {
+  183     u8 *tmp = skb->tail;
+  184     skb->tail += len;
+  185     skb->len  += len;
+  186     return tmp;
+  187 }
+  188 
+  189 static inline void *skb_put_zero(struct sk_buff *skb, u32 len)
+  190 {
+  191     void *tmp = skb_put(skb, len);
+  192     memset(tmp, 0, len);
+  193     return tmp;
+  194 }
+  195 
+  196 static inline void skb_put_data(struct sk_buff *skb, const void *data, u32 len)
+  197 {
+  198     void *tmp = skb_put(skb, len);
+
+=== TX completion token state machine | src/compat/linux/skbuff_tx_completion.h ===
+MATCH_LINES=28 CONTEXT_WINDOWS=1
+
+[lines 11-97]
+   11 #define _RTW88_COMPAT_SKBUFF_TX_COMPLETION_H
+   12 
+   13 #include <stdbool.h>
+   14 
+   15 #ifdef __cplusplus
+   16 extern "C" {
+   17 #endif
+   18 
+   19 typedef void (*rtw88_skb_tx_completion_fn)(void *context, void *cookie,
+   20                                            bool transmitted);
+   21 typedef void (*rtw88_skb_tx_completion_release_fn)(void *token);
+   22 
+   23 struct rtw88_skb_tx_completion_token {
+   24     rtw88_skb_tx_completion_fn callback;
+   25     rtw88_skb_tx_completion_release_fn release;
+   26     void *context;
+   27     void *cookie;
+   28 };
+   29 
+   30 /* This one pointer is the only completion state stored inside struct sk_buff. */
+   31 struct rtw88_skb_tx_completion {
+   32     struct rtw88_skb_tx_completion_token *token;
+   33 };
+   34 
+   35 static inline bool
+   36 rtw88_skb_tx_completion_bind(
+   37     struct rtw88_skb_tx_completion *completion,
+   38     struct rtw88_skb_tx_completion_token *token)
+   39 {
+   40     if (!completion || !token || !token->callback || !token->release)
+   41         return false;
+   42 
+   43     struct rtw88_skb_tx_completion_token *expected = 0;
+   44     /* Publish a fully initialized, independently allocated token atomically. */
+   45     return __atomic_compare_exchange_n(&completion->token, &expected, token,
+   46                                        false, __ATOMIC_RELEASE,
+   47                                        __ATOMIC_RELAXED);
+   48 }
+   49 
+   50 /*
+   51  * Claim the token with one atomic exchange. After this returns, callers must
+   52  * not touch completion again: the skb may be freed by the losing free path.
+   53  */
+   54 static inline struct rtw88_skb_tx_completion_token *
+   55 rtw88_skb_tx_completion_claim(struct rtw88_skb_tx_completion *completion)
+   56 {
+   57     if (!completion)
+   58         return 0;
+   59     return __atomic_exchange_n(&completion->token,
+   60                                (struct rtw88_skb_tx_completion_token *)0,
+   61                                __ATOMIC_ACQ_REL);
+   62 }
+   63 
+   64 /* Dispatch uses only the detached token, never memory owned by the skb. */
+   65 static inline bool
+   66 rtw88_skb_tx_completion_dispatch(
+   67     struct rtw88_skb_tx_completion_token *token, bool transmitted)
+   68 {
+   69     if (!token)
+   70         return false;
+   71 
+   72     rtw88_skb_tx_completion_fn callback = token->callback;
+   73     rtw88_skb_tx_completion_release_fn release = token->release;
+   74     void *context = token->context;
+   75     void *cookie = token->cookie;
+   76 
+   77     if (callback)
+   78         callback(context, cookie, transmitted);
+   79     if (release)
+   80         release(token);
+   81     return callback != 0;
+   82 }
+   83 
+   84 static inline bool
+   85 rtw88_skb_tx_completion_report(struct rtw88_skb_tx_completion *completion,
+   86                                bool transmitted)
+   87 {
+   88     struct rtw88_skb_tx_completion_token *token =
+   89         rtw88_skb_tx_completion_claim(completion);
+   90     return rtw88_skb_tx_completion_dispatch(token, transmitted);
+   91 }
+   92 
+   93 #ifdef __cplusplus
+   94 }
+   95 #endif
+   96 
+   97 #endif /* _RTW88_COMPAT_SKBUFF_TX_COMPLETION_H */
+
+--- Compat callbacks, workqueue flush and teardown ---
+
+=== Compatibility datapath and callback teardown | src/compat/rtw88_compat.c ===
+MATCH_LINES=54 CONTEXT_WINDOWS=7
+
+[lines 151-189]
+  151 
+  152 /* ------------------------------------------------------------------ */
+  153 /*  Workqueue implementation (kernel threads + IOLock)                  */
+  154 /* ------------------------------------------------------------------ */
+  155 
+  156 /* One state lock also serializes transfers/cancellation across queues. */
+  157 static IOLock *work_state_lock;
+  158 struct workqueue_struct *system_wq      = NULL;
+  159 struct workqueue_struct *system_long_wq = NULL;
+  160 /* Keep PCI threaded IRQ + NAPI off the control-plane workqueues. */
+  161 static struct workqueue_struct *g_datapath_wq = NULL;
+  162 static uint32_t g_rtw88_rx_poll_active = 0;
+  163 static thread_t g_rtw88_rx_poll_thread = NULL;
+  164 
+  165 static void wq_thread_fn(void *arg, wait_result_t wr)
+  166 {
+  167     struct workqueue_struct *wq = (struct workqueue_struct *)arg;
+  168 
+  169     IOLockLock(wq->lock);
+  170     while (wq->running || !list_empty(&wq->queue)) {
+  171         if (list_empty(&wq->queue)) {
+  172             IOLockSleep(wq->lock, &wq->queue, THREAD_UNINT);
+  173             continue;
+  174         }
+  175         struct work_struct *work = container_of(wq->queue.next,
+  176                                                 struct work_struct, entry);
+  177         list_del_init(&work->entry);
+  178         work->pending = 0;
+  179         work->executing = true;
+  180         wq->active++;
+  181         IOLockUnlock(wq->lock);
+  182         if (work->func) work->func(work);
+  183         IOLockLock(wq->lock);
+  184         work->executing = false;
+  185         wq->active--;
+  186         IOLockWakeup(wq->lock, work, false);
+  187         IOLockWakeup(wq->lock, &wq->queue, false);
+  188     }
+  189 
+
+[lines 229-352]
+  229     wq->running = 0;
+  230     IOLockWakeup(wq->lock, &wq->queue, false);
+  231     while (!wq->done)
+  232         IOLockSleep(wq->lock, (void *)&wq->done, THREAD_UNINT);
+  233     IOLockUnlock(wq->lock);
+  234     IOFree(wq, sizeof(*wq));
+  235 }
+  236 
+  237 /* All work state below is protected by work_state_lock. Owners must stop
+  238  * producers and cancel delayed work before destroying the target queue. */
+  239 static bool queue_work_locked(struct workqueue_struct *wq, struct work_struct *work)
+  240 {
+  241     if (!wq->running || work->pending || work->canceling)
+  242         return false;
+  243     if (work->executing && work->wq != wq)
+  244         return false;
+  245     work->wq = wq;
+  246     work->pending = 1;
+  247     list_add_tail(&work->entry, &wq->queue);
+  248     IOLockWakeup(work_state_lock, &wq->queue, false);
+  249     return true;
+  250 }
+  251 
+  252 bool queue_work(struct workqueue_struct *wq, struct work_struct *work)
+  253 {
+  254     if (!wq || !work || !work_state_lock) return false;
+  255     IOLockLock(work_state_lock);
+  256     bool queued = queue_work_locked(wq, work);
+  257     IOLockUnlock(work_state_lock);
+  258     return queued;
+  259 }
+  260 
+  261 bool schedule_work(struct work_struct *work)
+  262 {
+  263     return queue_work(system_wq, work);
+  264 }
+  265 
+  266 void rtw88_delayed_work_timer_fn(struct timer_list *t)
+  267 {
+  268     struct delayed_work *dwork = from_timer(dwork, t, timer);
+  269     IOLockLock(work_state_lock);
+  270     if (dwork->work.pending == 2) {
+  271         dwork->work.pending = 0;
+  272         queue_work_locked(dwork->work.wq, &dwork->work);
+  273     }
+  274     IOLockWakeup(work_state_lock, &dwork->work, false);
+  275     IOLockUnlock(work_state_lock);
+  276 }
+  277 
+  278 bool queue_delayed_work(struct workqueue_struct *wq,
+  279                        struct delayed_work *dwork, unsigned long delay)
+  280 {
+  281     if (!wq || !dwork || !work_state_lock) return false;
+  282     if (!delay) return queue_work(wq, &dwork->work);
+  283     IOLockLock(work_state_lock);
+  284     struct work_struct *work = &dwork->work;
+  285     if (!wq->running || work->pending || work->canceling ||
+  286         (work->executing && work->wq != wq)) {
+  287         IOLockUnlock(work_state_lock);
+  288         return false;
+  289     }
+  290     work->wq = wq;
+  291     work->pending = 2;
+  292     mod_timer(&dwork->timer, jiffies + delay);
+  293     if (!dwork->timer.call) work->pending = 0;
+  294     bool queued = work->pending != 0;
+  295     IOLockUnlock(work_state_lock);
+  296     return queued;
+  297 }
+  298 
+  299 bool schedule_delayed_work(struct delayed_work *dwork, unsigned long delay)
+  300 {
+  301     return queue_delayed_work(system_wq, dwork, delay);
+  302 }
+  303 
+  304 void flush_workqueue(struct workqueue_struct *wq)
+  305 {
+  306     if (!wq || !work_state_lock) return;
+  307     IOLockLock(work_state_lock);
+  308     while (!list_empty(&wq->queue) || wq->active)
+  309         IOLockSleep(work_state_lock, &wq->queue, THREAD_UNINT);
+  310     IOLockUnlock(work_state_lock);
+  311 }
+  312 
+  313 static bool remove_pending_work(struct work_struct *work)
+  314 {
+  315     bool pending = work->pending != 0;
+  316     if (work->pending == 1) list_del_init(&work->entry);
+  317     work->pending = 0;
+  318     if (pending && work->wq)
+  319         IOLockWakeup(work_state_lock, &work->wq->queue, false);
+  320     IOLockWakeup(work_state_lock, work, false);
+  321     return pending;
+  322 }
+  323 
+  324 bool cancel_work_sync(struct work_struct *work)
+  325 {
+  326     if (!work || !work_state_lock) return false;
+  327     IOLockLock(work_state_lock);
+  328     work->canceling = true;
+  329     bool pending = remove_pending_work(work);
+  330     while (work->executing)
+  331         IOLockSleep(work_state_lock, work, THREAD_UNINT);
+  332     work->canceling = false;
+  333     IOLockUnlock(work_state_lock);
+  334     return pending;
+  335 }
+  336 
+  337 bool cancel_delayed_work_sync(struct delayed_work *dwork)
+  338 {
+  339     if (!dwork || !work_state_lock) return false;
+  340     IOLockLock(work_state_lock);
+  341     dwork->work.canceling = true;
+  342     bool pending = remove_pending_work(&dwork->work);
+  343     IOLockUnlock(work_state_lock);
+  344     /* Never wait for a timer callback while holding its state lock. */
+  345     del_timer_sync(&dwork->timer);
+  346     IOLockLock(work_state_lock);
+  347     while (dwork->work.executing)
+  348         IOLockSleep(work_state_lock, &dwork->work, THREAD_UNINT);
+  349     dwork->work.canceling = false;
+  350     IOLockUnlock(work_state_lock);
+  351     return pending;
+  352 }
+
+[lines 365-403]
+  365 {
+  366     if (!work || !work_state_lock) return;
+  367     IOLockLock(work_state_lock);
+  368     while (work->pending || work->executing)
+  369         IOLockSleep(work_state_lock, work, THREAD_UNINT);
+  370     IOLockUnlock(work_state_lock);
+  371 }
+  372 
+  373 void flush_scheduled_work(void)
+  374 {
+  375     flush_workqueue(system_wq);
+  376 }
+  377 
+  378 /* ------------------------------------------------------------------ */
+  379 /*  Timer implementation (thread_call)                                  */
+  380 /* ------------------------------------------------------------------ */
+  381 
+  382 static void timer_call_fn(thread_call_param_t p0, thread_call_param_t p1)
+  383 {
+  384     struct timer_list *timer = (struct timer_list *)p0;
+  385     (void)p1;
+  386     /* Only fire if still marked active (del_timer may have raced) */
+  387     if (timer->active) {
+  388         timer->active = 0;
+  389         if (timer->function) timer->function(timer);
+  390     }
+  391 }
+  392 
+  393 void timer_setup(struct timer_list *timer,
+  394                  void (*func)(struct timer_list *t),
+  395                  unsigned int flags)
+  396 {
+  397     timer->function = func;
+  398     timer->expires  = 0;
+  399     timer->active   = 0;
+  400     timer->call = NULL;
+  401 }
+  402 
+  403 int mod_timer(struct timer_list *timer, unsigned long expires)
+
+[lines 443-482]
+  443 /* ------------------------------------------------------------------ */
+  444 /*  mac80211 callbacks                                                  */
+  445 /* ------------------------------------------------------------------ */
+  446 
+  447 struct rtw88_hw_callbacks {
+  448     void (*rx_frame)(void *kext_hw, struct sk_buff *skb);
+  449     void (*tx_status)(void *kext_hw, struct sk_buff *skb);
+  450     void (*scan_done)(void *kext_hw, bool aborted);
+  451 };
+  452 
+  453 static struct rtw88_hw_callbacks *g_hw_cbs = NULL;
+  454 static void *g_kext_hw = NULL;
+  455 
+  456 /* Forward declaration — defined later in ieee80211_alloc_hw section */
+  457 static struct ieee80211_hw *g_rtw88_hw;
+  458 
+  459 irq_handler_t g_irq_handler = NULL;
+  460 irq_handler_t g_irq_thread_fn = NULL;
+  461 void *g_irq_dev_id = NULL;
+  462 
+  463 /* XNU thread_call can be re-entered while an earlier invocation is still
+  464  * running. Linux NAPI/threaded IRQ relies on single-flight execution, so use
+  465  * one ordered queue for the PCI datapath instead. */
+  466 static struct work_struct g_irq_work;
+  467 static bool g_irq_work_initialized = false;
+  468 
+  469 /* Single active VIF — registered by the kext after add_interface so that
+  470  * ieee80211_iterate_active_interfaces_atomic can deliver the iterator to
+  471  * rtw88's internal callbacks (e.g. rtw_build_rsvd_page_iter). */
+  472 static struct ieee80211_vif *g_rtw88_vif = NULL;
+  473 static struct ieee80211_vif *g_rtw88_sta_vif = NULL;
+  474 static struct ieee80211_sta *g_rtw88_sta = NULL;
+  475 
+  476 void rtw88_register_sta(struct ieee80211_vif *vif, struct ieee80211_sta *sta)
+  477 {
+  478     g_rtw88_sta_vif = vif;
+  479     __atomic_store_n(&g_rtw88_sta, sta, __ATOMIC_SEQ_CST);
+  480 }
+  481 
+  482 /* Returns false if an RX poll may still be using the station; the caller must
+
+[lines 542-731]
+  542         INIT_WORK(&g_irq_work, rtw88_irq_work_fn);
+  543         g_irq_work_initialized = true;
+  544     }
+  545     return 0;
+  546 }
+  547 
+  548 void rtw88_devm_free_irq(struct device *dev, unsigned int irq, void *dev_id)
+  549 {
+  550     (void)dev; (void)irq; (void)dev_id;
+  551     if (g_irq_work_initialized)
+  552         cancel_work_sync(&g_irq_work);
+  553     g_irq_handler = NULL;
+  554     g_irq_thread_fn = NULL;
+  555     g_irq_dev_id = NULL;
+  556 }
+  557 
+  558 void rtw88_trigger_interrupt(void)
+  559 {
+  560     if (!g_irq_handler || !g_irq_dev_id)
+  561         return;
+  562 
+  563     int ret = g_irq_handler(0, g_irq_dev_id);
+  564     if (ret == IRQ_WAKE_THREAD && g_irq_work_initialized && g_datapath_wq)
+  565         queue_work(g_datapath_wq, &g_irq_work);
+  566 }
+  567 
+  568 void rtw88_synchronize_irq(void)
+  569 {
+  570     if (g_irq_work_initialized)
+  571         flush_work(&g_irq_work);
+  572 }
+  573 
+  574 static void rtw88_napi_work_fn(struct work_struct *work)
+  575 {
+  576     struct napi_struct *napi = container_of(work, struct napi_struct, work);
+  577     if (!napi || !napi->enabled || !napi->poll)
+  578         return;
+  579 
+  580     /* RX status lookup (rtw_rx_addr_match) dereferences the registered peer
+  581      * station outside rtwdev->mutex. Publish poll activity so station removal
+  582      * can wait for lookups that may have observed the old pointer. */
+  583     __atomic_store_n(&g_rtw88_rx_poll_thread, current_thread(), __ATOMIC_SEQ_CST);
+  584     __atomic_add_fetch(&g_rtw88_rx_poll_active, 1, __ATOMIC_SEQ_CST);
+  585     int done = napi->poll(napi, napi->weight);
+  586     __atomic_sub_fetch(&g_rtw88_rx_poll_active, 1, __ATOMIC_SEQ_CST);
+  587     __atomic_store_n(&g_rtw88_rx_poll_thread, (thread_t)NULL, __ATOMIC_SEQ_CST);
+  588 
+  589     /* A full budget means Linux would leave NAPI scheduled. Requeue the same
+  590      * work item; the ordered queue guarantees the polls never overlap. */
+  591     if (napi->enabled && done >= napi->weight && g_datapath_wq)
+  592         queue_work(g_datapath_wq, &napi->work);
+  593 }
+  594 
+  595 void rtw88_netif_napi_add(struct net_device *dev, struct napi_struct *napi,
+  596                            int (*poll_fn)(struct napi_struct *, int))
+  597 {
+  598     if (!napi) return;
+  599     napi->dev = dev;
+  600     napi->poll = poll_fn;
+  601     napi->weight = 64;
+  602     napi->enabled = false;
+  603     INIT_WORK(&napi->work, rtw88_napi_work_fn);
+  604 }
+  605 
+  606 void rtw88_napi_enable(struct napi_struct *napi)
+  607 {
+  608     if (napi) napi->enabled = true;
+  609 }
+  610 
+  611 void rtw88_napi_synchronize(struct napi_struct *napi)
+  612 {
+  613     if (napi)
+  614         flush_work(&napi->work);
+  615 }
+  616 
+  617 void rtw88_napi_disable(struct napi_struct *napi)
+  618 {
+  619     if (!napi) return;
+  620     napi->enabled = false;
+  621     cancel_work_sync(&napi->work);
+  622 }
+  623 
+  624 void rtw88_netif_napi_del(struct napi_struct *napi)
+  625 {
+  626     if (!napi) return;
+  627     rtw88_napi_disable(napi);
+  628     napi->poll = NULL;
+  629     napi->dev = NULL;
+  630 }
+  631 
+  632 void rtw88_napi_schedule(struct napi_struct *napi)
+  633 {
+  634     if (napi && napi->enabled && napi->poll && g_datapath_wq)
+  635         queue_work(g_datapath_wq, &napi->work);
+  636 }
+  637 
+  638 void rtw88_set_hw_callbacks(struct rtw88_hw_callbacks *cbs, void *kext_hw)
+  639 {
+  640     g_hw_cbs  = cbs;
+  641     g_kext_hw = kext_hw;
+  642     /* Populate the kext_hw back-pointer in the hw struct so all callbacks
+  643      * that dereference hw->kext_hw actually reach the RTW88IEEE80211 object.
+  644      * Without this every callback fires with NULL and silently does nothing. */
+  645     if (g_rtw88_hw)
+  646         g_rtw88_hw->kext_hw = kext_hw;
+  647 }
+  648 
+  649 void ieee80211_rx_irqsafe(struct ieee80211_hw *hw, struct sk_buff *skb)
+  650 {
+  651     /* Linux mac80211 removes the trailing 802.11 FCS before handing frames to
+  652      * normal RX processing when a driver advertises RX_INCLUDES_FCS.  This
+  653      * port bypasses mac80211's RX core and forwards the rtw88 skb directly to
+  654      * RTW88IEEE80211, so preserving the four CRC bytes changes the effective
+  655      * ABI: data packets grow four bytes and, critically, AWDL action parsers
+  656      * interpret the CRC as another TLV/trailing garbage.  rtw88 explicitly
+  657      * sets RX_INCLUDES_FCS in rtw_register_hw(), therefore emulate the missing
+  658      * mac80211 normalization here, once, for every RX consumer. */
+  659     if (skb && hw && ieee80211_hw_check(hw, RX_INCLUDES_FCS) && skb->len >= 4)
+  660         skb_trim(skb, skb->len - 4);
+  661 
+  662     /* Use g_kext_hw as fallback in case hw->kext_hw wasn't set yet */
+  663     void *ctx = hw ? hw->kext_hw : NULL;
+  664     if (!ctx) ctx = g_kext_hw;
+  665     if (g_hw_cbs && g_hw_cbs->rx_frame)
+  666         g_hw_cbs->rx_frame(ctx, skb);
+  667     else
+  668         kfree_skb(skb);
+  669 }
+  670 
+  671 void ieee80211_rx_napi(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
+  672                        struct sk_buff *skb, struct napi_struct *napi)
+  673 {
+  674     ieee80211_rx_irqsafe(hw, skb);
+  675 }
+  676 
+  677 void ieee80211_tx_status_irqsafe(struct ieee80211_hw *hw, struct sk_buff *skb)
+  678 {
+  679     void *ctx = hw ? hw->kext_hw : NULL;
+  680     if (!ctx) ctx = g_kext_hw;
+  681     if (g_hw_cbs && g_hw_cbs->tx_status)
+  682         g_hw_cbs->tx_status(ctx, skb);
+  683     else
+  684         kfree_skb(skb);
+  685 }
+  686 
+  687 void ieee80211_tx_status(struct ieee80211_hw *hw, struct sk_buff *skb)
+  688 {
+  689     ieee80211_tx_status_irqsafe(hw, skb);
+  690 }
+  691 
+  692 void ieee80211_free_txskb(struct ieee80211_hw *hw, struct sk_buff *skb)
+  693 {
+  694     kfree_skb(skb);
+  695 }
+  696 
+  697 void ieee80211_scan_completed(struct ieee80211_hw *hw,
+  698                                struct cfg80211_scan_info *info)
+  699 {
+  700     void *ctx = hw ? hw->kext_hw : NULL;
+  701     if (!ctx) ctx = g_kext_hw;
+  702     if (g_hw_cbs && g_hw_cbs->scan_done)
+  703         g_hw_cbs->scan_done(ctx, info ? info->aborted : false);
+  704 }
+  705 
+  706 void ieee80211_stop_queues(struct ieee80211_hw *hw)  {}
+  707 void ieee80211_wake_queues(struct ieee80211_hw *hw)  {}
+  708 void ieee80211_stop_queue(struct ieee80211_hw *hw, int q) {}
+  709 void ieee80211_wake_queue(struct ieee80211_hw *hw, int q) {}
+  710 void ieee80211_schedule_txq(struct ieee80211_hw *hw, struct ieee80211_txq *txq) {}
+  711 
+  712 void ieee80211_connection_loss(struct ieee80211_vif *vif) {}
+  713 void ieee80211_beacon_loss(struct ieee80211_vif *vif) {}
+  714 void ieee80211_cqm_rssi_notify(struct ieee80211_vif *vif,
+  715                                 int event, s32 rssi_level, gfp_t gfp) {}
+  716 
+  717 void ieee80211_iterate_active_interfaces_atomic(
+  718     struct ieee80211_hw *hw, unsigned int iter_flags,
+  719     void (*iterator)(void *data, u8 *mac, struct ieee80211_vif *vif),
+  720     void *data)
+  721 {
+  722     if (g_rtw88_vif && iterator)
+  723         iterator(data, g_rtw88_vif->addr, g_rtw88_vif);
+  724 }
+  725 
+  726 void ieee80211_iterate_active_interfaces(
+  727     struct ieee80211_hw *hw, unsigned int iter_flags,
+  728     void (*iterator)(void *data, u8 *mac, struct ieee80211_vif *vif),
+  729     void *data)
+  730 {
+  731     if (g_rtw88_vif && iterator)
+
+[lines 884-972]
+  884 
+  885 /* ------------------------------------------------------------------ */
+  886 /*  Workqueue extras                                                    */
+  887 /* ------------------------------------------------------------------ */
+  888 
+  889 struct workqueue_struct *create_singlethread_workqueue(const char *name)
+  890 {
+  891     return alloc_ordered_workqueue(name, 0);
+  892 }
+  893 
+  894 void ieee80211_queue_work(struct ieee80211_hw *hw, struct work_struct *work)
+  895 {
+  896     if (hw && hw->priv) {
+  897         struct workqueue_struct *wq = system_wq;
+  898         queue_work(wq, work);
+  899     }
+  900 }
+  901 
+  902 void ieee80211_queue_delayed_work(struct ieee80211_hw *hw,
+  903                                    struct delayed_work *dwork,
+  904                                    unsigned long delay)
+  905 {
+  906     queue_delayed_work(system_wq, dwork, delay);
+  907 }
+  908 
+  909 /* ------------------------------------------------------------------ */
+  910 /*  mac80211 stubs                                                      */
+  911 /* ------------------------------------------------------------------ */
+  912 
+  913 struct ieee80211_sta *ieee80211_find_sta(struct ieee80211_vif *vif,
+  914                                           const u8 *addr)
+  915 {
+  916     struct ieee80211_sta *sta = __atomic_load_n(&g_rtw88_sta, __ATOMIC_SEQ_CST);
+  917     if (!addr || !sta || vif != g_rtw88_sta_vif)
+  918         return NULL;
+  919     return memcmp(sta->addr, addr, ETH_ALEN) == 0 ? sta : NULL;
+  920 }
+  921 
+  922 struct ieee80211_sta *ieee80211_find_sta_by_ifaddr(struct ieee80211_hw *hw,
+  923                                                     const u8 *addr,
+  924                                                     const u8 *localaddr)
+  925 {
+  926     struct ieee80211_sta *sta = __atomic_load_n(&g_rtw88_sta, __ATOMIC_SEQ_CST);
+  927     struct ieee80211_vif *vif = g_rtw88_sta_vif;
+  928     if (hw != g_rtw88_hw || !addr || !sta || !vif)
+  929         return NULL;
+  930     if (localaddr && memcmp(vif->addr, localaddr, ETH_ALEN) != 0)
+  931         return NULL;
+  932     return memcmp(sta->addr, addr, ETH_ALEN) == 0 ? sta : NULL;
+  933 }
+  934 
+  935 struct sk_buff *ieee80211_proberesp_get(struct ieee80211_hw *hw,
+  936                                          struct ieee80211_vif *vif)
+  937 { (void)hw; (void)vif; return NULL; }
+  938 
+  939 void ieee80211_purge_tx_queue(struct ieee80211_hw *hw,
+  940                                struct sk_buff_head *skbs)
+  941 {
+  942     struct sk_buff *skb;
+  943     while ((skb = skb_dequeue(skbs)) != NULL)
+  944         kfree_skb(skb);
+  945 }
+  946 
+  947 void ieee80211_restart_hw(struct ieee80211_hw *hw) { (void)hw; }
+  948 
+  949 int ieee80211_start_tx_ba_session(struct ieee80211_sta *sta, u16 tid,
+  950                                    u16 timeout)
+  951 { (void)sta; (void)tid; (void)timeout; return -EOPNOTSUPP; }
+  952 
+  953 void ieee80211_stop_tx_ba_cb_irqsafe(struct ieee80211_vif *vif,
+  954                                       const u8 *ra, u16 tid)
+  955 { (void)vif; (void)ra; (void)tid; }
+  956 
+  957 void ieee80211_tx_info_clear_status(struct ieee80211_tx_info *info)
+  958 {
+  959     int i;
+  960     for (i = 0; i < IEEE80211_TX_MAX_RATES; i++) {
+  961         info->status.rates[i].idx   = -1;
+  962         info->status.rates[i].count = 0;
+  963         info->status.rates[i].flags = 0;
+  964     }
+  965 }
+  966 
+  967 void ieee80211_txq_get_depth(struct ieee80211_txq *txq,
+  968                               unsigned long *frame_cnt,
+  969                               unsigned long *byte_cnt)
+  970 {
+  971     if (frame_cnt) *frame_cnt = 0;
+  972     if (byte_cnt)  *byte_cnt  = 0;
+
+[lines 1075-1156]
+ 1075 {
+ 1076     return del_timer_sync(timer);
+ 1077 }
+ 1078 
+ 1079 /* ------------------------------------------------------------------ */
+ 1080 /*  Init / exit                                                         */
+ 1081 /* ------------------------------------------------------------------ */
+ 1082 
+ 1083 int rtw88_compat_init(void)
+ 1084 {
+ 1085     if (system_wq || system_long_wq || g_datapath_wq || rtw88_log_lock)
+ 1086         return -EBUSY;
+ 1087 
+ 1088     work_state_lock = IOLockAlloc();
+ 1089     if (!work_state_lock) return -ENOMEM;
+ 1090     rtw88_log_lock = IOSimpleLockAlloc();
+ 1091     system_wq      = alloc_workqueue("rtw88_system_wq", 0, 0);
+ 1092     system_long_wq = alloc_workqueue("rtw88_long_wq",   0, 0);
+ 1093     g_datapath_wq  = alloc_ordered_workqueue("rtw88_datapath_wq", 0);
+ 1094     if (!system_wq || !system_long_wq || !g_datapath_wq || !rtw88_log_lock) {
+ 1095         destroy_workqueue(g_datapath_wq);
+ 1096         destroy_workqueue(system_wq);
+ 1097         destroy_workqueue(system_long_wq);
+ 1098         g_datapath_wq = NULL;
+ 1099         system_wq = system_long_wq = NULL;
+ 1100         if (rtw88_log_lock) {
+ 1101             IOSimpleLockFree(rtw88_log_lock);
+ 1102             rtw88_log_lock = NULL;
+ 1103         }
+ 1104         IOLockFree(work_state_lock);
+ 1105         work_state_lock = NULL;
+ 1106         return -ENOMEM;
+ 1107     }
+ 1108 
+ 1109     return 0;
+ 1110 }
+ 1111 
+ 1112 void rtw88_compat_exit(void)
+ 1113 {
+ 1114     if (g_irq_work_initialized)
+ 1115         cancel_work_sync(&g_irq_work);
+ 1116     destroy_workqueue(g_datapath_wq);
+ 1117     g_datapath_wq = NULL;
+ 1118     destroy_workqueue(system_wq);
+ 1119     destroy_workqueue(system_long_wq);
+ 1120     system_wq = system_long_wq = NULL;
+ 1121     if (work_state_lock) { IOLockFree(work_state_lock); work_state_lock = NULL; }
+ 1122     g_irq_handler   = NULL;
+ 1123     g_irq_thread_fn = NULL;
+ 1124     g_irq_dev_id    = NULL;
+ 1125     g_irq_work_initialized = false;
+ 1126     g_tx_resume_cb  = NULL;
+ 1127     g_hw_cbs        = NULL;
+ 1128     g_kext_hw       = NULL;
+ 1129     g_rtw88_vif     = NULL;
+ 1130     g_rtw88_sta = NULL;
+ 1131     g_rtw88_sta_vif = NULL;
+ 1132     if (rtw88_log_lock) {
+ 1133         IOSimpleLockFree(rtw88_log_lock);
+ 1134         rtw88_log_lock = NULL;
+ 1135     }
+ 1136 }
+ 1137 
+ 1138 /* ------------------------------------------------------------------ */
+ 1139 /*  Driver Info Helpers                                                 */
+ 1140 /* ------------------------------------------------------------------ */
+ 1141 
+ 1142 #include "main.h"
+ 1143 #include "fw.h"
+ 1144 #include "reg.h"
+ 1145 
+ 1146 /* We can't include rtw88's pci.h here because the compat tree's
+ 1147  * linux/pci.h shadows it on the include path.  Just hardcode the few
+ 1148  * register offsets and bits we need; they're stable in rtw88. */
+ 1149 #define RTW88_DBG_RTK_PCI_HIMR0        0x0B0
+ 1150 #define RTW88_DBG_RTK_PCI_HISR0        0x0B4
+ 1151 #define RTW88_DBG_RTK_PCI_HIMR1        0x0B8
+ 1152 #define RTW88_DBG_RTK_PCI_HISR1        0x0BC
+ 1153 #define RTW88_DBG_RTK_PCI_HISR3        0x10BC  /* 3081-wcpu (8822C) only */
+ 1154 #define RTW88_DBG_RTK_PCI_TXBD_IDX_BEQ 0x3A8
+ 1155 #define RTW88_DBG_REG_TXPAUSE          0x0522  /* MAC-level AC queue pause */
+ 1156 #define RTW88_DBG_REG_FWHW_TXQ_CTRL    0x0420  /* TXQ control / enable */
+
+--- Native WCL packet adapter callback/queue/teardown ---
+
+=== Native Skywalk TX adapter | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp ===
+MATCH_LINES=14 CONTEXT_WINDOWS=1
+
+[lines 59-178]
+   59     if (!bytes || length < 14 || length > 2048)
+   60         return nullptr;
+   61 
+   62     mbuf_t mbuf = nullptr;
+   63     if (mbuf_allocpacket(MBUF_DONTWAIT, length, nullptr, &mbuf) != 0 || !mbuf)
+   64         return nullptr;
+   65 
+   66     /* allocpacket may return a chain; copyback handles every segment. Keep
+   67      * the copy non-blocking because this runs in a Skywalk queue callback. */
+   68     if (mbuf_copyback(mbuf, 0, length, bytes, MBUF_DONTWAIT) != 0) {
+   69         mbuf_freem(mbuf);
+   70         return nullptr;
+   71     }
+   72     mbuf_pkthdr_setlen(mbuf, length);
+   73     return mbuf;
+   74 }
+   75 
+   76 IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+   77 {
+   78     if (!packet)
+   79         return kIOReturnBadArgument;
+   80     if (!_radio || !_txPool)
+   81         return kIOReturnNotReady;
+   82 
+   83     RTW88WCLPacketView view = {};
+   84     if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+   85         return kIOReturnBadArgument;
+   86 
+   87     mbuf_t mbuf = copyPacketToMbuf(view.bytes, view.length);
+   88     if (!mbuf)
+   89         return kIOReturnNoMemory;
+   90 
+   91     packet->retain();
+   92     TicketPool::Ticket *ticket = _tickets.reserve(packet);
+   93     if (!ticket) {
+   94         packet->release();
+   95         mbuf_freem(mbuf);
+   96         return kIOReturnBusy;
+   97     }
+   98 
+   99     /* Keep the adapter alive until the workloop-side completion drain drops
+  100      * this ticket. backendCompletion() intentionally does not release it. */
+  101     retain();
+  102     const UInt32 backendResult = _radio->outputPacketWithCompletion(
+  103         mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+  104 
+  105     /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+  106      * terminal callback, including synchronous drops. Once the ticket has
+  107      * been reserved, adapter acceptance is successful; the actual transmitted
+  108      * vs dropped result is delivered later through the completion sink. */
+  109     (void)backendResult;
+  110     return kIOReturnSuccess;
+  111 }
+  112 
+  113 void RTW88WCLSkywalkTxAdapter::backendCompletion(
+  114     void *context, void *cookie, bool transmitted)
+  115 {
+  116     auto *self = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+  117     auto *ticket = static_cast<TicketPool::Ticket *>(cookie);
+  118     if (!self || !ticket)
+  119         return;
+  120 
+  121     /* No Skywalk API, OSObject release, allocation, or blocking operation is
+  122      * allowed here. A deferred consumer performs the completion handoff. */
+  123     (void)TicketPool::complete(ticket, transmitted);
+  124 }
+  125 
+  126 uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+  127     CompletionSink sink, void *context)
+  128 {
+  129     if (!sink)
+  130         return 0;
+  131 
+  132     /* A sink may trigger owner teardown; keep this adapter alive until the
+  133      * drain loop has stopped touching its ticket pool. */
+  134     retain();
+  135     uint32_t drained = 0;
+  136     for (;;) {
+  137         TicketPool::Ticket *ticket = _tickets.claimCompleted();
+  138         if (!ticket)
+  139             break;
+  140 
+  141         auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+  142         const bool transmitted = TicketPool::transmitted(ticket);
+  143 
+  144         /* The sink runs in deferred context and borrows the retained packet.
+  145          * It must finish any Skywalk queue handoff before returning. */
+  146         if (packet)
+  147             sink(packet, transmitted, context);
+  148 
+  149         TicketPool::finish(ticket);
+  150         if (packet)
+  151             packet->release();
+  152         release();
+  153         ++drained;
+  154     }
+  155     release();
+  156     return drained;
+  157 }
+  158 
+  159 bool RTW88WCLSkywalkTxAdapter::hasOutstandingCompletions() const
+  160 {
+  161     return _tickets.hasOutstanding();
+  162 }
+  163 
+  164 uint32_t RTW88WCLSkywalkTxAdapter::outstandingCompletionCount() const
+  165 {
+  166     return _tickets.outstandingCount();
+  167 }
+  168 
+  169 void RTW88WCLSkywalkTxAdapter::free()
+  170 {
+  171     /* A per-ticket retain prevents free() while hardware callbacks are still
+  172      * pending. The owning controller must drain every completion before its
+  173      * final reference is released. */
+  174     if (_tickets.hasOutstanding())
+  175         IOLog("rtl88wifi-wcl: TX adapter free attempted with outstanding tickets\n");
+  176     unbind();
+  177     super::free();
+  178 }
+
+--- Native state-machine TX completion and shutdown paths ---
+
+=== Native TX callback and shutdown references | src/kext/RTW88IEEE80211.cpp ===
+MATCH_LINES=21 CONTEXT_WINDOWS=10
+
+[lines 23-69]
+   23 /* Chain-safe packet mbuf builder (defined below). */
+   24 static mbuf_t rtw88_make_packet_mbuf(const void *src, uint32_t len);
+   25 
+   26 extern "C" {
+   27 #include "../compat/rtw88_compat.h"
+   28 
+   29 /* Linux driver public API */
+   30 int  rtw_core_init(struct rtw_dev *rtwdev);
+   31 void rtw_core_deinit(struct rtw_dev *rtwdev);
+   32 int  rtw_core_start(struct rtw_dev *rtwdev);
+   33 void rtw_core_stop(struct rtw_dev *rtwdev);
+   34 void rtw_tx(struct rtw_dev *rtwdev, struct ieee80211_tx_control *control,
+   35             struct sk_buff *skb);
+   36 
+   37 /* PCI probe shim declared in pci.c */
+   38 int  rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+   39 void rtw_pci_remove(struct pci_dev *pdev);
+   40 int  rtw_regd_set_country(struct rtw_dev *rtwdev, const char alpha2[2]);
+   41 
+   42 /* Exported from the compat layer for hooking */
+   43 void rtw88_set_hw_callbacks(struct rtw88_hw_callbacks *cbs, void *kext_hw);
+   44 
+   45 /* chip hw_spec structs — driver_data for rtw_pci_probe */
+   46 extern const struct rtw_chip_info rtw8822b_hw_spec;
+   47 extern const struct rtw_chip_info rtw8822c_hw_spec;
+   48 extern const struct rtw_chip_info rtw8821c_hw_spec;
+   49 
+   50 } /* extern "C" */
+   51 
+   52 /* Completion tokens are allocated with the compat slab allocator and must be
+   53  * released with its matching kfree() wrapper. */
+   54 static void rtw88_release_skb_tx_completion_token(void *token)
+   55 {
+   56     kfree(token);
+   57 }
+   58 
+   59 #define IOLog rtw88_candidate_log
+   60 
+   61 /* ------------------------------------------------------------------ */
+   62 /*  WPA2 cryptographic functions (SHA1, HMAC-SHA1, PBKDF2, PRF)      */
+   63 /* ------------------------------------------------------------------ */
+   64 
+   65 typedef struct {
+   66     uint32_t state[5];
+   67     uint32_t count[2];
+   68     uint8_t buffer[64];
+   69 } KERN_SHA1_CTX;
+
+[lines 517-553]
+  517 /* ------------------------------------------------------------------ */
+  518 /*  Static compat callbacks                                             */
+  519 /* ------------------------------------------------------------------ */
+  520 
+  521 void RTW88IEEE80211::compat_rx_frame(void *kext_hw, struct sk_buff *skb)
+  522 {
+  523     RTW88IEEE80211 *self = (RTW88IEEE80211 *)kext_hw;
+  524     if (self) self->rxFrame(skb);
+  525 }
+  526 
+  527 void RTW88IEEE80211::compat_tx_status(void *kext_hw, struct sk_buff *skb)
+  528 {
+  529     RTW88IEEE80211 *self = (RTW88IEEE80211 *)kext_hw;
+  530     if (self) self->txStatus(skb);
+  531     kfree_skb(skb);
+  532 }
+  533 
+  534 void RTW88IEEE80211::compat_scan_done(void *kext_hw, bool aborted)
+  535 {
+  536     RTW88IEEE80211 *self = (RTW88IEEE80211 *)kext_hw;
+  537     if (self) self->scanDone(aborted);
+  538 }
+  539 
+  540 /* ------------------------------------------------------------------ */
+  541 /*  Factory / init / free                                               */
+  542 /* ------------------------------------------------------------------ */
+  543 
+  544 RTW88IEEE80211 *RTW88IEEE80211::create(RTW88PCIDevice *dev, struct pci_dev *pci)
+  545 {
+  546     RTW88IEEE80211 *obj = new RTW88IEEE80211;
+  547     if (obj && !obj->init(dev, pci)) {
+  548         obj->release();
+  549         return nullptr;
+  550     }
+  551     return obj;
+  552 }
+  553 
+
+[lines 573-612]
+  573     _joinTried.clear();
+  574     _baRecovery.reset();
+  575     _connectTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::connectTCFn,
+  576                                        (thread_call_param_t)this);
+  577     _manualScanTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::manualScanTCFn,
+  578                                          (thread_call_param_t)this);
+  579     if (!_connectTC || !_manualScanTC) return false;
+  580     /* Install callbacks into compat layer */
+  581     static struct rtw88_hw_callbacks cbs = {
+  582         .rx_frame  = RTW88IEEE80211::compat_rx_frame,
+  583         .tx_status = RTW88IEEE80211::compat_tx_status,
+  584         .scan_done = RTW88IEEE80211::compat_scan_done,
+  585     };
+  586     rtw88_set_hw_callbacks(&cbs, this);
+  587     /* Set up workloop / timer for state machine */
+  588     _wl = IOWorkLoop::workLoop();
+  589     if (!_wl) return false;
+  590     _gate = IOCommandGate::commandGate(this);
+  591     if (!_gate) return false;
+  592     if (_wl->addEventSource(_gate) != kIOReturnSuccess) return false;
+  593     _timer = IOTimerEventSource::timerEventSource(this,
+  594         &RTW88IEEE80211::timerFired);
+  595     if (!_timer) return false;
+  596     if (_wl->addEventSource(_timer) != kIOReturnSuccess) return false;
+  597     /* RX A-MPDU reorder: lock + hole-flush timer.  The timer lives on the
+  598      * RX/interrupt workloop (not _wl) so reorder-released frames and normal RX
+  599      * frames are delivered from the same thread — injectRxFrame's queue+
+  600      * flush is not safe against concurrent callers. */
+  601     _rxBaLock = IOLockAlloc();
+  602     if (!_rxBaLock) return false;
+  603     IOWorkLoop *rxwl = _parent ? _parent->getRxWorkLoop() : nullptr;
+  604     if (!rxwl) return false;
+  605     _reorderTimer = IOTimerEventSource::timerEventSource(this,
+  606         &RTW88IEEE80211::reorderTimerFired);
+  607     if (!_reorderTimer) return false;
+  608     if (rxwl->addEventSource(_reorderTimer) != kIOReturnSuccess) return false;
+  609     IOLog("rtw88: RTW88IEEE80211 initialized\n");
+  610     return true;
+  611 }
+  612 
+
+[lines 622-661]
+  622 
+  623     _connectTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::connectTCFn,
+  624                                        (thread_call_param_t)this);
+  625     _manualScanTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::manualScanTCFn,
+  626                                           (thread_call_param_t)this);
+  627     if (!_connectTC || !_manualScanTC) return false;
+  628 
+  629     /* Install callbacks into compat layer */
+  630     static struct rtw88_hw_callbacks cbs = {
+  631         .rx_frame  = RTW88IEEE80211::compat_rx_frame,
+  632         .tx_status = RTW88IEEE80211::compat_tx_status,
+  633         .scan_done = RTW88IEEE80211::compat_scan_done,
+  634     };
+  635     rtw88_set_hw_callbacks(&cbs, this);
+  636 
+  637     /* Set up workloop / timer for state machine */
+  638     _wl = IOWorkLoop::workLoop();
+  639     if (!_wl) return false;
+  640 
+  641     _gate = IOCommandGate::commandGate(this);
+  642     if (!_gate) return false;
+  643     if (_wl->addEventSource(_gate) != kIOReturnSuccess) return false;
+  644 
+  645     _timer = IOTimerEventSource::timerEventSource(this,
+  646         &RTW88IEEE80211::timerFired);
+  647     if (!_timer) return false;
+  648     if (_wl->addEventSource(_timer) != kIOReturnSuccess) return false;
+  649 
+  650     /* RX A-MPDU reorder: lock + hole-flush timer.  The timer lives on the
+  651      * RX/interrupt workloop (not _wl) so reorder-released frames and normal RX
+  652      * frames are delivered from the same thread — injectRxFrame's queue+flush
+  653      * is not safe against concurrent callers. */
+  654     _rxBaLock = IOLockAlloc();
+  655     if (!_rxBaLock) return false;
+  656     IOWorkLoop *rxwl = _parent ? _parent->getRxWorkLoop() : nullptr;
+  657     if (!rxwl) return false;
+  658     _reorderTimer = IOTimerEventSource::timerEventSource(this,
+  659         &RTW88IEEE80211::reorderTimerFired);
+  660     if (!_reorderTimer) return false;
+  661     if (rxwl->addEventSource(_reorderTimer) != kIOReturnSuccess) return false;
+
+[lines 665-701]
+  665 }
+  666 
+  667 void RTW88IEEE80211::free()
+  668 {
+  669     _manualScanAbort = true;
+  670     if (_manualScanTC) { thread_call_cancel_wait(_manualScanTC); thread_call_free(_manualScanTC); _manualScanTC = nullptr; }
+  671     if (_connectTC) { thread_call_cancel_wait(_connectTC); thread_call_free(_connectTC); _connectTC = nullptr; }
+  672 
+  673     /* The compat layer keeps a raw callback context.  Clear it before this
+  674      * object can disappear so a late RX/TX completion cannot call freed memory. */
+  675     rtw88_set_hw_callbacks(nullptr, nullptr);
+  676     clearKeys();
+  677     releaseSta();
+  678     if (_rxBaLock)
+  679         rxBaTeardownAll();
+  680     if (_reorderTimer) {
+  681         IOWorkLoop *rxwl = _parent ? _parent->getRxWorkLoop() : nullptr;
+  682         if (rxwl) rxwl->removeEventSource(_reorderTimer);
+  683         _reorderTimer->release();
+  684         _reorderTimer = nullptr;
+  685     }
+  686     if (_rxBaLock) { IOLockFree(_rxBaLock); _rxBaLock = nullptr; }
+  687     if (_timer)  { if (_wl) _wl->removeEventSource(_timer); _timer->release(); _timer = nullptr; }
+  688     if (_gate)   { if (_wl) _wl->removeEventSource(_gate); _gate->release(); _gate = nullptr; }
+  689     if (_wl)     { _wl->release();   _wl = nullptr; }
+  690     if (_lock)   { IOLockFree(_lock);    _lock = nullptr; }
+  691     if (_bssLock){ IOLockFree(_bssLock); _bssLock = nullptr; }
+  692 
+  693     /* Free BSS list */
+  694     RTW88BSS *b = _bssList;
+  695     while (b) {
+  696         RTW88BSS *n = b->next;
+  697         IOFree(b, sizeof(*b));
+  698         b = n;
+  699     }
+  700     _bssList = nullptr;
+  701     if (_scanRequest) { IOFree(_scanRequest, sizeof(*_scanRequest)); _scanRequest = nullptr; }
+
+[lines 1198-1314]
+ 1198     if (!_hw || !_hw->ops || !_hw->ops->start) return kIOReturnNotReady;
+ 1199     int ret = _hw->ops->start(_hw);
+ 1200     if (ret) {
+ 1201         IOLog("rtw88: rtw_core_start failed: %d\n", ret);
+ 1202         return kIOReturnError;
+ 1203     }
+ 1204     _powered = true;
+ 1205     _awdlPreparedChannel = 0;
+ 1206     _awdlOffChannel = false;
+ 1207     if (rtw88_restore_interface(_hw, _vif) != 0) {
+ 1208         powerOff();
+ 1209         return kIOReturnError;
+ 1210     }
+ 1211     IOReturn filterResult = _awdlReceiveMode ? setAWDLReceiveMode(true) : setReceiveMulticast(_receiveMulticast);
+ 1212     if (filterResult != kIOReturnSuccess) powerOff();
+ 1213     return filterResult;
+ 1214 }
+ 1215 
+ 1216 void RTW88IEEE80211::powerOff()
+ 1217 {
+ 1218     IOLog("rtw88: IEEE80211 powerOff\n");
+ 1219     if (!_powered) return;
+ 1220     if (_hw && _hw->ops && _hw->ops->stop)
+ 1221         _hw->ops->stop(_hw, false);
+ 1222     _powered = false;
+ 1223     _awdlPreparedChannel = 0;
+ 1224     _awdlOffChannel = false;
+ 1225 }
+ 1226 
+ 1227 /* ------------------------------------------------------------------ */
+ 1228 /*  Interrupt dispatch                                                  */
+ 1229 /* ------------------------------------------------------------------ */
+ 1230 
+ 1231 extern "C" void rtw88_trigger_interrupt(void);
+ 1232 
+ 1233 void RTW88IEEE80211::handleInterrupt()
+ 1234 {
+ 1235     /* Never log every IRQ: console I/O on the RX/TX hot path adds measurable
+ 1236      * scheduling jitter and can amplify stalls while traffic is heavy. */
+ 1237     rtw88_trigger_interrupt();
+ 1238 }
+ 1239 
+ 1240 /* ------------------------------------------------------------------ */
+ 1241 /*  TX path: Ethernet → 802.11 data frame                              */
+ 1242 /* ------------------------------------------------------------------ */
+ 1243 
+ 1244 UInt32 RTW88IEEE80211::outputPacket(mbuf_t m)
+ 1245 {
+ 1246     return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
+ 1247 }
+ 1248 
+ 1249 UInt32 RTW88IEEE80211::outputPacketWithCompletion(
+ 1250     mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie)
+ 1251 {
+ 1252     if (!m) {
+ 1253         if (callback)
+ 1254             callback(context, cookie, false);
+ 1255         return kIOReturnOutputDropped;
+ 1256     }
+ 1257 
+ 1258     /* Need an associated STA before data frames can be sent. */
+ 1259     bool connected = (_state == RTW88_STATE_CONNECTED) ||
+ 1260                      (_state == RTW88_STATE_SCANNING &&
+ 1261                       _scanReturnState == RTW88_STATE_CONNECTED &&
+ 1262                       (_manualScanChannelCount == 0 ||
+ 1263                        _manualScanOnHomeChannel));
+ 1264     if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
+ 1265         mbuf_freem(m);
+ 1266         if (callback)
+ 1267             callback(context, cookie, false);
+ 1268         return kIOReturnOutputDropped;
+ 1269     }
+ 1270 
+ 1271     /* Apple RSN needs the BSD link marked up to exchange EAPOL, but before
+ 1272      * PTK+GTK are installed the controlled port must carry EAPOL only. */
+ 1273     if (_wpa2 && _externalSupplicant && !externalKeysReady()) {
+ 1274         uint8_t eh[14] = {};
+ 1275         if (mbuf_pkthdr_len(m) < sizeof(eh) ||
+ 1276             mbuf_copydata(m, 0, sizeof(eh), eh) != 0 ||
+ 1277             (uint16_t)((eh[12] << 8) | eh[13]) != ETH_P_PAE) {
+ 1278             mbuf_freem(m);
+ 1279             if (callback)
+ 1280                 callback(context, cookie, false);
+ 1281             return kIOReturnOutputDropped;
+ 1282         }
+ 1283     }
+ 1284 
+ 1285     /* txDataFrame() consumes m in all paths. Once its skb is handed to rtw88,
+ 1286      * the completion callback follows that skb until either the PCI TX status
+ 1287      * callback or an early free/reset path reports its terminal outcome. */
+ 1288     const bool submitted = txDataFrame(m, callback, context, cookie);
+ 1289     if (!submitted && callback)
+ 1290         callback(context, cookie, false);
+ 1291     return submitted ? kIOReturnOutputSuccess : kIOReturnOutputDropped;
+ 1292 }
+ 1293 
+ 1294 /* ------------------------------------------------------------------ */
+ 1295 /*  RX path: sk_buff from driver → mbuf to macOS                       */
+ 1296 /* ------------------------------------------------------------------ */
+ 1297 
+ 1298 void RTW88IEEE80211::rxFrame(struct sk_buff *skb)
+ 1299 {
+ 1300     if (!skb) return;
+ 1301     if (skb->len < 24) { kfree_skb(skb); return; }
+ 1302 
+ 1303     struct ieee80211_rx_status *rxs = IEEE80211_SKB_RXCB(skb);
+ 1304     /* A corrupted frame must not change association state, peer clocks, or
+ 1305      * enter either network interface even if a diagnostic RX filter admits it. */
+ 1306     if (rxs->flag & RX_FLAG_FAILED_FCS_CRC) {
+ 1307         kfree_skb(skb);
+ 1308         return;
+ 1309     }
+ 1310     if (rtw88StationSignal(skb->data, skb->len, _macAddr, _targetBSS.bssid,
+ 1311                           rxs->signal,
+ 1312                           (rxs->flag & (RX_FLAG_NO_SIGNAL_VAL | RX_FLAG_FAILED_FCS_CRC)) != 0))
+ 1313         _rssi = rxs->signal;
+ 1314 
+
+[lines 2247-2289]
+ 2247     if (self) {
+ 2248         self->_reorderTimerArmed = false;
+ 2249         self->rxReorderFlushStale();
+ 2250     }
+ 2251 }
+ 2252 
+ 2253 /* ------------------------------------------------------------------ */
+ 2254 /*  TX status                                                           */
+ 2255 /* ------------------------------------------------------------------ */
+ 2256 
+ 2257 void RTW88IEEE80211::txStatus(struct sk_buff *skb)
+ 2258 {
+ 2259     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+ 2260     const bool transmitted =
+ 2261         (info->flags & (IEEE80211_TX_STAT_ACK |
+ 2262                         IEEE80211_TX_STAT_NOACK_TRANSMITTED)) != 0;
+ 2263     rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
+ 2264     if (!(info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS))
+ 2265         return;
+ 2266 
+ 2267     const char *frameName = "frame";
+ 2268     if (skb->len >= sizeof(struct ieee80211_hdr_3addr)) {
+ 2269         struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+ 2270         uint16_t fc = le16_to_cpu(hdr->frame_control);
+ 2271 
+ 2272         if ((fc & IEEE80211_FCTL_FTYPE) == IEEE80211_FTYPE_MGMT) {
+ 2273             switch (fc & IEEE80211_FCTL_STYPE) {
+ 2274             case IEEE80211_STYPE_AUTH:       frameName = "authentication"; break;
+ 2275             case IEEE80211_STYPE_ASSOC_REQ:  frameName = "association request"; break;
+ 2276             case IEEE80211_STYPE_DEAUTH:     frameName = "deauthentication"; break;
+ 2277             case IEEE80211_STYPE_ACTION:     frameName = "action"; break;
+ 2278             default:                         frameName = "management"; break;
+ 2279             }
+ 2280         } else if ((fc & IEEE80211_FCTL_FTYPE) == IEEE80211_FTYPE_DATA) {
+ 2281             uint16_t hdrlen = ieee80211_get_hdrlen_from_skb(skb);
+ 2282             if (skb->len >= hdrlen + 8) {
+ 2283                 const uint8_t *llc = skb->data + hdrlen;
+ 2284                 uint16_t ethertype = (uint16_t)((llc[6] << 8) | llc[7]);
+ 2285                 if (llc[0] == 0xaa && llc[1] == 0xaa && llc[2] == 0x03 &&
+ 2286                     ethertype == ETH_P_PAE && skb->len >= hdrlen + 8 + 99) {
+ 2287                     /* Pairwise M2 carries the RSN IE; M4 has no key data. The
+ 2288                      * Secure bit cannot distinguish them during a rekey. */
+ 2289                     const uint8_t *eapol = llc + 8;
+
+[lines 4045-4081]
+ 4045          * DISASSOCIATE.  Reason 0 made airportd log "Dropped Connection:
+ 4046          * reason=0" on wake and add the network to its "potentially
+ 4047          * problematic" list.  cmdConnect resets the reason to 0. */
+ 4048         _deauthReason = 8;
+ 4049         doDisconnect();
+ 4050     } else {
+ 4051         clearKeys();
+ 4052         releaseSta();
+ 4053     }
+ 4054 
+ 4055     powerOff();
+ 4056     clearAssocRsnIE();
+ 4057     _state = RTW88_STATE_IDLE;
+ 4058     _associatedVisible = false;
+ 4059     _scanReturnState = RTW88_STATE_IDLE;
+ 4060     _scanPartial = false;
+ 4061     if (_parent)
+ 4062         _parent->setLinkStatus(kIONetworkLinkValid);
+ 4063     return kIOReturnSuccess;
+ 4064 }
+ 4065 
+ 4066 void RTW88IEEE80211::doDisconnect()
+ 4067 {
+ 4068     /* A deauth must be transmitted on the infrastructure channel.  AWDL may
+ 4069      * currently own the single PHY, so hand it back before tearing down the
+ 4070      * association or clearing the visibility latch used by the restore path. */
+ 4071     if (_awdlOffChannel)
+ 4072         restoreSTAChannelAfterAWDL();
+ 4073 
+ 4074     if (!_hw || !_vif) {
+ 4075         _state = RTW88_STATE_IDLE;
+ 4076         _associatedVisible = false;
+ 4077         _scanReturnState = RTW88_STATE_IDLE;
+ 4078         _scanPartial = false;
+ 4079         return;
+ 4080     }
+ 4081     clearKeys();
+
+[lines 4368-4404]
+ 4368         kern_hmac_sha1(_ptk, 16, eapol, eapol_total, mic_buf);
+ 4369         memcpy(key + 77, mic_buf, 16);
+ 4370     }
+ 4371 
+ 4372     uint32_t ethlen = 14 + eapol_total;
+ 4373     mbuf_t m = rtw88_make_packet_mbuf(frame, ethlen);
+ 4374     if (!m) return false;
+ 4375     /* Group message 2 is sent after the PTK is in use, so protect it with the
+ 4376      * TK as ordinary supplicants do. Pairwise M2/M4 keep the proven path. */
+ 4377     _eapolTxProtect = (step == 5);
+ 4378     bool submitted = txDataFrame(m);
+ 4379     _eapolTxProtect = false;
+ 4380     IOLog("rtw88: EAPOL %s%d submission=%d len=%u\n", step == 5 ? "G" : "M",
+ 4381           step == 5 ? 2 : step, submitted, ethlen);
+ 4382     return submitted;
+ 4383 }
+ 4384 
+ 4385 /* ------------------------------------------------------------------ */
+ 4386 /*  Frame TX helpers                                                    */
+ 4387 /* ------------------------------------------------------------------ */
+ 4388 
+ 4389 bool RTW88IEEE80211::txRawManagementFrame(const uint8_t *frame, uint32_t len)
+ 4390 {
+ 4391     if (!frame || len < 24 || len > 4096)
+ 4392         return false;
+ 4393 
+ 4394     /* Accept management frames only. AWDL uses vendor/public action frames;
+ 4395      * keeping data/control frames out of this path protects the normal STA
+ 4396      * datapath and rtw88 queue assumptions. */
+ 4397     uint16_t fc = (uint16_t)frame[0] | ((uint16_t)frame[1] << 8);
+ 4398     if ((fc & 0x000c) != 0x0000)
+ 4399         return false;
+ 4400 
+ 4401     if (len >= 40 && RTW88AWDL::actionHeader(frame + 24, len - 24) && !canTransmitAWDL())
+ 4402         return false;
+ 4403     return txMgmtFrame(frame, len);
+ 4404 }
+
+[lines 4876-4912]
+ 4876     eh[12] = (uint8_t)(ethertype >> 8);
+ 4877     eh[13] = (uint8_t)ethertype;
+ 4878     if (mbuf_copyback(m, 0, sizeof(eh), eh, MBUF_WAITOK) != 0 ||
+ 4879         (paylen && mbuf_copyback(m, 14, paylen, payload, MBUF_WAITOK) != 0)) {
+ 4880         mbuf_freem(m);
+ 4881         return;
+ 4882     }
+ 4883     _parent->injectRxAWDLFrame(m);
+ 4884 }
+ 4885 
+ 4886 bool RTW88IEEE80211::txDataFrame(mbuf_t m,
+ 4887                                   RTW88TxCompletionCallback callback,
+ 4888                                   void *completionContext,
+ 4889                                   void *completionCookie)
+ 4890 {
+ 4891     if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta) {
+ 4892         if (m) mbuf_freem(m);
+ 4893         return false;
+ 4894     }
+ 4895 
+ 4896     /* The mbuf is an Ethernet frame: [DA(6)][SA(6)][ethertype(2)][payload].
+ 4897      * The rtw88 driver's tx op expects an 802.11 frame, so we must
+ 4898      * encapsulate: 802.11 data header (24) + LLC/SNAP (8) + IP payload.
+ 4899      * mac80211 normally does this; we are bypassing mac80211's tx path. */
+ 4900     size_t total = mbuf_pkthdr_len(m);
+ 4901     if (total < 14 || total > 2048) { mbuf_freem(m); return false; }
+ 4902     uint32_t paylen = (uint32_t)total - 14;
+ 4903 
+ 4904     uint8_t eh[14];
+ 4905     if (mbuf_copydata(m, 0, 14, eh) != 0) { mbuf_freem(m); return false; }
+ 4906     uint16_t ethertype = (uint16_t)((eh[12] << 8) | eh[13]);
+ 4907 
+ 4908     if (ethertype == ETH_P_PAE) {
+ 4909         IOLog("rtw88: EAPOL TX external=%d state=%d ptk=%p len=%u\n",
+ 4910               _externalSupplicant, _state, _ptkConf, paylen);
+ 4911     }
+ 4912 
+
+--- Cross-tree symbol-reference counts (including function-pointer assignments) ---
+
+SYMBOL=rtw_pci_write_data_rsvd_page REFERENCES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:876 | static int rtw_pci_write_data_rsvd_page(struct rtw_dev *rtwdev, u8 *buf,
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1688 | .write_data_rsvd_page = rtw_pci_write_data_rsvd_page,
+
+SYMBOL=rtw_pci_tx_write_data REFERENCES=4
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:806 | static int rtw_pci_tx_write_data(struct rtw_dev *rtwdev,
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:888 | ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_BCN);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:912 | ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_H2C);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:932 | ret = rtw_pci_tx_write_data(rtwdev, pkt_info, skb, queue);
+
+SYMBOL=rtw_pci_write_data_h2c REFERENCES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:902 | static int rtw_pci_write_data_h2c(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1689 | .write_data_h2c = rtw_pci_write_data_h2c,
+
+SYMBOL=rtw_tx_report_enqueue REFERENCES=4
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1021 | rtw_tx_report_enqueue(rtwdev, skb, tx_data->sn);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c:198 | void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c:214 | EXPORT_SYMBOL(rtw_tx_report_enqueue);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:100 | void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn);
+
+SYMBOL=rtw_tx_report_handle REFERENCES=4
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.c:104 | rtw_tx_report_handle(rtwdev, skb, C2H_CCX_RPT);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.c:315 | rtw_tx_report_handle(rtwdev, skb, C2H_CCX_TX_RPT);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c:231 | void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:101 | void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src);
+
+SYMBOL=rtw_tx_report_purge_timer REFERENCES=3
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c:2161 | rtw_tx_report_purge_timer, 0);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2242 | void rtw_tx_report_purge_timer(struct timer_list *t);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c:179 | void rtw_tx_report_purge_timer(struct timer_list *t)
+
+SYMBOL=rtw_tx_report_purge REFERENCES=0
+
+SYMBOL=rtw88_skb_tx_completion_claim REFERENCES=2
+  src/compat/linux/skbuff_tx_completion.h:55 | rtw88_skb_tx_completion_claim(struct rtw88_skb_tx_completion *completion)
+  src/compat/linux/skbuff_tx_completion.h:89 | rtw88_skb_tx_completion_claim(completion);
+
+SYMBOL=rtw88_skb_tx_completion_dispatch REFERENCES=2
+  src/compat/linux/skbuff_tx_completion.h:66 | rtw88_skb_tx_completion_dispatch(
+  src/compat/linux/skbuff_tx_completion.h:90 | return rtw88_skb_tx_completion_dispatch(token, transmitted);
+
+SYMBOL=rtw88_skb_tx_completion_report REFERENCES=3
+  src/compat/linux/skbuff.h:159 | rtw88_skb_tx_completion_report(&skb->tx_completion, false);
+  src/compat/linux/skbuff_tx_completion.h:85 | rtw88_skb_tx_completion_report(struct rtw88_skb_tx_completion *completion,
+  src/kext/RTW88IEEE80211.cpp:2263 | rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
+
+SYMBOL=rtw88_skb_tx_completion_bind REFERENCES=2
+  src/compat/linux/skbuff_tx_completion.h:36 | rtw88_skb_tx_completion_bind(
+  src/kext/RTW88IEEE80211.cpp:5027 | if (!rtw88_skb_tx_completion_bind(&skb->tx_completion, token)) {
+
+SYMBOL=ieee80211_free_txskb REFERENCES=4
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c:25 | ieee80211_free_txskb(hw, skb);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c:603 | ieee80211_free_txskb(rtwdev->hw, skb);
+  src/compat/rtw88_compat.c:692 | void ieee80211_free_txskb(struct ieee80211_hw *hw, struct sk_buff *skb)
+  src/compat/net/mac80211.h:1064 | void ieee80211_free_txskb(struct ieee80211_hw *hw, struct sk_buff *skb);
+
+--- Focused logic assertions ---
+RESERVED_PAGE_WRITER_SYMBOL_PRESENT=YES
+RESERVED_PAGE_WRITER_REGISTERED_IN_HCI_TABLE=YES
+RESERVED_PAGE_FAILURE_BRANCH_FREES_SKB=NO
+H2C_WRITER_HAS_LOCAL_ERROR_CLEANUP=NO
+TX_REPORT_QUEUE_PURGE_SYMBOL_PRESENT=YES
+TX_REPORT_TIMER_CANCEL_PRESENT=NO
+TX_REPORT_QUEUE_EXPLICIT_PURGE_PRESENT=YES
+TX_REPORT_QUEUE_STATUS_CALLBACK_PRESENT=YES
+SKB_FREE_REPORTS_FAILED_COMPLETION=YES
+TOKEN_CLAIM_USES_ATOMIC_EXCHANGE_OR_CAS=YES
+TOKEN_DISPATCH_HAS_RELEASE=YES
+COMPAT_CALLBACK_CLEAR_PRESENT=NO
+NOTE=Absence of a named purge helper is not proof of a leak; inspect the full contexts and caller/registration map.
+
+--- Review questions ---
+OPEN_QUESTION_01=Is rtw_pci_write_data_rsvd_page reachable from the active PCI HCI ops table or is it an unused helper?
+OPEN_QUESTION_02=If reserved-page TX is reachable, who frees the skb after rtw_pci_tx_write_data returns an error?
+OPEN_QUESTION_03=Does the H2C writer dispose of its skb on every map/queue failure?
+OPEN_QUESTION_04=When and where is the deferred TX report timer stopped during device stop/deinit?
+OPEN_QUESTION_05=Are all skbs in the deferred TX report queue drained and completion-reported before rtwdev is freed?
+OPEN_QUESTION_06=Can purge-timer callback race a matching C2H TX report and both consume the same skb?
+OPEN_QUESTION_07=Does the completion token claim operation guarantee one terminal callback under duplicate free/status races?
+OPEN_QUESTION_08=Does native Skywalk adapter shutdown wait for all completion records and outstanding cookies?
+OPEN_QUESTION_09=Are interrupt/NAPI workers synchronized before the PCI TX ring and DMA mappings are reclaimed?
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+
+--- End Stage 35N ---
+ACTUAL_BUILD=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+HARDWARE_TEST=NOT_RUN

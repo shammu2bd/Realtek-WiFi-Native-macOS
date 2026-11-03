@@ -1,0 +1,501 @@
+STAGE52_CLASS_DECLARATION_AND_METACLASS_INDEX
+COMMENTS_AND_QUOTED_LITERALS=EXCLUDED
+
+FILE=src/kext/RTL88WiFi.cpp
+   28 #define IOLog rtw88_candidate_log
+   29 
+   30 #define super IO80211Controller
+   31 
+   32 /* Keep enough headroom in the 256-entry BE ring that rtw_tx() never reaches
+  182 }
+  183 
+  184 OSDefineMetaClassAndStructors(RTL88WiFi, IO80211Controller)
+  185 
+  186 bool RTL88WiFi::init(OSDictionary *props)
+  359      * the controller service and the interface.  The controller publication
+  360      * is important for IO80211 clients that own virtual-interface lifecycle. */
+  361     IO80211Controller::setLinkStatus(kIONetworkLinkValid);
+  362     registerService();
+  363     _netif->registerService();
+ 1606 
+ 1607 #if __IO80211_TARGET >= __MAC_10_15
+ 1608 SInt32 RTL88WiFi::apple80211_ioctl_get(IO80211SkywalkInterface *skywalkInterface,
+ 1609                                        void *data)
+ 1610 {
+ 1765 SInt32 RTL88WiFi::apple80211_ioctl_set(IO80211Interface *interface,
+ 1766                                            IO80211VirtualInterface *virtualInterface,
+ 1767                                            IO80211SkywalkInterface *skywalkInterface,
+ 1768                                            void *data)
+ 1769 {
+ 1863 }
+ 1864 
+ 1865 SInt32 RTL88WiFi::apple80211_ioctl_set(IO80211SkywalkInterface *skywalkInterface,
+ 1866                                            void *data)
+ 1867 {
+ 3972 {
+ 3973     if (__atomic_load_n(&_shutdown, __ATOMIC_ACQUIRE)) return false;
+ 3974     const bool ret = IO80211Controller::setLinkStatus(status, activeMedium, speed, data);
+ 3975     const bool up = (status & kIONetworkLinkActive) != 0;
+ 3976 
+
+FILE=src/kext/RTL88WiFi.hpp
+   14 #pragma once
+   15 
+   16 #include <IOKit/80211/IO80211Controller.h>
+   17 #include <IOKit/80211/IO80211Interface.h>
+   18 #include <IOKit/80211/IO80211VirtualInterface.h>
+  102 class RTL88WiFiInterface;
+  103 
+  104 class RTL88WiFi : public IO80211Controller, public RTW88EventDelegate, public RTW88RxDelegate, public RTW88HwOps {
+  105     OSDeclareDefaultStructors(RTL88WiFi)
+  106 
+  107 public:
+  164                                         ifnet_t net, void *data) override;
+  165 #if __IO80211_TARGET >= __MAC_10_15
+  166     virtual SInt32 apple80211_ioctl_get(IO80211SkywalkInterface *skywalkInterface,
+  167                                         void *data) override;
+  168 #endif
+  175     virtual SInt32 apple80211_ioctl_set(IO80211Interface *interface,
+  176                                         IO80211VirtualInterface *virtualInterface,
+  177                                         IO80211SkywalkInterface *skywalkInterface,
+  178                                         void *data) override;
+  179     virtual SInt32 apple80211_ioctl_set(IO80211SkywalkInterface *skywalkInterface,
+  180                                         void *data) override;
+  181 #endif
+
+FILE=src/kext/RTL88WiFiAWDL.cpp
+   12 #include <sys/kpi_mbuf.h>
+   13 
+   14 #define super IO80211Controller
+   15 
+   16 static const char *rtw88VifRoleName(UInt role)
+
+FILE=src/kext/RTL88WiFiInterface.cpp
+    6 #define super IO80211Interface
+    7 
+    8 OSDefineMetaClassAndStructors(RTL88WiFiInterface, IO80211Interface)
+    9 
+   10 bool RTL88WiFiInterface::init(IONetworkController *controller)
+
+FILE=src/kext/RTL88WiFiInterface.hpp
+   17 
+   18 class RTL88WiFiInterface : public IO80211Interface {
+   19     OSDeclareDefaultStructors(RTL88WiFiInterface)
+   20 
+   21 public:
+
+FILE=src/kext/RTW88AWDLManager.cpp
+    1 /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+    2 /* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (AWDL radio policy, mesh join selection); see NOTICE.md. */
+    3 #include <IOKit/80211/IO80211Controller.h>
+    4 #include <IOKit/80211/IO80211VirtualInterface.h>
+    5 #include <IOKit/80211/apple80211_ioctl.h>
+
+FILE=src/kext/RTW88IEEE80211.cpp
+  513 
+  514 #define super OSObject
+  515 OSDefineMetaClassAndStructors(RTW88IEEE80211, OSObject)
+  516 
+  517 /* ------------------------------------------------------------------ */
+
+FILE=src/kext/RTW88IEEE80211.hpp
+  179 public:
+  180     RTW88EventDelegate *_delegate = nullptr;
+  181     OSDeclareDefaultStructors(RTW88IEEE80211)
+  182 
+  183 public:
+
+FILE=src/kext/RTW88Kext.cpp
+    6 
+    7 #define super IOService
+    8 OSDefineMetaClassAndStructors(RTW88Kext, IOService)
+    9 
+   10 bool RTW88Kext::init(OSDictionary *props)
+
+FILE=src/kext/RTW88Kext.hpp
+    7 
+    8 class RTW88Kext : public IOService {
+    9     OSDeclareDefaultStructors(RTW88Kext)
+   10 
+   11 public:
+
+FILE=src/kext/RTW88PCIDevice.cpp
+   21 
+   22 #define super IOEthernetController
+   23 OSDefineMetaClassAndStructors(RTW88PCIDevice, IOEthernetController)
+   24 
+   25 static constexpr unsigned int kRTW88TxStallAvail = 96;
+
+FILE=src/kext/RTW88PCIDevice.hpp
+   32 /* RTW88PCIDevice --------------------------------------------------------- */
+   33 class RTW88PCIDevice : public IOEthernetController, public RTW88RxDelegate, public RTW88HwOps {
+   34     OSDeclareDefaultStructors(RTW88PCIDevice)
+   35 
+   36     friend class RTW88UserClient;
+
+FILE=src/kext/RTW88UserClient.cpp
+   10 
+   11 #define super IOUserClient
+   12 OSDefineMetaClassAndStructors(RTW88UserClient, IOUserClient)
+   13 
+   14 /* ------------------------------------------------------------------ */
+
+FILE=src/kext/RTW88UserClient.hpp
+   51 /* ------------------------------------------------------------------ */
+   52 class RTW88UserClient : public IOUserClient {
+   53     OSDeclareDefaultStructors(RTW88UserClient)
+   54 
+   55 public:
+
+FILE=src/kext/RTW88WCLWorkQueue.cpp
+    7 
+    8 #define super IOEventSource
+    9 OSDefineMetaClassAndStructors(RTW88WCLWorkQueue, IOEventSource)
+   10 
+   11 bool RTW88WCLWorkQueue::init(OSObject *owner, IOWorkLoop *workLoop,
+
+FILE=src/kext/RTW88WCLWorkQueue.hpp
+    7 #include <IOKit/IOLocks.h>
+    8 #include <IOKit/IOWorkLoop.h>
+    9 #include <libkern/c++/OSMetaClass.h>
+   10 
+   11 #include "RTW88WCLRadioBridge.hpp"
+   33 class RTW88WCLWorkQueue final : public IOEventSource,
+   34                                 public RTW88WCLRadioEventSink {
+   35     OSDeclareDefaultStructors(RTW88WCLWorkQueue)
+   36 
+   37 public:
+
+FILE=src/kext/wcl24h32/RTW88WCL24H32ABI.hpp
+   24 #include <net/ethernet.h>
+   25 #include <IOKit/network/IOEthernetController.h>
+   26 #include <libkern/c++/OSMetaClass.h>
+   27 #include <IOKit/80211/apple80211_ioctl.h>
+   28 
+   29 class IO80211SkywalkInterface;
+   30 class IO80211Interface;
+   31 class IO80211VirtualInterface;
+   57 };
+   58 
+   59 class IO80211Controller : public IOEthernetController {
+   60     OSDeclareAbstractStructors(IO80211Controller)
+   61 public:
+   62     IOReturn postMessage(IO80211SkywalkInterface *, unsigned int, void *, unsigned long, bool);
+   63     virtual void _RESERVEDIONetworkController6() __asm__("__ZN19IONetworkController20allocatePacketNoWaitEj") override;
+   64     virtual void _RESERVEDIONetworkController7() __asm__("__ZN19IONetworkController18setHardwareAssistsEjj") override;
+   87     virtual void requestPacketTx(void *, unsigned int);
+   88     virtual IOCommandGate *getIO80211CommandGate() const;
+   89     virtual IO80211SkywalkInterface *getPrimarySkywalkInterface();
+   90     virtual int bpfOutputPacket(OSObject *, unsigned int, struct __mbuf *);
+   91     virtual SInt32 monitorModeSetEnabled(bool, unsigned int);
+   92     virtual SInt32 handleCardSpecific(IO80211SkywalkInterface *, unsigned long, void *, bool) = 0;
+   93     virtual UInt32 hardwareOutputQueueDepth();
+   94     virtual SInt32 performCountryCodeOperation(IO80211CountryCodeOp);
+   95     virtual void dataLinkLayerAttachComplete();
+   96     virtual SInt32 enableFeature(IO80211FeatureCode, void *);
+   97     virtual IOReturn getDRIVER_VERSION(IO80211SkywalkInterface *, apple80211_version_data *) = 0;
+   98     virtual IOReturn getHARDWARE_VERSION(IO80211SkywalkInterface *, apple80211_version_data *) = 0;
+   99     virtual IOReturn getCARD_CAPABILITIES(IO80211SkywalkInterface *, apple80211_capability_data *) = 0;
+  100     virtual IOReturn getPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+  101     virtual IOReturn setPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+  102     virtual IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *, apple80211_country_code_data *) = 0;
+  103     virtual IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *, apple80211_country_code_data *) = 0;
+  104     virtual IOReturn setGET_DEBUG_INFO(IO80211SkywalkInterface *, apple80211_debug_command *) = 0;
+  105 private:
+  106     virtual void _abi_0d00() __asm__("__ZN17IO80211Controller18getPLATFORM_CONFIGEP23IO80211SkywalkInterfaceP26apple80211_platform_config");
+  139     virtual bool attachVirtualInterface(IO80211VirtualInterface **, ether_addr *, unsigned int, bool);
+  140     virtual bool detachVirtualInterface(IO80211VirtualInterface *, bool);
+  141     virtual void _RESERVEDIO80211Controller0();
+  142     virtual void _RESERVEDIO80211Controller1();
+  143     virtual void _RESERVEDIO80211Controller2();
+  144     virtual void _RESERVEDIO80211Controller3();
+  145     virtual void _RESERVEDIO80211Controller4();
+  146     virtual void _RESERVEDIO80211Controller5();
+  147     virtual void _RESERVEDIO80211Controller6();
+  148     virtual void _RESERVEDIO80211Controller7();
+  149     virtual void _RESERVEDIO80211Controller8();
+  150     virtual void _RESERVEDIO80211Controller9();
+  151     virtual void _RESERVEDIO80211Controller10();
+  152     virtual void _RESERVEDIO80211Controller11();
+  153     virtual void _RESERVEDIO80211Controller12();
+  154     virtual void _RESERVEDIO80211Controller13();
+  155     virtual void _RESERVEDIO80211Controller14();
+  156     virtual void _RESERVEDIO80211Controller15();
+  157     /* Sequoia adds this IO80211Controller slot with ether_addr ABI; it is
+  158      * distinct from IOEthernetController::setMulticastList(IOEthernetAddress*, UInt32). */
+  162 };
+  163 
+  164 static_assert(sizeof(IO80211Controller) == 0x128,
+  165               "IO80211Controller does not match the reviewed Sequoia ABI");
+
+FILE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp
+   35 #include <IOKit/network/IOEthernetController.h>
+   36 #include <IOKit/80211/apple80211_ioctl.h>
+   37 #include <libkern/c++/OSMetaClass.h>
+   38 
+   39 class IO80211Controller;
+   40 class IO80211Peer;
+   41 class IO80211APIUserClient;
+  467 static_assert(sizeof(TxPacketRequest) == 0x60, "24H32 TxPacketRequest ABI");
+  468 
+  469 class IO80211SkywalkInterface : public IOSkywalkEthernetInterface {
+  470     OSDeclareAbstractStructors(IO80211SkywalkInterface)
+  471 public:
+  472     virtual bool init() override;
+  519     virtual void setDataPathState(bool);
+  520     virtual void *getScanManager();
+  521     virtual IO80211Controller *getController();
+  522     virtual void updateLinkParameters(apple80211_interface_availability *);
+  523     virtual void updateInterfaceCoexRiskPct(unsigned long long);
+  622     int getInterfaceRole();
+  623 };
+  624 static_assert(sizeof(IO80211SkywalkInterface) == 0x118, "24H32 IO80211SkywalkInterface ABI");
+  625 
+  626 class IO80211InfraInterface : public IO80211SkywalkInterface {
+  627     OSDeclareAbstractStructors(IO80211InfraInterface)
+  628 public:
+  629     virtual bool init() override;
+  690 private:
+  691     virtual void _abi_0e98() __asm__("__ZN21IO80211InfraInterface13createLQMDataEv");
+  692     uint8_t _layout[0x120 - sizeof(IO80211SkywalkInterface)];
+  693 };
+  694 static_assert(sizeof(IO80211InfraInterface) == 0x120, "24H32 IO80211InfraInterface ABI");
+  695 
+  696 /* IO80211InfraProtocol's pure virtual selector order is part of the WCL ABI.
+  697  * Unsupported optional selectors are implemented by the concrete adapter as
+  698  * kIOReturnUnsupported. Do not reorder this list. */
+  699 class IO80211InfraProtocol : public IO80211InfraInterface {
+  700     OSDeclareAbstractStructors(IO80211InfraProtocol)
+  701 public:
+  702 #define RTW88_WCL_ABI_METHOD(name, type) virtual IOReturn name(type *) = 0;
+  893 #undef RTW88_WCL_ABI_METHOD
+  894 };
+  895 static_assert(sizeof(IO80211InfraProtocol) == 0x120, "24H32 IO80211InfraProtocol ABI");
+
+FILE=src/kext/wcl24h32/RTW88WCLController.cpp
+   12 #include <IOKit/IOLib.h>
+   13 #include <IOKit/network/IOOutputQueue.h>
+   14 #include <libkern/c++/OSMetaClass.h>
+   15 
+   16 #define super IO80211Controller
+   17 OSDefineMetaClassAndStructors(RTW88WCLController, IO80211Controller)
+   18 
+   19 bool RTW88WCLController::init(OSDictionary *properties)
+  287 }
+  288 
+  289 SInt32 RTW88WCLController::handleCardSpecific(IO80211SkywalkInterface *interface,
+  290                                                unsigned long command,
+  291                                                void *data, bool set)
+  295 }
+  296 
+  297 IOReturn RTW88WCLController::getDRIVER_VERSION(IO80211SkywalkInterface *interface,
+  298                                                 apple80211_version_data *data)
+  299 {
+  309 }
+  310 
+  311 IOReturn RTW88WCLController::getHARDWARE_VERSION(IO80211SkywalkInterface *interface,
+  312                                                   apple80211_version_data *data)
+  313 {
+  318 }
+  319 
+  320 IOReturn RTW88WCLController::getCARD_CAPABILITIES(IO80211SkywalkInterface *interface,
+  321                                                    apple80211_capability_data *data)
+  322 {
+  331 }
+  332 
+  333 IOReturn RTW88WCLController::getPOWER(IO80211SkywalkInterface *interface,
+  334                                        apple80211_power_data *data)
+  335 {
+  342 }
+  343 
+  344 IOReturn RTW88WCLController::setPOWER(IO80211SkywalkInterface *interface,
+  345                                        apple80211_power_data *data)
+  346 {
+  349 }
+  350 
+  351 IOReturn RTW88WCLController::getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+  352                                               apple80211_country_code_data *data)
+  353 {
+  360 }
+  361 
+  362 IOReturn RTW88WCLController::setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+  363                                               apple80211_country_code_data *data)
+  364 {
+  367 }
+  368 
+  369 IOReturn RTW88WCLController::setGET_DEBUG_INFO(IO80211SkywalkInterface *interface,
+  370                                                 apple80211_debug_command *data)
+  371 {
+  406 
+  407 IOReturn RTW88WCLController::activatePacketPath(
+  408     IO80211SkywalkInterface *interface)
+  409 {
+  410     if (!interface)
+  455         return kIOReturnBusy;
+  456 
+  457     IO80211SkywalkInterface *interface = _packetPathInterface;
+  458     _packetPathInterface = nullptr;
+  459     if (interface)
+
+FILE=src/kext/wcl24h32/RTW88WCLController.hpp
+   19 class IOSkywalkPacket;
+   20 
+   21 class RTW88WCLController final : public IO80211Controller,
+   22                                  public RTW88WCLPCIBackendClient,
+   23                                  public RTW88EventDelegate,
+   24                                  public RTW88RxDelegate {
+   25     OSDeclareDefaultStructors(RTW88WCLController)
+   26 
+   27 public:
+   36      * only after their packet rings are registered and the radio is started. */
+   37     UInt32 outputPacket(mbuf_t packet, void *param) override;
+   38     IOReturn activatePacketPath(IO80211SkywalkInterface *interface);
+   39     IOReturn quiescePacketPath();
+   40 
+   42      * native protocol + Skywalk datapath are attached, operations fail closed. */
+   43     bool isCommandProhibited(int command) override;
+   44     SInt32 handleCardSpecific(IO80211SkywalkInterface *interface,
+   45                               unsigned long command, void *data,
+   46                               bool set) override;
+   47     IOReturn getDRIVER_VERSION(IO80211SkywalkInterface *interface,
+   48                                apple80211_version_data *data) override;
+   49     IOReturn getHARDWARE_VERSION(IO80211SkywalkInterface *interface,
+   50                                  apple80211_version_data *data) override;
+   51     IOReturn getCARD_CAPABILITIES(IO80211SkywalkInterface *interface,
+   52                                   apple80211_capability_data *data) override;
+   53     IOReturn getPOWER(IO80211SkywalkInterface *interface,
+   54                       apple80211_power_data *data) override;
+   55     IOReturn setPOWER(IO80211SkywalkInterface *interface,
+   56                       apple80211_power_data *data) override;
+   57     IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+   58                              apple80211_country_code_data *data) override;
+   59     IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+   60                              apple80211_country_code_data *data) override;
+   61     IOReturn setGET_DEBUG_INFO(IO80211SkywalkInterface *interface,
+   62                                apple80211_debug_command *data) override;
+   63     CCLogStream *getLogger() const override;
+  103 
+  104     IOWorkLoop *_workLoop = nullptr;
+  105     IO80211SkywalkInterface *_packetPathInterface = nullptr; // retained while active
+  106     volatile uint32_t _packetPathState = kPacketPathDisabled;
+  107     volatile uint32_t _packetPathInFlight = 0;
+
+FILE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+   10 
+   11 #include <IOKit/IOLib.h>
+   12 #include <libkern/c++/OSMetaClass.h>
+   13 #include <string.h>
+   14 
+   15 #define super IO80211InfraProtocol
+   16 OSDefineMetaClassAndStructors(RTW88WCLInfraInterface, IO80211InfraProtocol)
+   17 
+   18 namespace {
+  164         return false;
+  165 
+  166     if (!IO80211SkywalkInterface::init(provider, address))
+  167         return false;
+  168 
+  324      * virtual dispatch. Apple retains ownership of the BSD parameter setup.
+  325      */
+  326     return IO80211InfraInterface::initBSDInterfaceParameters(params, address);
+  327 }
+  328 
+  345 }
+  346 
+  347 IO80211Controller *RTW88WCLInfraInterface::getController()
+  348 {
+  349     return _controller;
+  372                                            unsigned int duration)
+  373 {
+  374     return IO80211InfraInterface::setLinkState(state, reason, debounce, duration);
+  375 }
+  376 
+
+FILE=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+   13 #include "../RTW88WCLWorkQueue.hpp"
+   14 
+   15 class RTW88WCLController;
+   16 
+   17 #define RTW88_WCL_UNSUPPORTED(name, type) \
+   20     }
+   21 
+   22 class RTW88WCLInfraInterface final : public IO80211InfraProtocol,
+   23                                      public RTW88WCLRadioEventHandler {
+   24     OSDeclareDefaultStructors(RTW88WCLInfraInterface)
+   25 public:
+   26     bool init() override;
+   37     IOReturn getHardwareAddress(ether_addr *address) override;
+   38     IOReturn setHardwareAddress(ether_addr *address) override;
+   39     IO80211Controller *getController() override;
+   40     bool isChipInterfaceReady() override;
+   41     bool isDebounceOnGoing() override;
+
+FILE=src/kext/wcl24h32/RTW88WCLPCIBackend.cpp
+    5 
+    6 #include <IOKit/IOLib.h>
+    7 #include <libkern/c++/OSMetaClass.h>
+    8 #include <kern/thread.h>
+    9 #include <string.h>
+   16 
+   17 #define super OSObject
+   18 OSDefineMetaClassAndStructors(RTW88WCLPCIBackend, OSObject)
+   19 
+   20 bool RTW88WCLPCIBackend::init()
+
+FILE=src/kext/wcl24h32/RTW88WCLPCIBackend.hpp
+   27 
+   28 class RTW88WCLPCIBackend final : public OSObject, public RTW88HwOps {
+   29     OSDeclareDefaultStructors(RTW88WCLPCIBackend)
+   30 
+   31 public:
+
+FILE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+    6 
+    7 #include <IOKit/IOLib.h>
+    8 #include <libkern/c++/OSMetaClass.h>
+    9 
+   10 /* The bundled SDK declares PoolOptions before its public: label. Expose the
+   17 
+   18 #define super OSObject
+   19 OSDefineMetaClassAndStructors(RTW88WCLSkywalkQueues, OSObject)
+   20 
+   21 bool RTW88WCLSkywalkQueues::init()
+
+FILE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+   17 
+   18 class RTW88WCLSkywalkQueues final : public OSObject {
+   19     OSDeclareDefaultStructors(RTW88WCLSkywalkQueues)
+   20 
+   21 public:
+
+FILE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
+   13 
+   14 #define super IOEventSource
+   15 OSDefineMetaClassAndStructors(RTW88WCLSkywalkRxAdapter, IOEventSource)
+   16 
+   17 bool RTW88WCLSkywalkRxAdapter::init(OSObject *owner, IOWorkLoop *workLoop,
+
+FILE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp
+   14 
+   15 class RTW88WCLSkywalkRxAdapter final : public IOEventSource {
+   16     OSDeclareDefaultStructors(RTW88WCLSkywalkRxAdapter)
+   17 
+   18 public:
+
+FILE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+    7 
+    8 #include <IOKit/IOLib.h>
+    9 #include <libkern/c++/OSMetaClass.h>
+   10 #include <sys/kpi_mbuf.h>
+   11 
+   12 #define super OSObject
+   13 OSDefineMetaClassAndStructors(RTW88WCLSkywalkTxAdapter, OSObject)
+   14 
+   15 bool RTW88WCLSkywalkTxAdapter::init()
+
+FILE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp
+   14 
+   15 class RTW88WCLSkywalkTxAdapter final : public OSObject {
+   16     OSDeclareDefaultStructors(RTW88WCLSkywalkTxAdapter)
+   17 
+   18 public:

@@ -1,0 +1,111 @@
+========== STAGE 38: SKYWALK METHOD DISASSEMBLY AUDIT ==========
+script_version=STAGE38_V1_20261102
+timestamp_utc=2026-11-02T02:27:49Z
+product_version=15.8.1
+build_version=24H32
+architecture=x86_64
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+boot_kernel_collection=/System/Library/KernelCollections/BootKernelExtensions.kc
+llvm_objdump=/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump
+mode=read-only address-bounded x86_64 Mach-O disassembly
+PREDECESSOR=Stage37 run-20261102-022215
+
+SOURCE_FINGERPRINT_MATCH=src/kext/RTW88WCLWorkQueue.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/RTW88WCLWorkQueue.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLController.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLController.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+AUDITED_SOURCE_FINGERPRINTS=12
+SOURCE_FINGERPRINT_CONTINUITY=PASS
+
+--- Exact definitions recovered from BootKernelExtensions.kc ---
+NM_OUTPUT_BYTES=26271278
+IO80211InfraInterface.registerInfraEthernetInterface	ffffff80022dcfce	__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_	ffffff80022dcfce (__TEXT,__text) external __ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_
+initRegistrationInfo	ffffff8002987ed6	__ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm	ffffff8002987ed6 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm
+registerEthernetInterface.queue_array	ffffff8002988078	__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j	ffffff8002988078 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j
+deregisterEthernetInterface	ffffff80029880e8	__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj	ffffff80029880e8 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj
+
+--- Bounded instruction disassembly ---
+
+=== METHOD IO80211InfraInterface.registerInfraEthernetInterface ===
+MANGLED=__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_
+NM_DEFINITION=ffffff80022dcfce (__TEXT,__text) external __ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_
+START_ADDRESS=0xffffff80022dcfce
+STOP_ADDRESS=0xffffff80022dd14e
+LLVM_OBJDUMP_EXIT=0
+OTOOL_EXIT=0
+DETECTED_INSTRUCTION_LINES=0
+--- llvm-objdump output ---
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+--- otool output ---
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+
+=== METHOD initRegistrationInfo ===
+MANGLED=__ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm
+NM_DEFINITION=ffffff8002987ed6 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm
+START_ADDRESS=0xffffff8002987ed6
+STOP_ADDRESS=0xffffff8002988056
+LLVM_OBJDUMP_EXIT=0
+OTOOL_EXIT=0
+DETECTED_INSTRUCTION_LINES=0
+--- llvm-objdump output ---
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+--- otool output ---
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+
+=== METHOD registerEthernetInterface.queue_array ===
+MANGLED=__ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j
+NM_DEFINITION=ffffff8002988078 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j
+START_ADDRESS=0xffffff8002988078
+STOP_ADDRESS=0xffffff80029881f8
+LLVM_OBJDUMP_EXIT=0
+OTOOL_EXIT=0
+DETECTED_INSTRUCTION_LINES=0
+--- llvm-objdump output ---
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+--- otool output ---
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+
+=== METHOD deregisterEthernetInterface ===
+MANGLED=__ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj
+NM_DEFINITION=ffffff80029880e8 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj
+START_ADDRESS=0xffffff80029880e8
+STOP_ADDRESS=0xffffff8002988268
+LLVM_OBJDUMP_EXIT=0
+OTOOL_EXIT=0
+DETECTED_INSTRUCTION_LINES=0
+--- llvm-objdump output ---
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+--- otool output ---
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+
+--- Runtime context ---
+   53   11 0xffffff8002624000 0x15ff4    0x15ff4    com.apple.iokit.IONetworkingFamily (3.4) 5D3F11B8-802B-3860-8A36-E9334980A117 <9 8 7 6 3 1>
+   55    5 0xffffff8004150000 0xce000    0xce000    com.apple.iokit.IOSkywalkFamily (1.0) 035A9AD9-6CDE-362F-8DEC-B664BC6431EC <54 53 9 8 7 6 3 1>
+   93    1 0xffffff8004645000 0x20a000   0x20a000   com.apple.iokit.IO80211FamilyLegacy (1200.12.2b1) 4C07538B-62EB-3D6D-AEF9-93BCDCF45FAB <92 55 53 27 23 10 9 8 7 6 3 1>
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+IMPLEMENTATION_AUTHORIZED_BY_THIS_STAGE=NO
+========== END STAGE 38 ==========

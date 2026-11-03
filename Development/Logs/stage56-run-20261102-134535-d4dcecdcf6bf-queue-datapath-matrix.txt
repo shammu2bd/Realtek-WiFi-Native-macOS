@@ -1,0 +1,104 @@
+STAGE56_QUEUE_TX_RX_OWNERSHIP_AND_CALLBACK_LINK_MATRIX
+SOURCE_FILES_SCANNED=1242
+QUALIFIED_METHOD_DEFINITIONS_FOUND=105
+
+CHECK=interface prepares RegistrationInfo helper
+METHOD_SCOPE=RTW88WCLInfraInterface::prepareRegistrationInfo
+RESULT=PRESENT
+EVIDENCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:8: /* 24H32 initRegistrationInfo requires option 1 and the exact 0x130 size.
+EVIDENCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:12: if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+
+CHECK=interface start calls RegistrationInfo helper
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface start calls infra registration
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=queue owner creates TX/RX queues
+METHOD_SCOPE=RTW88WCLSkywalkQueues::createQueues
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=queue owner creates TX/RX pools
+METHOD_SCOPE=RTW88WCLSkywalkQueues::createQueues
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=queue creation passes callback function pointers
+METHOD_SCOPE=RTW88WCLSkywalkQueues::createQueues
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=controller allocates TX adapter
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=controller allocates RX adapter
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=PRESENT
+EVIDENCE=src/kext/wcl24h32/RTW88WCLController.cpp::RTW88WCLController::start:91: _rxAdapter = new RTW88WCLSkywalkRxAdapter;
+
+CHECK=controller binds RX consumer sink
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=PRESENT
+EVIDENCE=src/kext/wcl24h32/RTW88WCLController.cpp::RTW88WCLController::start:94: &RTW88WCLController::stagedRxFrame, this)) {
+
+CHECK=TX adapter submit method calls RTW88 output
+METHOD_SCOPE=RTW88WCLSkywalkTxAdapter::submitPacket
+RESULT=PRESENT
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:4: if (!_radio || !_txPool)
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:8: if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:8: if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:26: const UInt32 backendResult = _radio->outputPacketWithCompletion(
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:27: mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:29: /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:31: * been reserved, adapter acceptance is successful; the actual transmitted
+
+CHECK=TX adapter completion path exposes sink
+METHOD_SCOPE=RTW88WCLSkywalkTxAdapter::drainCompletions
+RESULT=PRESENT
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:2: if (!sink)
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:5: /* A sink may trigger owner teardown; keep this adapter alive until the
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:17: /* The sink runs in deferred context and borrows the retained packet.
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:20: sink(packet, transmitted, context);
+
+CHECK=TX queue callback reaches TX adapter
+METHOD_SCOPE=RTW88WCLSkywalkQueues::createQueues
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=RX queue callback reaches RX adapter
+METHOD_SCOPE=RTW88WCLSkywalkQueues::createQueues
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=RX adapter sends completed packet to networking sink
+METHOD_SCOPE=RTW88WCLSkywalkRxAdapter::checkForWork
+RESULT=PRESENT
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::checkForWork:12: /* A true return means the sink has accepted ownership. The
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::checkForWork:13: * current controller sink returns false because the RX
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::checkForWork:15: const bool accepted = _sink && _sink(packet, _sinkContext);
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::checkForWork:15: const bool accepted = _sink && _sink(packet, _sinkContext);
+EVIDENCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::checkForWork:15: const bool accepted = _sink && _sink(packet, _sinkContext);
+
+CHECK=controller publishes primary interface
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=controller constructs native interface
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+METHOD_DEFINITION=RTW88WCLInfraInterface::prepareRegistrationInfo
+FOUND=YES
+
+METHOD_DEFINITION=RTW88WCLSkywalkQueues::createQueues
+FOUND=YES
+
+METHOD_DEFINITION=RTW88WCLSkywalkQueues::destroyQueues
+FOUND=YES
+
+METHOD_DEFINITION=RTW88WCLSkywalkTxAdapter::submitPacket
+FOUND=YES
+
+METHOD_DEFINITION=RTW88WCLSkywalkTxAdapter::drainCompletions
+FOUND=YES
+
+RX_ADAPTER_METHOD_DEFINITIONS=RTW88WCLSkywalkRxAdapter::checkForWork,RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket,RTW88WCLSkywalkRxAdapter::droppedFrames,RTW88WCLSkywalkRxAdapter::enqueueFrame,RTW88WCLSkywalkRxAdapter::free,RTW88WCLSkywalkRxAdapter::init,RTW88WCLSkywalkRxAdapter::isValidMbuf,RTW88WCLSkywalkRxAdapter::preparedFrames,RTW88WCLSkywalkRxAdapter::queuedFrames,RTW88WCLSkywalkRxAdapter::stop

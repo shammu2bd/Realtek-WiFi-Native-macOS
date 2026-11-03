@@ -1,0 +1,29 @@
+========== STAGE 62 QUEUESET / LOGICALLINK REGISTRATION METADATA AUDIT ==========
+VERSION=STAGE62_V2_20261102
+RUN=run-20261102-161032-d54adc732d87
+TARGET=15.8.1/24H32/x86_64
+PREDECESSOR=Stage61 V1 run-20261102-152354-434ec3c3ae26
+PURPOSE=trace the private QueueSetInfo_s and LogicalLinkInfo_s values passed by Apple's queue-array registration wrapper
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+
+QUEUESET_INFO=Apple stages a 32-bit control word with values 0x3 or 0xb; QueueSet init tests bit 3 and copies the whole dword.
+QUEUESET_INFO_LIMIT=the call path proves at least a 4-byte readable word; exact private structure sizeof/layout is not proven.
+LOGICALLINK_INFO=caller stages 0x50 bytes from a static 10-qword table and overwrites the first dword with 1; selected initializer reads that first dword.
+LOGICALLINK_INFO_LIMIT=the 0x50-byte staging size is observed, but the full formal private structure size/alignment is not proven by these method bodies.
+TRANSACTION=QueueSet creation precedes LogicalLink creation, then the LogicalLink overload performs network-interface registration.
+LIFETIME=LogicalLink initializer retains/attaches QueueSets; free/deregister paths are included for review.
+ACTIVATION_GATE=BLOCKED — native driver has not connected RegistrationInfo, queue arrays, pools, callbacks, packet ownership or rollback to this Apple transaction.
+
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+SIP_NVRAM_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+========== END STAGE 62 ==========

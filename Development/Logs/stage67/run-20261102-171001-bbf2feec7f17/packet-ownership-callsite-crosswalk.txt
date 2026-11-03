@@ -1,0 +1,59 @@
+STAGE67_PACKET_OWNERSHIP_CALLSITE_CROSSWALK
+
+QUEUE_PACKET_COMPLETION
+ffffff8002980f9f:      	mov	rcx, qword ptr [rdi + 0x68]
+ffffff8002981002:      	call	0xffffff8000536cc0 <_uuid_unparse_upper+0xffffff8000536cc0>
+ffffff8002981007:      	mov	rcx, qword ptr [r14 + 0x68]
+ffffff8002981075:      	call	0xffffff8000536cc0 <_uuid_unparse_upper+0xffffff8000536cc0>
+ffffff800298108c:      	mov	rcx, qword ptr [r14 + 0x68]
+ffffff8002981099:      	call	0xffffff8000536d80 <_uuid_unparse_upper+0xffffff8000536d80>
+ffffff80029810a2:      	mov	rcx, qword ptr [r14 + 0x68]
+ffffff80029810d1:      	call	0xffffff8000536cc0 <_uuid_unparse_upper+0xffffff8000536cc0>
+ffffff80029810d6:      	mov	rcx, qword ptr [r14 + 0x68]
+ffffff80029810f7:      	mov	rsi, qword ptr [r14 + 0x68]
+ffffff8002981113:      	call	0xffffff8000a48bd0 <_uuid_unparse_upper+0xffffff8000a48bd0>
+ffffff8002981118:      	mov	rsi, qword ptr [r14 + 0x68]
+ffffff8002981123:      	call	0xffffff8000a48bd0 <_uuid_unparse_upper+0xffffff8000a48bd0>
+ffffff8002981128:      	mov	rsi, qword ptr [r14 + 0x68]
+
+TX_COMPLETION_PACKET_DRAIN
+ffffff800298a07b:      	call	qword ptr [rax + 0x140]
+ffffff800298a087:      	call	0xffffff800297e498 <__ZNK15IOSkywalkPacket14getSourceQueueEv>
+ffffff800298a09c:      	call	0xffffff8002980ec2 <__ZN20IOSkywalkPacketQueue14notifySrcQueueEbPS_j>
+ffffff800298a0b1:      	call	qword ptr [rax + 0x198]
+ffffff800298a0b7:      	mov	rsi, qword ptr [rbx + 0xe8]
+ffffff800298a0c3:      	mov	rdi, qword ptr [r14 + 0x28]
+ffffff800298a0c7:      	call	0xffffff8000a35800 <_uuid_unparse_upper+0xffffff8000a35800>
+ffffff800298a0e4:      	mov	rdi, qword ptr [rbx + 0x50]
+ffffff800298a0f6:      	call	qword ptr [rax + 0x148]
+ffffff800298a108:      	call	0xffffff8002980ec2 <__ZN20IOSkywalkPacketQueue14notifySrcQueueEbPS_j>
+ffffff800298a10d:      	mov	rdi, qword ptr [rbx + 0xf0]
+ffffff800298a122:      	call	qword ptr [rax + 0x268]
+ffffff800298a128:      	mov	rax, qword ptr [rbx + 0xf8]
+ffffff800298a148:      	mov	qword ptr [rax + 0x18], r14
+
+RX_NETWORK_PACKET_ENQUEUE
+ffffff8002986963:      	call	0xffffff800297e498 <__ZNK15IOSkywalkPacket14getSourceQueueEv>
+ffffff8002986968:      	mov	r13, qword ptr [rbx + 0x28]
+ffffff800298697e:      	call	0xffffff8000a363b0 <_uuid_unparse_upper+0xffffff8000a363b0>
+ffffff800298698f:      	call	0xffffff8000a363b0 <_uuid_unparse_upper+0xffffff8000a363b0>
+ffffff800298699a:      	call	qword ptr [rax + 0x140]
+ffffff80029869b3:      	call	qword ptr [rax + 0x198]
+ffffff80029869bf:      	call	qword ptr [rax + 0x1e0]
+ffffff80029869d4:      	mov	rdi, qword ptr [rax + 0xf0]
+ffffff80029869e9:      	call	0xffffff80006228f0 <_uuid_unparse_upper+0xffffff80006228f0>
+ffffff8002986a12:      	mov	rdi, qword ptr [rax + 0xf8]
+ffffff8002986a29:      	call	qword ptr [rax + 0x268]
+ffffff8002986a42:      	call	0xffffff8000a1b930 <_uuid_unparse_upper+0xffffff8000a1b930>
+
+RX_KPIPE_PACKET_ENQUEUE
+ffffff8002986a91:      	call	0xffffff800297e498 <__ZNK15IOSkywalkPacket14getSourceQueueEv>
+ffffff8002986a9d:      	call	qword ptr [rax + 0x140]
+ffffff8002986ab7:      	call	qword ptr [rax + 0x198]
+ffffff8002986afd:      	call	qword ptr [rax + 0x268]
+ffffff8002986b0c:      	call	qword ptr [rax + 0x1e0]
+
+PACKET_VTABLE_SLOT_MEANINGS=not inferred from offsets; exact target symbols and disassembly are recorded separately
+POOL_VTABLE_SLOT_MEANING=not inferred from offset; exact target symbol and disassembly are recorded separately
+COMPLETION_HOOK_DYNAMIC_OBJECT=Stage66 TX completion path calls object at queue offset +0xf0 through vtable offset +0x268; dynamic class not established by available pinned evidence
+OWNERSHIP_RULE=do not equate callback count with number of packets safely reclaimed until packet vtable targets and pool target bodies are reviewed

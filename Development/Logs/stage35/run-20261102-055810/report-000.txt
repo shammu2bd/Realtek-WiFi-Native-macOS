@@ -1,0 +1,246 @@
+RTL88WiFi Stage35 — native build and source-membership audit
+PROJECT_ROOT: /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+TARGET: macOS Sequoia 15.8.1 / build 24H32 / Intel x86_64
+MODE: READ-ONLY; no source edits, build, install, load, or OpenCore changes.
+PURPOSE: identify actual project root/Git state, build targets and source membership; resolve _dma_ops linkage evidence.
+
+=== GIT STATE ===
+git rev-parse exit=128
+git root=(unavailable)
+git root stderr=fatal: not a git repository (or any of the parent directories): .git
+HEAD exit=999: (unavailable)
+branch exit=999: (unavailable or detached)
+status exit=999
+(clean/no output/unavailable)
+tracked files exit=999; count=0
+changed unstaged exit=999
+(none/unavailable)
+changed staged exit=999
+(none/unavailable)
+untracked exit=999
+(none/unavailable)
+git diff --check exit=999
+(no whitespace errors/unavailable)
+NOTE: Git state is valid only if the detected Git root actually contains this project checkout; paths outside the Git root are not treated as tracked.
+
+=== BUILD DESCRIPTOR INVENTORY ===
+driver/RTL88WiFi/MacKernelSDK/Headers/libkern/crypto/Makefile | bytes=643 | inside_git_root=no | tracked=not-applicable
+driver/RTL88WiFi/MacKernelSDK/Library/kmod/libkmod.xcodeproj/project.pbxproj | bytes=18585 | inside_git_root=no | tracked=not-applicable
+driver/RTL88WiFi/Makefile | bytes=20888 | inside_git_root=no | tracked=not-applicable
+
+=== XCODE TARGETS AND PBXSourcesBuildPhase MEMBERSHIP ===
+
+PROJECT: driver/RTL88WiFi/MacKernelSDK/Library/kmod/libkmod.xcodeproj/project.pbxproj
+TARGET: All | productType= | productName=All
+SOURCE_BUILD_FILE_COUNT: 0
+
+PROJECT: driver/RTL88WiFi/MacKernelSDK/Library/kmod/libkmod.xcodeproj/project.pbxproj
+TARGET: libkmodc++ | productType=com.apple.product-type.library.static | productName=libkmodc++
+SOURCE_BUILD_FILE_COUNT: 3
+  cplus_start.c => driver/RTL88WiFi/MacKernelSDK/Library/kmod/cplus_start.c [basename-unique] git_tracked=unknown
+  i386_builtins.c => driver/RTL88WiFi/MacKernelSDK/Library/kmod/i386_builtins.c [basename-unique] git_tracked=unknown
+  cplus_stop.c => driver/RTL88WiFi/MacKernelSDK/Library/kmod/cplus_stop.c [basename-unique] git_tracked=unknown
+
+PROJECT: driver/RTL88WiFi/MacKernelSDK/Library/kmod/libkmod.xcodeproj/project.pbxproj
+TARGET: libkmod | productType=com.apple.product-type.library.static | productName=libkmod
+SOURCE_BUILD_FILE_COUNT: 3
+  c_start.c => driver/RTL88WiFi/MacKernelSDK/Library/kmod/c_start.c [basename-unique] git_tracked=unknown
+  i386_builtins.c => driver/RTL88WiFi/MacKernelSDK/Library/kmod/i386_builtins.c [basename-unique] git_tracked=unknown
+  c_stop.c => driver/RTL88WiFi/MacKernelSDK/Library/kmod/c_stop.c [basename-unique] git_tracked=unknown
+
+PROJECT: driver/RTL88WiFi/MacKernelSDK/Library/kmod/libkmod.xcodeproj/project.pbxproj
+TARGET: libkmodtest | productType=com.apple.product-type.kernel-extension | productName=libkmodtest
+SOURCE_BUILD_FILE_COUNT: 1
+  libkmodtest.cpp => driver/RTL88WiFi/MacKernelSDK/Library/kmod/libkmodtest/libkmodtest.cpp [basename-unique] git_tracked=unknown
+
+=== MAKEFILE SOURCE/TARGET DECLARATIONS ===
+
+--- driver/RTL88WiFi/MacKernelSDK/Headers/libkern/crypto/Makefile ---
+  6: include $(MakeInc_cmd)
+  7: include $(MakeInc_def)
+  23: include $(MakeInc_rule)
+  24: include $(MakeInc_dir)
+
+--- driver/RTL88WiFi/Makefile ---
+  52: CC           := xcrun clang
+  53: CXX          := xcrun clang++
+  77:     -include $(COMPAT_DIR)/rtw88_compat.h \
+  110:     $(LINUX_SRC)/main.c \
+  111:     $(LINUX_SRC)/mac.c \
+  112:     $(LINUX_SRC)/phy.c \
+  113:     $(LINUX_SRC)/fw.c \
+  114:     $(LINUX_SRC)/tx.c \
+  115:     $(LINUX_SRC)/rx.c \
+  116:     $(LINUX_SRC)/sec.c \
+  117:     $(LINUX_SRC)/efuse.c \
+  118:     $(LINUX_SRC)/coex.c \
+  119:     $(LINUX_SRC)/ps.c \
+  120:     $(LINUX_SRC)/regd.c \
+  121:     $(LINUX_SRC)/bf.c \
+  122:     $(LINUX_SRC)/sar.c \
+  123:     $(LINUX_SRC)/util.c \
+  124:     $(LINUX_SRC)/pci.c \
+  125:     $(LINUX_SRC)/mac80211.c
+  129:     $(LINUX_SRC)/rtw8822b.c \
+  130:     $(LINUX_SRC)/rtw8822b_table.c \
+  131:     $(LINUX_SRC)/rtw8822be.c \
+  132:     $(LINUX_SRC)/rtw8822c.c \
+  133:     $(LINUX_SRC)/rtw8822c_table.c \
+  134:     $(LINUX_SRC)/rtw8822ce.c \
+  135:     $(LINUX_SRC)/rtw8821c.c \
+  136:     $(LINUX_SRC)/rtw8821c_table.c \
+  137:     $(LINUX_SRC)/rtw8821ce.c
+  141:     $(COMPAT_DIR)/rtw88_thread_call.c \
+  142:     $(COMPAT_DIR)/rtw88_compat.c
+  145: # fw_blobs.c is auto-generated from firmware/*.bin before compilation
+  147:     $(COMPAT_DIR)/rtw88_firmware.c \
+  148:     $(COMPAT_DIR)/fw_blobs.c
+  150: FW_BLOBS_C := $(COMPAT_DIR)/fw_blobs.c
+  152: # kmod_info.c — defines _kmod_info (required by kmutil/kextutil)
+  154:     $(KEXT_SRC)/kmod_info.c
+  159:     $(KEXT_SRC)/RTW88Kext.cpp \
+  160:     $(KEXT_SRC)/RTW88PCIDevice.cpp \
+  161:     $(KEXT_SRC)/RTW88UserClient.cpp \
+  162:     $(KEXT_SRC)/RTW88IEEE80211.cpp
+  168: DRIVER_OBJS   := $(patsubst $(LINUX_SRC)/%.c,  $(BUILD_DIR)/driver/%.o, $(DRIVER_SRCS))
+  169: CHIP_OBJS     := $(patsubst $(LINUX_SRC)/%.c,  $(BUILD_DIR)/driver/%.o, $(CHIP_SRCS))
+  170: COMPAT_OBJS   := $(patsubst $(COMPAT_DIR)/%.c, $(BUILD_DIR)/compat/%.o, $(COMPAT_SRCS))
+  171: FIRMWARE_OBJS := $(patsubst $(COMPAT_DIR)/%.c, $(BUILD_DIR)/compat/%.o, $(FIRMWARE_SRCS))
+  172: KMOD_OBJS   := $(patsubst $(KEXT_SRC)/%.c,   $(BUILD_DIR)/kext/%.o,   $(KMOD_SRCS))
+  173: KEXT_OBJS   := $(patsubst $(KEXT_SRC)/%.cpp, $(BUILD_DIR)/kext/%.o,   $(KEXT_SRCS))
+  211: $(BUILD_DIR)/driver/%.o: $(LINUX_SRC)/%.c | $(BUILD_DIR)/driver
+  216: $(BUILD_DIR)/compat/%.o: $(COMPAT_DIR)/%.c | $(BUILD_DIR)/compat
+  220: # Generate fw_blobs.c from firmware/*.bin (zlib-compressed embedded blobs)
+  221: $(FW_BLOBS_C): $(wildcard $(FIRMWARE_DIR)/*.bin) scripts/gen_fw_blobs.py
+  222: 	@echo "  GEN  fw_blobs.c"
+  232: $(BUILD_DIR)/compat/rtw88_firmware.o: $(COMPAT_DIR)/rtw88_firmware.c | $(BUILD_DIR)/compat
+  233: 	@echo "  CC   rtw88_firmware.c"
+  236: $(BUILD_DIR)/compat/fw_blobs.o: $(COMPAT_DIR)/fw_blobs.c | $(BUILD_DIR)/compat
+  237: 	@echo "  CC   fw_blobs.c"
+  240: # Compile kmod_info.c (plain C, no compat headers)
+  241: $(BUILD_DIR)/kext/kmod_info.o: $(KEXT_SRC)/kmod_info.c | $(BUILD_DIR)/kext
+  242: 	@echo "  CC   kmod_info.c"
+  246: $(BUILD_DIR)/kext/%.o: $(KEXT_SRC)/%.cpp | $(BUILD_DIR)/kext
+  253: $(OUT_CTL): $(CTL_DIR)/main.c | $(OUT_DIR)
+  327: #   RTL88WiFi.hpp  RTL88WiFi.cpp
+  328: #   RTL88WiFiInterface.hpp  RTL88WiFiInterface.cpp
+  335:     $(KEXT_SRC)/RTW88IEEE80211.cpp \
+  336:     $(KEXT_SRC)/RTW88HwOps.cpp \
+  337:     $(KEXT_SRC)/RTL88WiFi.cpp \
+  338:     $(KEXT_SRC)/RTL88WiFiAWDL.cpp \
+  339:     $(KEXT_SRC)/RTW88AWDLManager.cpp \
+  340:     $(KEXT_SRC)/RTL88WiFiInterface.cpp \
+  341:     $(KEXT_SRC)/RTW88WCLRadioBridge.cpp \
+  342:     $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+  344: AIRPORT_KEXT_OBJS := $(patsubst $(KEXT_SRC)/%.cpp, $(BUILD_DIR)/airport/%.o, $(AIRPORT_KEXT_SRCS))
+  349: WCL24H32_CONTROLLER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLController.cpp
+  351: WCL24H32_INFRA_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLInfraInterface.cpp
+  353: WCL24H32_PCI_BACKEND_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.cpp
+  355: WCL24H32_SKYWALK_QUEUES_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.cpp
+  357: WCL24H32_TX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+  359: WCL24H32_RX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
+  401: 	@echo "  WCL-ABI CXX  RTW88WCLController.cpp (24H32, bounded RX packet owner; compile-only)"
+  413: 	@echo "  WCL-ABI CXX  RTW88WCLInfraInterface.cpp (24H32, compile-only)"
+  421: 	@echo "  WCL-ABI CXX  RTW88WCLPCIBackend.cpp (ABI-neutral, compile-only)"
+  430: 	@echo "  WCL-ABI CXX  RTW88WCLSkywalkQueues.cpp (24H32, unregistered queues)"
+  440: 	@echo "  WCL-ABI CXX  RTW88WCLSkywalkTxAdapter.cpp (24H32, mbuf copy + deferred completion; compile-only)"
+  451: 	@echo "  WCL-ABI CXX  RTW88WCLSkywalkRxAdapter.cpp (24H32, pool-backed RX conversion; compile-only)"
+  462: NATIVE_CORE_SRCS := $(KEXT_SRC)/RTW88IEEE80211.cpp $(KEXT_SRC)/RTW88HwOps.cpp $(KEXT_SRC)/RTW88WCLRadioBridge.cpp $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+  463: NATIVE_CORE_HEADERS := $(wildcard $(KEXT_SRC)/*.hpp) $(wildcard $(KEXT_SRC)/wcl24h32/*.hpp)
+  474: $(NATIVE_CORE_OBJ_DIR)/%.o: $(KEXT_SRC)/%.cpp $(NATIVE_CORE_HEADERS) | $(NATIVE_CORE_OBJ_DIR)
+  498: $(BUILD_DIR)/airport/%.o: $(KEXT_SRC)/%.cpp | $(BUILD_DIR)/airport
+  502: $(AIRPORT_KMOD_OBJ): $(KEXT_SRC)/kmod_info.c | $(BUILD_DIR)/airport
+  503: 	@echo "  CC   airport/kmod_info.c"
+  517: -include $(DEPFILES)
+
+=== _dma_ops DEFINITIONS / ASSIGNMENTS / REFERENCES ===
+
+[dma_ops_definition] count=8
+  driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:130: struct rtw88_dma_alloc_ops _dma_ops = {
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:176: struct rtw88_dma_alloc_ops _dma_ops = {
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:317: rtw88_dma_ops      = &_dma_ops;
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:458: rtw88_dma_ops      = nullptr;
+  driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:252: rtw88_dma_ops       = &_dma_ops;
+  driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:792: rtw88_dma_ops = nullptr;
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:106: rtw88_dma_ops = &_dma_ops;
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:261: rtw88_dma_ops = nullptr;
+
+[dma_ops_assignment] count=9
+  driver/RTL88WiFi/src/compat/rtw88_compat.c:144: struct rtw88_dma_alloc_ops *rtw88_dma_ops      = NULL;
+  driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:130: struct rtw88_dma_alloc_ops _dma_ops = {
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:176: struct rtw88_dma_alloc_ops _dma_ops = {
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:317: rtw88_dma_ops      = &_dma_ops;
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:458: rtw88_dma_ops      = nullptr;
+  driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:252: rtw88_dma_ops       = &_dma_ops;
+  driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:792: rtw88_dma_ops = nullptr;
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:106: rtw88_dma_ops = &_dma_ops;
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:261: rtw88_dma_ops = nullptr;
+
+[dma_ops_reference] count=23
+  driver/RTL88WiFi/src/compat/rtw88_compat.c:144: struct rtw88_dma_alloc_ops *rtw88_dma_ops      = NULL;
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:37: extern struct rtw88_dma_alloc_ops *rtw88_dma_ops;
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:42: if (rtw88_dma_ops && rtw88_dma_ops->alloc_coherent)
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:43: return rtw88_dma_ops->alloc_coherent(dev, size, dma_handle, flag);
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:53: if (rtw88_dma_ops && rtw88_dma_ops->free_coherent) {
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:54: rtw88_dma_ops->free_coherent(dev, size, cpu_addr, dma_handle);
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:63: if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:64: return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:71: if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:72: rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:79: if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_cpu)
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:80: rtw88_dma_ops->sync_single_for_cpu(dev, addr, size, dir);
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:87: if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_device)
+  driver/RTL88WiFi/src/compat/linux/dma-mapping.h:88: rtw88_dma_ops->sync_single_for_device(dev, addr, size, dir);
+  driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:130: struct rtw88_dma_alloc_ops _dma_ops = {
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:76: extern struct rtw88_dma_alloc_ops _dma_ops;
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:176: struct rtw88_dma_alloc_ops _dma_ops = {
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:317: rtw88_dma_ops      = &_dma_ops;
+  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:458: rtw88_dma_ops      = nullptr;
+  driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:252: rtw88_dma_ops       = &_dma_ops;
+  driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:792: rtw88_dma_ops = nullptr;
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:106: rtw88_dma_ops = &_dma_ops;
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:261: rtw88_dma_ops = nullptr;
+
+[native_tx] count=21
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c:18: static void rtw_ops_tx(struct ieee80211_hw *hw,
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c:29: rtw_tx(rtwdev, control, skb);
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c:952: .tx			= rtw_ops_tx,
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:806: static int rtw_pci_tx_write_data(struct rtw_dev *rtwdev,
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:888: ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_BCN);
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:912: ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_H2C);
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:932: ret = rtw_pci_tx_write_data(rtwdev, pkt_info, skb, queue);
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:87: void rtw_tx(struct rtw_dev *rtwdev,
+  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c:584: void rtw_tx(struct rtw_dev *rtwdev,
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:34: void rtw_tx(struct rtw_dev *rtwdev, struct ieee80211_tx_control *control,
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1246: return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1249: UInt32 RTW88IEEE80211::outputPacketWithCompletion(
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1288: const bool submitted = txDataFrame(m, callback, context, cookie);
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4378: bool submitted = txDataFrame(m);
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4886: bool RTW88IEEE80211::txDataFrame(mbuf_t m,
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:224: UInt32    outputPacketWithCompletion(mbuf_t m,
+  driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:364: bool      txDataFrame(mbuf_t m,
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:36: static IOReturn txSubmissionAction(OSObject *owner,
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:72: &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:147: IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:102: const UInt32 backendResult = _radio->outputPacketWithCompletion(
+
+=== LINKAGE RESOLUTION ===
+MULTIPLE definition-shaped occurrences repository-wide: 8. They are not automatically duplicate linked symbols; target membership and linkage/storage class must be checked.
+TARGET All: definition TUs linked by PBXSourcesBuildPhase = 0 / 8; none identified
+TARGET libkmodc++: definition TUs linked by PBXSourcesBuildPhase = 0 / 8; none identified
+TARGET libkmod: definition TUs linked by PBXSourcesBuildPhase = 0 / 8; none identified
+TARGET libkmodtest: definition TUs linked by PBXSourcesBuildPhase = 0 / 8; none identified
+
+=== AUDIT LIMITATIONS / ERRORS ===
+Xcode parse errors: 0
+NONE
+Source read errors: 0
+NONE
+
+=== STAGE35 DECISION ===
+PROJECT_ROOT: established from the requested driver/RTL88WiFi/Makefile path.
+GIT_STATE: UNAVAILABLE — resolve checkout/repository root before claiming tracked state.
+BUILD_MEMBERSHIP: XCODE TARGET SOURCE MEMBERSHIP EXTRACTED
+DMA_OPS_LINKAGE: REVIEW_REQUIRED — inspect storage class, target membership, and duplicate-symbol rules.
+ACTIVATION_GATE: BLOCKED until the exact experimental Kext target, all linked translation units, and one unambiguous active DMA ops implementation are proven.
+NO SOURCE FILES WERE MODIFIED. BUILD/INSTALL/LOAD NOT RUN. OPENCORE UNCHANGED.

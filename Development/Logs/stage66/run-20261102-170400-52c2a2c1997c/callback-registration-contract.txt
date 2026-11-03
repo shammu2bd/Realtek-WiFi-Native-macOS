@@ -1,0 +1,39 @@
+STAGE66_QUEUE_CALLBACK_REGISTRATION_CONTRACT
+PREDECESSOR=Stage65 V1; Stage64 separately pins Action callbacks as IOReturn
+BASE_INIT_DISPATCH=STAGE66_IOSKYWALK_PACKET_QUEUE_INIT_DISPATCH
+SOURCE=initWithPool disassembly calls IOSkywalkPacketQueue vtable slot offset 0x240
+SLOT_OFFSET=0x240
+SLOT offset=0x240 index=72 target=0xffffff8002980860 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+TX_COMPLETION_CALLBACK_CALLSITE=Stage65 enqueueAndCompletePackets
+TX_COMPLETION_CALLBACK_FIELD=object offset +0x20 (indirect call qword ptr [rbx+0x20])
+TX_COMPLETION_CALLBACK_CONTEXT=object offset +0x18 is passed as first callback argument
+TX_COMPLETION_CALLBACK_PACKET_ARRAY=object offset +0xe0 is passed as third callback argument
+TX_COMPLETION_CALLBACK_LIMIT=queue capacity at +0xac minus one is passed as fourth callback argument
+TX_COMPLETION_CALLBACK_RETURN=EAX is tested and, when nonzero, passed as count to completePackets
+RX_COMPLETION_CALLBACK_CALLSITE=Stage65 gatedEnqueue
+RX_COMPLETION_CALLBACK_FIELD=loaded from object offset +0x20 then invoked indirectly
+RX_COMPLETION_CALLBACK_CONTEXT=object offset +0x18 passed as first callback argument
+RX_COMPLETION_CALLBACK_PACKET_ARRAY=packet-table entry pointer passed as third callback argument
+RX_COMPLETION_CALLBACK_RETURN=EAX contributes to accepted packet count; nonzero count is passed to enqueuePacketsForKPipe or enqueuePacketsForNetworking
+IMPORTANT=these packet-array callback returns are not the IOReturn Action return audited in Stage64
+TX_COMPLETION_CALLBACK_ASSEMBLY_BEGIN
+ffffff80029a3a17:      	mov	rdi, qword ptr [rdi + 0x18]
+ffffff80029a3a1b:      	mov	rdx, qword ptr [rbx + 0xe0]
+ffffff80029a3a22:      	mov	ecx, dword ptr [rbx + 0xac]
+ffffff80029a3a2d:      	call	qword ptr [rbx + 0x20]
+ffffff80029a3a42:      	test	eax, eax
+ffffff80029a3a46:      	mov	rsi, qword ptr [rbx + 0xe0]
+ffffff80029a3a52:      	call	0xffffff800298a03c <__ZN26IOSkywalkTxCompletionQueue15completePacketsEPP15IOSkywalkPacketj>
+TX_COMPLETION_CALLBACK_ASSEMBLY_END
+RX_COMPLETION_CALLBACK_ASSEMBLY_BEGIN
+ffffff80029a3507:      	mov	r12, qword ptr [rdi + 0x20]
+ffffff80029a350b:      	mov	rax, qword ptr [rdi + 0xe8]
+ffffff80029a359a:      	mov	rdi, qword ptr [rbx + 0x18]
+ffffff80029a35a7:      	call	r12
+ffffff80029a35bc:      	test	eax, eax
+ffffff80029a35d2:      	call	0xffffff8002986a5a <__ZN26IOSkywalkRxCompletionQueue22enqueuePacketsForKPipeEPKP15IOSkywalkPacketjj>
+ffffff80029a35d7:      	mov	rax, qword ptr [rbx + 0xe8]
+ffffff80029a35f1:      	call	0xffffff8002986918 <__ZN26IOSkywalkRxCompletionQueue27enqueuePacketsForNetworkingEPKP15IOSkywalkPacketjj>
+RX_COMPLETION_CALLBACK_ASSEMBLY_END
+CLASSIFICATION=Stage64 Action callback function pointer signature returns IOReturn; Stage66 queue packet callbacks return a packet count consumed as such by Apple helpers
+OWNERSHIP=actual completion/recycling ownership still requires packet-table and completePackets/refill/enqueue method analysis; no implementation authorization

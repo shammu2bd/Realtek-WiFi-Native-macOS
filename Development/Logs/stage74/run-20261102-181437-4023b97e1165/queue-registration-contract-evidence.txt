@@ -1,0 +1,200 @@
+STAGE74_QUEUE_POOL_AND_CALLBACK_CONSTRUCTOR_CALLS
+
+SOURCE=RTW88WCLSkywalkQueues.cpp:56-57
+    _txPool = IOSkywalkPacketBufferPool::withName(
+        "RTL88WiFi-WCL-TX", this, kIOSkywalkPacketTypeNetwork, &txOptions);
+
+SOURCE=RTW88WCLSkywalkQueues.cpp:61-62
+    _rxPool = IOSkywalkPacketBufferPool::withName(
+        "RTL88WiFi-WCL-RX", this, kIOSkywalkPacketTypeNetwork, &rxOptions);
+
+SOURCE=RTW88WCLSkywalkQueues.cpp:70-72
+    _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+        _txPool, kQueueCapacity, 0, this,
+        &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+
+SOURCE=RTW88WCLSkywalkQueues.cpp:76-78
+    _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+        _txPool, kQueueCapacity, 0, this,
+        &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+
+SOURCE=RTW88WCLSkywalkQueues.cpp:82-84
+    _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+        _rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),
+        this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+
+SOURCE=RTW88WCLSkywalkQueues.cpp:88-90
+    _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+        _rxPool, kQueueCapacity, 0, this,
+        &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+
+===== QUEUE_HEADER src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp =====
+...
+34: 
+35: private:
+36:     static IOReturn txSubmissionAction(OSObject *owner,
+37:                                       IOSkywalkTxSubmissionQueue *queue,
+38:                                       const IOSkywalkPacket **packets,
+39:                                       UInt32 packetCount, void *refCon);
+40:     static IOReturn txCompletionAction(OSObject *owner,
+41:                                        IOSkywalkTxCompletionQueue *queue,
+42:                                        IOSkywalkPacket **packets,
+43:                                        UInt32 packetCount, void *refCon);
+44:     static IOReturn rxSubmissionAction(OSObject *owner,
+45:                                       IOSkywalkRxSubmissionQueue *queue,
+46:                                       const IOSkywalkPacket **packets,
+47:                                       UInt32 packetCount, void *refCon);
+48:     static IOReturn rxCompletionAction(OSObject *owner,
+49:                                        IOSkywalkRxCompletionQueue *queue,
+50:                                        IOSkywalkPacket **packets,
+
+===== REGISTRATION_INFO_HELPERS src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp =====
+...
+1: /* SPDX-License-Identifier: GPL-2.0-only
+2:  * Opaque IOSkywalk RegistrationInfo storage and the verified Apple 24H32
+3:  * post-initializer writes. Field semantics intentionally remain unnamed.
+4:  */
+...
+9: #include <string.h>
+10: 
+11: namespace RTW88WCLRegistrationInfo24H32 {
+12: 
+13: constexpr size_t kSize = 0x130;
+14: constexpr uint64_t kVersionAndSize = 0x0000013000000001ULL;
+15: 
+...
+29: 
+30: struct alignas(8) Storage {
+31:     uint8_t bytes[kSize];
+32: };
+33: static_assert(sizeof(Storage) == kSize, "24H32 RegistrationInfo storage size");
+34: static_assert(alignof(Storage) >= 8, "24H32 RegistrationInfo alignment");
+35: static_assert(kOpaqueSlot0C + sizeof(uint32_t) <= kSize,
+36:               "24H32 opaque slot 0x0c is in bounds");
+37: static_assert(kOpaqueSlot14 + sizeof(uint32_t) <= kSize,
+38:               "24H32 opaque slot 0x14 is in bounds");
+39: static_assert(kOpaqueSlot24 + sizeof(uint64_t) <= kSize,
+40:               "24H32 opaque slot 0x24 is in bounds");
+41: static_assert(kOpaqueSlot40 + sizeof(uint32_t) <= kSize,
+42:               "24H32 opaque slot 0x40 is in bounds");
+43: static_assert(kHardwareAddress + 6 <= kSize,
+44:               "24H32 hardware address is in bounds");
+45: 
+...
+74: 
+75: /* Apply only the fields written by Apple's 24H32 createSkywalkInterface
+76:  * caller after initRegistrationInfo(). The initializer itself remains a
+77:  * separate kernel call because it populates other values from virtual hooks.
+78:  */
+...
+91: }
+92: 
+93: /* Called only after the kernel initRegistrationInfo() method has returned
+94:  * true and applyAppleProducerWrites() has run.
+95:  */
+...
+112: }
+113: 
+114: } // namespace RTW88WCLRegistrationInfo24H32
+
+===== ABI_REGISTRATION_DECLARATIONS src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp =====
+...
+49: class OSSymbol;
+50: class IOSkywalkPacketQueue;
+51: class IOSkywalkLogicalLink;
+52: class IOSkywalkPacketBufferPool;
+53: class TxSubmissionDequeueStats;
+...
+301:     uint8_t _layout[0xb0 - sizeof(IOService)];
+302: };
+303: static_assert(sizeof(IOSkywalkInterface) == 0xb0, "24H32 IOSkywalkInterface ABI");
+304: 
+305: class IOSkywalkNetworkInterface : public IOSkywalkInterface {
+306:     OSDeclareAbstractStructors(IOSkywalkNetworkInterface)
+307:     /* Private registration payload; its fields are not part of the SDK. */
+308:     struct RegistrationInfo;
+309: public:
+310:     struct IOSkywalkTSOOptions;
+...
+316:     virtual IOReturn enable(unsigned int) override;
+317:     virtual IOReturn disable(unsigned int) override;
+318:     virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+319:     /* 24H32 non-virtual registration entry points. Their IOReturn convention
+320:      * is confirmed by the target function bodies and Apple caller's EAX test.
+321:      * These declarations do not add vtable slots. */
+322:     IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+323:                                       unsigned int, IOSkywalkPacketBufferPool *,
+324:                                       IOSkywalkPacketBufferPool *, unsigned int);
+325:     IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+326:                                       IOSkywalkPacketBufferPool *,
+327:                                       IOSkywalkPacketBufferPool *, unsigned int);
+328:     IOReturn deregisterNetworkInterface(unsigned int);
+329:     virtual IOReturn deregisterLogicalLink();
+330:     virtual SInt32 initBSDInterfaceParameters(ifnet_init_eparams *, sockaddr_dl **) = 0;
+331:     virtual IOReturn prepareBSDInterface(struct __ifnet *, unsigned int);
+...
+387:     uint8_t _layout1[0x10];
+388: };
+389: static_assert(sizeof(IOSkywalkNetworkInterface) == 0xd0, "24H32 IOSkywalkNetworkInterface ABI");
+390: 
+391: class IOSkywalkEthernetInterface : public IOSkywalkNetworkInterface {
+...
+394:     /* Opaque nested type: public here only so the 24H32 infra shim can spell
+395:      * the exact parameter type. This does not expose or change its layout. */
+396:     struct RegistrationInfo;
+397:     virtual void free() override;
+398:     virtual bool init(OSDictionary *) override;
+...
+434:     /* Non-virtual 24H32 entry points. The complete kernel bodies propagate
+435:      * IOReturn values; Apple callers treat EAX==0 as success. */
+436:     bool initRegistrationInfo(RegistrationInfo *, unsigned int, size_t);
+437:     IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+438:                                        unsigned int, IOSkywalkPacketBufferPool *,
+439:                                        IOSkywalkPacketBufferPool *, unsigned int);
+440:     IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+441:                                        IOSkywalkPacketBufferPool *,
+442:                                        IOSkywalkPacketBufferPool *, unsigned int);
+443:     IOReturn deregisterEthernetInterface(unsigned int);
+444: protected:
+445:     struct ExpansionData;
+...
+450:     ExpansionData *mExpansionData2;
+451: };
+452: static_assert(sizeof(IOSkywalkEthernetInterface) == 0x110, "24H32 IOSkywalkEthernetInterface ABI");
+453: // This kernel ABI class is polymorphic and therefore not standard-layout.
+454: // Clang implements offsetof here as an ABI extension; keep the hard 24H32
+...
+456: #pragma clang diagnostic push
+457: #pragma clang diagnostic ignored "-Winvalid-offsetof"
+458: static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
+459: #pragma clang diagnostic pop
+460: 
+...
+465:     uint32_t reqTx;
+466: };
+467: static_assert(sizeof(TxPacketRequest) == 0x60, "24H32 TxPacketRequest ABI");
+468: 
+469: class IO80211SkywalkInterface : public IOSkywalkEthernetInterface {
+...
+622:     int getInterfaceRole();
+623: };
+624: static_assert(sizeof(IO80211SkywalkInterface) == 0x118, "24H32 IO80211SkywalkInterface ABI");
+625: 
+626: class IO80211InfraInterface : public IO80211SkywalkInterface {
+...
+685:     /* Non-virtual helper called directly by AppleBCMWLANSkywalkInterface::start
+686:      * on 24H32. Return is an IOReturn (zero means success), not bool. */
+687:     IOReturn registerInfraEthernetInterface(
+688:         IOSkywalkEthernetInterface::RegistrationInfo *, IOSkywalkPacketQueue **,
+689:         unsigned int, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *);
+690: private:
+...
+692:     uint8_t _layout[0x120 - sizeof(IO80211SkywalkInterface)];
+693: };
+694: static_assert(sizeof(IO80211InfraInterface) == 0x120, "24H32 IO80211InfraInterface ABI");
+695: 
+696: /* IO80211InfraProtocol's pure virtual selector order is part of the WCL ABI.
+...
+893: #undef RTW88_WCL_ABI_METHOD
+894: };
+895: static_assert(sizeof(IO80211InfraProtocol) == 0x120, "24H32 IO80211InfraProtocol ABI");

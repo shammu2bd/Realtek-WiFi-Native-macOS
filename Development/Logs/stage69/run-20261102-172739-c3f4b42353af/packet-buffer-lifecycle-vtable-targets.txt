@@ -1,0 +1,11 @@
+STAGE69_PACKET_BUFFER_LIFECYCLE_VTABLE_TARGETS
+SOURCE=Stage68 IOSkywalkPacketBuffer wrappers and IOSkywalkPacketBufferPool::deallocatePacketBuffer
+
+CLASS=IOSkywalkPacketBuffer SLOT_OFFSET=0x120 OBSERVED_USE=prepareWithMemorySegment wrapper dispatches here
+SLOT offset=0x120 index=36 target=0xffffff8000a4ba90 owner=com.apple.kernel symbol=__ZN8OSObject19_RESERVEDOSObject15Ev result=PASS
+
+CLASS=IOSkywalkPacketBuffer SLOT_OFFSET=0x128 OBSERVED_USE=completeWithMemorySegment wrapper dispatches here
+SLOT offset=0x128 index=37 target=0xffffff800297eac8 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN21IOSkywalkPacketBuffer12initWithPoolEP25IOSkywalkPacketBufferPoolP31IOSkywalkPacketBufferDescriptorj result=PASS
+
+CLASS=IOSkywalkPacketBuffer SLOT_OFFSET=0x148 OBSERVED_USE=pool deallocatePacketBuffer dispatches here when buffer state bit 1 is set
+SLOT offset=0x148 index=41 target=0xffffff800297ec48 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN21IOSkywalkPacketBuffer25completeWithMemorySegmentEP22IOSkywalkMemorySegmentyj result=PASS

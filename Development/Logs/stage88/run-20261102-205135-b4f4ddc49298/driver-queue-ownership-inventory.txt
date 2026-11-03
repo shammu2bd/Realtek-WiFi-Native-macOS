@@ -1,0 +1,378 @@
+STAGE88_DRIVER_QUEUE_OWNERSHIP_INVENTORY
+CPP_FILE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+HPP_FILE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+SOURCE_FILES_SCANNED=91
+
+MEMBER=_txSubmission
+REFERENCE_COUNT=10
+DECLARATION_COUNT=1
+FACTORY_ASSIGNMENT_COUNT=1
+RELEASE_CALL_COUNT=1
+NULL_CLEAR_COUNT=3
+DECLARATIONS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:55:IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+FACTORY_ASSIGNMENTS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:70:_txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+RELEASE_CALLS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:120:_txSubmission->release();
+NULL_CLEARS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:27:_txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:121:_txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:55:IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+ALL_REFERENCES:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:27:_txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:39:if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:70:_txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:73:if (!_txSubmission)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:119:if (_txSubmission) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:120:_txSubmission->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:121:_txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:136:return _allocated && _txPool && _rxPool && _txSubmission &&
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:153:if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:55:IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+
+MEMBER=_txCompletion
+REFERENCE_COUNT=9
+DECLARATION_COUNT=1
+FACTORY_ASSIGNMENT_COUNT=1
+RELEASE_CALL_COUNT=1
+NULL_CLEAR_COUNT=3
+DECLARATIONS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:56:IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
+FACTORY_ASSIGNMENTS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:76:_txCompletion = IOSkywalkTxCompletionQueue::withPool(
+RELEASE_CALLS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:116:_txCompletion->release();
+NULL_CLEARS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:28:_txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:117:_txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:56:IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
+ALL_REFERENCES:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:28:_txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:39:if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:76:_txCompletion = IOSkywalkTxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:79:if (!_txCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:115:if (_txCompletion) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:116:_txCompletion->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:117:_txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:56:IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
+
+MEMBER=_rxSubmission
+REFERENCE_COUNT=9
+DECLARATION_COUNT=1
+FACTORY_ASSIGNMENT_COUNT=1
+RELEASE_CALL_COUNT=1
+NULL_CLEAR_COUNT=3
+DECLARATIONS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:57:IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
+FACTORY_ASSIGNMENTS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:82:_rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+RELEASE_CALLS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:112:_rxSubmission->release();
+NULL_CLEARS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:29:_rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:113:_rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:57:IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
+ALL_REFERENCES:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:29:_rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:40:_rxSubmission || _rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:82:_rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:85:if (!_rxSubmission)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:111:if (_rxSubmission) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:112:_rxSubmission->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:113:_rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:57:IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
+
+MEMBER=_rxCompletion
+REFERENCE_COUNT=9
+DECLARATION_COUNT=1
+FACTORY_ASSIGNMENT_COUNT=1
+RELEASE_CALL_COUNT=1
+NULL_CLEAR_COUNT=3
+DECLARATIONS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:58:IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+FACTORY_ASSIGNMENTS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:88:_rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+RELEASE_CALLS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:108:_rxCompletion->release();
+NULL_CLEARS:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:30:_rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:109:_rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:58:IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+ALL_REFERENCES:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:30:_rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:40:_rxSubmission || _rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:88:_rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:91:if (!_rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:107:if (_rxCompletion) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:108:_rxCompletion->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:109:_rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:58:IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+
+===== NUMBERED SOURCE: src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp =====
+0001 /* SPDX-License-Identifier: GPL-2.0-only
+0002  * Sequoia Skywalk queue/pool resource owner.
+0003  *
+0004  * This stage allocates the native queue objects and packet pools but does not
+0005  * register them with IOSkywalkEthernetInterface. Queue callbacks intentionally
+0006  * fail closed until packet layout, completion semantics and RX buffer refill
+0007  * have been validated against the 24H32 runtime.
+0008  */
+0009 #pragma once
+0010 
+0011 #include <IOKit/skywalk/IOSkywalkPacketBufferPool.h>
+0012 #include <IOKit/skywalk/IOSkywalkTxSubmissionQueue.h>
+0013 #include <IOKit/skywalk/IOSkywalkTxCompletionQueue.h>
+0014 #include <IOKit/skywalk/IOSkywalkRxSubmissionQueue.h>
+0015 #include <IOKit/skywalk/IOSkywalkRxCompletionQueue.h>
+0016 #include <libkern/c++/OSObject.h>
+0017 
+0018 class RTW88WCLSkywalkQueues final : public OSObject {
+0019     OSDeclareDefaultStructors(RTW88WCLSkywalkQueues)
+0020 
+0021 public:
+0022     bool init() override;
+0023     IOReturn createQueues();
+0024     void destroyQueues();
+0025     bool queuesAllocated() const;
+0026     void free() override;
+0027 
+0028     static constexpr UInt32 kQueueCapacity = 128;
+0029     static constexpr UInt32 kTxBufferSize = 2048;
+0030     static constexpr UInt32 kRxBufferSize = 4096;
+0031 
+0032     /* Borrowed by the controller only long enough for the RX adapter to retain it. */
+0033     IOSkywalkPacketBufferPool *rxPacketPool() const { return _rxPool; }
+0034 
+0035 private:
+0036     static IOReturn txSubmissionAction(OSObject *owner,
+0037                                       IOSkywalkTxSubmissionQueue *queue,
+0038                                       const IOSkywalkPacket **packets,
+0039                                       UInt32 packetCount, void *refCon);
+0040     static IOReturn txCompletionAction(OSObject *owner,
+0041                                        IOSkywalkTxCompletionQueue *queue,
+0042                                        IOSkywalkPacket **packets,
+0043                                        UInt32 packetCount, void *refCon);
+0044     static IOReturn rxSubmissionAction(OSObject *owner,
+0045                                       IOSkywalkRxSubmissionQueue *queue,
+0046                                       const IOSkywalkPacket **packets,
+0047                                       UInt32 packetCount, void *refCon);
+0048     static IOReturn rxCompletionAction(OSObject *owner,
+0049                                        IOSkywalkRxCompletionQueue *queue,
+0050                                        IOSkywalkPacket **packets,
+0051                                        UInt32 packetCount, void *refCon);
+0052 
+0053     IOSkywalkPacketBufferPool *_txPool = nullptr;
+0054     IOSkywalkPacketBufferPool *_rxPool = nullptr;
+0055     IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+0056     IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
+0057     IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
+0058     IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+0059     bool _allocated = false;
+0060 };
+
+===== NUMBERED SOURCE: src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp =====
+0001 /* SPDX-License-Identifier: GPL-2.0-only
+0002  * Sequoia 24H32 Skywalk queue and packet-pool resource owner.
+0003  */
+0004 #include "RTW88WCLSkywalkQueues.hpp"
+0005 #include "RTW88WCLPacketView.hpp"
+0006 
+0007 #include <IOKit/IOLib.h>
+0008 #include <libkern/c++/OSMetaClass.h>
+0009 
+0010 /* The bundled SDK declares PoolOptions before its public: label. Expose the
+0011  * exact protected nested ABI type through a derived access shim; its layout is
+0012  * unchanged and no shim object is instantiated. */
+0013 class RTW88WCLPoolOptionsAccess : public IOSkywalkPacketBufferPool {
+0014 public:
+0015     using PoolOptions = IOSkywalkPacketBufferPool::PoolOptions;
+0016 };
+0017 
+0018 #define super OSObject
+0019 OSDefineMetaClassAndStructors(RTW88WCLSkywalkQueues, OSObject)
+0020 
+0021 bool RTW88WCLSkywalkQueues::init()
+0022 {
+0023     if (!super::init())
+0024         return false;
+0025     _txPool = nullptr;
+0026     _rxPool = nullptr;
+0027     _txSubmission = nullptr;
+0028     _txCompletion = nullptr;
+0029     _rxSubmission = nullptr;
+0030     _rxCompletion = nullptr;
+0031     _allocated = false;
+0032     return true;
+0033 }
+0034 
+0035 IOReturn RTW88WCLSkywalkQueues::createQueues()
+0036 {
+0037     if (_allocated)
+0038         return kIOReturnSuccess;
+0039     if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+0040         _rxSubmission || _rxCompletion)
+0041         return kIOReturnBusy;
+0042 
+0043     RTW88WCLPoolOptionsAccess::PoolOptions txOptions = {};
+0044     txOptions.packetCount = kQueueCapacity;
+0045     txOptions.bufferCount = kQueueCapacity;
+0046     txOptions.bufferSize = kTxBufferSize;
+0047     txOptions.maxBuffersPerPacket = 1;
+0048     txOptions.memorySegmentSize = kQueueCapacity * kTxBufferSize;
+0049     txOptions.poolFlags = 0;
+0050     txOptions._reserved = 0;
+0051 
+0052     RTW88WCLPoolOptionsAccess::PoolOptions rxOptions = txOptions;
+0053     rxOptions.bufferSize = kRxBufferSize;
+0054     rxOptions.memorySegmentSize = kQueueCapacity * kRxBufferSize;
+0055 
+0056     _txPool = IOSkywalkPacketBufferPool::withName(
+0057         "RTL88WiFi-WCL-TX", this, kIOSkywalkPacketTypeNetwork, &txOptions);
+0058     if (!_txPool)
+0059         goto no_memory;
+0060 
+0061     _rxPool = IOSkywalkPacketBufferPool::withName(
+0062         "RTL88WiFi-WCL-RX", this, kIOSkywalkPacketTypeNetwork, &rxOptions);
+0063     if (!_rxPool)
+0064         goto no_memory;
+0065 
+0066     /* These queue objects are deliberately not added to an IOWorkLoop and
+0067      * are not passed to registerEthernetInterface() yet. Skywalk owns their
+0068      * scheduling and packet lifetime only after a complete RegistrationInfo
+0069      * + ring setup transaction, which is a later stage. */
+0070     _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+0071         _txPool, kQueueCapacity, 0, this,
+0072         &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+0073     if (!_txSubmission)
+0074         goto no_memory;
+0075 
+0076     _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+0077         _txPool, kQueueCapacity, 0, this,
+0078         &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+0079     if (!_txCompletion)
+0080         goto no_memory;
+0081 
+0082     _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+0083         _rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),
+0084         this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+0085     if (!_rxSubmission)
+0086         goto no_memory;
+0087 
+0088     _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+0089         _rxPool, kQueueCapacity, 0, this,
+0090         &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+0091     if (!_rxCompletion)
+0092         goto no_memory;
+0093 
+0094     _allocated = true;
+0095     IOLog("rtl88wifi-wcl: allocated Skywalk pools and four queue objects (not registered)\n");
+0096     return kIOReturnSuccess;
+0097 
+0098 no_memory:
+0099     destroyQueues();
+0100     return kIOReturnNoMemory;
+0101 }
+0102 
+0103 void RTW88WCLSkywalkQueues::destroyQueues()
+0104 {
+0105     /* Release queues before their pools: queue implementations retain and
+0106      * reference their associated pool for packet and buffer accounting. */
+0107     if (_rxCompletion) {
+0108         _rxCompletion->release();
+0109         _rxCompletion = nullptr;
+0110     }
+0111     if (_rxSubmission) {
+0112         _rxSubmission->release();
+0113         _rxSubmission = nullptr;
+0114     }
+0115     if (_txCompletion) {
+0116         _txCompletion->release();
+0117         _txCompletion = nullptr;
+0118     }
+0119     if (_txSubmission) {
+0120         _txSubmission->release();
+0121         _txSubmission = nullptr;
+0122     }
+0123     if (_rxPool) {
+0124         _rxPool->release();
+0125         _rxPool = nullptr;
+0126     }
+0127     if (_txPool) {
+0128         _txPool->release();
+0129         _txPool = nullptr;
+0130     }
+0131     _allocated = false;
+0132 }
+0133 
+0134 bool RTW88WCLSkywalkQueues::queuesAllocated() const
+0135 {
+0136     return _allocated && _txPool && _rxPool && _txSubmission &&
+0137            _txCompletion && _rxSubmission && _rxCompletion;
+0138 }
+0139 
+0140 /*
+0141  * Sequoia 24H32 callback contract: although the bundled Skywalk action
+0142  * typedefs are declared as IOReturn, the audited queue dispatchers
+0143  * consume these callback return values as packet counts. Zero means
+0144  * that no packets were accepted or completed. Do not return nonzero
+0145  * IOReturn error constants from these action callbacks.
+0146  */
+0147 IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+0148     OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
+0149     const IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+0150 {
+0151     (void)refCon;
+0152     auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
+0153     if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+0154         return static_cast<IOReturn>(0);
+0155 
+0156     /* Validate every descriptor before a future TX path is allowed to copy
+0157      * bytes or hand ownership to RTW88. The callback remains fail-closed:
+0158      * a validated packet is not yet accepted until its hardware completion
+0159      * cookie is connected to the native completion queue. */
+0160     for (UInt32 i = 0; i < packetCount; ++i) {
+0161         if (!packets[i])
+0162             return static_cast<IOReturn>(0);
+0163         RTW88WCLPacketView view = {};
+0164         if (!RTW88WCLResolveEthernetTxPacket(
+0165                 const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
+0166             return static_cast<IOReturn>(0);
+0167     }
+0168 
+0169     return static_cast<IOReturn>(0);
+0170 }
+0171 
+0172 IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
+0173     OSObject *owner, IOSkywalkTxCompletionQueue *queue,
+0174     IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+0175 {
+0176     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+0177     return static_cast<IOReturn>(0);
+0178 }
+0179 
+0180 IOReturn RTW88WCLSkywalkQueues::rxSubmissionAction(
+0181     OSObject *owner, IOSkywalkRxSubmissionQueue *queue,
+0182     const IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+0183 {
+0184     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+0185     /* RX buffer ownership/refill is intentionally not accepted yet. */
+0186     return static_cast<IOReturn>(0);
+0187 }
+0188 
+0189 IOReturn RTW88WCLSkywalkQueues::rxCompletionAction(
+0190     OSObject *owner, IOSkywalkRxCompletionQueue *queue,
+0191     IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+0192 {
+0193     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+0194     return static_cast<IOReturn>(0);
+0195 }
+0196 
+0197 void RTW88WCLSkywalkQueues::free()
+0198 {
+0199     destroyQueues();
+0200     super::free();
+0201 }

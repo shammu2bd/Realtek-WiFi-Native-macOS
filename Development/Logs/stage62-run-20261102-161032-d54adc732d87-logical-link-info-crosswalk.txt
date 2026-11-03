@@ -1,0 +1,21 @@
+STAGE62_LOGICALLINK_INFO_S_CALLER_CALLEE_CROSSWALK
+CALLER=IOSkywalkNetworkInterface queue-array registerNetworkInterface overload
+STAGING_BUFFER=rbp-0x80; caller copies 10 qwords (0x50 bytes) from a static report-channel-name pointer table
+FIRST_WORD=caller overwrites the first 32-bit word with 1 before LogicalLink::createWithQueueSet
+FACTORY=IOSkywalkLogicalLink::createWithQueueSet(queueSetArray, queueSetCount=1, LogicalLinkInfo_s*)
+CALLEE=IOSkywalkLogicalLink::initWithQueueSet(queueSetArray, queueSetCount, LogicalLinkInfo_s*)
+OBSERVED_READ=initWithQueueSet reads the first 32-bit word at info+0 and stores it in the link's nexus-info record
+UNREAD_BYTES=the selected init method does not visibly consume the remaining 0x4c bytes of the caller's 0x50-byte staging buffer
+SIZE_LIMIT=0x50 bytes are staged by the caller; the private type's formal sizeof/alignment is not established by these observations
+LINK_COUNT=caller passes one QueueSet; initializer's observed accepted count range is 1..16
+LIFETIME=initializer retains each QueueSet, attaches the LogicalLink pointer, and records per-QueueSet nexus info
+
+CHECK=INIT_FORWARDS_INFO_POINTER RESULT=PASS
+CHECK=INIT_READS_FIRST_DWORD RESULT=PASS
+CHECK=FIRST_DWORD_STORED_IN_LINK_NEXUS_INFO RESULT=PASS
+CHECK=LINK_STORES_BACK_POINTER RESULT=PASS
+CHECK=QUEUESET_ARRAY_ALLOCATION RESULT=PASS
+CHECK=LINK_QUEUESET_COUNT_STORED RESULT=PASS
+CHECK=QUEUESET_LINK_ATTACHMENT RESULT=PASS
+CHECK=QUEUESET_RETAIN RESULT=PASS
+CHECK=CREATE_WITH_QUEUESET_ALLOCATION_SIZE_0x30 RESULT=PASS

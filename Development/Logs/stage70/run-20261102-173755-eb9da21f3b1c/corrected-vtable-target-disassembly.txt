@@ -1,0 +1,581 @@
+
+===== TARGET class=IOSkywalkPacket symbol=__ZNK15IOSkywalkPacket13getDataLengthEv address=0xffffff800297e3e8 owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=29
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff800297e3e8 <__ZNK15IOSkywalkPacket13getDataLengthEv>:
+ffffff800297e3e8:      	push	rbp
+ffffff800297e3e9:      	mov	rbp, rsp
+ffffff800297e3ec:      	push	r15
+ffffff800297e3ee:      	push	r14
+ffffff800297e3f0:      	push	rbx
+ffffff800297e3f1:      	push	rax
+ffffff800297e3f2:      	cmp	dword ptr [rdi + 0x64], 0x0
+ffffff800297e3f6:      	je	0xffffff800297e41e <__ZNK15IOSkywalkPacket13getDataLengthEv+0x36>
+ffffff800297e3f8:      	mov	rbx, rdi
+ffffff800297e3fb:      	xor	r15d, r15d
+ffffff800297e3fe:      	xor	r14d, r14d
+ffffff800297e401:      	mov	rax, qword ptr [rbx + 0x30]
+ffffff800297e405:      	mov	rdi, qword ptr [rax + 8*r15]
+ffffff800297e409:      	call	0xffffff800297ebce <__ZNK21IOSkywalkPacketBuffer13getDataLengthEv>
+ffffff800297e40e:      	add	r14d, eax
+ffffff800297e411:      	inc	r15
+ffffff800297e414:      	mov	eax, dword ptr [rbx + 0x64]
+ffffff800297e417:      	cmp	r15, rax
+ffffff800297e41a:      	jb	0xffffff800297e401 <__ZNK15IOSkywalkPacket13getDataLengthEv+0x19>
+ffffff800297e41c:      	jmp	0xffffff800297e421 <__ZNK15IOSkywalkPacket13getDataLengthEv+0x39>
+ffffff800297e41e:      	xor	r14d, r14d
+ffffff800297e421:      	mov	eax, r14d
+ffffff800297e424:      	add	rsp, 0x8
+ffffff800297e428:      	pop	rbx
+ffffff800297e429:      	pop	r14
+ffffff800297e42b:      	pop	r15
+ffffff800297e42d:      	pop	rbp
+ffffff800297e42e:      	ret
+ffffff800297e42f:      	nop
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacket symbol=__ZN15IOSkywalkPacket7prepareEP20IOSkywalkPacketQueueyj address=0xffffff800297e4a2 owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=31
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff800297e4a2 <__ZN15IOSkywalkPacket7prepareEP20IOSkywalkPacketQueueyj>:
+ffffff800297e4a2:      	test	byte ptr [rdi + 0x58], 0x2
+ffffff800297e4a6:      	jne	0xffffff800297e4cb <__ZN15IOSkywalkPacket7prepareEP20IOSkywalkPacketQueueyj+0x29>
+ffffff800297e4a8:      	push	rbp
+ffffff800297e4a9:      	mov	rbp, rsp
+ffffff800297e4ac:      	push	r15
+ffffff800297e4ae:      	push	r14
+ffffff800297e4b0:      	push	rbx
+ffffff800297e4b1:      	push	rax
+ffffff800297e4b2:      	mov	ebx, ecx
+ffffff800297e4b4:      	mov	r14, rsi
+ffffff800297e4b7:      	mov	r15, rdi
+ffffff800297e4ba:      	test	rsi, rsi
+ffffff800297e4bd:      	je	0xffffff800297e4ce <__ZN15IOSkywalkPacket7prepareEP20IOSkywalkPacketQueueyj+0x2c>
+ffffff800297e4bf:      	mov	rdi, r14
+ffffff800297e4c2:      	call	0xffffff8002980b74 <__ZNK20IOSkywalkPacketQueue12getDirectionEv>
+ffffff800297e4c7:      	mov	edx, eax
+ffffff800297e4c9:      	jmp	0xffffff800297e4d0 <__ZN15IOSkywalkPacket7prepareEP20IOSkywalkPacketQueueyj+0x2e>
+ffffff800297e4cb:      	xor	eax, eax
+ffffff800297e4cd:      	ret
+ffffff800297e4ce:      	xor	edx, edx
+ffffff800297e4d0:      	mov	rax, qword ptr [r15]
+ffffff800297e4d3:      	mov	rax, qword ptr [rax + 0x188]
+ffffff800297e4da:      	mov	rdi, r15
+ffffff800297e4dd:      	mov	rsi, r14
+ffffff800297e4e0:      	mov	ecx, ebx
+ffffff800297e4e2:      	add	rsp, 0x8
+ffffff800297e4e6:      	pop	rbx
+ffffff800297e4e7:      	pop	r14
+ffffff800297e4e9:      	pop	r15
+ffffff800297e4eb:      	pop	rbp
+ffffff800297e4ec:      	jmp	rax
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacket symbol=__ZN15IOSkywalkPacket17completeWithQueueEP20IOSkywalkPacketQueuejj address=0xffffff800297e612 owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=53
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff800297e612 <__ZN15IOSkywalkPacket17completeWithQueueEP20IOSkywalkPacketQueuejj>:
+ffffff800297e612:      	push	rbp
+ffffff800297e613:      	mov	rbp, rsp
+ffffff800297e616:      	push	r15
+ffffff800297e618:      	push	r14
+ffffff800297e61a:      	push	r13
+ffffff800297e61c:      	push	r12
+ffffff800297e61e:      	push	rbx
+ffffff800297e61f:      	push	rax
+ffffff800297e620:      	mov	ebx, ecx
+ffffff800297e622:      	mov	r12d, edx
+ffffff800297e625:      	mov	r14, rsi
+ffffff800297e628:      	mov	r15, rdi
+ffffff800297e62b:      	cmp	dword ptr [rdi + 0x64], 0x0
+ffffff800297e62f:      	je	0xffffff800297e659 <__ZN15IOSkywalkPacket17completeWithQueueEP20IOSkywalkPacketQueuejj+0x47>
+ffffff800297e631:      	xor	r13d, r13d
+ffffff800297e634:      	mov	rax, qword ptr [r15 + 0x30]
+ffffff800297e638:      	mov	rdi, qword ptr [rax + 8*r13]
+ffffff800297e63c:      	mov	rax, qword ptr [rdi]
+ffffff800297e63f:      	mov	rsi, r14
+ffffff800297e642:      	mov	edx, r12d
+ffffff800297e645:      	mov	ecx, ebx
+ffffff800297e647:      	call	qword ptr [rax + 0x148]
+ffffff800297e64d:      	inc	r13
+ffffff800297e650:      	mov	eax, dword ptr [r15 + 0x64]
+ffffff800297e654:      	cmp	r13, rax
+ffffff800297e657:      	jb	0xffffff800297e634 <__ZN15IOSkywalkPacket17completeWithQueueEP20IOSkywalkPacketQueuejj+0x22>
+ffffff800297e659:      	cmp	r12d, 0x2
+ffffff800297e65d:      	jne	0xffffff800297e682 <__ZN15IOSkywalkPacket17completeWithQueueEP20IOSkywalkPacketQueuejj+0x70>
+ffffff800297e65f:      	mov	rdi, qword ptr [r15 + 0x28]
+ffffff800297e663:      	call	0xffffff8000a35500 <_uuid_unparse_upper+0xffffff8000a35500>
+ffffff800297e668:      	mov	rdi, qword ptr [r15 + 0x38]
+ffffff800297e66c:      	test	rdi, rdi
+ffffff800297e66f:      	je	0xffffff800297e682 <__ZN15IOSkywalkPacket17completeWithQueueEP20IOSkywalkPacketQueuejj+0x70>
+ffffff800297e671:      	mov	rax, qword ptr [rdi]
+ffffff800297e674:      	mov	rsi, r15
+ffffff800297e677:      	mov	rdx, r14
+ffffff800297e67a:      	xor	ecx, ecx
+ffffff800297e67c:      	call	qword ptr [rax + 0x220]
+ffffff800297e682:      	and	byte ptr [r15 + 0x58], -0x3
+ffffff800297e687:      	mov	rax, qword ptr [r15]
+ffffff800297e68a:      	mov	rax, qword ptr [rax + 0x1a0]
+ffffff800297e691:      	mov	rdi, r15
+ffffff800297e694:      	mov	rsi, r14
+ffffff800297e697:      	mov	edx, ebx
+ffffff800297e699:      	add	rsp, 0x8
+ffffff800297e69d:      	pop	rbx
+ffffff800297e69e:      	pop	r12
+ffffff800297e6a0:      	pop	r13
+ffffff800297e6a2:      	pop	r14
+ffffff800297e6a4:      	pop	r15
+ffffff800297e6a6:      	pop	rbp
+ffffff800297e6a7:      	jmp	rax
+ffffff800297e6a9:      	nop
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacket symbol=__ZN15IOSkywalkPacket13disposePacketEv address=0xffffff800297e76c owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=29
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff800297e76c <__ZN15IOSkywalkPacket13disposePacketEv>:
+ffffff800297e76c:      	push	rbp
+ffffff800297e76d:      	mov	rbp, rsp
+ffffff800297e770:      	push	r14
+ffffff800297e772:      	push	rbx
+ffffff800297e773:      	mov	rbx, rdi
+ffffff800297e776:      	cmp	dword ptr [rdi + 0x64], 0x0
+ffffff800297e77a:      	je	0xffffff800297e7a3 <__ZN15IOSkywalkPacket13disposePacketEv+0x37>
+ffffff800297e77c:      	xor	r14d, r14d
+ffffff800297e77f:      	mov	rax, qword ptr [rbx + 0x30]
+ffffff800297e783:      	mov	rdi, qword ptr [rax + 8*r14]
+ffffff800297e787:      	call	0xffffff800297eda4 <__ZN21IOSkywalkPacketBuffer19disposePacketBufferEv>
+ffffff800297e78c:      	mov	rax, qword ptr [rbx + 0x30]
+ffffff800297e790:      	mov	qword ptr [rax + 8*r14], 0x0
+ffffff800297e798:      	inc	r14
+ffffff800297e79b:      	mov	eax, dword ptr [rbx + 0x64]
+ffffff800297e79e:      	cmp	r14, rax
+ffffff800297e7a1:      	jb	0xffffff800297e77f <__ZN15IOSkywalkPacket13disposePacketEv+0x13>
+ffffff800297e7a3:      	xor	eax, eax
+ffffff800297e7a5:      	mov	qword ptr [rbx + 0x28], rax
+ffffff800297e7a9:      	mov	qword ptr [rbx + 0x38], rax
+ffffff800297e7ad:      	mov	dword ptr [rbx + 0x64], eax
+ffffff800297e7b0:      	mov	dword ptr [rbx + 0x5c], eax
+ffffff800297e7b3:      	mov	dword ptr [rbx + 0x6c], eax
+ffffff800297e7b6:      	mov	word ptr [rbx + 0x58], 0x0
+ffffff800297e7bc:      	pop	rbx
+ffffff800297e7bd:      	pop	r14
+ffffff800297e7bf:      	pop	rbp
+ffffff800297e7c0:      	ret
+ffffff800297e7c1:      	nop
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacketBuffer symbol=__ZN21IOSkywalkPacketBuffer7prepareEj address=0xffffff800297ec24 owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=5
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff800297ec24 <__ZN21IOSkywalkPacketBuffer7prepareEj>:
+ffffff800297ec24:      	push	rbp
+ffffff800297ec25:      	mov	rbp, rsp
+ffffff800297ec28:      	xor	eax, eax
+ffffff800297ec2a:      	pop	rbp
+ffffff800297ec2b:      	ret
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacketBuffer symbol=__ZN21IOSkywalkPacketBuffer8completeEj address=0xffffff800297ec2c owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=5
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff800297ec2c <__ZN21IOSkywalkPacketBuffer8completeEj>:
+ffffff800297ec2c:      	push	rbp
+ffffff800297ec2d:      	mov	rbp, rsp
+ffffff800297ec30:      	xor	eax, eax
+ffffff800297ec32:      	pop	rbp
+ffffff800297ec33:      	ret
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacketBuffer symbol=__ZN21IOSkywalkPacketBuffer16prepareWithQueueEP20IOSkywalkPacketQueuejj address=0xffffff800297ec66 owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=51
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff800297ec66 <__ZN21IOSkywalkPacketBuffer16prepareWithQueueEP20IOSkywalkPacketQueuejj>:
+ffffff800297ec66:      	push	rbp
+ffffff800297ec67:      	mov	rbp, rsp
+ffffff800297ec6a:      	push	r15
+ffffff800297ec6c:      	push	r14
+ffffff800297ec6e:      	push	r12
+ffffff800297ec70:      	push	rbx
+ffffff800297ec71:      	mov	r14, rsi
+ffffff800297ec74:      	mov	rbx, rdi
+ffffff800297ec77:      	mov	rdi, qword ptr [rdi + 0x30]
+ffffff800297ec7b:      	test	rdi, rdi
+ffffff800297ec7e:      	sete	al
+ffffff800297ec81:      	cmp	edx, 0x1
+ffffff800297ec84:      	setne	cl
+ffffff800297ec87:      	or	cl, al
+ffffff800297ec89:      	jne	0xffffff800297ec9e <__ZN21IOSkywalkPacketBuffer16prepareWithQueueEP20IOSkywalkPacketQueuejj+0x38>
+ffffff800297ec8b:      	call	0xffffff8000a364a0 <_uuid_unparse_upper+0xffffff8000a364a0>
+ffffff800297ec90:      	mov	dword ptr [rbx + 0x7c], eax
+ffffff800297ec93:      	mov	rdi, qword ptr [rbx + 0x30]
+ffffff800297ec97:      	call	0xffffff8000a36470 <_uuid_unparse_upper+0xffffff8000a36470>
+ffffff800297ec9c:      	jmp	0xffffff800297eca7 <__ZN21IOSkywalkPacketBuffer16prepareWithQueueEP20IOSkywalkPacketQueuejj+0x41>
+ffffff800297ec9e:      	mov	dword ptr [rbx + 0x7c], 0x0
+ffffff800297eca5:      	xor	eax, eax
+ffffff800297eca7:      	mov	dword ptr [rbx + 0x80], eax
+ffffff800297ecad:      	mov	rcx, qword ptr [rbx + 0x28]
+ffffff800297ecb1:      	test	byte ptr [rcx + 0x49], 0x1
+ffffff800297ecb5:      	je	0xffffff800297ecec <__ZN21IOSkywalkPacketBuffer16prepareWithQueueEP20IOSkywalkPacketQueuejj+0x86>
+ffffff800297ecb7:      	mov	r15d, eax
+ffffff800297ecba:      	add	r15, qword ptr [rbx + 0x70]
+ffffff800297ecbe:      	mov	eax, dword ptr [rbx + 0x7c]
+ffffff800297ecc1:      	test	eax, eax
+ffffff800297ecc3:      	jne	0xffffff800297ecc8 <__ZN21IOSkywalkPacketBuffer16prepareWithQueueEP20IOSkywalkPacketQueuejj+0x62>
+ffffff800297ecc5:      	mov	eax, dword ptr [rcx + 0x30]
+ffffff800297ecc8:      	mov	r12d, eax
+ffffff800297eccb:      	mov	rdi, qword ptr [rbx + 0x58]
+ffffff800297eccf:      	call	0xffffff80029872ba <__ZNK22IOSkywalkMemorySegment19getMemoryDescriptorEv>
+ffffff800297ecd4:      	mov	r8, qword ptr [rax]
+ffffff800297ecd7:      	mov	rdi, rax
+ffffff800297ecda:      	mov	esi, 0x1
+ffffff800297ecdf:      	mov	rdx, r15
+ffffff800297ece2:      	mov	rcx, r12
+ffffff800297ece5:      	call	qword ptr [r8 + 0x128]
+ffffff800297ecec:      	mov	qword ptr [rbx + 0x48], r14
+ffffff800297ecf0:      	or	byte ptr [rbx + 0x78], 0x2
+ffffff800297ecf4:      	xor	eax, eax
+ffffff800297ecf6:      	pop	rbx
+ffffff800297ecf7:      	pop	r12
+ffffff800297ecf9:      	pop	r14
+ffffff800297ecfb:      	pop	r15
+ffffff800297ecfd:      	pop	rbp
+ffffff800297ecfe:      	ret
+ffffff800297ecff:      	nop
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacketBuffer symbol=__ZN21IOSkywalkPacketBuffer17completeWithQueueEP20IOSkywalkPacketQueuejj address=0xffffff800297ed00 owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=27
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff800297ed00 <__ZN21IOSkywalkPacketBuffer17completeWithQueueEP20IOSkywalkPacketQueuejj>:
+ffffff800297ed00:      	push	rbp
+ffffff800297ed01:      	mov	rbp, rsp
+ffffff800297ed04:      	push	r14
+ffffff800297ed06:      	push	rbx
+ffffff800297ed07:      	mov	rbx, rsi
+ffffff800297ed0a:      	mov	r14, rdi
+ffffff800297ed0d:      	cmp	edx, 0x2
+ffffff800297ed10:      	jne	0xffffff800297ed21 <__ZN21IOSkywalkPacketBuffer17completeWithQueueEP20IOSkywalkPacketQueuejj+0x21>
+ffffff800297ed12:      	cmp	qword ptr [r14 + 0x30], 0x0
+ffffff800297ed17:      	je	0xffffff800297ed21 <__ZN21IOSkywalkPacketBuffer17completeWithQueueEP20IOSkywalkPacketQueuejj+0x21>
+ffffff800297ed19:      	mov	rdi, r14
+ffffff800297ed1c:      	call	0xffffff800297ed48 <__ZN21IOSkywalkPacketBuffer8finalizeEv>
+ffffff800297ed21:      	and	byte ptr [r14 + 0x78], -0x3
+ffffff800297ed26:      	mov	rdi, qword ptr [r14 + 0x48]
+ffffff800297ed2a:      	test	rdi, rdi
+ffffff800297ed2d:      	je	0xffffff800297ed40 <__ZN21IOSkywalkPacketBuffer17completeWithQueueEP20IOSkywalkPacketQueuejj+0x40>
+ffffff800297ed2f:      	mov	rax, qword ptr [rdi]
+ffffff800297ed32:      	mov	rsi, r14
+ffffff800297ed35:      	mov	rdx, rbx
+ffffff800297ed38:      	xor	ecx, ecx
+ffffff800297ed3a:      	call	qword ptr [rax + 0x228]
+ffffff800297ed40:      	xor	eax, eax
+ffffff800297ed42:      	pop	rbx
+ffffff800297ed43:      	pop	r14
+ffffff800297ed45:      	pop	rbp
+ffffff800297ed46:      	ret
+ffffff800297ed47:      	nop
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacketQueue symbol=__ZN20IOSkywalkPacketQueue30_RESERVEDIOSkywalkPacketQueue0Ev address=0xffffff8002981170 owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=7
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff8002981170 <__ZN20IOSkywalkPacketQueue30_RESERVEDIOSkywalkPacketQueue0Ev>:
+ffffff8002981170:      	push	rbp
+ffffff8002981171:      	mov	rbp, rsp
+ffffff8002981174:      	lea	rdi, [rip + 0x3589d] ## 0xffffff80029b6a18 <__ZN20IOSkywalkPacketQueue10gMetaClassE>
+ffffff800298117b:      	xor	esi, esi
+ffffff800298117d:      	pop	rbp
+ffffff800298117e:      	jmp	0xffffff8000a4b1f0 <_uuid_unparse_upper+0xffffff8000a4b1f0>
+ffffff8002981183:      	nop
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkPacketBufferPool symbol=__ZN25IOSkywalkPacketBufferPool17deallocatePacketsEPP15IOSkywalkPacketj address=0xffffff80029a20be owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=53
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff80029a20be <__ZN25IOSkywalkPacketBufferPool17deallocatePacketsEPP15IOSkywalkPacketj>:
+ffffff80029a20be:      	push	rbp
+ffffff80029a20bf:      	mov	rbp, rsp
+ffffff80029a20c2:      	push	r15
+ffffff80029a20c4:      	push	r14
+ffffff80029a20c6:      	push	r13
+ffffff80029a20c8:      	push	r12
+ffffff80029a20ca:      	push	rbx
+ffffff80029a20cb:      	push	rax
+ffffff80029a20cc:      	test	rsi, rsi
+ffffff80029a20cf:      	je	0xffffff80029a213a <__ZN25IOSkywalkPacketBufferPool17deallocatePacketsEPP15IOSkywalkPacketj+0x7c>
+ffffff80029a20d1:      	mov	ebx, edx
+ffffff80029a20d3:      	test	edx, edx
+ffffff80029a20d5:      	je	0xffffff80029a213a <__ZN25IOSkywalkPacketBufferPool17deallocatePacketsEPP15IOSkywalkPacketj+0x7c>
+ffffff80029a20d7:      	mov	r14, rsi
+ffffff80029a20da:      	mov	qword ptr [rbp - 0x30], rdi
+ffffff80029a20de:      	mov	r13d, ebx
+ffffff80029a20e1:      	xor	r15d, r15d
+ffffff80029a20e4:      	mov	r12, qword ptr [r14 + 8*r15]
+ffffff80029a20e8:      	test	byte ptr [r12 + 0x58], 0x2
+ffffff80029a20ee:      	jne	0xffffff80029a2110 <__ZN25IOSkywalkPacketBufferPool17deallocatePacketsEPP15IOSkywalkPacketj+0x52>
+ffffff80029a20f0:      	mov	rax, qword ptr [r12 + 0x28]
+ffffff80029a20f5:      	mov	qword ptr [r14 + 8*r15], rax
+ffffff80029a20f9:      	mov	rax, qword ptr [r12]
+ffffff80029a20fd:      	mov	rdi, r12
+ffffff80029a2100:      	call	qword ptr [rax + 0x1e0]
+ffffff80029a2106:      	inc	r15
+ffffff80029a2109:      	cmp	r13, r15
+ffffff80029a210c:      	jne	0xffffff80029a20e4 <__ZN25IOSkywalkPacketBufferPool17deallocatePacketsEPP15IOSkywalkPacketj+0x26>
+ffffff80029a210e:      	jmp	0xffffff80029a211a <__ZN25IOSkywalkPacketBufferPool17deallocatePacketsEPP15IOSkywalkPacketj+0x5c>
+ffffff80029a2110:      	mov	rsi, r12
+ffffff80029a2113:      	call	0xffffff800297d84a <__ZN25IOSkywalkPacketBufferPool22completePreparedPacketEP15IOSkywalkPacket>
+ffffff80029a2118:      	jmp	0xffffff80029a20f0 <__ZN25IOSkywalkPacketBufferPool17deallocatePacketsEPP15IOSkywalkPacketj+0x32>
+ffffff80029a211a:      	mov	rax, qword ptr [rbp - 0x30]
+ffffff80029a211e:      	mov	rdi, qword ptr [rax + 0x18]
+ffffff80029a2122:      	mov	rsi, r14
+ffffff80029a2125:      	mov	edx, ebx
+ffffff80029a2127:      	add	rsp, 0x8
+ffffff80029a212b:      	pop	rbx
+ffffff80029a212c:      	pop	r12
+ffffff80029a212e:      	pop	r13
+ffffff80029a2130:      	pop	r14
+ffffff80029a2132:      	pop	r15
+ffffff80029a2134:      	pop	rbp
+ffffff80029a2135:      	jmp	0xffffff8000a3c970 <_uuid_unparse_upper+0xffffff8000a3c970>
+ffffff80029a213a:      	add	rsp, 0x8
+ffffff80029a213e:      	pop	rbx
+ffffff80029a213f:      	pop	r12
+ffffff80029a2141:      	pop	r13
+ffffff80029a2143:      	pop	r14
+ffffff80029a2145:      	pop	r15
+ffffff80029a2147:      	pop	rbp
+ffffff80029a2148:      	ret
+ffffff80029a2149:      	nop
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkTxSubmissionQueue symbol=__ZN26IOSkywalkTxSubmissionQueue16sendNotificationEj address=0xffffff80029a2a40 owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=20
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff80029a2a40 <__ZN26IOSkywalkTxSubmissionQueue16sendNotificationEj>:
+ffffff80029a2a40:      	push	rbp
+ffffff80029a2a41:      	mov	rbp, rsp
+ffffff80029a2a44:      	push	rbx
+ffffff80029a2a45:      	push	rax
+ffffff80029a2a46:      	mov	rdi, qword ptr [rdi + 0xe0]
+ffffff80029a2a4d:      	test	rdi, rdi
+ffffff80029a2a50:      	je	0xffffff80029a2a64 <__ZN26IOSkywalkTxSubmissionQueue16sendNotificationEj+0x24>
+ffffff80029a2a52:      	xor	ebx, ebx
+ffffff80029a2a54:      	xor	esi, esi
+ffffff80029a2a56:      	call	0xffffff80009cb0e0 <_uuid_unparse_upper+0xffffff80009cb0e0>
+ffffff80029a2a5b:      	mov	eax, ebx
+ffffff80029a2a5d:      	add	rsp, 0x8
+ffffff80029a2a61:      	pop	rbx
+ffffff80029a2a62:      	pop	rbp
+ffffff80029a2a63:      	ret
+ffffff80029a2a64:      	mov	ebx, 0xe00002d8
+ffffff80029a2a69:      	jmp	0xffffff80029a2a5b <__ZN26IOSkywalkTxSubmissionQueue16sendNotificationEj+0x1b>
+ffffff80029a2a6b:      	nop
+ffffff80029a2a6c:      	nop
+ffffff80029a2a6d:      	nop
+DISASSEMBLY_END
+
+===== TARGET class=IOSkywalkTxSubmissionQueue symbol=__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb address=0xffffff80029a2cac owner=com.apple.iokit.IOSkywalkFamily =====
+OBJDUMP_EXIT=0 INSTRUCTIONS=139
+DISASSEMBLY_BEGIN
+
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage70/run-20261102-173755-eb9da21f3b1c/kc-cache/com.apple.iokit.IOSkywalkFamily.macho:	file format mach-o 64-bit x86-64
+
+Disassembly of section __TEXT,__text:
+
+ffffff80029a2cac <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb>:
+ffffff80029a2cac:      	push	rbp
+ffffff80029a2cad:      	mov	rbp, rsp
+ffffff80029a2cb0:      	push	r15
+ffffff80029a2cb2:      	push	r14
+ffffff80029a2cb4:      	push	r12
+ffffff80029a2cb6:      	push	rbx
+ffffff80029a2cb7:      	sub	rsp, 0x10
+ffffff80029a2cbb:      	or	dword ptr [rbp - 0x24], -0x1
+ffffff80029a2cbf:      	mov	r14d, esi
+ffffff80029a2cc2:      	mov	rbx, rdi
+ffffff80029a2cc5:      	mov	al, byte ptr [rdi + 0x28]
+ffffff80029a2cc8:      	test	esi, esi
+ffffff80029a2cca:      	je	0xffffff80029a2d04 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x58>
+ffffff80029a2ccc:      	test	al, al
+ffffff80029a2cce:      	je	0xffffff80029a2e93 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1e7>
+ffffff80029a2cd4:      	mov	rdi, rbx
+ffffff80029a2cd7:      	call	0xffffff8000afb050 <_uuid_unparse_upper+0xffffff8000afb050>
+ffffff80029a2cdc:      	mov	rcx, qword ptr [rbx + 0x100]
+ffffff80029a2ce3:      	test	al, al
+ffffff80029a2ce5:      	je	0xffffff80029a2dc0 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x114>
+ffffff80029a2ceb:      	inc	qword ptr [rcx + 0x10]
+ffffff80029a2cef:      	test	byte ptr [rbx + 0x13c], 0x7
+ffffff80029a2cf6:      	je	0xffffff80029a2d5f <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0xb3>
+ffffff80029a2cf8:      	inc	qword ptr [rcx + 0x40]
+ffffff80029a2cfc:      	xor	r15d, r15d
+ffffff80029a2cff:      	jmp	0xffffff80029a2e6e <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1c2>
+ffffff80029a2d04:      	mov	r15d, 0xe00002d7
+ffffff80029a2d0a:      	test	al, al
+ffffff80029a2d0c:      	je	0xffffff80029a2e76 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1ca>
+ffffff80029a2d12:      	cmp	byte ptr [rbx + 0xcc], 0x1
+ffffff80029a2d19:      	jne	0xffffff80029a2e76 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1ca>
+ffffff80029a2d1f:      	mov	rdi, qword ptr [rbx + 0x100]
+ffffff80029a2d26:      	inc	qword ptr [rdi + 0x20]
+ffffff80029a2d2a:      	mov	eax, dword ptr [rbx + 0x13c]
+ffffff80029a2d30:      	test	al, 0x5
+ffffff80029a2d32:      	jne	0xffffff80029a2e9b <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1ef>
+ffffff80029a2d38:      	test	al, 0x2
+ffffff80029a2d3a:      	je	0xffffff80029a2d5f <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0xb3>
+ffffff80029a2d3c:      	and	eax, -0x8
+ffffff80029a2d3f:      	mov	dword ptr [rbx + 0x13c], eax
+ffffff80029a2d45:      	add	rdi, 0x78
+ffffff80029a2d49:      	call	0xffffff8002980c9a <__ZN20IOSkywalkPacketQueue18statGetElapsedTimeEPKy>
+ffffff80029a2d4e:      	mov	rcx, qword ptr [rbx + 0x100]
+ffffff80029a2d55:      	cmp	rax, qword ptr [rcx + 0x70]
+ffffff80029a2d59:      	ja	0xffffff80029a2ea7 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1fb>
+ffffff80029a2d5f:      	xor	eax, eax
+ffffff80029a2d61:      	xchg	dword ptr [rbx + 0x134], eax
+ffffff80029a2d67:      	mov	r15d, dword ptr [rbx + 0x130]
+ffffff80029a2d6e:      	sub	r15d, eax
+ffffff80029a2d71:      	mov	dword ptr [rbx + 0x130], r15d
+ffffff80029a2d78:      	not	r15d
+ffffff80029a2d7b:      	add	r15d, dword ptr [rbx + 0xac]
+ffffff80029a2d82:      	mov	rax, qword ptr [rbx + 0xf0]
+ffffff80029a2d89:      	test	rax, rax
+ffffff80029a2d8c:      	je	0xffffff80029a2da2 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0xf6>
+ffffff80029a2d8e:      	mov	rdi, qword ptr [rbx + 0x18]
+ffffff80029a2d92:      	lea	rdx, [rbp - 0x24]
+ffffff80029a2d96:      	mov	rsi, rbx
+ffffff80029a2d99:      	call	rax
+ffffff80029a2d9b:      	cmp	r15d, eax
+ffffff80029a2d9e:      	cmovae	r15d, eax
+ffffff80029a2da2:      	cmp	qword ptr [rbx + 0x68], 0x0
+ffffff80029a2da7:      	mov	r12d, dword ptr [rbp - 0x24]
+ffffff80029a2dab:      	je	0xffffff80029a2de9 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x13d>
+ffffff80029a2dad:      	mov	rdi, rbx
+ffffff80029a2db0:      	call	0xffffff800298115a <__ZN20IOSkywalkPacketQueue18queryByteFreeSpaceEv>
+ffffff80029a2db5:      	cmp	r12d, eax
+ffffff80029a2db8:      	jae	0xffffff80029a2dda <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x12e>
+ffffff80029a2dba:      	mov	r12d, dword ptr [rbp - 0x24]
+ffffff80029a2dbe:      	jmp	0xffffff80029a2de5 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x139>
+ffffff80029a2dc0:      	inc	qword ptr [rcx + 0x18]
+ffffff80029a2dc4:      	inc	dword ptr [rbx + 0x148]
+ffffff80029a2dca:      	mov	rdi, rbx
+ffffff80029a2dcd:      	call	0xffffff8000afafb0 <_uuid_unparse_upper+0xffffff8000afafb0>
+ffffff80029a2dd2:      	xor	r15d, r15d
+ffffff80029a2dd5:      	jmp	0xffffff80029a2e76 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1ca>
+ffffff80029a2dda:      	mov	rdi, rbx
+ffffff80029a2ddd:      	call	0xffffff800298115a <__ZN20IOSkywalkPacketQueue18queryByteFreeSpaceEv>
+ffffff80029a2de2:      	mov	r12d, eax
+ffffff80029a2de5:      	mov	dword ptr [rbp - 0x24], r12d
+ffffff80029a2de9:      	test	r15d, r15d
+ffffff80029a2dec:      	je	0xffffff80029a2e2b <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x17f>
+ffffff80029a2dee:      	test	r12d, r12d
+ffffff80029a2df1:      	je	0xffffff80029a2e30 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x184>
+ffffff80029a2df3:      	mov	rax, qword ptr [rbx]
+ffffff80029a2df6:      	mov	rdi, rbx
+ffffff80029a2df9:      	call	qword ptr [rax + 0x1f8]
+ffffff80029a2dff:      	sub	r15d, eax
+ffffff80029a2e02:      	test	byte ptr [rbx + 0x142], 0x2
+ffffff80029a2e09:      	mov	edx, dword ptr [rbp - 0x24]
+ffffff80029a2e0c:      	movzx	ecx, r14b
+ffffff80029a2e10:      	mov	rdi, rbx
+ffffff80029a2e13:      	mov	esi, r15d
+ffffff80029a2e16:      	jne	0xffffff80029a2e5d <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1b1>
+ffffff80029a2e18:      	call	0xffffff8002984a3e <__ZN26IOSkywalkTxSubmissionQueue25refillTxRingForNetworkingEjjb>
+ffffff80029a2e1d:      	test	eax, eax
+ffffff80029a2e1f:      	jne	0xffffff80029a2e66 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1ba>
+ffffff80029a2e21:      	mov	rdi, rbx
+ffffff80029a2e24:      	call	0xffffff80029a27a4 <__ZN26IOSkywalkTxSubmissionQueue13legacyDequeueEv>
+ffffff80029a2e29:      	jmp	0xffffff80029a2e8e <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1e2>
+ffffff80029a2e2b:      	test	r12d, r12d
+ffffff80029a2e2e:      	jne	0xffffff80029a2e3a <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x18e>
+ffffff80029a2e30:      	mov	dword ptr [rbx + 0x154], 0x1
+ffffff80029a2e3a:      	or	byte ptr [rbx + 0x13c], 0x2
+ffffff80029a2e41:      	call	0xffffff8000536cc0 <_uuid_unparse_upper+0xffffff8000536cc0>
+ffffff80029a2e46:      	mov	rcx, qword ptr [rbx + 0x100]
+ffffff80029a2e4d:      	mov	qword ptr [rcx + 0x78], rax
+ffffff80029a2e51:      	inc	qword ptr [rcx + 0x68]
+ffffff80029a2e55:      	mov	r15d, 0xe00002db
+ffffff80029a2e5b:      	jmp	0xffffff80029a2e69 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1bd>
+ffffff80029a2e5d:      	call	0xffffff8002984c04 <__ZN26IOSkywalkTxSubmissionQueue26getPacketListForNetworkingEjjb>
+ffffff80029a2e62:      	test	eax, eax
+ffffff80029a2e64:      	je	0xffffff80029a2e86 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1da>
+ffffff80029a2e66:      	mov	r15d, eax
+ffffff80029a2e69:      	test	r14b, r14b
+ffffff80029a2e6c:      	je	0xffffff80029a2e76 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1ca>
+ffffff80029a2e6e:      	mov	rdi, rbx
+ffffff80029a2e71:      	call	0xffffff8000afafd0 <_uuid_unparse_upper+0xffffff8000afafd0>
+ffffff80029a2e76:      	mov	eax, r15d
+ffffff80029a2e79:      	add	rsp, 0x10
+ffffff80029a2e7d:      	pop	rbx
+ffffff80029a2e7e:      	pop	r12
+ffffff80029a2e80:      	pop	r14
+ffffff80029a2e82:      	pop	r15
+ffffff80029a2e84:      	pop	rbp
+ffffff80029a2e85:      	ret
+ffffff80029a2e86:      	mov	rdi, rbx
+ffffff80029a2e89:      	call	0xffffff80029a28c8 <__ZN26IOSkywalkTxSubmissionQueue11listDequeueEv>
+ffffff80029a2e8e:      	xor	r15d, r15d
+ffffff80029a2e91:      	jmp	0xffffff80029a2e69 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1bd>
+ffffff80029a2e93:      	mov	r15d, 0xe00002d8
+ffffff80029a2e99:      	jmp	0xffffff80029a2e76 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1ca>
+ffffff80029a2e9b:      	inc	qword ptr [rdi + 0x48]
+ffffff80029a2e9f:      	mov	r15d, 0xe00002d5
+ffffff80029a2ea5:      	jmp	0xffffff80029a2e76 <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0x1ca>
+ffffff80029a2ea7:      	mov	qword ptr [rcx + 0x70], rax
+ffffff80029a2eab:      	jmp	0xffffff80029a2d5f <__ZN26IOSkywalkTxSubmissionQueue16packetSubmissionEb+0xb3>
+ffffff80029a2eb0:      	nop
+ffffff80029a2eb1:      	nop
+DISASSEMBLY_END

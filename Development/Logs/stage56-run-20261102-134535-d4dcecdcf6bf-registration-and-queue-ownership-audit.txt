@@ -1,0 +1,233 @@
+STAGE56_REGISTRATION_INFO_OWNERSHIP_AND_LIFECYCLE
+
+SECTION=prepareRegistrationInfo
+MATCHES=15
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:2: using namespace RTW88WCLRegistrationInfo24H32;
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:4: clearRegistrationInfo();
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:5: auto *info = reinterpret_cast<IOSkywalkEthernetInterface::RegistrationInfo *>(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:6: _registrationInfo.bytes);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:8: /* 24H32 initRegistrationInfo requires option 1 and the exact 0x130 size.
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:12: if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:12: if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:13: clearRegistrationInfo();
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:14: return false;
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:17: if (!applyAppleProducerWrites(_registrationInfo, address.octet) ||
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:18: !matchesApple24H32Template(_registrationInfo, address.octet)) {
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:19: clearRegistrationInfo();
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:20: return false;
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:23: _registrationInfoPrepared = true;
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::prepareRegistrationInfo:24: return true;
+
+SECTION=clearRegistrationInfo
+MATCHES=4
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::clearRegistrationInfo:2: RTW88WCLRegistrationInfo24H32::clear(_registrationInfo);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::clearRegistrationInfo:2: RTW88WCLRegistrationInfo24H32::clear(_registrationInfo);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::clearRegistrationInfo:2: RTW88WCLRegistrationInfo24H32::clear(_registrationInfo);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::clearRegistrationInfo:3: _registrationInfoPrepared = false;
+
+SECTION=createQueues
+MATCHES=58
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:3: return kIOReturnSuccess;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:3: return kIOReturnSuccess;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:4: if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:4: if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:4: if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:4: if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:5: _rxSubmission || _rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:5: _rxSubmission || _rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:6: return kIOReturnBusy;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:6: return kIOReturnBusy;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:8: RTW88WCLPoolOptionsAccess::PoolOptions txOptions = {};
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:9: txOptions.packetCount = kQueueCapacity;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:10: txOptions.bufferCount = kQueueCapacity;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:11: txOptions.bufferSize = kTxBufferSize;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:11: txOptions.bufferSize = kTxBufferSize;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:12: txOptions.maxBuffersPerPacket = 1;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:13: txOptions.memorySegmentSize = kQueueCapacity * kTxBufferSize;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:13: txOptions.memorySegmentSize = kQueueCapacity * kTxBufferSize;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:14: txOptions.poolFlags = 0;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:15: txOptions._reserved = 0;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:17: RTW88WCLPoolOptionsAccess::PoolOptions rxOptions = txOptions;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:17: RTW88WCLPoolOptionsAccess::PoolOptions rxOptions = txOptions;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:18: rxOptions.bufferSize = kRxBufferSize;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:18: rxOptions.bufferSize = kRxBufferSize;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:19: rxOptions.memorySegmentSize = kQueueCapacity * kRxBufferSize;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:19: rxOptions.memorySegmentSize = kQueueCapacity * kRxBufferSize;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:21: _txPool = IOSkywalkPacketBufferPool::withName(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:22: "RTL88WiFi-WCL-TX", this, kIOSkywalkPacketTypeNetwork, &txOptions);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:22: "RTL88WiFi-WCL-TX", this, kIOSkywalkPacketTypeNetwork, &txOptions);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:23: if (!_txPool)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:26: _rxPool = IOSkywalkPacketBufferPool::withName(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:27: "RTL88WiFi-WCL-RX", this, kIOSkywalkPacketTypeNetwork, &rxOptions);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:27: "RTL88WiFi-WCL-RX", this, kIOSkywalkPacketTypeNetwork, &rxOptions);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:28: if (!_rxPool)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:35: _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:35: _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:36: _txPool, kQueueCapacity, 0, this,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:37: &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:38: if (!_txSubmission)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:41: _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:41: _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:42: _txPool, kQueueCapacity, 0, this,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:43: &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:44: if (!_txCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:47: _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:47: _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:48: _rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:49: this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:50: if (!_rxSubmission)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:53: _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:53: _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:54: _rxPool, kQueueCapacity, 0, this,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:55: &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:56: if (!_rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:61: return kIOReturnSuccess;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:61: return kIOReturnSuccess;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:65: return kIOReturnNoMemory;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::createQueues:65: return kIOReturnNoMemory;
+
+SECTION=destroyQueues
+MATCHES=23
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:2: /* Release queues before their pools: queue implementations retain and
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:2: /* Release queues before their pools: queue implementations retain and
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:2: /* Release queues before their pools: queue implementations retain and
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:2: /* Release queues before their pools: queue implementations retain and
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:3: * reference their associated pool for packet and buffer accounting. */
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:5: _rxCompletion->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:6: _rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:9: _rxSubmission->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:10: _rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:13: _txCompletion->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:14: _txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:17: _txSubmission->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:18: _txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:20: if (_rxPool) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:21: _rxPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:21: _rxPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:22: _rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:22: _rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:24: if (_txPool) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:25: _txPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:25: _txPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:26: _txPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp::RTW88WCLSkywalkQueues::destroyQueues:26: _txPool = nullptr;
+
+SECTION=RTW88WCLSkywalkTxAdapter::submitPacket
+MATCHES=28
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:3: return kIOReturnBadArgument;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:3: return kIOReturnBadArgument;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:5: return kIOReturnNotReady;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:5: return kIOReturnNotReady;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:9: return kIOReturnBadArgument;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:9: return kIOReturnBadArgument;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:13: return kIOReturnNoMemory;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:13: return kIOReturnNoMemory;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:16: TicketPool::Ticket *ticket = _tickets.reserve(packet);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:16: TicketPool::Ticket *ticket = _tickets.reserve(packet);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:16: TicketPool::Ticket *ticket = _tickets.reserve(packet);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:16: TicketPool::Ticket *ticket = _tickets.reserve(packet);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:17: if (!ticket) {
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:20: return kIOReturnBusy;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:20: return kIOReturnBusy;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:23: /* Keep the adapter alive until the workloop-side completion drain drops
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:24: * this ticket. backendCompletion() intentionally does not release it. */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:24: * this ticket. backendCompletion() intentionally does not release it. */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:26: const UInt32 backendResult = _radio->outputPacketWithCompletion(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:26: const UInt32 backendResult = _radio->outputPacketWithCompletion(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:27: mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:27: mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:29: /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:29: /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:30: * terminal callback, including synchronous drops. Once the ticket has
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:32: * vs dropped result is delivered later through the completion sink. */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:34: return kIOReturnSuccess;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::submitPacket:34: return kIOReturnSuccess;
+
+SECTION=RTW88WCLSkywalkTxAdapter::drainCompletions
+MATCHES=23
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:2: if (!sink)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:3: return 0;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:5: /* A sink may trigger owner teardown; keep this adapter alive until the
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:6: * drain loop has stopped touching its ticket pool. */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:6: * drain loop has stopped touching its ticket pool. */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:8: uint32_t drained = 0;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:10: TicketPool::Ticket *ticket = _tickets.claimCompleted();
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:10: TicketPool::Ticket *ticket = _tickets.claimCompleted();
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:10: TicketPool::Ticket *ticket = _tickets.claimCompleted();
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:10: TicketPool::Ticket *ticket = _tickets.claimCompleted();
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:11: if (!ticket)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:14: auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:14: auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:15: const bool transmitted = TicketPool::transmitted(ticket);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:15: const bool transmitted = TicketPool::transmitted(ticket);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:17: /* The sink runs in deferred context and borrows the retained packet.
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:18: * It must finish any Skywalk queue handoff before returning. */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:20: sink(packet, transmitted, context);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:22: TicketPool::finish(ticket);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:22: TicketPool::finish(ticket);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:26: ++drained;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:29: return drained;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp::RTW88WCLSkywalkTxAdapter::drainCompletions:29: return drained;
+
+SECTION=RTW88WCLSkywalkRxAdapter methods
+MATCHES=120
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:2: if (!owner || !workLoop || !rxPool || _workLoop || _rxPool || _registered)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:2: if (!owner || !workLoop || !rxPool || _workLoop || _rxPool || _registered)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:3: return false;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:5: return false;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:9: _rxPool = rxPool;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:9: _rxPool = rxPool;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:10: _rxPool->retain();
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:11: _sink = sink;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:11: _sink = sink;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:12: _sinkContext = context;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:18: const IOReturn status = workLoop->addEventSource(this);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:19: if (status != kIOReturnSuccess) {
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:20: _rxPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:21: _rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:23: _sink = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:24: _sinkContext = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:25: return false;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::init:28: return true;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::isValidMbuf:2: if (!packet)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::isValidMbuf:3: return false;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::isValidMbuf:7: const size_t packetLength = mbuf_pkthdr_len(packet);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::isValidMbuf:7: const size_t packetLength = mbuf_pkthdr_len(packet);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::isValidMbuf:8: return packetLength >= kMinimumFrameLength &&
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::isValidMbuf:8: return packetLength >= kMinimumFrameLength &&
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::isValidMbuf:9: packetLength <= kMaximumFrameLength;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:2: if (outPacket)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:3: *outPacket = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:4: if (!pool || !source || !outPacket)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:4: if (!pool || !source || !outPacket)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:5: return false;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:7: const size_t packetLength = mbuf_pkthdr_len(source);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:8: if (packetLength < kMinimumFrameLength ||
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:9: packetLength > kMaximumFrameLength)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:10: return false;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:12: IOSkywalkPacket *packet = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:12: IOSkywalkPacket *packet = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:13: /* Option bit 0 requests non-blocking allocation in a packet callback. */
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:14: if (pool->allocatePacket(1, &packet, 1) != kIOReturnSuccess || !packet)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:14: if (pool->allocatePacket(1, &packet, 1) != kIOReturnSuccess || !packet)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:14: if (pool->allocatePacket(1, &packet, 1) != kIOReturnSuccess || !packet)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:14: if (pool->allocatePacket(1, &packet, 1) != kIOReturnSuccess || !packet)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:14: if (pool->allocatePacket(1, &packet, 1) != kIOReturnSuccess || !packet)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:15: return false;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:19: if (packet->getPacketType() != kIOSkywalkPacketTypeNetwork ||
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:19: if (packet->getPacketType() != kIOSkywalkPacketTypeNetwork ||
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:19: if (packet->getPacketType() != kIOSkywalkPacketTypeNetwork ||
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:20: packet->getPacketBufferPool() != pool ||
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:20: packet->getPacketBufferPool() != pool ||
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:20: packet->getPacketBufferPool() != pool ||
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:20: packet->getPacketBufferPool() != pool ||
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:21: packet->getPacketBufferCount() != 1)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:21: packet->getPacketBufferCount() != 1)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:24: auto *networkPacket = OSDynamicCast(IOSkywalkNetworkPacket, packet);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:24: auto *networkPacket = OSDynamicCast(IOSkywalkNetworkPacket, packet);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:24: auto *networkPacket = OSDynamicCast(IOSkywalkNetworkPacket, packet);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:25: if (!networkPacket)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:28: IOSkywalkPacketBuffer *buffers[1] = { nullptr };
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:29: if (packet->getPacketBuffers(buffers, 1) != 1 || !buffers[0])
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:29: if (packet->getPacketBuffers(buffers, 1) != 1 || !buffers[0])
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp::RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket:31: IOSkywalkPacketBuffer *buffer = buffers[0];

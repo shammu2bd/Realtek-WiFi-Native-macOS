@@ -1,0 +1,676 @@
+========== STAGE 35S: NATIVE BUILD WARNING SOURCE-CONTEXT AUDIT ==========
+timestamp_utc=2026-11-02T01:35:28Z
+host=DESKTOP-65R32QP.localdomain
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+target=rtl88wifi-native
+predecessor=Stage35R run-20261102-012552, BUILD_EXIT=0
+predecessor_artifact=Development/Artifacts/stage35r/RTL88WiFiNative-run-20261102-012552.tar.gz
+predecessor_artifact_sha256=7c2af9719f60446f78d8bf4e96816ed1bfe3c5d2f67200605c6b5b00c526bc18
+audit_mode=read-only source and warning-context inspection
+retained_stage35r_build_log=/Users/shohel/Downloads/Stage35R-run-20261102-012552/native-build.log
+
+--- Source fingerprint before audit ---
+files=4 sha256=81fe58cd50e1f7e274a37a4f442bb2b4c5eed66afb1cceeeb2d1e94ab9a600c7
+
+--- 1. mac.c: LTE coexistence backup/read/write path (lines 770-830) ---
+   770	{
+   771		u16 fw_ctrl;
+   772	
+   773		rtw_write32(rtwdev, REG_TXDMA_STATUS, BTI_PAGE_OVF);
+   774	
+   775		/* Check IMEM & DMEM checksum is OK or not */
+   776		fw_ctrl = rtw_read16(rtwdev, REG_MCUFW_CTRL);
+   777		if ((fw_ctrl & BIT_CHECK_SUM_OK) != BIT_CHECK_SUM_OK)
+   778			return;
+   779	
+   780		fw_ctrl = (fw_ctrl | BIT_FW_DW_RDY) & ~BIT_MCUFWDL_EN;
+   781		rtw_write16(rtwdev, REG_MCUFW_CTRL, fw_ctrl);
+   782	}
+   783	
+   784	static int __rtw_download_firmware(struct rtw_dev *rtwdev,
+   785					   struct rtw_fw_state *fw)
+   786	{
+   787		struct rtw_backup_info bckp[DLFW_RESTORE_REG_NUM];
+   788		const u8 *data = fw->firmware->data;
+   789		u32 size = fw->firmware->size;
+   790		u32 ltecoex_bckp;
+   791		int ret;
+   792	
+   793		if (!check_firmware_size(data, size))
+   794			return -EINVAL;
+   795	
+   796		if (rtwdev->chip->ltecoex_addr &&
+   797		    !ltecoex_read_reg(rtwdev, 0x38, &ltecoex_bckp))
+   798			return -EBUSY;
+   799	
+   800		wlan_cpu_enable(rtwdev, false);
+   801	
+   802		download_firmware_reg_backup(rtwdev, bckp);
+   803		download_firmware_reset_platform(rtwdev);
+   804	
+   805		ret = start_download_firmware(rtwdev, data, size);
+   806		if (ret)
+   807			goto dlfw_fail;
+   808	
+   809		download_firmware_reg_restore(rtwdev, bckp, DLFW_RESTORE_REG_NUM);
+   810	
+   811		download_firmware_end_flow(rtwdev);
+   812	
+   813		wlan_cpu_enable(rtwdev, true);
+   814	
+   815		if (rtwdev->chip->ltecoex_addr &&
+   816		    !ltecoex_reg_write(rtwdev, 0x38, ltecoex_bckp)) {
+   817			ret = -EBUSY;
+   818			goto dlfw_fail;
+   819		}
+   820	
+   821		ret = download_firmware_validate(rtwdev);
+   822		if (ret)
+   823			goto dlfw_fail;
+   824	
+   825		/* reset desc and index */
+   826		rtw_hci_setup(rtwdev);
+   827	
+   828		rtwdev->h2c.last_box_num = 0;
+   829		rtwdev->h2c.seq = 0;
+   830	
+
+--- 2. pci.c: DBI register flag path (lines 1280-1350) ---
+  1280		int ret;
+  1281	
+  1282		ret = pci_request_regions(pdev, KBUILD_MODNAME);
+  1283		if (ret) {
+  1284			rtw_err(rtwdev, "failed to request pci regions\n");
+  1285			return ret;
+  1286		}
+  1287	
+  1288		len = pci_resource_len(pdev, bar_id);
+  1289		rtwpci->mmap = pci_iomap(pdev, bar_id, len);
+  1290		if (!rtwpci->mmap) {
+  1291			pci_release_regions(pdev);
+  1292			rtw_err(rtwdev, "failed to map pci memory\n");
+  1293			return -ENOMEM;
+  1294		}
+  1295	
+  1296		return 0;
+  1297	}
+  1298	
+  1299	static void rtw_pci_io_unmapping(struct rtw_dev *rtwdev,
+  1300					 struct pci_dev *pdev)
+  1301	{
+  1302		struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  1303	
+  1304		if (rtwpci->mmap) {
+  1305			pci_iounmap(pdev, rtwpci->mmap);
+  1306			pci_release_regions(pdev);
+  1307		}
+  1308	}
+  1309	
+  1310	static void rtw_dbi_write8(struct rtw_dev *rtwdev, u16 addr, u8 data)
+  1311	{
+  1312		u16 write_addr;
+  1313		u16 remainder = addr & ~(BITS_DBI_WREN | BITS_DBI_ADDR_MASK);
+  1314		u8 flag;
+  1315		u8 cnt;
+  1316	
+  1317		write_addr = addr & BITS_DBI_ADDR_MASK;
+  1318		write_addr |= u16_encode_bits(BIT(remainder), BITS_DBI_WREN);
+  1319		rtw_write8(rtwdev, REG_DBI_WDATA_V1 + remainder, data);
+  1320		rtw_write16(rtwdev, REG_DBI_FLAG_V1, write_addr);
+  1321		rtw_write8(rtwdev, REG_DBI_FLAG_V1 + 2, BIT_DBI_WFLAG >> 16);
+  1322	
+  1323		for (cnt = 0; cnt < RTW_PCI_WR_RETRY_CNT; cnt++) {
+  1324			flag = rtw_read8(rtwdev, REG_DBI_FLAG_V1 + 2);
+  1325			if (flag == 0)
+  1326				return;
+  1327	
+  1328			udelay(10);
+  1329		}
+  1330	
+  1331		WARN(flag, "failed to write to DBI register, addr=0x%04x\n", addr);
+  1332	}
+  1333	
+  1334	static int rtw_dbi_read8(struct rtw_dev *rtwdev, u16 addr, u8 *value)
+  1335	{
+  1336		u16 read_addr = addr & BITS_DBI_ADDR_MASK;
+  1337		u8 flag;
+  1338		u8 cnt;
+  1339	
+  1340		rtw_write16(rtwdev, REG_DBI_FLAG_V1, read_addr);
+  1341		rtw_write8(rtwdev, REG_DBI_FLAG_V1 + 2, BIT_DBI_RFLAG >> 16);
+  1342	
+  1343		for (cnt = 0; cnt < RTW_PCI_WR_RETRY_CNT; cnt++) {
+  1344			flag = rtw_read8(rtwdev, REG_DBI_FLAG_V1 + 2);
+  1345			if (flag == 0) {
+  1346				read_addr = REG_DBI_RDATA_V1 + (addr & 3);
+  1347				*value = rtw_read8(rtwdev, read_addr);
+  1348				return 0;
+  1349			}
+  1350	
+
+--- 3. pci.c: MDIO WFLAG path (lines 1350-1405) ---
+  1350	
+  1351			udelay(10);
+  1352		}
+  1353	
+  1354		WARN(1, "failed to read DBI register, addr=0x%04x\n", addr);
+  1355		return -EIO;
+  1356	}
+  1357	
+  1358	static void rtw_mdio_write(struct rtw_dev *rtwdev, u8 addr, u16 data, bool g1)
+  1359	{
+  1360		u8 page;
+  1361		u8 wflag;
+  1362		u8 cnt;
+  1363	
+  1364		rtw_write16(rtwdev, REG_MDIO_V1, data);
+  1365	
+  1366		page = addr < RTW_PCI_MDIO_PG_SZ ? 0 : 1;
+  1367		page += g1 ? RTW_PCI_MDIO_PG_OFFS_G1 : RTW_PCI_MDIO_PG_OFFS_G2;
+  1368		rtw_write8(rtwdev, REG_PCIE_MIX_CFG, addr & BITS_MDIO_ADDR_MASK);
+  1369		rtw_write8(rtwdev, REG_PCIE_MIX_CFG + 3, page);
+  1370		rtw_write32_mask(rtwdev, REG_PCIE_MIX_CFG, BIT_MDIO_WFLAG_V1, 1);
+  1371	
+  1372		for (cnt = 0; cnt < RTW_PCI_WR_RETRY_CNT; cnt++) {
+  1373			wflag = rtw_read32_mask(rtwdev, REG_PCIE_MIX_CFG,
+  1374						BIT_MDIO_WFLAG_V1);
+  1375			if (wflag == 0)
+  1376				return;
+  1377	
+  1378			udelay(10);
+  1379		}
+  1380	
+  1381		WARN(wflag, "failed to write to MDIO register, addr=0x%02x\n", addr);
+  1382	}
+  1383	
+  1384	static void rtw_pci_clkreq_set(struct rtw_dev *rtwdev, bool enable)
+  1385	{
+  1386		u8 value;
+  1387		int ret;
+  1388	
+  1389		if (rtw_pci_disable_aspm)
+  1390			return;
+  1391	
+  1392		ret = rtw_dbi_read8(rtwdev, RTK_PCIE_LINK_CFG, &value);
+  1393		if (ret) {
+  1394			rtw_err(rtwdev, "failed to read CLKREQ_L1, ret=%d", ret);
+  1395			return;
+  1396		}
+  1397	
+  1398		if (enable)
+  1399			value |= BIT_CLKREQ_SW_EN;
+  1400		else
+  1401			value &= ~BIT_CLKREQ_SW_EN;
+  1402	
+  1403		rtw_dbi_write8(rtwdev, RTK_PCIE_LINK_CFG, value);
+  1404	}
+  1405	
+
+--- 4. tx.h: packed TX descriptor and checksum writes (lines 1-150) ---
+     1	/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+     2	/* Copyright(c) 2018-2019  Realtek Corporation
+     3	 */
+     4	
+     5	#ifndef __RTW_TX_H_
+     6	#define __RTW_TX_H_
+     7	
+     8	#define RTK_TX_MAX_AGG_NUM_MASK		0x1f
+     9	
+    10	#define RTW_TX_PROBE_TIMEOUT		msecs_to_jiffies(500)
+    11	
+    12	struct rtw_tx_desc {
+    13		__le32 w0;
+    14		__le32 w1;
+    15		__le32 w2;
+    16		__le32 w3;
+    17		__le32 w4;
+    18		__le32 w5;
+    19		__le32 w6;
+    20		__le32 w7;
+    21		__le32 w8;
+    22		__le32 w9;
+    23	} __packed;
+    24	
+    25	#define RTW_TX_DESC_W0_TXPKTSIZE GENMASK(15, 0)
+    26	#define RTW_TX_DESC_W0_OFFSET GENMASK(23, 16)
+    27	#define RTW_TX_DESC_W0_BMC BIT(24)
+    28	#define RTW_TX_DESC_W0_LS BIT(26)
+    29	#define RTW_TX_DESC_W0_DISQSELSEQ BIT(31)
+    30	#define RTW_TX_DESC_W1_MACID GENMASK(7, 0)
+    31	#define RTW_TX_DESC_W1_QSEL GENMASK(12, 8)
+    32	#define RTW_TX_DESC_W1_RATE_ID GENMASK(20, 16)
+    33	#define RTW_TX_DESC_W1_SEC_TYPE GENMASK(23, 22)
+    34	#define RTW_TX_DESC_W1_PKT_OFFSET GENMASK(28, 24)
+    35	#define RTW_TX_DESC_W1_MORE_DATA BIT(29)
+    36	#define RTW_TX_DESC_W2_AGG_EN BIT(12)
+    37	#define RTW_TX_DESC_W2_SPE_RPT BIT(19)
+    38	#define RTW_TX_DESC_W2_AMPDU_DEN GENMASK(22, 20)
+    39	#define RTW_TX_DESC_W2_BT_NULL BIT(23)
+    40	#define RTW_TX_DESC_W3_HW_SSN_SEL GENMASK(7, 6)
+    41	#define RTW_TX_DESC_W3_USE_RATE BIT(8)
+    42	#define RTW_TX_DESC_W3_DISDATAFB BIT(10)
+    43	#define RTW_TX_DESC_W3_USE_RTS BIT(12)
+    44	#define RTW_TX_DESC_W3_NAVUSEHDR BIT(15)
+    45	#define RTW_TX_DESC_W3_MAX_AGG_NUM GENMASK(21, 17)
+    46	#define RTW_TX_DESC_W4_DATARATE GENMASK(6, 0)
+    47	#define RTW_TX_DESC_W4_DATARATE_FB_LIMIT GENMASK(12, 8)
+    48	#define RTW_TX_DESC_W4_RTSRATE GENMASK(28, 24)
+    49	#define RTW_TX_DESC_W5_DATA_SHORT BIT(4)
+    50	#define RTW_TX_DESC_W5_DATA_BW GENMASK(6, 5)
+    51	#define RTW_TX_DESC_W5_DATA_LDPC BIT(7)
+    52	#define RTW_TX_DESC_W5_DATA_STBC GENMASK(9, 8)
+    53	#define RTW_TX_DESC_W5_DATA_RTS_SHORT BIT(12)
+    54	#define RTW_TX_DESC_W6_SW_DEFINE GENMASK(11, 0)
+    55	#define RTW_TX_DESC_W7_TXDESC_CHECKSUM GENMASK(15, 0)
+    56	#define RTW_TX_DESC_W7_DMA_TXAGG_NUM GENMASK(31, 24)
+    57	#define RTW_TX_DESC_W8_EN_HWSEQ BIT(15)
+    58	#define RTW_TX_DESC_W9_SW_SEQ GENMASK(23, 12)
+    59	#define RTW_TX_DESC_W9_TIM_EN BIT(7)
+    60	#define RTW_TX_DESC_W9_TIM_OFFSET GENMASK(6, 0)
+    61	
+    62	enum rtw_tx_desc_queue_select {
+    63		TX_DESC_QSEL_TID0	= 0,
+    64		TX_DESC_QSEL_TID1	= 1,
+    65		TX_DESC_QSEL_TID2	= 2,
+    66		TX_DESC_QSEL_TID3	= 3,
+    67		TX_DESC_QSEL_TID4	= 4,
+    68		TX_DESC_QSEL_TID5	= 5,
+    69		TX_DESC_QSEL_TID6	= 6,
+    70		TX_DESC_QSEL_TID7	= 7,
+    71		TX_DESC_QSEL_TID8	= 8,
+    72		TX_DESC_QSEL_TID9	= 9,
+    73		TX_DESC_QSEL_TID10	= 10,
+    74		TX_DESC_QSEL_TID11	= 11,
+    75		TX_DESC_QSEL_TID12	= 12,
+    76		TX_DESC_QSEL_TID13	= 13,
+    77		TX_DESC_QSEL_TID14	= 14,
+    78		TX_DESC_QSEL_TID15	= 15,
+    79		TX_DESC_QSEL_BEACON	= 16,
+    80		TX_DESC_QSEL_HIGH	= 17,
+    81		TX_DESC_QSEL_MGMT	= 18,
+    82		TX_DESC_QSEL_H2C	= 19,
+    83	};
+    84	
+    85	enum rtw_rsvd_packet_type;
+    86	
+    87	void rtw_tx(struct rtw_dev *rtwdev,
+    88		    struct ieee80211_tx_control *control,
+    89		    struct sk_buff *skb);
+    90	void rtw_txq_init(struct rtw_dev *rtwdev, struct ieee80211_txq *txq);
+    91	void rtw_txq_cleanup(struct rtw_dev *rtwdev, struct ieee80211_txq *txq);
+    92	void rtw_tx_work(struct work_struct *w);
+    93	void __rtw_tx_work(struct rtw_dev *rtwdev);
+    94	void rtw_tx_pkt_info_update(struct rtw_dev *rtwdev,
+    95				    struct rtw_tx_pkt_info *pkt_info,
+    96				    struct ieee80211_sta *sta,
+    97				    struct sk_buff *skb);
+    98	void rtw_tx_fill_tx_desc(struct rtw_dev *rtwdev,
+    99				 struct rtw_tx_pkt_info *pkt_info, struct sk_buff *skb);
+   100	void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn);
+   101	void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src);
+   102	void rtw_tx_rsvd_page_pkt_info_update(struct rtw_dev *rtwdev,
+   103					      struct rtw_tx_pkt_info *pkt_info,
+   104					      struct sk_buff *skb,
+   105					      enum rtw_rsvd_packet_type type);
+   106	struct sk_buff *
+   107	rtw_tx_write_data_rsvd_page_get(struct rtw_dev *rtwdev,
+   108					struct rtw_tx_pkt_info *pkt_info,
+   109					u8 *buf, u32 size);
+   110	struct sk_buff *
+   111	rtw_tx_write_data_h2c_get(struct rtw_dev *rtwdev,
+   112				  struct rtw_tx_pkt_info *pkt_info,
+   113				  u8 *buf, u32 size);
+   114	
+   115	enum rtw_tx_queue_type rtw_tx_ac_to_hwq(enum ieee80211_ac_numbers ac);
+   116	enum rtw_tx_queue_type rtw_tx_queue_mapping(struct sk_buff *skb);
+   117	
+   118	static inline
+   119	void fill_txdesc_checksum_common(u8 *txdesc, size_t words)
+   120	{
+   121		__le16 chksum = 0;
+   122		__le16 *data = (__le16 *)(txdesc);
+   123		struct rtw_tx_desc *tx_desc = (struct rtw_tx_desc *)txdesc;
+   124	
+   125		le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+   126	
+   127		while (words--)
+   128			chksum ^= *data++;
+   129	
+   130		le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+   131				   RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+   132	}
+   133	
+   134	static inline void rtw_tx_fill_txdesc_checksum(struct rtw_dev *rtwdev,
+   135						       struct rtw_tx_pkt_info *pkt_info,
+   136						       u8 *txdesc)
+   137	{
+   138		const struct rtw_chip_info *chip = rtwdev->chip;
+   139	
+   140		chip->ops->fill_txdesc_checksum(rtwdev, pkt_info, txdesc);
+   141	}
+   142	
+   143	#endif
+
+--- 5. ABI assertion and surrounding declarations (lines 425-465) ---
+   425	    virtual void _RESERVEDIOSkywalkEthernetInterface3();
+   426	    virtual void _RESERVEDIOSkywalkEthernetInterface4();
+   427	    virtual void _RESERVEDIOSkywalkEthernetInterface5();
+   428	    virtual void _RESERVEDIOSkywalkEthernetInterface6();
+   429	    virtual void _RESERVEDIOSkywalkEthernetInterface7();
+   430	    virtual void _RESERVEDIOSkywalkEthernetInterface8();
+   431	    virtual void _RESERVEDIOSkywalkEthernetInterface9();
+   432	    virtual void _RESERVEDIOSkywalkEthernetInterface10();
+   433	
+   434	    /* Non-virtual 24H32 entry points. The complete kernel bodies propagate
+   435	     * IOReturn values; Apple callers treat EAX==0 as success. */
+   436	    bool initRegistrationInfo(RegistrationInfo *, unsigned int, size_t);
+   437	    IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+   438	                                       unsigned int, IOSkywalkPacketBufferPool *,
+   439	                                       IOSkywalkPacketBufferPool *, unsigned int);
+   440	    IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+   441	                                       IOSkywalkPacketBufferPool *,
+   442	                                       IOSkywalkPacketBufferPool *, unsigned int);
+   443	    IOReturn deregisterEthernetInterface(unsigned int);
+   444	protected:
+   445	    struct ExpansionData;
+   446	private:
+   447	    uint8_t _layout0[0x38];
+   448	public:
+   449	    /* Pointer is visible for layout assertions; its pointed-to layout is not. */
+   450	    ExpansionData *mExpansionData2;
+   451	};
+   452	static_assert(sizeof(IOSkywalkEthernetInterface) == 0x110, "24H32 IOSkywalkEthernetInterface ABI");
+   453	static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
+   454	
+   455	struct TxPacketRequest {
+   456	    uint16_t unk1, t, mU, mM, pkt_cnt, unk2, unk3, unk4;
+   457	    uint32_t pad;
+   458	    mbuf_t bufs[8];
+   459	    uint32_t reqTx;
+   460	};
+   461	static_assert(sizeof(TxPacketRequest) == 0x60, "24H32 TxPacketRequest ABI");
+   462	
+   463	class IO80211SkywalkInterface : public IOSkywalkEthernetInterface {
+   464	    OSDeclareAbstractStructors(IO80211SkywalkInterface)
+   465	public:
+
+--- 6. All le32p_replace_bits definitions and uses in relevant source roots ---
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:	le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:	le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:401:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(6, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:403:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:405:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(31, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:407:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(15, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:417:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(31, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:419:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:422:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(7, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:424:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:426:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:428:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(27, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:430:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(31, 28))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:432:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:434:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(1))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:437:	le32p_replace_bits((__le32 *)(pkt) + 0x00, value, GENMASK(7, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:439:	le32p_replace_bits((__le32 *)(pkt) + 0x00, value, GENMASK(11, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:441:	le32p_replace_bits((__le32 *)(pkt) + 0x00, value, GENMASK(15, 12))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:443:	le32p_replace_bits((__le32 *)(pkt) + 0x00, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:445:	le32p_replace_bits((__le32 *)(pkt) + 0x00, value, GENMASK(30, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:447:	le32p_replace_bits((__le32 *)(pkt) + 0x00, value, BIT(31))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:472:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(15, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:474:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:476:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(31, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:479:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:481:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(1))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:483:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(2))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:485:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(4, 3))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:487:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(5))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:489:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(6))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:491:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:493:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:495:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(27, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:497:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(31, 28))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:499:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(7, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:501:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(13, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:503:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(15, 14))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:505:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(21, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:507:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(23, 22))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:509:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(31, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:511:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x04, value, GENMASK(31, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:513:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x05, value, GENMASK(31, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:515:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x06, value, GENMASK(15, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:518:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:520:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(1))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:522:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(2))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:524:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(3))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:526:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, BIT(4))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:528:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:530:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x02, value, GENMASK(31, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:532:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(7, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:534:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:536:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(19, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:538:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(23, 20))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:540:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x03, value, GENMASK(26, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:542:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x04, value, GENMASK(15, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:544:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x04, value, GENMASK(31, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:546:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x05, value, GENMASK(3, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:548:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x05, value, GENMASK(7, 4))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:550:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x05, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:587:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(7, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:590:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, BIT(8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:592:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:595:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(17, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:597:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(27, 18))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:599:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(7, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:601:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:603:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:605:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:607:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, BIT(16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:609:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(20, 17))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:611:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(23, 21))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:613:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(31, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:615:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(3, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:617:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(13, 4))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:620:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, BIT(8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:623:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(11, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:625:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(15, 12))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:627:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:629:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(31, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:631:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(7, 0))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:634:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(14, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:636:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(19, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:638:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(23, 20))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:640:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(31, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:642:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(7, 5))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:644:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:646:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(23, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:648:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(31, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:650:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, BIT(8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:652:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, BIT(10))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:654:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:656:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(31, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:658:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x01, value, BIT(1))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:660:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(15, 8))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:662:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(20, 16))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:664:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(22, 21))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:666:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, BIT(23))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:668:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, GENMASK(25, 24))
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.h:670:	le32p_replace_bits((__le32 *)(h2c_pkt) + 0x00, value, BIT(26))
+
+--- 7. Exact compiler diagnostic excerpts from retained Stage35R build log ---
+BUILD_LOG_LINES=5558 TARGETED_DIAGNOSTIC_HITS=26
+
+--- build log lines 696-703 ---
+    696       |             ~~~~~   ^~~~~~~~~~~
+    697 :9In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c:6:
+    698 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125::/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+    699 22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+    700   125 | :implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]:14        le
+    701 :   2253warning: 2442p_r:  238 |         ret9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]
+    702   225 |         return ret;
+    703       |         ~~~~~~ ^~~
+
+--- build log lines 715-722 ---
+    715       |             ~~~~~   ^~~~~~~~~~~
+    716 c->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+    717       |                             ^~~~~~~~~~~
+    718 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+    719   130 |         le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+    720       |                             ^~~~~~~~~~~
+    721 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.ht = _:244:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+    722   244 |         u32 shift = __ffs(mask);
+
+--- build log lines 899-906 ---
+    899 s:
+    900    | h            ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~iimplicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]f
+    901 
+    902 t16  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+    903   125 |         le32p304 = __ffs(mask);
+    904 _ |                         new      r | _|               ~ ^~~~~~~~~~~l/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:265:
+    905 32: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+    906                   return find_next_zero_bit(sec->cam_map, RTW_MAX/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:285_:ep265eS36lIn file included from :E | a        vc elC /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c=swarning: /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c_:17e:
+
+--- build log lines 918-925 ---
+    918       |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    919 : implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+    920 :125:        =130  22 
+    921 324 |           ::r( warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+    922   125 |         le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+    923       |                             ^~~~~~~~~~~
+    924 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h284 |         :        s22        130        r:por22:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+    925   130:twd 46:warning:  | ik        taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]tsl_e
+
+--- build log lines 1162-1169 ---
+   1162   789 |         u32 size = fw->firmware->size;
+   1163       |             ~~~~   ~~~~~~~~~~~~~~^~~~
+   1164 d_t                         ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   1165 o_dec_pwr_/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.cby_r/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rx.c/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c:816::290:23: warning: :39: warning: variable 'ltecoex_bckp' may be uninitialized when used here [-Wconditional-uninitialized]
+   1166   816 |             !ltecoex_reg_write(rtwdev, 0x38, ltecoex_bckp)) {
+   1167       |                                              ^~~~~~~~~~~~
+   1168 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c:790:18: note: initialize the variable 'ltecoex_bckp' to silence this warning
+   1169   790 |         u32 ltecoex_bckp;
+
+--- build log lines 2931-2938 ---
+   2931   159 |                 return len - wp + rp - 1;
+   2932       |                 ~~~~~~ ~~~~~~~~~~~~~~^~~
+   2933 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:10:
+   2934 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+   2935 a  125 |           CC   rtw8822b_table.c
+   2936 lxcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Downloads/RTL88WiF:i-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext -include /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/rtw88_compat.h -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88 -DRTW88_MACOS=1 -D__KERNEL__ -DCONFIG_RTW88_PCI=1 -DCONFIG_RTW88_8822B=1 -DCONFIG_RTW88_8822BE=1 -DCONFIG_RTW88_8822C=1 -DCONFIG_RTW88_8822CE=1 -DCONFIG_RTW88_8821C=1 -DCONFIG_RTW88_8821CE=1 -Werror=implicit-function-declaration -Werror=int-conversion -Werror=incompatible-pointer-types -Wno-unused-variable -Wno-unused-function -c /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822b_table.c -o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822b_table.o
+   2937 e32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+   2938       |                             ^~~~~~~~~~~
+
+--- build log lines 3137-3144 ---
+   3137  2196 |                 set_bit(mac_id, rtwdev->mac_id_map);
+   3138       |                 ~~~~~~~ ^~~~~~
+   3139 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c:7:
+   3140 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+   3141   125 |         le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+   3142       |                             ^~~~~~~~~~~
+   3143 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+   3144   130 |         le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+
+--- build log lines 3233-3240 ---
+   3233 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c:597:21: warning: implicit conversion changes signedness: 's8' (aka 'signed char') to 'u8' (aka 'unsigned char') [-Wsign-conversion]
+   3234   597 |                 hw_key_idx = key->keyidx;
+   3235       |                            ~ ~~~~~^~~~~~
+   3236 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1331:7: warning: variable 'flag' may be uninitialized when used here [-Wconditional-uninitialized]
+   3237  1331 |         WARN(flag, "failed to write to DBI regisIn file included from <built-in>:1:
+   3238 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+   3239 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/iokit_shim.h:11:
+   3240 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:10:
+
+--- build log lines 3241-3248 ---
+   3241 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:35:
+   3242 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:71:
+   3243 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.hIn file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822b.c:9:
+   3244 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+   3245   125 |         le32p_replace_bits(&tx_desc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+   3246       |                             ^~~~~~~~~~~
+   3247 :178:9: warning: '__cold' macro redefined [-Wmacro-redefined]
+   3248   178 | #define __cold          __attribute__((__cold__))
+
+--- build log lines 3262-3269 ---
+   3262 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/rtw88_compat.h:22:9: note: previous definition is here
+   3263    22 | #define __pure __attribute__((pure))
+   3264       |         ^
+   3265 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+   3266   130 |         le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+   3267       |                             ^~~~~~~~~~~
+   3268 In file included from <built-in>:1:
+   3269 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+
+--- build log lines 3441-3448 ---
+   3441       |                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   3442  1374 |                                         BIT_MDIO_WFLAG_V1);
+   3443       |                                         ~~~~~~~~~~~~~~~~~~
+   3444 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1381:7: warning: variable 'wflag' may be uninitialized when used here [-Wconditional-uninitialized]
+   3445  1381 |         WARN(wflag, "failedIn file included from <built-in>:1:
+   3446 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/rtw88_compat.h:35:
+   3447 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/linux/bitops.h:53:12: /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822b.c:178:57: warning: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   3448    53 |     return __built to write to MDIO register, addr=0x%02         0x00000000  /* not interruptible      */
+
+--- build log lines 4053-4060 ---
+   4053       |         ~~~~~~ ^~~~~~
+   4054 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2196:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+   4055  2196 |                 set_biIn file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822c.c:9:
+   4056 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+   4057   125 |         le32p_replac:2198:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+   4058  2198 |         returrtwdev->hci.ops->fn mac_id;
+   4059       |         ~~~~~~ ^~~~~~
+   4060 e_bitt(mac_id,s(&tx/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2196:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+
+--- build log lines 4062-4069 ---
+   4062       |                 ~~~~~~~ ^~~~~~
+   4063 SC_W7_TXDESC_CHECKSUM);
+   4064       |                             ^~~~~~~~~~~
+   4065 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+   4066   130 |         le32p_replace_bits(&tx_desc->w7, __le16_to_cpu(chksum),
+   4067       |                             ^~~~~~~~~~~
+   4068 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822be.c:7:
+   4069 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:157:18: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+
+--- build log lines 4838-4845 ---
+   4838       |         ^
+   4839  warning: 'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+   4840   143 | #define THREAD_UNINT                    0x00000000  /* not interruptible   In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:9:
+   4841 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+   4842   125 |         le32p_replace_bits(&tx_d   */
+   4843       |         ^
+   4844 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/iokit_shim.h:39:9: note: previous definition is here
+   4845 oesc->w7, 0, RTW_TX_DESC_W7_TXDESC_CHECKSUM);
+
+--- build log lines 5463-5470 ---
+   5463   WCL-ABI CXX  RTW88WCLSkywalkRxAdapter.cpp (24H32, pool-backed RX conversion; compile-only)
+   5464 xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp -o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+   5465 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:5:
+   5466 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:453:15: warning: offset of on non-standard-layout type 'IOSkywalkEthernetInterface' [-Winvalid-offsetof]
+   5467   453 | static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
+   5468       |               ^                                      ~~~~~~~~~~~~~~~
+   5469 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/sys/_types.h:82:33: note: expanded from macro '__offsetof'
+   5470    82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+
+--- build log lines 5516-5523 ---
+   5516       |                          ~ ~~~~~~~~~~~^~~
+   5517 iIn file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:9:
+   5518 In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:9:
+   5519 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:453:15: warning: offset of on non-standard-layout type 'IOSkywalkEthernetInterface' [-Winvalid-offsetof]
+   5520   453 | static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
+   5521       |               ^                                      ~~~~~~~~~~~~~~~
+   5522 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/sys/_types.h:82:33: note: expanded from macro '__offsetof'
+   5523    82 | #define __over) \
+
+--- Source immutability check ---
+before=files=4 sha256=81fe58cd50e1f7e274a37a4f442bb2b4c5eed66afb1cceeeb2d1e94ab9a600c7
+after=files=4 sha256=81fe58cd50e1f7e274a37a4f442bb2b4c5eed66afb1cceeeb2d1e94ab9a600c7
+SOURCE_FILES_MODIFIED=NO
+
+--- Findings policy ---
+WARNING_REMEDIATION=NOT_APPLIED
+REBUILD=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+CODESIGN=NOT_RUN
+OPENCORE_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+NEXT_GATE=review exact control flow, then prepare minimal guarded patch only for confirmed defects
+========== END STAGE 35S ==========

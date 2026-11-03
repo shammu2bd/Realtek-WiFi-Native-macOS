@@ -1,0 +1,83 @@
+========== STAGE 52 IOKIT PERSONALITY / PROVIDER CONTRACT AUDIT ==========
+VERSION=STAGE52_V1_20261102
+RUN=run-20261102-125515-55388073f143
+TARGET=15.8.1/24H32/x86_64
+SOURCE_ROOT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+PREDECESSOR=Stage51 run-20261102-125002-c08308fb6081
+SCOPE=IOKit Info.plist personality keys; RTW88 class/metaclass declarations; IO80211 protocol inheritance; provider init and controller linkage; interface factory/publication references
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+
+FILE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+EXPECTED_SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+ACTUAL_SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+RESULT=MATCH
+FILE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp
+EXPECTED_SHA256=63a6a038ef7513312c686199b00e8cf45a16d251c7792ab03d2f5986f9fd84fb
+ACTUAL_SHA256=63a6a038ef7513312c686199b00e8cf45a16d251c7792ab03d2f5986f9fd84fb
+RESULT=MATCH
+FILE=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+EXPECTED_SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4
+ACTUAL_SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4
+RESULT=MATCH
+STAGE43_SOURCE_CONTINUITY=PASS
+
+STAGE52_IOKIT_PERSONALITY_PROVIDER_CONTRACT_AUDIT
+TARGET=macOS 15.8.1 / 24H32 / x86_64
+SOURCE_FILES_SCANNED=91
+METHOD_BODIES_EXTRACTED=9
+METHOD_BODIES_REQUESTED=9
+INFO_PLIST_FILES_FOUND=4
+PARSED_PERSONALITY_ENTRIES=8
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+SIP_NVRAM_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+
+STAGE52_PROVIDER_AND_PERSONALITY_MATRIX
+PRESENT means a direct token/reference appears in the extracted method body or parsed plist entry.
+A missing source edge does not prove the Apple framework has no internal factory path.
+infra provider-init calls IO80211SkywalkInterface::init(provider,address): PRESENT
+infra provider-init casts provider to RTW88WCLController: PRESENT
+infra attachRadio obtains provider controller workloop: PRESENT
+infra attachRadio attaches radio and work queue to bridge: PRESENT
+infra getController returns stored provider controller: PRESENT
+infra start returns false: PRESENT
+controller start creates infra-interface object: ABSENT
+controller start sets primary Skywalk interface: ABSENT
+controller start prepares or starts infra protocol: ABSENT
+controller free retains resources on cleanup failure: PRESENT
+PLIST_PERSONALITY: file=RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8822BE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8822CE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8821CE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=RTL88WiFiNative.kext/Contents/Info.plist name=RTL88WiFiNative_8821CE IOClass='RTW88WCLController' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=build/out/RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8822BE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=build/out/RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8822CE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=build/out/RTL88WiFi.kext/Contents/Info.plist name=RTL88WiFi_8821CE IOClass='RTL88WiFi' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+PLIST_PERSONALITY: file=build/out/RTL88WiFiNative.kext/Contents/Info.plist name=RTL88WiFiNative_8821CE IOClass='RTW88WCLController' IOProviderClass='IOPCIDevice' IOMatchCategory='IODefaultMatchCategory'
+METHODS_EXTRACTED=9
+METHODS_REQUESTED=9
+
+METHOD_BODIES=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage52/run-20261102-125515-55388073f143/method-bodies.txt
+CLASS_METACLASS_INDEX=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage52/run-20261102-125515-55388073f143/class-and-metaclass-index.txt
+SOURCE_REFERENCE_INDEX=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage52/run-20261102-125515-55388073f143/reference-index.txt
+PERSONALITY_REPORT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage52/run-20261102-125515-55388073f143/personality-report.txt
+METADATA_REFERENCE=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage52/run-20261102-125515-55388073f143/metadata-reference.txt
+
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+SIP_NVRAM_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+SYSTEM_FILES_MODIFIED=NO
+========== END STAGE 52 ==========

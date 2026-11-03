@@ -1,0 +1,5095 @@
+========== STAGE 35O v2: NATIVE REACHABILITY / SPECIAL TX / COMPLETION DRAIN AUDIT ==========
+script_version=STAGE35O_V2_20261102
+timestamp_utc=2026-11-02T01:01:53Z
+host=DESKTOP-65R32QP.localdomain
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+mode=read-only source inventory / cross-tree call-reference / dispatch audit
+
+--- Source inventory and fingerprints ---
+SOURCE_FILES_SCANNED=143
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.c bytes=67099 sha256=52c04c30f7a8c0f270e9203b93927e36aa82251301f021817ae5fb021b95afe1
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c bytes=25473 sha256=c72a38098dddf4f4ae447bb60cd0c2a6842df250714bd58fa8be0aa0471bebcc
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c bytes=68023 sha256=fa28844e52fa8a3915abc349f06cb34071de5507582a51ab607e605f4102fdaa
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c bytes=52798 sha256=609dd80f41c66364e71762708bee25886c44d66dec3dc9bee39fe15500aebf83
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c bytes=21780 sha256=508c239d2eb89902cae4d931bc7fd22097d14737839b9d3bb0b3a00343006bde
+SOURCE path=src/compat/rtw88_compat.c bytes=61127 sha256=c2f72e5d077f87ae3878d8afb1f582076e2068b84566216495c74730a978f490
+SOURCE path=src/compat/linux/skbuff.h bytes=9275 sha256=58b5304797d2d1996766072e1deb6f820ecf249547a291f4c167d285373aea67
+SOURCE path=src/compat/linux/skbuff_tx_completion.h bytes=3229 sha256=4a52b0ca7c2d89a844bd3b110f8132c40264d5cd4c0336a6662fb70de6e4a154
+SOURCE path=src/kext/RTW88HwOps.cpp bytes=4321 sha256=3984d76592346bf3e9050195045a69f37328ccedc3b957ee23bc51ed22fae3d1
+SOURCE path=src/kext/RTW88IEEE80211.cpp bytes=213719 sha256=5e7994b25a47d8748a096c68324fd80f859f460d489e7902baf2959046b14110
+SOURCE path=src/kext/RTW88IEEE80211.hpp bytes=26628 sha256=1c1b768a862e0b5dcc525c90c0daeeb3b5cd2f6d9c76885714f11cc53c5dbc34
+SOURCE path=src/kext/wcl24h32/RTW88WCL24H32ABI.hpp bytes=8089 sha256=a312895412fc504602189683a6a32ba013f5bafdc9bd8482da14734f4e55212a
+SOURCE path=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp bytes=48740 sha256=de41fcbd0bb9b8b6a165df0f8e2484b49d2751e32ba821211d753c081ea57e87
+SOURCE path=src/kext/wcl24h32/RTW88WCLController.cpp bytes=20358 sha256=2c67658a50b40ec65cc400fbc7f13295d054e95a039aaf7060a65457c6087059
+SOURCE path=src/kext/wcl24h32/RTW88WCLController.hpp bytes=5330 sha256=740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee
+SOURCE path=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp bytes=28857 sha256=20f8fcf3be99c797a28df29612a765a1b6d362dbc032e6045a7113d7f2ec82e1
+SOURCE path=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp bytes=17853 sha256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4
+SOURCE path=src/kext/wcl24h32/RTW88WCLMbufRing.hpp bytes=5328 sha256=4138f41066f66ecef67b2bf989bcd2297c54dceb420b9c4eb809bdd1453f86c7
+SOURCE path=src/kext/wcl24h32/RTW88WCLPCIBackend.cpp bytes=16613 sha256=2253d451b3242035510d21c317782a8e9f24ef46bd154b2ad842c713c296e9a4
+SOURCE path=src/kext/wcl24h32/RTW88WCLPCIBackend.hpp bytes=3737 sha256=67e9ac69e2177754d617633f5f44274c5bfd6a7c8e1f27d85ade26e38da91c90
+SOURCE path=src/kext/wcl24h32/RTW88WCLPacketSpanValidation.hpp bytes=2176 sha256=06c63ea6dbad3f33a99477c4b4ede09f7c6520fad7437e398b77e75562f06347
+SOURCE path=src/kext/wcl24h32/RTW88WCLPacketView.hpp bytes=2843 sha256=e8e205f65c1a764ca65f9f8cd25e1306ad780b7400f7672d4bc9b344998acbad
+SOURCE path=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp bytes=3924 sha256=c9fcc397927c0c0dbb8b034f264b34d13eb5fd77db5470e105ab068ebc89082d
+SOURCE path=src/kext/wcl24h32/RTW88WCLRequestDecoder.hpp bytes=5110 sha256=6f473988ab5c918ebc40ec3b731bf49e01cd6408e65894200031792a14f0c9b2
+SOURCE path=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp bytes=6846 sha256=9ee96d066731bad2844daaae2a117b77fc6b140de7601f1fe4797256a33014fd
+SOURCE path=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp bytes=2724 sha256=78af90d3d96c84afa83ae5aa04604d0d442f3055cbf505f2144bcaa197c213d0
+SOURCE path=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp bytes=8199 sha256=e1a66ffeaba3d71f4c4ef4ca5d0068de146a11cd8d98ea825920b45ce5079b7d
+SOURCE path=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp bytes=2320 sha256=8a6474d76c9ac4b4b094266100242f55a4f6d6e62061012aa399254cbaaba512
+SOURCE path=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp bytes=5317 sha256=6d97498a2a4a581be48607cab7de7c53bcc98c62c27a8c440ddfdcd0cac1e9da
+SOURCE path=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp bytes=2030 sha256=6fc48d17bd8def41f971cb195be3a239568cc0ca1ec2fe2fdc09851d5243ef62
+SOURCE path=src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp bytes=4323 sha256=af7a498d3b5d2e4855609533bd7b823e40a5ef6c83e27c76abfe2e497f7c8f7f
+
+--- All WCL/native component files ---
+WCL_SOURCE_FILES=20
+WCL_FILE=src/kext/wcl24h32/RTW88WCL24H32ABI.hpp bytes=8089
+WCL_FILE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp bytes=48740
+WCL_FILE=src/kext/wcl24h32/RTW88WCLController.cpp bytes=20358
+WCL_FILE=src/kext/wcl24h32/RTW88WCLController.hpp bytes=5330
+WCL_FILE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp bytes=28857
+WCL_FILE=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp bytes=17853
+WCL_FILE=src/kext/wcl24h32/RTW88WCLMbufRing.hpp bytes=5328
+WCL_FILE=src/kext/wcl24h32/RTW88WCLPCIBackend.cpp bytes=16613
+WCL_FILE=src/kext/wcl24h32/RTW88WCLPCIBackend.hpp bytes=3737
+WCL_FILE=src/kext/wcl24h32/RTW88WCLPacketSpanValidation.hpp bytes=2176
+WCL_FILE=src/kext/wcl24h32/RTW88WCLPacketView.hpp bytes=2843
+WCL_FILE=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp bytes=3924
+WCL_FILE=src/kext/wcl24h32/RTW88WCLRequestDecoder.hpp bytes=5110
+WCL_FILE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp bytes=6846
+WCL_FILE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp bytes=2724
+WCL_FILE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp bytes=8199
+WCL_FILE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp bytes=2320
+WCL_FILE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp bytes=5317
+WCL_FILE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp bytes=2030
+WCL_FILE=src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp bytes=4323
+
+--- Build target and source membership hints ---
+
+--- Native controller and PCI backend lifecycle definitions/references ---
+
+=== Native/probe lifecycle call sites | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c ===
+MATCH_LINES=2 CONTEXT_WINDOWS=1
+
+[lines 49-94]
+   49 	else
+   50 		queue_work(rtwdev->tx_wq, &rtwdev->tx_work);
+   51 }
+   52 
+   53 static int rtw_ops_start(struct ieee80211_hw *hw)
+   54 {
+   55 	struct rtw_dev *rtwdev = hw->priv;
+   56 	int ret;
+   57 
+   58 	mutex_lock(&rtwdev->mutex);
+   59 	ret = rtw_core_start(rtwdev);
+   60 	mutex_unlock(&rtwdev->mutex);
+   61 
+   62 	return ret;
+   63 }
+   64 
+   65 static void rtw_ops_stop(struct ieee80211_hw *hw, bool suspend)
+   66 {
+   67 	struct rtw_dev *rtwdev = hw->priv;
+   68 
+   69 	mutex_lock(&rtwdev->mutex);
+   70 	rtw_core_stop(rtwdev);
+   71 	mutex_unlock(&rtwdev->mutex);
+   72 }
+   73 
+   74 static int rtw_ops_config(struct ieee80211_hw *hw, int radio_idx, u32 changed)
+   75 {
+   76 	struct rtw_dev *rtwdev = hw->priv;
+   77 	int ret = 0;
+   78 
+   79 	/* let previous ips work finish to ensure we don't leave ips twice */
+   80 	cancel_work_sync(&rtwdev->ips_work);
+   81 
+   82 	mutex_lock(&rtwdev->mutex);
+   83 
+   84 	rtw_leave_lps_deep(rtwdev);
+   85 
+   86 	if ((changed & IEEE80211_CONF_CHANGE_IDLE) &&
+   87 	    !(hw->conf.flags & IEEE80211_CONF_IDLE)) {
+   88 		ret = rtw_leave_ips(rtwdev);
+   89 		if (ret) {
+   90 			rtw_err(rtwdev, "failed to leave idle state\n");
+   91 			goto out;
+   92 		}
+   93 	}
+   94 
+
+=== Native/probe lifecycle call sites | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c ===
+MATCH_LINES=4 CONTEXT_WINDOWS=4
+
+[lines 1517-1551]
+ 1517 	ether_addr_copy(rtwvif->mac_addr, vif->addr);
+ 1518 	config |= PORT_SET_MAC_ADDR;
+ 1519 	rtw_vif_port_config(rtwdev, rtwvif, config);
+ 1520 
+ 1521 	rtw_coex_scan_notify(rtwdev, COEX_SCAN_FINISH);
+ 1522 
+ 1523 	if (hw_scan && (rtwdev->hw->conf.flags & IEEE80211_CONF_IDLE))
+ 1524 		ieee80211_queue_work(rtwdev->hw, &rtwdev->ips_work);
+ 1525 }
+ 1526 
+ 1527 int rtw_core_start(struct rtw_dev *rtwdev)
+ 1528 {
+ 1529 	int ret;
+ 1530 
+ 1531 	ret = rtwdev->chip->ops->power_on(rtwdev);
+ 1532 	if (ret)
+ 1533 		return ret;
+ 1534 
+ 1535 	rtw_sec_enable_sec_engine(rtwdev);
+ 1536 
+ 1537 	rtwdev->lps_conf.deep_mode = rtw_update_lps_deep_mode(rtwdev, &rtwdev->fw);
+ 1538 	rtwdev->lps_conf.wow_deep_mode = rtw_update_lps_deep_mode(rtwdev, &rtwdev->wow_fw);
+ 1539 
+ 1540 	/* rcr reset after powered on */
+ 1541 	rtw_write32(rtwdev, REG_RCR, rtwdev->hal.rcr);
+ 1542 
+ 1543 	/* IO80211's power-save selector is not mac80211 cfg.ps. Until that
+ 1544 	 * translation is complete, keep firmware LPS/deep-LPS and Linux dynamic
+ 1545 	 * watchdog transitions out of the live macOS datapath. */
+ 1546 	rtwdev->ps_enabled = false;
+ 1547 	clear_bit(RTW_FLAG_LEISURE_PS, rtwdev->flags);
+ 1548 	clear_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags);
+ 1549 	if (!rtw88_disable_watchdog_work)
+ 1550 		ieee80211_queue_delayed_work(rtwdev->hw, &rtwdev->watch_dog_work,
+ 1551 				     RTW_WATCH_DOG_DELAY_TIME);
+
+[lines 1556-1590]
+ 1556 }
+ 1557 
+ 1558 void rtw_power_off(struct rtw_dev *rtwdev)
+ 1559 {
+ 1560 	rtw_hci_stop(rtwdev);
+ 1561 	rtw_coex_power_off_setting(rtwdev);
+ 1562 	rtw_mac_power_off(rtwdev);
+ 1563 }
+ 1564 EXPORT_SYMBOL(rtw_power_off);
+ 1565 
+ 1566 void rtw_core_stop(struct rtw_dev *rtwdev)
+ 1567 {
+ 1568 	struct rtw_coex *coex = &rtwdev->coex;
+ 1569 
+ 1570 	clear_bit(RTW_FLAG_RUNNING, rtwdev->flags);
+ 1571 	clear_bit(RTW_FLAG_FW_RUNNING, rtwdev->flags);
+ 1572 
+ 1573 	mutex_unlock(&rtwdev->mutex);
+ 1574 
+ 1575 	cancel_work_sync(&rtwdev->c2h_work);
+ 1576 	cancel_work_sync(&rtwdev->update_beacon_work);
+ 1577 	cancel_delayed_work_sync(&rtwdev->watch_dog_work);
+ 1578 	cancel_delayed_work_sync(&coex->bt_relink_work);
+ 1579 	cancel_delayed_work_sync(&coex->bt_reenable_work);
+ 1580 	cancel_delayed_work_sync(&coex->defreeze_work);
+ 1581 	cancel_delayed_work_sync(&coex->wl_remain_work);
+ 1582 	cancel_delayed_work_sync(&coex->bt_remain_work);
+ 1583 	cancel_delayed_work_sync(&coex->wl_connecting_work);
+ 1584 	cancel_delayed_work_sync(&coex->bt_multi_link_remain_work);
+ 1585 	cancel_delayed_work_sync(&coex->wl_ccklock_work);
+ 1586 
+ 1587 	mutex_lock(&rtwdev->mutex);
+ 1588 
+ 1589 	rtwdev->chip->ops->power_off(rtwdev);
+ 1590 }
+
+[lines 2141-2175]
+ 2141 
+ 2142 	ewma_tp_init(&stats->tx_ewma_tp);
+ 2143 	ewma_tp_init(&stats->rx_ewma_tp);
+ 2144 
+ 2145 	for (i = 0; i < RTW_EVM_NUM; i++)
+ 2146 		ewma_evm_init(&dm_info->ewma_evm[i]);
+ 2147 	for (i = 0; i < RTW_SNR_NUM; i++)
+ 2148 		ewma_snr_init(&dm_info->ewma_snr[i]);
+ 2149 }
+ 2150 
+ 2151 int rtw_core_init(struct rtw_dev *rtwdev)
+ 2152 {
+ 2153 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 2154 	struct rtw_coex *coex = &rtwdev->coex;
+ 2155 	int ret;
+ 2156 
+ 2157 	INIT_LIST_HEAD(&rtwdev->rsvd_page_list);
+ 2158 	INIT_LIST_HEAD(&rtwdev->txqs);
+ 2159 
+ 2160 	timer_setup(&rtwdev->tx_report.purge_timer,
+ 2161 		    rtw_tx_report_purge_timer, 0);
+ 2162 	rtwdev->tx_wq = alloc_workqueue("rtw_tx_wq", WQ_UNBOUND | WQ_HIGHPRI, 0);
+ 2163 	if (!rtwdev->tx_wq) {
+ 2164 		rtw_warn(rtwdev, "alloc_workqueue rtw_tx_wq failed\n");
+ 2165 		return -ENOMEM;
+ 2166 	}
+ 2167 
+ 2168 	INIT_DELAYED_WORK(&rtwdev->watch_dog_work, rtw_watch_dog_work);
+ 2169 	INIT_DELAYED_WORK(&coex->bt_relink_work, rtw_coex_bt_relink_work);
+ 2170 	INIT_DELAYED_WORK(&coex->bt_reenable_work, rtw_coex_bt_reenable_work);
+ 2171 	INIT_DELAYED_WORK(&coex->defreeze_work, rtw_coex_defreeze_work);
+ 2172 	INIT_DELAYED_WORK(&coex->wl_remain_work, rtw_coex_wl_remain_work);
+ 2173 	INIT_DELAYED_WORK(&coex->bt_remain_work, rtw_coex_bt_remain_work);
+ 2174 	INIT_DELAYED_WORK(&coex->wl_connecting_work, rtw_coex_wl_connecting_work);
+ 2175 	INIT_DELAYED_WORK(&coex->bt_multi_link_remain_work,
+
+[lines 2224-2258]
+ 2224 	}
+ 2225 
+ 2226 	return 0;
+ 2227 
+ 2228 out:
+ 2229 	destroy_workqueue(rtwdev->tx_wq);
+ 2230 	return ret;
+ 2231 }
+ 2232 EXPORT_SYMBOL(rtw_core_init);
+ 2233 
+ 2234 void rtw_core_deinit(struct rtw_dev *rtwdev)
+ 2235 {
+ 2236 	struct rtw_fw_state *fw = &rtwdev->fw;
+ 2237 	struct rtw_fw_state *wow_fw = &rtwdev->wow_fw;
+ 2238 	struct rtw_rsvd_page *rsvd_pkt, *tmp;
+ 2239 	unsigned long flags;
+ 2240 
+ 2241 	rtw_wait_firmware_completion(rtwdev);
+ 2242 
+ 2243 	if (fw->firmware)
+ 2244 		release_firmware(fw->firmware);
+ 2245 
+ 2246 	if (wow_fw->firmware)
+ 2247 		release_firmware(wow_fw->firmware);
+ 2248 
+ 2249 	destroy_workqueue(rtwdev->tx_wq);
+ 2250 	timer_delete_sync(&rtwdev->tx_report.purge_timer);
+ 2251 	spin_lock_irqsave(&rtwdev->tx_report.q_lock, flags);
+ 2252 	skb_queue_purge(&rtwdev->tx_report.queue);
+ 2253 	spin_unlock_irqrestore(&rtwdev->tx_report.q_lock, flags);
+ 2254 	skb_queue_purge(&rtwdev->coex.queue);
+ 2255 	skb_queue_purge(&rtwdev->c2h_queue);
+ 2256 
+ 2257 	list_for_each_entry_safe(rsvd_pkt, tmp, &rtwdev->rsvd_page_list,
+ 2258 				 build_list) {
+
+=== Native/probe lifecycle call sites | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c ===
+MATCH_LINES=5 CONTEXT_WINDOWS=2
+
+[lines 1819-1880]
+ 1819 	netif_device_attach(netdev);
+ 1820 }
+ 1821 
+ 1822 const struct pci_error_handlers rtw_pci_err_handler = {
+ 1823 	.error_detected = rtw_pci_io_err_detected,
+ 1824 	.slot_reset = rtw_pci_io_slot_reset,
+ 1825 	.resume = rtw_pci_io_resume,
+ 1826 };
+ 1827 EXPORT_SYMBOL(rtw_pci_err_handler);
+ 1828 
+ 1829 int rtw_pci_probe(struct pci_dev *pdev,
+ 1830 		  const struct pci_device_id *id)
+ 1831 {
+ 1832 	struct pci_dev *bridge = pci_upstream_bridge(pdev);
+ 1833 	struct ieee80211_hw *hw;
+ 1834 	struct rtw_dev *rtwdev;
+ 1835 	struct rtw_pci *rtwpci;
+ 1836 	int drv_data_size;
+ 1837 	int ret;
+ 1838 
+ 1839 	drv_data_size = sizeof(struct rtw_dev) + sizeof(struct rtw_pci);
+ 1840 	hw = ieee80211_alloc_hw(drv_data_size, &rtw_ops);
+ 1841 	if (!hw) {
+ 1842 		dev_err(&pdev->dev, "failed to allocate hw\n");
+ 1843 		return -ENOMEM;
+ 1844 	}
+ 1845 
+ 1846 	rtwdev = hw->priv;
+ 1847 	rtwdev->hw = hw;
+ 1848 	rtwdev->dev = &pdev->dev;
+ 1849 	rtwdev->chip = (struct rtw_chip_info *)id->driver_data;
+ 1850 	rtwdev->hci.ops = &rtw_pci_ops;
+ 1851 	rtwdev->hci.type = RTW_HCI_TYPE_PCIE;
+ 1852 
+ 1853 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 1854 	atomic_set(&rtwpci->link_usage, 1);
+ 1855 
+ 1856 	ret = rtw_core_init(rtwdev);
+ 1857 	if (ret)
+ 1858 		goto err_release_hw;
+ 1859 
+ 1860 	rtw_dbg(rtwdev, RTW_DBG_PCI,
+ 1861 		"rtw88 pci probe: vendor=0x%4.04X device=0x%4.04X rev=%d\n",
+ 1862 		pdev->vendor, pdev->device, pdev->revision);
+ 1863 
+ 1864 	ret = rtw_pci_claim(rtwdev, pdev);
+ 1865 	if (ret) {
+ 1866 		rtw_err(rtwdev, "failed to claim pci device\n");
+ 1867 		goto err_deinit_core;
+ 1868 	}
+ 1869 
+ 1870 	ret = rtw_pci_setup_resource(rtwdev, pdev);
+ 1871 	if (ret) {
+ 1872 		rtw_err(rtwdev, "failed to setup pci resources\n");
+ 1873 		goto err_pci_declaim;
+ 1874 	}
+ 1875 
+ 1876 	ret = rtw_pci_napi_init(rtwdev);
+ 1877 	if (ret) {
+ 1878 		rtw_err(rtwdev, "failed to setup NAPI\n");
+ 1879 		goto err_pci_declaim;
+ 1880 	}
+
+[lines 1907-1969]
+ 1907 	return 0;
+ 1908 
+ 1909 err_destroy_pci:
+ 1910 	rtw_pci_napi_deinit(rtwdev);
+ 1911 	rtw_pci_destroy(rtwdev, pdev);
+ 1912 
+ 1913 err_pci_declaim:
+ 1914 	rtw_pci_declaim(rtwdev, pdev);
+ 1915 
+ 1916 err_deinit_core:
+ 1917 	rtw_core_deinit(rtwdev);
+ 1918 
+ 1919 err_release_hw:
+ 1920 	pci_set_drvdata(pdev, NULL);
+ 1921 	ieee80211_free_hw(hw);
+ 1922 
+ 1923 	return ret;
+ 1924 }
+ 1925 EXPORT_SYMBOL(rtw_pci_probe);
+ 1926 
+ 1927 void rtw_pci_remove(struct pci_dev *pdev)
+ 1928 {
+ 1929 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+ 1930 	struct rtw_dev *rtwdev;
+ 1931 	struct rtw_pci *rtwpci;
+ 1932 
+ 1933 	if (!hw)
+ 1934 		return;
+ 1935 
+ 1936 	rtwdev = hw->priv;
+ 1937 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 1938 
+ 1939 	rtw_unregister_hw(rtwdev, hw);
+ 1940 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+ 1941 	rtw_pci_free_irq(rtwdev, pdev);
+ 1942 	rtw_pci_napi_deinit(rtwdev);
+ 1943 	rtw_pci_destroy(rtwdev, pdev);
+ 1944 	rtw_pci_declaim(rtwdev, pdev);
+ 1945 	rtw_core_deinit(rtwdev);
+ 1946 	ieee80211_free_hw(hw);
+ 1947 	pci_set_drvdata(pdev, NULL);
+ 1948 }
+ 1949 EXPORT_SYMBOL(rtw_pci_remove);
+ 1950 
+ 1951 void rtw_pci_shutdown(struct pci_dev *pdev)
+ 1952 {
+ 1953 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+ 1954 	struct rtw_dev *rtwdev;
+ 1955 	const struct rtw_chip_info *chip;
+ 1956 
+ 1957 	if (!hw)
+ 1958 		return;
+ 1959 
+ 1960 	rtwdev = hw->priv;
+ 1961 	chip = rtwdev->chip;
+ 1962 
+ 1963 	if (chip->ops->shutdown)
+ 1964 		chip->ops->shutdown(rtwdev);
+ 1965 
+ 1966 	pci_set_power_state(pdev, PCI_D3hot);
+ 1967 }
+ 1968 EXPORT_SYMBOL(rtw_pci_shutdown);
+ 1969 
+
+=== Native/probe lifecycle call sites | src/kext/RTL88WiFi.cpp ===
+MATCH_LINES=12 CONTEXT_WINDOWS=3
+
+[lines 170-205]
+  170     case 0xC822:
+  171     case 0xC82F: return "RTL8822CE";
+  172     case 0xC821:
+  173     case 0xB821: return "RTL8821CE";
+  174     default: return "Realtek Wireless";
+  175     }
+  176 }
+  177 
+  178 extern "C" void rtw88_airport_tx_resume_trampoline(void)
+  179 {
+  180     if (g_pci_dev_instance)
+  181         g_pci_dev_instance->resumeTxIfStalled();
+  182 }
+  183 
+  184 OSDefineMetaClassAndStructors(RTL88WiFi, IO80211Controller)
+  185 
+  186 bool RTL88WiFi::init(OSDictionary *props)
+  187 {
+  188     return super::init(props);
+  189 }
+  190 
+  191 /* Match the reference IO80211 driver's IO80211Controller lifecycle.  IONetworkController::
+  192  * start() calls this virtual before RTL88WiFi::start() continues; using an
+  193  * IO80211WorkLoop keeps controller IOCTL/VIF callbacks, our interrupt source
+  194  * and RX injection on the same controller-owned workloop. */
+  195 bool RTL88WiFi::createWorkLoop()
+  196 {
+  197     if (_workLoop)
+  198         return true;
+  199     _workLoop = IO80211WorkLoop::workLoop();
+  200     IOLog("RTL88WiFi: createWorkLoop IO80211WorkLoop=%p\n", _workLoop);
+  201     return _workLoop != nullptr;
+  202 }
+  203 
+  204 IOWorkLoop *RTL88WiFi::getWorkLoop() const
+  205 {
+
+[lines 240-309]
+  240     _mmioMap = _pciDev->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress2);
+  241     if (!_mmioMap) {
+  242         return failStart(provider, "failed to map BAR2");
+  243     }
+  244     _mmioBase = (volatile void *)_mmioMap->getVirtualAddress();
+  245     IOLog("RTL88WiFi: BAR2 mapped at %p, size 0x%llx\n",
+  246           (void *)_mmioBase, (unsigned long long)_mmioMap->getLength());
+  247 
+  248     /* Instalar callbacks compartidos de compat (mismos que usa RTW88PCIDevice,
+  249      * ahora apuntando a esta instancia via el puntero generico RTW88HwOps*) */
+  250     g_pci_dev_instance = this;
+  251     rtw88_pci_io_ops    = &_pci_io_ops;
+  252     rtw88_dma_ops       = &_dma_ops;
+  253 
+  254     if (rtw88_compat_init() != 0)
+  255         return failStart(provider, "compat initialization failed");
+  256     _compatInitialized = true;
+  257 
+  258     _compatPciDev = (struct pci_dev *)IOMallocZero(sizeof(struct pci_dev));
+  259     if (!_compatPciDev)
+  260         return failStart(provider, "failed to allocate compat PCI device");
+  261 
+  262     _compatPciDev->vendor  = _pciDev->configRead16(0x00);
+  263     _compatPciDev->device  = _pciDev->configRead16(0x02);
+  264     _compatPciDev->kext_dev = this;
+  265     _compatPciDev->resource[2]     = (resource_size_t)_mmioBase;
+  266     _compatPciDev->resource_len[2] = (resource_size_t)_mmioMap->getLength();
+  267 
+  268     IOLog("RTL88WiFi: PCI device %04x:%04x\n",
+  269           _compatPciDev->vendor, _compatPciDev->device);
+  270 
+  271     /* super::start() has already called our createWorkLoop().  The reference IO80211 driver
+  272      * relies on that controller-owned IO80211WorkLoop; do not create a second
+  273      * parallel loop here. */
+  274     if (!_workLoop)
+  275         return failStart(provider, "IO80211 workloop unavailable after super::start");
+  276 
+  277     if (!setupInterrupt()) {
+  278         return failStart(provider, "failed to set up interrupt");
+  279     }
+  280 
+  281     rtw88_find_fw_dir();
+  282 
+  283     /* Crear la maquina de estados 802.11 -- AHORA con el pci_dev real,
+  284      * en vez de nullptr como antes */
+  285     _ieee80211 = RTW88IEEE80211::createAirport(this, _compatPciDev);
+  286     if (!_ieee80211) {
+  287         return failStart(provider, "failed to create IEEE80211 state machine");
+  288     }
+  289     _ieee80211->setEventDelegate(this);
+  290     _ieee80211->setRxDelegate(this);
+  291 
+  292     /* 1.0.2 AWDL radio policy: read from the matched IOKit personality, so no
+  293      * new kernel symbol (boot-arg parsing) is needed.  Absent or false means
+  294      * the AWDL interface exists but never takes the radio off the AP channel. */
+  295     {
+  296         OSBoolean *awdlRadio = OSDynamicCast(OSBoolean, getProperty("RTL88WiFiAWDLRadio"));
+  297         const bool allowAWDL = awdlRadio && awdlRadio->isTrue();
+  298         _ieee80211->setAWDLRadioAllowed(allowAWDL);
+  299         setProperty("AWDL_RADIO_POLICY", allowAWDL ? "enabled" : "disabled");
+  300         IOLog("RTL88WiFi: AWDL radio policy: %s\n", allowAWDL ? "enabled (experimental)" : "disabled (stable default)");
+  301 
+  302         /* 1.0.4 band policy: default on; RTL88WiFiPrefer5GHz=false in the
+  303          * personality honours the BSSID macOS asks for exactly. */
+  304         OSBoolean *p5 = OSDynamicCast(OSBoolean, getProperty("RTL88WiFiPrefer5GHz"));
+  305         const bool prefer5 = p5 ? p5->isTrue() : true;
+  306         _ieee80211->setPrefer5GHzUpgrade(prefer5);
+  307         setProperty("PREFER_5GHZ_POLICY", prefer5 ? "enabled" : "disabled");
+  308     }
+  309 
+
+[lines 755-816]
+  755             detachInterface(_netif, true);
+  756         _netifAttached = false;
+  757         _netif->release();
+  758         _netif = nullptr;
+  759     }
+  760 
+  761     drainPendingFree();
+  762     releaseDMAEntries();
+  763 
+  764     if (_compatInitialized) {
+  765         rtw88_compat_exit();
+  766         _compatInitialized = false;
+  767     }
+  768 
+  769     if (_intrSrc) {
+  770         if (_workLoop)
+  771             _workLoop->removeEventSource(_intrSrc);
+  772         _intrSrc->release();
+  773         _intrSrc = nullptr;
+  774     }
+  775     if (_workLoop) {
+  776         _workLoop->release();
+  777         _workLoop = nullptr;
+  778     }
+  779     if (_compatPciDev) {
+  780         IOFree(_compatPciDev, sizeof(*_compatPciDev));
+  781         _compatPciDev = nullptr;
+  782     }
+  783     if (_mmioMap) {
+  784         _mmioMap->release();
+  785         _mmioMap = nullptr;
+  786         _mmioBase = nullptr;
+  787     }
+  788 
+  789     if (g_pci_dev_instance == this) {
+  790         g_pci_dev_instance = nullptr;
+  791         rtw88_pci_io_ops = nullptr;
+  792         rtw88_dma_ops = nullptr;
+  793     }
+  794 
+  795     if (_pciDev) {
+  796         _pciDev->setBusMasterEnable(false);
+  797         _pciDev->release();
+  798         _pciDev = nullptr;
+  799     }
+  800 
+  801     if (_pendingFreeLock) {
+  802         IOSimpleLockFree(_pendingFreeLock);
+  803         _pendingFreeLock = nullptr;
+  804     }
+  805     if (_dmaLock) {
+  806         IOSimpleLockFree(_dmaLock);
+  807         _dmaLock = nullptr;
+  808     }
+  809 }
+  810 
+  811 IOReturn RTL88WiFi::registerWithPolicyMaker(IOService *policyMaker)
+  812 {
+  813     if (!policyMaker)
+  814         return kIOReturnBadArgument;
+  815 
+  816     _pmPowerState = kRTW88PowerStateOn;
+
+=== Native/probe lifecycle call sites | src/kext/RTL88WiFi.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTL88WiFiAWDL.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTL88WiFiInterface.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTL88WiFiInterface.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88AWDLManager.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88AWDLManager.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88HwOps.cpp ===
+MATCH_LINES=23 CONTEXT_WINDOWS=1
+
+[lines 1-137]
+    1 // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+    2 // Hardware shims shared by the Ethernet and Airport controller frontends.
+    3 
+    4 #include "RTW88IEEE80211.hpp"
+    5 #include <IOKit/IOLib.h>
+    6 
+    7 extern "C" {
+    8 #include "../compat/rtw88_compat.h"
+    9 }
+   10 
+   11 RTW88HwOps *g_pci_dev_instance = nullptr;
+   12 
+   13 static int compat_pci_read_config_byte(struct pci_dev *, int where, u8 *val)
+   14 {
+   15     if (!g_pci_dev_instance) { *val = 0xff; return -1; }
+   16     *val = g_pci_dev_instance->pciReadByte(where);
+   17     return 0;
+   18 }
+   19 
+   20 static int compat_pci_read_config_word(struct pci_dev *, int where, u16 *val)
+   21 {
+   22     if (!g_pci_dev_instance) { *val = 0xffff; return -1; }
+   23     *val = g_pci_dev_instance->pciReadWord(where);
+   24     return 0;
+   25 }
+   26 
+   27 static int compat_pci_read_config_dword(struct pci_dev *, int where, u32 *val)
+   28 {
+   29     if (!g_pci_dev_instance) { *val = 0xffffffff; return -1; }
+   30     *val = g_pci_dev_instance->pciReadDword(where);
+   31     return 0;
+   32 }
+   33 
+   34 static int compat_pci_write_config_byte(struct pci_dev *, int where, u8 val)
+   35 {
+   36     if (!g_pci_dev_instance) return -1;
+   37     g_pci_dev_instance->pciWriteByte(where, val);
+   38     return 0;
+   39 }
+   40 
+   41 static int compat_pci_write_config_word(struct pci_dev *, int where, u16 val)
+   42 {
+   43     if (!g_pci_dev_instance) return -1;
+   44     g_pci_dev_instance->pciWriteWord(where, val);
+   45     return 0;
+   46 }
+   47 
+   48 static int compat_pci_write_config_dword(struct pci_dev *, int where, u32 val)
+   49 {
+   50     if (!g_pci_dev_instance) return -1;
+   51     g_pci_dev_instance->pciWriteDword(where, val);
+   52     return 0;
+   53 }
+   54 
+   55 static void *compat_ioremap(struct pci_dev *, int, size_t)
+   56 {
+   57     return g_pci_dev_instance ? (void *)g_pci_dev_instance->mmioBase() : nullptr;
+   58 }
+   59 
+   60 static void compat_iounmap(struct pci_dev *, void *) {}
+   61 static int compat_enable_msi(struct pci_dev *) { return 0; }
+   62 static void compat_disable_msi(struct pci_dev *) {}
+   63 
+   64 static int compat_pci_find_capability(struct pci_dev *, int cap)
+   65 {
+   66     return g_pci_dev_instance ? g_pci_dev_instance->pciFindCapability(cap) : 0;
+   67 }
+   68 
+   69 struct pci_ops_rtw88 _pci_io_ops = {
+   70     .read_config_byte = compat_pci_read_config_byte,
+   71     .read_config_word = compat_pci_read_config_word,
+   72     .read_config_dword = compat_pci_read_config_dword,
+   73     .write_config_byte = compat_pci_write_config_byte,
+   74     .write_config_word = compat_pci_write_config_word,
+   75     .write_config_dword = compat_pci_write_config_dword,
+   76     .ioremap = compat_ioremap,
+   77     .iounmap = compat_iounmap,
+   78     .enable_msi = compat_enable_msi,
+   79     .disable_msi = compat_disable_msi,
+   80     .pci_find_capability = compat_pci_find_capability,
+   81 };
+   82 
+   83 static void *compat_dma_alloc(struct device *, size_t size,
+   84                               dma_addr_t *dma_handle, gfp_t)
+   85 {
+   86     if (!g_pci_dev_instance) return nullptr;
+   87     IOPhysicalAddress phys = 0;
+   88     void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+   89     if (dma_handle) *dma_handle = (dma_addr_t)phys;
+   90     return virt;
+   91 }
+   92 
+   93 static void compat_dma_free(struct device *, size_t size, void *cpu_addr,
+   94                             dma_addr_t dma_handle)
+   95 {
+   96     if (g_pci_dev_instance)
+   97         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+   98                                          (IOPhysicalAddress)dma_handle);
+   99 }
+  100 
+  101 static dma_addr_t compat_dma_map(struct device *, void *ptr, size_t size, int dir)
+  102 {
+  103     if (!g_pci_dev_instance || !ptr) return 0;
+  104 
+  105     IOPhysicalAddress phys = 0;
+  106     void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+  107     if (!bounce) return 0;
+  108 
+  109     g_pci_dev_instance->setBounceOrigVA(phys, ptr);
+  110     if (dir == 1 || dir == 2)
+  111         memcpy(bounce, ptr, size);
+  112     return (dma_addr_t)phys;
+  113 }
+  114 
+  115 static void compat_dma_unmap(struct device *, dma_addr_t addr, size_t, int)
+  116 {
+  117     if (g_pci_dev_instance)
+  118         g_pci_dev_instance->freeCoherentByPhys((IOPhysicalAddress)addr);
+  119 }
+  120 
+  121 static void compat_dma_sync_cpu(struct device *, dma_addr_t addr,
+  122                                 size_t size, int dir)
+  123 {
+  124     if (dir == 0 && g_pci_dev_instance)
+  125         g_pci_dev_instance->syncBounceForCpu((IOPhysicalAddress)addr, size);
+  126 }
+  127 
+  128 static void compat_dma_sync_dev(struct device *, dma_addr_t, size_t, int) {}
+  129 
+  130 struct rtw88_dma_alloc_ops _dma_ops = {
+  131     .alloc_coherent = compat_dma_alloc,
+  132     .free_coherent = compat_dma_free,
+  133     .map_single = compat_dma_map,
+  134     .unmap_single = compat_dma_unmap,
+  135     .sync_single_for_cpu = compat_dma_sync_cpu,
+  136     .sync_single_for_device = compat_dma_sync_dev,
+  137 };
+
+=== Native/probe lifecycle call sites | src/kext/RTW88IEEE80211.cpp ===
+MATCH_LINES=10 CONTEXT_WINDOWS=5
+
+[lines 20-63]
+   20 /* Debug stage checkpoint — logs message only (no sleep). */
+   21 #define RTW88_STAGE(fmt, ...) IOLog("rtw88: ---- STAGE: " fmt " ----\n", ##__VA_ARGS__)
+   22 
+   23 /* Chain-safe packet mbuf builder (defined below). */
+   24 static mbuf_t rtw88_make_packet_mbuf(const void *src, uint32_t len);
+   25 
+   26 extern "C" {
+   27 #include "../compat/rtw88_compat.h"
+   28 
+   29 /* Linux driver public API */
+   30 int  rtw_core_init(struct rtw_dev *rtwdev);
+   31 void rtw_core_deinit(struct rtw_dev *rtwdev);
+   32 int  rtw_core_start(struct rtw_dev *rtwdev);
+   33 void rtw_core_stop(struct rtw_dev *rtwdev);
+   34 void rtw_tx(struct rtw_dev *rtwdev, struct ieee80211_tx_control *control,
+   35             struct sk_buff *skb);
+   36 
+   37 /* PCI probe shim declared in pci.c */
+   38 int  rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+   39 void rtw_pci_remove(struct pci_dev *pdev);
+   40 int  rtw_regd_set_country(struct rtw_dev *rtwdev, const char alpha2[2]);
+   41 
+   42 /* Exported from the compat layer for hooking */
+   43 void rtw88_set_hw_callbacks(struct rtw88_hw_callbacks *cbs, void *kext_hw);
+   44 
+   45 /* chip hw_spec structs — driver_data for rtw_pci_probe */
+   46 extern const struct rtw_chip_info rtw8822b_hw_spec;
+   47 extern const struct rtw_chip_info rtw8822c_hw_spec;
+   48 extern const struct rtw_chip_info rtw8821c_hw_spec;
+   49 
+   50 } /* extern "C" */
+   51 
+   52 /* Completion tokens are allocated with the compat slab allocator and must be
+   53  * released with its matching kfree() wrapper. */
+   54 static void rtw88_release_skb_tx_completion_token(void *token)
+   55 {
+   56     kfree(token);
+   57 }
+   58 
+   59 #define IOLog rtw88_candidate_log
+   60 
+   61 /* ------------------------------------------------------------------ */
+   62 /*  WPA2 cryptographic functions (SHA1, HMAC-SHA1, PBKDF2, PRF)      */
+   63 /* ------------------------------------------------------------------ */
+
+[lines 544-578]
+  544 RTW88IEEE80211 *RTW88IEEE80211::create(RTW88PCIDevice *dev, struct pci_dev *pci)
+  545 {
+  546     RTW88IEEE80211 *obj = new RTW88IEEE80211;
+  547     if (obj && !obj->init(dev, pci)) {
+  548         obj->release();
+  549         return nullptr;
+  550     }
+  551     return obj;
+  552 }
+  553 
+  554 RTW88IEEE80211 *RTW88IEEE80211::createAirport(RTW88RxDelegate *delegate, struct pci_dev *pci)
+  555 {
+  556     RTW88IEEE80211 *obj = new RTW88IEEE80211;
+  557     if (obj && !obj->init(delegate, pci)) {
+  558         obj->release();
+  559         return nullptr;
+  560     }
+  561     return obj;
+  562 }
+  563 
+  564 bool RTW88IEEE80211::init(RTW88RxDelegate *delegate, struct pci_dev *pci)
+  565 {
+  566     if (!super::init()) return false;
+  567     _parent = delegate;
+  568     _pcidev = pci;
+  569     _lock    = IOLockAlloc();
+  570     _bssLock = IOLockAlloc();
+  571     if (!_lock || !_bssLock) return false;
+  572     _joinFail.clear();
+  573     _joinTried.clear();
+  574     _baRecovery.reset();
+  575     _connectTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::connectTCFn,
+  576                                        (thread_call_param_t)this);
+  577     _manualScanTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::manualScanTCFn,
+  578                                          (thread_call_param_t)this);
+
+[lines 848-882]
+  848 
+  849     const struct pci_device_id fake_id = {
+  850         .vendor      = _pcidev->vendor,
+  851         .device      = _pcidev->device,
+  852         .subvendor   = PCI_ANY_ID,
+  853         .subdevice   = PCI_ANY_ID,
+  854         .driver_data = (unsigned long)chip,
+  855     };
+  856 
+  857     RTW88_STAGE("calling rtw_pci_probe");
+  858     int ret = rtw_pci_probe(_pcidev, &fake_id);
+  859     RTW88_STAGE("rtw_pci_probe returned %d", ret);
+  860     if (ret != 0) {
+  861         IOLog("rtw88: rtw_pci_probe failed: %d\n", ret);
+  862         return kIOReturnError;
+  863     }
+  864 
+  865     /* Use the hw pointer that ieee80211_alloc_hw() registered in the compat
+  866      * layer via rtw88_register_hw().  rtw88_get_hw() is the external-linkage
+  867      * accessor for the static g_rtw88_hw variable — avoids both the fragile
+  868      * *(ieee80211_hw **)rtwdev double-dereference and the UB of declaring
+  869      * 'extern' on a static variable from another TU. */
+  870     _hw = rtw88_get_hw();
+  871 
+  872     /* rtwdev is hw->priv (allocated contiguously after ieee80211_hw in alloc_hw).
+  873      * Note: rtw_pci_probe stores hw (not rtwdev) in pdev->driver_data via pci_set_drvdata(). */
+  874     _rtwdev = _hw ? (struct rtw_dev *)_hw->priv : nullptr;
+  875 
+  876     RTW88_STAGE("rtwdev=%p hw=%p", (void *)_rtwdev, (void *)_hw);
+  877 
+  878     if (!_hw || !_rtwdev || !_hw->wiphy || !_hw->ops) {
+  879         IOLog("rtw88: probe returned incomplete hardware state\n");
+  880         goto fail_probe;
+  881     }
+  882 
+
+[lines 940-974]
+  940     if (_powered && _hw && _hw->ops && _hw->ops->stop) {
+  941         _hw->ops->stop(_hw, false);
+  942         _powered = false;
+  943     }
+  944     if (_vif) {
+  945         IOFree(_vif, _vifAllocSize);
+  946         _vifAllocSize = 0;
+  947         _vif = nullptr;
+  948     }
+  949 fail_probe:
+  950     rtw_pci_remove(_pcidev);
+  951     _rtwdev = nullptr;
+  952     _hw = nullptr;
+  953     _powered = false;
+  954     return kIOReturnError;
+  955 }
+  956 
+  957 void RTW88IEEE80211::stop()
+  958 {
+  959     IOLog("rtw88: IEEE80211 stop\n");
+  960     cancelAuthentication();
+  961     _manualScanAbort = true;
+  962     if (_manualScanTC) thread_call_cancel_wait(_manualScanTC);
+  963     if (_connectTC) thread_call_cancel_wait(_connectTC);
+  964     if (_reorderTimer) { _reorderTimer->cancelTimeout(); _reorderTimer->disable(); }
+  965     if (_timer)
+  966         _timer->cancelTimeout();
+  967 
+  968     if ((_state == RTW88_STATE_CONNECTED ||
+  969          (_state == RTW88_STATE_SCANNING &&
+  970           _scanReturnState == RTW88_STATE_CONNECTED)) && _powered)
+  971         doDisconnect();
+  972     else {
+  973         clearKeys();
+  974         releaseSta();
+
+[lines 989-1023]
+  989         rtw88_unregister_vif();
+  990         IOFree(_vif, _vifAllocSize);
+  991         _vifAllocSize = 0;
+  992         _vif = nullptr;
+  993     }
+  994 
+  995     if (_powered && _hw && _hw->ops && _hw->ops->stop)
+  996         _hw->ops->stop(_hw, false);
+  997     _powered = false;
+  998 
+  999     if (_pcidev) rtw_pci_remove(_pcidev);
+ 1000     _rtwdev = nullptr;
+ 1001     _hw     = nullptr;
+ 1002     _state  = RTW88_STATE_IDLE;
+ 1003     _associatedVisible = false;
+ 1004     _scanReturnState = RTW88_STATE_IDLE;
+ 1005     _scanPartial = false;
+ 1006 }
+ 1007 
+ 1008 /* ------------------------------------------------------------------ */
+ 1009 /*  Power on/off (called from enable/disable)                          */
+ 1010 /* ------------------------------------------------------------------ */
+ 1011 
+ 1012 IOReturn RTW88IEEE80211::setReceiveMulticast(bool active)
+ 1013 {
+ 1014     if (!_hw || !_hw->ops || !_hw->ops->configure_filter)
+ 1015         return kIOReturnNotReady;
+ 1016     _receiveMulticast = active;
+ 1017     if (_powered) {
+ 1018         unsigned int flags = (active || _awdlReceiveMode) ? FIF_ALLMULTI : 0;
+ 1019         _hw->ops->configure_filter(_hw, FIF_ALLMULTI, &flags, 0);
+ 1020     }
+ 1021     return kIOReturnSuccess;
+ 1022 }
+ 1023 
+
+=== Native/probe lifecycle call sites | src/kext/RTW88IEEE80211.hpp ===
+MATCH_LINES=2 CONTEXT_WINDOWS=2
+
+[lines 62-96]
+   62 struct RTW88DMAEntry {
+   63     IOBufferMemoryDescriptor *desc;
+   64     void    *virt;
+   65     IOPhysicalAddress phys;
+   66     size_t   size;
+   67     void    *orig_va;
+   68     RTW88DMAEntry *next;
+   69 };
+   70 
+   71 class RTW88HwOps;
+   72 extern RTW88HwOps *g_pci_dev_instance;
+   73 struct pci_ops_rtw88;
+   74 struct rtw88_dma_alloc_ops;
+   75 extern struct pci_ops_rtw88 _pci_io_ops;
+   76 extern struct rtw88_dma_alloc_ops _dma_ops;
+   77 
+   78 class RTW88HwOps {
+   79 public:
+   80     virtual UInt8  pciReadByte(int offset) = 0;
+   81     virtual UInt16 pciReadWord(int offset) = 0;
+   82     virtual UInt32 pciReadDword(int offset) = 0;
+   83     virtual void   pciWriteByte(int offset, UInt8 val) = 0;
+   84     virtual void   pciWriteWord(int offset, UInt16 val) = 0;
+   85     virtual void   pciWriteDword(int offset, UInt32 val) = 0;
+   86     virtual int    pciFindCapability(int cap) = 0;
+   87     virtual volatile void *mmioBase() const = 0;
+   88     virtual void  *allocCoherent(size_t size, IOPhysicalAddress *phys) = 0;
+   89     virtual void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) = 0;
+   90     virtual void   freeCoherentByPhys(IOPhysicalAddress phys) = 0;
+   91     virtual void   setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) = 0;
+   92     virtual void   syncBounceForCpu(IOPhysicalAddress dma, size_t size) = 0;
+   93     virtual void   resumeTxIfStalled() = 0;
+   94     virtual ~RTW88HwOps() {}
+   95 };
+   96 
+
+[lines 175-209]
+  175 typedef void (*RTW88TxCompletionCallback)(void *context, void *cookie,
+  176                                            bool transmitted);
+  177 
+  178 class RTW88IEEE80211 : public OSObject {
+  179 public:
+  180     RTW88EventDelegate *_delegate = nullptr;
+  181     OSDeclareDefaultStructors(RTW88IEEE80211)
+  182 
+  183 public:
+  184     static RTW88IEEE80211 *create(RTW88PCIDevice *dev, struct pci_dev *pci);
+  185     static RTW88IEEE80211 *createAirport(RTW88RxDelegate *delegate, struct pci_dev *pci);
+  186 
+  187     bool      init(RTW88PCIDevice *dev, struct pci_dev *pci);
+  188     bool      init(RTW88RxDelegate *delegate, struct pci_dev *pci);
+  189     void      free() override;
+  190 
+  191     /* Called by RTW88PCIDevice */
+  192     IOReturn  start();       /* probe: chip info, efuse, register hw */
+  193     void      stop();        /* full teardown */
+  194     IOReturn setReceiveMulticast(bool active);
+  195     IOReturn setAWDLReceiveMode(bool active);
+  196     IOReturn setAWDLChannel(uint16_t channel);
+  197     /* RTL88WiFi 1.0.2 policy.  AWDL (AirDrop/Continuity) has never completed a
+  198      * peer exchange on this driver, yet while the awdl0 interface exists the
+  199      * scheduler (a) puts the NIC in near-promiscuous receive mode and (b)
+  200      * parks the radio on channels 6/44/149 and stalls en0 transmit, which is
+  201      * what overflowed the 256-packet output queue under upload.  Default:
+  202      * the AWDL virtual interface exists but never takes the radio.  Set the
+  203      * Info.plist property RTL88WiFiAWDLRadio to true to restore the old
+  204      * behaviour for experiments. */
+  205     /* 1.0.4 band policy (Info.plist key RTL88WiFiPrefer5GHz, default true): when
+  206      * macOS asks for a 2.4 GHz node but a usable 5 GHz node of the same SSID is
+  207      * known, join the 5 GHz node.  False honours the requested BSSID exactly. */
+  208     void setPrefer5GHzUpgrade(bool on) { _prefer5GHzUpgrade = on; }
+  209     void setAWDLRadioAllowed(bool allowed) { _awdlRadioAllowed = allowed; }
+
+=== Native/probe lifecycle call sites | src/kext/RTW88PCIDevice.cpp ===
+MATCH_LINES=34 CONTEXT_WINDOWS=4
+
+[lines 22-192]
+   22 #define super IOEthernetController
+   23 OSDefineMetaClassAndStructors(RTW88PCIDevice, IOEthernetController)
+   24 
+   25 static constexpr unsigned int kRTW88TxStallAvail = 96;
+   26 static constexpr unsigned int kRTW88TxResumeAvail = 160;
+   27 
+   28 /* ------------------------------------------------------------------ */
+   29 /*  PCI ops shim (C linkage, called from driver C code)                */
+   30 /* ------------------------------------------------------------------ */
+   31 
+   32 RTW88HwOps *g_pci_dev_instance = nullptr;  /* ya no static: RTL88WiFi tambien lo setea */
+   33 
+   34 static int compat_pci_read_config_byte(struct pci_dev *dev, int where, u8 *val)
+   35 {
+   36     if (!g_pci_dev_instance) { *val = 0xff; return -1; }
+   37     *val = g_pci_dev_instance->pciReadByte(where);
+   38     return 0;
+   39 }
+   40 static int compat_pci_read_config_word(struct pci_dev *dev, int where, u16 *val)
+   41 {
+   42     if (!g_pci_dev_instance) { *val = 0xffff; return -1; }
+   43     *val = g_pci_dev_instance->pciReadWord(where);
+   44     return 0;
+   45 }
+   46 static int compat_pci_read_config_dword(struct pci_dev *dev, int where, u32 *val)
+   47 {
+   48     if (!g_pci_dev_instance) { *val = 0xffffffff; return -1; }
+   49     *val = g_pci_dev_instance->pciReadDword(where);
+   50     return 0;
+   51 }
+   52 static int compat_pci_write_config_byte(struct pci_dev *dev, int where, u8 val)
+   53 {
+   54     if (!g_pci_dev_instance) return -1;
+   55     g_pci_dev_instance->pciWriteByte(where, val);
+   56     return 0;
+   57 }
+   58 static int compat_pci_write_config_word(struct pci_dev *dev, int where, u16 val)
+   59 {
+   60     if (!g_pci_dev_instance) return -1;
+   61     g_pci_dev_instance->pciWriteWord(where, val);
+   62     return 0;
+   63 }
+   64 static int compat_pci_write_config_dword(struct pci_dev *dev, int where, u32 val)
+   65 {
+   66     if (!g_pci_dev_instance) return -1;
+   67     g_pci_dev_instance->pciWriteDword(where, val);
+   68     return 0;
+   69 }
+   70 static void *compat_ioremap(struct pci_dev *dev, int bar, size_t len)
+   71 {
+   72     /* Already mapped at start; just return the cached base */
+   73     return (void *)g_pci_dev_instance->mmioBase();
+   74 }
+   75 static void compat_iounmap(struct pci_dev *dev, void *addr) {}
+   76 
+   77 static int compat_enable_msi(struct pci_dev *dev)
+   78 {
+   79     /* Handled by IOInterruptEventSource in setupInterrupt() */
+   80     return 0;
+   81 }
+   82 static void compat_disable_msi(struct pci_dev *dev) {}
+   83 
+   84 static int compat_pci_find_capability(struct pci_dev *dev, int cap)
+   85 {
+   86     if (!g_pci_dev_instance) return 0;
+   87     return g_pci_dev_instance->pciFindCapability(cap);
+   88 }
+   89 
+   90 struct pci_ops_rtw88 _pci_io_ops = {
+   91     .read_config_byte   = compat_pci_read_config_byte,
+   92     .read_config_word   = compat_pci_read_config_word,
+   93     .read_config_dword  = compat_pci_read_config_dword,
+   94     .write_config_byte  = compat_pci_write_config_byte,
+   95     .write_config_word  = compat_pci_write_config_word,
+   96     .write_config_dword = compat_pci_write_config_dword,
+   97     .ioremap            = compat_ioremap,
+   98     .iounmap            = compat_iounmap,
+   99     .enable_msi         = compat_enable_msi,
+  100     .disable_msi        = compat_disable_msi,
+  101     .pci_find_capability = compat_pci_find_capability,
+  102 };
+  103 
+  104 
+  105 
+  106 /* DMA ops shim */
+  107 static void *compat_dma_alloc(struct device *dev, size_t size,
+  108                                dma_addr_t *dma_handle, gfp_t flag)
+  109 {
+  110     if (!g_pci_dev_instance) return nullptr;
+  111     IOPhysicalAddress phys = 0;
+  112     void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+  113     if (dma_handle) *dma_handle = (dma_addr_t)phys;
+  114     return virt;
+  115 }
+  116 static void compat_dma_free(struct device *dev, size_t size,
+  117                              void *cpu_addr, dma_addr_t dma_handle)
+  118 {
+  119     if (g_pci_dev_instance)
+  120         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+  121                                           (IOPhysicalAddress)dma_handle);
+  122 }
+  123 static dma_addr_t compat_dma_map(struct device *dev, void *ptr,
+  124                                    size_t size, int dir)
+  125 {
+  126     /*
+  127      * Always bounce: allocate a physically-contiguous <4GB buffer, record the
+  128      * original CPU VA in orig_va, and hand the chip the bounce PA.
+  129      *
+  130      * DMA_TO_DEVICE (1): copy ptr→bounce now; chip reads from bounce.
+  131      * DMA_FROM_DEVICE (0): don't copy now; chip writes to bounce.
+  132      *   dma_sync_single_for_cpu() will copy bounce→ptr after chip is done.
+  133      *
+  134      * This is the standard software bounce-buffer strategy.  It costs a memcpy
+  135      * per RX packet but is always correct regardless of where IOMalloc places
+  136      * the skb data pages.
+  137      */
+  138     if (!g_pci_dev_instance || !ptr) return 0;
+  139 
+  140     IOPhysicalAddress phys = 0;
+  141     void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+  142     if (!bounce) return 0;
+  143 
+  144     /* Store the original VA so sync_for_cpu can copy the received data back */
+  145     g_pci_dev_instance->setBounceOrigVA((IOPhysicalAddress)phys, ptr);
+  146 
+  147     /* TX: feed the chip data now */
+  148     if (dir == 1 /* DMA_TO_DEVICE */ || dir == 2 /* DMA_BIDIRECTIONAL */)
+  149         memcpy(bounce, ptr, size);
+  150 
+  151     return (dma_addr_t)phys;
+  152 }
+  153 static void compat_dma_unmap(struct device *dev, dma_addr_t addr,
+  154                                size_t size, int dir)
+  155 {
+  156     /* Free the bounce buffer; freeCoherentByPhys is a no-op if not found */
+  157     if (g_pci_dev_instance)
+  158         g_pci_dev_instance->freeCoherentByPhys((IOPhysicalAddress)addr);
+  159 }
+  160 static void compat_dma_sync_cpu(struct device *dev, dma_addr_t addr,
+  161                                   size_t size, int dir)
+  162 {
+  163     /*
+  164      * RX: chip finished writing to the bounce buffer.  Copy it into the
+  165      * original skb->data buffer so the driver can read it from there.
+  166      */
+  167     if (dir == 0 /* DMA_FROM_DEVICE */ && g_pci_dev_instance)
+  168         g_pci_dev_instance->syncBounceForCpu((IOPhysicalAddress)addr, size);
+  169 }
+  170 static void compat_dma_sync_dev(struct device *dev, dma_addr_t addr,
+  171                                   size_t size, int dir)
+  172 {
+  173     /* Re-arm for next DMA: bounce is already in place, nothing to do */
+  174 }
+  175 
+  176 struct rtw88_dma_alloc_ops _dma_ops = {
+  177     .alloc_coherent         = compat_dma_alloc,
+  178     .free_coherent          = compat_dma_free,
+  179     .map_single             = compat_dma_map,
+  180     .unmap_single           = compat_dma_unmap,
+  181     .sync_single_for_cpu    = compat_dma_sync_cpu,
+  182     .sync_single_for_device = compat_dma_sync_dev,
+  183 };
+  184 
+  185 const char *RTW88PCIDevice::chipDisplayName() const
+  186 {
+  187     if (!_compatPciDev)
+  188         return "Realtek Wireless";
+  189 
+  190     switch (_compatPciDev->device) {
+  191     case 0xB822:
+  192         return "RTL8822BE";
+
+[lines 261-296]
+  261                 mac->release();
+  262             }
+  263         }
+  264     }
+  265 }
+  266 
+  267 /* C-linkage trampoline registered with the compat layer; the IRQ bottom-half
+  268  * calls it after tx_isr to resume a flow-control-stalled output queue. */
+  269 extern "C" void rtw88_tx_resume_trampoline(void)
+  270 {
+  271     if (g_pci_dev_instance)
+  272         g_pci_dev_instance->resumeTxIfStalled();
+  273 }
+  274 
+  275 /* ------------------------------------------------------------------ */
+  276 /*  IOService lifecycle                                                 */
+  277 /* ------------------------------------------------------------------ */
+  278 
+  279 bool RTW88PCIDevice::init(OSDictionary *props)
+  280 {
+  281     IOLog("rtw88: RTW88PCIDevice::init\n");
+  282     if (!super::init(props)) return false;
+  283     _dmaLock        = IOSimpleLockAlloc();
+  284     _pendingFreeLock = IOSimpleLockAlloc();
+  285     return _dmaLock != nullptr && _pendingFreeLock != nullptr;
+  286 }
+  287 
+  288 bool RTW88PCIDevice::start(IOService *provider)
+  289 {
+  290     IOLog("rtw88: RTW88PCIDevice::start\n");
+  291     if (!super::start(provider)) return false;
+  292 
+  293     _pciDev = OSDynamicCast(IOPCIDevice, provider);
+  294     if (!_pciDev) {
+  295         IOLog("rtw88: provider is not IOPCIDevice\n");
+  296         return false;
+
+[lines 305-344]
+  305     _mmioMap = _pciDev->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress2);
+  306     if (!_mmioMap) {
+  307         IOLog("rtw88: failed to map BAR2\n");
+  308         return false;
+  309     }
+  310     _mmioBase = (volatile void *)_mmioMap->getVirtualAddress();
+  311     IOLog("rtw88: BAR2 mapped at %p, size 0x%llx\n",
+  312           (void *)_mmioBase, (unsigned long long)_mmioMap->getLength());
+  313 
+  314     /* Install global compat ops */
+  315     g_pci_dev_instance = this;
+  316     rtw88_pci_io_ops   = &_pci_io_ops;
+  317     rtw88_dma_ops      = &_dma_ops;
+  318 
+  319     /* Initialise compat runtime (workqueues, timers) */
+  320     rtw88_compat_init();
+  321 
+  322     /* Build the pci_dev struct for the Linux driver */
+  323     _compatPciDev = (struct pci_dev *)IOMallocZero(sizeof(struct pci_dev));
+  324     if (!_compatPciDev) return false;
+  325 
+  326     _compatPciDev->vendor  = _pciDev->configRead16(0x00);
+  327     _compatPciDev->device  = _pciDev->configRead16(0x02);
+  328     _compatPciDev->kext_dev = this;
+  329     _compatPciDev->resource[2]     = (resource_size_t)_mmioBase;
+  330     _compatPciDev->resource_len[2] = (resource_size_t)_mmioMap->getLength();
+  331 
+  332     IOLog("rtw88: PCI device %04x:%04x\n",
+  333           _compatPciDev->vendor, _compatPciDev->device);
+  334 
+  335     /* Set up IOWorkLoop */
+  336     _workLoop = IOWorkLoop::workLoop();
+  337     if (!_workLoop) return false;
+  338 
+  339     _cmdGate = IOCommandGate::commandGate(this);
+  340     if (!_cmdGate) return false;
+  341     _workLoop->addEventSource(_cmdGate);
+  342 
+  343     /* Set up interrupt */
+  344     if (!setupInterrupt()) {
+
+[lines 435-482]
+  435     if (_txQueue) {
+  436         _txQueue->stop();
+  437         _txQueue->flush();
+  438     }
+  439 
+  440     if (_enabled) disable(_iface);
+  441     drainPendingFree();   /* release any bounce bufs deferred during TX ISR */
+  442 
+  443     if (_ieee80211)  { _ieee80211->stop(); _ieee80211->release(); _ieee80211 = nullptr; }
+  444 
+  445     rtw88_compat_exit();
+  446 
+  447     if (_debugTimer) { _debugTimer->cancelTimeout(); _workLoop->removeEventSource(_debugTimer); _debugTimer->release(); _debugTimer = nullptr; }
+  448     if (_intrSrc)  { _workLoop->removeEventSource(_intrSrc); _intrSrc->release();  _intrSrc = nullptr; }
+  449     if (_cmdGate)  { _workLoop->removeEventSource(_cmdGate); _cmdGate->release();  _cmdGate = nullptr; }
+  450     if (_txQueue)  { _txQueue->release();   _txQueue = nullptr; }
+  451     if (_iface)    { detachInterface(_iface); _iface->release(); _iface = nullptr; }
+  452     if (_workLoop) { _workLoop->release();   _workLoop = nullptr; }
+  453     if (_mmioMap)  { _mmioMap->release();    _mmioMap = nullptr; _mmioBase = nullptr; }
+  454     if (_pciDev)   { _pciDev->release();     _pciDev = nullptr; }
+  455 
+  456     g_pci_dev_instance = nullptr;
+  457     rtw88_pci_io_ops   = nullptr;
+  458     rtw88_dma_ops      = nullptr;
+  459 }
+  460 
+  461 /* ------------------------------------------------------------------ */
+  462 /*  Interrupt                                                           */
+  463 /* ------------------------------------------------------------------ */
+  464 
+  465 bool RTW88PCIDevice::setupInterrupt()
+  466 {
+  467     _intrSrc = IOInterruptEventSource::interruptEventSource(
+  468         this,
+  469         OSMemberFunctionCast(IOInterruptEventSource::Action,
+  470                              this, &RTW88PCIDevice::handleInterrupt),
+  471         _pciDev, 0);
+  472 
+  473     if (!_intrSrc) {
+  474         IOLog("rtw88: failed to create interrupt event source\n");
+  475         return false;
+  476     }
+  477     _workLoop->addEventSource(_intrSrc);
+  478 
+  479     return true;
+  480 }
+  481 
+  482 void RTW88PCIDevice::handleInterrupt(IOInterruptEventSource *src, int count)
+
+=== Native/probe lifecycle call sites | src/kext/RTW88PCIDevice.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88UserClient.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88WCLRadioBridge.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88WCLRadioBridge.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88WCLRadioEventRing.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88WCLWorkQueue.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/RTW88WCLWorkQueue.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCL24H32ABI.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLController.cpp ===
+MATCH_LINES=13 CONTEXT_WINDOWS=4
+
+[lines 64-131]
+   64 
+   65     /* Stage B: this native personality must be matched directly to a PCI
+   66      * provider. The backend retains it and owns BAR2/MMIO/DMA resources. */
+   67     {
+   68         IOPCIDevice *pci = OSDynamicCast(IOPCIDevice, provider);
+   69         if (!pci) {
+   70             IOLog("rtl88wifi-wcl: provider is not an IOPCIDevice\n");
+   71             goto fail;
+   72         }
+   73 
+   74         _pciBackend = new RTW88WCLPCIBackend;
+   75         if (!_pciBackend) {
+   76             IOLog("rtl88wifi-wcl: PCI backend allocation failed\n");
+   77             goto fail;
+   78         }
+   79         if (!_pciBackend->init()) {
+   80             _pciBackend->release();
+   81             _pciBackend = nullptr;
+   82             IOLog("rtl88wifi-wcl: PCI backend initialization failed\n");
+   83             goto fail;
+   84         }
+   85 
+   86         const IOReturn openStatus = _pciBackend->open(pci, _workLoop, this);
+   87         if (openStatus != kIOReturnSuccess) {
+   88             IOLog("rtl88wifi-wcl: PCI backend open failed: 0x%08x\n",
+   89                   openStatus);
+   90             goto fail;
+   91         }
+   92 
+   93         /* Stage C: instantiate the RTW88 state machine against the backend's
+   94          * compat pci_dev. This installs callback context and allocates its
+   95          * private timers/workloop only; it does not probe or power the chip. */
+   96         struct pci_dev *compatPCI = _pciBackend->compatPCIDevice();
+   97         if (!compatPCI) {
+   98             IOLog("rtl88wifi-wcl: backend did not provide a compat PCI device\n");
+   99             goto fail;
+  100         }
+  101         RTW88IEEE80211 *radio = RTW88IEEE80211::createAirport(this, compatPCI);
+  102         if (!radio) {
+  103             IOLog("rtl88wifi-wcl: RTW88 state-machine allocation failed\n");
+  104             goto fail;
+  105         }
+  106         radio->setEventDelegate(this);
+  107         const IOReturn bindStatus = bindRadioBackend(radio);
+  108         radio->release();
+  109         if (bindStatus != kIOReturnSuccess) {
+  110             IOLog("rtl88wifi-wcl: RTW88 state-machine bind failed: 0x%08x\n",
+  111                   bindStatus);
+  112             goto fail;
+  113         }
+  114     }
+  115 
+  116     /* Stage D: reserve native Skywalk queue/pool objects while the PCI and
+  117      * RTW88 owners are still available for orderly unwind. These objects are
+  118      * intentionally not registered or scheduled until packet descriptor
+  119      * conversion and hardware completion correlation are implemented. */
+  120     _skywalkQueues = new RTW88WCLSkywalkQueues;
+  121     if (!_skywalkQueues || !_skywalkQueues->init()) {
+  122         if (_skywalkQueues) {
+  123             _skywalkQueues->release();
+  124             _skywalkQueues = nullptr;
+  125         }
+  126         IOLog("rtl88wifi-wcl: Skywalk queue owner allocation failed\n");
+  127         goto fail;
+  128     }
+  129     {
+  130         const IOReturn queueStatus = _skywalkQueues->createQueues();
+  131         if (queueStatus != kIOReturnSuccess) {
+
+[lines 154-235]
+  154                            "PCI, RTW88 and pool-backed RX packet conversion staged; datapath pending");
+  155 
+  156     /* Publication fence: do not probe or power the radio until Skywalk packet
+  157      * registration, RX/TX rings, packet metadata and teardown are implemented.
+  158      * Starting it sooner would produce frames without a safe delivery path. */
+  159     IOLog("rtl88wifi-wcl: backend lifecycle staged; refusing publication until Skywalk datapath is ready\n");
+  160     goto fail;
+  161 
+  162 fail:
+  163     {
+  164         const IOReturn cleanupStatus = releaseNativeResources();
+  165         if (cleanupStatus != kIOReturnSuccess) {
+  166             IOLog("rtl88wifi-wcl: start-failure cleanup incomplete (0x%08x); retaining native resources\n",
+  167                   cleanupStatus);
+  168             return false;
+  169         }
+  170     }
+  171     if (_baseStarted) {
+  172         super::stop(provider);
+  173         _baseStarted = false;
+  174     }
+  175     return false;
+  176 }
+  177 
+  178 void RTW88WCLController::stop(IOService *provider)
+  179 {
+  180     const IOReturn cleanupStatus = releaseNativeResources();
+  181     if (cleanupStatus != kIOReturnSuccess) {
+  182         IOLog("rtl88wifi-wcl: stop cleanup incomplete (0x%08x); deferring superclass stop and retaining resources\n",
+  183               cleanupStatus);
+  184         return;
+  185     }
+  186     if (_baseStarted) {
+  187         super::stop(provider);
+  188         _baseStarted = false;
+  189     }
+  190 }
+  191 
+  192 IOReturn RTW88WCLController::releaseNativeResources()
+  193 {
+  194     const IOReturn packetPathStatus = quiescePacketPath();
+  195     if (packetPathStatus != kIOReturnSuccess) {
+  196         IOLog("rtl88wifi-wcl: packet path quiesce deferred: 0x%08x\n",
+  197               packetPathStatus);
+  198         return packetPathStatus; // Keep the radio, interface and PCI callbacks alive.
+  199     }
+  200 
+  201     /* Stop the RTW88 RX/TX producer before removing its deferred consumers or
+  202      * disabling PCI interrupts. The staged path currently leaves
+  203      * _radioStarted false; preserve this ordering when native radio start is
+  204      * enabled after queue registration. */
+  205     if (_radio && _radioStarted) {
+  206         _radio->stop();
+  207         _radioStarted = false;
+  208     }
+  209 
+  210     if (_pciBackend && _pciBackend->isRadioRunning()) {
+  211         const IOReturn fenceStatus = _pciBackend->setRadioRunning(false);
+  212         if (fenceStatus != kIOReturnSuccess) {
+  213             IOLog("rtl88wifi-wcl: PCI interrupt/bus-master fence failed: 0x%08x\n",
+  214                   fenceStatus);
+  215             return fenceStatus; // Keep callbacks, mappings and DMA owner alive on failure.
+  216         }
+  217     }
+  218 
+  219     /* Remove the RX workloop source only after the RTW88 producer is stopped.
+  220      * stop() waits out an active checkForWork() and releases all staged mbufs. */
+  221     if (_rxAdapter) {
+  222         _rxAdapter->stop();
+  223         _rxAdapter->release();
+  224         _rxAdapter = nullptr;
+  225     }
+  226 
+  227     /* The RX adapter transfers accepted native packets into the controller's
+  228      * bounded ready ring. Recycle those packets while their pool still exists;
+  229      * on a pool error, retain the queue owner and PCI/backend context so a later
+  230      * stop/free attempt can retry rather than releasing live packet memory. */
+  231     const IOReturn recycleStatus = recycleStagedRxPackets();
+  232     if (recycleStatus != kIOReturnSuccess) {
+  233         IOLog("rtl88wifi-wcl: staged RX packet recycle deferred: 0x%08x\n",
+  234               recycleStatus);
+  235         return recycleStatus;
+
+[lines 240-291]
+  240     if (_skywalkQueues) {
+  241         _skywalkQueues->destroyQueues();
+  242         _skywalkQueues->release();
+  243         _skywalkQueues = nullptr;
+  244     }
+  245 
+  246     
+  247 
+  248     /* RTW88IEEE80211 owns the compat callback context; destroy it before
+  249      * rtw88_compat_exit() and before relinquishing the global hardware lease. */
+  250     unbindRadioBackend();
+  251 
+  252     if (_pciBackend) {
+  253         const IOReturn closeStatus = _pciBackend->close();
+  254         if (closeStatus != kIOReturnSuccess) {
+  255             IOLog("rtl88wifi-wcl: PCI backend close deferred: 0x%08x\n",
+  256                   closeStatus);
+  257             return closeStatus;
+  258         }
+  259         _pciBackend->release();
+  260         _pciBackend = nullptr;
+  261     }
+  262     return kIOReturnSuccess;
+  263 }
+  264 
+  265 void RTW88WCLController::free()
+  266 {
+  267     const IOReturn cleanupStatus = releaseNativeResources();
+  268     if (cleanupStatus != kIOReturnSuccess) {
+  269         IOLog("rtl88wifi-wcl: controller shutdown incomplete (0x%08x); quarantining controller and retaining workloop/resources\n",
+  270               cleanupStatus);
+  271         /* Do not release the workloop or call super::free() while any child,
+  272          * packet pool, or PCI/DMA resource may still reference this controller.
+  273          * This deliberately leaks the object rather than risking a UAF/DMA UAF. */
+  274         return;
+  275     }
+  276     if (_workLoop) {
+  277         _workLoop->release();
+  278         _workLoop = nullptr;
+  279     }
+  280     super::free();
+  281 }
+  282 
+  283 bool RTW88WCLController::isCommandProhibited(int command)
+  284 {
+  285     (void)command;
+  286     return true; // No WCL interface is published by this ABI-only slice.
+  287 }
+  288 
+  289 SInt32 RTW88WCLController::handleCardSpecific(IO80211SkywalkInterface *interface,
+  290                                                unsigned long command,
+  291                                                void *data, bool set)
+
+[lines 573-598]
+  573 {
+  574     return _workLoop;
+  575 }
+  576 
+  577 void RTW88WCLController::setLinkStatus(UInt32 status)
+  578 {
+  579     (void)status;
+  580     /* Link state is owned by IO80211InfraProtocol after Skywalk attachment. */
+  581 }
+  582 
+  583 IOReturn RTW88WCLController::bindRadioBackend(RTW88IEEE80211 *radio)
+  584 {
+  585     if (!radio) return kIOReturnBadArgument;
+  586     if (_radio) return kIOReturnBusy;
+  587     radio->retain();
+  588     _radio = radio;
+  589     return kIOReturnSuccess;
+  590 }
+  591 
+  592 void RTW88WCLController::unbindRadioBackend()
+  593 {
+  594     if (_radio) {
+  595         _radio->release();
+  596         _radio = nullptr;
+  597     }
+  598 }
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLController.hpp ===
+MATCH_LINES=8 CONTEXT_WINDOWS=2
+
+[lines 2-46]
+    2  * First native WCL controller slice for Sequoia 24H32.
+    3  *
+    4  * This controller remains isolated from the active legacy Kext. It owns the
+    5  * native PCI backend and RTW88 state-machine object, but deliberately does
+    6  * not start the radio or publish an interface until the Skywalk datapath is
+    7  * complete.
+    8  */
+    9 #pragma once
+   10 
+   11 #include "RTW88WCL24H32ABI.hpp"
+   12 #include "RTW88WCLPCIBackend.hpp"
+   13 #include "RTW88WCLMbufRing.hpp"
+   14 #include <IOKit/IOWorkLoop.h>
+   15 
+   16 class RTW88IEEE80211;
+   17 class RTW88WCLSkywalkQueues;
+   18 class RTW88WCLSkywalkRxAdapter;
+   19 class IOSkywalkPacket;
+   20 
+   21 class RTW88WCLController final : public IO80211Controller,
+   22                                  public RTW88WCLPCIBackendClient,
+   23                                  public RTW88EventDelegate,
+   24                                  public RTW88RxDelegate {
+   25     OSDeclareDefaultStructors(RTW88WCLController)
+   26 
+   27 public:
+   28     bool init(OSDictionary *properties) override;
+   29     bool start(IOService *provider) override;
+   30     void stop(IOService *provider) override;
+   31     void free() override;
+   32     bool createWorkLoop() override;
+   33     IOWorkLoop *getWorkLoop() const override;
+   34 
+   35     /* Native Ethernet mbuf handoff seam. Skywalk queue callbacks must call these
+   36      * only after their packet rings are registered and the radio is started. */
+   37     UInt32 outputPacket(mbuf_t packet, void *param) override;
+   38     IOReturn activatePacketPath(IO80211SkywalkInterface *interface);
+   39     IOReturn quiescePacketPath();
+   40 
+   41     /* Required pure virtuals in the 24H32 IO80211Controller ABI. Until the
+   42      * native protocol + Skywalk datapath are attached, operations fail closed. */
+   43     bool isCommandProhibited(int command) override;
+   44     SInt32 handleCardSpecific(IO80211SkywalkInterface *interface,
+   45                               unsigned long command, void *data,
+   46                               bool set) override;
+
+[lines 56-117]
+   56                       apple80211_power_data *data) override;
+   57     IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+   58                              apple80211_country_code_data *data) override;
+   59     IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+   60                              apple80211_country_code_data *data) override;
+   61     IOReturn setGET_DEBUG_INFO(IO80211SkywalkInterface *interface,
+   62                                apple80211_debug_command *data) override;
+   63     CCLogStream *getLogger() const override;
+   64     CommonFaultReporter *getFaultReporterFromDriver() override;
+   65 
+   66     IOReturn bindRadioBackend(RTW88IEEE80211 *radio);
+   67     void unbindRadioBackend();
+   68     RTW88IEEE80211 *radioBackend() const { return _radio; }
+   69     RTW88WCLPCIBackend *pciBackend() const { return _pciBackend; }
+   70 
+   71     /* RTW88WCLPCIBackendClient: no native TX queue is registered yet. */
+   72     void rtw88WCLResumeTransmit() override;
+   73 
+   74     /* RTW88EventDelegate: events are deliberately not published until the
+   75      * Skywalk interface has completed registration. */
+   76     void rtw88Event(RTW88Event event, void *data) override;
+   77 
+   78     /* RTW88RxDelegate: receive mbufs enter a bounded workloop staging ring,
+   79      * then become pool-backed Skywalk packets. The sink still rejects them
+   80      * until the RX completion queue is registered and verified. */
+   81     mbuf_t allocateInputPacket(uint32_t length) override;
+   82     void injectRxFrame(mbuf_t packet) override;
+   83     IOWorkLoop *getRxWorkLoop() override;
+   84     void setLinkStatus(UInt32 status) override;
+   85 
+   86 private:
+   87     IOReturn releaseNativeResources();
+   88     IOReturn recycleStagedRxPackets();
+   89     static bool stagedRxFrame(IOSkywalkPacket *preparedPacket, void *context);
+   90 
+   91     enum : uint32_t {
+   92         kPacketPathDisabled = 0,
+   93         kPacketPathActive = 1,
+   94         kPacketPathQuiescing = 2,
+   95         kPacketPathReleasing = 3,
+   96         kPacketPathBinding = 4
+   97     };
+   98 
+   99     bool enterPacketPath();
+  100     void leavePacketPath();
+  101 
+  102     static constexpr uint32_t kStagedRxPacketCapacity = 128;
+  103 
+  104     IOWorkLoop *_workLoop = nullptr;
+  105     IO80211SkywalkInterface *_packetPathInterface = nullptr; // retained while active
+  106     volatile uint32_t _packetPathState = kPacketPathDisabled;
+  107     volatile uint32_t _packetPathInFlight = 0;
+  108     RTW88WCLPCIBackend *_pciBackend = nullptr; // retained
+  109     RTW88WCLSkywalkQueues *_skywalkQueues = nullptr; // retained, unregistered
+  110     RTW88WCLSkywalkRxAdapter *_rxAdapter = nullptr; // retained, workloop-bound
+  111     /* Accepted RX packets remain pool-owned here until a verified completion
+  112      * queue can consume them. This ring is bounded to the RX pool packet count. */
+  113     RTW88WCLMbufRing<IOSkywalkPacket *, kStagedRxPacketCapacity> _stagedRxPackets;
+  114     RTW88IEEE80211 *_radio = nullptr;          // retained via bindRadioBackend
+  115     bool _baseStarted = false;
+  116     bool _radioStarted = false;
+  117 };
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLInfraInterface.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLMbufRing.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLPCIBackend.cpp ===
+MATCH_LINES=39 CONTEXT_WINDOWS=5
+
+[lines 1-68]
+    1 /* SPDX-License-Identifier: GPL-2.0-only
+    2  * ABI-neutral PCI/MMIO/DMA owner for the native Sequoia WCL frontend.
+    3  */
+    4 #include "RTW88WCLPCIBackend.hpp"
+    5 
+    6 #include <IOKit/IOLib.h>
+    7 #include <libkern/c++/OSMetaClass.h>
+    8 #include <kern/thread.h>
+    9 #include <string.h>
+   10 
+   11 extern "C" {
+   12 #include "../../compat/rtw88_compat.h"
+   13 void rtw88_trigger_interrupt(void);
+   14 boolean_t preemption_enabled(void);
+   15 }
+   16 
+   17 #define super OSObject
+   18 OSDefineMetaClassAndStructors(RTW88WCLPCIBackend, OSObject)
+   19 
+   20 bool RTW88WCLPCIBackend::init()
+   21 {
+   22     if (!super::init())
+   23         return false;
+   24     _pciDev = nullptr;
+   25     _mmioMap = nullptr;
+   26     _mmioBase = nullptr;
+   27     _interruptSource = nullptr;
+   28     _workLoop = nullptr;
+   29     _compatPciDev = nullptr;
+   30     _client = nullptr;
+   31     _dmaLock = nullptr;
+   32     _pendingFreeLock = nullptr;
+   33     _dmaList = nullptr;
+   34     _dmaPendingFree = nullptr;
+   35     _compatLeaseHeld = false;
+   36     _compatInitialized = false;
+   37     _opened = false;
+   38     _radioRunning = false;
+   39     return true;
+   40 }
+   41 
+   42 IOReturn RTW88WCLPCIBackend::open(IOPCIDevice *provider,
+   43                                   IOWorkLoop *workLoop,
+   44                                   RTW88WCLPCIBackendClient *client)
+   45 {
+   46     if (!provider || !workLoop)
+   47         return kIOReturnBadArgument;
+   48     if (_opened || _pciDev || _compatLeaseHeld)
+   49         return kIOReturnBusy;
+   50 
+   51     _pciDev = provider;
+   52     _pciDev->retain();
+   53     _workLoop = workLoop;
+   54     _workLoop->retain();
+   55     _client = client;
+   56 
+   57     _dmaLock = IOSimpleLockAlloc();
+   58     _pendingFreeLock = IOSimpleLockAlloc();
+   59     if (!_dmaLock || !_pendingFreeLock) {
+   60         closeResources();
+   61         return kIOReturnNoMemory;
+   62     }
+   63 
+   64     _pciDev->setMemoryEnable(true);
+   65     _pciDev->setBusMasterEnable(true);
+   66     const UInt16 enabledCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+   67     if ((enabledCommand & 0x0006U) != 0x0006U) {
+   68         IOLog("rtl88wifi-wcl: PCI memory/bus-master enable failed (command=0x%04x)\n",
+
+[lines 87-161]
+   87     }
+   88     _compatPciDev->vendor = _pciDev->configRead16(0x00);
+   89     _compatPciDev->device = _pciDev->configRead16(0x02);
+   90     _compatPciDev->kext_dev = this;
+   91     _compatPciDev->resource[2] = reinterpret_cast<resource_size_t>(_mmioBase);
+   92     _compatPciDev->resource_len[2] = static_cast<resource_size_t>(_mmioMap->getLength());
+   93 
+   94     /* The compat layer has process-global callbacks, so acquire this lease
+   95      * before publishing the function tables or starting its workqueues. */
+   96     RTW88HwOps *expectedOwner = nullptr;
+   97     if (!__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+   98                                      static_cast<RTW88HwOps *>(this), false,
+   99                                      __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE)) {
+  100         IOLog("rtl88wifi-wcl: RTW88 compat hardware lease is already owned\n");
+  101         closeResources();
+  102         return kIOReturnBusy;
+  103     }
+  104     _compatLeaseHeld = true;
+  105     rtw88_pci_io_ops = &_pci_io_ops;
+  106     rtw88_dma_ops = &_dma_ops;
+  107 
+  108     const int compatStatus = rtw88_compat_init();
+  109     if (compatStatus != 0) {
+  110         IOLog("rtl88wifi-wcl: compat runtime initialization failed (%d)\n",
+  111               compatStatus);
+  112         closeResources();
+  113         return kIOReturnNoResources;
+  114     }
+  115     _compatInitialized = true;
+  116 
+  117     _interruptSource = IOInterruptEventSource::interruptEventSource(
+  118         this,
+  119         OSMemberFunctionCast(IOInterruptEventSource::Action, this,
+  120                              &RTW88WCLPCIBackend::handleInterrupt),
+  121         _pciDev, 0);
+  122     if (!_interruptSource ||
+  123         _workLoop->addEventSource(_interruptSource) != kIOReturnSuccess) {
+  124         IOLog("rtl88wifi-wcl: unable to register PCI interrupt event source\n");
+  125         closeResources();
+  126         return kIOReturnNoResources;
+  127     }
+  128     _interruptSource->disable();
+  129 
+  130     _opened = true;
+  131     IOLog("rtl88wifi-wcl: PCI backend acquired %04x:%04x, BAR2=%p length=0x%llx\n",
+  132           _compatPciDev->vendor, _compatPciDev->device, (void *)_mmioBase,
+  133           static_cast<unsigned long long>(_mmioMap->getLength()));
+  134     return kIOReturnSuccess;
+  135 }
+  136 
+  137 IOReturn RTW88WCLPCIBackend::setRadioRunning(bool running)
+  138 {
+  139     if (!_opened || !_pciDev || !_interruptSource)
+  140         return kIOReturnNotReady;
+  141     if (_radioRunning == running)
+  142         return kIOReturnSuccess;
+  143 
+  144     if (running) {
+  145         _pciDev->setMemoryEnable(true);
+  146         _pciDev->setBusMasterEnable(true);
+  147         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+  148         if ((command & 0x0006U) != 0x0006U) {
+  149             _interruptSource->disable();
+  150             _pciDev->setBusMasterEnable(false);
+  151             const UInt16 rollbackCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+  152             if (rollbackCommand & 0x0004U) {
+  153                 /* Bus mastering may still be active. Keep the backend marked
+  154                  * running so close/free cannot reclaim DMA mappings. */
+  155                 _radioRunning = true;
+  156                 IOLog("rtl88wifi-wcl: partial PCI enable rollback failed (command=0x%04x); DMA resources quarantined\n",
+  157                       rollbackCommand);
+  158             } else {
+  159                 _radioRunning = false;
+  160                 _pciDev->setMemoryEnable(false);
+  161             }
+
+[lines 175-230]
+  175         IOLog("rtl88wifi-wcl: PCI bus-master fence did not stick (command=0x%04x)\n",
+  176               command);
+  177         return kIOReturnNotReady;
+  178     }
+  179     _radioRunning = false;
+  180     if (preemption_enabled())
+  181         drainPendingFree();
+  182     return kIOReturnSuccess;
+  183 }
+  184 
+  185 IOReturn RTW88WCLPCIBackend::close()
+  186 {
+  187     if (_radioRunning)
+  188         return kIOReturnBusy;
+  189     closeResources();
+  190     return kIOReturnSuccess;
+  191 }
+  192 
+  193 void RTW88WCLPCIBackend::closeResources()
+  194 {
+  195     if (_interruptSource) {
+  196         _interruptSource->disable();
+  197         if (_workLoop)
+  198             _workLoop->removeEventSource(_interruptSource);
+  199         _interruptSource->release();
+  200         _interruptSource = nullptr;
+  201     }
+  202 
+  203     /* Stop all compat work before reclaiming DMA buffers and releasing the
+  204      * callbacks they may invoke. The RTW88 core must already be stopped. */
+  205     if (_compatInitialized) {
+  206         rtw88_compat_exit();
+  207         _compatInitialized = false;
+  208     }
+  209 
+  210     if (preemption_enabled())
+  211         drainPendingFree();
+  212     releaseDMAEntries();
+  213 
+  214     clearCompatLease();
+  215 
+  216     if (_pciDev) {
+  217         _pciDev->setBusMasterEnable(false);
+  218         _pciDev->setMemoryEnable(false);
+  219     }
+  220     if (_compatPciDev) {
+  221         IOFree(_compatPciDev, sizeof(*_compatPciDev));
+  222         _compatPciDev = nullptr;
+  223     }
+  224     if (_mmioMap) {
+  225         _mmioMap->release();
+  226         _mmioMap = nullptr;
+  227     }
+  228     _mmioBase = nullptr;
+  229 
+  230     if (_workLoop) {
+
+[lines 242-354]
+  242     if (_dmaLock) {
+  243         IOSimpleLockFree(_dmaLock);
+  244         _dmaLock = nullptr;
+  245     }
+  246 
+  247     _client = nullptr;
+  248     _radioRunning = false;
+  249     _opened = false;
+  250 }
+  251 
+  252 void RTW88WCLPCIBackend::clearCompatLease()
+  253 {
+  254     if (!_compatLeaseHeld)
+  255         return;
+  256     RTW88HwOps *expectedOwner = static_cast<RTW88HwOps *>(this);
+  257     if (__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+  258                                     static_cast<RTW88HwOps *>(nullptr), false,
+  259                                     __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE)) {
+  260         rtw88_pci_io_ops = nullptr;
+  261         rtw88_dma_ops = nullptr;
+  262     }
+  263     _compatLeaseHeld = false;
+  264 }
+  265 
+  266 void RTW88WCLPCIBackend::free()
+  267 {
+  268     if (_pciDev) {
+  269         if (_interruptSource)
+  270             _interruptSource->disable();
+  271         _pciDev->setBusMasterEnable(false);
+  272         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+  273         if (command & 0x0004U) {
+  274             IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\n",
+  275                   command);
+  276             /* Keep this object, DMA descriptors, MMIO map, locks, and PCI
+  277              * reference alive until hardware bus mastering is demonstrably off. */
+  278             return;
+  279         }
+  280     }
+  281     _radioRunning = false;
+  282     closeResources();
+  283     super::free();
+  284 }
+  285 
+  286 uint64_t RTW88WCLPCIBackend::mmioLength() const
+  287 {
+  288     return _mmioMap ? static_cast<uint64_t>(_mmioMap->getLength()) : 0;
+  289 }
+  290 
+  291 UInt8 RTW88WCLPCIBackend::pciReadByte(int offset)
+  292 {
+  293     return _pciDev ? _pciDev->configRead8(static_cast<UInt8>(offset)) : 0xff;
+  294 }
+  295 
+  296 UInt16 RTW88WCLPCIBackend::pciReadWord(int offset)
+  297 {
+  298     return _pciDev ? _pciDev->configRead16(static_cast<UInt8>(offset)) : 0xffff;
+  299 }
+  300 
+  301 UInt32 RTW88WCLPCIBackend::pciReadDword(int offset)
+  302 {
+  303     return _pciDev ? _pciDev->configRead32(static_cast<UInt8>(offset)) : 0xffffffffU;
+  304 }
+  305 
+  306 void RTW88WCLPCIBackend::pciWriteByte(int offset, UInt8 value)
+  307 {
+  308     if (_pciDev) _pciDev->configWrite8(static_cast<UInt8>(offset), value);
+  309 }
+  310 
+  311 void RTW88WCLPCIBackend::pciWriteWord(int offset, UInt16 value)
+  312 {
+  313     if (_pciDev) _pciDev->configWrite16(static_cast<UInt8>(offset), value);
+  314 }
+  315 
+  316 void RTW88WCLPCIBackend::pciWriteDword(int offset, UInt32 value)
+  317 {
+  318     if (_pciDev) _pciDev->configWrite32(static_cast<UInt8>(offset), value);
+  319 }
+  320 
+  321 int RTW88WCLPCIBackend::pciFindCapability(int capability)
+  322 {
+  323     if (!_pciDev || capability < 0 || capability > 0xff)
+  324         return 0;
+  325     UInt8 offset = 0;
+  326     return _pciDev->findPCICapability(static_cast<UInt8>(capability), &offset)
+  327                ? static_cast<int>(offset) : 0;
+  328 }
+  329 
+  330 void *RTW88WCLPCIBackend::allocCoherent(size_t size,
+  331                                          IOPhysicalAddress *physical)
+  332 {
+  333     if (physical) *physical = 0;
+  334     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+  335         return nullptr;
+  336     if (preemption_enabled())
+  337         drainPendingFree();
+  338 
+  339     IOBufferMemoryDescriptor *descriptor =
+  340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+  341             kernel_task,
+  342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+  343                 kIOMemoryKernelUserShared,
+  344             size, 0x00000000FFFFFFF0ULL);
+  345     if (!descriptor)
+  346         return nullptr;
+  347     if (descriptor->prepare() != kIOReturnSuccess) {
+  348         descriptor->release();
+  349         return nullptr;
+  350     }
+  351 
+  352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+  353     void *virtualAddress = descriptor->getBytesNoCopy();
+  354     if (!virtualAddress || !address) {
+
+[lines 370-537]
+  370     entry->size = size;
+  371 
+  372     IOSimpleLockLock(_dmaLock);
+  373     entry->next = _dmaList;
+  374     _dmaList = entry;
+  375     IOSimpleLockUnlock(_dmaLock);
+  376     if (physical) *physical = address;
+  377     return virtualAddress;
+  378 }
+  379 
+  380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+  381                                       IOPhysicalAddress physical)
+  382 {
+  383     (void)size;
+  384     (void)physical;
+  385     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+  386         return;
+  387 
+  388     IOSimpleLockLock(_dmaLock);
+  389     RTW88DMAEntry **previous = &_dmaList;
+  390     RTW88DMAEntry *entry = _dmaList;
+  391     while (entry && entry->virt != virtualAddress) {
+  392         previous = &entry->next;
+  393         entry = entry->next;
+  394     }
+  395     if (entry)
+  396         *previous = entry->next;
+  397     IOSimpleLockUnlock(_dmaLock);
+  398 
+  399     if (!entry) {
+  400         IOLog("rtl88wifi-wcl: freeCoherent: unknown virtual address %p\n",
+  401               virtualAddress);
+  402         return;
+  403     }
+  404     if (preemption_enabled()) {
+  405         freeDMAList(entry);
+  406     } else {
+  407         IOSimpleLockLock(_pendingFreeLock);
+  408         entry->next = _dmaPendingFree;
+  409         _dmaPendingFree = entry;
+  410         IOSimpleLockUnlock(_pendingFreeLock);
+  411     }
+  412 }
+  413 
+  414 void RTW88WCLPCIBackend::freeCoherentByPhys(IOPhysicalAddress physical)
+  415 {
+  416     if (!_dmaLock || !_pendingFreeLock || !physical)
+  417         return;
+  418 
+  419     IOSimpleLockLock(_dmaLock);
+  420     RTW88DMAEntry **previous = &_dmaList;
+  421     RTW88DMAEntry *entry = _dmaList;
+  422     while (entry && entry->phys != physical) {
+  423         previous = &entry->next;
+  424         entry = entry->next;
+  425     }
+  426     if (entry)
+  427         *previous = entry->next;
+  428     IOSimpleLockUnlock(_dmaLock);
+  429 
+  430     if (!entry)
+  431         return;
+  432     if (preemption_enabled()) {
+  433         freeDMAList(entry);
+  434     } else {
+  435         IOSimpleLockLock(_pendingFreeLock);
+  436         entry->next = _dmaPendingFree;
+  437         _dmaPendingFree = entry;
+  438         IOSimpleLockUnlock(_pendingFreeLock);
+  439     }
+  440 }
+  441 
+  442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+  443                                          void *originalAddress)
+  444 {
+  445     if (!_dmaLock || !physical)
+  446         return;
+  447     IOSimpleLockLock(_dmaLock);
+  448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+  449         if (entry->phys == physical) {
+  450             entry->orig_va = originalAddress;
+  451             break;
+  452         }
+  453     }
+  454     IOSimpleLockUnlock(_dmaLock);
+  455 }
+  456 
+  457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+  458                                           size_t size)
+  459 {
+  460     if (!_dmaLock || !dmaAddress || !size)
+  461         return;
+  462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+  463      * racing a concurrent unmap/free against the original buffer pointer. */
+  464     IOSimpleLockLock(_dmaLock);
+  465     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+  466         if (entry->phys == dmaAddress && entry->orig_va && entry->virt) {
+  467             const size_t copyLength = size < entry->size ? size : entry->size;
+  468             memcpy(entry->orig_va, entry->virt, copyLength);
+  469             break;
+  470         }
+  471     }
+  472     IOSimpleLockUnlock(_dmaLock);
+  473 }
+  474 
+  475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+  476 {
+  477     if (_client)
+  478         _client->rtw88WCLResumeTransmit();
+  479 }
+  480 
+  481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+  482                                           int count)
+  483 {
+  484     (void)source;
+  485     (void)count;
+  486     if (!_radioRunning || !g_pci_dev_instance ||
+  487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+  488             static_cast<RTW88HwOps *>(this))
+  489         return;
+  490     if (preemption_enabled())
+  491         drainPendingFree();
+  492     rtw88_trigger_interrupt();
+  493 }
+  494 
+  495 void RTW88WCLPCIBackend::drainPendingFree()
+  496 {
+  497     if (!_pendingFreeLock)
+  498         return;
+  499     IOSimpleLockLock(_pendingFreeLock);
+  500     RTW88DMAEntry *list = _dmaPendingFree;
+  501     _dmaPendingFree = nullptr;
+  502     IOSimpleLockUnlock(_pendingFreeLock);
+  503     freeDMAList(list);
+  504 }
+  505 
+  506 void RTW88WCLPCIBackend::releaseDMAEntries()
+  507 {
+  508     if (_dmaLock) {
+  509         IOSimpleLockLock(_dmaLock);
+  510         RTW88DMAEntry *list = _dmaList;
+  511         _dmaList = nullptr;
+  512         IOSimpleLockUnlock(_dmaLock);
+  513         freeDMAList(list);
+  514     }
+  515     if (_pendingFreeLock) {
+  516         IOSimpleLockLock(_pendingFreeLock);
+  517         RTW88DMAEntry *pending = _dmaPendingFree;
+  518         _dmaPendingFree = nullptr;
+  519         IOSimpleLockUnlock(_pendingFreeLock);
+  520         freeDMAList(pending);
+  521     }
+  522 }
+  523 
+  524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+  525 {
+  526     while (list) {
+  527         RTW88DMAEntry *next = list->next;
+  528         if (list->desc) {
+  529             list->desc->complete();
+  530             list->desc->release();
+  531         }
+  532         IOFree(list, sizeof(*list));
+  533         list = next;
+  534     }
+  535 }
+  536 
+  537 #undef super
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLPCIBackend.hpp ===
+MATCH_LINES=9 CONTEXT_WINDOWS=2
+
+[lines 12-68]
+   12 #include "../RTW88IEEE80211.hpp"
+   13 
+   14 #include <IOKit/IOBufferMemoryDescriptor.h>
+   15 #include <IOKit/IOInterruptEventSource.h>
+   16 #include <IOKit/IOWorkLoop.h>
+   17 #include <IOKit/IOMemoryDescriptor.h>
+   18 #include <IOKit/IOLocks.h>
+   19 #include <IOKit/pci/IOPCIDevice.h>
+   20 #include <libkern/c++/OSObject.h>
+   21 
+   22 class RTW88WCLPCIBackendClient {
+   23 public:
+   24     virtual void rtw88WCLResumeTransmit() = 0;
+   25     virtual ~RTW88WCLPCIBackendClient() {}
+   26 };
+   27 
+   28 class RTW88WCLPCIBackend final : public OSObject, public RTW88HwOps {
+   29     OSDeclareDefaultStructors(RTW88WCLPCIBackend)
+   30 
+   31 public:
+   32     bool init() override;
+   33     void free() override;
+   34 
+   35     /* Acquires one process-wide RTW88 compat-hardware lease. This is
+   36      * deliberately exclusive: the legacy controller and a native WCL
+   37      * controller must never drive the same global rtw88 compat callbacks. */
+   38     IOReturn open(IOPCIDevice *provider, IOWorkLoop *workLoop,
+   39                   RTW88WCLPCIBackendClient *client = nullptr);
+   40 
+   41     /* The caller must first stop RTW88IEEE80211 so it can no longer issue
+   42      * MMIO/DMA operations. close() refuses to tear down a running radio. */
+   43     IOReturn close();
+   44     IOReturn setRadioRunning(bool running);
+   45 
+   46     bool isOpen() const { return _opened; }
+   47     bool isRadioRunning() const { return _radioRunning; }
+   48     IOPCIDevice *pciDevice() const { return _pciDev; } // borrowed
+   49     struct pci_dev *compatPCIDevice() const { return _compatPciDev; } // borrowed
+   50     uint64_t mmioLength() const;
+   51 
+   52     UInt8 pciReadByte(int offset) override;
+   53     UInt16 pciReadWord(int offset) override;
+   54     UInt32 pciReadDword(int offset) override;
+   55     void pciWriteByte(int offset, UInt8 value) override;
+   56     void pciWriteWord(int offset, UInt16 value) override;
+   57     void pciWriteDword(int offset, UInt32 value) override;
+   58     int pciFindCapability(int capability) override;
+   59     volatile void *mmioBase() const override { return _mmioBase; }
+   60     void *allocCoherent(size_t size, IOPhysicalAddress *physical) override;
+   61     void freeCoherent(size_t size, void *virtualAddress,
+   62                       IOPhysicalAddress physical) override;
+   63     void freeCoherentByPhys(IOPhysicalAddress physical) override;
+   64     void setBounceOrigVA(IOPhysicalAddress physical, void *originalAddress) override;
+   65     void syncBounceForCpu(IOPhysicalAddress dmaAddress, size_t size) override;
+   66     void resumeTxIfStalled() override;
+   67 
+   68 private:
+
+[lines 72-93]
+   72     void handleInterrupt(IOInterruptEventSource *source, int count);
+   73     void clearCompatLease();
+   74     void closeResources();
+   75 
+   76     IOPCIDevice *_pciDev = nullptr;                // retained
+   77     IOMemoryMap *_mmioMap = nullptr;               // retained
+   78     volatile void *_mmioBase = nullptr;
+   79     IOInterruptEventSource *_interruptSource = nullptr;
+   80     IOWorkLoop *_workLoop = nullptr;               // retained
+   81     struct pci_dev *_compatPciDev = nullptr;
+   82     RTW88WCLPCIBackendClient *_client = nullptr;   // non-owning
+   83 
+   84     IOSimpleLock *_dmaLock = nullptr;
+   85     IOSimpleLock *_pendingFreeLock = nullptr;
+   86     RTW88DMAEntry *_dmaList = nullptr;
+   87     RTW88DMAEntry *_dmaPendingFree = nullptr;
+   88 
+   89     bool _compatLeaseHeld = false;
+   90     bool _compatInitialized = false;
+   91     bool _opened = false;
+   92     bool _radioRunning = false;
+   93 };
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLPacketSpanValidation.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLPacketView.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLRequestDecoder.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+=== Native/probe lifecycle call sites | src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp ===
+MATCH_LINES=0 CONTEXT_WINDOWS=0
+
+--- PCI probe path registration and teardown ---
+
+=== PCI ops / probe / remove / DMA and interrupt lifecycle | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c ===
+MATCH_LINES=18 CONTEXT_WINDOWS=6
+
+[lines 154-198]
+  154 static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+  155 				 struct rtw_pci_rx_ring *rx_ring)
+  156 {
+  157 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+  158 	u8 *head = rx_ring->r.head;
+  159 	int ring_sz = rx_ring->r.desc_size * rx_ring->r.len;
+  160 
+  161 	rtw_pci_free_rx_ring_skbs(rtwdev, rx_ring);
+  162 
+  163 	dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+  164 }
+  165 
+  166 static void rtw_pci_free_trx_ring(struct rtw_dev *rtwdev)
+  167 {
+  168 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  169 	struct rtw_pci_tx_ring *tx_ring;
+  170 	struct rtw_pci_rx_ring *rx_ring;
+  171 	int i;
+  172 
+  173 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+  174 		tx_ring = &rtwpci->tx_rings[i];
+  175 		rtw_pci_free_tx_ring(rtwdev, tx_ring);
+  176 	}
+  177 
+  178 	for (i = 0; i < RTK_MAX_RX_QUEUE_NUM; i++) {
+  179 		rx_ring = &rtwpci->rx_rings[i];
+  180 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+  181 	}
+  182 }
+  183 
+  184 static int rtw_pci_init_tx_ring(struct rtw_dev *rtwdev,
+  185 				struct rtw_pci_tx_ring *tx_ring,
+  186 				u8 desc_size, u32 len)
+  187 {
+  188 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+  189 	int ring_sz = desc_size * len;
+  190 	dma_addr_t dma;
+  191 	u8 *head;
+  192 
+  193 	if (len > TRX_BD_IDX_MASK) {
+  194 		rtw_err(rtwdev, "len %d exceeds maximum TX entries\n", len);
+  195 		return -EINVAL;
+  196 	}
+  197 
+  198 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+
+[lines 360-404]
+  360 
+  361 	rx_alloced = j;
+  362 	for (j = 0; j < rx_alloced; j++) {
+  363 		rx_ring = &rtwpci->rx_rings[j];
+  364 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+  365 	}
+  366 
+  367 	return ret;
+  368 }
+  369 
+  370 static void rtw_pci_deinit(struct rtw_dev *rtwdev)
+  371 {
+  372 	rtw_pci_free_trx_ring(rtwdev);
+  373 }
+  374 
+  375 static int rtw_pci_init(struct rtw_dev *rtwdev)
+  376 {
+  377 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  378 	int ret = 0;
+  379 
+  380 	rtwpci->irq_mask[0] = IMR_HIGHDOK |
+  381 			      IMR_MGNTDOK |
+  382 			      IMR_BKDOK |
+  383 			      IMR_BEDOK |
+  384 			      IMR_VIDOK |
+  385 			      IMR_VODOK |
+  386 			      IMR_ROK |
+  387 			      IMR_BCNDMAINT_E |
+  388 			      IMR_C2HCMD |
+  389 			      0;
+  390 	rtwpci->irq_mask[1] = IMR_TXFOVW |
+  391 			      0;
+  392 	rtwpci->irq_mask[3] = IMR_H2CDOK |
+  393 			      0;
+  394 	spin_lock_init(&rtwpci->irq_lock);
+  395 	spin_lock_init(&rtwpci->hwirq_lock);
+  396 	ret = rtw_pci_init_trx_ring(rtwdev);
+  397 
+  398 	return ret;
+  399 }
+  400 
+  401 static void rtw_pci_reset_buf_desc(struct rtw_dev *rtwdev)
+  402 {
+  403 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  404 	u32 len;
+
+[lines 531-636]
+  531 }
+  532 
+  533 static int rtw_pci_setup(struct rtw_dev *rtwdev)
+  534 {
+  535 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  536 
+  537 	rtw_pci_reset_trx_ring(rtwdev);
+  538 	rtw_pci_dma_reset(rtwdev, rtwpci);
+  539 
+  540 	return 0;
+  541 }
+  542 
+  543 static void rtw_pci_dma_release(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci)
+  544 {
+  545 	struct rtw_pci_tx_ring *tx_ring;
+  546 	enum rtw_tx_queue_type queue;
+  547 
+  548 	rtw_pci_reset_trx_ring(rtwdev);
+  549 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++) {
+  550 		tx_ring = &rtwpci->tx_rings[queue];
+  551 		rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+  552 	}
+  553 }
+  554 
+  555 static void rtw_pci_napi_start(struct rtw_dev *rtwdev)
+  556 {
+  557 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  558 
+  559 	if (test_and_set_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+  560 		return;
+  561 
+  562 	napi_enable(&rtwpci->napi);
+  563 }
+  564 
+  565 static void rtw_pci_napi_stop(struct rtw_dev *rtwdev)
+  566 {
+  567 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  568 
+  569 	if (!test_and_clear_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+  570 		return;
+  571 
+  572 	napi_synchronize(&rtwpci->napi);
+  573 	napi_disable(&rtwpci->napi);
+  574 }
+  575 
+  576 static int rtw_pci_start(struct rtw_dev *rtwdev)
+  577 {
+  578 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  579 
+  580 	rtw_pci_napi_start(rtwdev);
+  581 
+  582 	spin_lock_bh(&rtwpci->irq_lock);
+  583 	rtwpci->running = true;
+  584 	rtw_pci_enable_interrupt(rtwdev, rtwpci, false);
+  585 	spin_unlock_bh(&rtwpci->irq_lock);
+  586 
+  587 	return 0;
+  588 }
+  589 
+  590 static void rtw_pci_stop(struct rtw_dev *rtwdev)
+  591 {
+  592 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  593 	struct pci_dev *pdev = rtwpci->pdev;
+  594 
+  595 	spin_lock_bh(&rtwpci->irq_lock);
+  596 	rtwpci->running = false;
+  597 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+  598 	spin_unlock_bh(&rtwpci->irq_lock);
+  599 
+  600 	synchronize_irq(pdev->irq);
+  601 	rtw_pci_napi_stop(rtwdev);
+  602 
+  603 	spin_lock_bh(&rtwpci->irq_lock);
+  604 	rtw_pci_dma_release(rtwdev, rtwpci);
+  605 	spin_unlock_bh(&rtwpci->irq_lock);
+  606 }
+  607 
+  608 static void rtw_pci_deep_ps_enter(struct rtw_dev *rtwdev)
+  609 {
+  610 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  611 	struct rtw_pci_tx_ring *tx_ring;
+  612 	enum rtw_tx_queue_type queue;
+  613 	bool tx_empty = true;
+  614 
+  615 	if (rtw_fw_feature_check(&rtwdev->fw, FW_FEATURE_TX_WAKE))
+  616 		goto enter_deep_ps;
+  617 
+  618 	lockdep_assert_held(&rtwpci->irq_lock);
+  619 
+  620 	/* Deep PS state is not allowed to TX-DMA */
+  621 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++) {
+  622 		/* BCN queue is rsvd page, does not have DMA interrupt
+  623 		 * H2C queue is managed by firmware
+  624 		 */
+  625 		if (queue == RTW_TX_QUEUE_BCN ||
+  626 		    queue == RTW_TX_QUEUE_H2C)
+  627 			continue;
+  628 
+  629 		tx_ring = &rtwpci->tx_rings[queue];
+  630 
+  631 		/* check if there is any skb DMAing */
+  632 		if (skb_queue_len(&tx_ring->queue)) {
+  633 			tx_empty = false;
+  634 			break;
+  635 		}
+  636 	}
+
+[lines 1657-1721]
+ 1657 	rtw_pci_io_unmapping(rtwdev, pdev);
+ 1658 
+ 1659 err_out:
+ 1660 	return ret;
+ 1661 }
+ 1662 
+ 1663 static void rtw_pci_destroy(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ 1664 {
+ 1665 	rtw_pci_deinit(rtwdev);
+ 1666 	rtw_pci_io_unmapping(rtwdev, pdev);
+ 1667 }
+ 1668 
+ 1669 static const struct rtw_hci_ops rtw_pci_ops = {
+ 1670 	.tx_write = rtw_pci_tx_write,
+ 1671 	.tx_kick_off = rtw_pci_tx_kick_off,
+ 1672 	.flush_queues = rtw_pci_flush_queues,
+ 1673 	.setup = rtw_pci_setup,
+ 1674 	.start = rtw_pci_start,
+ 1675 	.stop = rtw_pci_stop,
+ 1676 	.deep_ps = rtw_pci_deep_ps,
+ 1677 	.link_ps = rtw_pci_link_ps,
+ 1678 	.interface_cfg = rtw_pci_interface_cfg,
+ 1679 	.dynamic_rx_agg = NULL,
+ 1680 	.write_firmware_page = rtw_write_firmware_page,
+ 1681 
+ 1682 	.read8 = rtw_pci_read8,
+ 1683 	.read16 = rtw_pci_read16,
+ 1684 	.read32 = rtw_pci_read32,
+ 1685 	.write8 = rtw_pci_write8,
+ 1686 	.write16 = rtw_pci_write16,
+ 1687 	.write32 = rtw_pci_write32,
+ 1688 	.write_data_rsvd_page = rtw_pci_write_data_rsvd_page,
+ 1689 	.write_data_h2c = rtw_pci_write_data_h2c,
+ 1690 };
+ 1691 
+ 1692 static int rtw_pci_request_irq(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ 1693 {
+ 1694 	unsigned int flags = PCI_IRQ_INTX;
+ 1695 	int ret;
+ 1696 
+ 1697 	if (!rtw_disable_msi)
+ 1698 		flags |= PCI_IRQ_MSI;
+ 1699 
+ 1700 	ret = pci_alloc_irq_vectors(pdev, 1, 1, flags);
+ 1701 	if (ret < 0) {
+ 1702 		rtw_err(rtwdev, "failed to alloc PCI irq vectors\n");
+ 1703 		return ret;
+ 1704 	}
+ 1705 
+ 1706 	ret = devm_request_threaded_irq(rtwdev->dev, pdev->irq,
+ 1707 					rtw_pci_interrupt_handler,
+ 1708 					rtw_pci_interrupt_threadfn,
+ 1709 					IRQF_SHARED, KBUILD_MODNAME, rtwdev);
+ 1710 	if (ret) {
+ 1711 		rtw_err(rtwdev, "failed to request irq %d\n", ret);
+ 1712 		pci_free_irq_vectors(pdev);
+ 1713 	}
+ 1714 
+ 1715 	return ret;
+ 1716 }
+ 1717 
+ 1718 static void rtw_pci_free_irq(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+ 1719 {
+ 1720 	devm_free_irq(rtwdev->dev, pdev->irq, rtwdev);
+ 1721 	pci_free_irq_vectors(pdev);
+
+[lines 1817-1888]
+ 1817 	pci_enable_wake(pdev, PCI_D0, 0);
+ 1818 
+ 1819 	netif_device_attach(netdev);
+ 1820 }
+ 1821 
+ 1822 const struct pci_error_handlers rtw_pci_err_handler = {
+ 1823 	.error_detected = rtw_pci_io_err_detected,
+ 1824 	.slot_reset = rtw_pci_io_slot_reset,
+ 1825 	.resume = rtw_pci_io_resume,
+ 1826 };
+ 1827 EXPORT_SYMBOL(rtw_pci_err_handler);
+ 1828 
+ 1829 int rtw_pci_probe(struct pci_dev *pdev,
+ 1830 		  const struct pci_device_id *id)
+ 1831 {
+ 1832 	struct pci_dev *bridge = pci_upstream_bridge(pdev);
+ 1833 	struct ieee80211_hw *hw;
+ 1834 	struct rtw_dev *rtwdev;
+ 1835 	struct rtw_pci *rtwpci;
+ 1836 	int drv_data_size;
+ 1837 	int ret;
+ 1838 
+ 1839 	drv_data_size = sizeof(struct rtw_dev) + sizeof(struct rtw_pci);
+ 1840 	hw = ieee80211_alloc_hw(drv_data_size, &rtw_ops);
+ 1841 	if (!hw) {
+ 1842 		dev_err(&pdev->dev, "failed to allocate hw\n");
+ 1843 		return -ENOMEM;
+ 1844 	}
+ 1845 
+ 1846 	rtwdev = hw->priv;
+ 1847 	rtwdev->hw = hw;
+ 1848 	rtwdev->dev = &pdev->dev;
+ 1849 	rtwdev->chip = (struct rtw_chip_info *)id->driver_data;
+ 1850 	rtwdev->hci.ops = &rtw_pci_ops;
+ 1851 	rtwdev->hci.type = RTW_HCI_TYPE_PCIE;
+ 1852 
+ 1853 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 1854 	atomic_set(&rtwpci->link_usage, 1);
+ 1855 
+ 1856 	ret = rtw_core_init(rtwdev);
+ 1857 	if (ret)
+ 1858 		goto err_release_hw;
+ 1859 
+ 1860 	rtw_dbg(rtwdev, RTW_DBG_PCI,
+ 1861 		"rtw88 pci probe: vendor=0x%4.04X device=0x%4.04X rev=%d\n",
+ 1862 		pdev->vendor, pdev->device, pdev->revision);
+ 1863 
+ 1864 	ret = rtw_pci_claim(rtwdev, pdev);
+ 1865 	if (ret) {
+ 1866 		rtw_err(rtwdev, "failed to claim pci device\n");
+ 1867 		goto err_deinit_core;
+ 1868 	}
+ 1869 
+ 1870 	ret = rtw_pci_setup_resource(rtwdev, pdev);
+ 1871 	if (ret) {
+ 1872 		rtw_err(rtwdev, "failed to setup pci resources\n");
+ 1873 		goto err_pci_declaim;
+ 1874 	}
+ 1875 
+ 1876 	ret = rtw_pci_napi_init(rtwdev);
+ 1877 	if (ret) {
+ 1878 		rtw_err(rtwdev, "failed to setup NAPI\n");
+ 1879 		goto err_pci_declaim;
+ 1880 	}
+ 1881 
+ 1882 	ret = rtw_chip_info_setup(rtwdev);
+ 1883 	if (ret) {
+ 1884 		rtw_err(rtwdev, "failed to setup chip information\n");
+ 1885 		goto err_destroy_pci;
+ 1886 	}
+ 1887 
+ 1888 	/* Disable PCIe ASPM L1 while doing NAPI poll for 8821CE */
+
+[lines 1905-1972]
+ 1905 	}
+ 1906 
+ 1907 	return 0;
+ 1908 
+ 1909 err_destroy_pci:
+ 1910 	rtw_pci_napi_deinit(rtwdev);
+ 1911 	rtw_pci_destroy(rtwdev, pdev);
+ 1912 
+ 1913 err_pci_declaim:
+ 1914 	rtw_pci_declaim(rtwdev, pdev);
+ 1915 
+ 1916 err_deinit_core:
+ 1917 	rtw_core_deinit(rtwdev);
+ 1918 
+ 1919 err_release_hw:
+ 1920 	pci_set_drvdata(pdev, NULL);
+ 1921 	ieee80211_free_hw(hw);
+ 1922 
+ 1923 	return ret;
+ 1924 }
+ 1925 EXPORT_SYMBOL(rtw_pci_probe);
+ 1926 
+ 1927 void rtw_pci_remove(struct pci_dev *pdev)
+ 1928 {
+ 1929 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+ 1930 	struct rtw_dev *rtwdev;
+ 1931 	struct rtw_pci *rtwpci;
+ 1932 
+ 1933 	if (!hw)
+ 1934 		return;
+ 1935 
+ 1936 	rtwdev = hw->priv;
+ 1937 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 1938 
+ 1939 	rtw_unregister_hw(rtwdev, hw);
+ 1940 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+ 1941 	rtw_pci_free_irq(rtwdev, pdev);
+ 1942 	rtw_pci_napi_deinit(rtwdev);
+ 1943 	rtw_pci_destroy(rtwdev, pdev);
+ 1944 	rtw_pci_declaim(rtwdev, pdev);
+ 1945 	rtw_core_deinit(rtwdev);
+ 1946 	ieee80211_free_hw(hw);
+ 1947 	pci_set_drvdata(pdev, NULL);
+ 1948 }
+ 1949 EXPORT_SYMBOL(rtw_pci_remove);
+ 1950 
+ 1951 void rtw_pci_shutdown(struct pci_dev *pdev)
+ 1952 {
+ 1953 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+ 1954 	struct rtw_dev *rtwdev;
+ 1955 	const struct rtw_chip_info *chip;
+ 1956 
+ 1957 	if (!hw)
+ 1958 		return;
+ 1959 
+ 1960 	rtwdev = hw->priv;
+ 1961 	chip = rtwdev->chip;
+ 1962 
+ 1963 	if (chip->ops->shutdown)
+ 1964 		chip->ops->shutdown(rtwdev);
+ 1965 
+ 1966 	pci_set_power_state(pdev, PCI_D3hot);
+ 1967 }
+ 1968 EXPORT_SYMBOL(rtw_pci_shutdown);
+ 1969 
+ 1970 MODULE_AUTHOR("Realtek Corporation");
+ 1971 MODULE_DESCRIPTION("Realtek PCI 802.11ac wireless driver");
+ 1972 MODULE_LICENSE("Dual BSD/GPL");
+
+--- Generic HCI wrappers and firmware callers for special TX ---
+
+FILE_NOT_FOUND=hci.c
+
+=== HCI/firmware/special TX dispatch hci.h | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h ===
+MATCH_LINES=6 CONTEXT_WINDOWS=2
+
+[lines 15-50]
+   15 	int (*setup)(struct rtw_dev *rtwdev);
+   16 	int (*start)(struct rtw_dev *rtwdev);
+   17 	void (*stop)(struct rtw_dev *rtwdev);
+   18 	void (*deep_ps)(struct rtw_dev *rtwdev, bool enter);
+   19 	void (*link_ps)(struct rtw_dev *rtwdev, bool enter);
+   20 	void (*interface_cfg)(struct rtw_dev *rtwdev);
+   21 	void (*dynamic_rx_agg)(struct rtw_dev *rtwdev, bool enable);
+   22 	void (*write_firmware_page)(struct rtw_dev *rtwdev, u32 page,
+   23 				    const u8 *data, u32 size);
+   24 
+   25 	int (*write_data_rsvd_page)(struct rtw_dev *rtwdev, u8 *buf, u32 size);
+   26 	int (*write_data_h2c)(struct rtw_dev *rtwdev, u8 *buf, u32 size);
+   27 
+   28 	u8 (*read8)(struct rtw_dev *rtwdev, u32 addr);
+   29 	u16 (*read16)(struct rtw_dev *rtwdev, u32 addr);
+   30 	u32 (*read32)(struct rtw_dev *rtwdev, u32 addr);
+   31 	void (*write8)(struct rtw_dev *rtwdev, u32 addr, u8 val);
+   32 	void (*write16)(struct rtw_dev *rtwdev, u32 addr, u16 val);
+   33 	void (*write32)(struct rtw_dev *rtwdev, u32 addr, u32 val);
+   34 };
+   35 
+   36 static inline int rtw_hci_tx_write(struct rtw_dev *rtwdev,
+   37 				   struct rtw_tx_pkt_info *pkt_info,
+   38 				   struct sk_buff *skb)
+   39 {
+   40 	return rtwdev->hci.ops->tx_write(rtwdev, pkt_info, skb);
+   41 }
+   42 
+   43 static inline void rtw_hci_tx_kick_off(struct rtw_dev *rtwdev)
+   44 {
+   45 	return rtwdev->hci.ops->tx_kick_off(rtwdev);
+   46 }
+   47 
+   48 static inline int rtw_hci_setup(struct rtw_dev *rtwdev)
+   49 {
+   50 	return rtwdev->hci.ops->setup(rtwdev);
+
+[lines 81-123]
+   81 		rtwdev->hci.ops->dynamic_rx_agg(rtwdev, enable);
+   82 }
+   83 
+   84 static inline void rtw_hci_write_firmware_page(struct rtw_dev *rtwdev, u32 page,
+   85 					       const u8 *data, u32 size)
+   86 {
+   87 	rtwdev->hci.ops->write_firmware_page(rtwdev, page, data, size);
+   88 }
+   89 
+   90 static inline int
+   91 rtw_hci_write_data_rsvd_page(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+   92 {
+   93 	return rtwdev->hci.ops->write_data_rsvd_page(rtwdev, buf, size);
+   94 }
+   95 
+   96 static inline int
+   97 rtw_hci_write_data_h2c(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+   98 {
+   99 	return rtwdev->hci.ops->write_data_h2c(rtwdev, buf, size);
+  100 }
+  101 
+  102 static inline u8 rtw_read8(struct rtw_dev *rtwdev, u32 addr)
+  103 {
+  104 	return rtwdev->hci.ops->read8(rtwdev, addr);
+  105 }
+  106 
+  107 static inline u16 rtw_read16(struct rtw_dev *rtwdev, u32 addr)
+  108 {
+  109 	return rtwdev->hci.ops->read16(rtwdev, addr);
+  110 }
+  111 
+  112 static inline u32 rtw_read32(struct rtw_dev *rtwdev, u32 addr)
+  113 {
+  114 	return rtwdev->hci.ops->read32(rtwdev, addr);
+  115 }
+  116 
+  117 static inline void rtw_write8(struct rtw_dev *rtwdev, u32 addr, u8 val)
+  118 {
+  119 	rtwdev->hci.ops->write8(rtwdev, addr, val);
+  120 }
+  121 
+  122 static inline void rtw_write16(struct rtw_dev *rtwdev, u32 addr, u16 val)
+  123 {
+
+=== HCI/firmware/special TX dispatch fw.c | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.c ===
+MATCH_LINES=102 CONTEXT_WINDOWS=13
+
+[lines 94-128]
+   94 				      struct sk_buff *skb)
+   95 {
+   96 	struct rtw_c2h_cmd *c2h;
+   97 	u8 sub_cmd_id;
+   98 
+   99 	c2h = get_c2h_from_skb(skb);
+  100 	sub_cmd_id = c2h->payload[0];
+  101 
+  102 	switch (sub_cmd_id) {
+  103 	case C2H_CCX_RPT:
+  104 		rtw_tx_report_handle(rtwdev, skb, C2H_CCX_RPT);
+  105 		break;
+  106 	case C2H_SCAN_STATUS_RPT:
+  107 		rtw_hw_scan_status_report(rtwdev, skb);
+  108 		break;
+  109 	case C2H_CHAN_SWITCH:
+  110 		rtw_hw_scan_chan_switch(rtwdev, skb);
+  111 		break;
+  112 	default:
+  113 		break;
+  114 	}
+  115 }
+  116 
+  117 static u16 get_max_amsdu_len(u32 bit_rate)
+  118 {
+  119 	/* lower than ofdm, do not aggregate */
+  120 	if (bit_rate < 550)
+  121 		return 1;
+  122 
+  123 	/* lower than 20M 2ss mcs8, make it small */
+  124 	if (bit_rate < 1800)
+  125 		return 1200;
+  126 
+  127 	/* lower than 40M 2ss mcs9, make it medium */
+  128 	if (bit_rate < 4000)
+
+[lines 305-339]
+  305 	c2h = (struct rtw_c2h_cmd *)(skb->data + pkt_offset);
+  306 	len = skb->len - pkt_offset - 2;
+  307 
+  308 	mutex_lock(&rtwdev->mutex);
+  309 
+  310 	if (!test_bit(RTW_FLAG_RUNNING, rtwdev->flags))
+  311 		goto unlock;
+  312 
+  313 	switch (c2h->id) {
+  314 	case C2H_CCX_TX_RPT:
+  315 		rtw_tx_report_handle(rtwdev, skb, C2H_CCX_TX_RPT);
+  316 		break;
+  317 	case C2H_BT_INFO:
+  318 		rtw_coex_bt_info_notify(rtwdev, c2h->payload, len);
+  319 		break;
+  320 	case C2H_BT_HID_INFO:
+  321 		rtw_coex_bt_hid_info_notify(rtwdev, c2h->payload, len);
+  322 		break;
+  323 	case C2H_WLAN_INFO:
+  324 		rtw_coex_wl_fwdbginfo_notify(rtwdev, c2h->payload, len);
+  325 		break;
+  326 	case C2H_BCN_FILTER_NOTIFY:
+  327 		rtw_fw_bcn_filter_notify(rtwdev, c2h->payload, len);
+  328 		break;
+  329 	case C2H_HALMAC:
+  330 		rtw_fw_c2h_cmd_handle_ext(rtwdev, skb);
+  331 		break;
+  332 	case C2H_RA_RPT:
+  333 		rtw_fw_ra_report_handle(rtwdev, c2h->payload, len);
+  334 		break;
+  335 	case C2H_ADAPTIVITY:
+  336 		rtw_fw_adaptivity_result(rtwdev, c2h->payload, len);
+  337 		break;
+  338 	default:
+  339 		rtw_dbg(rtwdev, RTW_DBG_FW, "C2H 0x%x isn't handled\n", c2h->id);
+
+[lines 501-535]
+  501 	rtw_fw_send_h2c_command(rtwdev, h2c);
+  502 }
+  503 
+  504 static void rtw_fw_send_h2c_packet(struct rtw_dev *rtwdev, u8 *h2c_pkt)
+  505 {
+  506 	int ret;
+  507 
+  508 	lockdep_assert_held(&rtwdev->mutex);
+  509 
+  510 	FW_OFFLOAD_H2C_SET_SEQ_NUM(h2c_pkt, rtwdev->h2c.seq);
+  511 	ret = rtw_hci_write_data_h2c(rtwdev, h2c_pkt, H2C_PKT_SIZE);
+  512 	if (ret)
+  513 		rtw_err(rtwdev, "failed to send h2c packet\n");
+  514 	rtwdev->h2c.seq++;
+  515 }
+  516 
+  517 void
+  518 rtw_fw_send_general_info(struct rtw_dev *rtwdev)
+  519 {
+  520 	struct rtw_fifo_conf *fifo = &rtwdev->fifo;
+  521 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
+  522 	u16 total_size = H2C_PKT_HDR_SIZE + 4;
+  523 
+  524 	if (rtw_chip_wcpu_8051(rtwdev))
+  525 		return;
+  526 
+  527 	rtw_h2c_pkt_set_header(h2c_pkt, H2C_PKT_GENERAL_INFO);
+  528 
+  529 	SET_PKT_H2C_TOTAL_LEN(h2c_pkt, total_size);
+  530 
+  531 	GENERAL_INFO_SET_FW_TX_BOUNDARY(h2c_pkt,
+  532 					fifo->rsvd_fw_txbuf_addr -
+  533 					fifo->rsvd_boundary);
+  534 
+  535 	rtw_fw_send_h2c_packet(rtwdev, h2c_pkt);
+
+[lines 947-1097]
+  947 	SET_H2C_CMD_ID_CLASS(h2c_pkt, H2C_CMD_REMOTE_WAKE_CTRL);
+  948 
+  949 	SET_REMOTE_WAKECTRL_ENABLE(h2c_pkt, enable);
+  950 
+  951 	if (rtw_wow_no_link(rtwdev))
+  952 		SET_REMOTE_WAKE_CTRL_NLO_OFFLOAD_EN(h2c_pkt, enable);
+  953 
+  954 	rtw_fw_send_h2c_command(rtwdev, h2c_pkt);
+  955 }
+  956 
+  957 static u8 rtw_get_rsvd_page_location(struct rtw_dev *rtwdev,
+  958 				     enum rtw_rsvd_packet_type type)
+  959 {
+  960 	struct rtw_rsvd_page *rsvd_pkt;
+  961 	u8 location = 0;
+  962 
+  963 	list_for_each_entry(rsvd_pkt, &rtwdev->rsvd_page_list, build_list) {
+  964 		if (type == rsvd_pkt->type)
+  965 			location = rsvd_pkt->page;
+  966 	}
+  967 
+  968 	return location;
+  969 }
+  970 
+  971 void rtw_fw_set_nlo_info(struct rtw_dev *rtwdev, bool enable)
+  972 {
+  973 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
+  974 	u8 loc_nlo;
+  975 
+  976 	loc_nlo = rtw_get_rsvd_page_location(rtwdev, RSVD_NLO_INFO);
+  977 
+  978 	SET_H2C_CMD_ID_CLASS(h2c_pkt, H2C_CMD_NLO_INFO);
+  979 
+  980 	SET_NLO_FUN_EN(h2c_pkt, enable);
+  981 	if (enable) {
+  982 		if (rtw_get_lps_deep_mode(rtwdev) != LPS_DEEP_MODE_NONE)
+  983 			SET_NLO_PS_32K(h2c_pkt, enable);
+  984 		SET_NLO_IGNORE_SECURITY(h2c_pkt, enable);
+  985 		SET_NLO_LOC_NLO_INFO(h2c_pkt, loc_nlo);
+  986 	}
+  987 
+  988 	rtw_fw_send_h2c_command(rtwdev, h2c_pkt);
+  989 }
+  990 
+  991 void rtw_fw_set_recover_bt_device(struct rtw_dev *rtwdev)
+  992 {
+  993 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
+  994 
+  995 	SET_H2C_CMD_ID_CLASS(h2c_pkt, H2C_CMD_RECOVER_BT_DEV);
+  996 	SET_RECOVER_BT_DEV_EN(h2c_pkt, 1);
+  997 
+  998 	rtw_fw_send_h2c_command(rtwdev, h2c_pkt);
+  999 }
+ 1000 
+ 1001 void rtw_fw_set_pg_info(struct rtw_dev *rtwdev)
+ 1002 {
+ 1003 	struct rtw_lps_conf *conf = &rtwdev->lps_conf;
+ 1004 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
+ 1005 	u8 loc_pg, loc_dpk;
+ 1006 
+ 1007 	loc_pg = rtw_get_rsvd_page_location(rtwdev, RSVD_LPS_PG_INFO);
+ 1008 	loc_dpk = rtw_get_rsvd_page_location(rtwdev, RSVD_LPS_PG_DPK);
+ 1009 
+ 1010 	SET_H2C_CMD_ID_CLASS(h2c_pkt, H2C_CMD_LPS_PG_INFO);
+ 1011 
+ 1012 	LPS_PG_INFO_LOC(h2c_pkt, loc_pg);
+ 1013 	LPS_PG_DPK_LOC(h2c_pkt, loc_dpk);
+ 1014 	LPS_PG_SEC_CAM_EN(h2c_pkt, conf->sec_cam_backup);
+ 1015 	LPS_PG_PATTERN_CAM_EN(h2c_pkt, conf->pattern_cam_backup);
+ 1016 
+ 1017 	rtw_fw_send_h2c_command(rtwdev, h2c_pkt);
+ 1018 }
+ 1019 
+ 1020 static u8 rtw_get_rsvd_page_probe_req_location(struct rtw_dev *rtwdev,
+ 1021 					       struct cfg80211_ssid *ssid)
+ 1022 {
+ 1023 	struct rtw_rsvd_page *rsvd_pkt;
+ 1024 	u8 location = 0;
+ 1025 
+ 1026 	list_for_each_entry(rsvd_pkt, &rtwdev->rsvd_page_list, build_list) {
+ 1027 		if (rsvd_pkt->type != RSVD_PROBE_REQ)
+ 1028 			continue;
+ 1029 		if ((!ssid && !rsvd_pkt->ssid) ||
+ 1030 		    cfg80211_ssid_eq(rsvd_pkt->ssid, ssid))
+ 1031 			location = rsvd_pkt->page;
+ 1032 	}
+ 1033 
+ 1034 	return location;
+ 1035 }
+ 1036 
+ 1037 static u16 rtw_get_rsvd_page_probe_req_size(struct rtw_dev *rtwdev,
+ 1038 					    struct cfg80211_ssid *ssid)
+ 1039 {
+ 1040 	struct rtw_rsvd_page *rsvd_pkt;
+ 1041 	u16 size = 0;
+ 1042 
+ 1043 	list_for_each_entry(rsvd_pkt, &rtwdev->rsvd_page_list, build_list) {
+ 1044 		if (rsvd_pkt->type != RSVD_PROBE_REQ)
+ 1045 			continue;
+ 1046 		if ((!ssid && !rsvd_pkt->ssid) ||
+ 1047 		    cfg80211_ssid_eq(rsvd_pkt->ssid, ssid))
+ 1048 			size = rsvd_pkt->probe_req_size;
+ 1049 	}
+ 1050 
+ 1051 	return size;
+ 1052 }
+ 1053 
+ 1054 void rtw_send_rsvd_page_h2c(struct rtw_dev *rtwdev)
+ 1055 {
+ 1056 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
+ 1057 	u8 location = 0;
+ 1058 
+ 1059 	SET_H2C_CMD_ID_CLASS(h2c_pkt, H2C_CMD_RSVD_PAGE);
+ 1060 
+ 1061 	location = rtw_get_rsvd_page_location(rtwdev, RSVD_PROBE_RESP);
+ 1062 	*(h2c_pkt + 1) = location;
+ 1063 	rtw_dbg(rtwdev, RTW_DBG_FW, "RSVD_PROBE_RESP loc: %d\n", location);
+ 1064 
+ 1065 	location = rtw_get_rsvd_page_location(rtwdev, RSVD_PS_POLL);
+ 1066 	*(h2c_pkt + 2) = location;
+ 1067 	rtw_dbg(rtwdev, RTW_DBG_FW, "RSVD_PS_POLL loc: %d\n", location);
+ 1068 
+ 1069 	location = rtw_get_rsvd_page_location(rtwdev, RSVD_NULL);
+ 1070 	*(h2c_pkt + 3) = location;
+ 1071 	rtw_dbg(rtwdev, RTW_DBG_FW, "RSVD_NULL loc: %d\n", location);
+ 1072 
+ 1073 	location = rtw_get_rsvd_page_location(rtwdev, RSVD_QOS_NULL);
+ 1074 	*(h2c_pkt + 4) = location;
+ 1075 	rtw_dbg(rtwdev, RTW_DBG_FW, "RSVD_QOS_NULL loc: %d\n", location);
+ 1076 
+ 1077 	rtw_fw_send_h2c_command(rtwdev, h2c_pkt);
+ 1078 }
+ 1079 
+ 1080 static struct sk_buff *rtw_nlo_info_get(struct ieee80211_hw *hw)
+ 1081 {
+ 1082 	struct rtw_dev *rtwdev = hw->priv;
+ 1083 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 1084 	struct rtw_pno_request *pno_req = &rtwdev->wow.pno_req;
+ 1085 	struct rtw_nlo_info_hdr *nlo_hdr;
+ 1086 	struct cfg80211_ssid *ssid;
+ 1087 	struct sk_buff *skb;
+ 1088 	u8 *pos, loc;
+ 1089 	u32 size;
+ 1090 	int i;
+ 1091 
+ 1092 	if (!pno_req->inited || !pno_req->match_set_cnt)
+ 1093 		return NULL;
+ 1094 
+ 1095 	size = sizeof(struct rtw_nlo_info_hdr) + pno_req->match_set_cnt *
+ 1096 		      IEEE80211_MAX_SSID_LEN + chip->tx_pkt_desc_sz;
+ 1097 
+
+[lines 1107-1141]
+ 1107 	nlo_hdr->hidden_ap_count = pno_req->match_set_cnt;
+ 1108 
+ 1109 	/* pattern check for firmware */
+ 1110 	memset(nlo_hdr->pattern_check, 0xA5, FW_NLO_INFO_CHECK_SIZE);
+ 1111 
+ 1112 	for (i = 0; i < pno_req->match_set_cnt; i++)
+ 1113 		nlo_hdr->ssid_len[i] = pno_req->match_sets[i].ssid.ssid_len;
+ 1114 
+ 1115 	for (i = 0; i < pno_req->match_set_cnt; i++) {
+ 1116 		ssid = &pno_req->match_sets[i].ssid;
+ 1117 		loc  = rtw_get_rsvd_page_probe_req_location(rtwdev, ssid);
+ 1118 		if (!loc) {
+ 1119 			rtw_err(rtwdev, "failed to get probe req rsvd loc\n");
+ 1120 			kfree_skb(skb);
+ 1121 			return NULL;
+ 1122 		}
+ 1123 		nlo_hdr->location[i] = loc;
+ 1124 	}
+ 1125 
+ 1126 	for (i = 0; i < pno_req->match_set_cnt; i++) {
+ 1127 		pos = skb_put_zero(skb, IEEE80211_MAX_SSID_LEN);
+ 1128 		memcpy(pos, pno_req->match_sets[i].ssid.ssid,
+ 1129 		       pno_req->match_sets[i].ssid.ssid_len);
+ 1130 	}
+ 1131 
+ 1132 	return skb;
+ 1133 }
+ 1134 
+ 1135 static struct sk_buff *rtw_cs_channel_info_get(struct ieee80211_hw *hw)
+ 1136 {
+ 1137 	struct rtw_dev *rtwdev = hw->priv;
+ 1138 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 1139 	struct rtw_pno_request *pno_req = &rtwdev->wow.pno_req;
+ 1140 	struct ieee80211_channel *channels = pno_req->channels;
+ 1141 	struct sk_buff *skb;
+
+[lines 1213-1248]
+ 1213 	pg_info_hdr->sec_cam_count =
+ 1214 		rtw_sec_cam_pg_backup(rtwdev, pg_info_hdr->sec_cam);
+ 1215 	pg_info_hdr->pattern_count = rtw_wow->pattern_cnt;
+ 1216 
+ 1217 	conf->sec_cam_backup = pg_info_hdr->sec_cam_count != 0;
+ 1218 	conf->pattern_cam_backup = rtw_wow->pattern_cnt != 0;
+ 1219 
+ 1220 	return skb;
+ 1221 }
+ 1222 
+ 1223 static struct sk_buff *rtw_get_rsvd_page_skb(struct ieee80211_hw *hw,
+ 1224 					     struct rtw_rsvd_page *rsvd_pkt)
+ 1225 {
+ 1226 	struct ieee80211_vif *vif;
+ 1227 	struct rtw_vif *rtwvif;
+ 1228 	struct sk_buff *skb_new;
+ 1229 	struct cfg80211_ssid *ssid;
+ 1230 	u16 tim_offset = 0;
+ 1231 
+ 1232 	if (rsvd_pkt->type == RSVD_DUMMY) {
+ 1233 		skb_new = alloc_skb(1, GFP_KERNEL);
+ 1234 		if (!skb_new)
+ 1235 			return NULL;
+ 1236 
+ 1237 		skb_put(skb_new, 1);
+ 1238 		return skb_new;
+ 1239 	}
+ 1240 
+ 1241 	rtwvif = rsvd_pkt->rtwvif;
+ 1242 	if (!rtwvif)
+ 1243 		return NULL;
+ 1244 
+ 1245 	vif = rtwvif_to_vif(rtwvif);
+ 1246 
+ 1247 	switch (rsvd_pkt->type) {
+ 1248 	case RSVD_BEACON:
+
+[lines 1287-1490]
+ 1287 	default:
+ 1288 		return NULL;
+ 1289 	}
+ 1290 
+ 1291 	if (!skb_new)
+ 1292 		return NULL;
+ 1293 
+ 1294 	return skb_new;
+ 1295 }
+ 1296 
+ 1297 static void rtw_fill_rsvd_page_desc(struct rtw_dev *rtwdev, struct sk_buff *skb,
+ 1298 				    enum rtw_rsvd_packet_type type)
+ 1299 {
+ 1300 	struct rtw_tx_pkt_info pkt_info = {0};
+ 1301 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 1302 	u8 *pkt_desc;
+ 1303 
+ 1304 	rtw_tx_rsvd_page_pkt_info_update(rtwdev, &pkt_info, skb, type);
+ 1305 	pkt_desc = skb_push(skb, chip->tx_pkt_desc_sz);
+ 1306 	memset(pkt_desc, 0, chip->tx_pkt_desc_sz);
+ 1307 	rtw_tx_fill_tx_desc(rtwdev, &pkt_info, skb);
+ 1308 }
+ 1309 
+ 1310 static inline u8 rtw_len_to_page(unsigned int len, u16 page_size)
+ 1311 {
+ 1312 	return DIV_ROUND_UP(len, page_size);
+ 1313 }
+ 1314 
+ 1315 static void rtw_rsvd_page_list_to_buf(struct rtw_dev *rtwdev, u16 page_size,
+ 1316 				      u16 page_margin, u32 page, u8 *buf,
+ 1317 				      struct rtw_rsvd_page *rsvd_pkt)
+ 1318 {
+ 1319 	struct sk_buff *skb = rsvd_pkt->skb;
+ 1320 
+ 1321 	if (page >= 1)
+ 1322 		memcpy(buf + page_margin + page_size * (page - 1),
+ 1323 		       skb->data, skb->len);
+ 1324 	else
+ 1325 		memcpy(buf, skb->data, skb->len);
+ 1326 }
+ 1327 
+ 1328 static struct rtw_rsvd_page *rtw_alloc_rsvd_page(struct rtw_dev *rtwdev,
+ 1329 						 enum rtw_rsvd_packet_type type,
+ 1330 						 bool txdesc)
+ 1331 {
+ 1332 	struct rtw_rsvd_page *rsvd_pkt = NULL;
+ 1333 
+ 1334 	rsvd_pkt = kzalloc_obj(*rsvd_pkt);
+ 1335 
+ 1336 	if (!rsvd_pkt)
+ 1337 		return NULL;
+ 1338 
+ 1339 	INIT_LIST_HEAD(&rsvd_pkt->vif_list);
+ 1340 	INIT_LIST_HEAD(&rsvd_pkt->build_list);
+ 1341 	rsvd_pkt->type = type;
+ 1342 	rsvd_pkt->add_txdesc = txdesc;
+ 1343 
+ 1344 	return rsvd_pkt;
+ 1345 }
+ 1346 
+ 1347 static void rtw_insert_rsvd_page(struct rtw_dev *rtwdev,
+ 1348 				 struct rtw_vif *rtwvif,
+ 1349 				 struct rtw_rsvd_page *rsvd_pkt)
+ 1350 {
+ 1351 	lockdep_assert_held(&rtwdev->mutex);
+ 1352 
+ 1353 	list_add_tail(&rsvd_pkt->vif_list, &rtwvif->rsvd_page_list);
+ 1354 }
+ 1355 
+ 1356 static void rtw_add_rsvd_page(struct rtw_dev *rtwdev,
+ 1357 			      struct rtw_vif *rtwvif,
+ 1358 			      enum rtw_rsvd_packet_type type,
+ 1359 			      bool txdesc)
+ 1360 {
+ 1361 	struct rtw_rsvd_page *rsvd_pkt;
+ 1362 
+ 1363 	rsvd_pkt = rtw_alloc_rsvd_page(rtwdev, type, txdesc);
+ 1364 	if (!rsvd_pkt) {
+ 1365 		rtw_err(rtwdev, "failed to alloc rsvd page %d\n", type);
+ 1366 		return;
+ 1367 	}
+ 1368 
+ 1369 	rsvd_pkt->rtwvif = rtwvif;
+ 1370 	rtw_insert_rsvd_page(rtwdev, rtwvif, rsvd_pkt);
+ 1371 }
+ 1372 
+ 1373 static void rtw_add_rsvd_page_probe_req(struct rtw_dev *rtwdev,
+ 1374 					struct rtw_vif *rtwvif,
+ 1375 					struct cfg80211_ssid *ssid)
+ 1376 {
+ 1377 	struct rtw_rsvd_page *rsvd_pkt;
+ 1378 
+ 1379 	rsvd_pkt = rtw_alloc_rsvd_page(rtwdev, RSVD_PROBE_REQ, true);
+ 1380 	if (!rsvd_pkt) {
+ 1381 		rtw_err(rtwdev, "failed to alloc probe req rsvd page\n");
+ 1382 		return;
+ 1383 	}
+ 1384 
+ 1385 	rsvd_pkt->rtwvif = rtwvif;
+ 1386 	rsvd_pkt->ssid = ssid;
+ 1387 	rtw_insert_rsvd_page(rtwdev, rtwvif, rsvd_pkt);
+ 1388 }
+ 1389 
+ 1390 void rtw_remove_rsvd_page(struct rtw_dev *rtwdev,
+ 1391 			  struct rtw_vif *rtwvif)
+ 1392 {
+ 1393 	struct rtw_rsvd_page *rsvd_pkt, *tmp;
+ 1394 
+ 1395 	lockdep_assert_held(&rtwdev->mutex);
+ 1396 
+ 1397 	/* remove all of the rsvd pages for vif */
+ 1398 	list_for_each_entry_safe(rsvd_pkt, tmp, &rtwvif->rsvd_page_list,
+ 1399 				 vif_list) {
+ 1400 		list_del(&rsvd_pkt->vif_list);
+ 1401 		if (!list_empty(&rsvd_pkt->build_list))
+ 1402 			list_del(&rsvd_pkt->build_list);
+ 1403 		kfree(rsvd_pkt);
+ 1404 	}
+ 1405 }
+ 1406 
+ 1407 void rtw_add_rsvd_page_bcn(struct rtw_dev *rtwdev,
+ 1408 			   struct rtw_vif *rtwvif)
+ 1409 {
+ 1410 	struct ieee80211_vif *vif = rtwvif_to_vif(rtwvif);
+ 1411 
+ 1412 	if (vif->type != NL80211_IFTYPE_AP &&
+ 1413 	    vif->type != NL80211_IFTYPE_ADHOC &&
+ 1414 	    vif->type != NL80211_IFTYPE_MESH_POINT) {
+ 1415 		rtw_warn(rtwdev, "Cannot add beacon rsvd page for %d\n",
+ 1416 			 vif->type);
+ 1417 		return;
+ 1418 	}
+ 1419 
+ 1420 	rtw_add_rsvd_page(rtwdev, rtwvif, RSVD_BEACON, false);
+ 1421 }
+ 1422 
+ 1423 void rtw_add_rsvd_page_pno(struct rtw_dev *rtwdev,
+ 1424 			   struct rtw_vif *rtwvif)
+ 1425 {
+ 1426 	struct ieee80211_vif *vif = rtwvif_to_vif(rtwvif);
+ 1427 	struct rtw_wow_param *rtw_wow = &rtwdev->wow;
+ 1428 	struct rtw_pno_request *rtw_pno_req = &rtw_wow->pno_req;
+ 1429 	struct cfg80211_ssid *ssid;
+ 1430 	int i;
+ 1431 
+ 1432 	if (vif->type != NL80211_IFTYPE_STATION) {
+ 1433 		rtw_warn(rtwdev, "Cannot add PNO rsvd page for %d\n",
+ 1434 			 vif->type);
+ 1435 		return;
+ 1436 	}
+ 1437 
+ 1438 	for (i = 0 ; i < rtw_pno_req->match_set_cnt; i++) {
+ 1439 		ssid = &rtw_pno_req->match_sets[i].ssid;
+ 1440 		rtw_add_rsvd_page_probe_req(rtwdev, rtwvif, ssid);
+ 1441 	}
+ 1442 
+ 1443 	rtw_add_rsvd_page_probe_req(rtwdev, rtwvif, NULL);
+ 1444 	rtw_add_rsvd_page(rtwdev, rtwvif, RSVD_NLO_INFO, false);
+ 1445 	rtw_add_rsvd_page(rtwdev, rtwvif, RSVD_CH_INFO, true);
+ 1446 }
+ 1447 
+ 1448 void rtw_add_rsvd_page_sta(struct rtw_dev *rtwdev,
+ 1449 			   struct rtw_vif *rtwvif)
+ 1450 {
+ 1451 	struct ieee80211_vif *vif = rtwvif_to_vif(rtwvif);
+ 1452 
+ 1453 	if (vif->type != NL80211_IFTYPE_STATION) {
+ 1454 		rtw_warn(rtwdev, "Cannot add sta rsvd page for %d\n",
+ 1455 			 vif->type);
+ 1456 		return;
+ 1457 	}
+ 1458 
+ 1459 	rtw_add_rsvd_page(rtwdev, rtwvif, RSVD_PS_POLL, true);
+ 1460 	rtw_add_rsvd_page(rtwdev, rtwvif, RSVD_QOS_NULL, true);
+ 1461 	rtw_add_rsvd_page(rtwdev, rtwvif, RSVD_NULL, true);
+ 1462 	rtw_add_rsvd_page(rtwdev, rtwvif, RSVD_LPS_PG_DPK, true);
+ 1463 	rtw_add_rsvd_page(rtwdev, rtwvif, RSVD_LPS_PG_INFO, true);
+ 1464 }
+ 1465 
+ 1466 int rtw_fw_write_data_rsvd_page(struct rtw_dev *rtwdev, u16 pg_addr,
+ 1467 				u8 *buf, u32 size)
+ 1468 {
+ 1469 	u8 bckp[3];
+ 1470 	u8 val;
+ 1471 	u16 rsvd_pg_head;
+ 1472 	u32 bcn_valid_addr;
+ 1473 	u32 bcn_valid_mask;
+ 1474 	int ret;
+ 1475 
+ 1476 	lockdep_assert_held(&rtwdev->mutex);
+ 1477 
+ 1478 	if (!size)
+ 1479 		return -EINVAL;
+ 1480 
+ 1481 	bckp[2] = rtw_read8(rtwdev, REG_BCN_CTRL);
+ 1482 
+ 1483 	if (rtw_chip_wcpu_8051(rtwdev)) {
+ 1484 		rtw_write32_set(rtwdev, REG_DWBCN0_CTRL, BIT_BCN_VALID);
+ 1485 	} else {
+ 1486 		pg_addr &= BIT_MASK_BCN_HEAD_1_V1;
+ 1487 		pg_addr |= BIT_BCN_VALID_V1;
+ 1488 		rtw_write16(rtwdev, REG_FIFOPAGE_CTRL_2, pg_addr);
+ 1489 	}
+ 1490 
+
+[lines 1496-1680]
+ 1496 	rtw_write8(rtwdev, REG_BCN_CTRL,
+ 1497 		   (bckp[2] & ~BIT_EN_BCN_FUNCTION) | BIT_DIS_TSF_UDT);
+ 1498 
+ 1499 	if (rtw_hci_type(rtwdev) == RTW_HCI_TYPE_PCIE) {
+ 1500 		val = rtw_read8(rtwdev, REG_FWHW_TXQ_CTRL + 2);
+ 1501 		bckp[1] = val;
+ 1502 		val &= ~(BIT_EN_BCNQ_DL >> 16);
+ 1503 		rtw_write8(rtwdev, REG_FWHW_TXQ_CTRL + 2, val);
+ 1504 	}
+ 1505 
+ 1506 	ret = rtw_hci_write_data_rsvd_page(rtwdev, buf, size);
+ 1507 	if (ret) {
+ 1508 		rtw_err(rtwdev, "failed to write data to rsvd page\n");
+ 1509 		goto restore;
+ 1510 	}
+ 1511 
+ 1512 	if (rtw_chip_wcpu_8051(rtwdev)) {
+ 1513 		bcn_valid_addr = REG_DWBCN0_CTRL;
+ 1514 		bcn_valid_mask = BIT_BCN_VALID;
+ 1515 	} else {
+ 1516 		bcn_valid_addr = REG_FIFOPAGE_CTRL_2;
+ 1517 		bcn_valid_mask = BIT_BCN_VALID_V1;
+ 1518 	}
+ 1519 
+ 1520 	if (!check_hw_ready(rtwdev, bcn_valid_addr, bcn_valid_mask, 1)) {
+ 1521 		rtw_err(rtwdev, "error beacon valid\n");
+ 1522 		ret = -EBUSY;
+ 1523 	}
+ 1524 
+ 1525 restore:
+ 1526 	rsvd_pg_head = rtwdev->fifo.rsvd_boundary;
+ 1527 	rtw_write16(rtwdev, REG_FIFOPAGE_CTRL_2,
+ 1528 		    rsvd_pg_head | BIT_BCN_VALID_V1);
+ 1529 	rtw_write8(rtwdev, REG_BCN_CTRL, bckp[2]);
+ 1530 	if (rtw_hci_type(rtwdev) == RTW_HCI_TYPE_PCIE)
+ 1531 		rtw_write8(rtwdev, REG_FWHW_TXQ_CTRL + 2, bckp[1]);
+ 1532 	rtw_write8(rtwdev, REG_CR + 1, bckp[0]);
+ 1533 
+ 1534 	return ret;
+ 1535 }
+ 1536 
+ 1537 static int rtw_download_drv_rsvd_page(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+ 1538 {
+ 1539 	u32 pg_size;
+ 1540 	u32 pg_num = 0;
+ 1541 	u16 pg_addr = 0;
+ 1542 
+ 1543 	pg_size = rtwdev->chip->page_size;
+ 1544 	pg_num = size / pg_size + ((size & (pg_size - 1)) ? 1 : 0);
+ 1545 	if (pg_num > rtwdev->fifo.rsvd_drv_pg_num)
+ 1546 		return -ENOMEM;
+ 1547 
+ 1548 	pg_addr = rtwdev->fifo.rsvd_drv_addr;
+ 1549 
+ 1550 	return rtw_fw_write_data_rsvd_page(rtwdev, pg_addr, buf, size);
+ 1551 }
+ 1552 
+ 1553 static void __rtw_build_rsvd_page_reset(struct rtw_dev *rtwdev)
+ 1554 {
+ 1555 	struct rtw_rsvd_page *rsvd_pkt, *tmp;
+ 1556 
+ 1557 	list_for_each_entry_safe(rsvd_pkt, tmp, &rtwdev->rsvd_page_list,
+ 1558 				 build_list) {
+ 1559 		list_del_init(&rsvd_pkt->build_list);
+ 1560 
+ 1561 		/* Don't free except for the dummy rsvd page,
+ 1562 		 * others will be freed when removing vif
+ 1563 		 */
+ 1564 		if (rsvd_pkt->type == RSVD_DUMMY)
+ 1565 			kfree(rsvd_pkt);
+ 1566 	}
+ 1567 }
+ 1568 
+ 1569 static void rtw_build_rsvd_page_iter(void *data, u8 *mac,
+ 1570 				     struct ieee80211_vif *vif)
+ 1571 {
+ 1572 	struct rtw_dev *rtwdev = data;
+ 1573 	struct rtw_vif *rtwvif = (struct rtw_vif *)vif->drv_priv;
+ 1574 	struct rtw_rsvd_page *rsvd_pkt;
+ 1575 
+ 1576 	/* AP not yet started, don't gather its rsvd pages */
+ 1577 	if (vif->type == NL80211_IFTYPE_AP && !rtwdev->ap_active)
+ 1578 		return;
+ 1579 
+ 1580 	list_for_each_entry(rsvd_pkt, &rtwvif->rsvd_page_list, vif_list) {
+ 1581 		if (rsvd_pkt->type == RSVD_BEACON)
+ 1582 			list_add(&rsvd_pkt->build_list,
+ 1583 				 &rtwdev->rsvd_page_list);
+ 1584 		else
+ 1585 			list_add_tail(&rsvd_pkt->build_list,
+ 1586 				      &rtwdev->rsvd_page_list);
+ 1587 	}
+ 1588 }
+ 1589 
+ 1590 static int  __rtw_build_rsvd_page_from_vifs(struct rtw_dev *rtwdev)
+ 1591 {
+ 1592 	struct rtw_rsvd_page *rsvd_pkt;
+ 1593 
+ 1594 	__rtw_build_rsvd_page_reset(rtwdev);
+ 1595 
+ 1596 	/* gather rsvd page from vifs */
+ 1597 	rtw_iterate_vifs_atomic(rtwdev, rtw_build_rsvd_page_iter, rtwdev);
+ 1598 
+ 1599 	rsvd_pkt = list_first_entry_or_null(&rtwdev->rsvd_page_list,
+ 1600 					    struct rtw_rsvd_page, build_list);
+ 1601 	if (!rsvd_pkt) {
+ 1602 		WARN(1, "Should not have an empty reserved page\n");
+ 1603 		return -EINVAL;
+ 1604 	}
+ 1605 
+ 1606 	/* the first rsvd should be beacon, otherwise add a dummy one */
+ 1607 	if (rsvd_pkt->type != RSVD_BEACON) {
+ 1608 		struct rtw_rsvd_page *dummy_pkt;
+ 1609 
+ 1610 		dummy_pkt = rtw_alloc_rsvd_page(rtwdev, RSVD_DUMMY, false);
+ 1611 		if (!dummy_pkt) {
+ 1612 			rtw_err(rtwdev, "failed to alloc dummy rsvd page\n");
+ 1613 			return -ENOMEM;
+ 1614 		}
+ 1615 
+ 1616 		list_add(&dummy_pkt->build_list, &rtwdev->rsvd_page_list);
+ 1617 	}
+ 1618 
+ 1619 	return 0;
+ 1620 }
+ 1621 
+ 1622 static u8 *rtw_build_rsvd_page(struct rtw_dev *rtwdev, u32 *size)
+ 1623 {
+ 1624 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 1625 	struct ieee80211_hw *hw = rtwdev->hw;
+ 1626 	struct rtw_rsvd_page *rsvd_pkt;
+ 1627 	struct sk_buff *iter;
+ 1628 	u16 page_size, page_margin, tx_desc_sz;
+ 1629 	u8 total_page = 0;
+ 1630 	u32 page = 0;
+ 1631 	u8 *buf;
+ 1632 	int ret;
+ 1633 
+ 1634 	page_size = chip->page_size;
+ 1635 	tx_desc_sz = chip->tx_pkt_desc_sz;
+ 1636 	page_margin = page_size - tx_desc_sz;
+ 1637 
+ 1638 	ret = __rtw_build_rsvd_page_from_vifs(rtwdev);
+ 1639 	if (ret) {
+ 1640 		rtw_err(rtwdev,
+ 1641 			"failed to build rsvd page from vifs, ret %d\n", ret);
+ 1642 		return NULL;
+ 1643 	}
+ 1644 
+ 1645 	list_for_each_entry(rsvd_pkt, &rtwdev->rsvd_page_list, build_list) {
+ 1646 		iter = rtw_get_rsvd_page_skb(hw, rsvd_pkt);
+ 1647 		if (!iter) {
+ 1648 			rtw_err(rtwdev, "failed to build rsvd packet\n");
+ 1649 			goto release_skb;
+ 1650 		}
+ 1651 
+ 1652 		/* Fill the tx_desc for the rsvd pkt that requires one.
+ 1653 		 * And iter->len will be added with size of tx_desc_sz.
+ 1654 		 */
+ 1655 		if (rsvd_pkt->add_txdesc)
+ 1656 			rtw_fill_rsvd_page_desc(rtwdev, iter, rsvd_pkt->type);
+ 1657 
+ 1658 		rsvd_pkt->skb = iter;
+ 1659 		rsvd_pkt->page = total_page;
+ 1660 
+ 1661 		/* Reserved page is downloaded via TX path, and TX path will
+ 1662 		 * generate a tx_desc at the header to describe length of
+ 1663 		 * the buffer. If we are not counting page numbers with the
+ 1664 		 * size of tx_desc added at the first rsvd_pkt (usually a
+ 1665 		 * beacon, firmware default refer to the first page as the
+ 1666 		 * content of beacon), we could generate a buffer which size
+ 1667 		 * is smaller than the actual size of the whole rsvd_page
+ 1668 		 */
+ 1669 		if (total_page == 0) {
+ 1670 			if (rsvd_pkt->type != RSVD_BEACON &&
+ 1671 			    rsvd_pkt->type != RSVD_DUMMY) {
+ 1672 				rtw_err(rtwdev, "first page should be a beacon\n");
+ 1673 				goto release_skb;
+ 1674 			}
+ 1675 			total_page += rtw_len_to_page(iter->len + tx_desc_sz,
+ 1676 						      page_size);
+ 1677 		} else {
+ 1678 			total_page += rtw_len_to_page(iter->len, page_size);
+ 1679 		}
+ 1680 	}
+
+[lines 1689-1825]
+ 1689 	if (!buf)
+ 1690 		goto release_skb;
+ 1691 
+ 1692 	/* Copy the content of each rsvd_pkt to the buf, and they should
+ 1693 	 * be aligned to the pages.
+ 1694 	 *
+ 1695 	 * Note that the first rsvd_pkt is a beacon no matter what vif->type.
+ 1696 	 * And that rsvd_pkt does not require tx_desc because when it goes
+ 1697 	 * through TX path, the TX path will generate one for it.
+ 1698 	 */
+ 1699 	list_for_each_entry(rsvd_pkt, &rtwdev->rsvd_page_list, build_list) {
+ 1700 		rtw_rsvd_page_list_to_buf(rtwdev, page_size, page_margin,
+ 1701 					  page, buf, rsvd_pkt);
+ 1702 		if (page == 0)
+ 1703 			page += rtw_len_to_page(rsvd_pkt->skb->len +
+ 1704 						tx_desc_sz, page_size);
+ 1705 		else
+ 1706 			page += rtw_len_to_page(rsvd_pkt->skb->len, page_size);
+ 1707 
+ 1708 		kfree_skb(rsvd_pkt->skb);
+ 1709 		rsvd_pkt->skb = NULL;
+ 1710 	}
+ 1711 
+ 1712 	return buf;
+ 1713 
+ 1714 release_skb:
+ 1715 	list_for_each_entry(rsvd_pkt, &rtwdev->rsvd_page_list, build_list) {
+ 1716 		kfree_skb(rsvd_pkt->skb);
+ 1717 		rsvd_pkt->skb = NULL;
+ 1718 	}
+ 1719 
+ 1720 	return NULL;
+ 1721 }
+ 1722 
+ 1723 static int rtw_download_beacon(struct rtw_dev *rtwdev)
+ 1724 {
+ 1725 	struct ieee80211_hw *hw = rtwdev->hw;
+ 1726 	struct rtw_rsvd_page *rsvd_pkt;
+ 1727 	struct sk_buff *skb;
+ 1728 	int ret = 0;
+ 1729 
+ 1730 	rsvd_pkt = list_first_entry_or_null(&rtwdev->rsvd_page_list,
+ 1731 					    struct rtw_rsvd_page, build_list);
+ 1732 	if (!rsvd_pkt) {
+ 1733 		rtw_err(rtwdev, "failed to get rsvd page from build list\n");
+ 1734 		return -ENOENT;
+ 1735 	}
+ 1736 
+ 1737 	if (rsvd_pkt->type != RSVD_BEACON &&
+ 1738 	    rsvd_pkt->type != RSVD_DUMMY) {
+ 1739 		rtw_err(rtwdev, "invalid rsvd page type %d, should be beacon or dummy\n",
+ 1740 			rsvd_pkt->type);
+ 1741 		return -EINVAL;
+ 1742 	}
+ 1743 
+ 1744 	skb = rtw_get_rsvd_page_skb(hw, rsvd_pkt);
+ 1745 	if (!skb) {
+ 1746 		rtw_err(rtwdev, "failed to get beacon skb\n");
+ 1747 		return -ENOMEM;
+ 1748 	}
+ 1749 
+ 1750 	ret = rtw_download_drv_rsvd_page(rtwdev, skb->data, skb->len);
+ 1751 	if (ret)
+ 1752 		rtw_err(rtwdev, "failed to download drv rsvd page\n");
+ 1753 
+ 1754 	dev_kfree_skb(skb);
+ 1755 
+ 1756 	return ret;
+ 1757 }
+ 1758 
+ 1759 int rtw_fw_download_rsvd_page(struct rtw_dev *rtwdev)
+ 1760 {
+ 1761 	u8 *buf;
+ 1762 	u32 size;
+ 1763 	int ret;
+ 1764 
+ 1765 	buf = rtw_build_rsvd_page(rtwdev, &size);
+ 1766 	if (!buf) {
+ 1767 		rtw_err(rtwdev, "failed to build rsvd page pkt\n");
+ 1768 		return -ENOMEM;
+ 1769 	}
+ 1770 
+ 1771 	ret = rtw_download_drv_rsvd_page(rtwdev, buf, size);
+ 1772 	if (ret) {
+ 1773 		rtw_err(rtwdev, "failed to download drv rsvd page\n");
+ 1774 		goto free;
+ 1775 	}
+ 1776 
+ 1777 	/* The last thing is to download the *ONLY* beacon again, because
+ 1778 	 * the previous tx_desc is to describe the total rsvd page. Download
+ 1779 	 * the beacon again to replace the TX desc header, and we will get
+ 1780 	 * a correct tx_desc for the beacon in the rsvd page.
+ 1781 	 */
+ 1782 	ret = rtw_download_beacon(rtwdev);
+ 1783 	if (ret) {
+ 1784 		rtw_err(rtwdev, "failed to download beacon\n");
+ 1785 		goto free;
+ 1786 	}
+ 1787 
+ 1788 free:
+ 1789 	kfree(buf);
+ 1790 
+ 1791 	return ret;
+ 1792 }
+ 1793 
+ 1794 void rtw_fw_update_beacon_work(struct work_struct *work)
+ 1795 {
+ 1796 	struct rtw_dev *rtwdev = container_of(work, struct rtw_dev,
+ 1797 					      update_beacon_work);
+ 1798 
+ 1799 	mutex_lock(&rtwdev->mutex);
+ 1800 	rtw_fw_download_rsvd_page(rtwdev);
+ 1801 	rtw_send_rsvd_page_h2c(rtwdev);
+ 1802 	mutex_unlock(&rtwdev->mutex);
+ 1803 }
+ 1804 
+ 1805 static void rtw_fw_read_fifo_page(struct rtw_dev *rtwdev, u32 offset, u32 size,
+ 1806 				  u32 *buf, u32 residue, u16 start_pg)
+ 1807 {
+ 1808 	u32 i;
+ 1809 	u16 idx = 0;
+ 1810 	u16 ctl;
+ 1811 
+ 1812 	ctl = rtw_read16(rtwdev, REG_PKTBUF_DBG_CTRL) & 0xf000;
+ 1813 	/* disable rx clock gate */
+ 1814 	rtw_write32_set(rtwdev, REG_RCR, BIT_DISGCLK);
+ 1815 
+ 1816 	do {
+ 1817 		rtw_write16(rtwdev, REG_PKTBUF_DBG_CTRL, start_pg | ctl);
+ 1818 
+ 1819 		for (i = FIFO_DUMP_ADDR + residue;
+ 1820 		     i < FIFO_DUMP_ADDR + FIFO_PAGE_SIZE; i += 4) {
+ 1821 			buf[idx++] = rtw_read32(rtwdev, i);
+ 1822 			size -= 4;
+ 1823 			if (size == 0)
+ 1824 				goto out;
+ 1825 		}
+
+[lines 1912-1952]
+ 1912 
+ 1913 	rtw_fw_send_h2c_packet(rtwdev, h2c_pkt);
+ 1914 }
+ 1915 
+ 1916 void rtw_fw_update_pkt_probe_req(struct rtw_dev *rtwdev,
+ 1917 				 struct cfg80211_ssid *ssid)
+ 1918 {
+ 1919 	u8 loc;
+ 1920 	u16 size;
+ 1921 
+ 1922 	loc = rtw_get_rsvd_page_probe_req_location(rtwdev, ssid);
+ 1923 	if (!loc) {
+ 1924 		rtw_err(rtwdev, "failed to get probe_req rsvd loc\n");
+ 1925 		return;
+ 1926 	}
+ 1927 
+ 1928 	size = rtw_get_rsvd_page_probe_req_size(rtwdev, ssid);
+ 1929 	if (!size) {
+ 1930 		rtw_err(rtwdev, "failed to get probe_req rsvd size\n");
+ 1931 		return;
+ 1932 	}
+ 1933 
+ 1934 	__rtw_fw_update_pkt(rtwdev, RTW_PACKET_PROBE_REQ, size, loc);
+ 1935 }
+ 1936 
+ 1937 void rtw_fw_channel_switch(struct rtw_dev *rtwdev, bool enable)
+ 1938 {
+ 1939 	struct rtw_pno_request *rtw_pno_req = &rtwdev->wow.pno_req;
+ 1940 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
+ 1941 	u16 total_size = H2C_PKT_HDR_SIZE + H2C_PKT_CH_SWITCH_LEN;
+ 1942 	u8 loc_ch_info;
+ 1943 	const struct rtw_ch_switch_option cs_option = {
+ 1944 		.dest_ch_en = 1,
+ 1945 		.dest_ch = 1,
+ 1946 		.periodic_option = 2,
+ 1947 		.normal_period = 5,
+ 1948 		.normal_period_sel = 0,
+ 1949 		.normal_cycle = 10,
+ 1950 		.slow_period = 1,
+ 1951 		.slow_period_sel = 1,
+ 1952 	};
+
+[lines 1960-1994]
+ 1960 	CH_SWITCH_SET_NORMAL_PERIOD(h2c_pkt, cs_option.normal_period);
+ 1961 	CH_SWITCH_SET_NORMAL_PERIOD_SEL(h2c_pkt, cs_option.normal_period_sel);
+ 1962 	CH_SWITCH_SET_SLOW_PERIOD(h2c_pkt, cs_option.slow_period);
+ 1963 	CH_SWITCH_SET_SLOW_PERIOD_SEL(h2c_pkt, cs_option.slow_period_sel);
+ 1964 	CH_SWITCH_SET_NORMAL_CYCLE(h2c_pkt, cs_option.normal_cycle);
+ 1965 	CH_SWITCH_SET_PERIODIC_OPT(h2c_pkt, cs_option.periodic_option);
+ 1966 
+ 1967 	CH_SWITCH_SET_CH_NUM(h2c_pkt, rtw_pno_req->channel_cnt);
+ 1968 	CH_SWITCH_SET_INFO_SIZE(h2c_pkt, rtw_pno_req->channel_cnt * 4);
+ 1969 
+ 1970 	loc_ch_info = rtw_get_rsvd_page_location(rtwdev, RSVD_CH_INFO);
+ 1971 	CH_SWITCH_SET_INFO_LOC(h2c_pkt, loc_ch_info);
+ 1972 
+ 1973 	rtw_fw_send_h2c_packet(rtwdev, h2c_pkt);
+ 1974 }
+ 1975 
+ 1976 void rtw_fw_adaptivity(struct rtw_dev *rtwdev)
+ 1977 {
+ 1978 	struct rtw_dm_info *dm_info = &rtwdev->dm_info;
+ 1979 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
+ 1980 
+ 1981 	if (!rtw_edcca_enabled) {
+ 1982 		dm_info->edcca_mode = RTW_EDCCA_NORMAL;
+ 1983 		rtw_dbg(rtwdev, RTW_DBG_ADAPTIVITY,
+ 1984 			"EDCCA disabled by debugfs\n");
+ 1985 	}
+ 1986 
+ 1987 	SET_H2C_CMD_ID_CLASS(h2c_pkt, H2C_CMD_ADAPTIVITY);
+ 1988 	SET_ADAPTIVITY_MODE(h2c_pkt, dm_info->edcca_mode);
+ 1989 	SET_ADAPTIVITY_OPTION(h2c_pkt, 1);
+ 1990 	SET_ADAPTIVITY_IGI(h2c_pkt, dm_info->igi_history[0]);
+ 1991 	SET_ADAPTIVITY_L2H(h2c_pkt, dm_info->l2h_th_ini);
+ 1992 	SET_ADAPTIVITY_DENSITY(h2c_pkt, dm_info->scan_density);
+ 1993 
+ 1994 	rtw_fw_send_h2c_command(rtwdev, h2c_pkt);
+
+[lines 2049-2099]
+ 2049 
+ 2050 	pages = page_offset + num_probes * page_cnt;
+ 2051 
+ 2052 	buf = kzalloc(page_size * pages, GFP_KERNEL);
+ 2053 	if (!buf)
+ 2054 		return -ENOMEM;
+ 2055 
+ 2056 	buf_offset -= tx_desc_sz;
+ 2057 	skb_queue_walk_safe(probe_req_list, skb, tmp) {
+ 2058 		skb_unlink(skb, probe_req_list);
+ 2059 		rtw_fill_rsvd_page_desc(rtwdev, skb, RSVD_PROBE_REQ);
+ 2060 		if (skb->len > page_size * page_cnt) {
+ 2061 			ret = -EINVAL;
+ 2062 			goto out;
+ 2063 		}
+ 2064 
+ 2065 		memcpy(buf + buf_offset, skb->data, skb->len);
+ 2066 		pkt_len = skb->len - tx_desc_sz;
+ 2067 		loc = pg_addr - rtwdev->fifo.rsvd_boundary + page_offset;
+ 2068 		__rtw_fw_update_pkt(rtwdev, RTW_PACKET_PROBE_REQ, pkt_len, loc);
+ 2069 
+ 2070 		buf_offset += page_cnt * page_size;
+ 2071 		page_offset += page_cnt;
+ 2072 		kfree_skb(skb);
+ 2073 	}
+ 2074 
+ 2075 	ret = rtw_fw_write_data_rsvd_page(rtwdev, pg_addr, buf, buf_offset);
+ 2076 	if (ret) {
+ 2077 		rtw_err(rtwdev, "Download probe request to firmware failed\n");
+ 2078 		goto out;
+ 2079 	}
+ 2080 
+ 2081 	rtwdev->scan_info.probe_pg_size = page_offset;
+ 2082 out:
+ 2083 	kfree(buf);
+ 2084 	skb_queue_walk_safe(probe_req_list, skb, tmp)
+ 2085 		kfree_skb(skb);
+ 2086 
+ 2087 	return ret;
+ 2088 }
+ 2089 
+ 2090 static int rtw_hw_scan_update_probe_req(struct rtw_dev *rtwdev,
+ 2091 					struct rtw_vif *rtwvif)
+ 2092 {
+ 2093 	struct cfg80211_scan_request *req = rtwvif->scan_req;
+ 2094 	struct sk_buff_head list;
+ 2095 	struct sk_buff *skb, *tmp;
+ 2096 	u8 num = req->n_ssids, i, bands = 0;
+ 2097 	int ret;
+ 2098 
+ 2099 	skb_queue_head_init(&list);
+
+[lines 2184-2218]
+ 2184 		if (ret)
+ 2185 			return ret;
+ 2186 	}
+ 2187 
+ 2188 	if (list->size > fifo->rsvd_pg_num << TX_PAGE_SIZE_SHIFT) {
+ 2189 		rtw_err(rtwdev, "List exceeds rsvd page total size\n");
+ 2190 		return -EINVAL;
+ 2191 	}
+ 2192 
+ 2193 	list->addr = fifo->rsvd_h2c_info_addr + rtwdev->scan_info.probe_pg_size;
+ 2194 	ret = rtw_fw_write_data_rsvd_page(rtwdev, list->addr, buf, list->size);
+ 2195 	if (ret)
+ 2196 		rtw_err(rtwdev, "Download channel list failed\n");
+ 2197 
+ 2198 	return ret;
+ 2199 }
+ 2200 
+ 2201 static void rtw_fw_set_scan_offload(struct rtw_dev *rtwdev,
+ 2202 				    struct rtw_ch_switch_option *opt,
+ 2203 				    struct rtw_vif *rtwvif,
+ 2204 				    struct rtw_chan_list *list)
+ 2205 {
+ 2206 	struct rtw_hw_scan_info *scan_info = &rtwdev->scan_info;
+ 2207 	struct cfg80211_scan_request *req = rtwvif->scan_req;
+ 2208 	struct rtw_fifo_conf *fifo = &rtwdev->fifo;
+ 2209 	/* reserve one dummy page at the beginning for tx descriptor */
+ 2210 	u8 pkt_loc = fifo->rsvd_h2c_info_addr - fifo->rsvd_boundary + 1;
+ 2211 	bool random_seq = req->flags & NL80211_SCAN_FLAG_RANDOM_SN;
+ 2212 	u8 h2c_pkt[H2C_PKT_SIZE] = {0};
+ 2213 
+ 2214 	rtw_h2c_pkt_set_header(h2c_pkt, H2C_PKT_SCAN_OFFLOAD);
+ 2215 	SET_PKT_H2C_TOTAL_LEN(h2c_pkt, H2C_PKT_CH_SWITCH_LEN);
+ 2216 
+ 2217 	SCAN_OFFLOAD_SET_START(h2c_pkt, opt->switch_en);
+ 2218 	SCAN_OFFLOAD_SET_BACK_OP_EN(h2c_pkt, opt->back_op_en);
+
+=== HCI/firmware/special TX dispatch tx.c | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c ===
+MATCH_LINES=13 CONTEXT_WINDOWS=2
+
+[lines 169-255]
+  169 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  170 
+  171 	/* [11:8], reserved, fills with zero
+  172 	 * [7:2],  tx report sequence number
+  173 	 * [1:0],  firmware use, fills with zero
+  174 	 */
+  175 	pkt_info->sn = (atomic_inc_return(&tx_report->sn) << 2) & 0xfc;
+  176 	pkt_info->report = true;
+  177 }
+  178 
+  179 void rtw_tx_report_purge_timer(struct timer_list *t)
+  180 {
+  181 	struct rtw_dev *rtwdev = timer_container_of(rtwdev, t,
+  182 						    tx_report.purge_timer);
+  183 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  184 	unsigned long flags;
+  185 
+  186 	if (skb_queue_len(&tx_report->queue) == 0)
+  187 		return;
+  188 
+  189 	rtw_warn(rtwdev, "failed to get tx report from firmware\n");
+  190 
+  191 	spin_lock_irqsave(&tx_report->q_lock, flags);
+  192 	rtw88_candidate_log("rtw88: TX report expired pending=%u; ACK unknown\n",
+  193                             skb_queue_len(&tx_report->queue));
+  194 	skb_queue_purge(&tx_report->queue);
+  195 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+  196 }
+  197 
+  198 void rtw_tx_report_enqueue(struct rtw_dev *rtwdev, struct sk_buff *skb, u8 sn)
+  199 {
+  200 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  201 	unsigned long flags;
+  202 	u8 *drv_data;
+  203 
+  204 	/* pass sn to tx report handler through driver data */
+  205 	drv_data = (u8 *)IEEE80211_SKB_CB(skb)->status.status_driver_data;
+  206 	*drv_data = sn;
+  207 
+  208 	spin_lock_irqsave(&tx_report->q_lock, flags);
+  209 	__skb_queue_tail(&tx_report->queue, skb);
+  210 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
+  211 
+  212 	mod_timer(&tx_report->purge_timer, jiffies + RTW_TX_PROBE_TIMEOUT);
+  213 }
+  214 EXPORT_SYMBOL(rtw_tx_report_enqueue);
+  215 
+  216 static void rtw_tx_report_tx_status(struct rtw_dev *rtwdev,
+  217 				    struct sk_buff *skb, bool acked)
+  218 {
+  219 	struct ieee80211_tx_info *info;
+  220 
+  221 	info = IEEE80211_SKB_CB(skb);
+  222 	ieee80211_tx_info_clear_status(info);
+  223 	if (acked)
+  224 		info->flags |= IEEE80211_TX_STAT_ACK;
+  225 	else
+  226 		info->flags &= ~IEEE80211_TX_STAT_ACK;
+  227 
+  228 	ieee80211_tx_status_irqsafe(rtwdev->hw, skb);
+  229 }
+  230 
+  231 void rtw_tx_report_handle(struct rtw_dev *rtwdev, struct sk_buff *skb, int src)
+  232 {
+  233 	struct rtw_tx_report *tx_report = &rtwdev->tx_report;
+  234 	struct rtw_c2h_cmd *c2h;
+  235 	struct sk_buff *cur, *tmp;
+  236 	unsigned long flags;
+  237 	u8 sn, st;
+  238 	u8 *n;
+  239 
+  240 	c2h = get_c2h_from_skb(skb);
+  241 
+  242 	if (src == C2H_CCX_TX_RPT) {
+  243 		sn = GET_CCX_REPORT_SEQNUM_V0(c2h->payload);
+  244 		st = GET_CCX_REPORT_STATUS_V0(c2h->payload);
+  245 	} else {
+  246 		sn = GET_CCX_REPORT_SEQNUM_V1(c2h->payload);
+  247 		st = GET_CCX_REPORT_STATUS_V1(c2h->payload);
+  248 	}
+  249 
+  250 	spin_lock_irqsave(&tx_report->q_lock, flags);
+  251 	skb_queue_walk_safe(&tx_report->queue, cur, tmp) {
+  252 		n = (u8 *)IEEE80211_SKB_CB(cur)->status.status_driver_data;
+  253 		if (*n == sn) {
+  254 			__skb_unlink(cur, &tx_report->queue);
+  255 			rtw_tx_report_tx_status(rtwdev, cur, st == 0);
+
+[lines 471-606]
+  471 	rtw_tx_pkt_info_update_sec(rtwdev, pkt_info, skb);
+  472 	pkt_info->tx_pkt_size = skb->len;
+  473 	pkt_info->offset = chip->tx_pkt_desc_sz;
+  474 	pkt_info->qsel = skb->priority;
+  475 	pkt_info->ls = true;
+  476 
+  477 	/* maybe merge with tx status ? */
+  478 	rtw_tx_stats(rtwdev, vif, skb);
+  479 }
+  480 
+  481 void rtw_tx_rsvd_page_pkt_info_update(struct rtw_dev *rtwdev,
+  482 				      struct rtw_tx_pkt_info *pkt_info,
+  483 				      struct sk_buff *skb,
+  484 				      enum rtw_rsvd_packet_type type)
+  485 {
+  486 	const struct rtw_chip_info *chip = rtwdev->chip;
+  487 	struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+  488 	bool bmc;
+  489 
+  490 	/* A beacon or dummy reserved page packet indicates that it is the first
+  491 	 * reserved page, and the qsel of it will be set in each hci.
+  492 	 */
+  493 	if (type != RSVD_BEACON && type != RSVD_DUMMY)
+  494 		pkt_info->qsel = TX_DESC_QSEL_MGMT;
+  495 
+  496 	rtw_tx_pkt_info_update_rate(rtwdev, pkt_info, skb, true);
+  497 
+  498 	bmc = is_broadcast_ether_addr(hdr->addr1) ||
+  499 	      is_multicast_ether_addr(hdr->addr1);
+  500 	pkt_info->bmc = bmc;
+  501 	pkt_info->tx_pkt_size = skb->len;
+  502 	pkt_info->offset = chip->tx_pkt_desc_sz;
+  503 	pkt_info->ls = true;
+  504 	if (type == RSVD_PS_POLL) {
+  505 		pkt_info->nav_use_hdr = true;
+  506 	} else {
+  507 		pkt_info->dis_qselseq = true;
+  508 		pkt_info->en_hwseq = true;
+  509 		pkt_info->hw_ssn_sel = 0;
+  510 	}
+  511 	if (type == RSVD_QOS_NULL)
+  512 		pkt_info->bt_null = true;
+  513 
+  514 	if (type == RSVD_BEACON) {
+  515 		struct rtw_rsvd_page *rsvd_pkt;
+  516 		int hdr_len;
+  517 
+  518 		rsvd_pkt = list_first_entry_or_null(&rtwdev->rsvd_page_list,
+  519 						    struct rtw_rsvd_page,
+  520 						    build_list);
+  521 		if (rsvd_pkt && rsvd_pkt->tim_offset != 0) {
+  522 			hdr_len = sizeof(struct ieee80211_hdr_3addr);
+  523 			pkt_info->tim_offset = rsvd_pkt->tim_offset - hdr_len;
+  524 		}
+  525 	}
+  526 
+  527 	rtw_tx_pkt_info_update_sec(rtwdev, pkt_info, skb);
+  528 
+  529 	/* TODO: need to change hw port and hw ssn sel for multiple vifs */
+  530 }
+  531 
+  532 struct sk_buff *
+  533 rtw_tx_write_data_rsvd_page_get(struct rtw_dev *rtwdev,
+  534 				struct rtw_tx_pkt_info *pkt_info,
+  535 				u8 *buf, u32 size)
+  536 {
+  537 	const struct rtw_chip_info *chip = rtwdev->chip;
+  538 	struct sk_buff *skb;
+  539 	u32 tx_pkt_desc_sz;
+  540 	u32 length;
+  541 
+  542 	tx_pkt_desc_sz = chip->tx_pkt_desc_sz;
+  543 	length = size + tx_pkt_desc_sz;
+  544 	skb = dev_alloc_skb(length);
+  545 	if (!skb) {
+  546 		rtw_err(rtwdev, "failed to alloc write data rsvd page skb\n");
+  547 		return NULL;
+  548 	}
+  549 
+  550 	skb_reserve(skb, tx_pkt_desc_sz);
+  551 	skb_put_data(skb, buf, size);
+  552 	rtw_tx_rsvd_page_pkt_info_update(rtwdev, pkt_info, skb, RSVD_BEACON);
+  553 
+  554 	return skb;
+  555 }
+  556 EXPORT_SYMBOL(rtw_tx_write_data_rsvd_page_get);
+  557 
+  558 struct sk_buff *
+  559 rtw_tx_write_data_h2c_get(struct rtw_dev *rtwdev,
+  560 			  struct rtw_tx_pkt_info *pkt_info,
+  561 			  u8 *buf, u32 size)
+  562 {
+  563 	const struct rtw_chip_info *chip = rtwdev->chip;
+  564 	struct sk_buff *skb;
+  565 	u32 tx_pkt_desc_sz;
+  566 	u32 length;
+  567 
+  568 	tx_pkt_desc_sz = chip->tx_pkt_desc_sz;
+  569 	length = size + tx_pkt_desc_sz;
+  570 	skb = dev_alloc_skb(length);
+  571 	if (!skb) {
+  572 		rtw_err(rtwdev, "failed to alloc write data h2c skb\n");
+  573 		return NULL;
+  574 	}
+  575 
+  576 	skb_reserve(skb, tx_pkt_desc_sz);
+  577 	skb_put_data(skb, buf, size);
+  578 	pkt_info->tx_pkt_size = size;
+  579 
+  580 	return skb;
+  581 }
+  582 EXPORT_SYMBOL(rtw_tx_write_data_h2c_get);
+  583 
+  584 void rtw_tx(struct rtw_dev *rtwdev,
+  585 	    struct ieee80211_tx_control *control,
+  586 	    struct sk_buff *skb)
+  587 {
+  588 	struct rtw_tx_pkt_info pkt_info = {0};
+  589 	int ret;
+  590 
+  591 	rtw_tx_pkt_info_update(rtwdev, &pkt_info, control->sta, skb);
+  592 	ret = rtw_hci_tx_write(rtwdev, &pkt_info, skb);
+  593 	if (ret) {
+  594 		rtw_err(rtwdev, "failed to write TX skb to HCI\n");
+  595 		goto out;
+  596 	}
+  597 
+  598 	rtw_hci_tx_kick_off(rtwdev);
+  599 
+  600 	return;
+  601 
+  602 out:
+  603 	ieee80211_free_txskb(rtwdev->hw, skb);
+  604 }
+  605 
+  606 static void rtw_txq_check_agg(struct rtw_dev *rtwdev,
+
+=== HCI/firmware/special TX dispatch main.c | ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c ===
+MATCH_LINES=9 CONTEXT_WINDOWS=2
+
+[lines 2141-2185]
+ 2141 
+ 2142 	ewma_tp_init(&stats->tx_ewma_tp);
+ 2143 	ewma_tp_init(&stats->rx_ewma_tp);
+ 2144 
+ 2145 	for (i = 0; i < RTW_EVM_NUM; i++)
+ 2146 		ewma_evm_init(&dm_info->ewma_evm[i]);
+ 2147 	for (i = 0; i < RTW_SNR_NUM; i++)
+ 2148 		ewma_snr_init(&dm_info->ewma_snr[i]);
+ 2149 }
+ 2150 
+ 2151 int rtw_core_init(struct rtw_dev *rtwdev)
+ 2152 {
+ 2153 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 2154 	struct rtw_coex *coex = &rtwdev->coex;
+ 2155 	int ret;
+ 2156 
+ 2157 	INIT_LIST_HEAD(&rtwdev->rsvd_page_list);
+ 2158 	INIT_LIST_HEAD(&rtwdev->txqs);
+ 2159 
+ 2160 	timer_setup(&rtwdev->tx_report.purge_timer,
+ 2161 		    rtw_tx_report_purge_timer, 0);
+ 2162 	rtwdev->tx_wq = alloc_workqueue("rtw_tx_wq", WQ_UNBOUND | WQ_HIGHPRI, 0);
+ 2163 	if (!rtwdev->tx_wq) {
+ 2164 		rtw_warn(rtwdev, "alloc_workqueue rtw_tx_wq failed\n");
+ 2165 		return -ENOMEM;
+ 2166 	}
+ 2167 
+ 2168 	INIT_DELAYED_WORK(&rtwdev->watch_dog_work, rtw_watch_dog_work);
+ 2169 	INIT_DELAYED_WORK(&coex->bt_relink_work, rtw_coex_bt_relink_work);
+ 2170 	INIT_DELAYED_WORK(&coex->bt_reenable_work, rtw_coex_bt_reenable_work);
+ 2171 	INIT_DELAYED_WORK(&coex->defreeze_work, rtw_coex_defreeze_work);
+ 2172 	INIT_DELAYED_WORK(&coex->wl_remain_work, rtw_coex_wl_remain_work);
+ 2173 	INIT_DELAYED_WORK(&coex->bt_remain_work, rtw_coex_bt_remain_work);
+ 2174 	INIT_DELAYED_WORK(&coex->wl_connecting_work, rtw_coex_wl_connecting_work);
+ 2175 	INIT_DELAYED_WORK(&coex->bt_multi_link_remain_work,
+ 2176 			  rtw_coex_bt_multi_link_remain_work);
+ 2177 	INIT_DELAYED_WORK(&coex->wl_ccklock_work, rtw_coex_wl_ccklock_work);
+ 2178 	INIT_WORK(&rtwdev->tx_work, rtw_tx_work);
+ 2179 	INIT_WORK(&rtwdev->c2h_work, rtw_c2h_work);
+ 2180 	INIT_WORK(&rtwdev->ips_work, rtw_ips_work);
+ 2181 	INIT_WORK(&rtwdev->fw_recovery_work, rtw_fw_recovery_work);
+ 2182 	INIT_WORK(&rtwdev->update_beacon_work, rtw_fw_update_beacon_work);
+ 2183 	INIT_WORK(&rtwdev->ba_work, rtw_txq_ba_work);
+ 2184 	skb_queue_head_init(&rtwdev->c2h_queue);
+ 2185 	skb_queue_head_init(&rtwdev->coex.queue);
+
+[lines 2222-2290]
+ 2222 			goto out;
+ 2223 		}
+ 2224 	}
+ 2225 
+ 2226 	return 0;
+ 2227 
+ 2228 out:
+ 2229 	destroy_workqueue(rtwdev->tx_wq);
+ 2230 	return ret;
+ 2231 }
+ 2232 EXPORT_SYMBOL(rtw_core_init);
+ 2233 
+ 2234 void rtw_core_deinit(struct rtw_dev *rtwdev)
+ 2235 {
+ 2236 	struct rtw_fw_state *fw = &rtwdev->fw;
+ 2237 	struct rtw_fw_state *wow_fw = &rtwdev->wow_fw;
+ 2238 	struct rtw_rsvd_page *rsvd_pkt, *tmp;
+ 2239 	unsigned long flags;
+ 2240 
+ 2241 	rtw_wait_firmware_completion(rtwdev);
+ 2242 
+ 2243 	if (fw->firmware)
+ 2244 		release_firmware(fw->firmware);
+ 2245 
+ 2246 	if (wow_fw->firmware)
+ 2247 		release_firmware(wow_fw->firmware);
+ 2248 
+ 2249 	destroy_workqueue(rtwdev->tx_wq);
+ 2250 	timer_delete_sync(&rtwdev->tx_report.purge_timer);
+ 2251 	spin_lock_irqsave(&rtwdev->tx_report.q_lock, flags);
+ 2252 	skb_queue_purge(&rtwdev->tx_report.queue);
+ 2253 	spin_unlock_irqrestore(&rtwdev->tx_report.q_lock, flags);
+ 2254 	skb_queue_purge(&rtwdev->coex.queue);
+ 2255 	skb_queue_purge(&rtwdev->c2h_queue);
+ 2256 
+ 2257 	list_for_each_entry_safe(rsvd_pkt, tmp, &rtwdev->rsvd_page_list,
+ 2258 				 build_list) {
+ 2259 		list_del(&rsvd_pkt->build_list);
+ 2260 		kfree(rsvd_pkt);
+ 2261 	}
+ 2262 
+ 2263 	mutex_destroy(&rtwdev->mutex);
+ 2264 	mutex_destroy(&rtwdev->hal.tx_power_mutex);
+ 2265 }
+ 2266 EXPORT_SYMBOL(rtw_core_deinit);
+ 2267 
+ 2268 int rtw_register_hw(struct rtw_dev *rtwdev, struct ieee80211_hw *hw)
+ 2269 {
+ 2270 	struct rtw_hal *hal = &rtwdev->hal;
+ 2271 	int max_tx_headroom = 0;
+ 2272 	int ret;
+ 2273 
+ 2274 	max_tx_headroom = rtwdev->chip->tx_pkt_desc_sz;
+ 2275 
+ 2276 	if (rtw_hci_type(rtwdev) == RTW_HCI_TYPE_SDIO)
+ 2277 		max_tx_headroom += RTW_SDIO_DATA_PTR_ALIGN;
+ 2278 
+ 2279 	hw->extra_tx_headroom = max_tx_headroom;
+ 2280 	hw->queues = IEEE80211_NUM_ACS;
+ 2281 	hw->txq_data_size = sizeof(struct rtw_txq);
+ 2282 	hw->sta_data_size = sizeof(struct rtw_sta_info);
+ 2283 	hw->vif_data_size = sizeof(struct rtw_vif);
+ 2284 
+ 2285 	ieee80211_hw_set(hw, SIGNAL_DBM);
+ 2286 	ieee80211_hw_set(hw, RX_INCLUDES_FCS);
+ 2287 	ieee80211_hw_set(hw, AMPDU_AGGREGATION);
+ 2288 	ieee80211_hw_set(hw, MFP_CAPABLE);
+ 2289 	ieee80211_hw_set(hw, REPORTS_TX_ACK_STATUS);
+ 2290 	ieee80211_hw_set(hw, SUPPORTS_PS);
+
+--- All call/reference lines for critical reachability symbols ---
+
+SYMBOL=rtw_pci_probe REFERENCES=14
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1829 | int rtw_pci_probe(struct pci_dev *pdev,
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1925 | EXPORT_SYMBOL(rtw_pci_probe);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:236 | int rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c:26 | .probe = rtw_pci_probe,
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822be.c:22 | .probe = rtw_pci_probe,
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822ce.c:26 | .probe = rtw_pci_probe,
+  src/compat/rtw88_compat.h:153 | /* Set the firmware resources directory (call before rtw_pci_probe) */
+  src/kext/RTW88IEEE80211.cpp:38 | int  rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+  src/kext/RTW88IEEE80211.cpp:45 | /* chip hw_spec structs — driver_data for rtw_pci_probe */
+  src/kext/RTW88IEEE80211.cpp:857 | RTW88_STAGE("calling rtw_pci_probe");
+  src/kext/RTW88IEEE80211.cpp:858 | int ret = rtw_pci_probe(_pcidev, &fake_id);
+  src/kext/RTW88IEEE80211.cpp:859 | RTW88_STAGE("rtw_pci_probe returned %d", ret);
+  src/kext/RTW88IEEE80211.cpp:861 | IOLog("rtw88: rtw_pci_probe failed: %d\n", ret);
+  src/kext/RTW88PCIDevice.cpp:359 | /* Force-disable BT coexistence.  rtw_pci_probe (inside create()) has
+
+SYMBOL=rtw_pci_remove REFERENCES=9
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1927 | void rtw_pci_remove(struct pci_dev *pdev)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1949 | EXPORT_SYMBOL(rtw_pci_remove);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:237 | void rtw_pci_remove(struct pci_dev *pdev);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c:27 | .remove = rtw_pci_remove,
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822be.c:23 | .remove = rtw_pci_remove,
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822ce.c:27 | .remove = rtw_pci_remove,
+  src/kext/RTW88IEEE80211.cpp:39 | void rtw_pci_remove(struct pci_dev *pdev);
+  src/kext/RTW88IEEE80211.cpp:950 | rtw_pci_remove(_pcidev);
+  src/kext/RTW88IEEE80211.cpp:999 | if (_pcidev) rtw_pci_remove(_pcidev);
+
+SYMBOL=rtw_core_init REFERENCES=5
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c:2151 | int rtw_core_init(struct rtw_dev *rtwdev)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c:2232 | EXPORT_SYMBOL(rtw_core_init);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2253 | int rtw_core_init(struct rtw_dev *rtwdev);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1856 | ret = rtw_core_init(rtwdev);
+  src/kext/RTW88IEEE80211.cpp:30 | int  rtw_core_init(struct rtw_dev *rtwdev);
+
+SYMBOL=rtw_core_deinit REFERENCES=6
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c:2234 | void rtw_core_deinit(struct rtw_dev *rtwdev)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c:2266 | EXPORT_SYMBOL(rtw_core_deinit);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2254 | void rtw_core_deinit(struct rtw_dev *rtwdev);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1917 | rtw_core_deinit(rtwdev);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1945 | rtw_core_deinit(rtwdev);
+  src/kext/RTW88IEEE80211.cpp:31 | void rtw_core_deinit(struct rtw_dev *rtwdev);
+
+SYMBOL=rtw_core_start REFERENCES=7
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c:59 | ret = rtw_core_start(rtwdev);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c:1527 | int rtw_core_start(struct rtw_dev *rtwdev)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2249 | int rtw_core_start(struct rtw_dev *rtwdev);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/ps.c:17 | ret = rtw_core_start(rtwdev);
+  src/kext/RTW88IEEE80211.cpp:32 | int  rtw_core_start(struct rtw_dev *rtwdev);
+  src/kext/RTW88IEEE80211.cpp:1201 | IOLog("rtw88: rtw_core_start failed: %d\n", ret);
+  src/kext/RTW88IEEE80211.hpp:217 | IOReturn  powerOn();     /* enable: rtw_core_start */
+
+SYMBOL=rtw_core_stop REFERENCES=6
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c:70 | rtw_core_stop(rtwdev);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c:1566 | void rtw_core_stop(struct rtw_dev *rtwdev)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2251 | void rtw_core_stop(struct rtw_dev *rtwdev);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/ps.c:34 | rtw_core_stop(rtwdev);
+  src/kext/RTW88IEEE80211.cpp:33 | void rtw_core_stop(struct rtw_dev *rtwdev);
+  src/kext/RTW88IEEE80211.hpp:218 | void      powerOff();    /* disable: rtw_core_stop */
+
+SYMBOL=rtw88_compat_init REFERENCES=5
+  src/compat/rtw88_compat.c:1083 | int rtw88_compat_init(void)
+  src/compat/rtw88_compat.h:150 | int  rtw88_compat_init(void);
+  src/kext/RTL88WiFi.cpp:254 | if (rtw88_compat_init() != 0)
+  src/kext/RTW88PCIDevice.cpp:320 | rtw88_compat_init();
+  src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:108 | const int compatStatus = rtw88_compat_init();
+
+SYMBOL=rtw88_compat_exit REFERENCES=5
+  src/compat/rtw88_compat.c:1112 | void rtw88_compat_exit(void)
+  src/compat/rtw88_compat.h:151 | void rtw88_compat_exit(void);
+  src/kext/RTL88WiFi.cpp:765 | rtw88_compat_exit();
+  src/kext/RTW88PCIDevice.cpp:445 | rtw88_compat_exit();
+  src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:206 | rtw88_compat_exit();
+
+SYMBOL=rtw_hci_write_data_rsvd_page REFERENCES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.c:1506 | ret = rtw_hci_write_data_rsvd_page(rtwdev, buf, size);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:91 | rtw_hci_write_data_rsvd_page(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+
+SYMBOL=rtw_hci_write_data_h2c REFERENCES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.c:511 | ret = rtw_hci_write_data_h2c(rtwdev, h2c_pkt, H2C_PKT_SIZE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:97 | rtw_hci_write_data_h2c(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+
+SYMBOL=write_data_rsvd_page REFERENCES=3
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:25 | int (*write_data_rsvd_page)(struct rtw_dev *rtwdev, u8 *buf, u32 size);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:93 | return rtwdev->hci.ops->write_data_rsvd_page(rtwdev, buf, size);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1688 | .write_data_rsvd_page = rtw_pci_write_data_rsvd_page,
+
+SYMBOL=write_data_h2c REFERENCES=3
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:26 | int (*write_data_h2c)(struct rtw_dev *rtwdev, u8 *buf, u32 size);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:99 | return rtwdev->hci.ops->write_data_h2c(rtwdev, buf, size);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1689 | .write_data_h2c = rtw_pci_write_data_h2c,
+
+SYMBOL=rtw_pci_write_data_rsvd_page REFERENCES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:876 | static int rtw_pci_write_data_rsvd_page(struct rtw_dev *rtwdev, u8 *buf,
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1688 | .write_data_rsvd_page = rtw_pci_write_data_rsvd_page,
+
+SYMBOL=rtw_pci_write_data_h2c REFERENCES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:902 | static int rtw_pci_write_data_h2c(struct rtw_dev *rtwdev, u8 *buf, u32 size)
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1689 | .write_data_h2c = rtw_pci_write_data_h2c,
+
+SYMBOL=drainCompletions REFERENCES=2
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126 | uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39 | uint32_t drainCompletions(CompletionSink sink, void *context);
+
+SYMBOL=hasOutstandingCompletions REFERENCES=2
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:159 | bool RTW88WCLSkywalkTxAdapter::hasOutstandingCompletions() const
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:41 | bool hasOutstandingCompletions() const;
+
+SYMBOL=outstandingCompletionCount REFERENCES=2
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:164 | uint32_t RTW88WCLSkywalkTxAdapter::outstandingCompletionCount() const
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:42 | uint32_t outstandingCompletionCount() const;
+
+SYMBOL=claimCompleted REFERENCES=2
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:137 | TicketPool::Ticket *ticket = _tickets.claimCompleted();
+  src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp:84 | Ticket *claimCompleted()
+
+SYMBOL=backendCompletion REFERENCES=3
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:103 | mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:113 | void RTW88WCLSkywalkTxAdapter::backendCompletion(
+  src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:48 | static void backendCompletion(void *context, void *cookie,
+
+SYMBOL=releaseNativeResources REFERENCES=5
+  src/kext/wcl24h32/RTW88WCLController.cpp:164 | const IOReturn cleanupStatus = releaseNativeResources();
+  src/kext/wcl24h32/RTW88WCLController.cpp:180 | const IOReturn cleanupStatus = releaseNativeResources();
+  src/kext/wcl24h32/RTW88WCLController.cpp:192 | IOReturn RTW88WCLController::releaseNativeResources()
+  src/kext/wcl24h32/RTW88WCLController.cpp:267 | const IOReturn cleanupStatus = releaseNativeResources();
+  src/kext/wcl24h32/RTW88WCLController.hpp:87 | IOReturn releaseNativeResources();
+
+SYMBOL=bindRadioBackend REFERENCES=4
+  src/kext/wcl24h32/RTW88WCLController.cpp:107 | const IOReturn bindStatus = bindRadioBackend(radio);
+  src/kext/wcl24h32/RTW88WCLController.cpp:583 | IOReturn RTW88WCLController::bindRadioBackend(RTW88IEEE80211 *radio)
+  src/kext/wcl24h32/RTW88WCLController.hpp:66 | IOReturn bindRadioBackend(RTW88IEEE80211 *radio);
+  src/kext/wcl24h32/RTW88WCLController.hpp:114 | RTW88IEEE80211 *_radio = nullptr;          // retained via bindRadioBackend
+
+SYMBOL=unbindRadioBackend REFERENCES=3
+  src/kext/wcl24h32/RTW88WCLController.cpp:250 | unbindRadioBackend();
+  src/kext/wcl24h32/RTW88WCLController.cpp:592 | void RTW88WCLController::unbindRadioBackend()
+  src/kext/wcl24h32/RTW88WCLController.hpp:67 | void unbindRadioBackend();
+
+--- Skywalk completion adapter, controller drain caller, TicketPool and teardown ---
+
+=== WCL completion/ticket lifecycle | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp ===
+MATCH_LINES=22 CONTEXT_WINDOWS=1
+
+[lines 18-178]
+   18         return false;
+   19     _radio = nullptr;
+   20     _txPool = nullptr;
+   21     _tickets.reset();
+   22     return true;
+   23 }
+   24 
+   25 IOReturn RTW88WCLSkywalkTxAdapter::bind(
+   26     RTW88IEEE80211 *radio, IOSkywalkPacketBufferPool *txPool)
+   27 {
+   28     if (!radio || !txPool)
+   29         return kIOReturnBadArgument;
+   30     if (_radio || _txPool || _tickets.hasOutstanding())
+   31         return kIOReturnBusy;
+   32 
+   33     radio->retain();
+   34     txPool->retain();
+   35     _radio = radio;
+   36     _txPool = txPool;
+   37     return kIOReturnSuccess;
+   38 }
+   39 
+   40 IOReturn RTW88WCLSkywalkTxAdapter::unbind()
+   41 {
+   42     if (_tickets.hasOutstanding())
+   43         return kIOReturnBusy;
+   44 
+   45     RTW88IEEE80211 *radio = _radio;
+   46     IOSkywalkPacketBufferPool *pool = _txPool;
+   47     _radio = nullptr;
+   48     _txPool = nullptr;
+   49     if (pool)
+   50         pool->release();
+   51     if (radio)
+   52         radio->release();
+   53     return kIOReturnSuccess;
+   54 }
+   55 
+   56 mbuf_t RTW88WCLSkywalkTxAdapter::copyPacketToMbuf(
+   57     const uint8_t *bytes, uint32_t length)
+   58 {
+   59     if (!bytes || length < 14 || length > 2048)
+   60         return nullptr;
+   61 
+   62     mbuf_t mbuf = nullptr;
+   63     if (mbuf_allocpacket(MBUF_DONTWAIT, length, nullptr, &mbuf) != 0 || !mbuf)
+   64         return nullptr;
+   65 
+   66     /* allocpacket may return a chain; copyback handles every segment. Keep
+   67      * the copy non-blocking because this runs in a Skywalk queue callback. */
+   68     if (mbuf_copyback(mbuf, 0, length, bytes, MBUF_DONTWAIT) != 0) {
+   69         mbuf_freem(mbuf);
+   70         return nullptr;
+   71     }
+   72     mbuf_pkthdr_setlen(mbuf, length);
+   73     return mbuf;
+   74 }
+   75 
+   76 IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+   77 {
+   78     if (!packet)
+   79         return kIOReturnBadArgument;
+   80     if (!_radio || !_txPool)
+   81         return kIOReturnNotReady;
+   82 
+   83     RTW88WCLPacketView view = {};
+   84     if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+   85         return kIOReturnBadArgument;
+   86 
+   87     mbuf_t mbuf = copyPacketToMbuf(view.bytes, view.length);
+   88     if (!mbuf)
+   89         return kIOReturnNoMemory;
+   90 
+   91     packet->retain();
+   92     TicketPool::Ticket *ticket = _tickets.reserve(packet);
+   93     if (!ticket) {
+   94         packet->release();
+   95         mbuf_freem(mbuf);
+   96         return kIOReturnBusy;
+   97     }
+   98 
+   99     /* Keep the adapter alive until the workloop-side completion drain drops
+  100      * this ticket. backendCompletion() intentionally does not release it. */
+  101     retain();
+  102     const UInt32 backendResult = _radio->outputPacketWithCompletion(
+  103         mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+  104 
+  105     /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+  106      * terminal callback, including synchronous drops. Once the ticket has
+  107      * been reserved, adapter acceptance is successful; the actual transmitted
+  108      * vs dropped result is delivered later through the completion sink. */
+  109     (void)backendResult;
+  110     return kIOReturnSuccess;
+  111 }
+  112 
+  113 void RTW88WCLSkywalkTxAdapter::backendCompletion(
+  114     void *context, void *cookie, bool transmitted)
+  115 {
+  116     auto *self = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+  117     auto *ticket = static_cast<TicketPool::Ticket *>(cookie);
+  118     if (!self || !ticket)
+  119         return;
+  120 
+  121     /* No Skywalk API, OSObject release, allocation, or blocking operation is
+  122      * allowed here. A deferred consumer performs the completion handoff. */
+  123     (void)TicketPool::complete(ticket, transmitted);
+  124 }
+  125 
+  126 uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+  127     CompletionSink sink, void *context)
+  128 {
+  129     if (!sink)
+  130         return 0;
+  131 
+  132     /* A sink may trigger owner teardown; keep this adapter alive until the
+  133      * drain loop has stopped touching its ticket pool. */
+  134     retain();
+  135     uint32_t drained = 0;
+  136     for (;;) {
+  137         TicketPool::Ticket *ticket = _tickets.claimCompleted();
+  138         if (!ticket)
+  139             break;
+  140 
+  141         auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+  142         const bool transmitted = TicketPool::transmitted(ticket);
+  143 
+  144         /* The sink runs in deferred context and borrows the retained packet.
+  145          * It must finish any Skywalk queue handoff before returning. */
+  146         if (packet)
+  147             sink(packet, transmitted, context);
+  148 
+  149         TicketPool::finish(ticket);
+  150         if (packet)
+  151             packet->release();
+  152         release();
+  153         ++drained;
+  154     }
+  155     release();
+  156     return drained;
+  157 }
+  158 
+  159 bool RTW88WCLSkywalkTxAdapter::hasOutstandingCompletions() const
+  160 {
+  161     return _tickets.hasOutstanding();
+  162 }
+  163 
+  164 uint32_t RTW88WCLSkywalkTxAdapter::outstandingCompletionCount() const
+  165 {
+  166     return _tickets.outstandingCount();
+  167 }
+  168 
+  169 void RTW88WCLSkywalkTxAdapter::free()
+  170 {
+  171     /* A per-ticket retain prevents free() while hardware callbacks are still
+  172      * pending. The owning controller must drain every completion before its
+  173      * final reference is released. */
+  174     if (_tickets.hasOutstanding())
+  175         IOLog("rtl88wifi-wcl: TX adapter free attempted with outstanding tickets\n");
+  176     unbind();
+  177     super::free();
+  178 }
+
+=== WCL completion/ticket lifecycle | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp ===
+MATCH_LINES=9 CONTEXT_WINDOWS=1
+
+[lines 7-55]
+    7 #include <IOKit/skywalk/IOSkywalkPacketBufferPool.h>
+    8 #include <libkern/c++/OSObject.h>
+    9 #include <sys/mbuf.h>
+   10 
+   11 #include "RTW88WCLTxCompletionSlots.hpp"
+   12 
+   13 class RTW88IEEE80211;
+   14 
+   15 class RTW88WCLSkywalkTxAdapter final : public OSObject {
+   16     OSDeclareDefaultStructors(RTW88WCLSkywalkTxAdapter)
+   17 
+   18 public:
+   19     using CompletionSink = void (*)(IOSkywalkPacket *packet,
+   20                                     bool transmitted,
+   21                                     void *context);
+   22 
+   23     static constexpr uint32_t kCompletionCapacity = 128;
+   24 
+   25     bool init() override;
+   26     IOReturn bind(RTW88IEEE80211 *radio,
+   27                   IOSkywalkPacketBufferPool *txPool);
+   28     IOReturn unbind();
+   29 
+   30     /* Copies a validated, single-buffer Skywalk Ethernet frame to an mbuf,
+   31      * then submits it to RTW88 with a bounded completion ticket. Ownership of
+   32      * the Skywalk packet stays with this adapter until drainCompletions(). */
+   33     IOReturn submitPacket(IOSkywalkPacket *packet);
+   34 
+   35     /* Must be called later from a serialized/deferred context. The sink may
+   36      * enqueue the packet to Skywalk's TX-completion queue once that queue's
+   37      * ABI and lifecycle have been validated. The adapter releases its packet
+   38      * retain after the sink returns. */
+   39     uint32_t drainCompletions(CompletionSink sink, void *context);
+   40 
+   41     bool hasOutstandingCompletions() const;
+   42     uint32_t outstandingCompletionCount() const;
+   43     void free() override;
+   44 
+   45 private:
+   46     using TicketPool = RTW88WCLTxCompletionSlots<kCompletionCapacity>;
+   47 
+   48     static void backendCompletion(void *context, void *cookie,
+   49                                   bool transmitted);
+   50     static mbuf_t copyPacketToMbuf(const uint8_t *bytes, uint32_t length);
+   51 
+   52     RTW88IEEE80211 *_radio = nullptr; // retained while bound
+   53     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
+   54     TicketPool _tickets;
+   55 };
+
+=== WCL completion/ticket lifecycle | src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp ===
+MATCH_LINES=3 CONTEXT_WINDOWS=1
+
+[lines 72-140]
+   72         uint32_t expected = kSubmitted;
+   73         if (!__atomic_compare_exchange_n(&ticket->state, &expected,
+   74                                          kCompleting, false,
+   75                                          __ATOMIC_ACQ_REL,
+   76                                          __ATOMIC_ACQUIRE))
+   77             return false;
+   78         ticket->transmitted = transmitted ? 1U : 0U;
+   79         __atomic_store_n(&ticket->state, kCompleted, __ATOMIC_RELEASE);
+   80         return true;
+   81     }
+   82 
+   83     /* Single consumer, called from the adapter's deferred/workloop context. */
+   84     Ticket *claimCompleted()
+   85     {
+   86         for (uint32_t i = 0; i < Capacity; ++i) {
+   87             Ticket *ticket = &_slots[i];
+   88             uint32_t expected = kCompleted;
+   89             if (__atomic_compare_exchange_n(&ticket->state, &expected,
+   90                                             kDraining, false,
+   91                                             __ATOMIC_ACQ_REL,
+   92                                             __ATOMIC_ACQUIRE))
+   93                 return ticket;
+   94         }
+   95         return nullptr;
+   96     }
+   97 
+   98     static void finish(Ticket *ticket)
+   99     {
+  100         if (!ticket)
+  101             return;
+  102         ticket->packet = nullptr;
+  103         ticket->transmitted = 0;
+  104         __atomic_store_n(&ticket->state, kFree, __ATOMIC_RELEASE);
+  105     }
+  106 
+  107     static void *packet(const Ticket *ticket)
+  108     {
+  109         return ticket ? ticket->packet : nullptr;
+  110     }
+  111 
+  112     static bool transmitted(const Ticket *ticket)
+  113     {
+  114         return ticket && ticket->transmitted != 0;
+  115     }
+  116 
+  117     bool hasOutstanding() const
+  118     {
+  119         for (uint32_t i = 0; i < Capacity; ++i) {
+  120             if (__atomic_load_n(&_slots[i].state, __ATOMIC_ACQUIRE) != kFree)
+  121                 return true;
+  122         }
+  123         return false;
+  124     }
+  125 
+  126     uint32_t outstandingCount() const
+  127     {
+  128         uint32_t count = 0;
+  129         for (uint32_t i = 0; i < Capacity; ++i) {
+  130             if (__atomic_load_n(&_slots[i].state, __ATOMIC_ACQUIRE) != kFree)
+  131                 ++count;
+  132         }
+  133         return count;
+  134     }
+  135 
+  136     static constexpr uint32_t capacity() { return Capacity; }
+  137 
+  138 private:
+  139     Ticket _slots[Capacity] = {};
+  140 };
+
+=== Skywalk adapter API RTW88WCLSkywalkTxAdapter.cpp | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp ===
+MATCH_LINES=21 CONTEXT_WINDOWS=1
+
+[lines 20-178]
+   20     _txPool = nullptr;
+   21     _tickets.reset();
+   22     return true;
+   23 }
+   24 
+   25 IOReturn RTW88WCLSkywalkTxAdapter::bind(
+   26     RTW88IEEE80211 *radio, IOSkywalkPacketBufferPool *txPool)
+   27 {
+   28     if (!radio || !txPool)
+   29         return kIOReturnBadArgument;
+   30     if (_radio || _txPool || _tickets.hasOutstanding())
+   31         return kIOReturnBusy;
+   32 
+   33     radio->retain();
+   34     txPool->retain();
+   35     _radio = radio;
+   36     _txPool = txPool;
+   37     return kIOReturnSuccess;
+   38 }
+   39 
+   40 IOReturn RTW88WCLSkywalkTxAdapter::unbind()
+   41 {
+   42     if (_tickets.hasOutstanding())
+   43         return kIOReturnBusy;
+   44 
+   45     RTW88IEEE80211 *radio = _radio;
+   46     IOSkywalkPacketBufferPool *pool = _txPool;
+   47     _radio = nullptr;
+   48     _txPool = nullptr;
+   49     if (pool)
+   50         pool->release();
+   51     if (radio)
+   52         radio->release();
+   53     return kIOReturnSuccess;
+   54 }
+   55 
+   56 mbuf_t RTW88WCLSkywalkTxAdapter::copyPacketToMbuf(
+   57     const uint8_t *bytes, uint32_t length)
+   58 {
+   59     if (!bytes || length < 14 || length > 2048)
+   60         return nullptr;
+   61 
+   62     mbuf_t mbuf = nullptr;
+   63     if (mbuf_allocpacket(MBUF_DONTWAIT, length, nullptr, &mbuf) != 0 || !mbuf)
+   64         return nullptr;
+   65 
+   66     /* allocpacket may return a chain; copyback handles every segment. Keep
+   67      * the copy non-blocking because this runs in a Skywalk queue callback. */
+   68     if (mbuf_copyback(mbuf, 0, length, bytes, MBUF_DONTWAIT) != 0) {
+   69         mbuf_freem(mbuf);
+   70         return nullptr;
+   71     }
+   72     mbuf_pkthdr_setlen(mbuf, length);
+   73     return mbuf;
+   74 }
+   75 
+   76 IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+   77 {
+   78     if (!packet)
+   79         return kIOReturnBadArgument;
+   80     if (!_radio || !_txPool)
+   81         return kIOReturnNotReady;
+   82 
+   83     RTW88WCLPacketView view = {};
+   84     if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+   85         return kIOReturnBadArgument;
+   86 
+   87     mbuf_t mbuf = copyPacketToMbuf(view.bytes, view.length);
+   88     if (!mbuf)
+   89         return kIOReturnNoMemory;
+   90 
+   91     packet->retain();
+   92     TicketPool::Ticket *ticket = _tickets.reserve(packet);
+   93     if (!ticket) {
+   94         packet->release();
+   95         mbuf_freem(mbuf);
+   96         return kIOReturnBusy;
+   97     }
+   98 
+   99     /* Keep the adapter alive until the workloop-side completion drain drops
+  100      * this ticket. backendCompletion() intentionally does not release it. */
+  101     retain();
+  102     const UInt32 backendResult = _radio->outputPacketWithCompletion(
+  103         mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+  104 
+  105     /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+  106      * terminal callback, including synchronous drops. Once the ticket has
+  107      * been reserved, adapter acceptance is successful; the actual transmitted
+  108      * vs dropped result is delivered later through the completion sink. */
+  109     (void)backendResult;
+  110     return kIOReturnSuccess;
+  111 }
+  112 
+  113 void RTW88WCLSkywalkTxAdapter::backendCompletion(
+  114     void *context, void *cookie, bool transmitted)
+  115 {
+  116     auto *self = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+  117     auto *ticket = static_cast<TicketPool::Ticket *>(cookie);
+  118     if (!self || !ticket)
+  119         return;
+  120 
+  121     /* No Skywalk API, OSObject release, allocation, or blocking operation is
+  122      * allowed here. A deferred consumer performs the completion handoff. */
+  123     (void)TicketPool::complete(ticket, transmitted);
+  124 }
+  125 
+  126 uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+  127     CompletionSink sink, void *context)
+  128 {
+  129     if (!sink)
+  130         return 0;
+  131 
+  132     /* A sink may trigger owner teardown; keep this adapter alive until the
+  133      * drain loop has stopped touching its ticket pool. */
+  134     retain();
+  135     uint32_t drained = 0;
+  136     for (;;) {
+  137         TicketPool::Ticket *ticket = _tickets.claimCompleted();
+  138         if (!ticket)
+  139             break;
+  140 
+  141         auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+  142         const bool transmitted = TicketPool::transmitted(ticket);
+  143 
+  144         /* The sink runs in deferred context and borrows the retained packet.
+  145          * It must finish any Skywalk queue handoff before returning. */
+  146         if (packet)
+  147             sink(packet, transmitted, context);
+  148 
+  149         TicketPool::finish(ticket);
+  150         if (packet)
+  151             packet->release();
+  152         release();
+  153         ++drained;
+  154     }
+  155     release();
+  156     return drained;
+  157 }
+  158 
+  159 bool RTW88WCLSkywalkTxAdapter::hasOutstandingCompletions() const
+  160 {
+  161     return _tickets.hasOutstanding();
+  162 }
+  163 
+  164 uint32_t RTW88WCLSkywalkTxAdapter::outstandingCompletionCount() const
+  165 {
+  166     return _tickets.outstandingCount();
+  167 }
+  168 
+  169 void RTW88WCLSkywalkTxAdapter::free()
+  170 {
+  171     /* A per-ticket retain prevents free() while hardware callbacks are still
+  172      * pending. The owning controller must drain every completion before its
+  173      * final reference is released. */
+  174     if (_tickets.hasOutstanding())
+  175         IOLog("rtl88wifi-wcl: TX adapter free attempted with outstanding tickets\n");
+  176     unbind();
+  177     super::free();
+  178 }
+
+=== Skywalk adapter API RTW88WCLSkywalkTxAdapter.hpp | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp ===
+MATCH_LINES=9 CONTEXT_WINDOWS=1
+
+[lines 18-55]
+   18 public:
+   19     using CompletionSink = void (*)(IOSkywalkPacket *packet,
+   20                                     bool transmitted,
+   21                                     void *context);
+   22 
+   23     static constexpr uint32_t kCompletionCapacity = 128;
+   24 
+   25     bool init() override;
+   26     IOReturn bind(RTW88IEEE80211 *radio,
+   27                   IOSkywalkPacketBufferPool *txPool);
+   28     IOReturn unbind();
+   29 
+   30     /* Copies a validated, single-buffer Skywalk Ethernet frame to an mbuf,
+   31      * then submits it to RTW88 with a bounded completion ticket. Ownership of
+   32      * the Skywalk packet stays with this adapter until drainCompletions(). */
+   33     IOReturn submitPacket(IOSkywalkPacket *packet);
+   34 
+   35     /* Must be called later from a serialized/deferred context. The sink may
+   36      * enqueue the packet to Skywalk's TX-completion queue once that queue's
+   37      * ABI and lifecycle have been validated. The adapter releases its packet
+   38      * retain after the sink returns. */
+   39     uint32_t drainCompletions(CompletionSink sink, void *context);
+   40 
+   41     bool hasOutstandingCompletions() const;
+   42     uint32_t outstandingCompletionCount() const;
+   43     void free() override;
+   44 
+   45 private:
+   46     using TicketPool = RTW88WCLTxCompletionSlots<kCompletionCapacity>;
+   47 
+   48     static void backendCompletion(void *context, void *cookie,
+   49                                   bool transmitted);
+   50     static mbuf_t copyPacketToMbuf(const uint8_t *bytes, uint32_t length);
+   51 
+   52     RTW88IEEE80211 *_radio = nullptr; // retained while bound
+   53     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
+   54     TicketPool _tickets;
+   55 };
+
+--- TicketPool definitions and uses across all native source ---
+
+=== TicketPool implementation/reference | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp ===
+MATCH_LINES=13 CONTEXT_WINDOWS=2
+
+[lines 20-72]
+   20     _txPool = nullptr;
+   21     _tickets.reset();
+   22     return true;
+   23 }
+   24 
+   25 IOReturn RTW88WCLSkywalkTxAdapter::bind(
+   26     RTW88IEEE80211 *radio, IOSkywalkPacketBufferPool *txPool)
+   27 {
+   28     if (!radio || !txPool)
+   29         return kIOReturnBadArgument;
+   30     if (_radio || _txPool || _tickets.hasOutstanding())
+   31         return kIOReturnBusy;
+   32 
+   33     radio->retain();
+   34     txPool->retain();
+   35     _radio = radio;
+   36     _txPool = txPool;
+   37     return kIOReturnSuccess;
+   38 }
+   39 
+   40 IOReturn RTW88WCLSkywalkTxAdapter::unbind()
+   41 {
+   42     if (_tickets.hasOutstanding())
+   43         return kIOReturnBusy;
+   44 
+   45     RTW88IEEE80211 *radio = _radio;
+   46     IOSkywalkPacketBufferPool *pool = _txPool;
+   47     _radio = nullptr;
+   48     _txPool = nullptr;
+   49     if (pool)
+   50         pool->release();
+   51     if (radio)
+   52         radio->release();
+   53     return kIOReturnSuccess;
+   54 }
+   55 
+   56 mbuf_t RTW88WCLSkywalkTxAdapter::copyPacketToMbuf(
+   57     const uint8_t *bytes, uint32_t length)
+   58 {
+   59     if (!bytes || length < 14 || length > 2048)
+   60         return nullptr;
+   61 
+   62     mbuf_t mbuf = nullptr;
+   63     if (mbuf_allocpacket(MBUF_DONTWAIT, length, nullptr, &mbuf) != 0 || !mbuf)
+   64         return nullptr;
+   65 
+   66     /* allocpacket may return a chain; copyback handles every segment. Keep
+   67      * the copy non-blocking because this runs in a Skywalk queue callback. */
+   68     if (mbuf_copyback(mbuf, 0, length, bytes, MBUF_DONTWAIT) != 0) {
+   69         mbuf_freem(mbuf);
+   70         return nullptr;
+   71     }
+   72     mbuf_pkthdr_setlen(mbuf, length);
+
+[lines 82-178]
+   82 
+   83     RTW88WCLPacketView view = {};
+   84     if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+   85         return kIOReturnBadArgument;
+   86 
+   87     mbuf_t mbuf = copyPacketToMbuf(view.bytes, view.length);
+   88     if (!mbuf)
+   89         return kIOReturnNoMemory;
+   90 
+   91     packet->retain();
+   92     TicketPool::Ticket *ticket = _tickets.reserve(packet);
+   93     if (!ticket) {
+   94         packet->release();
+   95         mbuf_freem(mbuf);
+   96         return kIOReturnBusy;
+   97     }
+   98 
+   99     /* Keep the adapter alive until the workloop-side completion drain drops
+  100      * this ticket. backendCompletion() intentionally does not release it. */
+  101     retain();
+  102     const UInt32 backendResult = _radio->outputPacketWithCompletion(
+  103         mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+  104 
+  105     /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+  106      * terminal callback, including synchronous drops. Once the ticket has
+  107      * been reserved, adapter acceptance is successful; the actual transmitted
+  108      * vs dropped result is delivered later through the completion sink. */
+  109     (void)backendResult;
+  110     return kIOReturnSuccess;
+  111 }
+  112 
+  113 void RTW88WCLSkywalkTxAdapter::backendCompletion(
+  114     void *context, void *cookie, bool transmitted)
+  115 {
+  116     auto *self = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+  117     auto *ticket = static_cast<TicketPool::Ticket *>(cookie);
+  118     if (!self || !ticket)
+  119         return;
+  120 
+  121     /* No Skywalk API, OSObject release, allocation, or blocking operation is
+  122      * allowed here. A deferred consumer performs the completion handoff. */
+  123     (void)TicketPool::complete(ticket, transmitted);
+  124 }
+  125 
+  126 uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+  127     CompletionSink sink, void *context)
+  128 {
+  129     if (!sink)
+  130         return 0;
+  131 
+  132     /* A sink may trigger owner teardown; keep this adapter alive until the
+  133      * drain loop has stopped touching its ticket pool. */
+  134     retain();
+  135     uint32_t drained = 0;
+  136     for (;;) {
+  137         TicketPool::Ticket *ticket = _tickets.claimCompleted();
+  138         if (!ticket)
+  139             break;
+  140 
+  141         auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+  142         const bool transmitted = TicketPool::transmitted(ticket);
+  143 
+  144         /* The sink runs in deferred context and borrows the retained packet.
+  145          * It must finish any Skywalk queue handoff before returning. */
+  146         if (packet)
+  147             sink(packet, transmitted, context);
+  148 
+  149         TicketPool::finish(ticket);
+  150         if (packet)
+  151             packet->release();
+  152         release();
+  153         ++drained;
+  154     }
+  155     release();
+  156     return drained;
+  157 }
+  158 
+  159 bool RTW88WCLSkywalkTxAdapter::hasOutstandingCompletions() const
+  160 {
+  161     return _tickets.hasOutstanding();
+  162 }
+  163 
+  164 uint32_t RTW88WCLSkywalkTxAdapter::outstandingCompletionCount() const
+  165 {
+  166     return _tickets.outstandingCount();
+  167 }
+  168 
+  169 void RTW88WCLSkywalkTxAdapter::free()
+  170 {
+  171     /* A per-ticket retain prevents free() while hardware callbacks are still
+  172      * pending. The owning controller must drain every completion before its
+  173      * final reference is released. */
+  174     if (_tickets.hasOutstanding())
+  175         IOLog("rtl88wifi-wcl: TX adapter free attempted with outstanding tickets\n");
+  176     unbind();
+  177     super::free();
+  178 }
+
+=== TicketPool implementation/reference | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp ===
+MATCH_LINES=1 CONTEXT_WINDOWS=1
+
+[lines 31-55]
+   31      * then submits it to RTW88 with a bounded completion ticket. Ownership of
+   32      * the Skywalk packet stays with this adapter until drainCompletions(). */
+   33     IOReturn submitPacket(IOSkywalkPacket *packet);
+   34 
+   35     /* Must be called later from a serialized/deferred context. The sink may
+   36      * enqueue the packet to Skywalk's TX-completion queue once that queue's
+   37      * ABI and lifecycle have been validated. The adapter releases its packet
+   38      * retain after the sink returns. */
+   39     uint32_t drainCompletions(CompletionSink sink, void *context);
+   40 
+   41     bool hasOutstandingCompletions() const;
+   42     uint32_t outstandingCompletionCount() const;
+   43     void free() override;
+   44 
+   45 private:
+   46     using TicketPool = RTW88WCLTxCompletionSlots<kCompletionCapacity>;
+   47 
+   48     static void backendCompletion(void *context, void *cookie,
+   49                                   bool transmitted);
+   50     static mbuf_t copyPacketToMbuf(const uint8_t *bytes, uint32_t length);
+   51 
+   52     RTW88IEEE80211 *_radio = nullptr; // retained while bound
+   53     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
+   54     TicketPool _tickets;
+   55 };
+
+--- Focused evidence flags (presence is not a reachability proof) ---
+PCI_PROBE_DEFINITION_PRESENT=YES
+PCI_REMOVE_DEFINITION_PRESENT=YES
+NATIVE_KEXT_DIRECTLY_REFERENCES_PCI_PROBE=YES
+NATIVE_KEXT_DIRECTLY_REFERENCES_CORE_INIT=YES
+NATIVE_KEXT_DIRECTLY_REFERENCES_CORE_DEINIT=YES
+SPECIAL_WRITERS_REGISTERED_IN_PCI_OPS=YES
+SPECIAL_WRITERS_HAVE_NO_LOCAL_ERROR_FREE=YES
+TX_REPORT_TIMER_SYNCHRONOUSLY_DELETED_IN_CORE_DEINIT=YES
+TX_REPORT_QUEUE_PURGED_DURING_CORE_DEINIT=YES
+ADAPTER_HAS_OUTSTANDING_TICKET_GUARD=YES
+ADAPTER_DRAIN_CALL_EXISTS=NO
+ADAPTER_DRAIN_DEFINITION_EXISTS=YES
+CONTROLLER_HAS_COMPLETION_DRAIN_CALL=YES
+COMPAT_CALLBACK_CONTEXT_CLEAR_IN_NATIVE_TREE=YES
+NOTE=Use call-site contexts and target membership; lexical presence alone does not prove runtime execution.
+
+--- Conclusion boundaries / open questions ---
+OPEN_QUESTION_01=Does the active native controller actually invoke rtw_pci_probe(), or does its PCI backend initialize a different path?
+OPEN_QUESTION_02=If native code does not call rtw_pci_probe(), can the registered rtw_pci_ops special-TX writers be reached at all?
+OPEN_QUESTION_03=Which controller method owns native PCI backend creation, radio binding, start, stop, and releaseNativeResources?
+OPEN_QUESTION_04=Is RTW88WCLSkywalkTxAdapter::drainCompletions called by a live controller/queue event path, and who owns that event source?
+OPEN_QUESTION_05=Does controller stop/free drain completed tickets, wait for outstanding tickets, or merely log and unbind?
+OPEN_QUESTION_06=Can pending tickets remain indefinitely if a TX callback never arrives, and what is the timeout or forced-drain policy?
+OPEN_QUESTION_07=Are reserved-page/H2C callbacks registered through a native PCI ops table anywhere besides the legacy rtw_pci_ops?
+OPEN_QUESTION_08=Does the build target include the source that owns the Linux PCI probe and native controller, and what call graph connects them?
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+
+--- End Stage 35O ---
+ACTUAL_BUILD=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+HARDWARE_TEST=NOT_RUN

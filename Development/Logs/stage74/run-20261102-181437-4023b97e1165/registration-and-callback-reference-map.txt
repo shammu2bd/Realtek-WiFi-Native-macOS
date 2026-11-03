@@ -1,0 +1,127 @@
+STAGE74_COMMENT_FILTERED_SOURCE_REFERENCE_MAP
+
+GROUP=REGISTRATION_API
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:247 TERMS=initRegistrationInfo TEXT=if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:318 TERMS=registerNetworkInterfaceWithLogicalLink TEXT=virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:322 TERMS=registerNetworkInterface TEXT=IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:325 TERMS=registerNetworkInterface TEXT=IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:328 TERMS=deregisterNetworkInterface TEXT=IOReturn deregisterNetworkInterface(unsigned int);
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:329 TERMS=deregisterLogicalLink TEXT=virtual IOReturn deregisterLogicalLink();
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:436 TERMS=initRegistrationInfo TEXT=bool initRegistrationInfo(RegistrationInfo *, unsigned int, size_t);
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:437 TERMS=registerEthernetInterface TEXT=IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440 TERMS=registerEthernetInterface TEXT=IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:443 TERMS=deregisterEthernetInterface TEXT=IOReturn deregisterEthernetInterface(unsigned int);
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:687 TERMS=registerInfraEthernetInterface TEXT=IOReturn registerInfraEthernetInterface(
+
+GROUP=QUEUE_FACTORIES
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:56 TERMS=withName TEXT=_txPool = IOSkywalkPacketBufferPool::withName(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:61 TERMS=withName TEXT=_rxPool = IOSkywalkPacketBufferPool::withName(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:70 TERMS=withPool TEXT=_txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:76 TERMS=withPool TEXT=_txCompletion = IOSkywalkTxCompletionQueue::withPool(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:82 TERMS=withPool TEXT=_rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:88 TERMS=withPool TEXT=_rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:240 TERMS=RegistrationInfo TEXT=auto *info = reinterpret_cast<IOSkywalkEthernetInterface::RegistrationInfo *>(
+SOURCE=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp:33 TERMS=RegistrationInfo TEXT=static_assert(sizeof(Storage) == kSize, "24H32 RegistrationInfo storage size");
+SOURCE=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp:34 TERMS=RegistrationInfo TEXT=static_assert(alignof(Storage) >= 8, "24H32 RegistrationInfo alignment");
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:308 TERMS=RegistrationInfo TEXT=struct RegistrationInfo;
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:318 TERMS=RegistrationInfo TEXT=virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:322 TERMS=RegistrationInfo TEXT=IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:325 TERMS=RegistrationInfo TEXT=IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:396 TERMS=RegistrationInfo TEXT=struct RegistrationInfo;
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:436 TERMS=RegistrationInfo TEXT=bool initRegistrationInfo(RegistrationInfo *, unsigned int, size_t);
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:437 TERMS=RegistrationInfo TEXT=IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440 TERMS=RegistrationInfo TEXT=IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+SOURCE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:688 TERMS=RegistrationInfo TEXT=IOSkywalkEthernetInterface::RegistrationInfo *, IOSkywalkPacketQueue **,
+
+GROUP=CALLBACKS
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:72 TERMS=txSubmissionAction TEXT=&RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:78 TERMS=txCompletionAction TEXT=&RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:84 TERMS=rxSubmissionAction TEXT=this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:90 TERMS=rxCompletionAction TEXT=&RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:147 TERMS=txSubmissionAction TEXT=IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:172 TERMS=txCompletionAction TEXT=IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:180 TERMS=rxSubmissionAction TEXT=IOReturn RTW88WCLSkywalkQueues::rxSubmissionAction(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:189 TERMS=rxCompletionAction TEXT=IOReturn RTW88WCLSkywalkQueues::rxCompletionAction(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:36 TERMS=txSubmissionAction TEXT=static IOReturn txSubmissionAction(OSObject *owner,
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:40 TERMS=txCompletionAction TEXT=static IOReturn txCompletionAction(OSObject *owner,
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:44 TERMS=rxSubmissionAction TEXT=static IOReturn rxSubmissionAction(OSObject *owner,
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:48 TERMS=rxCompletionAction TEXT=static IOReturn rxCompletionAction(OSObject *owner,
+
+GROUP=TX_ADAPTER
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76 TERMS=submitPacket TEXT=IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:102 TERMS=outputPacketWithCompletion TEXT=const UInt32 backendResult = _radio->outputPacketWithCompletion(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:103 TERMS=backendCompletion TEXT=mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:113 TERMS=backendCompletion TEXT=void RTW88WCLSkywalkTxAdapter::backendCompletion(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126 TERMS=drainCompletions TEXT=uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:127 TERMS=CompletionSink TEXT=CompletionSink sink, void *context)
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:137 TERMS=claimCompleted TEXT=TicketPool::Ticket *ticket = _tickets.claimCompleted();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:19 TERMS=CompletionSink TEXT=using CompletionSink = void (*)(IOSkywalkPacket *packet,
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33 TERMS=submitPacket TEXT=IOReturn submitPacket(IOSkywalkPacket *packet);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39 TERMS=drainCompletions,CompletionSink TEXT=uint32_t drainCompletions(CompletionSink sink, void *context);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:48 TERMS=backendCompletion TEXT=static void backendCompletion(void *context, void *cookie,
+SOURCE=src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp:84 TERMS=claimCompleted TEXT=Ticket *claimCompleted()
+
+GROUP=RX_ADAPTER
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:62 TERMS=copyMbufToSkywalkPacket TEXT=bool RTW88WCLSkywalkRxAdapter::copyMbufToSkywalkPacket(
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:144 TERMS=enqueueFrame TEXT=IOReturn RTW88WCLSkywalkRxAdapter::enqueueFrame(mbuf_t packet)
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:169 TERMS=checkForWork TEXT=bool RTW88WCLSkywalkRxAdapter::checkForWork()
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:179 TERMS=copyMbufToSkywalkPacket TEXT=if (copyMbufToSkywalkPacket(_rxPool, source, &packet)) {
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:32 TERMS=enqueueFrame TEXT=IOReturn enqueueFrame(mbuf_t packet);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:38 TERMS=checkForWork TEXT=bool checkForWork() override;
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:46 TERMS=copyMbufToSkywalkPacket TEXT=static bool copyMbufToSkywalkPacket(IOSkywalkPacketBufferPool *pool,
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:30 TERMS=_stagedRxPackets TEXT=_stagedRxPackets.reset();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:144 TERMS=stagedRxFrame TEXT=&RTW88WCLController::stagedRxFrame, this)) {
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:522 TERMS=enqueueFrame TEXT=(void)_rxAdapter->enqueueFrame(packet);
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:528 TERMS=_stagedRxPackets TEXT=if (_stagedRxPackets.empty())
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:536 TERMS=_stagedRxPackets TEXT=while (_stagedRxPackets.pop(&packet)) {
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:558 TERMS=stagedRxFrame TEXT=bool RTW88WCLController::stagedRxFrame(
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:569 TERMS=_stagedRxPackets TEXT=return self->_stagedRxPackets.push(preparedPacket);
+SOURCE=src/kext/wcl24h32/RTW88WCLController.hpp:89 TERMS=stagedRxFrame TEXT=static bool stagedRxFrame(IOSkywalkPacket *preparedPacket, void *context);
+SOURCE=src/kext/wcl24h32/RTW88WCLController.hpp:113 TERMS=_stagedRxPackets TEXT=RTW88WCLMbufRing<IOSkywalkPacket *, kStagedRxPacketCapacity> _stagedRxPackets;
+
+GROUP=ROLLBACK_TEARDOWN
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:31 TERMS=_allocated TEXT=_allocated = false;
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:37 TERMS=_allocated TEXT=if (_allocated)
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:94 TERMS=_allocated TEXT=_allocated = true;
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:108 TERMS=release() TEXT=_rxCompletion->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:112 TERMS=release() TEXT=_rxSubmission->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:116 TERMS=release() TEXT=_txCompletion->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:120 TERMS=release() TEXT=_txSubmission->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:124 TERMS=release() TEXT=_rxPool->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:128 TERMS=release() TEXT=_txPool->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:131 TERMS=_allocated TEXT=_allocated = false;
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:136 TERMS=_allocated TEXT=return _allocated && _txPool && _rxPool && _txSubmission &&
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:59 TERMS=_allocated TEXT=bool _allocated = false;
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:50 TERMS=release() TEXT=pool->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:52 TERMS=release() TEXT=radio->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:94 TERMS=release() TEXT=packet->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:151 TERMS=release() TEXT=packet->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:152 TERMS=release() TEXT=release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:155 TERMS=release() TEXT=release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:39 TERMS=release() TEXT=_rxPool->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:218 TERMS=removeEventSource TEXT=_workLoop->removeEventSource(this);
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:232 TERMS=release() TEXT=_rxPool->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:80 TERMS=release() TEXT=_pciBackend->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:108 TERMS=release() TEXT=radio->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:123 TERMS=release() TEXT=_skywalkQueues->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:146 TERMS=release() TEXT=_rxAdapter->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:194 TERMS=quiescePacketPath TEXT=const IOReturn packetPathStatus = quiescePacketPath();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:223 TERMS=release() TEXT=_rxAdapter->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:231 TERMS=recycleStagedRxPackets TEXT=const IOReturn recycleStatus = recycleStagedRxPackets();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:242 TERMS=release() TEXT=_skywalkQueues->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:259 TERMS=release() TEXT=_pciBackend->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:277 TERMS=release() TEXT=_workLoop->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:428 TERMS=quiescePacketPath TEXT=IOReturn RTW88WCLController::quiescePacketPath()
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:460 TERMS=release() TEXT=interface->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:526 TERMS=recycleStagedRxPackets TEXT=IOReturn RTW88WCLController::recycleStagedRxPackets()
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:554 TERMS=disposeAllPackets TEXT=pool->disposeAllPackets();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:595 TERMS=release() TEXT=_radio->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.hpp:39 TERMS=quiescePacketPath TEXT=IOReturn quiescePacketPath();
+SOURCE=src/kext/wcl24h32/RTW88WCLController.hpp:88 TERMS=recycleStagedRxPackets TEXT=IOReturn recycleStagedRxPackets();
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:188 TERMS=release() TEXT=queue->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:195 TERMS=release() TEXT=queue->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:211 TERMS=release() TEXT=_workQueue->release();
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:311 TERMS=quiescePacketPath TEXT=IOReturn status = _controller->quiescePacketPath();
+
+DIRECT_REGISTRATION_IMPLEMENTATION_CALLS
+DIRECT_REGISTRATION_CALL_COUNT=0

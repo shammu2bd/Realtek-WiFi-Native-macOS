@@ -1,0 +1,1301 @@
+========== STAGE 35F: LOCAL ADDITIONS + NATIVE TARGET DRY-RUN ==========
+timestamp_utc=2026-11-02T00:30:14Z
+host=DESKTOP-65R32QP.localdomain
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+reference=https://github.com/X1REN41L/RTL88WiFi.git
+make_path=/usr/bin/make
+
+--- Clone reference in isolated diagnostic directory ---
+Cloning into '/Users/shohel/Downloads/Stage35F-run-20261102-003013/reference'...
+reference_head=8cebe79209d05e8760e17603af6a344941920381
+reference_source_tree=/Users/shohel/Downloads/Stage35F-run-20261102-003013/reference/driver/RTL88WiFi
+
+--- Detailed inventory ---
+LOCAL_FILES=1333 REFERENCE_FILES=1301 IDENTICAL=1289 CHANGED=12 LOCAL_ONLY=32 REFERENCE_ONLY=0
+
+[LOCAL-ONLY FILES: category | bytes | sha256 | path]
+macOS metadata | 6148 | d0c1ce66ec840c06baeff758f0bb02fe470151774e9f4a7e79908a3e66765fa8 | .DS_Store
+Kext bundle metadata | 2395 | 55c15e8a9906adb6f68f42879b2b1f4724f1a8ba74a191f8d0837786dc087eb1 | RTL88WiFiNative.kext/Contents/Info.plist
+TX completion/lifetime | 3229 | 4a52b0ca7c2d89a844bd3b110f8132c40264d5cd4c0336a6662fb70de6e4a154 | src/compat/linux/skbuff_tx_completion.h
+additional C/C++ source | 3676 | aeaf822f95c9ef759d82b7579255a87bf7e509b67f7b239321f42519c3053983 | src/kext/RTW88BaPolicy.hpp
+additional C/C++ source | 6853 | 44e17933e77185bca7296d8d3a4758981b8c19f40c7730c650d010cf23fedd23 | src/kext/RTW88JoinPolicy.hpp
+additional C/C++ source | 3339 | cdd91372200effa5be56f409702d129c12983597e48c9fa13db595b2eaeb8ef9 | src/kext/RTW88LinkMetrics.hpp
+additional C/C++ source | 1298 | 84442c243820d8d5bd4ac2bd5d94f4db8d70fd7f3a513fac5a2fe2a4360ad852 | src/kext/RTW88RoamScanPolicy.hpp
+additional C/C++ source | 14073 | 4b174561b2e076f75b75a5651b10344032276bf7b95bf6829091361e2adfcc6b | src/kext/RTW88WCLRadioBridge.cpp
+additional C/C++ source | 5641 | 00789ac1f19e38988f4720a2b7864fdaba988f8059b0512b89d990b5defb2c4f | src/kext/RTW88WCLRadioBridge.hpp
+additional C/C++ source | 2753 | 846011fea2f9d025c4226db77073dd3c3d7ab3b35ae474bb392412d041893b30 | src/kext/RTW88WCLRadioEventRing.hpp
+additional C/C++ source | 5672 | 6ded9d08bf1e91aa26b393c9a8bea990ca8f64196f36a0553109ed61829d29e7 | src/kext/RTW88WCLWorkQueue.cpp
+additional C/C++ source | 2451 | 5cad32ee1bae3b40596a5757973689e2efa188347be753238ca44cb8583db41c | src/kext/RTW88WCLWorkQueue.hpp
+24H32 WCL implementation | 8089 | a312895412fc504602189683a6a32ba013f5bafdc9bd8482da14734f4e55212a | src/kext/wcl24h32/RTW88WCL24H32ABI.hpp
+24H32 WCL implementation | 48740 | de41fcbd0bb9b8b6a165df0f8e2484b49d2751e32ba821211d753c081ea57e87 | src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp
+24H32 WCL implementation | 20358 | 2c67658a50b40ec65cc400fbc7f13295d054e95a039aaf7060a65457c6087059 | src/kext/wcl24h32/RTW88WCLController.cpp
+24H32 WCL implementation | 5330 | 740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee | src/kext/wcl24h32/RTW88WCLController.hpp
+24H32 WCL implementation | 28857 | 20f8fcf3be99c797a28df29612a765a1b6d362dbc032e6045a7113d7f2ec82e1 | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+24H32 WCL implementation | 17853 | 9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4 | src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+24H32 WCL implementation | 5328 | 4138f41066f66ecef67b2bf989bcd2297c54dceb420b9c4eb809bdd1453f86c7 | src/kext/wcl24h32/RTW88WCLMbufRing.hpp
+24H32 WCL implementation | 16613 | 2253d451b3242035510d21c317782a8e9f24ef46bd154b2ad842c713c296e9a4 | src/kext/wcl24h32/RTW88WCLPCIBackend.cpp
+24H32 WCL implementation | 3737 | 67e9ac69e2177754d617633f5f44274c5bfd6a7c8e1f27d85ade26e38da91c90 | src/kext/wcl24h32/RTW88WCLPCIBackend.hpp
+24H32 WCL implementation | 2176 | 06c63ea6dbad3f33a99477c4b4ede09f7c6520fad7437e398b77e75562f06347 | src/kext/wcl24h32/RTW88WCLPacketSpanValidation.hpp
+24H32 WCL implementation | 2843 | e8e205f65c1a764ca65f9f8cd25e1306ad780b7400f7672d4bc9b344998acbad | src/kext/wcl24h32/RTW88WCLPacketView.hpp
+24H32 WCL implementation | 3924 | c9fcc397927c0c0dbb8b034f264b34d13eb5fd77db5470e105ab068ebc89082d | src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp
+24H32 WCL implementation | 5110 | 6f473988ab5c918ebc40ec3b731bf49e01cd6408e65894200031792a14f0c9b2 | src/kext/wcl24h32/RTW88WCLRequestDecoder.hpp
+24H32 WCL implementation | 6846 | 9ee96d066731bad2844daaae2a117b77fc6b140de7601f1fe4797256a33014fd | src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+24H32 WCL implementation | 2724 | 78af90d3d96c84afa83ae5aa04604d0d442f3055cbf505f2144bcaa197c213d0 | src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+24H32 WCL implementation | 8199 | e1a66ffeaba3d71f4c4ef4ca5d0068de146a11cd8d98ea825920b45ce5079b7d | src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
+24H32 WCL implementation | 2320 | 8a6474d76c9ac4b4b094266100242f55a4f6d6e62061012aa399254cbaaba512 | src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp
+24H32 WCL implementation | 5317 | 6d97498a2a4a581be48607cab7de7c53bcc98c62c27a8c440ddfdcd0cac1e9da | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+24H32 WCL implementation | 2030 | 6fc48d17bd8def41f971cb195be3a239568cc0ca1ec2fe2fdc09851d5243ef62 | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp
+24H32 WCL implementation | 4323 | af7a498d3b5d2e4855609533bd7b823e40a5ef6c83e27c76abfe2e497f7c8f7f | src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp
+
+[CHANGED FILES: local bytes/hash vs reference bytes/hash]
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h | local=5267:819c769e0aa411ae3fd5cce4ba64854c50629abb54b96c0278b73b0bb9afec0b | reference=4906:78990387b3aef6ac7d0ceb12f3abaa50c0e39e03cf0f0032fb40ae1e8c07b7a4
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h | local=4856:c5a6b8b15dbf608bcd2bbb8d2eb09b300b1970a206a175566cf5315b80f7e728 | reference=4783:4150a3c150591f8760b8922ea0d816c708da15b9fa544d06b279cc0cd8178c47
+Makefile | local=20888:17030272d8f5592fcffecfa7bc3d8ba36973fac57db1ab159d4fb960706a7f8d | reference=13308:7a15289d4c6807955e9b66535e7b17a7ab3d54de6dcc554a340d9d183d879e57
+RTL88WiFi.kext/Contents/Info.plist | local=3505:24fcc27669dff19cee29ff7ba1e838413907a530b599bf4089e6815e62b8c7b5 | reference=3231:164bb3773ed315b17c5316fab5e7d2bf3278a96d2d386853d2bd6c56c99e99cf
+src/compat/linux/skbuff.h | local=9275:58b5304797d2d1996766072e1deb6f820ecf249547a291f4c167d285373aea67 | reference=8614:0887915f23191cf0ca1ce183cd92153b73f0b17379a6482eb7172dded712355a
+src/kext/RTL88WiFi.cpp | local=174612:1aba5df922d448205fbe60b9d80f7d9cdb50208e6dd0eb5382f862bea4352744 | reference=149251:556052e7cf2eef3d2e69ca52cfa4d0352077a0d42ec887ec4853d859ce1b437f
+src/kext/RTL88WiFi.hpp | local=19764:b8356afef165afc3d2d473f80355eacf1c2184a7557e8dba63a7c28225bce66a | reference=18247:5d4e4d795bf9d5f835a7f2a73c0e1f5f4a00687b559962fb752b61ffd47b95cb
+src/kext/RTW88AWDLManager.cpp | local=45483:bb275a0aefc07fe2c3d61042cf41044934ede0571c7071dff784b706f1366d22 | reference=44770:d766a52c0dcf4f2fb24bd7c7b3792a44c6263ec498e82097cab0718bed03d990
+src/kext/RTW88AssocWire.hpp | local=2877:09c7ca06deeec850870c324eeaa1443e8c2501ae1c3206913cfd152f49cc06a0 | reference=1818:8411e7f18486664a9cc33e817378b3b7d82e5eedbecfef8e71d1eb8fca5c985e
+src/kext/RTW88IEEE80211.cpp | local=213719:5e7994b25a47d8748a096c68324fd80f859f460d489e7902baf2959046b14110 | reference=187921:a7dec54d27d03a1b6e56921e59a3f37203962953470f6776ad33dab64a11b2b8
+src/kext/RTW88IEEE80211.hpp | local=26628:1c1b768a862e0b5dcc525c90c0daeeb3b5cd2f6d9c76885714f11cc53c5dbc34 | reference=21553:00375f7013675025951525a4dbb758ef6c437497c4b0b52d6cc216fac754957e
+src/kext/kmod_info.c | local=1089:3aae7ceb6f293102dcea5addb0efc05a9408041d24f18cd27416e7248c141179 | reference=1087:73edd6294c64867774b8d3c89cab92d2c78693059363fc5c0e810bc24a8b3f2c
+
+[CHANGED FILE UNIFIED DIFFS; max 220 lines per file]
+
+### MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h
+--- REFERENCE/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h
++++ LOCAL/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h
+@@ -88,28 +88,28 @@
+     IOSkywalkPacketDirection getTransferDirection();
+     bool clearTransferDirection( IOSkywalkPacketDirection direction );
+ 
+-    void setSlotReference( void * ref );
+-    void * getSlotReference();
+     virtual UInt32 getPacketType();
+     virtual kern_buflet_t acquireWithPacketHandle( kern_packet_t handle, IOOptionBits options );
+     void cancelCompletionCallback();
+     virtual void disposePacket();
+ 
+ protected:
+-    void *                      mReserved;      // 32
+-    kern_packet_t               mPacketHandle;  // 40
+-    IOSkywalkPacketBuffer    ** mPacketBuffers; // 48
+-    IOSkywalkPacketQueue      * mSourceQueue;   // 56
+-    IOSkywalkPacketBufferPool * mBufferPool;    // 64
+-    kern_buflet_t               mBuflet;        // 72
++    void *                      mReserved;      // 32 (0x20)
++    kern_packet_t               mPacketHandle;  // 40 (0x28)
++    IOSkywalkPacketBuffer    ** mPacketBuffers; // 48 (0x30)
++    IOSkywalkPacketQueue      * mSourceQueue;   // 56 (0x38)
++    IOSkywalkPacketBufferPool * mBufferPool;    // 64 (0x40)
++    kern_buflet_t               mBuflet;        // 72 (0x48)
+ 
+-    uint64_t                 _reserved0;         // 80
+-    UInt32                   mPacketState;       // 88 - 0 on complete, 1 on acquire, 2 on prepare
+-    UInt32                   mMaxNumBuffers;     // 92
+-    UInt32                   mActualNumBuffers;  // 96
+-    kern_packet_idx_t        mPacketIndex;       // 100
+-    IOSkywalkPacketDirection mTransferDirection; // 104
+-    void *                   mSlotReference;     // 112
++    uint64_t                 _reserved0;         // 80 (0x50)
++    UInt32                   mPacketState;       // 88 (0x58) - state access observed in 24H32
++    UInt32                   _unknownFlags;      // 92 (0x5c) - observed bit use; semantic name not confirmed
++    UInt32                   mMaxNumBuffers;     // 96 (0x60) - initialized from pool descriptor
++    UInt32                   mActualNumBuffers;  // 100 (0x64) - read by both 24H32 count methods
++    kern_packet_idx_t        mPacketIndex;       // 104 (0x68) - initialized from packet descriptor
++    IOSkywalkPacketDirection mTransferDirection; // 108 (0x6c) - set/get/clear in 24H32
++    // 24H32 IOSkywalkPacket instance size is 0x70; no member exists at 0x70.
++    // The older SDK slot-reference field/accessors are not in this build's class method list.
+ };
+ 
+ #endif
+
+### MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h
+--- REFERENCE/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h
++++ LOCAL/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h
+@@ -65,7 +65,7 @@
+     virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+ 
+     static IOSkywalkRxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+-    virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options )
++    virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+     virtual void free() APPLE_KEXT_OVERRIDE;
+ 
+     void addReporters( IOService * target, OSSet * set );
+@@ -91,12 +91,12 @@
+     thread_call_t mRetryDequeueThread; // 224
+     uint64_t _reserved0; // 232
+     UInt32 mQueueId; // 240
+-    UInt32 ; // 244
+-    UInt32 ; // 248
+-    UInt32 ; // 252
+-    UInt32 ; // 256
+-    UInt32 ; // 260
+-    UInt32 ; // 264
++    UInt32 _reserved244; // 244
++    UInt32 _reserved248; // 248
++    UInt32 _reserved252; // 252
++    UInt32 _reserved256; // 256
++    UInt32 _reserved260; // 260
++    UInt32 _reserved264; // 264
+     uint64_t _reserved1[2]; // 272
+ };
+ 
+
+### Makefile
+--- REFERENCE/Makefile
++++ LOCAL/Makefile
+@@ -337,9 +337,28 @@
+     $(KEXT_SRC)/RTL88WiFi.cpp \
+     $(KEXT_SRC)/RTL88WiFiAWDL.cpp \
+     $(KEXT_SRC)/RTW88AWDLManager.cpp \
+-    $(KEXT_SRC)/RTL88WiFiInterface.cpp
++    $(KEXT_SRC)/RTL88WiFiInterface.cpp \
++    $(KEXT_SRC)/RTW88WCLRadioBridge.cpp \
++    $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+ 
+ AIRPORT_KEXT_OBJS := $(patsubst $(KEXT_SRC)/%.cpp, $(BUILD_DIR)/airport/%.o, $(AIRPORT_KEXT_SRCS))
++
++# Compile-only Sequoia 24H32 controller ABI slice. This object is deliberately
++# NOT linked into the legacy/bridge Kext: its IO80211Controller declaration has
++# a different vtable ABI from the legacy header used by the active target.
++WCL24H32_CONTROLLER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLController.cpp
++WCL24H32_CONTROLLER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLController.o
++WCL24H32_INFRA_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLInfraInterface.cpp
++WCL24H32_INFRA_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLInfraInterface.o
++WCL24H32_PCI_BACKEND_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.cpp
++WCL24H32_PCI_BACKEND_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLPCIBackend.o
++WCL24H32_SKYWALK_QUEUES_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.cpp
++WCL24H32_SKYWALK_QUEUES_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkQueues.o
++WCL24H32_TX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
++WCL24H32_TX_ADAPTER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkTxAdapter.o
++WCL24H32_RX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
++WCL24H32_RX_ADAPTER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkRxAdapter.o
++WCL24H32_CXXFLAGS := $(KEXT_CXXFLAGS) -D__IO80211_TARGET=__MAC_15_2 -I$(KEXT_SRC)/wcl24h32
+ 
+ AIRPORT_KMOD_OBJ := $(BUILD_DIR)/airport/kmod_info.o
+ 
+@@ -350,8 +369,124 @@
+     $(MKSDK)/Library/x86_64/libkmod.a \
+     -Xlinker -undefined -Xlinker dynamic_lookup
+ 
+-.PHONY: rtl88wifi
+-rtl88wifi: $(AIRPORT_OUT_BIN)
++.PHONY: rtl88wifi rtl88wifi-wcl-controller-abi-check wcl-abi-audit-24h32
++rtl88wifi: $(AIRPORT_OUT_BIN) rtl88wifi-wcl-controller-abi-check
++
++# Emit complete 24H32 registration/deregistration function bodies and their
++# Apple call paths directly to stdout. The user can append this report to the
++# one project-root output.log after the normal build for focused ABI review.
++ABI_ARCHIVE ?= $(HOME)/Downloads/RTL88WiFi-Sequoia-24H32-kcabi.tar.gz
++wcl-abi-audit-24h32:
++	@test -r "$(ABI_ARCHIVE)" || { echo "ERROR: ABI archive not readable: $(ABI_ARCHIVE)"; exit 2; }
++	@echo "  WCL-ABI AUDIT  Sequoia 24H32 registration and call paths"
++	python3 $(PROJ_ROOT)/../../tools/audit-skywalk-registration-24H32.py "$(ABI_ARCHIVE)" --full-registration-asm --stdout
++
++# Compile the native Sequoia 24H32 controller/interface and ABI-neutral PCI
++# owner independently. All objects stay out of AIRPORT_ALL_OBJS: the active
++# Kext still includes the legacy IO80211Controller declaration and must not
++# mix the incompatible ABI. The controller now owns the PCI backend and RTW88
++# state-machine object in a staged, fail-closed lifecycle.
++rtl88wifi-wcl-controller-abi-check: $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
++
++$(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCL24H32InterfaceABI.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLMbufRing.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCL24H32ABI.hpp \
++    $(KEXT_SRC)/RTW88IEEE80211.hpp \
++    | $(BUILD_DIR)/wcl24h32
++	@echo "  WCL-ABI CXX  RTW88WCLController.cpp (24H32, bounded RX packet owner; compile-only)"
++	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
++
++$(WCL24H32_INFRA_OBJ): $(WCL24H32_INFRA_SRC) \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLInfraInterface.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLRegistrationInfo.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLRequestDecoder.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCL24H32InterfaceABI.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
++    $(KEXT_SRC)/RTW88WCLRadioBridge.hpp \
++    $(KEXT_SRC)/RTW88WCLWorkQueue.hpp \
++    | $(BUILD_DIR)/wcl24h32
++	@echo "  WCL-ABI CXX  RTW88WCLInfraInterface.cpp (24H32, compile-only)"
++	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
++
++$(WCL24H32_PCI_BACKEND_OBJ): $(WCL24H32_PCI_BACKEND_SRC) \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
++    $(KEXT_SRC)/RTW88IEEE80211.hpp \
++    $(KEXT_SRC)/../compat/rtw88_compat.h \
++    | $(BUILD_DIR)/wcl24h32
++	@echo "  WCL-ABI CXX  RTW88WCLPCIBackend.cpp (ABI-neutral, compile-only)"
++	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
++
++$(WCL24H32_SKYWALK_QUEUES_OBJ): $(WCL24H32_SKYWALK_QUEUES_SRC) \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketView.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
++    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkFamily.h \
++    | $(BUILD_DIR)/wcl24h32
++	@echo "  WCL-ABI CXX  RTW88WCLSkywalkQueues.cpp (24H32, unregistered queues)"
++	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
++
++$(WCL24H32_TX_ADAPTER_OBJ): $(WCL24H32_TX_ADAPTER_SRC) \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLTxCompletionSlots.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketView.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
++    $(KEXT_SRC)/RTW88IEEE80211.hpp \
++    | $(BUILD_DIR)/wcl24h32
++	@echo "  WCL-ABI CXX  RTW88WCLSkywalkTxAdapter.cpp (24H32, mbuf copy + deferred completion; compile-only)"
++	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
++
++
++$(WCL24H32_RX_ADAPTER_OBJ): $(WCL24H32_RX_ADAPTER_SRC) \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLMbufRing.hpp \
++    $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
++    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkNetworkPacket.h \
++    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkMemorySegment.h \
++    | $(BUILD_DIR)/wcl24h32
++	@echo "  WCL-ABI CXX  RTW88WCLSkywalkRxAdapter.cpp (24H32, pool-backed RX conversion; compile-only)"
++	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
++
++
++# Stage29b: independent native Sequoia 24H32 target.
++# This target has a separate bundle/output path and never links legacy Wi-Fi
++# frontend objects. It shares only the ABI-neutral RTW88 hardware/core objects.
++NATIVE_KEXT_SKEL := $(PROJ_ROOT)/RTL88WiFiNative.kext
++NATIVE_OUT_KEXT := $(OUT_DIR)/RTL88WiFiNative.kext
++NATIVE_OUT_BIN := $(NATIVE_OUT_KEXT)/Contents/MacOS/RTL88WiFiNative
++NATIVE_CORE_OBJ_DIR := $(BUILD_DIR)/native
++NATIVE_CORE_SRCS := $(KEXT_SRC)/RTW88IEEE80211.cpp $(KEXT_SRC)/RTW88HwOps.cpp $(KEXT_SRC)/RTW88WCLRadioBridge.cpp $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
++NATIVE_CORE_HEADERS := $(wildcard $(KEXT_SRC)/*.hpp) $(wildcard $(KEXT_SRC)/wcl24h32/*.hpp)
++NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88HwOps.o RTW88WCLRadioBridge.o RTW88WCLWorkQueue.o)
++NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
++NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
++
++.PHONY: rtl88wifi-native
++rtl88wifi-native: $(NATIVE_OUT_BIN)
++
++$(NATIVE_CORE_OBJ_DIR):
++	mkdir -p $@
++
++$(NATIVE_CORE_OBJ_DIR)/%.o: $(KEXT_SRC)/%.cpp $(NATIVE_CORE_HEADERS) | $(NATIVE_CORE_OBJ_DIR)
++	@echo "  NATIVE CXX  $< (24H32 isolated core object)"
++	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
++
++$(NATIVE_OUT_KEXT)/Contents/MacOS:
++	mkdir -p $@
++
++$(NATIVE_OUT_BIN): $(NATIVE_ALL_OBJS) $(NATIVE_KEXT_SKEL)/Contents/Info.plist | $(NATIVE_OUT_KEXT)/Contents/MacOS
++	@echo "  NATIVE LD   $(notdir $@)"
++	$(LD) $(NATIVE_LDFLAGS) -o $@ $(NATIVE_ALL_OBJS)
++	@echo "  NATIVE SYNC $(NATIVE_OUT_KEXT)"
++	rsync -a --exclude='MacOS' $(NATIVE_KEXT_SKEL)/ $(NATIVE_OUT_KEXT)/
++	@echo "  NATIVE OK   $(NATIVE_OUT_KEXT)"
++
++$(BUILD_DIR)/wcl24h32:
++	mkdir -p $@
+ 
+ $(AIRPORT_OUT_BIN): $(AIRPORT_ALL_OBJS) $(AIRPORT_KEXT_SKEL)/Contents/Info.plist | $(AIRPORT_OUT_KEXT)/Contents/MacOS
+ 	@echo "  LD   $(notdir $@)"
+@@ -375,7 +510,10 @@
+ 	mkdir -p $@
+ 
+ # Rebuild objects when one of their headers changes.
+-DEPFILES = $(ALL_OBJS:.o=.d) $(AIRPORT_KEXT_OBJS:.o=.d) $(AIRPORT_KMOD_OBJ:.o=.d)
++DEPFILES = $(ALL_OBJS:.o=.d) $(AIRPORT_KEXT_OBJS:.o=.d) $(AIRPORT_KMOD_OBJ:.o=.d) \
++           $(WCL24H32_CONTROLLER_OBJ:.o=.d) $(WCL24H32_INFRA_OBJ:.o=.d) \
++           $(WCL24H32_PCI_BACKEND_OBJ:.o=.d) $(WCL24H32_SKYWALK_QUEUES_OBJ:.o=.d) \
++           $(WCL24H32_TX_ADAPTER_OBJ:.o=.d) $(WCL24H32_RX_ADAPTER_OBJ:.o=.d)
+ -include $(DEPFILES)
+ 
+ # Compiler flags and ABI macros in this file affect every object.
+
+### RTL88WiFi.kext/Contents/Info.plist
+--- REFERENCE/RTL88WiFi.kext/Contents/Info.plist
++++ LOCAL/RTL88WiFi.kext/Contents/Info.plist
+@@ -15,13 +15,13 @@
+ 	<key>CFBundleDisplayName</key>
+ 	<string>RTL88WiFi for RTL88xx</string>
+ 	<key>CFBundleGetInfoString</key>
+-	<string>RTL88WiFi 1.0.1 — independent RTL88xx PCIe Wi-Fi driver</string>
++	<string>RTL88WiFi 1.0.11 — Skywalk Private Wi-Fi Address controls</string>
+ 	<key>CFBundlePackageType</key>
+ 	<string>KEXT</string>
+ 	<key>CFBundleShortVersionString</key>
+-	<string>1.0.1</string>
++	<string>1.0.11</string>
+ 	<key>CFBundleVersion</key>
+-	<string>1.0.1</string>
++	<string>1.0.11</string>
+ 	<key>CFBundleSupportedPlatforms</key>
+ 	<array>
+ 		<string>MacOSX</string>
+@@ -71,6 +71,10 @@
+ 			<integer>5000</integer>
+ 			<key>IOProviderClass</key>
+ 			<string>IOPCIDevice</string>
++			<key>RTL88WiFiAWDLRadio</key>
++			<false/>
++			<key>RTL88WiFiPrefer5GHz</key>
++			<true/>
+ 			<key>IOPCIMatch</key>
+ 			<string>0xB82210EC</string>
+ 		</dict>
+@@ -86,6 +90,10 @@
+ 			<integer>5000</integer>
+ 			<key>IOProviderClass</key>
+ 			<string>IOPCIDevice</string>
++			<key>RTL88WiFiAWDLRadio</key>
++			<false/>
++			<key>RTL88WiFiPrefer5GHz</key>
++			<true/>
+ 			<key>IOPCIMatch</key>
+ 			<string>0xC82210EC 0xC82F10EC</string>
+ 		</dict>
+@@ -101,6 +109,10 @@
+ 			<integer>5000</integer>
+ 			<key>IOProviderClass</key>
+ 			<string>IOPCIDevice</string>
++			<key>RTL88WiFiAWDLRadio</key>
++			<false/>
++			<key>RTL88WiFiPrefer5GHz</key>
++			<true/>
+ 			<key>IOPCIMatch</key>
+ 			<string>0xC82110EC 0xB82110EC</string>
+ 		</dict>
+
+### src/compat/linux/skbuff.h
+--- REFERENCE/src/compat/linux/skbuff.h
++++ LOCAL/src/compat/linux/skbuff.h
+@@ -5,6 +5,7 @@
+ #include "types.h"
+ #include "slab.h"
+ #include "spinlock.h"
++#include "skbuff_tx_completion.h"
+ #include <string.h>
+ 
+ /*
+@@ -37,6 +38,11 @@
+ 
+     /* Reference to mbuf for kext use */
+     void       *mbuf_ref;
++
++    /* Optional native-WCL packet completion token. The callback is invoked
++     * once either when the PCI TX status arrives or when any path frees this
++     * skb before normal completion. It must be non-blocking/IRQ-safe. */
++    struct rtw88_skb_tx_completion tx_completion;
+ };
+ 
+ /* sk_buff_head — queue */
+@@ -146,6 +152,11 @@
+ static inline void kfree_skb(struct sk_buff *skb)
+ {
+     if (skb) {
++        /* A reset, queue purge or early TX rejection can free an skb without
++         * reaching txStatus(). Report that terminal outcome before memory is
++         * reclaimed; the atomic claim prevents a completion/free race from
++         * notifying the packet owner twice. */
++        rtw88_skb_tx_completion_report(&skb->tx_completion, false);
+         kfree(skb->head);
+         kfree(skb);
+     }
+
+### src/kext/RTL88WiFi.cpp
+--- REFERENCE/src/kext/RTL88WiFi.cpp
++++ LOCAL/src/kext/RTL88WiFi.cpp
+@@ -1,4 +1,5 @@
+ /* Modified by X1REN41L on 2026-10-14 for RTL88WiFi 1.0.1; see the repository NOTICE.md. */
++/* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (noise reporting, AWDL radio policy); see NOTICE.md. */
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+  * Native IO80211 controller for the RTL8822BE port.
+  */
+@@ -6,6 +7,7 @@
+ #include "RTL88WiFiInterface.hpp"
+ #include "RTW88AssocWire.hpp"
+ #include "RTW88UserClient.hpp"
++#include "RTW88LinkMetrics.hpp"
+ 
+ extern "C" {
+ #include "../compat/rtw88_compat.h"
+@@ -20,6 +22,7 @@
+ #include <libkern/copyio.h>               /* copyin/copyout for legacy ioctl bridge */
+ #include <sys/errno.h>                    /* EINVAL/EFAULT/ENOMEM */
+ #include <libkern/version.h>              /* scan-cache bootstrap compatibility only */
++#include <sys/random.h>                   /* kernel CSPRNG for private station MACs */
+ #include <net/kpi_interface.h>            /* ifnet_stat_increment_in/out */
+ 
+ #define IOLog rtw88_candidate_log
+@@ -61,17 +64,78 @@
+       0, 0, 0, 0, 0, 0, 0, 0 },
+ };
+ 
+-/* rtw88 does not measure a noise floor.  8822B/8822C report a per-path RX
+- * SNR in PHY status, so derive noise = RSSI - SNR from that measurement.
+- * With no SNR (8821C, or no samples yet) noise is reported as unavailable
+- * instead of being derived from a constant. */
+-static bool rtw88LinkNoise(int rssi, int *noise, int *snr)
++/* APPLE80211_IOC_PRIVATE_MAC (238): the payload behind the "Private Wi-Fi
++ * address" control in Network settings.  The SDK defines only the request
++ * number.  This layout was read from Apple's own driver (AirPort_BrcmNIC::
++ * getPRIVATE_MAC / setPRIVATE_MAC in the IO80211FamilyLegacy bundle) and from
++ * the family's forwarding handlers, which insist on exactly 28 bytes:
++ *   +0x04 enabled     non-zero = private address on
++ *   +0x08 flags       control flags; Apple's driver stores them and returns them
++ *   +0x0C interval_s  rotation interval in seconds; 0 = fixed (no rotation)
++ *   +0x10 mac[6]      the current private address
++ * Apple's driver leaves +0x00 (version) and the rest zero. */
++struct rtw88_private_mac_data {
++    uint32_t version;
++    uint32_t enabled;
++    uint32_t flags;
++    uint32_t interval_s;
++    uint8_t  mac[6];
++    uint8_t  pad[2];
++    uint32_t reserved;
++};
++static_assert(sizeof(rtw88_private_mac_data) == 28, "family handlers require a 28-byte payload");
++
++static constexpr uint32_t kRTW88PrivateMacMaxIntervalS = 0xFFFFFFFFU / 1000U;
++static constexpr uint32_t kRTW88PrivateMacRetryMs = 60000U;
++
++static bool rtw88MacIsZero(const uint8_t mac[6])
++{
++    return !(mac[0] | mac[1] | mac[2] | mac[3] | mac[4] | mac[5]);
++}
++
++static bool rtw88MacIsUnicast(const uint8_t mac[6])
++{
++    return !rtw88MacIsZero(mac) && !(mac[0] & 0x01);
++}
++
++static void rtw88MakeLocallyAdministered(uint8_t mac[6])
++{
++    /* Keep the random payload but set local-admin and clear multicast bits. */
++    mac[0] = (uint8_t)((mac[0] & 0xFCU) | 0x02U);
++}
++
++static void rtw88GeneratePrivateMAC(uint8_t mac[6])
++{
++    read_random(mac, 6);
++    rtw88MakeLocallyAdministered(mac);
++}
++
++/* rtw88 does not measure a noise floor.  Chips that report a per-path RX SNR
++ * (8822B/8822C, and 8821C since 1.0.2) give noise = RSSI - SNR.  When no
++ * plausible SNR is available (idle 2.4 GHz link that only sees CCK beacons,
++ * or no samples yet) fall back to the thermal-noise estimate for the current
++ * channel width instead of reporting "unavailable", which macOS renders as
++ * "0 dBm".  See RTW88LinkMetrics.hpp.  Always succeeds. */
++static void rtw88LinkNoise(int rssi, unsigned widthMHz, int *noise, int *snr,
++                           bool *measured = nullptr)
+ {
+     int s = 0;
+-    if (!rtw88_get_rx_snr(&s)) return false;
+-    *snr = s;
+-    *noise = rssi - s;
+-    return true;
++    const bool haveSnr = rtw88_get_rx_snr(&s);
++    const RTW88Metrics::LinkNoise n = RTW88Metrics::linkNoise(rssi, haveSnr, s, widthMHz);
++    *noise = n.noise;
++    *snr = n.snr;
++    if (measured) *measured = (n.source == RTW88Metrics::kSourceMeasured);
++}
++
++/* Operating width of a scanned BSS (HT/VHT Operation IEs), used only to pick
++ * the thermal-noise estimate for networks we are not connected to. */
++static unsigned rtw88BssWidthMHz(const RTW88BSS &b)
++{
++    RTW88BssOperation op;
++    RTW88IEEE80211::parseBssOperation(b.ies, b.ies_len, &op);
++    if (b.channel > 14 && op.vhtWidth == 1 && op.vhtSeg0 != 0) return 80;
++    if (op.htStaWidth && (op.sco == 1 || op.sco == 3)) return 40;
++    return 20;
+ }
+ 
+ /* The port has no channel regulatory database: regulatory_hint() is a stub
+@@ -144,7 +208,7 @@
+ 
+ bool RTL88WiFi::start(IOService *provider)
+ {
+-    setProperty("DriverBuild", "1.0.1-rtl88wifi-r12-20261014");
++    setProperty("DriverBuild", "1.0.11-rtl88wifi-r22-20261031");
+     setProperty("STA_R10_TXQ_GATE", kOSBooleanTrue);
+     setProperty("STA_R11_TXQ_STALL_GATE", kOSBooleanTrue);
+     setProperty("STA_V19_DARWIN_ENOTSUP_FIX", kOSBooleanTrue);
+@@ -224,6 +288,24 @@
+     }
+     _ieee80211->setEventDelegate(this);
+     _ieee80211->setRxDelegate(this);
++
++    /* 1.0.2 AWDL radio policy: read from the matched IOKit personality, so no
++     * new kernel symbol (boot-arg parsing) is needed.  Absent or false means
++     * the AWDL interface exists but never takes the radio off the AP channel. */
++    {
++        OSBoolean *awdlRadio = OSDynamicCast(OSBoolean, getProperty("RTL88WiFiAWDLRadio"));
++        const bool allowAWDL = awdlRadio && awdlRadio->isTrue();
++        _ieee80211->setAWDLRadioAllowed(allowAWDL);
++        setProperty("AWDL_RADIO_POLICY", allowAWDL ? "enabled" : "disabled");
++        IOLog("RTL88WiFi: AWDL radio policy: %s\n", allowAWDL ? "enabled (experimental)" : "disabled (stable default)");
++
++        /* 1.0.4 band policy: default on; RTL88WiFiPrefer5GHz=false in the
++         * personality honours the BSSID macOS asks for exactly. */
++        OSBoolean *p5 = OSDynamicCast(OSBoolean, getProperty("RTL88WiFiPrefer5GHz"));
++        const bool prefer5 = p5 ? p5->isTrue() : true;
++        _ieee80211->setPrefer5GHzUpgrade(prefer5);
++        setProperty("PREFER_5GHZ_POLICY", prefer5 ? "enabled" : "disabled");
++    }
+ 
+     rtw88_force_wifi_only();
+ 
+@@ -294,7 +376,20 @@
+     setProperty("DiagnosticLogging", kOSBooleanTrue);
+     setProperty("DiagnosticLogCapacity", (uint64_t)32767, 32);
+     _diagnosticsTimer->setTimeoutMS(1000);
+-    IOLog("RTL88WiFi: 1.0.1 diagnostics enabled; skb cb=80; fixes=memory,wpa,gtk,peer,station,firmware,scan-ies,ap-ie-list,link-reason,rx-filter\n");
++
++    /* Private-address rotation is driven on the controller workloop.  Failure
++     * to allocate this optional timer must not prevent ordinary Wi-Fi use; Fixed
++     * still works through setHardwareAddress(), while Rotating reports a clear
++     * diagnostic and remains safely on its current address. */
++    _privateMacTimer = IOTimerEventSource::timerEventSource(this, &RTL88WiFi::privateMacTimerFired);
++    if (_privateMacTimer && _workLoop->addEventSource(_privateMacTimer) == kIOReturnSuccess) {
++        setProperty("PRIVATE_MAC_TIMER_AVAILABLE", kOSBooleanTrue);
++    } else {
++        if (_privateMacTimer) { _privateMacTimer->release(); _privateMacTimer = nullptr; }
++        setProperty("PRIVATE_MAC_TIMER_AVAILABLE", kOSBooleanFalse);
++        IOLog("RTL88WiFi: PRIVATE_MAC rotation timer unavailable; Fixed mode remains available\n");
++    }
++    IOLog("RTL88WiFi: 1.0.11 diagnostics enabled; fixes=assoc-open-empty-key,private-mac-legacy-and-skywalk-get-set,fixed-rotating-mac,mesh-roam,mesh-cache-refresh\n");
+     IOLog("RTL88WiFi: device started successfully\n");
+     return true;
+ }
+@@ -360,6 +455,10 @@
+          * queue stalled or the ifnet output thread waiting on a gate signal. */
+         self->releaseTxStall();
+         self->kickGatedOutput();
++        /* 1.0.6: upkeep of the connected link (re-negotiates uplink A-MPDU if the
++         * AP tore the Block Ack agreement down).  Inside the same guard as the
++         * hardware reads above, so it cannot race a power transition. */
++        self->_ieee80211->housekeeping();
+         rtw88_debug_dump_tx_state_to(toRing);
+     }
+     __atomic_store_n(&self->_diagnosticsInHardware, false, __ATOMIC_SEQ_CST);
+@@ -606,6 +705,14 @@
+ void RTL88WiFi::teardown()
+ {
+     __atomic_store_n(&_shutdown, true, __ATOMIC_RELEASE);
++    if (_privateMacTimer) {
++        _privateMacTimer->disable();
++        _privateMacTimer->cancelTimeout();
++        if (_workLoop) _workLoop->removeEventSource(_privateMacTimer);
++        _privateMacTimer->cancelTimeout();
++        _privateMacTimer->release();
++        _privateMacTimer = nullptr;
++    }
+     if (_diagnosticsTimer) {
+         /* A callback already running may re-arm after the first cancel;
+          * removal waits for the workloop gate, then cancel any re-arm. */
+@@ -1095,19 +1202,47 @@
+     if (!addr || !_ieee80211)
+         return kIOReturnBadArgument;
+ 
+-    /* Newer CoreWiFi asks the controller to adopt its per-network private
+-     * station address before it submits APPLE80211_IOC_ASSOCIATE.  The default
+-     * IOEthernetController implementation returns Unsupported; that aborts the
+-     * join before the Realtek association path is reached. */
+-    IOReturn ret = _ieee80211->setMACAddress(addr->bytes);
++    /* CoreWiFi calls this before each join.  Honour the PRIVATE_MAC selector:
++     * Off restores the EFuse address; Fixed adopts the host's selected address
++     * (or the address explicitly supplied by PRIVATE_MAC); Rotating uses the
++     * pending rotation when one is due.  Never rotate a live association. */
++    uint8_t desired[6] = {};
++    if (!_privMacEnabled) {
++        _ieee80211->getPermanentMACAddress(desired);
++    } else if (_privMacApplyPending && _privMacAddressValid) {
++        memcpy(desired, _privMacAddress, sizeof(desired));
++    } else if (_privMacRotatePending) {
++        rtw88GeneratePrivateMAC(desired);
++    } else {
++        /* A non-zero address supplied by CoreWiFi is authoritative (Apple's
++         * reference driver copies it unchanged).  Only addresses generated
++         * locally by rtw88GeneratePrivateMAC() are forced to LAA unicast. */
++        memcpy(desired, addr->bytes, sizeof(desired));
++    }
+... DIFF TRUNCATED: total_diff_lines=980
+
+### src/kext/RTL88WiFi.hpp
+--- REFERENCE/src/kext/RTL88WiFi.hpp
++++ LOCAL/src/kext/RTL88WiFi.hpp
+@@ -19,6 +19,7 @@
+ #include <IOKit/80211/IO80211P2PInterface.h>
+ #include <IOKit/pci/IOPCIDevice.h>
+ #include <IOKit/IOInterruptEventSource.h>
++#include <IOKit/IOTimerEventSource.h>
+ #include <IOKit/IOMemoryDescriptor.h>
+ #include <IOKit/IOBufferMemoryDescriptor.h>
+ #include <IOKit/IOWorkLoop.h>
+@@ -105,6 +106,7 @@
+ 
+ public:
+     static void diagnosticsTimerFired(OSObject *owner, IOTimerEventSource *timer);
++    static void privateMacTimerFired(OSObject *owner, IOTimerEventSource *timer);
+     static void awdlTimerFired(OSObject *owner, IOTimerEventSource *timer);
+     /* IOService */
+     bool     init(OSDictionary *props) override;
+@@ -155,6 +157,15 @@
+                                       int request_number,
+                                       IO80211Interface *interface,
+                                       void *data) override;
++    /* PRIVATE_MAC selector 238 is queried through both Legacy and Skywalk
++     * split GET entry points on recent macOS releases. */
++    virtual SInt32 apple80211_ioctl_get(IO80211Interface *interface,
++                                        IO80211VirtualInterface *virtualInterface,
++                                        ifnet_t net, void *data) override;
++#if __IO80211_TARGET >= __MAC_10_15
++    virtual SInt32 apple80211_ioctl_get(IO80211SkywalkInterface *skywalkInterface,
++                                        void *data) override;
++#endif
+ 
+ #if __IO80211_TARGET >= __MAC_10_15
+     /* Sonoma+ with the restored Ventura Legacy/Skywalk stack sends the join
+@@ -217,6 +228,11 @@
+     __attribute__((__noinline__)) SInt32 handleNativeRequest(unsigned int request_type, int request_number, IO80211Interface *interface, void *data);
+     __attribute__((__noinline__)) IOReturn handleRequestCOUNTRY_CODE(bool isSet, void *data);
+     __attribute__((__noinline__)) IOReturn handleRequestPHY_MODE(bool isSet, void *data);
++    __attribute__((__noinline__)) IOReturn handleRequestPRIVATE_MAC(bool isSet, void *data);
++    SInt32 handlePrivateMACBSDRequest(unsigned request_type, struct apple80211req *req,
++                                      const char *ingress);
++    IOReturn applyPrivateMACAddress(bool rotate);
++    void armPrivateMACTimer(UInt32 milliseconds);
+     __attribute__((__noinline__)) IOReturn handleRequestRATE(bool isSet, void *data);
+     __attribute__((__noinline__)) IOReturn handleRequestRATE_SET(bool isSet, void *data);
+     __attribute__((__noinline__)) IOReturn handleRequestCHANNELS_INFO(bool isSet, void *data);
+@@ -243,9 +259,18 @@
+ 
+     apple80211_scan_result _scanResult = {};
+     uint32_t _scanCursor = 0;
++    /* 1.0.5: APPLE80211_IOC_PRIVATE_MAC state; see handleRequestPRIVATE_MAC(). */
++    bool     _privMacEnabled = true;
++    uint32_t _privMacFlags = 0;
++    uint32_t _privMacIntervalS = 0;
++    uint32_t _privMacGets = 0;
++    uint8_t  _privMacAddress[6] = {};
++    bool     _privMacAddressValid = false;
++    bool     _privMacApplyPending = false;
++    bool     _privMacRotatePending = false;
+     uint32_t _authLower = APPLE80211_AUTHTYPE_OPEN;
+     uint32_t _authUpper = APPLE80211_AUTHTYPE_NONE;
+-    uint8_t  _countryCode[APPLE80211_MAX_CC_LEN] = {'Z', 'Z', 0};
++    uint8_t  _countryCode[APPLE80211_MAX_CC_LEN] = {'Z', 'Z', 0}; /* unknown until Apple80211 supplies the device's active country */
+     RTW88RoamProfileBandData _roamProfile = {};
+     bool _roamProfileValid = false;
+ 
+@@ -279,6 +304,7 @@
+     RTW88IEEE80211         *_ieee80211   = nullptr;  /* reused as-is from rtw88 core */
+ 
+     IOTimerEventSource *_diagnosticsTimer = nullptr;
++    IOTimerEventSource *_privateMacTimer = nullptr;
+     char *_diagnosticsBuffer = nullptr;
+     uint64_t _diagnosticsSamples = 0;
+     /* Last periodic sample written to the diagnostic ring (r8 throttle). */
+
+### src/kext/RTW88AWDLManager.cpp
+--- REFERENCE/src/kext/RTW88AWDLManager.cpp
++++ LOCAL/src/kext/RTW88AWDLManager.cpp
+@@ -1,4 +1,5 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
++/* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (AWDL radio policy, mesh join selection); see NOTICE.md. */
+ #include <IOKit/80211/IO80211Controller.h>
+ #include <IOKit/80211/IO80211VirtualInterface.h>
+ #include <IOKit/80211/apple80211_ioctl.h>
+@@ -780,6 +781,7 @@
+     if (!_owner) return;
+     const char *plane = !_awdlInterface ? "no-interface" :
+         !_syncEnabled ? "sync-disabled" :
++        (_backend && !_backend->awdlRadioAllowed()) ? "radio-disabled-by-policy" :
+         !_airTemplate ? "waiting-io80211" :
+         !_nativeSchedule ? "io80211-template" :
+         (_appleControlMask & ~kAppleCtlVIF) ? "hybrid-bootstrap" : "driver-bootstrap";
+@@ -844,6 +846,17 @@
+ {
+     return awdlGated<bool>(_workLoop, _owner, [&]() -> bool {
+     if (!_backend || !_syncEnabled || !_awdlInterface || !_txBuffer) return false;
++    if (!_backend->awdlRadioAllowed()) {
++        /* Radio policy (1.0.2): AWDL never owns the PHY, so there is no window
++         * to schedule.  Release whatever IO80211 queued (the enqueue paths
++         * re-arm us on demand) and do NOT re-arm: no 2-25 ms timer, no social
++         * channel sweeps, no off-channel excursions. */
++        flushData();
++        flushActions();
++        const uint64_t t = nowUS();
++        if (t >= _lastStatsUS + 1000000ULL) { publishStats(); _lastStatsUS = t; }
++        return false;
++    }
+     uint64_t now = nowUS();
+     if (!_airTemplate) {
+         if (!_fallbackDeadlineUS) _fallbackDeadlineUS = now + 1500000ULL;
+
+### src/kext/RTW88AssocWire.hpp
+--- REFERENCE/src/kext/RTW88AssocWire.hpp
++++ LOCAL/src/kext/RTW88AssocWire.hpp
+@@ -7,7 +7,7 @@
+ // Validate the shared prefix independently; never interpret the unknown tail.
+ // Mode and both auth fields use 32 bits rather than the Ventura controller ABI.
+ // Never cast this wire prefix to apple80211_assoc_data.
+-// Restricted to open/WPA2-PSK; the unknown tail is not interpreted as RSN.
++// Accepts open, WPA2-PSK, and WPA2-PSK fallback from transition mode; the unknown tail is not interpreted as RSN.
+ namespace RTW88AssocWire {
+ constexpr size_t RequestSize = 900, TahoeRequestSize = 908, PrefixSize = 108;
+ inline bool supportedRequestSize(size_t n) {
+@@ -24,11 +24,27 @@
+     if (!p || n != PrefixSize || le32(p)!=1 || le32(p+4)!=2 || le32(p+8)!=1)
+         return false;
+     const uint32_t upper=le32(p+12), ssidLength=le32(p+16), keyLength=le32(p+64);
+-    if ((upper!=0 && upper!=8) || !ssidLength || ssidLength>32 || le32(p+60)!=1 ||
+-        (upper==8 ? keyLength!=32 : keyLength!=0)) return false;
++    const uint32_t keyVersion=le32(p+60);
++    /* WPA3-SAE is disabled.  A transition-mode request may be downgraded
++     * only when WPA2-PSK is also explicitly present; SAE-only is rejected.
++     * The decoded request is normalized to WPA2-PSK so the SAE bit never
++     * reaches the association backend as a capability we do not implement. */
++    constexpr uint32_t kWpa2Psk = 1U << 3;
++    constexpr uint32_t kWpa3Sae = 1U << 9;
++    const bool open = upper == 0;
++    const bool psk = upper == kWpa2Psk || upper == (kWpa2Psk | kWpa3Sae);
++    /* For an open network macOS supplies no key object; its embedded key
++     * version is therefore zero.  WPA2 must still carry the version-1 key
++     * object.  Requiring version 1 for an empty open request caused a valid
++     * host32 request to fall through and be misread as Ventura's 16-bit ABI
++     * (lower=0, upper=1, ssidLen=0). */
++    const bool keyHeaderValid = open ? (keyVersion == 0 || keyVersion == 1)
++                                     : (keyVersion == 1);
++    if ((!open && !psk) || !ssidLength || ssidLength>32 || !keyHeaderValid ||
++        (psk ? keyLength!=32 : keyLength!=0)) return false;
+     for (uint32_t i=0;i<ssidLength;++i) if (!p[20+i]) return false;
+     if (p[52]&1) return false; // A selected BSSID must be unicast (zero is allowed).
+-    out={};out.mode=2;out.lower=1;out.upper=upper;out.ssidLength=ssidLength;
++    out={};out.mode=2;out.lower=1;out.upper=psk ? kWpa2Psk : 0;out.ssidLength=ssidLength;
+     out.keyLength=keyLength;out.cipher=le32(p+68);
+     memcpy(out.ssid,p+20,ssidLength);memcpy(out.bssid,p+52,6);
+     if (keyLength) memcpy(out.key,p+76,keyLength);
+
+### src/kext/RTW88IEEE80211.cpp
+--- REFERENCE/src/kext/RTW88IEEE80211.cpp
++++ LOCAL/src/kext/RTW88IEEE80211.cpp
+@@ -1,4 +1,5 @@
+ /* Modified by X1REN41L on 2026-10-14 for RTL88WiFi 1.0.1; see the repository NOTICE.md. */
++/* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (AWDL radio policy, mesh join selection); see NOTICE.md. */
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ // RTW88IEEE80211.cpp — 802.11 state machine
+ 
+@@ -13,6 +14,8 @@
+ #include <sys/mbuf.h>
+ #include <string.h>
+ #include <sys/random.h>
++#include <kern/clock.h>
++#include <mach/mach_time.h>
+ 
+ /* Debug stage checkpoint — logs message only (no sleep). */
+ #define RTW88_STAGE(fmt, ...) IOLog("rtw88: ---- STAGE: " fmt " ----\n", ##__VA_ARGS__)
+@@ -34,6 +37,7 @@
+ /* PCI probe shim declared in pci.c */
+ int  rtw_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id);
+ void rtw_pci_remove(struct pci_dev *pdev);
++int  rtw_regd_set_country(struct rtw_dev *rtwdev, const char alpha2[2]);
+ 
+ /* Exported from the compat layer for hooking */
+ void rtw88_set_hw_callbacks(struct rtw88_hw_callbacks *cbs, void *kext_hw);
+@@ -44,6 +48,13 @@
+ extern const struct rtw_chip_info rtw8821c_hw_spec;
+ 
+ } /* extern "C" */
++
++/* Completion tokens are allocated with the compat slab allocator and must be
++ * released with its matching kfree() wrapper. */
++static void rtw88_release_skb_tx_completion_token(void *token)
++{
++    kfree(token);
++}
+ 
+ #define IOLog rtw88_candidate_log
+ 
+@@ -558,6 +569,9 @@
+     _lock    = IOLockAlloc();
+     _bssLock = IOLockAlloc();
+     if (!_lock || !_bssLock) return false;
++    _joinFail.clear();
++    _joinTried.clear();
++    _baRecovery.reset();
+     _connectTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::connectTCFn,
+                                        (thread_call_param_t)this);
+     _manualScanTC = thread_call_allocate((thread_call_func_t)RTW88IEEE80211::manualScanTCFn,
+@@ -726,6 +740,7 @@
+ void RTW88IEEE80211::releaseSta()
+ {
+     _txBaPending = false;
++    _baRecovery.reset();
+     if (!_sta)
+         return;
+ 
+@@ -868,6 +883,7 @@
+     /* Read MAC address — SET_IEEE80211_PERM_ADDR() copies EFuse MAC into
+      * hw->wiphy->perm_addr during rtw_register_hw(); read it from there. */
+     memcpy(_macAddr, _hw->wiphy->perm_addr, 6);
++    memcpy(_permanentMacAddr, _hw->wiphy->perm_addr, 6);
+     IOLog("rtw88: MAC address: %02x:%02x:%02x:%02x:%02x:%02x\n",
+           _macAddr[0], _macAddr[1], _macAddr[2],
+           _macAddr[3], _macAddr[4], _macAddr[5]);
+@@ -916,6 +932,7 @@
+     _state = RTW88_STATE_IDLE;
+     _associatedVisible = false;
+     _scanReturnState = RTW88_STATE_IDLE;
++    _scanPartial = false;
+     RTW88_STAGE("IEEE80211::start complete — SUCCESS");
+     return kIOReturnSuccess;
+ 
+@@ -985,6 +1002,7 @@
+     _state  = RTW88_STATE_IDLE;
+     _associatedVisible = false;
+     _scanReturnState = RTW88_STATE_IDLE;
++    _scanPartial = false;
+ }
+ 
+ /* ------------------------------------------------------------------ */
+@@ -1005,6 +1023,17 @@
+ 
+ IOReturn RTW88IEEE80211::setAWDLReceiveMode(bool active)
+ {
++    /* Policy gate (1.0.2): do not enter AWDL receive mode, i.e. keep the
++     * normal BSSID/unicast RX filters instead of accepting every frame on the
++     * channel.  Reports success so IO80211 treats the interface as enabled. */
++    if (active && !_awdlRadioAllowed) {
++        if (!_awdlPolicyLogged) {
++            _awdlPolicyLogged = true;
++            IOLog("rtw88: AWDL radio disabled by policy (RTL88WiFiAWDLRadio=false); "
++                  "radio stays on the infrastructure channel\n");
++        }
++        return kIOReturnSuccess;
++    }
+     if (!_hw || !_hw->ops || !_hw->ops->configure_filter)
+         return kIOReturnNotReady;
+ 
+@@ -1087,6 +1116,9 @@
+ 
+ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
+ {
++    /* Policy gate (1.0.2): never retune the radio away from the AP for AWDL. */
++    if (!_awdlRadioAllowed)
++        return kIOReturnNotReady;
+     if (!_powered || !_hw || !_hw->wiphy || channel == 0)
+         return kIOReturnNotReady;
+ 
+@@ -1211,6 +1243,18 @@
+ 
+ UInt32 RTW88IEEE80211::outputPacket(mbuf_t m)
+ {
++    return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
++}
++
++UInt32 RTW88IEEE80211::outputPacketWithCompletion(
++    mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie)
++{
++    if (!m) {
++        if (callback)
++            callback(context, cookie, false);
++        return kIOReturnOutputDropped;
++    }
++
+     /* Need an associated STA before data frames can be sent. */
+     bool connected = (_state == RTW88_STATE_CONNECTED) ||
+                      (_state == RTW88_STATE_SCANNING &&
+@@ -1219,6 +1263,8 @@
+                        _manualScanOnHomeChannel));
+     if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
+         mbuf_freem(m);
++        if (callback)
++            callback(context, cookie, false);
+         return kIOReturnOutputDropped;
+     }
+ 
+@@ -1230,13 +1276,19 @@
+             mbuf_copydata(m, 0, sizeof(eh), eh) != 0 ||
+             (uint16_t)((eh[12] << 8) | eh[13]) != ETH_P_PAE) {
+             mbuf_freem(m);
++            if (callback)
++                callback(context, cookie, false);
+             return kIOReturnOutputDropped;
+         }
+     }
+ 
+-    /* txDataFrame() encapsulates the Ethernet frame as an 802.11 data frame
+-     * and consumes (frees) the mbuf in all paths. */
+-    return txDataFrame(m) ? kIOReturnOutputSuccess : kIOReturnOutputDropped;
++    /* txDataFrame() consumes m in all paths. Once its skb is handed to rtw88,
++     * the completion callback follows that skb until either the PCI TX status
++     * callback or an early free/reset path reports its terminal outcome. */
++    const bool submitted = txDataFrame(m, callback, context, cookie);
++    if (!submitted && callback)
++        callback(context, cookie, false);
++    return submitted ? kIOReturnOutputSuccess : kIOReturnOutputDropped;
+ }
+ 
+ /* ------------------------------------------------------------------ */
+@@ -1307,9 +1359,11 @@
+                     doAssociate();
+                 } else {
+                     IOLog("rtw88: auth rejected by AP status=%u\n", status);
++                    /* Was: silently drop to IDLE, so macOS never learned the
++                     * join failed and retried the same node.  Try the next
++                     * node of the SSID, else report the failure. */
+                     _timer->cancelTimeout();
+-                    _associatedVisible = false;
+-                    _state = RTW88_STATE_IDLE;
++                    joinAttemptFailed("auth-rejected");
+                 }
+             }
+         }
+@@ -1363,12 +1417,25 @@
+                 IOLog("rtw88: %s from AP, reason=%u — disconnecting\n",
+                       (stype == 0x00C0) ? "deauth" : "disassoc", reason);
+             }
++            const bool lostLinkDuringConnectedScan =
++                (_state == RTW88_STATE_SCANNING &&
++                 _scanReturnState == RTW88_STATE_CONNECTED);
+             clearKeys();
+             _txBaActive = false;
++            _baRecovery.reset();
+             rxBaTeardownAll();
+             _associatedVisible = false;
+-            _state = RTW88_STATE_IDLE;
+-            _scanReturnState = RTW88_STATE_IDLE;
++            if (lostLinkDuringConnectedScan) {
++                /* Keep SCANNING latched until the worker exits.  Resetting the
++                 * state here made scanDone() return early while the worker
++                 * continued channel-hopping after a deauth. */
++                _manualScanAbort = true;
++                _scanReturnState = RTW88_STATE_IDLE;
++            } else {
++                _state = RTW88_STATE_IDLE;
++                _scanReturnState = RTW88_STATE_IDLE;
++                _scanPartial = false;
++            }
+             if (_parent)
+                 _parent->setLinkStatus(kIONetworkLinkValid);
+             /* IO80211/CoreWiFi needs the asynchronous deauth notification,
+@@ -1440,7 +1507,9 @@
+ 
+ static bool rtw88RsnSelectCcmpPsk(const uint8_t *rsn, uint8_t len,
+                                   uint32_t *pairwise_cipher,
+-                                  uint32_t *group_cipher)
++                                  uint32_t *group_cipher,
++                                  bool *has_sae_out = nullptr,
++                                  bool *pmf_required_out = nullptr)
+ {
+     if (!rsn || len < 8) return false;
+     const uint8_t *p = rsn;
+@@ -1475,12 +1544,28 @@
+         return false;
+ 
+     bool hasPsk = false;
++    bool hasSae = false;
+     for (uint16_t i = 0; i < akmCount; i++, p += 4) {
+-        if (rtw88ReadSuite(p) == 0x000FAC02) /* 00-0f-ac:2 PSK */
+... DIFF TRUNCATED: total_diff_lines=1254
+
+### src/kext/RTW88IEEE80211.hpp
+--- REFERENCE/src/kext/RTW88IEEE80211.hpp
++++ LOCAL/src/kext/RTW88IEEE80211.hpp
+@@ -1,4 +1,5 @@
+ /* Modified by X1REN41L on 2026-10-14 for RTL88WiFi 1.0.1; see the repository NOTICE.md. */
++/* Modified on 2026-10-23 for RTL88WiFi 1.0.2 (AWDL radio policy, mesh join selection); see NOTICE.md. */
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+  * RTW88IEEE80211.hpp — 802.11 state machine for rtw88 macOS port.
+  *
+@@ -18,6 +19,9 @@
+ #include <sys/mbuf.h>
+ #include <net/ethernet.h>
+ #include <kern/thread_call.h>
++#include "RTW88JoinPolicy.hpp"
++#include "RTW88RoamScanPolicy.hpp"
++#include "RTW88BaPolicy.hpp"
+ 
+ /* Opaque C driver handle */
+ struct rtw_dev;
+@@ -36,6 +40,8 @@
+     kRTW88EventDeauth,
+     kRTW88EventDisconnected,
+     kRTW88EventRSSIChanged,
++    /* Complete controlled-port transition (open association or WPA2 M3). */
++    kRTW88EventConnected,
+ };
+ 
+ class RTW88EventDelegate {
+@@ -126,6 +132,11 @@
+     uint32_t cipher;       /* selected pairwise WLAN_CIPHER_SUITE_* */
+     uint32_t group_cipher; /* selected group WLAN_CIPHER_SUITE_* */
+     uint32_t akm;
++    /* RSN capabilities we must not silently ignore: SAE is recorded so a
++     * transition BSS can explicitly use WPA2-PSK fallback; MFPR requires
++     * protected management frames, which this port does not yet implement. */
++    uint8_t  rsn_has_sae;
++    uint8_t  rsn_pmf_required;
+     uint32_t last_seen_scan;
+     /* Final: a beacon from this BSSID carried a non-empty, non-zero SSID, so
+      * the AP is not hidden even if a later frame has a blank SSID element. */
+@@ -161,6 +172,9 @@
+ /* ------------------------------------------------------------------ */
+ /*  RTW88IEEE80211                                                       */
+ /* ------------------------------------------------------------------ */
++typedef void (*RTW88TxCompletionCallback)(void *context, void *cookie,
++                                           bool transmitted);
++
+ class RTW88IEEE80211 : public OSObject {
+ public:
+     RTW88EventDelegate *_delegate = nullptr;
+@@ -180,6 +194,20 @@
+     IOReturn setReceiveMulticast(bool active);
+     IOReturn setAWDLReceiveMode(bool active);
+     IOReturn setAWDLChannel(uint16_t channel);
++    /* RTL88WiFi 1.0.2 policy.  AWDL (AirDrop/Continuity) has never completed a
++     * peer exchange on this driver, yet while the awdl0 interface exists the
++     * scheduler (a) puts the NIC in near-promiscuous receive mode and (b)
++     * parks the radio on channels 6/44/149 and stalls en0 transmit, which is
++     * what overflowed the 256-packet output queue under upload.  Default:
++     * the AWDL virtual interface exists but never takes the radio.  Set the
++     * Info.plist property RTL88WiFiAWDLRadio to true to restore the old
++     * behaviour for experiments. */
++    /* 1.0.4 band policy (Info.plist key RTL88WiFiPrefer5GHz, default true): when
++     * macOS asks for a 2.4 GHz node but a usable 5 GHz node of the same SSID is
++     * known, join the 5 GHz node.  False honours the requested BSSID exactly. */
++    void setPrefer5GHzUpgrade(bool on) { _prefer5GHzUpgrade = on; }
++    void setAWDLRadioAllowed(bool allowed) { _awdlRadioAllowed = allowed; }
++    bool awdlRadioAllowed() const { return _awdlRadioAllowed; }
+     bool canTransmitAWDL() const;
+     bool staAssociatedForAWDL() const { return _associatedVisible && _state == RTW88_STATE_CONNECTED; }
+     uint16_t infrastructureChannel() const { return _targetBSS.channel; }
+@@ -190,11 +218,19 @@
+     void      powerOff();    /* disable: rtw_core_stop */
+     void      handleInterrupt();
+     UInt32    outputPacket(mbuf_t m);
++    /* Optional hardware completion hook for native packet adapters. The
++     * callback may run in interrupt/teardown context and must only enqueue a
++     * bounded completion record; it must not call Skywalk directly. */
++    UInt32    outputPacketWithCompletion(mbuf_t m,
++                                         RTW88TxCompletionCallback callback,
++                                         void *context, void *cookie);
+     bool      txRawManagementFrame(const uint8_t *frame, uint32_t len);
+     /* Native AWDL Ethernet -> 802.11 direct data encapsulation. Consumes m. */
+     bool      txAWDLDataFrame(mbuf_t m);
+     void      getMACAddress(uint8_t *mac);
++    void      getPermanentMACAddress(uint8_t *mac);
+     IOReturn  setMACAddress(const uint8_t *mac);
++    IOReturn  setRegulatoryCountry(const char alpha2[2]);
+ 
+     /* Called from compat layer (ieee80211_rx_irqsafe) */
+     void      rxFrame(struct sk_buff *skb);
+@@ -205,7 +241,13 @@
+     uint32_t deauthReason() const { return _deauthReason; }
+     RTW88State rawState() const { return _state; }
+     bool associatedVisible() const { return _associatedVisible; }
+-    IOReturn  cmdScan();
++    /* Connected scans are bounded to candidate channels for the current ESS.
++     * Disconnected scans retain the normal full-channel discovery behavior. */
++    IOReturn  cmdScan(const uint16_t *requestedChannels = nullptr,
++                      uint32_t requestedCount = 0);
++    /* Native WCL scan-abort entry point. Uses the existing bounded abort
++     * primitive so scan and join state remain owned by the RTW88 backend. */
++    IOReturn  cmdAbortScan();
+     IOReturn  cmdConnect(const char *ssid, const char *password, const uint8_t *pmk = nullptr,
+                          const uint8_t *bssid = nullptr, bool externalSupplicant = false);
+     IOReturn  cmdInstallExternalKey(bool pairwise, uint8_t keyidx, uint32_t cipher,
+@@ -230,6 +272,10 @@
+     uint8_t channelWidthMHz() const { return _connChanWidth; }
+     static void parseBssOperation(const uint8_t *ies, uint16_t ielen, RTW88BssOperation *op);
+     bool txAggregationActive() const { return _txBaActive; }
++    /* 1.0.6: periodic upkeep of a connected link (currently: re-negotiating a lost
++     * or declined uplink Block Ack agreement).  Called about every 5 s by the
++     * controller's diagnostic timer, inside its hardware-safe window. */
++    void housekeeping();
+     uint32_t receivedFrameCount() const { return _rxFrameCount; }
+     const char *scanEngine() const { return _scanEngine; }
+     uint32_t scanChannelCount() const { return _lastScanChannelCount; }
+@@ -269,6 +315,19 @@
+     bool      buildAssocReq(uint8_t *buf, uint32_t *len);
+     bool      buildAuthReq(uint8_t *buf, uint32_t *len);
+ 
++    /* 1.0.2 multi-BSS (mesh) join.  *Locked helpers need _bssLock held. */
++    RTW88BSS *selectBssLocked(const char *ssid, size_t ssidLen, const uint8_t *pinned,
++                              bool skipTried, int privacyMatch);
++    /* The BSS to join for a request: the pinned BSSID when macOS named a known
++     * one, else the best node.  1.0.4: a pinned 2.4 GHz node is upgraded to a
++     * fresh, usable 5 GHz node of the same SSID (see _prefer5GHzUpgrade). */
++    RTW88BSS *selectBssForJoinLocked(const char *ssid, size_t ssidLen, const uint8_t *pinned,
++                                     bool *upgraded);
++    bool      hasUntriedAlternativeLocked();
++    void      applyAssocRsnOverride(bool externalSupplicant, bool havePmk, bool havePassword);
++    bool      retryOtherBss(const char *stage);     /* true: now joining another BSS */
++    void      joinAttemptFailed(const char *stage); /* retry elsewhere, else failJoin() */
++
+     /* WPA2 4-way handshake */
+     void      handleEAPOL(const uint8_t *data, uint32_t len);
+     bool      deriveKeys(const uint8_t *anonce, const uint8_t *snonce);
+@@ -302,7 +361,10 @@
+     bool      txMgmtFrame(const uint8_t *frame, uint32_t len);
+     bool      txNullFunc(bool powerSave);
+     bool      txProbeRequest();
+-    bool      txDataFrame(mbuf_t m);
++    bool      txDataFrame(mbuf_t m,
++                          RTW88TxCompletionCallback callback = nullptr,
++                          void *completionContext = nullptr,
++                          void *completionCookie = nullptr);
+     bool      tryDeliverAWDLDataFrame(struct sk_buff *skb);
+     void      deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
+                                   uint16_t ethertype,
+@@ -363,8 +425,11 @@
+     uint16_t            _awdlChannel = 0;
+     uint16_t            _awdlPreparedChannel = 0;
+     bool                _awdlOffChannel = false;
++    bool                _awdlRadioAllowed = false;   /* see setAWDLRadioAllowed() */
++    bool                _awdlPolicyLogged = false;
+     uint8_t             _awdlAddress[6] = {};
+     uint8_t             _macAddr[6]   = {};
++    uint8_t             _permanentMacAddr[6] = {};
+     uint32_t            _timeoutMs    = 0;
+ 
+     /* Scan results */
+@@ -372,6 +437,7 @@
+     uint32_t            _bssCount     = 0;
+     IOLock             *_bssLock      = nullptr;
+     uint32_t            _scanGeneration = 0;
++    bool                _scanPartial = false; /* connected, bounded scan: do not age/prune unscanned BSSs */
+     const char *        _scanEngine = "not-started";
+     uint32_t            _lastScanChannelCount = 0, _lastScanCacheCount = 0;
+     uint32_t            _scanVisited2GHz = 0, _scanVisited5GHz = 0;
+@@ -389,6 +455,9 @@
+      * separate scan implementation, so preserve the request and start it as
+      * soon as scanDone() returns the backend to IDLE. */
+     bool                _deferredConnectPending = false;
++    /* One full refresh is allowed when ASSOCIATE names a BSS missing from the
++     * cache; the refreshed retry still honours the exact requested BSSID. */
++    bool                _missingBssRescanAttempted = false;
+     char                _deferredSSID[33] = {};
+     char                _deferredPassword[64] = {};
+     uint8_t             _deferredPMK[32] = {};
+@@ -401,6 +470,12 @@
+     RTW88BSS            _targetBSS    = {};
+     char                _password[64] = {};
+     uint8_t             _authAttempts = 0;
++    /* 1.0.2: nodes that recently failed and nodes already tried in this join. */
++    RTW88Join::FailMemory _joinFail;
++    RTW88Join::TriedSet   _joinTried;
++    bool                  _prefer5GHzUpgrade = true;
++    bool                  _joinHasRequested = false;   /* BSSID macOS named, when we joined another */
++    uint8_t               _joinRequestedBssid[6] = {};
+ 
+     /* WPA2 key material */
+     uint8_t  _pmk[32]  = {};
+@@ -444,6 +519,7 @@
+     uint8_t  _connChanWidth = 20;  /* negotiated operating width: 20/40/80 MHz */
+     uint8_t  _baDialog   = 0;      /* rolling ADDBA-request dialog token       */
+     bool     _txBaPending = false;
++    RTW88Ba::Recovery _baRecovery;      /* when to (re)send ADDBA; see RTW88BaPolicy.hpp */
+     uint16_t _baBufSize  = 64;     /* advertised BlockAck buffer/window size   */
+ 
+     /* RX A-MPDU reorder buffer — one per TID with an active downlink BA.
+
+### src/kext/kmod_info.c
+--- REFERENCE/src/kext/kmod_info.c
++++ LOCAL/src/kext/kmod_info.c
+@@ -9,9 +9,9 @@
+ extern kern_return_t _stop(kmod_info_t *, void *);
+ extern int printf(const char *format, ...);
+ #ifdef RTW88_AIRPORT_KMOD
+-KMOD_EXPLICIT_DECL(io.github.x1ren41l.RTL88WiFi, "1.0.1", _start, _stop)
++KMOD_EXPLICIT_DECL(io.github.x1ren41l.RTL88WiFi, "1.0.11", _start, _stop)
+ #else
+-KMOD_EXPLICIT_DECL(com.rtw88.driver, "1.0.1", _start, _stop)
++KMOD_EXPLICIT_DECL(com.rtw88.driver, "1.0.11", _start, _stop)
+ #endif
+ static kern_return_t rtw88_module_start(kmod_info_t *ki, void *data)
+ {
+
+--- Native Makefile target discovery ---
+MAKEFILE_TARGET_DECLARATIONS_WITH_NATIVE=1
+TARGET line=469 name=rtl88wifi-native declaration=rtl88wifi-native: $(NATIVE_OUT_BIN)
+SAFE_EXPLICIT_NATIVE_TARGET_CANDIDATES=1
+Makefile lines referring to native source lists / expected components:
+160:    $(KEXT_SRC)/RTW88PCIDevice.cpp \
+325:# RTL88WiFi native IO80211 target. Its controller and interface sources
+336:    $(KEXT_SRC)/RTW88HwOps.cpp \
+353:WCL24H32_PCI_BACKEND_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.cpp
+354:WCL24H32_PCI_BACKEND_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLPCIBackend.o
+355:WCL24H32_SKYWALK_QUEUES_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.cpp
+356:WCL24H32_SKYWALK_QUEUES_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkQueues.o
+384:# Compile the native Sequoia 24H32 controller/interface and ABI-neutral PCI
+394:    $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
+395:    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
+417:    $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
+421:	@echo "  WCL-ABI CXX  RTW88WCLPCIBackend.cpp (ABI-neutral, compile-only)"
+425:    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
+430:	@echo "  WCL-ABI CXX  RTW88WCLSkywalkQueues.cpp (24H32, unregistered queues)"
+435:    $(KEXT_SRC)/wcl24h32/RTW88WCLTxCompletionSlots.hpp \
+455:# Stage29b: independent native Sequoia 24H32 target.
+458:NATIVE_KEXT_SKEL := $(PROJ_ROOT)/RTL88WiFiNative.kext
+459:NATIVE_OUT_KEXT := $(OUT_DIR)/RTL88WiFiNative.kext
+460:NATIVE_OUT_BIN := $(NATIVE_OUT_KEXT)/Contents/MacOS/RTL88WiFiNative
+461:NATIVE_CORE_OBJ_DIR := $(BUILD_DIR)/native
+462:NATIVE_CORE_SRCS := $(KEXT_SRC)/RTW88IEEE80211.cpp $(KEXT_SRC)/RTW88HwOps.cpp $(KEXT_SRC)/RTW88WCLRadioBridge.cpp $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+463:NATIVE_CORE_HEADERS := $(wildcard $(KEXT_SRC)/*.hpp) $(wildcard $(KEXT_SRC)/wcl24h32/*.hpp)
+464:NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88HwOps.o RTW88WCLRadioBridge.o RTW88WCLWorkQueue.o)
+465:NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+466:NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
+468:.PHONY: rtl88wifi-native
+469:rtl88wifi-native: $(NATIVE_OUT_BIN)
+471:$(NATIVE_CORE_OBJ_DIR):
+474:$(NATIVE_CORE_OBJ_DIR)/%.o: $(KEXT_SRC)/%.cpp $(NATIVE_CORE_HEADERS) | $(NATIVE_CORE_OBJ_DIR)
+475:	@echo "  NATIVE CXX  $< (24H32 isolated core object)"
+478:$(NATIVE_OUT_KEXT)/Contents/MacOS:
+481:$(NATIVE_OUT_BIN): $(NATIVE_ALL_OBJS) $(NATIVE_KEXT_SKEL)/Contents/Info.plist | $(NATIVE_OUT_KEXT)/Contents/MacOS
+482:	@echo "  NATIVE LD   $(notdir $@)"
+483:	$(LD) $(NATIVE_LDFLAGS) -o $@ $(NATIVE_ALL_OBJS)
+484:	@echo "  NATIVE SYNC $(NATIVE_OUT_KEXT)"
+485:	rsync -a --exclude='MacOS' $(NATIVE_KEXT_SKEL)/ $(NATIVE_OUT_KEXT)/
+486:	@echo "  NATIVE OK   $(NATIVE_OUT_KEXT)"
+MAKEFILE_PARSE_TIME_SHELL_EXPRESSIONS=3
+PARSE_SHELL line=18 HOST_CPUS := $(shell sysctl -n hw.logicalcpu 2>/dev/null || echo 4)
+PARSE_SHELL line=25 PROJ_ROOT    := $(shell pwd)
+PARSE_SHELL line=47 SDK          := $(shell xcrun --show-sdk-path)
+DRYRUN_GUARD=PASS_STATIC_GUARD
+
+--- Explicit native-target dry-run ---
+SAFE_FOR_MAKE_MINUS_N: no mutating parse-time shell pattern, recursive make, or + recipe marker detected by static guard
+
+### TARGET=rtl88wifi-native
+MAKE_DRY_RUN_EXIT=0
+DRY_RUN_OUTPUT_BYTES=49
+DRY_RUN_COMMAND_LINES=1
+RTW88HwOps.cpp_mentions=0
+RTW88PCIDevice.cpp_mentions=0
+RTW88WCLPCIBackend.cpp_mentions=0
+RTW88WCLSkywalkQueues.cpp_mentions=0
+RTW88WCLTxCompletionSlots_mentions=0
+NATIVE_KEXT_OUTPUT_mentions=0
+--- dry-run command output (first 500 lines) ---
+make: Nothing to be done for `rtl88wifi-native'.
+--- end target rtl88wifi-native ---
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+REFERENCE_CLONE_ONLY=/Users/shohel/Downloads/Stage35F-run-20261102-003013/reference
+EXISTING_KEXT_MODIFIED=NO
+OPENCORE_MODIFIED=NO
+BUILD=NOT_RUN (make -n only, if guarded target was found)
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+========== END STAGE 35F ==========

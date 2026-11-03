@@ -1,0 +1,9 @@
+STAGE63_FOUR_QUEUE_CONSTRUCTION_MAP
+ORDER_FROM_CURRENT_SOURCE=_txSubmission,_txCompletion,_rxSubmission,_rxCompletion
+APPLE_QUEUE_DESCRIPTOR_TYPES_FROM_STAGE61=1_TX_SUBMISSION,2_TX_COMPLETION,3_RX_SUBMISSION,4_RX_COMPLETION
+NOTE=queueId argument in withPool is not assumed to be the Apple queue-type ID
+QUEUE=_txSubmission CLASS=IOSkywalkTxSubmissionQueue ARGUMENTS=_txPool, kQueueCapacity, 0, this,         &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0
+QUEUE=_txCompletion CLASS=IOSkywalkTxCompletionQueue ARGUMENTS=_txPool, kQueueCapacity, 0, this,         &RTW88WCLSkywalkQueues::txCompletionAction, this, 0
+QUEUE=_rxSubmission CLASS=IOSkywalkRxSubmissionQueue ARGUMENTS=_rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),         this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0
+QUEUE=_rxCompletion CLASS=IOSkywalkRxCompletionQueue ARGUMENTS=_rxPool, kQueueCapacity, 0, this,         &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0
+QUEUE_CONSTRUCTOR_CALLS_FOUND=4/4

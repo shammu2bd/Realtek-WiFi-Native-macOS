@@ -1,0 +1,1101 @@
+========== STAGE 35J: ACTIVE DMA API CALL-SITE AUDIT ==========
+timestamp_utc=2026-11-02T00:42:18Z
+host=DESKTOP-65R32QP.localdomain
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+rtw88_source=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88
+mode=read-only static call-site audit
+
+--- Source inventory ---
+RTW88_DRIVER_ROOT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88 SOURCE_FILES=52
+COMPAT_ROOT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat SOURCE_FILES=41
+KEXT_ROOT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext SOURCE_FILES=49
+
+--- DMA API call-site counts (header definitions excluded) ---
+dma_alloc_coherent_CALL_SITES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:198 | if (len > TRX_BD_IDX_MASK) { | head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:271 | if (dma_mapping_error(&pdev->dev, dma)) | head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+dma_free_coherent_CALL_SITES=3
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:129 | skb_queue_walk_safe(&tx_ring->queue, skb, tmp) { | dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:163 | if (!skb) | dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:314 | if (!skb) | dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+dma_map_single_CALL_SITES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:227 | if (!skb) | dma = dma_map_single(&pdev->dev, skb->data, buf_sz, DMA_FROM_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:836 | else if (!avail_desc(ring->r.wp, ring->r.rp, ring->r.len)) | dma = dma_map_single(&rtwpci->pdev->dev, skb->data, skb->len,
+dma_unmap_single_CALL_SITES=5
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:113 | skb_queue_walk_safe(&tx_ring->queue, skb, tmp) { | dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:148 | if (!skb) | dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:310 | if (!skb) | dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:685 | if (!prev) | dma_unmap_single(&rtwpci->pdev->dev, dma, prev->len, DMA_TO_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:996 | if (!skb) { | dma_unmap_single(&rtwpci->pdev->dev, tx_data->dma, skb->len,
+dma_sync_single_for_cpu_CALL_SITES=1
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1140 | while (count--) { | dma_sync_single_for_cpu(rtwdev->dev, dma, RTK_PCI_RX_BUF_SIZE,
+dma_sync_single_for_device_CALL_SITES=1
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:249 | if (dma_mapping_error(&pdev->dev, dma)) | dma_sync_single_for_device(dev, dma, buf_sz, DMA_FROM_DEVICE);
+dma_map_page_CALL_SITES=0
+dma_unmap_page_CALL_SITES=0
+alloc_page_CALL_SITES=0
+__free_page_CALL_SITES=0
+dma_set_mask_and_coherent_CALL_SITES=0
+dma_set_mask_CALL_SITES=0
+dma_set_coherent_mask_CALL_SITES=0
+dma_mapping_error_CALL_SITES=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:228 | if (dma_mapping_error(&pdev->dev, dma)) | if (dma_mapping_error(&pdev->dev, dma))
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:838 | if (dma_mapping_error(&rtwpci->pdev->dev, dma)) | if (dma_mapping_error(&rtwpci->pdev->dev, dma))
+
+--- Helper implementation and fallback risks ---
+[dma-mapping.h lines 16-103]
+  16 /*
+  17  * On macOS, DMA coherent memory is allocated by the kext using
+  18  * IOBufferMemoryDescriptor (kIOMemoryPhysicallyContiguous).
+  19  * The C driver code calls these helpers; the kext installs rtw88_dma_ops
+  20  * before probe so the fallback path never runs in production.
+  21  */
+  22 struct rtw88_dma_alloc_ops {
+  23     void      *(*alloc_coherent)(struct device *dev, size_t size,
+  24                                   dma_addr_t *dma_handle, gfp_t flag);
+  25     void       (*free_coherent)(struct device *dev, size_t size,
+  26                                  void *cpu_addr, dma_addr_t dma_handle);
+  27     dma_addr_t (*map_single)(struct device *dev, void *ptr,
+  28                               size_t size, int direction);
+  29     void       (*unmap_single)(struct device *dev, dma_addr_t addr,
+  30                                 size_t size, int direction);
+  31     void       (*sync_single_for_cpu)(struct device *dev, dma_addr_t addr,
+  32                                        size_t size, int dir);
+  33     void       (*sync_single_for_device)(struct device *dev, dma_addr_t addr,
+  34                                           size_t size, int dir);
+  35 };
+  36 
+  37 extern struct rtw88_dma_alloc_ops *rtw88_dma_ops;
+  38 
+  39 static inline void *dma_alloc_coherent(struct device *dev, size_t size,
+  40                                         dma_addr_t *dma_handle, gfp_t flag)
+  41 {
+  42     if (rtw88_dma_ops && rtw88_dma_ops->alloc_coherent)
+  43         return rtw88_dma_ops->alloc_coherent(dev, size, dma_handle, flag);
+  44     /* Fallback: plain kernel allocation (not DMA-safe) */
+  45     void *ptr = kzalloc(size, GFP_KERNEL);
+  46     if (ptr) *dma_handle = (dma_addr_t)(uintptr_t)ptr;
+  47     return ptr;
+  48 }
+  49 
+  50 static inline void dma_free_coherent(struct device *dev, size_t size,
+  51                                       void *cpu_addr, dma_addr_t dma_handle)
+  52 {
+  53     if (rtw88_dma_ops && rtw88_dma_ops->free_coherent) {
+  54         rtw88_dma_ops->free_coherent(dev, size, cpu_addr, dma_handle);
+  55         return;
+  56     }
+  57     kfree(cpu_addr);
+  58 }
+  59 
+  60 static inline dma_addr_t dma_map_single(struct device *dev, void *ptr,
+  61                                           size_t size, int direction)
+  62 {
+  63     if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+  64         return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+  65     return (dma_addr_t)(uintptr_t)ptr;
+  66 }
+  67 
+  68 static inline void dma_unmap_single(struct device *dev, dma_addr_t addr,
+  69                                      size_t size, int direction)
+  70 {
+  71     if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+  72         rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+  73 }
+  74 
+  75 static inline void dma_sync_single_for_cpu(struct device *dev,
+  76                                              dma_addr_t addr,
+  77                                              size_t size, int dir)
+  78 {
+  79     if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_cpu)
+  80         rtw88_dma_ops->sync_single_for_cpu(dev, addr, size, dir);
+  81 }
+  82 
+  83 static inline void dma_sync_single_for_device(struct device *dev,
+  84                                                 dma_addr_t addr,
+  85                                                 size_t size, int dir)
+  86 {
+  87     if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_device)
+  88         rtw88_dma_ops->sync_single_for_device(dev, addr, size, dir);
+  89 }
+  90 
+  91 static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask) { return 0; }
+  92 static inline int dma_set_mask(struct device *dev, u64 mask)              { return 0; }
+  93 static inline int dma_set_coherent_mask(struct device *dev, u64 mask)     { return 0; }
+  94 
+  95 /* Match what compat_dma_map actually returns on failure: it returns 0 when
+  96  * the bounce-buffer alloc fails.  Treat BOTH 0 and -1 as errors so the
+  97  * driver doesn't silently program HW descriptors with bogus DMA addresses
+  98  * (which corrupts the TX ring state — wp advances, HW chews garbage and
+  99  * advances rp, eventually deadlocking at wp+1 == rp). */
+ 100 static inline bool dma_mapping_error(struct device *dev, dma_addr_t addr)
+ 101 {
+ 102     return addr == 0 || addr == (dma_addr_t)-1;
+ 103 }
+[dma-mapping.h lines 105-140]
+ 105 /* Page abstraction for RX ring allocations */
+ 106 struct page {
+ 107     void      *virt;
+ 108     dma_addr_t phys;
+ 109 };
+ 110 
+ 111 static inline struct page *alloc_page(gfp_t flags)
+ 112 {
+ 113     /* Allocate struct page + 4096-byte data in one chunk */
+ 114     struct page *p = (struct page *)kzalloc(sizeof(*p) + 4096, flags);
+ 115     if (p) {
+ 116         p->virt = (void *)((char *)p + sizeof(*p));
+ 117         p->phys = (dma_addr_t)(uintptr_t)p->virt;
+ 118     }
+ 119     return p;
+ 120 }
+ 121 
+ 122 static inline void __free_page(struct page *page)
+ 123 {
+ 124     kfree(page);
+ 125 }
+ 126 
+ 127 static inline void *page_address(struct page *page)
+ 128 {
+ 129     return page ? page->virt : NULL;
+ 130 }
+ 131 
+ 132 static inline dma_addr_t dma_map_page(struct device *dev, struct page *page,
+ 133                                        size_t offset, size_t size, int dir)
+ 134 {
+ 135     return page->phys + offset;
+ 136 }
+ 137 
+ 138 static inline void dma_unmap_page(struct device *dev, dma_addr_t addr,
+ 139                                    size_t size, int dir) {}
+ 140 
+
+[RTW88HwOps.cpp DMA/PCI callback block]
+  55 static void *compat_ioremap(struct pci_dev *, int, size_t)
+  56 {
+  57     return g_pci_dev_instance ? (void *)g_pci_dev_instance->mmioBase() : nullptr;
+  58 }
+  59 
+  60 static void compat_iounmap(struct pci_dev *, void *) {}
+  61 static int compat_enable_msi(struct pci_dev *) { return 0; }
+  62 static void compat_disable_msi(struct pci_dev *) {}
+  63 
+  64 static int compat_pci_find_capability(struct pci_dev *, int cap)
+  65 {
+  66     return g_pci_dev_instance ? g_pci_dev_instance->pciFindCapability(cap) : 0;
+  67 }
+  68 
+  69 struct pci_ops_rtw88 _pci_io_ops = {
+  70     .read_config_byte = compat_pci_read_config_byte,
+  71     .read_config_word = compat_pci_read_config_word,
+  72     .read_config_dword = compat_pci_read_config_dword,
+  73     .write_config_byte = compat_pci_write_config_byte,
+  74     .write_config_word = compat_pci_write_config_word,
+  75     .write_config_dword = compat_pci_write_config_dword,
+  76     .ioremap = compat_ioremap,
+  77     .iounmap = compat_iounmap,
+  78     .enable_msi = compat_enable_msi,
+  79     .disable_msi = compat_disable_msi,
+  80     .pci_find_capability = compat_pci_find_capability,
+  81 };
+  82 
+  83 static void *compat_dma_alloc(struct device *, size_t size,
+  84                               dma_addr_t *dma_handle, gfp_t)
+  85 {
+  86     if (!g_pci_dev_instance) return nullptr;
+  87     IOPhysicalAddress phys = 0;
+  88     void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+  89     if (dma_handle) *dma_handle = (dma_addr_t)phys;
+  90     return virt;
+  91 }
+  92 
+  93 static void compat_dma_free(struct device *, size_t size, void *cpu_addr,
+  94                             dma_addr_t dma_handle)
+  95 {
+  96     if (g_pci_dev_instance)
+  97         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+  98                                          (IOPhysicalAddress)dma_handle);
+  99 }
+ 100 
+ 101 static dma_addr_t compat_dma_map(struct device *, void *ptr, size_t size, int dir)
+ 102 {
+ 103     if (!g_pci_dev_instance || !ptr) return 0;
+ 104 
+ 105     IOPhysicalAddress phys = 0;
+ 106     void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+ 107     if (!bounce) return 0;
+ 108 
+ 109     g_pci_dev_instance->setBounceOrigVA(phys, ptr);
+ 110     if (dir == 1 || dir == 2)
+ 111         memcpy(bounce, ptr, size);
+ 112     return (dma_addr_t)phys;
+ 113 }
+ 114 
+ 115 static void compat_dma_unmap(struct device *, dma_addr_t addr, size_t, int)
+ 116 {
+ 117     if (g_pci_dev_instance)
+ 118         g_pci_dev_instance->freeCoherentByPhys((IOPhysicalAddress)addr);
+ 119 }
+ 120 
+ 121 static void compat_dma_sync_cpu(struct device *, dma_addr_t addr,
+ 122                                 size_t size, int dir)
+ 123 {
+ 124     if (dir == 0 && g_pci_dev_instance)
+ 125         g_pci_dev_instance->syncBounceForCpu((IOPhysicalAddress)addr, size);
+ 126 }
+ 127 
+ 128 static void compat_dma_sync_dev(struct device *, dma_addr_t, size_t, int) {}
+ 129 
+ 130 struct rtw88_dma_alloc_ops _dma_ops = {
+ 131     .alloc_coherent = compat_dma_alloc,
+ 132     .free_coherent = compat_dma_free,
+ 133     .map_single = compat_dma_map,
+ 134     .unmap_single = compat_dma_unmap,
+ 135     .sync_single_for_cpu = compat_dma_sync_cpu,
+ 136     .sync_single_for_device = compat_dma_sync_dev,
+ 137 };
+
+--- Native backend DMA allocation/sync implementation ---
+
+[backend lines 112-160]
+ 112         closeResources();
+ 113         return kIOReturnNoResources;
+ 114     }
+ 115     _compatInitialized = true;
+ 116 
+ 117     _interruptSource = IOInterruptEventSource::interruptEventSource(
+ 118         this,
+ 119         OSMemberFunctionCast(IOInterruptEventSource::Action, this,
+ 120                              &RTW88WCLPCIBackend::handleInterrupt),
+ 121         _pciDev, 0);
+ 122     if (!_interruptSource ||
+ 123         _workLoop->addEventSource(_interruptSource) != kIOReturnSuccess) {
+ 124         IOLog("rtl88wifi-wcl: unable to register PCI interrupt event source\n");
+ 125         closeResources();
+ 126         return kIOReturnNoResources;
+ 127     }
+ 128     _interruptSource->disable();
+ 129 
+ 130     _opened = true;
+ 131     IOLog("rtl88wifi-wcl: PCI backend acquired %04x:%04x, BAR2=%p length=0x%llx\n",
+ 132           _compatPciDev->vendor, _compatPciDev->device, (void *)_mmioBase,
+ 133           static_cast<unsigned long long>(_mmioMap->getLength()));
+ 134     return kIOReturnSuccess;
+ 135 }
+ 136 
+ 137 IOReturn RTW88WCLPCIBackend::setRadioRunning(bool running)
+ 138 {
+ 139     if (!_opened || !_pciDev || !_interruptSource)
+ 140         return kIOReturnNotReady;
+ 141     if (_radioRunning == running)
+ 142         return kIOReturnSuccess;
+ 143 
+ 144     if (running) {
+ 145         _pciDev->setMemoryEnable(true);
+ 146         _pciDev->setBusMasterEnable(true);
+ 147         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+ 148         if ((command & 0x0006U) != 0x0006U) {
+ 149             _interruptSource->disable();
+ 150             _pciDev->setBusMasterEnable(false);
+ 151             const UInt16 rollbackCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+ 152             if (rollbackCommand & 0x0004U) {
+ 153                 /* Bus mastering may still be active. Keep the backend marked
+ 154                  * running so close/free cannot reclaim DMA mappings. */
+ 155                 _radioRunning = true;
+ 156                 IOLog("rtl88wifi-wcl: partial PCI enable rollback failed (command=0x%04x); DMA resources quarantined\n",
+ 157                       rollbackCommand);
+ 158             } else {
+ 159                 _radioRunning = false;
+ 160                 _pciDev->setMemoryEnable(false);
+
+[backend lines 322-370]
+ 322 {
+ 323     if (!_pciDev || capability < 0 || capability > 0xff)
+ 324         return 0;
+ 325     UInt8 offset = 0;
+ 326     return _pciDev->findPCICapability(static_cast<UInt8>(capability), &offset)
+ 327                ? static_cast<int>(offset) : 0;
+ 328 }
+ 329 
+ 330 void *RTW88WCLPCIBackend::allocCoherent(size_t size,
+ 331                                          IOPhysicalAddress *physical)
+ 332 {
+ 333     if (physical) *physical = 0;
+ 334     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+ 335         return nullptr;
+ 336     if (preemption_enabled())
+ 337         drainPendingFree();
+ 338 
+ 339     IOBufferMemoryDescriptor *descriptor =
+ 340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+ 341             kernel_task,
+ 342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+ 343                 kIOMemoryKernelUserShared,
+ 344             size, 0x00000000FFFFFFF0ULL);
+ 345     if (!descriptor)
+ 346         return nullptr;
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+
+[backend lines 331-379]
+ 331                                          IOPhysicalAddress *physical)
+ 332 {
+ 333     if (physical) *physical = 0;
+ 334     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+ 335         return nullptr;
+ 336     if (preemption_enabled())
+ 337         drainPendingFree();
+ 338 
+ 339     IOBufferMemoryDescriptor *descriptor =
+ 340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+ 341             kernel_task,
+ 342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+ 343                 kIOMemoryKernelUserShared,
+ 344             size, 0x00000000FFFFFFF0ULL);
+ 345     if (!descriptor)
+ 346         return nullptr;
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+
+[backend lines 332-380]
+ 332 {
+ 333     if (physical) *physical = 0;
+ 334     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+ 335         return nullptr;
+ 336     if (preemption_enabled())
+ 337         drainPendingFree();
+ 338 
+ 339     IOBufferMemoryDescriptor *descriptor =
+ 340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+ 341             kernel_task,
+ 342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+ 343                 kIOMemoryKernelUserShared,
+ 344             size, 0x00000000FFFFFFF0ULL);
+ 345     if (!descriptor)
+ 346         return nullptr;
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+
+[backend lines 334-382]
+ 334     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+ 335         return nullptr;
+ 336     if (preemption_enabled())
+ 337         drainPendingFree();
+ 338 
+ 339     IOBufferMemoryDescriptor *descriptor =
+ 340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+ 341             kernel_task,
+ 342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+ 343                 kIOMemoryKernelUserShared,
+ 344             size, 0x00000000FFFFFFF0ULL);
+ 345     if (!descriptor)
+ 346         return nullptr;
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+ 381                                       IOPhysicalAddress physical)
+ 382 {
+
+[backend lines 339-387]
+ 339     IOBufferMemoryDescriptor *descriptor =
+ 340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+ 341             kernel_task,
+ 342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+ 343                 kIOMemoryKernelUserShared,
+ 344             size, 0x00000000FFFFFFF0ULL);
+ 345     if (!descriptor)
+ 346         return nullptr;
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+ 381                                       IOPhysicalAddress physical)
+ 382 {
+ 383     (void)size;
+ 384     (void)physical;
+ 385     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+ 386         return;
+ 387 
+
+[backend lines 347-395]
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+ 381                                       IOPhysicalAddress physical)
+ 382 {
+ 383     (void)size;
+ 384     (void)physical;
+ 385     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+ 386         return;
+ 387 
+ 388     IOSimpleLockLock(_dmaLock);
+ 389     RTW88DMAEntry **previous = &_dmaList;
+ 390     RTW88DMAEntry *entry = _dmaList;
+ 391     while (entry && entry->virt != virtualAddress) {
+ 392         previous = &entry->next;
+ 393         entry = entry->next;
+ 394     }
+ 395     if (entry)
+
+[backend lines 355-403]
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+ 381                                       IOPhysicalAddress physical)
+ 382 {
+ 383     (void)size;
+ 384     (void)physical;
+ 385     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+ 386         return;
+ 387 
+ 388     IOSimpleLockLock(_dmaLock);
+ 389     RTW88DMAEntry **previous = &_dmaList;
+ 390     RTW88DMAEntry *entry = _dmaList;
+ 391     while (entry && entry->virt != virtualAddress) {
+ 392         previous = &entry->next;
+ 393         entry = entry->next;
+ 394     }
+ 395     if (entry)
+ 396         *previous = entry->next;
+ 397     IOSimpleLockUnlock(_dmaLock);
+ 398 
+ 399     if (!entry) {
+ 400         IOLog("rtl88wifi-wcl: freeCoherent: unknown virtual address %p\n",
+ 401               virtualAddress);
+ 402         return;
+ 403     }
+
+[backend lines 372-420]
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+ 381                                       IOPhysicalAddress physical)
+ 382 {
+ 383     (void)size;
+ 384     (void)physical;
+ 385     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+ 386         return;
+ 387 
+ 388     IOSimpleLockLock(_dmaLock);
+ 389     RTW88DMAEntry **previous = &_dmaList;
+ 390     RTW88DMAEntry *entry = _dmaList;
+ 391     while (entry && entry->virt != virtualAddress) {
+ 392         previous = &entry->next;
+ 393         entry = entry->next;
+ 394     }
+ 395     if (entry)
+ 396         *previous = entry->next;
+ 397     IOSimpleLockUnlock(_dmaLock);
+ 398 
+ 399     if (!entry) {
+ 400         IOLog("rtl88wifi-wcl: freeCoherent: unknown virtual address %p\n",
+ 401               virtualAddress);
+ 402         return;
+ 403     }
+ 404     if (preemption_enabled()) {
+ 405         freeDMAList(entry);
+ 406     } else {
+ 407         IOSimpleLockLock(_pendingFreeLock);
+ 408         entry->next = _dmaPendingFree;
+ 409         _dmaPendingFree = entry;
+ 410         IOSimpleLockUnlock(_pendingFreeLock);
+ 411     }
+ 412 }
+ 413 
+ 414 void RTW88WCLPCIBackend::freeCoherentByPhys(IOPhysicalAddress physical)
+ 415 {
+ 416     if (!_dmaLock || !_pendingFreeLock || !physical)
+ 417         return;
+ 418 
+ 419     IOSimpleLockLock(_dmaLock);
+ 420     RTW88DMAEntry **previous = &_dmaList;
+
+[backend lines 406-454]
+ 406     } else {
+ 407         IOSimpleLockLock(_pendingFreeLock);
+ 408         entry->next = _dmaPendingFree;
+ 409         _dmaPendingFree = entry;
+ 410         IOSimpleLockUnlock(_pendingFreeLock);
+ 411     }
+ 412 }
+ 413 
+ 414 void RTW88WCLPCIBackend::freeCoherentByPhys(IOPhysicalAddress physical)
+ 415 {
+ 416     if (!_dmaLock || !_pendingFreeLock || !physical)
+ 417         return;
+ 418 
+ 419     IOSimpleLockLock(_dmaLock);
+ 420     RTW88DMAEntry **previous = &_dmaList;
+ 421     RTW88DMAEntry *entry = _dmaList;
+ 422     while (entry && entry->phys != physical) {
+ 423         previous = &entry->next;
+ 424         entry = entry->next;
+ 425     }
+ 426     if (entry)
+ 427         *previous = entry->next;
+ 428     IOSimpleLockUnlock(_dmaLock);
+ 429 
+ 430     if (!entry)
+ 431         return;
+ 432     if (preemption_enabled()) {
+ 433         freeDMAList(entry);
+ 434     } else {
+ 435         IOSimpleLockLock(_pendingFreeLock);
+ 436         entry->next = _dmaPendingFree;
+ 437         _dmaPendingFree = entry;
+ 438         IOSimpleLockUnlock(_pendingFreeLock);
+ 439     }
+ 440 }
+ 441 
+ 442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+ 443                                          void *originalAddress)
+ 444 {
+ 445     if (!_dmaLock || !physical)
+ 446         return;
+ 447     IOSimpleLockLock(_dmaLock);
+ 448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+
+[backend lines 434-482]
+ 434     } else {
+ 435         IOSimpleLockLock(_pendingFreeLock);
+ 436         entry->next = _dmaPendingFree;
+ 437         _dmaPendingFree = entry;
+ 438         IOSimpleLockUnlock(_pendingFreeLock);
+ 439     }
+ 440 }
+ 441 
+ 442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+ 443                                          void *originalAddress)
+ 444 {
+ 445     if (!_dmaLock || !physical)
+ 446         return;
+ 447     IOSimpleLockLock(_dmaLock);
+ 448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+ 455 }
+ 456 
+ 457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+ 458                                           size_t size)
+ 459 {
+ 460     if (!_dmaLock || !dmaAddress || !size)
+ 461         return;
+ 462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+ 463      * racing a concurrent unmap/free against the original buffer pointer. */
+ 464     IOSimpleLockLock(_dmaLock);
+ 465     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 466         if (entry->phys == dmaAddress && entry->orig_va && entry->virt) {
+ 467             const size_t copyLength = size < entry->size ? size : entry->size;
+ 468             memcpy(entry->orig_va, entry->virt, copyLength);
+ 469             break;
+ 470         }
+ 471     }
+ 472     IOSimpleLockUnlock(_dmaLock);
+ 473 }
+ 474 
+ 475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+ 476 {
+ 477     if (_client)
+ 478         _client->rtw88WCLResumeTransmit();
+ 479 }
+ 480 
+ 481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+ 482                                           int count)
+
+[backend lines 449-497]
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+ 455 }
+ 456 
+ 457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+ 458                                           size_t size)
+ 459 {
+ 460     if (!_dmaLock || !dmaAddress || !size)
+ 461         return;
+ 462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+ 463      * racing a concurrent unmap/free against the original buffer pointer. */
+ 464     IOSimpleLockLock(_dmaLock);
+ 465     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 466         if (entry->phys == dmaAddress && entry->orig_va && entry->virt) {
+ 467             const size_t copyLength = size < entry->size ? size : entry->size;
+ 468             memcpy(entry->orig_va, entry->virt, copyLength);
+ 469             break;
+ 470         }
+ 471     }
+ 472     IOSimpleLockUnlock(_dmaLock);
+ 473 }
+ 474 
+ 475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+ 476 {
+ 477     if (_client)
+ 478         _client->rtw88WCLResumeTransmit();
+ 479 }
+ 480 
+ 481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+ 482                                           int count)
+ 483 {
+ 484     (void)source;
+ 485     (void)count;
+ 486     if (!_radioRunning || !g_pci_dev_instance ||
+ 487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+ 488             static_cast<RTW88HwOps *>(this))
+ 489         return;
+ 490     if (preemption_enabled())
+ 491         drainPendingFree();
+ 492     rtw88_trigger_interrupt();
+ 493 }
+ 494 
+ 495 void RTW88WCLPCIBackend::drainPendingFree()
+ 496 {
+ 497     if (!_pendingFreeLock)
+
+[backend lines 473-521]
+ 473 }
+ 474 
+ 475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+ 476 {
+ 477     if (_client)
+ 478         _client->rtw88WCLResumeTransmit();
+ 479 }
+ 480 
+ 481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+ 482                                           int count)
+ 483 {
+ 484     (void)source;
+ 485     (void)count;
+ 486     if (!_radioRunning || !g_pci_dev_instance ||
+ 487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+ 488             static_cast<RTW88HwOps *>(this))
+ 489         return;
+ 490     if (preemption_enabled())
+ 491         drainPendingFree();
+ 492     rtw88_trigger_interrupt();
+ 493 }
+ 494 
+ 495 void RTW88WCLPCIBackend::drainPendingFree()
+ 496 {
+ 497     if (!_pendingFreeLock)
+ 498         return;
+ 499     IOSimpleLockLock(_pendingFreeLock);
+ 500     RTW88DMAEntry *list = _dmaPendingFree;
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+ 506 void RTW88WCLPCIBackend::releaseDMAEntries()
+ 507 {
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+
+[backend lines 487-535]
+ 487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+ 488             static_cast<RTW88HwOps *>(this))
+ 489         return;
+ 490     if (preemption_enabled())
+ 491         drainPendingFree();
+ 492     rtw88_trigger_interrupt();
+ 493 }
+ 494 
+ 495 void RTW88WCLPCIBackend::drainPendingFree()
+ 496 {
+ 497     if (!_pendingFreeLock)
+ 498         return;
+ 499     IOSimpleLockLock(_pendingFreeLock);
+ 500     RTW88DMAEntry *list = _dmaPendingFree;
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+ 506 void RTW88WCLPCIBackend::releaseDMAEntries()
+ 507 {
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+
+[backend lines 498-537]
+ 498         return;
+ 499     IOSimpleLockLock(_pendingFreeLock);
+ 500     RTW88DMAEntry *list = _dmaPendingFree;
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+ 506 void RTW88WCLPCIBackend::releaseDMAEntries()
+ 507 {
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+
+[backend lines 521-537]
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+
+--- Global DMA/PCI table ownership ---
+src/kext/RTW88HwOps.cpp:11:RTW88HwOps *g_pci_dev_instance = nullptr;
+src/kext/RTW88HwOps.cpp:15:if (!g_pci_dev_instance) { *val = 0xff; return -1; }
+src/kext/RTW88HwOps.cpp:16:*val = g_pci_dev_instance->pciReadByte(where);
+src/kext/RTW88HwOps.cpp:22:if (!g_pci_dev_instance) { *val = 0xffff; return -1; }
+src/kext/RTW88HwOps.cpp:23:*val = g_pci_dev_instance->pciReadWord(where);
+src/kext/RTW88HwOps.cpp:29:if (!g_pci_dev_instance) { *val = 0xffffffff; return -1; }
+src/kext/RTW88HwOps.cpp:30:*val = g_pci_dev_instance->pciReadDword(where);
+src/kext/RTW88HwOps.cpp:36:if (!g_pci_dev_instance) return -1;
+src/kext/RTW88HwOps.cpp:37:g_pci_dev_instance->pciWriteByte(where, val);
+src/kext/RTW88HwOps.cpp:43:if (!g_pci_dev_instance) return -1;
+src/kext/RTW88HwOps.cpp:44:g_pci_dev_instance->pciWriteWord(where, val);
+src/kext/RTW88HwOps.cpp:50:if (!g_pci_dev_instance) return -1;
+src/kext/RTW88HwOps.cpp:51:g_pci_dev_instance->pciWriteDword(where, val);
+src/kext/RTW88HwOps.cpp:57:return g_pci_dev_instance ? (void *)g_pci_dev_instance->mmioBase() : nullptr;
+src/kext/RTW88HwOps.cpp:66:return g_pci_dev_instance ? g_pci_dev_instance->pciFindCapability(cap) : 0;
+src/kext/RTW88HwOps.cpp:69:struct pci_ops_rtw88 _pci_io_ops = {
+src/kext/RTW88HwOps.cpp:86:if (!g_pci_dev_instance) return nullptr;
+src/kext/RTW88HwOps.cpp:88:void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+src/kext/RTW88HwOps.cpp:96:if (g_pci_dev_instance)
+src/kext/RTW88HwOps.cpp:97:g_pci_dev_instance->freeCoherent(size, cpu_addr,
+src/kext/RTW88HwOps.cpp:103:if (!g_pci_dev_instance || !ptr) return 0;
+src/kext/RTW88HwOps.cpp:106:void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+src/kext/RTW88HwOps.cpp:109:g_pci_dev_instance->setBounceOrigVA(phys, ptr);
+src/kext/RTW88HwOps.cpp:117:if (g_pci_dev_instance)
+src/kext/RTW88HwOps.cpp:118:g_pci_dev_instance->freeCoherentByPhys((IOPhysicalAddress)addr);
+src/kext/RTW88HwOps.cpp:124:if (dir == 0 && g_pci_dev_instance)
+src/kext/RTW88HwOps.cpp:125:g_pci_dev_instance->syncBounceForCpu((IOPhysicalAddress)addr, size);
+src/kext/RTW88HwOps.cpp:130:struct rtw88_dma_alloc_ops _dma_ops = {
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:97:if (!__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:105:rtw88_pci_io_ops = &_pci_io_ops;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:106:rtw88_dma_ops = &_dma_ops;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:257:if (__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:260:rtw88_pci_io_ops = nullptr;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:261:rtw88_dma_ops = nullptr;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:486:if (!_radioRunning || !g_pci_dev_instance ||
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:487:__atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+src/compat/rtw88_compat.c:144:struct rtw88_dma_alloc_ops *rtw88_dma_ops      = NULL;
+src/compat/rtw88_compat.c:145:struct pci_ops_rtw88       *rtw88_pci_io_ops   = NULL;
+
+--- Call-site risk assessment ---
+dma_sync_single_for_device=PRESENT
+dma_map_page=NO_DRIVER_OR_COMPAT_CALLSITE_FOUND
+dma_unmap_page=NO_DRIVER_OR_COMPAT_CALLSITE_FOUND
+alloc_page=NO_DRIVER_OR_COMPAT_CALLSITE_FOUND
+dma_set_mask_and_coherent=NO_DRIVER_OR_COMPAT_CALLSITE_FOUND
+dma_set_mask=NO_DRIVER_OR_COMPAT_CALLSITE_FOUND
+dma_set_coherent_mask=NO_DRIVER_OR_COMPAT_CALLSITE_FOUND
+dma_mapping_error=PRESENT
+SYNC_FOR_DEVICE_CALLBACK_IMPLEMENTATION=compat_dma_sync_dev is empty in RTW88HwOps.cpp (inspect every call-site above)
+DMA_PAGE_IMPLEMENTATION=dma_map_page returns struct page phys; alloc_page assigns phys from CPU virtual pointer
+DMA_MASK_IMPLEMENTATION=dma_set_mask* helpers return success without checking capability
+FALLBACK_IMPLEMENTATION=dma_alloc_coherent/dma_map_single cast CPU virtual pointers when rtw88_dma_ops callback is missing
+SCOPE=static call-site scan of rtw88 stable driver, compat, and kext C/C++ headers/sources; no runtime proof
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+
+--- End Stage 35J ---
+ACTUAL_BUILD=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+HARDWARE_TEST=NOT_RUN

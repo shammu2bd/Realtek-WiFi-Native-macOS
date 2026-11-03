@@ -1,0 +1,19 @@
+--- /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage43/run-20261102-040558/RTW88WCLInfraInterface.cpp.before	2026-11-01 07:38:54
++++ /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp	2026-11-02 10:05:59
+@@ -317,9 +317,13 @@
+ SInt32 RTW88WCLInfraInterface::initBSDInterfaceParameters(
+     ifnet_init_eparams *params, sockaddr_dl **address)
+ {
+-    (void)params;
+-    (void)address;
+-    return kIOReturnUnsupported;
++    /*
++     * Stage42 confirmed that the 24H32 IO80211InfraInterface implementation
++     * forwards to IO80211SkywalkInterface::initBSDInterfaceParameters().
++     * Use a qualified base call so this override does not recurse through
++     * virtual dispatch. Apple retains ownership of the BSD parameter setup.
++     */
++    return IO80211InfraInterface::initBSDInterfaceParameters(params, address);
+ }
+ 
+ IOReturn RTW88WCLInfraInterface::setMacAddress(ether_addr &address)

@@ -1,0 +1,112 @@
+STAGE87_EVIDENCE_CHAIN
+STAGE82_WRAPPER_SUMMARY=PASS
+STAGE83_METADATA_SUMMARY=PASS
+STAGE84_ARRAY_WMM_SUMMARY=PASS
+STAGE85_WMM_BODY_SUMMARY=PASS
+STAGE86_SOURCE_INVENTORY_SUMMARY=PASS
+
+===== STAGE84 QUEUE ARRAY / WMM DETAIL =====
+STAGE84_QUEUE_ARRAY_AND_WMM_GATE_MATRIX
+TARGET=macOS_15.8.1_24H32_x86_64
+DRIVER_QUEUE_OBJECTS
+FACTORY=_txSubmission CLASS=IOSkywalkTxSubmissionQueue TYPECODE=1 RESULT=PASS
+FACTORY=_txCompletion CLASS=IOSkywalkTxCompletionQueue TYPECODE=2 RESULT=PASS
+FACTORY=_rxSubmission CLASS=IOSkywalkRxSubmissionQueue TYPECODE=3 RESULT=PASS
+FACTORY=_rxCompletion CLASS=IOSkywalkRxCompletionQueue TYPECODE=4 RESULT=PASS
+
+QUEUE_ARRAY_SEARCH_RESULTS=0
+QUEUE_ARRAY_CANDIDATES=NONE
+
+NATIVE_REGISTRATION_CALL_SEARCH_RESULTS=0
+NATIVE_REGISTRATION_CALLS=NONE
+
+APPLE_QUEUESET_CLASSIFICATION_EVIDENCE
+TYPECODE_MAP=1_TX_SUBMISSION,2_TX_COMPLETION,3_RX_SUBMISSION,4_RX_COMPLETION
+QUEUESET_CLASSIFIES_EACH_SUPPLIED_QUEUE_BY_PERFORMCOMMAND_TYPECODE=YES
+QUEUESET_ITERATES_THE_SUPPLIED_POINTER_ARRAY_UP_TO_QUEUE_COUNT=YES
+INPUT_ARRAY_ORDER_REQUIRED=NOT_PROVEN
+WMM_PREDICATE_CALLED_WITH_QUEUE_POINTER_AND_COUNT=YES
+WMM_PREDICATE_BODY_AND_EXACT_ACCEPTANCE_RULE=NOT_IN_PINNED_METHOD_SET
+QUEUESET_WMM_CONTROL_BIT_3_ENABLES_AN_ADDITIONAL_WMM_CAPABILITY_PATH=YES
+WMM_REQUIRED_QUEUE_COMBINATION_OR_ORDER=UNRESOLVED
+NOTE=Type-code grouping supports classification independent of ordinal position, but it does not prove the WMM predicate has no order-sensitive requirement.
+CHECK=FOUR_DRIVER_QUEUE_FACTORY_MEMBERS_PRESENT RESULT=PASS
+CHECK=STAGE80_TYPECODE_CROSSWALK_4_OF_4 RESULT=PASS
+CHECK=APPLE_QUEUESET_KIND_TABLE_HAS_FOUR_TYPES RESULT=PASS
+CHECK=QUEUESET_ITERATES_INPUT_ARRAY_AND_QUERIES_TYPECODE RESULT=PASS
+CHECK=WMM_PREDICATE_RECEIVES_QUEUE_POINTER_AND_COUNT RESULT=PASS
+CHECK=QUEUESET_WMM_CONTROL_BIT_IS_EVIDENCE_BACKED RESULT=PASS
+CHECK=PERFORMCOMMAND_EMITS_FOUR_TYPE_CODES RESULT=PASS
+CHECK=DRIVER_QUEUE_POINTER_ARRAY_NOT_FOUND RESULT=PASS
+CHECK=DRIVER_NATIVE_REGISTRATION_CALL_NOT_FOUND RESULT=PASS
+CHECK=STAGE73_SOURCE_FINGERPRINT_MATCHES RESULT=PASS
+
+
+===== STAGE86 REGISTRATION CALLSITE DETAIL =====
+STAGE86_REGISTRATION_AND_WMM_CALLSITE_INVENTORY
+CALL_LIKE_REFERENCES=0
+REGISTRATION_AND_WMM_CALLS=NONE_FOUND
+
+
+===== STAGE86 POINTER ARRAY DETAIL =====
+STAGE86_POINTER_ARRAY_DECLARATION_INVENTORY
+DECLARATION_PATTERN_HITS=0
+POINTER_ARRAY_DECLARATIONS=NONE_FOUND
+
+ARRAY_AGGREGATION_AND_ADDRESS_CLUES=0
+QUEUE_MEMBER_AGGREGATION_CLUES=NONE_FOUND
+
+
+===== STAGE86 QUEUE MEMBER REFERENCES =====
+STAGE86_QUEUE_MEMBER_REFERENCE_INVENTORY
+SOURCE_FILES_SCANNED=91
+
+MEMBER=_txSubmission
+REFERENCE_COUNT=10
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:27:_txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:39:if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:70:_txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:73:if (!_txSubmission)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:119:if (_txSubmission) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:120:_txSubmission->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:121:_txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:136:return _allocated && _txPool && _rxPool && _txSubmission &&
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:153:if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:55:IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+
+MEMBER=_txCompletion
+REFERENCE_COUNT=9
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:28:_txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:39:if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:76:_txCompletion = IOSkywalkTxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:79:if (!_txCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:115:if (_txCompletion) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:116:_txCompletion->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:117:_txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:56:IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
+
+MEMBER=_rxSubmission
+REFERENCE_COUNT=9
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:29:_rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:40:_rxSubmission || _rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:82:_rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:85:if (!_rxSubmission)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:111:if (_rxSubmission) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:112:_rxSubmission->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:113:_rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:57:IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
+
+MEMBER=_rxCompletion
+REFERENCE_COUNT=9
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:30:_rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:40:_rxSubmission || _rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:88:_rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:91:if (!_rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:107:if (_rxCompletion) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:108:_rxCompletion->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:109:_rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:58:IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+

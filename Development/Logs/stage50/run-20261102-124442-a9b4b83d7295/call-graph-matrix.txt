@@ -1,0 +1,38 @@
+STAGE50_DIRECT_BODY_CALL_GRAPH
+METHOD_BODIES=comment/string-masked; edge tests are direct-body token checks, not interprocedural proof
+PRESENT means the target token/reference is in that exact extracted body; ABSENT means no direct edge found there.
+InfraInterface::start -> Apple Skywalk registration entry point: ABSENT | infra_start
+prepareRegistrationInfo -> initRegistrationInfo: PRESENT | infra_prepare_registration
+Controller::start -> registration / QueueSet / LogicalLink creation: ABSENT | controller_start
+createQueues -> four queue withPool constructors: PRESENT | queue_create
+createQueues -> TX submission callback address: PRESENT | queue_create
+createQueues -> TX completion callback address: PRESENT | queue_create
+createQueues -> RX submission callback address: PRESENT | queue_create
+createQueues -> RX completion callback address: PRESENT | queue_create
+createQueues -> QueueSet / LogicalLink / interface registration: ABSENT | queue_create
+TX submission callback -> TX adapter submitPacket: ABSENT | queue_tx_submission
+TX completion callback -> ticket drain / Skywalk completion: ABSENT | queue_tx_completion
+RX submission callback -> RX buffer refill / queueing: ABSENT | queue_rx_submission
+RX completion callback -> Skywalk network enqueue: ABSENT | queue_rx_completion
+TX adapter -> RTW88 hardware completion-aware output: PRESENT | tx_adapter_submit
+TX ticket drain -> deferred completion sink: PRESENT | tx_adapter_drain
+RX adapter workloop -> controller frame sink: PRESENT | rx_adapter_work
+controller RX sink -> bounded staging ring: PRESENT | controller_staged_rx_sink
+
+STAGE50_CALLBACK_RETURN_CHECKS
+queue_tx_submission: zero-return statements=4 | FOUND
+queue_tx_completion: zero-return statements=1 | FOUND
+queue_rx_submission: zero-return statements=1 | FOUND
+queue_rx_completion: zero-return statements=1 | FOUND
+
+STAGE50_REGISTRATION_API_OCCURRENCES
+registerInfraEthernetInterface_CODE_OCCURRENCES=1
+registerEthernetInterface_CODE_OCCURRENCES=2
+registerNetworkInterface_CODE_OCCURRENCES=2
+createWithQueues_CODE_OCCURRENCES=0
+createWithQueueSet_CODE_OCCURRENCES=0
+setDefaultLogicalLink_CODE_OCCURRENCES=0
+setLogicalLink_CODE_OCCURRENCES=0
+setInterface_CODE_OCCURRENCES=0
+INFRA_START_CONTAINS_RETURN_FALSE=YES
+CONTROLLER_START_CONTAINS_FAIL_CLOSED_GOTO=YES

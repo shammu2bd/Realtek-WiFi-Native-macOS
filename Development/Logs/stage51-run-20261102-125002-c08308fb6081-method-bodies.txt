@@ -1,0 +1,1260 @@
+STAGE51_EXACT_CONTROLLER_INTERFACE_METHODS
+EXTRACTION=qualified out-of-line definitions; comments and string/character literals masked for brace matching
+METHOD_COUNT=76
+
+===== RTW88WCLController::init | src/kext/wcl24h32/RTW88WCLController.cpp:19..35 =====
+   20 {
+   21     if (!super::init(properties))
+   22         return false;
+   23     _workLoop = nullptr;
+   24     _packetPathInterface = nullptr;
+   25     _packetPathState = kPacketPathDisabled;
+   26     _packetPathInFlight = 0;
+   27     _pciBackend = nullptr;
+   28     _skywalkQueues = nullptr;
+   29     _rxAdapter = nullptr;
+   30     _stagedRxPackets.reset();
+   31     _radio = nullptr;
+   32     _baseStarted = false;
+   33     _radioStarted = false;
+   34     return true;
+   35 }
+
+===== RTW88WCLController::createWorkLoop | src/kext/wcl24h32/RTW88WCLController.cpp:37..43 =====
+   38 {
+   39     if (_workLoop)
+   40         return true;
+   41     _workLoop = IOWorkLoop::workLoop();
+   42     return _workLoop != nullptr;
+   43 }
+
+===== RTW88WCLController::getWorkLoop | src/kext/wcl24h32/RTW88WCLController.cpp:45..48 =====
+   46 {
+   47     return _workLoop;
+   48 }
+
+===== RTW88WCLController::start | src/kext/wcl24h32/RTW88WCLController.cpp:50..176 =====
+   51 {
+   52     if (!provider || _baseStarted || _pciBackend || _radio)
+   53         return false;
+   54     if (!super::start(provider))
+   55         return false;
+   56     _baseStarted = true;
+   57 
+   58     /* Stage A: the controller workloop must exist before acquiring a PCI
+   59      * backend or registering any interrupt source. */
+   60     if (!createWorkLoop()) {
+   61         IOLog("rtl88wifi-wcl: controller workloop creation failed\n");
+   62         goto fail;
+   63     }
+   64 
+   65     /* Stage B: this native personality must be matched directly to a PCI
+   66      * provider. The backend retains it and owns BAR2/MMIO/DMA resources. */
+   67     {
+   68         IOPCIDevice *pci = OSDynamicCast(IOPCIDevice, provider);
+   69         if (!pci) {
+   70             IOLog("rtl88wifi-wcl: provider is not an IOPCIDevice\n");
+   71             goto fail;
+   72         }
+   73 
+   74         _pciBackend = new RTW88WCLPCIBackend;
+   75         if (!_pciBackend) {
+   76             IOLog("rtl88wifi-wcl: PCI backend allocation failed\n");
+   77             goto fail;
+   78         }
+   79         if (!_pciBackend->init()) {
+   80             _pciBackend->release();
+   81             _pciBackend = nullptr;
+   82             IOLog("rtl88wifi-wcl: PCI backend initialization failed\n");
+   83             goto fail;
+   84         }
+   85 
+   86         const IOReturn openStatus = _pciBackend->open(pci, _workLoop, this);
+   87         if (openStatus != kIOReturnSuccess) {
+   88             IOLog("rtl88wifi-wcl: PCI backend open failed: 0x%08x\n",
+   89                   openStatus);
+   90             goto fail;
+   91         }
+   92 
+   93         /* Stage C: instantiate the RTW88 state machine against the backend's
+   94          * compat pci_dev. This installs callback context and allocates its
+   95          * private timers/workloop only; it does not probe or power the chip. */
+   96         struct pci_dev *compatPCI = _pciBackend->compatPCIDevice();
+   97         if (!compatPCI) {
+   98             IOLog("rtl88wifi-wcl: backend did not provide a compat PCI device\n");
+   99             goto fail;
+  100         }
+  101         RTW88IEEE80211 *radio = RTW88IEEE80211::createAirport(this, compatPCI);
+  102         if (!radio) {
+  103             IOLog("rtl88wifi-wcl: RTW88 state-machine allocation failed\n");
+  104             goto fail;
+  105         }
+  106         radio->setEventDelegate(this);
+  107         const IOReturn bindStatus = bindRadioBackend(radio);
+  108         radio->release();
+  109         if (bindStatus != kIOReturnSuccess) {
+  110             IOLog("rtl88wifi-wcl: RTW88 state-machine bind failed: 0x%08x\n",
+  111                   bindStatus);
+  112             goto fail;
+  113         }
+  114     }
+  115 
+  116     /* Stage D: reserve native Skywalk queue/pool objects while the PCI and
+  117      * RTW88 owners are still available for orderly unwind. These objects are
+  118      * intentionally not registered or scheduled until packet descriptor
+  119      * conversion and hardware completion correlation are implemented. */
+  120     _skywalkQueues = new RTW88WCLSkywalkQueues;
+  121     if (!_skywalkQueues || !_skywalkQueues->init()) {
+  122         if (_skywalkQueues) {
+  123             _skywalkQueues->release();
+  124             _skywalkQueues = nullptr;
+  125         }
+  126         IOLog("rtl88wifi-wcl: Skywalk queue owner allocation failed\n");
+  127         goto fail;
+  128     }
+  129     {
+  130         const IOReturn queueStatus = _skywalkQueues->createQueues();
+  131         if (queueStatus != kIOReturnSuccess) {
+  132             IOLog("rtl88wifi-wcl: Skywalk queue/pool allocation failed: 0x%08x\n",
+  133                   queueStatus);
+  134             goto fail;
+  135         }
+  136     }
+  137 
+  138     /* Stage E: bind the RX workloop consumer to the now-owned 4 KiB RX pool.
+  139      * It copies frames into native packet buffers, but its sink remains
+  140      * rejecting until the registration/completion ABI is closed. */
+  141     _rxAdapter = new RTW88WCLSkywalkRxAdapter;
+  142     if (!_rxAdapter || !_rxAdapter->init(
+  143             this, _workLoop, _skywalkQueues->rxPacketPool(),
+  144             &RTW88WCLController::stagedRxFrame, this)) {
+  145         if (_rxAdapter) {
+  146             _rxAdapter->release();
+  147             _rxAdapter = nullptr;
+  148         }
+  149         IOLog("rtl88wifi-wcl: RX packet adapter initialization failed\n");
+  150         goto fail;
+  151     }
+  152 
+  153     provider->setProperty("RTW88WCLControllerStage",
+  154                            "PCI, RTW88 and pool-backed RX packet conversion staged; datapath pending");
+  155 
+  156     /* Publication fence: do not probe or power the radio until Skywalk packet
+  157      * registration, RX/TX rings, packet metadata and teardown are implemented.
+  158      * Starting it sooner would produce frames without a safe delivery path. */
+  159     IOLog("rtl88wifi-wcl: backend lifecycle staged; refusing publication until Skywalk datapath is ready\n");
+  160     goto fail;
+  161 
+  162 fail:
+  163     {
+  164         const IOReturn cleanupStatus = releaseNativeResources();
+  165         if (cleanupStatus != kIOReturnSuccess) {
+  166             IOLog("rtl88wifi-wcl: start-failure cleanup incomplete (0x%08x); retaining native resources\n",
+  167                   cleanupStatus);
+  168             return false;
+  169         }
+  170     }
+  171     if (_baseStarted) {
+  172         super::stop(provider);
+  173         _baseStarted = false;
+  174     }
+  175     return false;
+  176 }
+
+===== RTW88WCLController::stop | src/kext/wcl24h32/RTW88WCLController.cpp:178..190 =====
+  179 {
+  180     const IOReturn cleanupStatus = releaseNativeResources();
+  181     if (cleanupStatus != kIOReturnSuccess) {
+  182         IOLog("rtl88wifi-wcl: stop cleanup incomplete (0x%08x); deferring superclass stop and retaining resources\n",
+  183               cleanupStatus);
+  184         return;
+  185     }
+  186     if (_baseStarted) {
+  187         super::stop(provider);
+  188         _baseStarted = false;
+  189     }
+  190 }
+
+===== RTW88WCLController::releaseNativeResources | src/kext/wcl24h32/RTW88WCLController.cpp:192..263 =====
+  193 {
+  194     const IOReturn packetPathStatus = quiescePacketPath();
+  195     if (packetPathStatus != kIOReturnSuccess) {
+  196         IOLog("rtl88wifi-wcl: packet path quiesce deferred: 0x%08x\n",
+  197               packetPathStatus);
+  198         return packetPathStatus; // Keep the radio, interface and PCI callbacks alive.
+  199     }
+  200 
+  201     /* Stop the RTW88 RX/TX producer before removing its deferred consumers or
+  202      * disabling PCI interrupts. The staged path currently leaves
+  203      * _radioStarted false; preserve this ordering when native radio start is
+  204      * enabled after queue registration. */
+  205     if (_radio && _radioStarted) {
+  206         _radio->stop();
+  207         _radioStarted = false;
+  208     }
+  209 
+  210     if (_pciBackend && _pciBackend->isRadioRunning()) {
+  211         const IOReturn fenceStatus = _pciBackend->setRadioRunning(false);
+  212         if (fenceStatus != kIOReturnSuccess) {
+  213             IOLog("rtl88wifi-wcl: PCI interrupt/bus-master fence failed: 0x%08x\n",
+  214                   fenceStatus);
+  215             return fenceStatus; // Keep callbacks, mappings and DMA owner alive on failure.
+  216         }
+  217     }
+  218 
+  219     /* Remove the RX workloop source only after the RTW88 producer is stopped.
+  220      * stop() waits out an active checkForWork() and releases all staged mbufs. */
+  221     if (_rxAdapter) {
+  222         _rxAdapter->stop();
+  223         _rxAdapter->release();
+  224         _rxAdapter = nullptr;
+  225     }
+  226 
+  227     /* The RX adapter transfers accepted native packets into the controller's
+  228      * bounded ready ring. Recycle those packets while their pool still exists;
+  229      * on a pool error, retain the queue owner and PCI/backend context so a later
+  230      * stop/free attempt can retry rather than releasing live packet memory. */
+  231     const IOReturn recycleStatus = recycleStagedRxPackets();
+  232     if (recycleStatus != kIOReturnSuccess) {
+  233         IOLog("rtl88wifi-wcl: staged RX packet recycle deferred: 0x%08x\n",
+  234               recycleStatus);
+  235         return recycleStatus;
+  236     }
+  237 
+  238     /* Skywalk packet pools/queues are released only after both the mbuf staging
+  239      * adapter and the prepared-packet ownership ring have been drained. */
+  240     if (_skywalkQueues) {
+  241         _skywalkQueues->destroyQueues();
+  242         _skywalkQueues->release();
+  243         _skywalkQueues = nullptr;
+  244     }
+  245 
+  246     
+  247 
+  248     /* RTW88IEEE80211 owns the compat callback context; destroy it before
+  249      * rtw88_compat_exit() and before relinquishing the global hardware lease. */
+  250     unbindRadioBackend();
+  251 
+  252     if (_pciBackend) {
+  253         const IOReturn closeStatus = _pciBackend->close();
+  254         if (closeStatus != kIOReturnSuccess) {
+  255             IOLog("rtl88wifi-wcl: PCI backend close deferred: 0x%08x\n",
+  256                   closeStatus);
+  257             return closeStatus;
+  258         }
+  259         _pciBackend->release();
+  260         _pciBackend = nullptr;
+  261     }
+  262     return kIOReturnSuccess;
+  263 }
+
+===== RTW88WCLController::free | src/kext/wcl24h32/RTW88WCLController.cpp:265..281 =====
+  266 {
+  267     const IOReturn cleanupStatus = releaseNativeResources();
+  268     if (cleanupStatus != kIOReturnSuccess) {
+  269         IOLog("rtl88wifi-wcl: controller shutdown incomplete (0x%08x); quarantining controller and retaining workloop/resources\n",
+  270               cleanupStatus);
+  271         /* Do not release the workloop or call super::free() while any child,
+  272          * packet pool, or PCI/DMA resource may still reference this controller.
+  273          * This deliberately leaks the object rather than risking a UAF/DMA UAF. */
+  274         return;
+  275     }
+  276     if (_workLoop) {
+  277         _workLoop->release();
+  278         _workLoop = nullptr;
+  279     }
+  280     super::free();
+  281 }
+
+===== RTW88WCLController::isCommandProhibited | src/kext/wcl24h32/RTW88WCLController.cpp:283..287 =====
+  284 {
+  285     (void)command;
+  286     return true; // No WCL interface is published by this ABI-only slice.
+  287 }
+
+===== RTW88WCLController::handleCardSpecific | src/kext/wcl24h32/RTW88WCLController.cpp:289..295 =====
+  292 {
+  293     (void)interface; (void)command; (void)data; (void)set;
+  294     return kIOReturnUnsupported;
+  295 }
+
+===== RTW88WCLController::getDRIVER_VERSION | src/kext/wcl24h32/RTW88WCLController.cpp:297..309 =====
+  299 {
+  300     (void)interface;
+  301     if (!data)
+  302         return kIOReturnBadArgument;
+  303     bzero(data, sizeof(*data));
+  304     data->version = APPLE80211_VERSION;
+  305     static const char version[] = "RTL88WiFi WCL 24H32 (development)";
+  306     data->string_len = static_cast<uint16_t>(sizeof(version) - 1);
+  307     memcpy(data->string, version, sizeof(version));
+  308     return kIOReturnSuccess;
+  309 }
+
+===== RTW88WCLController::getHARDWARE_VERSION | src/kext/wcl24h32/RTW88WCLController.cpp:311..318 =====
+  313 {
+  314     (void)interface;
+  315     if (data)
+  316         bzero(data, sizeof(*data));
+  317     return data ? kIOReturnNotReady : kIOReturnBadArgument;
+  318 }
+
+===== RTW88WCLController::getCARD_CAPABILITIES | src/kext/wcl24h32/RTW88WCLController.cpp:320..331 =====
+  322 {
+  323     (void)interface;
+  324     if (!data)
+  325         return kIOReturnBadArgument;
+  326     bzero(data, sizeof(*data));
+  327     data->version = APPLE80211_VERSION;
+  328     /* Do not advertise unsupported modes or ciphers before the radio owner
+  329      * and InfraProtocol capabilities are wired up. */
+  330     return kIOReturnNotReady;
+  331 }
+
+===== RTW88WCLController::getPOWER | src/kext/wcl24h32/RTW88WCLController.cpp:333..342 =====
+  335 {
+  336     (void)interface;
+  337     if (!data)
+  338         return kIOReturnBadArgument;
+  339     bzero(data, sizeof(*data));
+  340     data->version = APPLE80211_VERSION;
+  341     return kIOReturnNotReady;
+  342 }
+
+===== RTW88WCLController::setPOWER | src/kext/wcl24h32/RTW88WCLController.cpp:344..349 =====
+  346 {
+  347     (void)interface;
+  348     return data ? kIOReturnNotReady : kIOReturnBadArgument;
+  349 }
+
+===== RTW88WCLController::getCOUNTRY_CODE | src/kext/wcl24h32/RTW88WCLController.cpp:351..360 =====
+  353 {
+  354     (void)interface;
+  355     if (!data)
+  356         return kIOReturnBadArgument;
+  357     bzero(data, sizeof(*data));
+  358     data->version = APPLE80211_VERSION;
+  359     return kIOReturnNotReady;
+  360 }
+
+===== RTW88WCLController::setCOUNTRY_CODE | src/kext/wcl24h32/RTW88WCLController.cpp:362..367 =====
+  364 {
+  365     (void)interface;
+  366     return data ? kIOReturnNotReady : kIOReturnBadArgument;
+  367 }
+
+===== RTW88WCLController::setGET_DEBUG_INFO | src/kext/wcl24h32/RTW88WCLController.cpp:369..374 =====
+  371 {
+  372     (void)interface;
+  373     return data ? kIOReturnUnsupported : kIOReturnBadArgument;
+  374 }
+
+===== RTW88WCLController::getLogger | src/kext/wcl24h32/RTW88WCLController.cpp:376..379 =====
+  377 {
+  378     return nullptr;
+  379 }
+
+===== RTW88WCLController::getFaultReporterFromDriver | src/kext/wcl24h32/RTW88WCLController.cpp:381..384 =====
+  382 {
+  383     return nullptr;
+  384 }
+
+===== RTW88WCLController::enterPacketPath | src/kext/wcl24h32/RTW88WCLController.cpp:387..400 =====
+  388 {
+  389     if (__atomic_load_n(&_packetPathState, __ATOMIC_ACQUIRE) !=
+  390         kPacketPathActive)
+  391         return false;
+  392 
+  393     __atomic_add_fetch(&_packetPathInFlight, 1U, __ATOMIC_ACQ_REL);
+  394     if (__atomic_load_n(&_packetPathState, __ATOMIC_ACQUIRE) ==
+  395         kPacketPathActive)
+  396         return true;
+  397 
+  398     __atomic_sub_fetch(&_packetPathInFlight, 1U, __ATOMIC_ACQ_REL);
+  399     return false;
+  400 }
+
+===== RTW88WCLController::leavePacketPath | src/kext/wcl24h32/RTW88WCLController.cpp:402..405 =====
+  403 {
+  404     __atomic_sub_fetch(&_packetPathInFlight, 1U, __ATOMIC_ACQ_REL);
+  405 }
+
+===== RTW88WCLController::activatePacketPath | src/kext/wcl24h32/RTW88WCLController.cpp:407..426 =====
+  409 {
+  410     if (!interface)
+  411         return kIOReturnBadArgument;
+  412     if (!_radio || !_radioStarted || !_pciBackend || !_pciBackend->isOpen())
+  413         return kIOReturnNotReady;
+  414 
+  415     uint32_t expected = kPacketPathDisabled;
+  416     if (!__atomic_compare_exchange_n(&_packetPathState, &expected,
+  417                                      kPacketPathBinding, false,
+  418                                      __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+  419         return kIOReturnBusy;
+  420 
+  421     interface->retain();
+  422     _packetPathInterface = interface;
+  423     __atomic_store_n(&_packetPathState, kPacketPathActive, __ATOMIC_RELEASE);
+  424     IOLog("rtl88wifi-wcl: native mbuf packet handoff enabled\n");
+  425     return kIOReturnSuccess;
+  426 }
+
+===== RTW88WCLController::quiescePacketPath | src/kext/wcl24h32/RTW88WCLController.cpp:428..463 =====
+  429 {
+  430     for (;;) {
+  431         uint32_t state = __atomic_load_n(&_packetPathState, __ATOMIC_ACQUIRE);
+  432         if (state == kPacketPathDisabled)
+  433             return kIOReturnSuccess;
+  434         if (state == kPacketPathBinding)
+  435             return kIOReturnBusy;
+  436         if (state == kPacketPathActive) {
+  437             uint32_t expected = kPacketPathActive;
+  438             if (!__atomic_compare_exchange_n(&_packetPathState, &expected,
+  439                                              kPacketPathQuiescing, false,
+  440                                              __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+  441                 continue;
+  442         } else if (state != kPacketPathQuiescing) {
+  443             return kIOReturnBusy;
+  444         }
+  445         break;
+  446     }
+  447 
+  448     if (__atomic_load_n(&_packetPathInFlight, __ATOMIC_ACQUIRE) != 0)
+  449         return kIOReturnBusy;
+  450 
+  451     uint32_t expected = kPacketPathQuiescing;
+  452     if (!__atomic_compare_exchange_n(&_packetPathState, &expected,
+  453                                      kPacketPathReleasing, false,
+  454                                      __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+  455         return kIOReturnBusy;
+  456 
+  457     IO80211SkywalkInterface *interface = _packetPathInterface;
+  458     _packetPathInterface = nullptr;
+  459     if (interface)
+  460         interface->release();
+  461     __atomic_store_n(&_packetPathState, kPacketPathDisabled, __ATOMIC_RELEASE);
+  462     return kIOReturnSuccess;
+  463 }
+
+===== RTW88WCLController::outputPacket | src/kext/wcl24h32/RTW88WCLController.cpp:465..481 =====
+  466 {
+  467     (void)param;
+  468     if (!packet)
+  469         return kIOReturnOutputDropped;
+  470 
+  471     if (!enterPacketPath()) {
+  472         mbuf_freem(packet);
+  473         return kIOReturnOutputDropped;
+  474     }
+  475 
+  476     /* RTW88IEEE80211::outputPacket consumes the mbuf on every return path. */
+  477     const UInt32 result = _radio ? _radio->outputPacket(packet)
+  478                                  : kIOReturnOutputDropped;
+  479     leavePacketPath();
+  480     return result;
+  481 }
+
+===== RTW88WCLController::rtw88WCLResumeTransmit | src/kext/wcl24h32/RTW88WCLController.cpp:483..487 =====
+  484 {
+  485     /* RTW88's internal TX queues resume independently. The future Skywalk
+  486      * submission queue will connect its wakeup here after ring registration. */
+  487 }
+
+===== RTW88WCLController::rtw88Event | src/kext/wcl24h32/RTW88WCLController.cpp:489..494 =====
+  490 {
+  491     (void)event;
+  492     (void)data;
+  493     /* WCL notifications are withheld until interface registration succeeds. */
+  494 }
+
+===== RTW88WCLController::allocateInputPacket | src/kext/wcl24h32/RTW88WCLController.cpp:496..507 =====
+  497 {
+  498     if (length < 14 || length > RTW88WCLSkywalkRxAdapter::kMaximumFrameLength ||
+  499         !_radio || !_rxAdapter || !enterPacketPath())
+  500         return nullptr;
+  501 
+  502     /* IO80211Controller inherits the IONetworkController packet allocator.
+  503      * Keep its mbuf metadata initialization rather than hand-rolling m_len. */
+  504     mbuf_t packet = allocatePacket(length);
+  505     leavePacketPath();
+  506     return packet;
+  507 }
+
+===== RTW88WCLController::injectRxFrame | src/kext/wcl24h32/RTW88WCLController.cpp:509..524 =====
+  510 {
+  511     if (!packet)
+  512         return;
+  513 
+  514     if (!_rxAdapter || !enterPacketPath()) {
+  515         mbuf_freem(packet);
+  516         return;
+  517     }
+  518 
+  519     /* enqueueFrame consumes the mbuf on both success and failure. The native
+  520      * RX completion queue is not registered yet, so the workloop sink below
+  521      * deliberately drops frames after staging rather than exposing them. */
+  522     (void)_rxAdapter->enqueueFrame(packet);
+  523     leavePacketPath();
+  524 }
+
+===== RTW88WCLController::recycleStagedRxPackets | src/kext/wcl24h32/RTW88WCLController.cpp:526..556 =====
+  527 {
+  528     if (_stagedRxPackets.empty())
+  529         return kIOReturnSuccess;
+  530     if (!_skywalkQueues || !_skywalkQueues->rxPacketPool())
+  531         return kIOReturnNotReady;
+  532 
+  533     IOSkywalkPacketBufferPool *pool = _skywalkQueues->rxPacketPool();
+  534     IOSkywalkPacket *packet = nullptr;
+  535     bool disposalRequired = false;
+  536     while (_stagedRxPackets.pop(&packet)) {
+  537         if (!packet)
+  538             continue;
+  539 
+  540         const IOReturn status = pool->deallocatePacket(packet);
+  541         if (status != kIOReturnSuccess) {
+  542             /* The radio and RX event source are already quiesced, and these
+  543              * queues were never registered. If a packet cannot be returned
+  544              * individually, dispose the pool's packet set as one teardown
+  545              * operation before its memory segments are released. */
+  546             IOLog("rtl88wifi-wcl: RX packet recycle returned 0x%08x; pool disposal required\n",
+  547                   status);
+  548             disposalRequired = true;
+  549         }
+  550         packet = nullptr;
+  551     }
+  552 
+  553     if (disposalRequired)
+  554         pool->disposeAllPackets();
+  555     return kIOReturnSuccess;
+  556 }
+
+===== RTW88WCLController::stagedRxFrame | src/kext/wcl24h32/RTW88WCLController.cpp:558..570 =====
+  560 {
+  561     auto *self = static_cast<RTW88WCLController *>(context);
+  562     if (!self || !preparedPacket)
+  563         return false;
+  564 
+  565     /* Preserve the pool-backed packet in a fixed-capacity owner ring. The
+  566      * ring is bounded to the RX pool's 128 packets; overflow returns false,
+  567      * causing the RX adapter to recycle the packet immediately. No queue API
+  568      * is called here: completion-queue registration/ownership is still fenced. */
+  569     return self->_stagedRxPackets.push(preparedPacket);
+  570 }
+
+===== RTW88WCLController::getRxWorkLoop | src/kext/wcl24h32/RTW88WCLController.cpp:572..575 =====
+  573 {
+  574     return _workLoop;
+  575 }
+
+===== RTW88WCLController::setLinkStatus | src/kext/wcl24h32/RTW88WCLController.cpp:577..581 =====
+  578 {
+  579     (void)status;
+  580     /* Link state is owned by IO80211InfraProtocol after Skywalk attachment. */
+  581 }
+
+===== RTW88WCLController::bindRadioBackend | src/kext/wcl24h32/RTW88WCLController.cpp:583..590 =====
+  584 {
+  585     if (!radio) return kIOReturnBadArgument;
+  586     if (_radio) return kIOReturnBusy;
+  587     radio->retain();
+  588     _radio = radio;
+  589     return kIOReturnSuccess;
+  590 }
+
+===== RTW88WCLController::unbindRadioBackend | src/kext/wcl24h32/RTW88WCLController.cpp:592..598 =====
+  593 {
+  594     if (_radio) {
+  595         _radio->release();
+  596         _radio = nullptr;
+  597     }
+  598 }
+
+===== RTW88WCLInfraInterface::init | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:139..155 =====
+  140 {
+  141     if (!super::init())
+  142         return false;
+  143     clearRegistrationInfo();
+  144     _controller = nullptr;
+  145     _workQueue = nullptr;
+  146     _scanFilter = {};
+  147     bzero(_targetBSSID, sizeof(_targetBSSID));
+  148     _scanActive = false;
+  149     _activeScanGeneration = 0;
+  150     _activeJoinGeneration = 0;
+  151     _assocNotified = false;
+  152     _connectNotified = false;
+  153     _stopping = false;
+  154     return true;
+  155 }
+
+===== RTW88WCLInfraInterface::init | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:157..171 =====
+  158 {
+  159     if (!provider || !address || !super::init())
+  160         return false;
+  161 
+  162     _controller = OSDynamicCast(RTW88WCLController, provider);
+  163     if (!_controller)
+  164         return false;
+  165 
+  166     if (!IO80211SkywalkInterface::init(provider, address))
+  167         return false;
+  168 
+  169     clearRegistrationInfo();
+  170     return true;
+  171 }
+
+===== RTW88WCLInfraInterface::attachRadio | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:173..201 =====
+  174 {
+  175     if (!radio || !_controller)
+  176         return kIOReturnBadArgument;
+  177     if (_bridge.isAttached() || _workQueue)
+  178         return kIOReturnBusy;
+  179 
+  180     IOWorkLoop *workLoop = _controller->getWorkLoop();
+  181     if (!workLoop)
+  182         return kIOReturnNotReady;
+  183 
+  184     RTW88WCLWorkQueue *queue = new RTW88WCLWorkQueue;
+  185     if (!queue)
+  186         return kIOReturnNoMemory;
+  187     if (!queue->init(this, workLoop, this)) {
+  188         queue->release();
+  189         return kIOReturnNoResources;
+  190     }
+  191 
+  192     IOReturn status = _bridge.attach(radio, queue);
+  193     if (status != kIOReturnSuccess) {
+  194         queue->stop();
+  195         queue->release();
+  196         return status;
+  197     }
+  198     _workQueue = queue;
+  199     _stopping = false;
+  200     return kIOReturnSuccess;
+  201 }
+
+===== RTW88WCLInfraInterface::detachRadio | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:203..219 =====
+  204 {
+  205     _stopping = true;
+  206     /* Quiesce the producer first, then remove the work source. The controller
+  207      * must stop the radio before destroying its backend object. */
+  208     _bridge.detach();
+  209     if (_workQueue) {
+  210         _workQueue->stop();
+  211         _workQueue->release();
+  212         _workQueue = nullptr;
+  213     }
+  214     _scanActive = false;
+  215     _activeScanGeneration = 0;
+  216     _activeJoinGeneration = 0;
+  217     _assocNotified = false;
+  218     _connectNotified = false;
+  219 }
+
+===== RTW88WCLInfraInterface::free | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:221..227 =====
+  222 {
+  223     clearRegistrationInfo();
+  224     detachRadio();
+  225     _controller = nullptr;
+  226     super::free();
+  227 }
+
+===== RTW88WCLInfraInterface::clearRegistrationInfo | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:229..233 =====
+  230 {
+  231     RTW88WCLRegistrationInfo24H32::clear(_registrationInfo);
+  232     _registrationInfoPrepared = false;
+  233 }
+
+===== RTW88WCLInfraInterface::prepareRegistrationInfo | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:235..260 =====
+  236 {
+  237     using namespace RTW88WCLRegistrationInfo24H32;
+  238 
+  239     clearRegistrationInfo();
+  240     auto *info = reinterpret_cast<IOSkywalkEthernetInterface::RegistrationInfo *>(
+  241         _registrationInfo.bytes);
+  242 
+  243     /* 24H32 initRegistrationInfo requires option 1 and the exact 0x130 size.
+  244      * It supplies the other opaque slots through this interface's virtual
+  245      * hooks; do not replace it with a guessed local structure initializer.
+  246      */
+  247     if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+  248         clearRegistrationInfo();
+  249         return false;
+  250     }
+  251 
+  252     if (!applyAppleProducerWrites(_registrationInfo, address.octet) ||
+  253         !matchesApple24H32Template(_registrationInfo, address.octet)) {
+  254         clearRegistrationInfo();
+  255         return false;
+  256     }
+  257 
+  258     _registrationInfoPrepared = true;
+  259     return true;
+  260 }
+
+===== RTW88WCLInfraInterface::start | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262..272 =====
+  263 {
+  264     /* The native controller has not yet completed PCI/DMA ownership transfer,
+  265      * Skywalk registration-info allocation or RX/TX ring registration. Never
+  266      * publish a half-initialized Wi-Fi service. */
+  267     if (provider) {
+  268         provider->setProperty("RTW88WCLInfraInterfaceStage",
+  269                               "24H32 protocol handlers; Skywalk datapath pending");
+  270     }
+  271     return false;
+  272 }
+
+===== RTW88WCLInfraInterface::stop | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:274..281 =====
+  275 {
+  276     clearRegistrationInfo();
+  277     detachRadio();
+  278     if (provider)
+  279         provider->setProperty("RTW88WCLInfraInterfaceStopped", kOSBooleanTrue);
+  280     super::stop(provider);
+  281 }
+
+===== RTW88WCLInfraInterface::enable | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:283..301 =====
+  284 {
+  285     (void)options;
+  286     if (_stopping || !_bridge.isAttached() || !_controller)
+  287         return kIOReturnNotReady;
+  288 
+  289     /* Bring the RTW88 station path up first. Only then may the controller's
+  290      * standard mbuf TX hook admit packets for this registered interface. */
+  291     IOReturn status = _bridge.powerOn();
+  292     if (status != kIOReturnSuccess)
+  293         return status;
+  294 
+  295     status = _controller->activatePacketPath(this);
+  296     if (status != kIOReturnSuccess) {
+  297         _bridge.powerOff();
+  298         return status;
+  299     }
+  300     return kIOReturnSuccess;
+  301 }
+
+===== RTW88WCLInfraInterface::disable | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:303..315 =====
+  304 {
+  305     (void)options;
+  306     if (!_bridge.isAttached() || !_controller)
+  307         return kIOReturnNotReady;
+  308 
+  309     /* Stop new mbuf submissions and wait for synchronous TX handoffs before
+  310      * asking RTW88 to power down. A busy path leaves the radio running. */
+  311     IOReturn status = _controller->quiescePacketPath();
+  312     if (status != kIOReturnSuccess)
+  313         return status;
+  314     return _bridge.powerOff();
+  315 }
+
+===== RTW88WCLInfraInterface::initBSDInterfaceParameters | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:317..327 =====
+  319 {
+  320     /*
+  321      * Stage42 confirmed that the 24H32 IO80211InfraInterface implementation
+  322      * forwards to IO80211SkywalkInterface::initBSDInterfaceParameters().
+  323      * Use a qualified base call so this override does not recurse through
+  324      * virtual dispatch. Apple retains ownership of the BSD parameter setup.
+  325      */
+  326     return IO80211InfraInterface::initBSDInterfaceParameters(params, address);
+  327 }
+
+===== RTW88WCLInfraInterface::setMacAddress | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:329..332 =====
+  330 {
+  331     return _bridge.setMACAddress(address.octet);
+  332 }
+
+===== RTW88WCLInfraInterface::getHardwareAddress | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:334..339 =====
+  335 {
+  336     if (!address) return kIOReturnBadArgument;
+  337     if (!_bridge.isAttached()) return kIOReturnNotReady;
+  338     return _bridge.getMACAddress(address->octet);
+  339 }
+
+===== RTW88WCLInfraInterface::setHardwareAddress | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:341..345 =====
+  342 {
+  343     if (!address) return kIOReturnBadArgument;
+  344     return setMacAddress(*address);
+  345 }
+
+===== RTW88WCLInfraInterface::getController | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:347..350 =====
+  348 {
+  349     return _controller;
+  350 }
+
+===== RTW88WCLInfraInterface::isChipInterfaceReady | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:352..355 =====
+  353 {
+  354     return !_stopping && _bridge.isAttached();
+  355 }
+
+===== RTW88WCLInfraInterface::isDebounceOnGoing | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:357..360 =====
+  358 {
+  359     return false;
+  360 }
+
+===== RTW88WCLInfraInterface::linkState | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:362..367 =====
+  363 {
+  364     if (!_bridge.isAttached() || !_bridge.connectionReady())
+  365         return kIO80211NetworkLinkDown;
+  366     return kIO80211NetworkLinkUp;
+  367 }
+
+===== RTW88WCLInfraInterface::setLinkState | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:369..375 =====
+  373 {
+  374     return IO80211InfraInterface::setLinkState(state, reason, debounce, duration);
+  375 }
+
+===== RTW88WCLInfraInterface::getAssocState | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:377..380 =====
+  378 {
+  379     return linkState() == kIO80211NetworkLinkUp ? 1 : 0;
+  380 }
+
+===== RTW88WCLInfraInterface::getHardwareAssists | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:382..385 =====
+  383 {
+  384     return 0;
+  385 }
+
+===== RTW88WCLInfraInterface::bpfTap | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:387..392 =====
+  388 {
+  389     (void)direction;
+  390     (void)flags;
+  391     return false;
+  392 }
+
+===== RTW88WCLInfraInterface::hwConfigNicProxyData | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:394..398 =====
+  395 {
+  396     /* Proxy offload is not implemented; leave the opaque SDK structure alone. */
+  397     (void)info;
+  398 }
+
+===== RTW88WCLInfraInterface::getCHANNEL | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:400..417 =====
+  401 {
+  402     if (!data) return kIOReturnBadArgument;
+  403     if (!_bridge.isAttached()) return kIOReturnNotReady;
+  404     RTW88BSS bss = {};
+  405     IOReturn status = _bridge.copyCurrentBSS(&bss);
+  406     if (status != kIOReturnSuccess) return status;
+  407     if (bss.channel == 0 || bss.channel > 196) return kIOReturnNotReady;
+  408 
+  409     bzero(data, sizeof(*data));
+  410     data->version = APPLE80211_VERSION;
+  411     data->channel.version = APPLE80211_VERSION;
+  412     data->channel.channel = bss.channel;
+  413     data->channel.flags = bss.channel <= 14 ? APPLE80211_C_FLAG_2GHZ
+  414                                              : APPLE80211_C_FLAG_5GHZ;
+  415     data->channel.flags |= APPLE80211_C_FLAG_20MHZ;
+  416     return kIOReturnSuccess;
+  417 }
+
+===== RTW88WCLInfraInterface::getRSSI | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:419..434 =====
+  420 {
+  421     if (!data) return kIOReturnBadArgument;
+  422     if (!_bridge.isAttached()) return kIOReturnNotReady;
+  423     int rssi = 0;
+  424     IOReturn status = _bridge.getRSSI(&rssi);
+  425     if (status != kIOReturnSuccess) return status;
+  426 
+  427     bzero(data, sizeof(*data));
+  428     data->version = APPLE80211_VERSION;
+  429     data->num_radios = 1;
+  430     data->rssi_unit = APPLE80211_UNIT_DBM;
+  431     data->rssi[0] = rssi;
+  432     data->aggregate_rssi = rssi;
+  433     return kIOReturnSuccess;
+  434 }
+
+===== RTW88WCLInfraInterface::getSUPPORTED_CHANNELS | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:436..460 =====
+  438 {
+  439     if (!data) return kIOReturnBadArgument;
+  440     if (!_bridge.isAttached()) return kIOReturnNotReady;
+  441 
+  442     RTW88Channel channels[APPLE80211_MAX_CHANNELS] = {};
+  443     uint32_t count = 0;
+  444     IOReturn status = _bridge.copyChannels(channels,
+  445                                            APPLE80211_MAX_CHANNELS, &count);
+  446     if (status != kIOReturnSuccess) return status;
+  447     if (count > APPLE80211_MAX_CHANNELS) return kIOReturnNoResources;
+  448 
+  449     bzero(data, sizeof(*data));
+  450     data->version = APPLE80211_VERSION;
+  451     data->num_channels = count;
+  452     for (uint32_t i = 0; i < count; ++i) {
+  453         if (!channels[i].number || channels[i].number > 196)
+  454             return kIOReturnError;
+  455         data->supported_channels[i].version = APPLE80211_VERSION;
+  456         data->supported_channels[i].channel = channels[i].number;
+  457         data->supported_channels[i].flags = channelFlags(channels[i]);
+  458     }
+  459     return kIOReturnSuccess;
+  460 }
+
+===== RTW88WCLInfraInterface::setCIPHER_KEY | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:462..473 =====
+  463 {
+  464     if (!data) return kIOReturnBadArgument;
+  465     if (!_bridge.isAttached()) return kIOReturnNotReady;
+  466 
+  467     /* The Sequoia WCL protocol uses cipher values PMK (6), PMKSA (7) and MSK
+  468      * (9) here. The RTW88 internal WPA2-PSK path consumes its PMK from the
+  469      * association request and performs the four-way handshake itself. The
+  470      * backend has no WCL PMKSA/MSK cache insertion API yet. Do not reinterpret
+  471      * this message as a PTK/GTK key install. */
+  472     return kIOReturnUnsupported;
+  473 }
+
+===== RTW88WCLInfraInterface::setCLEAR_PMKSA_CACHE | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:475..480 =====
+  476 {
+  477     (void)data;
+  478     /* The existing RTW88 backend does not expose a PMKSA-cache removal API. */
+  479     return kIOReturnUnsupported;
+  480 }
+
+===== RTW88WCLInfraInterface::setWCL_LEAVE_NETWORK | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:482..501 =====
+  484 {
+  485     (void)data;
+  486     if (!_bridge.isAttached()) return kIOReturnNotReady;
+  487     IOReturn status = _bridge.leaveNetwork();
+  488     if (status == kIOReturnSuccess) {
+  489         /* Invalidate any deferred disconnect callback from the old join. */
+  490         _activeJoinGeneration = 0;
+  491         _connectNotified = false;
+  492         _assocNotified = false;
+  493         setCurrentApAddress(nullptr);
+  494         setLinkState(kIO80211NetworkLinkDown, 0, false, 0);
+  495         RTW88WCLLinkStatusEvent link = {};
+  496         link.up = 0;
+  497         postWCLMessage(kWCLMessageLinkStatus, &link, sizeof(link));
+  498         bzero(_targetBSSID, sizeof(_targetBSSID));
+  499     }
+  500     return status;
+  501 }
+
+===== RTW88WCLInfraInterface::setWCL_SCAN_ABORT | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:503..508 =====
+  504 {
+  505     (void)data;
+  506     if (!_bridge.isAttached()) return kIOReturnNotReady;
+  507     return _bridge.abortScan();
+  508 }
+
+===== RTW88WCLInfraInterface::setWCL_JOIN_ABORT | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:510..525 =====
+  511 {
+  512     (void)data;
+  513     if (!_bridge.isAttached()) return kIOReturnNotReady;
+  514     IOReturn status = _bridge.abortJoin();
+  515     if (status == kIOReturnSuccess) {
+  516         _activeJoinGeneration = 0;
+  517         _assocNotified = false;
+  518         _connectNotified = false;
+  519         postWCLMessage(kWCLMessageJoinAbortComplete, nullptr, 0);
+  520         setCurrentApAddress(nullptr);
+  521         setLinkState(kIO80211NetworkLinkDown, 0, false, 0);
+  522         bzero(_targetBSSID, sizeof(_targetBSSID));
+  523     }
+  524     return status;
+  525 }
+
+===== RTW88WCLInfraInterface::setWCL_SCAN_REQ | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:527..586 =====
+  528 {
+  529     if (!data) return kIOReturnBadArgument;
+  530     if (!_bridge.isAttached() || _stopping) return kIOReturnNotReady;
+  531     if (_scanActive || _bridge.scanInFlight()) return kIOReturnBusy;
+  532 
+  533     const uint8_t *raw = reinterpret_cast<const uint8_t *>(data);
+  534     const uint32_t channelCount = RTW88WCLRequest::read32(raw + 0x54);
+  535     if (channelCount > 400) return kIOReturnBadArgument;
+  536     const size_t requestLength = 0x58 + static_cast<size_t>(channelCount) * 12;
+  537     RTW88WCLRequest::Scan request = {};
+  538     if (!RTW88WCLRequest::decodeScan(data, requestLength, request))
+  539         return kIOReturnBadArgument;
+  540 
+  541     /* The backend currently supports active scans only. A FAST request is
+  542      * serviced as a fresh active scan because there is no separate cached-
+  543      * scan transaction; passive/background requests fail closed rather than
+  544      * being silently converted into active probe transmission. */
+  545     if (request.type != APPLE80211_SCAN_TYPE_ACTIVE &&
+  546         request.type != APPLE80211_SCAN_TYPE_FAST)
+  547         return kIOReturnUnsupported;
+  548 
+  549     uint16_t channels[128] = {};
+  550     uint32_t selected = 0;
+  551     for (unsigned channel = 1; channel <= 196; ++channel) {
+  552         if (!(request.channelBitmap[channel / 8] & (1U << (channel % 8))))
+  553             continue;
+  554         if (selected == sizeof(channels) / sizeof(channels[0]))
+  555             return kIOReturnNoResources;
+  556         channels[selected++] = static_cast<uint16_t>(channel);
+  557     }
+  558 
+  559     if (request.channelCount != 0 && selected == 0)
+  560         return kIOReturnUnsupported;
+  561 
+  562     ScanFilter filter = {};
+  563     filter.identifier = request.identifier;
+  564     filter.ssidLength = static_cast<uint8_t>(request.ssidLength);
+  565     memcpy(filter.ssid, request.ssid, sizeof(filter.ssid));
+  566     memcpy(filter.bssid, request.bssid, sizeof(filter.bssid));
+  567     memcpy(filter.channelBitmap, request.channelBitmap,
+  568            sizeof(filter.channelBitmap));
+  569     filter.filterBSSID = !isZeroAddress(filter.bssid, sizeof(filter.bssid));
+  570     filter.filterChannels = request.channelCount != 0;
+  571     _scanFilter = filter;
+  572     _scanActive = true;
+  573     /* The bridge writes this generation before it enters the asynchronous
+  574      * backend, so a fast completion cannot race the interface's filter state. */
+  575     _activeScanGeneration = 0;
+  576     setScanningState(request.identifier, true, nullptr, 0);
+  577 
+  578     IOReturn status = _bridge.startScan(selected ? channels : nullptr, selected,
+  579                                         &_activeScanGeneration);
+  580     if (status != kIOReturnSuccess) {
+  581         _scanActive = false;
+  582         _activeScanGeneration = 0;
+  583         setScanningState(request.identifier, false, nullptr, 0);
+  584     }
+  585     return status;
+  586 }
+
+===== RTW88WCLInfraInterface::setWCL_ASSOCIATE | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:588..623 =====
+  590 {
+  591     if (!data) return kIOReturnBadArgument;
+  592     if (!_bridge.isAttached() || _stopping) return kIOReturnNotReady;
+  593 
+  594     const uint8_t *raw = reinterpret_cast<const uint8_t *>(data);
+  595     const uint32_t candidates = RTW88WCLRequest::read32(raw + 0x214);
+  596     if (candidates == 0 || candidates > 10) return kIOReturnBadArgument;
+  597     const size_t requestLength = 0x218 + static_cast<size_t>(candidates) * 18;
+  598     RTW88WCLRequest::Join request = {};
+  599     if (!RTW88WCLRequest::decodeJoin(data, requestLength, request))
+  600         return kIOReturnUnsupported;
+  601 
+  602     const uint8_t *pmk = request.keyLength == 32 ? request.key : nullptr;
+  603     const uint8_t *rsn = request.rsnLength ? request.rsn : nullptr;
+  604     _assocNotified = false;
+  605     _connectNotified = false;
+  606     memcpy(_targetBSSID, request.bssid, sizeof(_targetBSSID));
+  607     /* The bridge writes this generation before cmdConnect() can schedule
+  608      * authentication or produce an event. Duplicate pending joins reuse the
+  609      * existing generation. */
+  610     _activeJoinGeneration = 0;
+  611     IOReturn status = _bridge.associate(request.ssid,
+  612                                         static_cast<uint8_t>(request.ssidLength),
+  613                                         request.bssid, pmk, rsn,
+  614                                         request.rsnLength, false /* internal RTW88 supplicant */,
+  615                                         &_activeJoinGeneration);
+  616     bzero(request.key, sizeof(request.key));
+  617     if (status != kIOReturnSuccess) {
+  618         _activeJoinGeneration = 0;
+  619         bzero(_targetBSSID, sizeof(_targetBSSID));
+  620         return status;
+  621     }
+  622     return kIOReturnSuccess;
+  623 }
+
+===== RTW88WCLInfraInterface::setWCL_LINK_UP_DONE | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:625..630 =====
+  626 {
+  627     (void)data;
+  628     maybePublishConnected();
+  629     return kIOReturnSuccess;
+  630 }
+
+===== RTW88WCLInfraInterface::setWCL_LINK_STATE_UPDATE | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:632..655 =====
+  634 {
+  635     if (!data) return kIOReturnBadArgument;
+  636 
+  637     /* Sequoia 24H32 WCL wire layout: byte 6 indicates an up-state record,
+  638      * byte 8 says the BSSID field is valid, byte 7 indicates link-up, and
+  639      * bytes 12..15 carry the down-state debounce interval. These offsets
+  640      * match the reviewed 24H32 WCL protocol layout; don't cast the opaque
+  641      * private structure to an older apple80211 definition. */
+  642     const uint8_t *bytes = reinterpret_cast<const uint8_t *>(data);
+  643     if (bytes[6]) {
+  644         if (bytes[8])
+  645             setCurrentApAddress(reinterpret_cast<ether_addr *>(data));
+  646         if (bytes[7])
+  647             setLinkState(kIO80211NetworkLinkUp, 0, false, 0);
+  648         return kIOReturnSuccess;
+  649     }
+  650 
+  651     const uint32_t debounce = RTW88WCLRequest::read32(bytes + 12);
+  652     setCurrentApAddress(nullptr);
+  653     setLinkState(kIO80211NetworkLinkDown, 0, debounce != 0, debounce);
+  654     return kIOReturnSuccess;
+  655 }
+
+===== RTW88WCLInfraInterface::scanResultMatches | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:657..674 =====
+  658 {
+  659     if (bss.channel == 0 || bss.channel > 196 || bss.ssid_len > 32 ||
+  660         bss.ies_len > sizeof(bss.ies) ||
+  661         !validInformationElements(bss.ies, bss.ies_len)) return false;
+  662     if (_scanFilter.filterBSSID &&
+  663         memcmp(bss.bssid, _scanFilter.bssid, sizeof(_scanFilter.bssid)) != 0)
+  664         return false;
+  665     if (_scanFilter.ssidLength &&
+  666         (bss.ssid_len != _scanFilter.ssidLength ||
+  667          memcmp(bss.ssid, _scanFilter.ssid, _scanFilter.ssidLength) != 0))
+  668         return false;
+  669     if (_scanFilter.filterChannels &&
+  670         !(_scanFilter.channelBitmap[bss.channel / 8] &
+  671           (1U << (bss.channel % 8))))
+  672         return false;
+  673     return true;
+  674 }
+
+===== RTW88WCLInfraInterface::postWCLMessage | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:676..682 =====
+  679 {
+  680     if (!_controller) return kIOReturnNotReady;
+  681     return _controller->postMessage(this, message, payload, length, true);
+  682 }
+
+===== RTW88WCLInfraInterface::publishScanResults | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:684..721 =====
+  685 {
+  686     if (!_controller) return;
+  687     if (status == kIOReturnSuccess) {
+  688         for (uint32_t index = 0; index < 128; ++index) {
+  689             RTW88BSS bss = {};
+  690             IOReturn copied = _bridge.copyScanBSS(index, &bss);
+  691             if (copied == kIOReturnNotFound) break;
+  692             if (copied != kIOReturnSuccess) break;
+  693             if (!scanResultMatches(bss)) continue;
+  694 
+  695             uint8_t message[sizeof(RTW88WCLBeaconMetadata) + sizeof(bss.ies)] = {};
+  696             RTW88WCLBeaconMetadata metadata = {};
+  697             metadata.ieLength = bss.ies_len;
+  698             metadata.channelSpec = static_cast<uint16_t>(bss.channel |
+  699                 (bss.channel <= 14 ? 0x1000 : 0xd000));
+  700             memcpy(metadata.ssid, bss.ssid, bss.ssid_len);
+  701             metadata.ssidLength = bss.ssid_len;
+  702             metadata.channel = bss.channel;
+  703             memcpy(metadata.bssid, bss.bssid, sizeof(metadata.bssid));
+  704             metadata.rssi = bss.rssi;
+  705             metadata.interval = bss.beacon_interval;
+  706             metadata.capability = static_cast<uint16_t>(bss.capabilities);
+  707             metadata.flags = kWCLBeaconRSSIValid;
+  708             if (bss.ssid_len) metadata.flags |= kWCLBeaconSSIDPresent;
+  709             memcpy(message, &metadata, sizeof(metadata));
+  710             if (bss.ies_len)
+  711                 memcpy(message + sizeof(metadata), bss.ies, bss.ies_len);
+  712             postWCLMessage(kWCLMessageScanResult, message,
+  713                            sizeof(metadata) + bss.ies_len);
+  714         }
+  715     }
+  716 
+  717     _scanActive = false;
+  718     _activeScanGeneration = 0;
+  719     setScanningState(_scanFilter.identifier, false, nullptr, 0);
+  720     postWCLMessage(kWCLMessageScanDone, &status, sizeof(status));
+  721 }
+
+===== RTW88WCLInfraInterface::postConnectionComplete | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:723..733 =====
+  726 {
+  727     RTW88WCLConnectionEvent event = {};
+  728     event.status = status;
+  729     event.reason = reason;
+  730     memcpy(event.peers[0].bssid, _targetBSSID, sizeof(_targetBSSID));
+  731     event.peers[0].driverStatus = driverStatus;
+  732     postWCLMessage(kWCLMessageConnectComplete, &event, sizeof(event));
+  733 }
+
+===== RTW88WCLInfraInterface::maybePublishConnected | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:735..752 =====
+  736 {
+  737     /* setWCL_LINK_UP_DONE may be delivered after a leave/abort request. Never
+  738      * publish an old backend CONNECTED state without a live join transaction. */
+  739     if (!_activeJoinGeneration || _connectNotified || !_bridge.isAttached() ||
+  740         !_bridge.connectionReady())
+  741         return;
+  742 
+  743     _connectNotified = true;
+  744     _assocNotified = true;
+  745     postConnectionComplete(0, 0, kIOReturnSuccess);
+  746     setLinkState(kIO80211NetworkLinkUp, 0, false, 0);
+  747 
+  748     RTW88WCLLinkStatusEvent link = {};
+  749     memcpy(link.bssid, _targetBSSID, sizeof(link.bssid));
+  750     link.up = 1;
+  751     postWCLMessage(kWCLMessageLinkStatus, &link, sizeof(link));
+  752 }
+
+===== RTW88WCLInfraInterface::handleRTW88WCLRadioEvent | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:754..839 =====
+  756 {
+  757     if (_stopping) return;
+  758     switch (event.event) {
+  759         case kRTW88EventScanDone: {
+  760             if (!_scanActive || event.scanGeneration != _activeScanGeneration)
+  761                 return; // stale completion from an aborted/superseded scan
+  762             const IOReturn status = event.value ? kIOReturnAborted
+  763                                                  : kIOReturnSuccess;
+  764             publishScanResults(status);
+  765             break;
+  766         }
+  767         case kRTW88EventConnected: {
+  768             if (!_activeJoinGeneration ||
+  769                 event.joinGeneration != _activeJoinGeneration)
+  770                 return;
+  771             if (!_assocNotified) {
+  772                 RTW88WCLAssociationEvent assoc = {};
+  773                 memcpy(assoc.bssid, _targetBSSID, sizeof(assoc.bssid));
+  774                 postWCLMessage(kWCLMessageAssocComplete, &assoc, sizeof(assoc));
+  775                 _assocNotified = true;
+  776             }
+  777             maybePublishConnected();
+  778             break;
+  779         }
+  780         case kRTW88EventAssocDone: {
+  781             if (!_activeJoinGeneration ||
+  782                 event.joinGeneration != _activeJoinGeneration)
+  783                 return; // stale association callback from an earlier join
+  784             if (!_assocNotified) {
+  785                 RTW88WCLAssociationEvent assoc = {};
+  786                 memcpy(assoc.bssid, _targetBSSID, sizeof(assoc.bssid));
+  787                 postWCLMessage(kWCLMessageAssocComplete, &assoc, sizeof(assoc));
+  788                 _assocNotified = true;
+  789             }
+  790             maybePublishConnected();
+  791             break;
+  792         }
+  793         case kRTW88EventDeauth: {
+  794             if (!_activeJoinGeneration ||
+  795                 event.joinGeneration != _activeJoinGeneration)
+  796                 return;
+  797             uint32_t reason = event.value;
+  798             postWCLMessage(kWCLMessageDeauth, &reason, sizeof(reason));
+  799             postConnectionComplete(1, static_cast<uint16_t>(reason),
+  800                                    kIOReturnNotAttached);
+  801             _connectNotified = false;
+  802             _assocNotified = false;
+  803             _activeJoinGeneration = 0;
+  804             setCurrentApAddress(nullptr);
+  805             setLinkState(kIO80211NetworkLinkDown, reason, false, 0);
+  806             break;
+  807         }
+  808         case kRTW88EventDisconnected: {
+  809             if (!_activeJoinGeneration ||
+  810                 event.joinGeneration != _activeJoinGeneration)
+  811                 return;
+  812             if (_connectNotified || _assocNotified)
+  813                 postConnectionComplete(1, 0, kIOReturnNotAttached);
+  814             _connectNotified = false;
+  815             _assocNotified = false;
+  816             _activeJoinGeneration = 0;
+  817             setCurrentApAddress(nullptr);
+  818             setLinkState(kIO80211NetworkLinkDown, 0, false, 0);
+  819             RTW88WCLLinkStatusEvent link = {};
+  820             memcpy(link.bssid, _targetBSSID, sizeof(link.bssid));
+  821             link.up = 0;
+  822             postWCLMessage(kWCLMessageLinkStatus, &link, sizeof(link));
+  823             break;
+  824         }
+  825         case kRTW88EventRSSIChanged: {
+  826             if (!_activeJoinGeneration ||
+  827                 event.joinGeneration != _activeJoinGeneration)
+  828                 return;
+  829             int rssi = 0;
+  830             if (_bridge.getRSSI(&rssi) == kIOReturnSuccess) {
+  831                 RTW88WCLLqmUpdate update = {};
+  832                 update.rssiValid = 1;
+  833                 update.rssi = rssi;
+  834                 postWCLMessage(kWCLMessageLqmUpdate, &update, sizeof(update));
+  835             }
+  836             break;
+  837         }
+  838     }
+  839 }

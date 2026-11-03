@@ -1,0 +1,166 @@
+STAGE75_24H32_REGISTRATION_PAYLOAD_AND_LIFECYCLE_EVIDENCE
+
+===== STORAGE_AND_HELPER_DECLARATIONS src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp =====
+...
+1: /* SPDX-License-Identifier: GPL-2.0-only
+2:  * Opaque IOSkywalk RegistrationInfo storage and the verified Apple 24H32
+3:  * post-initializer writes. Field semantics intentionally remain unnamed.
+4:  */
+5: #pragma once
+...
+9: #include <string.h>
+10: 
+11: namespace RTW88WCLRegistrationInfo24H32 {
+12: 
+13: constexpr size_t kSize = 0x130;
+14: constexpr uint64_t kVersionAndSize = 0x0000013000000001ULL;
+15: 
+16: /* Offsets/values observed in the 24H32 createSkywalkInterface producer.
+17:  * These are deliberately described as opaque slots, not guessed fields.
+18:  */
+19: constexpr size_t kOpaqueSlot0C = 0x0c;
+20: constexpr size_t kOpaqueSlot14 = 0x14;
+21: constexpr size_t kOpaqueSlot24 = 0x24;
+22: constexpr size_t kOpaqueSlot40 = 0x40;
+23: constexpr size_t kHardwareAddress = 0x108;
+24: 
+25: constexpr uint32_t kOpaqueValue0C = 3;
+26: constexpr uint32_t kOpaqueValue14 = 2;
+...
+29: 
+30: struct alignas(8) Storage {
+31:     uint8_t bytes[kSize];
+32: };
+33: static_assert(sizeof(Storage) == kSize, "24H32 RegistrationInfo storage size");
+34: static_assert(alignof(Storage) >= 8, "24H32 RegistrationInfo alignment");
+35: static_assert(kOpaqueSlot0C + sizeof(uint32_t) <= kSize,
+36:               "24H32 opaque slot 0x0c is in bounds");
+37: static_assert(kOpaqueSlot14 + sizeof(uint32_t) <= kSize,
+38:               "24H32 opaque slot 0x14 is in bounds");
+39: static_assert(kOpaqueSlot24 + sizeof(uint64_t) <= kSize,
+40:               "24H32 opaque slot 0x24 is in bounds");
+41: static_assert(kOpaqueSlot40 + sizeof(uint32_t) <= kSize,
+42:               "24H32 opaque slot 0x40 is in bounds");
+43: static_assert(kHardwareAddress + 6 <= kSize,
+44:               "24H32 hardware address is in bounds");
+45: 
+46: inline void clear(Storage &storage)
+...
+74: 
+75: /* Apply only the fields written by Apple's 24H32 createSkywalkInterface
+76:  * caller after initRegistrationInfo(). The initializer itself remains a
+77:  * separate kernel call because it populates other values from virtual hooks.
+78:  */
+79: inline bool applyAppleProducerWrites(Storage &storage,
+80:                                      const uint8_t hardwareAddress[6])
+81: {
+82:     if (!hardwareAddress)
+83:         return false;
+84: 
+85:     storeU32(storage, kOpaqueSlot14, kOpaqueValue14);
+86:     storeU64(storage, kOpaqueSlot24, kOpaqueValue24);
+87:     storeU32(storage, kOpaqueSlot0C, kOpaqueValue0C);
+88:     storeU32(storage, kOpaqueSlot40, kOpaqueValue40);
+89:     memcpy(storage.bytes + kHardwareAddress, hardwareAddress, 6);
+90:     return true;
+91: }
+92: 
+93: /* Called only after the kernel initRegistrationInfo() method has returned
+94:  * true and applyAppleProducerWrites() has run.
+95:  */
+96: inline bool matchesApple24H32Template(const Storage &storage,
+97:                                       const uint8_t hardwareAddress[6])
+...
+99:     if (!hardwareAddress)
+100:         return false;
+101:     if (loadU64(storage, 0) != kVersionAndSize)
+102:         return false;
+103:     if (loadU32(storage, kOpaqueSlot0C) != kOpaqueValue0C)
+104:         return false;
+105:     if (loadU32(storage, kOpaqueSlot14) != kOpaqueValue14)
+106:         return false;
+107:     if (loadU64(storage, kOpaqueSlot24) != kOpaqueValue24)
+108:         return false;
+109:     if (loadU32(storage, kOpaqueSlot40) != kOpaqueValue40)
+110:         return false;
+111:     return memcmp(storage.bytes + kHardwareAddress, hardwareAddress, 6) == 0;
+112: }
+113: 
+114: } // namespace RTW88WCLRegistrationInfo24H32
+
+===== STORAGE_AND_HELPER_DECLARATIONS src/kext/wcl24h32/RTW88WCLInfraInterface.hpp =====
+...
+8: 
+9: #include "RTW88WCL24H32InterfaceABI.hpp"
+10: #include "RTW88WCLRegistrationInfo.hpp"
+11: #include "RTW88WCLRequestDecoder.hpp"
+12: #include "../RTW88WCLRadioBridge.hpp"
+13: #include "../RTW88WCLWorkQueue.hpp"
+...
+258:     bool scanResultMatches(const RTW88BSS &bss) const;
+259:     void publishScanResults(IOReturn status);
+260:     bool prepareRegistrationInfo(const ether_addr &address);
+261:     void clearRegistrationInfo();
+262:     void postConnectionComplete(uint16_t status, uint16_t reason,
+263:                                 IOReturn driverStatus);
+264:     void maybePublishConnected();
+...
+282:      * and registration rollback have been verified.
+283:      */
+284:     RTW88WCLRegistrationInfo24H32::Storage _registrationInfo = {};
+285:     bool _registrationInfoPrepared = false;
+286: };
+287: 
+288: #undef RTW88_WCL_UNSUPPORTED
+
+===== FUNCTION RTW88WCLInfraInterface::prepareRegistrationInfo SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp =====
+SOURCE_LINES=236-260
+236: {
+237:     using namespace RTW88WCLRegistrationInfo24H32;
+238: 
+239:     clearRegistrationInfo();
+240:     auto *info = reinterpret_cast<IOSkywalkEthernetInterface::RegistrationInfo *>(
+241:         _registrationInfo.bytes);
+242: 
+243:                                                                              
+244:                                                                           
+245:                                                                            
+246:        
+247:     if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+248:         clearRegistrationInfo();
+249:         return false;
+250:     }
+251: 
+252:     if (!applyAppleProducerWrites(_registrationInfo, address.octet) ||
+253:         !matchesApple24H32Template(_registrationInfo, address.octet)) {
+254:         clearRegistrationInfo();
+255:         return false;
+256:     }
+257: 
+258:     _registrationInfoPrepared = true;
+259:     return true;
+260: }
+
+===== FUNCTION RTW88WCLInfraInterface::clearRegistrationInfo SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp =====
+SOURCE_LINES=230-233
+230: {
+231:     RTW88WCLRegistrationInfo24H32::clear(_registrationInfo);
+232:     _registrationInfoPrepared = false;
+233: }
+
+===== FUNCTION RegistrationInfo applyAppleProducerWrites helper SOURCE=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp =====
+SOURCE_LINES=81-91
+81: {
+82:     if (!hardwareAddress)
+83:         return false;
+84: 
+85:     storeU32(storage, kOpaqueSlot14, kOpaqueValue14);
+86:     storeU64(storage, kOpaqueSlot24, kOpaqueValue24);
+87:     storeU32(storage, kOpaqueSlot0C, kOpaqueValue0C);
+88:     storeU32(storage, kOpaqueSlot40, kOpaqueValue40);
+89:     memcpy(storage.bytes + kHardwareAddress, hardwareAddress, 6);
+90:     return true;
+91: }
+
+===== FUNCTION RegistrationInfo validation helper SOURCE=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp =====
+FUNCTION_BODY=NOT_FOUND

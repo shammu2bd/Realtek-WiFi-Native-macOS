@@ -1,0 +1,53 @@
+STAGE69_PACKET_BUFFER_LIFECYCLE_AND_MEMORY_SEGMENT_CROSSWALK
+
+PACKET_BUFFER_PREPARE_WITH_MEMORY_SEGMENT
+ffffff800297ec3b:      	mov	rax, qword ptr [rax + 0x120]
+
+PACKET_BUFFER_COMPLETE_WITH_MEMORY_SEGMENT
+ffffff800297ec4f:      	mov	rax, qword ptr [rax + 0x128]
+
+PACKET_BUFFER_PREPARE_WITH_QUEUE
+ffffff800297ec77:      	mov	rdi, qword ptr [rdi + 0x30]
+ffffff800297ec8b:      	call	0xffffff8000a364a0 <_uuid_unparse_upper+0xffffff8000a364a0>
+ffffff800297ec90:      	mov	dword ptr [rbx + 0x7c], eax
+ffffff800297ec93:      	mov	rdi, qword ptr [rbx + 0x30]
+ffffff800297ec97:      	call	0xffffff8000a36470 <_uuid_unparse_upper+0xffffff8000a36470>
+ffffff800297ec9e:      	mov	dword ptr [rbx + 0x7c], 0x0
+ffffff800297eca7:      	mov	dword ptr [rbx + 0x80], eax
+ffffff800297ecad:      	mov	rcx, qword ptr [rbx + 0x28]
+ffffff800297ecbe:      	mov	eax, dword ptr [rbx + 0x7c]
+ffffff800297ecc5:      	mov	eax, dword ptr [rcx + 0x30]
+ffffff800297eccb:      	mov	rdi, qword ptr [rbx + 0x58]
+ffffff800297eccf:      	call	0xffffff80029872ba <__ZNK22IOSkywalkMemorySegment19getMemoryDescriptorEv>
+ffffff800297ece5:      	call	qword ptr [r8 + 0x128]
+ffffff800297ecec:      	mov	qword ptr [rbx + 0x48], r14
+
+PACKET_BUFFER_COMPLETE_WITH_QUEUE
+ffffff800297ed1c:      	call	0xffffff800297ed48 <__ZN21IOSkywalkPacketBuffer8finalizeEv>
+ffffff800297ed26:      	mov	rdi, qword ptr [r14 + 0x48]
+ffffff800297ed3a:      	call	qword ptr [rax + 0x228]
+
+POOL_GET_BUFFER_BY_BUFLET
+ffffff80029a1dde:      	call	0xffffff8000a36530 <_uuid_unparse_upper+0xffffff8000a36530>
+ffffff80029a1deb:      	call	0xffffff8000a3c730 <_uuid_unparse_upper+0xffffff8000a3c730>
+ffffff80029a1df0:      	mov	rdi, qword ptr [rbx + 0x68]
+ffffff80029a1df9:      	call	qword ptr [rcx + 0x1e8]
+ffffff80029a1e04:      	mov	rdi, qword ptr [rax + 0x40]
+ffffff80029a1e0e:      	call	qword ptr [rax + 0x1e8]
+
+POOL_ALLOCATE_BUFFER
+ffffff80029a2191:      	mov	rdi, qword ptr [rdi + 0x18]
+ffffff80029a21a6:      	call	0xffffff8000a3c9c0 <_uuid_unparse_upper+0xffffff8000a3c9c0>
+ffffff80029a21b5:      	call	0xffffff8000a3c9d0 <_uuid_unparse_upper+0xffffff8000a3c9d0>
+ffffff80029a21ca:      	call	0xffffff80029a1e20 <__ZNK25IOSkywalkPacketBufferPool30getPacketBufferWithSegmentInfoEP9sksegmentj>
+ffffff80029a21d9:      	call	0xffffff800297ed94 <__ZN21IOSkywalkPacketBuffer23acquireWithBufferHandleEy>
+
+POOL_DEALLOCATE_BUFFER
+ffffff80029a2290:      	call	0xffffff800297ec1a <__ZNK21IOSkywalkPacketBuffer15getBufferHandleEv>
+ffffff80029a22ab:      	call	qword ptr [rax + 0x148]
+ffffff80029a22b4:      	call	0xffffff800297eda4 <__ZN21IOSkywalkPacketBuffer19disposePacketBufferEv>
+ffffff80029a22b9:      	mov	rdi, qword ptr [rbx + 0x18]
+
+SLOT_0x120_0x128_0x148=targets resolved from IOSkywalkPacketBuffer vtable; no semantic labels inferred from offsets alone
+POOL_SEGMENT_DISPATCH=Stage68 getPacketBufferWithBufletHandle calls vtable +0x1e8 on objects at pool+0x68 and returned-object+0x40; dynamic class identity is not assumed here
+LIFETIME_RULE=allocation, handle acquisition, buffer preparation, packet attachment, completion, dispose and handle release must be reviewed as one lifecycle; successful disassembly alone is not proof of safe driver ownership

@@ -1,0 +1,8 @@
+STAGE68_PACKET_BUFFER_AND_PACKET_VTABLE_TARGETS
+SOURCE=Stage67 IOSkywalkPacket::prepareWithQueue disassembly
+
+CLASS=IOSkywalkPacketBuffer SLOT_OFFSET=0x140 OBSERVED_USE=IOSkywalkPacket::prepareWithQueue calls this after obtaining a packet buffer
+SLOT offset=0x140 index=40 target=0xffffff800297ec34 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN21IOSkywalkPacketBuffer24prepareWithMemorySegmentEP22IOSkywalkMemorySegmentyj result=PASS
+
+CLASS=IOSkywalkPacket SLOT_OFFSET=0x190 OBSERVED_USE=IOSkywalkPacket::prepareWithQueue tail-dispatches through this slot
+SLOT offset=0x190 index=50 target=0xffffff800297e462 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZNK15IOSkywalkPacket23getDataIOVirtualAddressEv result=PASS

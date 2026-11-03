@@ -1,0 +1,256 @@
+STAGE52_PROVIDER_HANDOFF_METHOD_BODIES
+EXTRACTION=qualified out-of-line method definitions; comments and literals masked for brace matching
+
+===== infra_init_noarg | RTW88WCLInfraInterface::init | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:139..155 =====
+  140 {
+  141     if (!super::init())
+  142         return false;
+  143     clearRegistrationInfo();
+  144     _controller = nullptr;
+  145     _workQueue = nullptr;
+  146     _scanFilter = {};
+  147     bzero(_targetBSSID, sizeof(_targetBSSID));
+  148     _scanActive = false;
+  149     _activeScanGeneration = 0;
+  150     _activeJoinGeneration = 0;
+  151     _assocNotified = false;
+  152     _connectNotified = false;
+  153     _stopping = false;
+  154     return true;
+  155 }
+
+===== infra_init_provider | RTW88WCLInfraInterface::init | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:157..171 =====
+  158 {
+  159     if (!provider || !address || !super::init())
+  160         return false;
+  161 
+  162     _controller = OSDynamicCast(RTW88WCLController, provider);
+  163     if (!_controller)
+  164         return false;
+  165 
+  166     if (!IO80211SkywalkInterface::init(provider, address))
+  167         return false;
+  168 
+  169     clearRegistrationInfo();
+  170     return true;
+  171 }
+
+===== infra_attach_radio | RTW88WCLInfraInterface::attachRadio | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:173..201 =====
+  174 {
+  175     if (!radio || !_controller)
+  176         return kIOReturnBadArgument;
+  177     if (_bridge.isAttached() || _workQueue)
+  178         return kIOReturnBusy;
+  179 
+  180     IOWorkLoop *workLoop = _controller->getWorkLoop();
+  181     if (!workLoop)
+  182         return kIOReturnNotReady;
+  183 
+  184     RTW88WCLWorkQueue *queue = new RTW88WCLWorkQueue;
+  185     if (!queue)
+  186         return kIOReturnNoMemory;
+  187     if (!queue->init(this, workLoop, this)) {
+  188         queue->release();
+  189         return kIOReturnNoResources;
+  190     }
+  191 
+  192     IOReturn status = _bridge.attach(radio, queue);
+  193     if (status != kIOReturnSuccess) {
+  194         queue->stop();
+  195         queue->release();
+  196         return status;
+  197     }
+  198     _workQueue = queue;
+  199     _stopping = false;
+  200     return kIOReturnSuccess;
+  201 }
+
+===== infra_get_controller | RTW88WCLInfraInterface::getController | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:347..350 =====
+  348 {
+  349     return _controller;
+  350 }
+
+===== infra_start | RTW88WCLInfraInterface::start | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262..272 =====
+  263 {
+  264     /* The native controller has not yet completed PCI/DMA ownership transfer,
+  265      * Skywalk registration-info allocation or RX/TX ring registration. Never
+  266      * publish a half-initialized Wi-Fi service. */
+  267     if (provider) {
+  268         provider->setProperty("RTW88WCLInfraInterfaceStage",
+  269                               "24H32 protocol handlers; Skywalk datapath pending");
+  270     }
+  271     return false;
+  272 }
+
+===== infra_stop | RTW88WCLInfraInterface::stop | src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:274..281 =====
+  275 {
+  276     clearRegistrationInfo();
+  277     detachRadio();
+  278     if (provider)
+  279         provider->setProperty("RTW88WCLInfraInterfaceStopped", kOSBooleanTrue);
+  280     super::stop(provider);
+  281 }
+
+===== controller_init | RTW88WCLController::init | src/kext/wcl24h32/RTW88WCLController.cpp:19..35 =====
+   20 {
+   21     if (!super::init(properties))
+   22         return false;
+   23     _workLoop = nullptr;
+   24     _packetPathInterface = nullptr;
+   25     _packetPathState = kPacketPathDisabled;
+   26     _packetPathInFlight = 0;
+   27     _pciBackend = nullptr;
+   28     _skywalkQueues = nullptr;
+   29     _rxAdapter = nullptr;
+   30     _stagedRxPackets.reset();
+   31     _radio = nullptr;
+   32     _baseStarted = false;
+   33     _radioStarted = false;
+   34     return true;
+   35 }
+
+===== controller_start | RTW88WCLController::start | src/kext/wcl24h32/RTW88WCLController.cpp:50..176 =====
+   51 {
+   52     if (!provider || _baseStarted || _pciBackend || _radio)
+   53         return false;
+   54     if (!super::start(provider))
+   55         return false;
+   56     _baseStarted = true;
+   57 
+   58     /* Stage A: the controller workloop must exist before acquiring a PCI
+   59      * backend or registering any interrupt source. */
+   60     if (!createWorkLoop()) {
+   61         IOLog("rtl88wifi-wcl: controller workloop creation failed\n");
+   62         goto fail;
+   63     }
+   64 
+   65     /* Stage B: this native personality must be matched directly to a PCI
+   66      * provider. The backend retains it and owns BAR2/MMIO/DMA resources. */
+   67     {
+   68         IOPCIDevice *pci = OSDynamicCast(IOPCIDevice, provider);
+   69         if (!pci) {
+   70             IOLog("rtl88wifi-wcl: provider is not an IOPCIDevice\n");
+   71             goto fail;
+   72         }
+   73 
+   74         _pciBackend = new RTW88WCLPCIBackend;
+   75         if (!_pciBackend) {
+   76             IOLog("rtl88wifi-wcl: PCI backend allocation failed\n");
+   77             goto fail;
+   78         }
+   79         if (!_pciBackend->init()) {
+   80             _pciBackend->release();
+   81             _pciBackend = nullptr;
+   82             IOLog("rtl88wifi-wcl: PCI backend initialization failed\n");
+   83             goto fail;
+   84         }
+   85 
+   86         const IOReturn openStatus = _pciBackend->open(pci, _workLoop, this);
+   87         if (openStatus != kIOReturnSuccess) {
+   88             IOLog("rtl88wifi-wcl: PCI backend open failed: 0x%08x\n",
+   89                   openStatus);
+   90             goto fail;
+   91         }
+   92 
+   93         /* Stage C: instantiate the RTW88 state machine against the backend's
+   94          * compat pci_dev. This installs callback context and allocates its
+   95          * private timers/workloop only; it does not probe or power the chip. */
+   96         struct pci_dev *compatPCI = _pciBackend->compatPCIDevice();
+   97         if (!compatPCI) {
+   98             IOLog("rtl88wifi-wcl: backend did not provide a compat PCI device\n");
+   99             goto fail;
+  100         }
+  101         RTW88IEEE80211 *radio = RTW88IEEE80211::createAirport(this, compatPCI);
+  102         if (!radio) {
+  103             IOLog("rtl88wifi-wcl: RTW88 state-machine allocation failed\n");
+  104             goto fail;
+  105         }
+  106         radio->setEventDelegate(this);
+  107         const IOReturn bindStatus = bindRadioBackend(radio);
+  108         radio->release();
+  109         if (bindStatus != kIOReturnSuccess) {
+  110             IOLog("rtl88wifi-wcl: RTW88 state-machine bind failed: 0x%08x\n",
+  111                   bindStatus);
+  112             goto fail;
+  113         }
+  114     }
+  115 
+  116     /* Stage D: reserve native Skywalk queue/pool objects while the PCI and
+  117      * RTW88 owners are still available for orderly unwind. These objects are
+  118      * intentionally not registered or scheduled until packet descriptor
+  119      * conversion and hardware completion correlation are implemented. */
+  120     _skywalkQueues = new RTW88WCLSkywalkQueues;
+  121     if (!_skywalkQueues || !_skywalkQueues->init()) {
+  122         if (_skywalkQueues) {
+  123             _skywalkQueues->release();
+  124             _skywalkQueues = nullptr;
+  125         }
+  126         IOLog("rtl88wifi-wcl: Skywalk queue owner allocation failed\n");
+  127         goto fail;
+  128     }
+  129     {
+  130         const IOReturn queueStatus = _skywalkQueues->createQueues();
+  131         if (queueStatus != kIOReturnSuccess) {
+  132             IOLog("rtl88wifi-wcl: Skywalk queue/pool allocation failed: 0x%08x\n",
+  133                   queueStatus);
+  134             goto fail;
+  135         }
+  136     }
+  137 
+  138     /* Stage E: bind the RX workloop consumer to the now-owned 4 KiB RX pool.
+  139      * It copies frames into native packet buffers, but its sink remains
+  140      * rejecting until the registration/completion ABI is closed. */
+  141     _rxAdapter = new RTW88WCLSkywalkRxAdapter;
+  142     if (!_rxAdapter || !_rxAdapter->init(
+  143             this, _workLoop, _skywalkQueues->rxPacketPool(),
+  144             &RTW88WCLController::stagedRxFrame, this)) {
+  145         if (_rxAdapter) {
+  146             _rxAdapter->release();
+  147             _rxAdapter = nullptr;
+  148         }
+  149         IOLog("rtl88wifi-wcl: RX packet adapter initialization failed\n");
+  150         goto fail;
+  151     }
+  152 
+  153     provider->setProperty("RTW88WCLControllerStage",
+  154                            "PCI, RTW88 and pool-backed RX packet conversion staged; datapath pending");
+  155 
+  156     /* Publication fence: do not probe or power the radio until Skywalk packet
+  157      * registration, RX/TX rings, packet metadata and teardown are implemented.
+  158      * Starting it sooner would produce frames without a safe delivery path. */
+  159     IOLog("rtl88wifi-wcl: backend lifecycle staged; refusing publication until Skywalk datapath is ready\n");
+  160     goto fail;
+  161 
+  162 fail:
+  163     {
+  164         const IOReturn cleanupStatus = releaseNativeResources();
+  165         if (cleanupStatus != kIOReturnSuccess) {
+  166             IOLog("rtl88wifi-wcl: start-failure cleanup incomplete (0x%08x); retaining native resources\n",
+  167                   cleanupStatus);
+  168             return false;
+  169         }
+  170     }
+  171     if (_baseStarted) {
+  172         super::stop(provider);
+  173         _baseStarted = false;
+  174     }
+  175     return false;
+  176 }
+
+===== controller_free | RTW88WCLController::free | src/kext/wcl24h32/RTW88WCLController.cpp:265..281 =====
+  266 {
+  267     const IOReturn cleanupStatus = releaseNativeResources();
+  268     if (cleanupStatus != kIOReturnSuccess) {
+  269         IOLog("rtl88wifi-wcl: controller shutdown incomplete (0x%08x); quarantining controller and retaining workloop/resources\n",
+  270               cleanupStatus);
+  271         /* Do not release the workloop or call super::free() while any child,
+  272          * packet pool, or PCI/DMA resource may still reference this controller.
+  273          * This deliberately leaks the object rather than risking a UAF/DMA UAF. */
+  274         return;
+  275     }
+  276     if (_workLoop) {
+  277         _workLoop->release();
+  278         _workLoop = nullptr;
+  279     }
+  280     super::free();
+  281 }

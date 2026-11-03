@@ -1,0 +1,73 @@
+========== STAGE 51 CONTROLLER / INTERFACE OWNERSHIP AND LIFECYCLE AUDIT ==========
+VERSION=STAGE51_V1_20261102
+RUN=run-20261102-125002-c08308fb6081
+TARGET=15.8.1/24H32/x86_64
+SOURCE_ROOT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+PREDECESSOR=Stage50 V2 run-20261102-124442-a9b4b83d7295
+SCOPE=exact RTW88WCLController and RTW88WCLInfraInterface method bodies; object construction; radio attach/detach; primary-interface publication references; start/stop/free ordering; personality references
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+
+FILE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+EXPECTED_SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+ACTUAL_SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b
+RESULT=MATCH
+FILE=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp
+EXPECTED_SHA256=63a6a038ef7513312c686199b00e8cf45a16d251c7792ab03d2f5986f9fd84fb
+ACTUAL_SHA256=63a6a038ef7513312c686199b00e8cf45a16d251c7792ab03d2f5986f9fd84fb
+RESULT=MATCH
+FILE=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+EXPECTED_SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4
+ACTUAL_SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4
+RESULT=MATCH
+STAGE43_SOURCE_CONTINUITY=PASS
+
+STAGE51_CONTROLLER_INTERFACE_LIFECYCLE_AUDIT
+TARGET=macOS 15.8.1 / 24H32 / x86_64
+SOURCE_FILES_SCANNED=91
+CLASS_METHOD_BODIES_EXTRACTED=76
+INFRA_INTERFACE_METHOD_COUNT=42
+CONTROLLER_METHOD_COUNT=34
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+SIP_NVRAM_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+
+STAGE51_CONTROLLER_INTERFACE_LIFECYCLE_MATRIX
+PRESENT means a target token/reference appears inside the specified exact method body.
+ABSENT means no such direct body edge was found in the scanned source. It is not proof that no indirect path exists.
+controller start -> constructs native infra interface: ABSENT
+controller start -> calls infra attachRadio: ABSENT
+controller start -> installs primary Skywalk interface: ABSENT
+controller start -> prepares/starts infra interface: ABSENT
+infra start -> controller binding or PCI backend startup: ABSENT
+infra init -> superclass IO80211 Skywalk init: PRESENT
+infra free/stop -> detachRadio: PRESENT
+controller start -> creates queue owner: PRESENT
+controller start -> creates RX adapter: PRESENT
+controller stop -> releaseNativeResources: PRESENT
+interface registration-preparation routine is invoked from lifecycle: ABSENT
+INFRA_INTERFACE_METHODS=attachRadio,bpfTap,clearRegistrationInfo,detachRadio,disable,enable,free,getAssocState,getCHANNEL,getController,getHardwareAddress,getHardwareAssists,getRSSI,getSUPPORTED_CHANNELS,handleRTW88WCLRadioEvent,hwConfigNicProxyData,init,initBSDInterfaceParameters,isChipInterfaceReady,isDebounceOnGoing,linkState,maybePublishConnected,postConnectionComplete,postWCLMessage,prepareRegistrationInfo,publishScanResults,scanResultMatches,setCIPHER_KEY,setCLEAR_PMKSA_CACHE,setHardwareAddress,setLinkState,setMacAddress,setWCL_ASSOCIATE,setWCL_JOIN_ABORT,setWCL_LEAVE_NETWORK,setWCL_LINK_STATE_UPDATE,setWCL_LINK_UP_DONE,setWCL_SCAN_ABORT,setWCL_SCAN_REQ,start,stop
+CONTROLLER_METHODS=activatePacketPath,allocateInputPacket,bindRadioBackend,createWorkLoop,enterPacketPath,free,getCARD_CAPABILITIES,getCOUNTRY_CODE,getDRIVER_VERSION,getFaultReporterFromDriver,getHARDWARE_VERSION,getLogger,getPOWER,getRxWorkLoop,getWorkLoop,handleCardSpecific,init,injectRxFrame,isCommandProhibited,leavePacketPath,outputPacket,quiescePacketPath,recycleStagedRxPackets,releaseNativeResources,rtw88Event,rtw88WCLResumeTransmit,setCOUNTRY_CODE,setGET_DEBUG_INFO,setLinkStatus,setPOWER,stagedRxFrame,start,stop,unbindRadioBackend
+
+METHOD_BODIES=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage51/run-20261102-125002-c08308fb6081/method-bodies.txt
+REFERENCE_INDEX=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage51/run-20261102-125002-c08308fb6081/reference-index.txt
+PERSONALITY_REFERENCE=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/run log/stage51/run-20261102-125002-c08308fb6081/personality-reference.txt
+
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+SIP_NVRAM_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+SYSTEM_FILES_MODIFIED=NO
+========== END STAGE 51 ==========

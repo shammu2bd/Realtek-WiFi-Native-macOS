@@ -1,0 +1,29 @@
+STAGE77_CALLBACK_ABI_AND_OWNERSHIP_MATRIX
+RULE=queue Action callbacks use IOReturn; IOReturn success is not packet-count acceptance
+SEPARATE_RULE=Stage66 packet callback fields used by packet completion helpers return packet counts and are not the Stage64 Action callback typedefs
+EDGE=TX_SUBMISSION|BODY=FOUND|RETURN_TYPE=IOReturn|TARGET=submitPacket|TARGET_CALLS=0|RESULT=MISSING
+EDGE=TX_COMPLETION|BODY=FOUND|RETURN_TYPE=IOReturn|TARGET=drainCompletions|TARGET_CALLS=0|RESULT=MISSING
+EDGE=RX_SUBMISSION|BODY=FOUND|RETURN_TYPE=IOReturn|TARGET=allocatePacket|TARGET_CALLS=0|RESULT=MISSING
+EDGE=RX_COMPLETION|BODY=FOUND|RETURN_TYPE=IOReturn|TARGET=stagedRxFrame|TARGET_CALLS=0|RESULT=MISSING
+TX_DRAIN_NONDEFINITION_CALLS=0
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:36 static IOReturn txSubmissionAction(OSObject *owner,
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:40 static IOReturn txCompletionAction(OSObject *owner,
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:44 static IOReturn rxSubmissionAction(OSObject *owner,
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:48 static IOReturn rxCompletionAction(OSObject *owner,
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:72 &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:78 &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:84 this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:90 &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:147 IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:172 IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:180 IOReturn RTW88WCLSkywalkQueues::rxSubmissionAction(
+CALLBACK_SIGNATURE_OR_REFERENCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:189 IOReturn RTW88WCLSkywalkQueues::rxCompletionAction(
+OWNERSHIP_TOKEN=rx:copyMbufToSkywalkPacket|COUNT=2
+OWNERSHIP_TOKEN=rx:_sink|COUNT=5
+OWNERSHIP_TOKEN=rx:_rxPool->deallocatePacket|COUNT=1
+OWNERSHIP_TOKEN=controller:stagedRxFrame|COUNT=2
+OWNERSHIP_TOKEN=controller:_stagedRxPackets.push|COUNT=1
+OWNERSHIP_TOKEN=controller:_stagedRxPackets.pop|COUNT=1
+OWNERSHIP_TOKEN=controller:inputPacket|COUNT=0
+OWNERSHIP_TOKEN=controller:receivePacket|COUNT=0
+OWNERSHIP_TOKEN=controller:deliverPacket|COUNT=0

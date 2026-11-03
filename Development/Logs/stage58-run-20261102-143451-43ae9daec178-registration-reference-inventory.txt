@@ -1,0 +1,94 @@
+STAGE58_GLOBAL_REGISTRATION_AND_OWNERSHIP_REFERENCE_INVENTORY
+
+REFERENCE=registration_api
+MATCHES_AT_LEAST=13
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:51: IOReturn registerEthernetInterface( const RegistrationInfo * info, IOSkywalkPacketQueue ** queues, IOOptionBits queueOptions, IOSkywalkPacketBufferPool * pool1, IOSkywalkPacketBufferPool * pool2, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:52: IOReturn deregisterEthernetInterface( IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:55: IOReturn registerNetworkInterface( const RegistrationInfo * info, IOSkywalkPacketQueue ** queues, IOOptionBits queueOptions, IOSkywalkPacketBufferPool * pool1, IOSkywalkPacketBufferPool * pool2, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:56: IOReturn deregisterNetworkInterface( IOOptionBits options = 0 );
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:318: virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:322: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:325: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:328: IOReturn deregisterNetworkInterface(unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:437: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:443: IOReturn deregisterEthernetInterface(unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:687: IOReturn registerInfraEthernetInterface(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:67: * are not passed to registerEthernetInterface() yet. Skywalk owns their
+
+REFERENCE=queue_set_link_api
+MATCHES_AT_LEAST=0
+
+REFERENCE=queue_grouping
+MATCHES_AT_LEAST=2
+MacKernelSDK/Headers/IOKit/hidsystem/IOHIDSystem.h:192: OSSet * dataQueueSet;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketBufferPool.h:161: OSSet    *    mPacketQueueSet;                    // 136
+
+REFERENCE=queue_pool_owner
+MATCHES_AT_LEAST=55
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:136: @function createQueues
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:144: virtual IOReturn createQueues( IOItemCount queueLength = 0, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:147: @function destroyQueues
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:152: virtual IOReturn destroyQueues( void );
+src/kext/wcl24h32/RTW88WCLController.cpp:130: const IOReturn queueStatus = _skywalkQueues->createQueues();
+src/kext/wcl24h32/RTW88WCLController.cpp:241: _skywalkQueues->destroyQueues();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:25: _txPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:26: _rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:35: IOReturn RTW88WCLSkywalkQueues::createQueues()
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:39: if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:39: if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:56: _txPool = IOSkywalkPacketBufferPool::withName(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:58: if (!_txPool)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:61: _rxPool = IOSkywalkPacketBufferPool::withName(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:63: if (!_rxPool)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:71: _txPool, kQueueCapacity, 0, this,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:77: _txPool, kQueueCapacity, 0, this,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:83: _rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:89: _rxPool, kQueueCapacity, 0, this,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:99: destroyQueues();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:103: void RTW88WCLSkywalkQueues::destroyQueues()
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:123: if (_rxPool) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:124: _rxPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:125: _rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:127: if (_txPool) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:128: _txPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:129: _txPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:136: return _allocated && _txPool && _rxPool && _txSubmission &&
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:136: return _allocated && _txPool && _rxPool && _txSubmission &&
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:165: const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:199: destroyQueues();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:23: IOReturn createQueues();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:24: void destroyQueues();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:33: IOSkywalkPacketBufferPool *rxPacketPool() const { return _rxPool; }
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:53: IOSkywalkPacketBufferPool *_txPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:54: IOSkywalkPacketBufferPool *_rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:21: if (!owner || !workLoop || !rxPool || _workLoop || _rxPool || _registered)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:28: _rxPool = rxPool;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:29: _rxPool->retain();
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:39: _rxPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:40: _rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:179: if (copyMbufToSkywalkPacket(_rxPool, source, &packet)) {
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:186: (void)_rxPool->deallocatePacket(packet);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:231: if (_rxPool) {
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:232: _rxPool->release();
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:233: _rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:52: IOSkywalkPacketBufferPool *_rxPool = nullptr; // retained
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:20: _txPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:30: if (_radio || _txPool || _tickets.hasOutstanding())
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:36: _txPool = txPool;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:46: IOSkywalkPacketBufferPool *pool = _txPool;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:48: _txPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:80: if (!_radio || !_txPool)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:84: if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:53: IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
+
+REFERENCE=packet_handoff
+MATCHES_AT_LEAST=8
+src/kext/wcl24h32/RTW88WCLController.cpp:144: &RTW88WCLController::stagedRxFrame, this)) {
+src/kext/wcl24h32/RTW88WCLController.cpp:558: bool RTW88WCLController::stagedRxFrame(
+src/kext/wcl24h32/RTW88WCLController.hpp:89: static bool stagedRxFrame(IOSkywalkPacket *preparedPacket, void *context);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76: IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126: uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:32: * the Skywalk packet stays with this adapter until drainCompletions(). */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33: IOReturn submitPacket(IOSkywalkPacket *packet);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39: uint32_t drainCompletions(CompletionSink sink, void *context);

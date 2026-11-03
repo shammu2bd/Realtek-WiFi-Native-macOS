@@ -1,0 +1,256 @@
+STAGE64_NATIVE_CALLBACK_AND_PACKET_OWNERSHIP_METHOD_BODIES
+SOURCE_FILES_SCANNED=1242
+
+===== RTW88WCLSkywalkQueues::txSubmissionAction FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:147
+RTW88WCLSkywalkQueues::txSubmissionAction(
+    OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
+    const IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+{
+    (void)refCon;
+    auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
+    if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+        return static_cast<IOReturn>(0);
+
+    /* Validate every descriptor before a future TX path is allowed to copy
+     * bytes or hand ownership to RTW88. The callback remains fail-closed:
+     * a validated packet is not yet accepted until its hardware completion
+     * cookie is connected to the native completion queue. */
+    for (UInt32 i = 0; i < packetCount; ++i) {
+        if (!packets[i])
+            return static_cast<IOReturn>(0);
+        RTW88WCLPacketView view = {};
+        if (!RTW88WCLResolveEthernetTxPacket(
+                const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
+            return static_cast<IOReturn>(0);
+    }
+
+    return static_cast<IOReturn>(0);
+}
+
+===== RTW88WCLSkywalkQueues::txCompletionAction FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:172
+RTW88WCLSkywalkQueues::txCompletionAction(
+    OSObject *owner, IOSkywalkTxCompletionQueue *queue,
+    IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+{
+    (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+    return static_cast<IOReturn>(0);
+}
+
+===== RTW88WCLSkywalkQueues::rxSubmissionAction FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:180
+RTW88WCLSkywalkQueues::rxSubmissionAction(
+    OSObject *owner, IOSkywalkRxSubmissionQueue *queue,
+    const IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+{
+    (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+    /* RX buffer ownership/refill is intentionally not accepted yet. */
+    return static_cast<IOReturn>(0);
+}
+
+===== RTW88WCLSkywalkQueues::rxCompletionAction FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:189
+RTW88WCLSkywalkQueues::rxCompletionAction(
+    OSObject *owner, IOSkywalkRxCompletionQueue *queue,
+    IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+{
+    (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+    return static_cast<IOReturn>(0);
+}
+
+===== RTW88WCLSkywalkTxAdapter::submitPacket FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76
+RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+{
+    if (!packet)
+        return kIOReturnBadArgument;
+    if (!_radio || !_txPool)
+        return kIOReturnNotReady;
+
+    RTW88WCLPacketView view = {};
+    if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+        return kIOReturnBadArgument;
+
+    mbuf_t mbuf = copyPacketToMbuf(view.bytes, view.length);
+    if (!mbuf)
+        return kIOReturnNoMemory;
+
+    packet->retain();
+    TicketPool::Ticket *ticket = _tickets.reserve(packet);
+    if (!ticket) {
+        packet->release();
+        mbuf_freem(mbuf);
+        return kIOReturnBusy;
+    }
+
+    /* Keep the adapter alive until the workloop-side completion drain drops
+     * this ticket. backendCompletion() intentionally does not release it. */
+    retain();
+    const UInt32 backendResult = _radio->outputPacketWithCompletion(
+        mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+
+    /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+     * terminal callback, including synchronous drops. Once the ticket has
+     * been reserved, adapter acceptance is successful; the actual transmitted
+     * vs dropped result is delivered later through the completion sink. */
+    (void)backendResult;
+    return kIOReturnSuccess;
+}
+
+===== RTW88WCLSkywalkTxAdapter::drainCompletions FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126
+RTW88WCLSkywalkTxAdapter::drainCompletions(
+    CompletionSink sink, void *context)
+{
+    if (!sink)
+        return 0;
+
+    /* A sink may trigger owner teardown; keep this adapter alive until the
+     * drain loop has stopped touching its ticket pool. */
+    retain();
+    uint32_t drained = 0;
+    for (;;) {
+        TicketPool::Ticket *ticket = _tickets.claimCompleted();
+        if (!ticket)
+            break;
+
+        auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+        const bool transmitted = TicketPool::transmitted(ticket);
+
+        /* The sink runs in deferred context and borrows the retained packet.
+         * It must finish any Skywalk queue handoff before returning. */
+        if (packet)
+            sink(packet, transmitted, context);
+
+        TicketPool::finish(ticket);
+        if (packet)
+            packet->release();
+        release();
+        ++drained;
+    }
+    release();
+    return drained;
+}
+
+===== RTW88WCLSkywalkRxAdapter::checkForWork FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:169
+RTW88WCLSkywalkRxAdapter::checkForWork()
+{
+    if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE))
+        return false;
+
+    uint32_t drained = 0;
+    mbuf_t source = nullptr;
+    while (drained < kDrainBudget && _frames.pop(&source)) {
+        if (source) {
+            IOSkywalkPacket *packet = nullptr;
+            if (copyMbufToSkywalkPacket(_rxPool, source, &packet)) {
+                __atomic_add_fetch(&_prepared, 1U, __ATOMIC_RELAXED);
+                /* A true return means the sink has accepted ownership. The
+                 * current controller sink returns false because the RX
+                 * completion queue is still unregistered. */
+                const bool accepted = _sink && _sink(packet, _sinkContext);
+                if (!accepted) {
+                    (void)_rxPool->deallocatePacket(packet);
+                    __atomic_add_fetch(&_dropped, 1U, __ATOMIC_RELAXED);
+                }
+            } else {
+                __atomic_add_fetch(&_dropped, 1U, __ATOMIC_RELAXED);
+            }
+            mbuf_freem(source);
+            source = nullptr;
+        }
+        ++drained;
+    }
+
+    if (drained == kDrainBudget)
+        return true; // bounded workloop occupancy; schedule another pass
+
+    __atomic_store_n(&_pendingSignal, 0U, __ATOMIC_RELEASE);
+    if (!_frames.empty()) {
+        uint32_t expected = 0;
+        if (__atomic_compare_exchange_n(&_pendingSignal, &expected, 1U,
+                                        false, __ATOMIC_ACQ_REL,
+                                        __ATOMIC_ACQUIRE))
+            return true;
+    }
+    return false;
+}
+
+===== RTW88WCLSkywalkRxAdapter::stop FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:212
+RTW88WCLSkywalkRxAdapter::stop()
+{
+    __atomic_store_n(&_stopping, 1U, __ATOMIC_RELEASE);
+    if (_registered && _workLoop) {
+        /* Synchronous removal serializes against checkForWork(). The owner
+         * must stop/quiesce RTW88 RX producers before invoking stop(). */
+        _workLoop->removeEventSource(this);
+        _registered = false;
+    }
+
+    mbuf_t packet = nullptr;
+    while (_frames.pop(&packet)) {
+        if (packet)
+            mbuf_freem(packet);
+        packet = nullptr;
+    }
+    _sink = nullptr;
+    _sinkContext = nullptr;
+    _workLoop = nullptr;
+    if (_rxPool) {
+        _rxPool->release();
+        _rxPool = nullptr;
+    }
+}
+
+===== RTW88WCLController::stagedRxFrame FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:558
+RTW88WCLController::stagedRxFrame(
+    IOSkywalkPacket *preparedPacket, void *context)
+{
+    auto *self = static_cast<RTW88WCLController *>(context);
+    if (!self || !preparedPacket)
+        return false;
+
+    /* Preserve the pool-backed packet in a fixed-capacity owner ring. The
+     * ring is bounded to the RX pool's 128 packets; overflow returns false,
+     * causing the RX adapter to recycle the packet immediately. No queue API
+     * is called here: completion-queue registration/ownership is still fenced. */
+    return self->_stagedRxPackets.push(preparedPacket);
+}
+
+===== RTW88WCLController::recycleStagedRxPackets FOUND_COUNT=1 =====
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:526
+RTW88WCLController::recycleStagedRxPackets()
+{
+    if (_stagedRxPackets.empty())
+        return kIOReturnSuccess;
+    if (!_skywalkQueues || !_skywalkQueues->rxPacketPool())
+        return kIOReturnNotReady;
+
+    IOSkywalkPacketBufferPool *pool = _skywalkQueues->rxPacketPool();
+    IOSkywalkPacket *packet = nullptr;
+    bool disposalRequired = false;
+    while (_stagedRxPackets.pop(&packet)) {
+        if (!packet)
+            continue;
+
+        const IOReturn status = pool->deallocatePacket(packet);
+        if (status != kIOReturnSuccess) {
+            /* The radio and RX event source are already quiesced, and these
+             * queues were never registered. If a packet cannot be returned
+             * individually, dispose the pool's packet set as one teardown
+             * operation before its memory segments are released. */
+            IOLog("rtl88wifi-wcl: RX packet recycle returned 0x%08x; pool disposal required\n",
+                  status);
+            disposalRequired = true;
+        }
+        packet = nullptr;
+    }
+
+    if (disposalRequired)
+        pool->disposeAllPackets();
+    return kIOReturnSuccess;
+}

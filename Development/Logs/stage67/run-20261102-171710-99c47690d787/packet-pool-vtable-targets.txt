@@ -1,0 +1,14 @@
+STAGE67_PACKET_AND_POOL_VTABLE_TARGETS
+SOURCE=Stage66 IOSkywalkPacketQueue/TxCompletionQueue/RxCompletionQueue disassembly
+
+CLASS=IOSkywalkPacket SLOT_OFFSET=0x140 OBSERVED_USE=packet object method invoked before source-queue lookup
+SLOT offset=0x140 index=40 target=0xffffff80029a23d2 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZNK15IOSkywalkPacket19getMemoryDescriptorEv result=PASS
+
+CLASS=IOSkywalkPacket SLOT_OFFSET=0x198 OBSERVED_USE=packet object method invoked with completion queue and flags
+SLOT offset=0x198 index=51 target=0xffffff800297e4ee owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN15IOSkywalkPacket16prepareWithQueueEP20IOSkywalkPacketQueuejj result=PASS
+
+CLASS=IOSkywalkPacket SLOT_OFFSET=0x1e0 OBSERVED_USE=packet object method called from RX networking enqueue
+SLOT offset=0x1e0 index=60 target=0xffffff800297e6e6 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZNK15IOSkywalkPacket16generateTraceTagEP20IOSkywalkPacketQueue result=PASS
+
+CLASS=IOSkywalkPacketBufferPool SLOT_OFFSET=0x148 OBSERVED_USE=packet-buffer-pool target called with packet array/count
+SLOT offset=0x148 index=41 target=0xffffff80029a1f10 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN25IOSkywalkPacketBufferPool15allocatePacketsEjPjPP15IOSkywalkPacketj result=PASS

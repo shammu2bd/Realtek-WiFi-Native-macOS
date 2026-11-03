@@ -1,0 +1,77 @@
+STAGE59_PACKET_QUEUE_DISPATCH_AND_REGISTRATION_GAP_MATRIX
+APPLE_METHODS_RESOLVED=38
+APPLE_METHODS_DISASSEMBLED_PASS=38
+NATIVE_SOURCE_FILES_SCANNED=1242
+NATIVE_METHOD_DEFINITIONS_FOUND=18
+
+CHECK=SDK declares getFreeSpace as a no-argument UInt32 virtual
+SCOPE=whole native source tree
+RESULT=PRESENT
+SOURCE=MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h
+
+CHECK=SDK declares getPacketCount as a no-argument UInt32 virtual
+SCOPE=whole native source tree
+RESULT=PRESENT
+SOURCE=MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h
+
+CHECK=native WCL calls QueueSet construction API
+SCOPE=whole native source tree
+RESULT=NOT_FOUND
+SOURCE=none
+
+CHECK=native WCL calls LogicalLink construction API
+SCOPE=whole native source tree
+RESULT=NOT_FOUND
+SOURCE=none
+
+CHECK=controller allocates and creates native queues
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=PRESENT
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:50
+MATCH=new RTW88WCLSkywalkQueues;     if (!_skywalkQueues || !_skywalkQueues->init()) {         if (_skywalkQueues) {             _skywalkQueues->release();             _skywalkQueues = nullptr;         }         IOLog("rtl88wifi-wcl: Skywalk queue owner allocation failed\n");         goto fail;     }     {         const IORe
+
+CHECK=controller reaches registration API
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:50
+
+CHECK=infra start calls RegistrationInfo helper
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262
+
+CHECK=infra start calls Apple registration API
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262
+
+CHECK=TX queue callback calls TX adapter
+METHOD_SCOPE=RTW88WCLSkywalkQueues::txSubmissionAction
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:147
+
+CHECK=TX completion action drains completion tickets
+METHOD_SCOPE=RTW88WCLSkywalkQueues::txCompletionAction
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:172
+
+CHECK=RX completion action submits packets to networking
+METHOD_SCOPE=RTW88WCLSkywalkQueues::rxCompletionAction
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:189
+
+CHECK=RX staging sink hands packet to completion queue
+METHOD_SCOPE=RTW88WCLController::stagedRxFrame
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:558
+
+CHECK=interface creates QueueSet or LogicalLink
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262
+
+DISPATCH_SLOT_0x218_TARGET=IOSkywalkPacketQueue::getFreeSpace
+SDK_DECLARATION=virtual UInt32 getFreeSpace()
+QUEUESET_INIT_WITH_QUEUES_CALLSITE=captured in queueset-indirect-callsite-context.txt
+INTERPRETATION=This audit records the symbol, declared prototype, and actual callsite registers separately; it does not invent a queue-type enum or infer a private ABI from the slot name.
+GETFREESPACE_SYMBOL_ADDRESS=0xffffff8002980bf0

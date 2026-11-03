@@ -1,0 +1,44 @@
+STAGE74_CONTROLLER_TEARDOWN_ORDER_EVIDENCE
+CONTROLLER.cpp:28: _skywalkQueues = nullptr;
+CONTROLLER.cpp:80: _pciBackend->release();
+CONTROLLER.cpp:108: radio->release();
+CONTROLLER.cpp:120: _skywalkQueues = new RTW88WCLSkywalkQueues;
+CONTROLLER.cpp:121: if (!_skywalkQueues || !_skywalkQueues->init()) {
+CONTROLLER.cpp:122: if (_skywalkQueues) {
+CONTROLLER.cpp:123: _skywalkQueues->release();
+CONTROLLER.cpp:124: _skywalkQueues = nullptr;
+CONTROLLER.cpp:130: const IOReturn queueStatus = _skywalkQueues->createQueues();
+CONTROLLER.cpp:143: this, _workLoop, _skywalkQueues->rxPacketPool(),
+CONTROLLER.cpp:146: _rxAdapter->release();
+CONTROLLER.cpp:194: const IOReturn packetPathStatus = quiescePacketPath();
+CONTROLLER.cpp:206: _radio->stop();
+CONTROLLER.cpp:222: _rxAdapter->stop();
+CONTROLLER.cpp:223: _rxAdapter->release();
+CONTROLLER.cpp:231: const IOReturn recycleStatus = recycleStagedRxPackets();
+CONTROLLER.cpp:240: if (_skywalkQueues) {
+CONTROLLER.cpp:241: _skywalkQueues->destroyQueues();
+CONTROLLER.cpp:242: _skywalkQueues->release();
+CONTROLLER.cpp:243: _skywalkQueues = nullptr;
+CONTROLLER.cpp:259: _pciBackend->release();
+CONTROLLER.cpp:277: _workLoop->release();
+CONTROLLER.cpp:428: IOReturn RTW88WCLController::quiescePacketPath()
+CONTROLLER.cpp:460: interface->release();
+CONTROLLER.cpp:526: IOReturn RTW88WCLController::recycleStagedRxPackets()
+CONTROLLER.cpp:530: if (!_skywalkQueues || !_skywalkQueues->rxPacketPool())
+CONTROLLER.cpp:533: IOSkywalkPacketBufferPool *pool = _skywalkQueues->rxPacketPool();
+CONTROLLER.cpp:554: pool->disposeAllPackets();
+CONTROLLER.cpp:595: _radio->release();
+InfraInterface.cpp:143: clearRegistrationInfo();
+InfraInterface.cpp:169: clearRegistrationInfo();
+InfraInterface.cpp:203: void RTW88WCLInfraInterface::detachRadio()
+InfraInterface.cpp:208: _bridge.detach();
+InfraInterface.cpp:210: _workQueue->stop();
+InfraInterface.cpp:223: clearRegistrationInfo();
+InfraInterface.cpp:224: detachRadio();
+InfraInterface.cpp:229: void RTW88WCLInfraInterface::clearRegistrationInfo()
+InfraInterface.cpp:235: bool RTW88WCLInfraInterface::prepareRegistrationInfo(const ether_addr &address)
+InfraInterface.cpp:239: clearRegistrationInfo();
+InfraInterface.cpp:248: clearRegistrationInfo();
+InfraInterface.cpp:254: clearRegistrationInfo();
+InfraInterface.cpp:276: clearRegistrationInfo();
+InfraInterface.cpp:277: detachRadio();

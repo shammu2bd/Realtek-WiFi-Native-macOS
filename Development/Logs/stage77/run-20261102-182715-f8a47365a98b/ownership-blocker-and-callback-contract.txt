@@ -1,0 +1,10 @@
+STAGE77_PACKET_OWNERSHIP_BLOCKERS
+TX_SUBMISSION=callback currently validates packet descriptors; no submitPacket handoff
+TX_COMPLETION=callback stub; no adapter drain callsite; packet ticket drain helper exists but is unconnected
+RX_SUBMISSION=callback stub; no allocation/refill operation
+RX_COMPLETION=callback stub; no staged controller delivery call
+RX_ADAPTER=converts received mbufs to pool packets and invokes sink; sink rejection deallocates packet
+CONTROLLER_RX=staged ring is an intermediate ownership holder; current evidence does not show native RX completion queue delivery
+STATUS_SEMANTICS=Action callback return IOReturn success is not a packet count
+PACKET_COMPLETION_SEMANTICS=Stage66 packet callback return count is distinct; do not interchange these callback types
+ACTIVATION_GATE=BLOCKED

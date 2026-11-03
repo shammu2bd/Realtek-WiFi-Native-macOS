@@ -1,0 +1,27 @@
+========== STAGE 60 ITANIUM VTABLE ADDRESS-POINT / QUEUESET DISPATCH AUDIT ==========
+VERSION=STAGE60_V1_20261102
+RUN=run-20261102-150246-056583bdc528
+TARGET=15.8.1/24H32/x86_64
+PREDECESSOR=Stage59 V1 run-20261102-144540-b7f7850cbe02
+PURPOSE=resolve QueueSet [vptr+0x218] using the actual Itanium C++ vtable address point
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+
+FINDING=Stage59 KC.vtable() indexes start at the _ZTV symbol and include its 0x10-byte ABI prefix.
+CORRECTION=QueueSet [vptr+0x218] resolves to _ZTV+0x228, KC parser index 69.
+TARGET=All five queue classes resolve index 69 to their performCommand(UInt32, void *, size_t) implementation.
+CALLSITE=Two calls pass command 0x10000, data pointer and size 0x10; registers match the public SDK prototype.
+LIMIT=The private semantic meaning of command 0x10000 and its 16-byte payload is not inferred.
+ACTIVATION_GATE=BLOCKED — interface registration, TX/RX callback handoff and completion ownership remain open.
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+SIP_NVRAM_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+========== END STAGE 60 ==========

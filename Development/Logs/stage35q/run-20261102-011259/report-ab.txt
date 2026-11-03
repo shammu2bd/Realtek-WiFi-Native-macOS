@@ -1,0 +1,719 @@
+ drainPendingFree();
+  182     return kIOReturnSuccess;
+  183 }
+  184 
+  185 IOReturn RTW88WCLPCIBackend::close()
+  186 {
+  187     if (_radioRunning)
+  188         return kIOReturnBusy;
+  189     closeResources();
+  190     return kIOReturnSuccess;
+  191 }
+  192 
+  193 void RTW88WCLPCIBackend::closeResources()
+  194 {
+  195     if (_interruptSource) {
+  196         _interruptSource->disable();
+  197         if (_workLoop)
+  198             _workLoop->removeEventSource(_interruptSource);
+  199         _interruptSource->release();
+  200         _interruptSource = nullptr;
+  201     }
+  202 
+  203     /* Stop all compat work before reclaiming DMA buffers and releasing the
+  204      * callbacks they may invoke. The RTW88 core must already be stopped. */
+  205     if (_compatInitialized) {
+  206         rtw88_compat_exit();
+  207         _compatInitialized = false;
+  208     }
+  209 
+  210     if (preemption_enabled())
+  211         drainPendingFree();
+  212     releaseDMAEntries();
+  213 
+  214     clearCompatLease();
+  215 
+  216     if (_pciDev) {
+  217         _pciDev->setBusMasterEnable(false);
+  218         _pciDev->setMemoryEnable(false);
+  219     }
+  220     if (_compatPciDev) {
+  221         IOFree(_compatPciDev, sizeof(*_compatPciDev));
+  222         _compatPciDev = nullptr;
+  223     }
+  224     if (_mmioMap) {
+  225         _mmioMap->release();
+  226         _mmioMap = nullptr;
+  227     }
+  228     _mmioBase = nullptr;
+  229 
+  230     if (_workLoop) {
+  231         _workLoop->release();
+  232         _workLoop = nullptr;
+  233     }
+  234     if (_pciDev) {
+  235         _pciDev->release();
+  236         _pciDev = nullptr;
+  237     }
+  238     if (_pendingFreeLock) {
+  239         IOSimpleLockFree(_pendingFreeLock);
+  240         _pendingFreeLock = nullptr;
+
+[lines 262-293]
+  262     }
+  263     _compatLeaseHeld = false;
+  264 }
+  265 
+  266 void RTW88WCLPCIBackend::free()
+  267 {
+  268     if (_pciDev) {
+  269         if (_interruptSource)
+  270             _interruptSource->disable();
+  271         _pciDev->setBusMasterEnable(false);
+  272         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+  273         if (command & 0x0004U) {
+  274             IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\n",
+  275                   command);
+  276             /* Keep this object, DMA descriptors, MMIO map, locks, and PCI
+  277              * reference alive until hardware bus mastering is demonstrably off. */
+  278             return;
+  279         }
+  280     }
+  281     _radioRunning = false;
+  282     closeResources();
+  283     super::free();
+  284 }
+  285 
+  286 uint64_t RTW88WCLPCIBackend::mmioLength() const
+  287 {
+  288     return _mmioMap ? static_cast<uint64_t>(_mmioMap->getLength()) : 0;
+  289 }
+  290 
+  291 UInt8 RTW88WCLPCIBackend::pciReadByte(int offset)
+  292 {
+  293     return _pciDev ? _pciDev->configRead8(static_cast<UInt8>(offset)) : 0xff;
+
+[lines 473-503]
+  473 }
+  474 
+  475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+  476 {
+  477     if (_client)
+  478         _client->rtw88WCLResumeTransmit();
+  479 }
+  480 
+  481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+  482                                           int count)
+  483 {
+  484     (void)source;
+  485     (void)count;
+  486     if (!_radioRunning || !g_pci_dev_instance ||
+  487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+  488             static_cast<RTW88HwOps *>(this))
+  489         return;
+  490     if (preemption_enabled())
+  491         drainPendingFree();
+  492     rtw88_trigger_interrupt();
+  493 }
+  494 
+  495 void RTW88WCLPCIBackend::drainPendingFree()
+  496 {
+  497     if (!_pendingFreeLock)
+  498         return;
+  499     IOSimpleLockLock(_pendingFreeLock);
+  500     RTW88DMAEntry *list = _dmaPendingFree;
+  501     _dmaPendingFree = nullptr;
+  502     IOSimpleLockUnlock(_pendingFreeLock);
+  503     freeDMAList(list);
+
+=== Workloop/wakeup RTW88WCLPCIBackend.hpp | src/kext/wcl24h32/RTW88WCLPCIBackend.hpp ===
+MATCH_LINES=4 CONTEXT_WINDOWS=2
+
+[lines 8-60]
+    8  * close().
+    9  */
+   10 #pragma once
+   11 
+   12 #include "../RTW88IEEE80211.hpp"
+   13 
+   14 #include <IOKit/IOBufferMemoryDescriptor.h>
+   15 #include <IOKit/IOInterruptEventSource.h>
+   16 #include <IOKit/IOWorkLoop.h>
+   17 #include <IOKit/IOMemoryDescriptor.h>
+   18 #include <IOKit/IOLocks.h>
+   19 #include <IOKit/pci/IOPCIDevice.h>
+   20 #include <libkern/c++/OSObject.h>
+   21 
+   22 class RTW88WCLPCIBackendClient {
+   23 public:
+   24     virtual void rtw88WCLResumeTransmit() = 0;
+   25     virtual ~RTW88WCLPCIBackendClient() {}
+   26 };
+   27 
+   28 class RTW88WCLPCIBackend final : public OSObject, public RTW88HwOps {
+   29     OSDeclareDefaultStructors(RTW88WCLPCIBackend)
+   30 
+   31 public:
+   32     bool init() override;
+   33     void free() override;
+   34 
+   35     /* Acquires one process-wide RTW88 compat-hardware lease. This is
+   36      * deliberately exclusive: the legacy controller and a native WCL
+   37      * controller must never drive the same global rtw88 compat callbacks. */
+   38     IOReturn open(IOPCIDevice *provider, IOWorkLoop *workLoop,
+   39                   RTW88WCLPCIBackendClient *client = nullptr);
+   40 
+   41     /* The caller must first stop RTW88IEEE80211 so it can no longer issue
+   42      * MMIO/DMA operations. close() refuses to tear down a running radio. */
+   43     IOReturn close();
+   44     IOReturn setRadioRunning(bool running);
+   45 
+   46     bool isOpen() const { return _opened; }
+   47     bool isRadioRunning() const { return _radioRunning; }
+   48     IOPCIDevice *pciDevice() const { return _pciDev; } // borrowed
+   49     struct pci_dev *compatPCIDevice() const { return _compatPciDev; } // borrowed
+   50     uint64_t mmioLength() const;
+   51 
+   52     UInt8 pciReadByte(int offset) override;
+   53     UInt16 pciReadWord(int offset) override;
+   54     UInt32 pciReadDword(int offset) override;
+   55     void pciWriteByte(int offset, UInt8 value) override;
+   56     void pciWriteWord(int offset, UInt16 value) override;
+   57     void pciWriteDword(int offset, UInt32 value) override;
+   58     int pciFindCapability(int capability) override;
+   59     volatile void *mmioBase() const override { return _mmioBase; }
+   60     void *allocCoherent(size_t size, IOPhysicalAddress *physical) override;
+
+[lines 64-93]
+   64     void setBounceOrigVA(IOPhysicalAddress physical, void *originalAddress) override;
+   65     void syncBounceForCpu(IOPhysicalAddress dmaAddress, size_t size) override;
+   66     void resumeTxIfStalled() override;
+   67 
+   68 private:
+   69     static void freeDMAList(RTW88DMAEntry *list);
+   70     void drainPendingFree();
+   71     void releaseDMAEntries();
+   72     void handleInterrupt(IOInterruptEventSource *source, int count);
+   73     void clearCompatLease();
+   74     void closeResources();
+   75 
+   76     IOPCIDevice *_pciDev = nullptr;                // retained
+   77     IOMemoryMap *_mmioMap = nullptr;               // retained
+   78     volatile void *_mmioBase = nullptr;
+   79     IOInterruptEventSource *_interruptSource = nullptr;
+   80     IOWorkLoop *_workLoop = nullptr;               // retained
+   81     struct pci_dev *_compatPciDev = nullptr;
+   82     RTW88WCLPCIBackendClient *_client = nullptr;   // non-owning
+   83 
+   84     IOSimpleLock *_dmaLock = nullptr;
+   85     IOSimpleLock *_pendingFreeLock = nullptr;
+   86     RTW88DMAEntry *_dmaList = nullptr;
+   87     RTW88DMAEntry *_dmaPendingFree = nullptr;
+   88 
+   89     bool _compatLeaseHeld = false;
+   90     bool _compatInitialized = false;
+   91     bool _opened = false;
+   92     bool _radioRunning = false;
+   93 };
+
+=== Workloop/wakeup RTW88WCLSkywalkRxAdapter.cpp | src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp ===
+MATCH_LINES=9 CONTEXT_WINDOWS=2
+
+[lines 6-59]
+    6 #include "RTW88WCLPacketSpanValidation.hpp"
+    7 
+    8 #include <IOKit/IOLib.h>
+    9 #include <IOKit/skywalk/IOSkywalkMemorySegment.h>
+   10 #include <IOKit/skywalk/IOSkywalkNetworkPacket.h>
+   11 #include <IOKit/skywalk/IOSkywalkPacketBuffer.h>
+   12 #include <sys/kpi_mbuf.h>
+   13 
+   14 #define super IOEventSource
+   15 OSDefineMetaClassAndStructors(RTW88WCLSkywalkRxAdapter, IOEventSource)
+   16 
+   17 bool RTW88WCLSkywalkRxAdapter::init(OSObject *owner, IOWorkLoop *workLoop,
+   18                                     IOSkywalkPacketBufferPool *rxPool,
+   19                                     FrameSink sink, void *context)
+   20 {
+   21     if (!owner || !workLoop || !rxPool || _workLoop || _rxPool || _registered)
+   22         return false;
+   23     if (!super::init(owner, nullptr))
+   24         return false;
+   25 
+   26     _frames.reset();
+   27     _workLoop = workLoop;
+   28     _rxPool = rxPool;
+   29     _rxPool->retain();
+   30     _sink = sink;
+   31     _sinkContext = context;
+   32     __atomic_store_n(&_pendingSignal, 0U, __ATOMIC_RELAXED);
+   33     __atomic_store_n(&_stopping, 0U, __ATOMIC_RELAXED);
+   34     __atomic_store_n(&_dropped, 0U, __ATOMIC_RELAXED);
+   35     __atomic_store_n(&_prepared, 0U, __ATOMIC_RELAXED);
+   36 
+   37     const IOReturn status = workLoop->addEventSource(this);
+   38     if (status != kIOReturnSuccess) {
+   39         _rxPool->release();
+   40         _rxPool = nullptr;
+   41         _workLoop = nullptr;
+   42         _sink = nullptr;
+   43         _sinkContext = nullptr;
+   44         return false;
+   45     }
+   46     _registered = true;
+   47     return true;
+   48 }
+   49 
+   50 bool RTW88WCLSkywalkRxAdapter::isValidMbuf(mbuf_t packet)
+   51 {
+   52     if (!packet)
+   53         return false;
+   54 
+   55     /* Do not require the Ethernet header to fit in the first mbuf. RTW88 may
+   56      * hand us a chained mbuf; mbuf_copydata() below safely spans the chain. */
+   57     const size_t packetLength = mbuf_pkthdr_len(packet);
+   58     return packetLength >= kMinimumFrameLength &&
+   59            packetLength <= kMaximumFrameLength;
+
+[lines 157-240]
+  157         __atomic_add_fetch(&_dropped, 1U, __ATOMIC_RELAXED);
+  158         mbuf_freem(packet);
+  159         return kIOReturnNoResources;
+  160     }
+  161 
+  162     uint32_t expected = 0;
+  163     if (__atomic_compare_exchange_n(&_pendingSignal, &expected, 1U, false,
+  164                                     __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+  165         signalWorkAvailable();
+  166     return kIOReturnSuccess;
+  167 }
+  168 
+  169 bool RTW88WCLSkywalkRxAdapter::checkForWork()
+  170 {
+  171     if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE))
+  172         return false;
+  173 
+  174     uint32_t drained = 0;
+  175     mbuf_t source = nullptr;
+  176     while (drained < kDrainBudget && _frames.pop(&source)) {
+  177         if (source) {
+  178             IOSkywalkPacket *packet = nullptr;
+  179             if (copyMbufToSkywalkPacket(_rxPool, source, &packet)) {
+  180                 __atomic_add_fetch(&_prepared, 1U, __ATOMIC_RELAXED);
+  181                 /* A true return means the sink has accepted ownership. The
+  182                  * current controller sink returns false because the RX
+  183                  * completion queue is still unregistered. */
+  184                 const bool accepted = _sink && _sink(packet, _sinkContext);
+  185                 if (!accepted) {
+  186                     (void)_rxPool->deallocatePacket(packet);
+  187                     __atomic_add_fetch(&_dropped, 1U, __ATOMIC_RELAXED);
+  188                 }
+  189             } else {
+  190                 __atomic_add_fetch(&_dropped, 1U, __ATOMIC_RELAXED);
+  191             }
+  192             mbuf_freem(source);
+  193             source = nullptr;
+  194         }
+  195         ++drained;
+  196     }
+  197 
+  198     if (drained == kDrainBudget)
+  199         return true; // bounded workloop occupancy; schedule another pass
+  200 
+  201     __atomic_store_n(&_pendingSignal, 0U, __ATOMIC_RELEASE);
+  202     if (!_frames.empty()) {
+  203         uint32_t expected = 0;
+  204         if (__atomic_compare_exchange_n(&_pendingSignal, &expected, 1U,
+  205                                         false, __ATOMIC_ACQ_REL,
+  206                                         __ATOMIC_ACQUIRE))
+  207             return true;
+  208     }
+  209     return false;
+  210 }
+  211 
+  212 void RTW88WCLSkywalkRxAdapter::stop()
+  213 {
+  214     __atomic_store_n(&_stopping, 1U, __ATOMIC_RELEASE);
+  215     if (_registered && _workLoop) {
+  216         /* Synchronous removal serializes against checkForWork(). The owner
+  217          * must stop/quiesce RTW88 RX producers before invoking stop(). */
+  218         _workLoop->removeEventSource(this);
+  219         _registered = false;
+  220     }
+  221 
+  222     mbuf_t packet = nullptr;
+  223     while (_frames.pop(&packet)) {
+  224         if (packet)
+  225             mbuf_freem(packet);
+  226         packet = nullptr;
+  227     }
+  228     _sink = nullptr;
+  229     _sinkContext = nullptr;
+  230     _workLoop = nullptr;
+  231     if (_rxPool) {
+  232         _rxPool->release();
+  233         _rxPool = nullptr;
+  234     }
+  235 }
+  236 
+  237 void RTW88WCLSkywalkRxAdapter::free()
+  238 {
+  239     stop();
+  240     super::free();
+
+=== Workloop/wakeup RTW88WCLSkywalkRxAdapter.hpp | src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp ===
+MATCH_LINES=6 CONTEXT_WINDOWS=1
+
+[lines 1-60]
+    1 /* SPDX-License-Identifier: GPL-2.0-only
+    2  * Bounded RTW88 mbuf staging and native Skywalk RX packet construction.
+    3  */
+    4 #pragma once
+    5 
+    6 #include <IOKit/IOEventSource.h>
+    7 #include <IOKit/IOWorkLoop.h>
+    8 #include <IOKit/skywalk/IOSkywalkPacket.h>
+    9 #include <IOKit/skywalk/IOSkywalkPacketBufferPool.h>
+   10 #include <libkern/c++/OSObject.h>
+   11 #include <sys/mbuf.h>
+   12 
+   13 #include "RTW88WCLMbufRing.hpp"
+   14 
+   15 class RTW88WCLSkywalkRxAdapter final : public IOEventSource {
+   16     OSDeclareDefaultStructors(RTW88WCLSkywalkRxAdapter)
+   17 
+   18 public:
+   19     /* true transfers the prepared packet to the sink; false returns it to RX pool. */
+   20     using FrameSink = bool (*)(IOSkywalkPacket *preparedPacket, void *context);
+   21     static constexpr uint32_t kCapacity = 128;
+   22     static constexpr uint32_t kDrainBudget = 32;
+   23     static constexpr uint32_t kMinimumFrameLength = 14;
+   24     static constexpr uint32_t kMaximumFrameLength = 4096;
+   25 
+   26     bool init(OSObject *owner, IOWorkLoop *workLoop,
+   27               IOSkywalkPacketBufferPool *rxPool,
+   28               FrameSink sink, void *context);
+   29 
+   30     /* Consumes mbuf ownership on every return path. The producer path performs
+   31      * only bounded validation/enqueue and a workloop signal. */
+   32     IOReturn enqueueFrame(mbuf_t packet);
+   33 
+   34     /* Removes the event source, drains queued mbufs, then releases the retained pool. */
+   35     void stop();
+   36     void free() override;
+   37 
+   38     bool checkForWork() override;
+   39     uint32_t droppedFrames() const;
+   40     uint32_t preparedFrames() const;
+   41     uint32_t queuedFrames() const;
+   42     bool isRegistered() const { return _registered; }
+   43 
+   44 private:
+   45     static bool isValidMbuf(mbuf_t packet);
+   46     static bool copyMbufToSkywalkPacket(IOSkywalkPacketBufferPool *pool,
+   47                                         mbuf_t source,
+   48                                         IOSkywalkPacket **outPacket);
+   49 
+   50     RTW88WCLMbufRing<mbuf_t, kCapacity> _frames;
+   51     IOWorkLoop *_workLoop = nullptr; // non-owning; controller owns workloop
+   52     IOSkywalkPacketBufferPool *_rxPool = nullptr; // retained
+   53     FrameSink _sink = nullptr;       // non-owning; invoked on workloop
+   54     void *_sinkContext = nullptr;
+   55     volatile uint32_t _pendingSignal = 0;
+   56     volatile uint32_t _stopping = 0;
+   57     volatile uint32_t _dropped = 0;
+   58     volatile uint32_t _prepared = 0;
+   59     bool _registered = false;        // workloop lifecycle-owned
+   60 };
+
+=== Workloop/wakeup RTW88WCLSkywalkTxAdapter.cpp | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp ===
+MATCH_LINES=4 CONTEXT_WINDOWS=1
+
+[lines 92-148]
+   92     TicketPool::Ticket *ticket = _tickets.reserve(packet);
+   93     if (!ticket) {
+   94         packet->release();
+   95         mbuf_freem(mbuf);
+   96         return kIOReturnBusy;
+   97     }
+   98 
+   99     /* Keep the adapter alive until the workloop-side completion drain drops
+  100      * this ticket. backendCompletion() intentionally does not release it. */
+  101     retain();
+  102     const UInt32 backendResult = _radio->outputPacketWithCompletion(
+  103         mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+  104 
+  105     /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+  106      * terminal callback, including synchronous drops. Once the ticket has
+  107      * been reserved, adapter acceptance is successful; the actual transmitted
+  108      * vs dropped result is delivered later through the completion sink. */
+  109     (void)backendResult;
+  110     return kIOReturnSuccess;
+  111 }
+  112 
+  113 void RTW88WCLSkywalkTxAdapter::backendCompletion(
+  114     void *context, void *cookie, bool transmitted)
+  115 {
+  116     auto *self = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+  117     auto *ticket = static_cast<TicketPool::Ticket *>(cookie);
+  118     if (!self || !ticket)
+  119         return;
+  120 
+  121     /* No Skywalk API, OSObject release, allocation, or blocking operation is
+  122      * allowed here. A deferred consumer performs the completion handoff. */
+  123     (void)TicketPool::complete(ticket, transmitted);
+  124 }
+  125 
+  126 uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+  127     CompletionSink sink, void *context)
+  128 {
+  129     if (!sink)
+  130         return 0;
+  131 
+  132     /* A sink may trigger owner teardown; keep this adapter alive until the
+  133      * drain loop has stopped touching its ticket pool. */
+  134     retain();
+  135     uint32_t drained = 0;
+  136     for (;;) {
+  137         TicketPool::Ticket *ticket = _tickets.claimCompleted();
+  138         if (!ticket)
+  139             break;
+  140 
+  141         auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+  142         const bool transmitted = TicketPool::transmitted(ticket);
+  143 
+  144         /* The sink runs in deferred context and borrows the retained packet.
+  145          * It must finish any Skywalk queue handoff before returning. */
+  146         if (packet)
+  147             sink(packet, transmitted, context);
+  148 
+
+=== Workloop/wakeup RTW88WCLSkywalkTxAdapter.hpp | src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp ===
+MATCH_LINES=3 CONTEXT_WINDOWS=1
+
+[lines 24-55]
+   24 
+   25     bool init() override;
+   26     IOReturn bind(RTW88IEEE80211 *radio,
+   27                   IOSkywalkPacketBufferPool *txPool);
+   28     IOReturn unbind();
+   29 
+   30     /* Copies a validated, single-buffer Skywalk Ethernet frame to an mbuf,
+   31      * then submits it to RTW88 with a bounded completion ticket. Ownership of
+   32      * the Skywalk packet stays with this adapter until drainCompletions(). */
+   33     IOReturn submitPacket(IOSkywalkPacket *packet);
+   34 
+   35     /* Must be called later from a serialized/deferred context. The sink may
+   36      * enqueue the packet to Skywalk's TX-completion queue once that queue's
+   37      * ABI and lifecycle have been validated. The adapter releases its packet
+   38      * retain after the sink returns. */
+   39     uint32_t drainCompletions(CompletionSink sink, void *context);
+   40 
+   41     bool hasOutstandingCompletions() const;
+   42     uint32_t outstandingCompletionCount() const;
+   43     void free() override;
+   44 
+   45 private:
+   46     using TicketPool = RTW88WCLTxCompletionSlots<kCompletionCapacity>;
+   47 
+   48     static void backendCompletion(void *context, void *cookie,
+   49                                   bool transmitted);
+   50     static mbuf_t copyPacketToMbuf(const uint8_t *bytes, uint32_t length);
+   51 
+   52     RTW88IEEE80211 *_radio = nullptr; // retained while bound
+   53     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
+   54     TicketPool _tickets;
+   55 };
+
+--- Exact source references for relevant Skywalk API symbols ---
+
+SYMBOL=IOSkywalkTxSubmissionQueue REFERENCES=5
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:70 | _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:148 | OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:12 | #include <IOKit/skywalk/IOSkywalkTxSubmissionQueue.h>
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:37 | IOSkywalkTxSubmissionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:55 | IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+
+SYMBOL=IOSkywalkTxCompletionQueue REFERENCES=5
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:76 | _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:173 | OSObject *owner, IOSkywalkTxCompletionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:13 | #include <IOKit/skywalk/IOSkywalkTxCompletionQueue.h>
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:41 | IOSkywalkTxCompletionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:56 | IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
+
+SYMBOL=IOSkywalkRxSubmissionQueue REFERENCES=5
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:82 | _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:181 | OSObject *owner, IOSkywalkRxSubmissionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:14 | #include <IOKit/skywalk/IOSkywalkRxSubmissionQueue.h>
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:45 | IOSkywalkRxSubmissionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:57 | IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
+
+SYMBOL=IOSkywalkRxCompletionQueue REFERENCES=5
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:88 | _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:190 | OSObject *owner, IOSkywalkRxCompletionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:15 | #include <IOKit/skywalk/IOSkywalkRxCompletionQueue.h>
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:49 | IOSkywalkRxCompletionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:58 | IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+
+SYMBOL=IOSkywalkPacketBufferPool REFERENCES=33
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:52 | class IOSkywalkPacketBufferPool;
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:318 | virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:323 | unsigned int, IOSkywalkPacketBufferPool *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:324 | IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:326 | IOSkywalkPacketBufferPool *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:327 | IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:438 | unsigned int, IOSkywalkPacketBufferPool *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:439 | IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:441 | IOSkywalkPacketBufferPool *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:442 | IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:683 | unsigned int, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *);
+src/kext/wcl24h32/RTW88WCLController.cpp:533 | IOSkywalkPacketBufferPool *pool = _skywalkQueues->rxPacketPool();
+src/kext/wcl24h32/RTW88WCLPacketView.hpp:20 | IOSkywalkPacketBufferPool *expectedPool,
+src/kext/wcl24h32/RTW88WCLPacketView.hpp:81 | IOSkywalkPacketBufferPool *expectedPool,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:13 | class RTW88WCLPoolOptionsAccess : public IOSkywalkPacketBufferPool {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:15 | using PoolOptions = IOSkywalkPacketBufferPool::PoolOptions;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:56 | _txPool = IOSkywalkPacketBufferPool::withName(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:61 | _rxPool = IOSkywalkPacketBufferPool::withName(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:11 | #include <IOKit/skywalk/IOSkywalkPacketBufferPool.h>
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:33 | IOSkywalkPacketBufferPool *rxPacketPool() const { return _rxPool; }
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:53 | IOSkywalkPacketBufferPool *_txPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:54 | IOSkywalkPacketBufferPool *_rxPool = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:18 | IOSkywalkPacketBufferPool *rxPool,
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:63 | IOSkywalkPacketBufferPool *pool, mbuf_t source,
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:9 | #include <IOKit/skywalk/IOSkywalkPacketBufferPool.h>
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:27 | IOSkywalkPacketBufferPool *rxPool,
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:46 | static bool copyMbufToSkywalkPacket(IOSkywalkPacketBufferPool *pool,
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:52 | IOSkywalkPacketBufferPool *_rxPool = nullptr; // retained
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:26 | RTW88IEEE80211 *radio, IOSkywalkPacketBufferPool *txPool)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:46 | IOSkywalkPacketBufferPool *pool = _txPool;
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:7 | #include <IOKit/skywalk/IOSkywalkPacketBufferPool.h>
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:27 | IOSkywalkPacketBufferPool *txPool);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:53 | IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
+
+SYMBOL=IOSkywalkPacket REFERENCES=27
+src/kext/wcl24h32/RTW88WCLController.cpp:534 | IOSkywalkPacket *packet = nullptr;
+src/kext/wcl24h32/RTW88WCLController.cpp:559 | IOSkywalkPacket *preparedPacket, void *context)
+src/kext/wcl24h32/RTW88WCLController.hpp:19 | class IOSkywalkPacket;
+src/kext/wcl24h32/RTW88WCLController.hpp:89 | static bool stagedRxFrame(IOSkywalkPacket *preparedPacket, void *context);
+src/kext/wcl24h32/RTW88WCLController.hpp:113 | RTW88WCLMbufRing<IOSkywalkPacket *, kStagedRxPacketCapacity> _stagedRxPackets;
+src/kext/wcl24h32/RTW88WCLPacketView.hpp:19 | IOSkywalkPacket *packet,
+src/kext/wcl24h32/RTW88WCLPacketView.hpp:80 | IOSkywalkPacket *packet,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:149 | const IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:165 | const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:174 | IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:182 | const IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:191 | IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:38 | const IOSkywalkPacket **packets,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:42 | IOSkywalkPacket **packets,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:46 | const IOSkywalkPacket **packets,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:50 | IOSkywalkPacket **packets,
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:64 | IOSkywalkPacket **outPacket)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:76 | IOSkywalkPacket *packet = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:178 | IOSkywalkPacket *packet = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:8 | #include <IOKit/skywalk/IOSkywalkPacket.h>
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:20 | using FrameSink = bool (*)(IOSkywalkPacket *preparedPacket, void *context);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:48 | IOSkywalkPacket **outPacket);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76 | IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:141 | auto *packet = static_cast<IOSkywalkPacket *>(TicketPool::packet(ticket));
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:6 | #include <IOKit/skywalk/IOSkywalkPacket.h>
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:19 | using CompletionSink = void (*)(IOSkywalkPacket *packet,
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33 | IOReturn submitPacket(IOSkywalkPacket *packet);
+
+SYMBOL=IOSkywalkEthernetInterface REFERENCES=8
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:391 | class IOSkywalkEthernetInterface : public IOSkywalkNetworkInterface {
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:392 | OSDeclareAbstractStructors(IOSkywalkEthernetInterface)
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:452 | static_assert(sizeof(IOSkywalkEthernetInterface) == 0x110, "24H32 IOSkywalkEthernetInterface ABI");
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:453 | static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:463 | class IO80211SkywalkInterface : public IOSkywalkEthernetInterface {
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:612 | uint8_t _layout[0x118 - sizeof(IOSkywalkEthernetInterface)];
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:682 | IOSkywalkEthernetInterface::RegistrationInfo *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:240 | auto *info = reinterpret_cast<IOSkywalkEthernetInterface::RegistrationInfo *>(
+
+SYMBOL=registerEthernetInterface REFERENCES=2
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:437 | IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440 | IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+
+SYMBOL=unregisterEthernetInterface REFERENCES=0
+
+SYMBOL=IOSkywalkRegistrationInfo REFERENCES=0
+
+SYMBOL=txSubmissionAction REFERENCES=3
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:72 | &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:147 | IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:36 | static IOReturn txSubmissionAction(OSObject *owner,
+
+SYMBOL=txCompletionAction REFERENCES=3
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:78 | &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:172 | IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:40 | static IOReturn txCompletionAction(OSObject *owner,
+
+SYMBOL=rxSubmissionAction REFERENCES=3
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:84 | this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:180 | IOReturn RTW88WCLSkywalkQueues::rxSubmissionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:44 | static IOReturn rxSubmissionAction(OSObject *owner,
+
+SYMBOL=rxCompletionAction REFERENCES=3
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:90 | &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:189 | IOReturn RTW88WCLSkywalkQueues::rxCompletionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:48 | static IOReturn rxCompletionAction(OSObject *owner,
+
+SYMBOL=signalWorkAvailable REFERENCES=2
+src/kext/RTW88WCLWorkQueue.cpp:131 | signalWorkAvailable();
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:165 | signalWorkAvailable();
+
+SYMBOL=checkForWork REFERENCES=4
+src/kext/RTW88WCLWorkQueue.cpp:134 | bool RTW88WCLWorkQueue::checkForWork()
+src/kext/RTW88WCLWorkQueue.hpp:47 | bool checkForWork() override;
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:169 | bool RTW88WCLSkywalkRxAdapter::checkForWork()
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:38 | bool checkForWork() override;
+
+SYMBOL=drainCompletions REFERENCES=2
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126 | uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39 | uint32_t drainCompletions(CompletionSink sink, void *context);
+
+SYMBOL=submitPacket REFERENCES=2
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76 | IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33 | IOReturn submitPacket(IOSkywalkPacket *packet);
+
+--- Evidence flags (presence is not proof of runtime ABI validity) ---
+SDKROOT_DISCOVERED=YES
+SDK_TX_SUBMISSION_HEADER_FOUND=NO
+SDK_TX_COMPLETION_HEADER_FOUND=NO
+SDK_PACKET_BUFFER_POOL_HEADER_FOUND=NO
+TX_SUBMISSION_ACTION_CURRENTLY_FAILS_CLOSED=YES
+TX_COMPLETION_ACTION_CURRENTLY_RETURNS_ZERO=YES
+FOUR_QUEUE_OBJECTS_CREATED=YES
+QUEUE_CLASS_HAS_REGISTRATION_CALL=YES
+CONTROLLER_CALLS_REGISTER_ETHERNET_INTERFACE=NO
+CONTROLLER_OWNS_TX_ADAPTER=NO
+TX_ADAPTER_DRAIN_CALL_IN_CONTROLLER=NO
+WORKQUEUE_USES_SIGNAL_WORK_AVAILABLE=YES
+TX_ADAPTER_CALLBACK_SIGNALS_WORK=NO
+WORKQUEUE_CHECKFORWORK_IMPLEMENTED=YES
+REGISTRATION_INFO_HAS_QUEUE_WIRING=NO
+
+--- Build-readiness boundary ---
+THIS_STAGE_IS_READ_ONLY=YES
+COMPILE_OR_LINK_ATTEMPT=NOT_RUN
+SDK_ABI_CONFIRMED_ONLY_WHERE_EXACT_DECLARATIONS_WERE_FOUND=YES
+MISSING_OR_PRIVATE_SDK_HEADERS_MUST_NOT_BE_GUESSED=YES
+OPENCORE_MODIFIED=NO
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+
+--- Open questions for implementation planning ---
+OPEN_QUESTION_01=Does this installed Sequoia/Xcode SDK expose the exact queue callback typedefs and queue registration methods needed by the WCL class?
+OPEN_QUESTION_02=If SDK headers are private or absent, which already-audited 24H32 ABI source establishes exact callback and registration contracts?
+OPEN_QUESTION_03=What complete RegistrationInfo transaction connects all four queues and pools to the IO80211 Skywalk interface, including rollback/unregister?
+OPEN_QUESTION_04=Should TX completion draining use a dedicated IOEventSource, an IOCommandGate action, or an existing serialized workqueue on the controller workloop?
+OPEN_QUESTION_05=How can backendCompletion signal deferred work without calling Skywalk or releasing OSObjects in the hardware completion context?
+OPEN_QUESTION_06=What callback return count and packet ownership semantics does the actual 24H32 queue dispatcher consume?
+OPEN_QUESTION_07=Can a compile-only native target be attempted after ABI evidence is reviewed, without installing or loading the resulting Kext?
+
+--- End Stage 35Q ---
+SOURCE_TREE_MODIFIED=NO
+ACTUAL_BUILD=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN

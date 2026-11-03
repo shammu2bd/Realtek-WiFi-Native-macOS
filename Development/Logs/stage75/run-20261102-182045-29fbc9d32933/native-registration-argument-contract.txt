@@ -1,0 +1,310 @@
+STAGE75_NATIVE_REGISTRATION_ARGUMENT_AND_QUEUE_ARRAY_AUDIT
+
+===== ABI_DECLARATIONS =====
+48: class OSString;
+49: class OSSymbol;
+50: class IOSkywalkPacketQueue;
+51: class IOSkywalkLogicalLink;
+52: class IOSkywalkPacketBufferPool;
+53: class TxSubmissionDequeueStats;
+54: class TxCompletionEnqueueStats;
+50: class IOSkywalkPacketQueue;
+51: class IOSkywalkLogicalLink;
+52: class IOSkywalkPacketBufferPool;
+53: class TxSubmissionDequeueStats;
+54: class TxCompletionEnqueueStats;
+55: class PacketSkywalkScratch;
+56: class FlowIdMetadata;
+316:     virtual IOReturn enable(unsigned int) override;
+317:     virtual IOReturn disable(unsigned int) override;
+318:     virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+319:     /* 24H32 non-virtual registration entry points. Their IOReturn convention
+320:      * is confirmed by the target function bodies and Apple caller's EAX test.
+321:      * These declarations do not add vtable slots. */
+322:     IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+320:      * is confirmed by the target function bodies and Apple caller's EAX test.
+321:      * These declarations do not add vtable slots. */
+322:     IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+323:                                       unsigned int, IOSkywalkPacketBufferPool *,
+324:                                       IOSkywalkPacketBufferPool *, unsigned int);
+325:     IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+326:                                       IOSkywalkPacketBufferPool *,
+323:                                       unsigned int, IOSkywalkPacketBufferPool *,
+324:                                       IOSkywalkPacketBufferPool *, unsigned int);
+325:     IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+326:                                       IOSkywalkPacketBufferPool *,
+327:                                       IOSkywalkPacketBufferPool *, unsigned int);
+328:     IOReturn deregisterNetworkInterface(unsigned int);
+329:     virtual IOReturn deregisterLogicalLink();
+326:                                       IOSkywalkPacketBufferPool *,
+327:                                       IOSkywalkPacketBufferPool *, unsigned int);
+328:     IOReturn deregisterNetworkInterface(unsigned int);
+329:     virtual IOReturn deregisterLogicalLink();
+330:     virtual SInt32 initBSDInterfaceParameters(ifnet_init_eparams *, sockaddr_dl **) = 0;
+331:     virtual IOReturn prepareBSDInterface(struct __ifnet *, unsigned int);
+332:     virtual void finalizeBSDInterface(struct __ifnet *, unsigned int);
+435:      * IOReturn values; Apple callers treat EAX==0 as success. */
+436:     bool initRegistrationInfo(RegistrationInfo *, unsigned int, size_t);
+437:     IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+438:                                        unsigned int, IOSkywalkPacketBufferPool *,
+439:                                        IOSkywalkPacketBufferPool *, unsigned int);
+440:     IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+441:                                        IOSkywalkPacketBufferPool *,
+438:                                        unsigned int, IOSkywalkPacketBufferPool *,
+439:                                        IOSkywalkPacketBufferPool *, unsigned int);
+440:     IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+441:                                        IOSkywalkPacketBufferPool *,
+442:                                        IOSkywalkPacketBufferPool *, unsigned int);
+443:     IOReturn deregisterEthernetInterface(unsigned int);
+444: protected:
+441:                                        IOSkywalkPacketBufferPool *,
+442:                                        IOSkywalkPacketBufferPool *, unsigned int);
+443:     IOReturn deregisterEthernetInterface(unsigned int);
+444: protected:
+445:     struct ExpansionData;
+446: private:
+447:     uint8_t _layout0[0x38];
+685:     /* Non-virtual helper called directly by AppleBCMWLANSkywalkInterface::start
+686:      * on 24H32. Return is an IOReturn (zero means success), not bool. */
+687:     IOReturn registerInfraEthernetInterface(
+688:         IOSkywalkEthernetInterface::RegistrationInfo *, IOSkywalkPacketQueue **,
+689:         unsigned int, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *);
+690: private:
+691:     virtual void _abi_0e98() __asm__("__ZN21IO80211InfraInterface13createLQMDataEv");
+
+===== QUEUE_OBJECT_LAYOUT_AND_API =====
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+11: #include <IOKit/skywalk/IOSkywalkPacketBufferPool.h>
+12: #include <IOKit/skywalk/IOSkywalkTxSubmissionQueue.h>
+13: #include <IOKit/skywalk/IOSkywalkTxCompletionQueue.h>
+14: #include <IOKit/skywalk/IOSkywalkRxSubmissionQueue.h>
+15: #include <IOKit/skywalk/IOSkywalkRxCompletionQueue.h>
+23: IOReturn createQueues();
+24: void destroyQueues();
+33: IOSkywalkPacketBufferPool *rxPacketPool() const { return _rxPool; }
+37: IOSkywalkTxSubmissionQueue *queue,
+41: IOSkywalkTxCompletionQueue *queue,
+45: IOSkywalkRxSubmissionQueue *queue,
+49: IOSkywalkRxCompletionQueue *queue,
+53: IOSkywalkPacketBufferPool *_txPool = nullptr;
+54: IOSkywalkPacketBufferPool *_rxPool = nullptr;
+55: IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+56: IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
+57: IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
+58: IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+59: bool _allocated = false;
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+13: class RTW88WCLPoolOptionsAccess : public IOSkywalkPacketBufferPool {
+15: using PoolOptions = IOSkywalkPacketBufferPool::PoolOptions;
+25: _txPool = nullptr;
+26: _rxPool = nullptr;
+27: _txSubmission = nullptr;
+28: _txCompletion = nullptr;
+29: _rxSubmission = nullptr;
+30: _rxCompletion = nullptr;
+31: _allocated = false;
+35: IOReturn RTW88WCLSkywalkQueues::createQueues()
+37: if (_allocated)
+39: if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+40: _rxSubmission || _rxCompletion)
+56: _txPool = IOSkywalkPacketBufferPool::withName(
+58: if (!_txPool)
+61: _rxPool = IOSkywalkPacketBufferPool::withName(
+63: if (!_rxPool)
+70: _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+71: _txPool, kQueueCapacity, 0, this,
+73: if (!_txSubmission)
+76: _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+77: _txPool, kQueueCapacity, 0, this,
+79: if (!_txCompletion)
+82: _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+83: _rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),
+85: if (!_rxSubmission)
+88: _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+89: _rxPool, kQueueCapacity, 0, this,
+91: if (!_rxCompletion)
+94: _allocated = true;
+99: destroyQueues();
+103: void RTW88WCLSkywalkQueues::destroyQueues()
+107: if (_rxCompletion) {
+108: _rxCompletion->release();
+109: _rxCompletion = nullptr;
+111: if (_rxSubmission) {
+112: _rxSubmission->release();
+113: _rxSubmission = nullptr;
+115: if (_txCompletion) {
+116: _txCompletion->release();
+117: _txCompletion = nullptr;
+119: if (_txSubmission) {
+120: _txSubmission->release();
+121: _txSubmission = nullptr;
+123: if (_rxPool) {
+124: _rxPool->release();
+125: _rxPool = nullptr;
+127: if (_txPool) {
+128: _txPool->release();
+129: _txPool = nullptr;
+131: _allocated = false;
+136: return _allocated && _txPool && _rxPool && _txSubmission &&
+137: _txCompletion && _rxSubmission && _rxCompletion;
+148: OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
+153: if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+165: const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
+173: OSObject *owner, IOSkywalkTxCompletionQueue *queue,
+181: OSObject *owner, IOSkywalkRxSubmissionQueue *queue,
+190: OSObject *owner, IOSkywalkRxCompletionQueue *queue,
+199: destroyQueues();
+
+===== FUNCTION RTW88WCLSkywalkQueues::createQueues SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp =====
+SOURCE_LINES=36-101
+36: {
+37:     if (_allocated)
+38:         return kIOReturnSuccess;
+39:     if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+40:         _rxSubmission || _rxCompletion)
+41:         return kIOReturnBusy;
+42: 
+43:     RTW88WCLPoolOptionsAccess::PoolOptions txOptions = {};
+44:     txOptions.packetCount = kQueueCapacity;
+45:     txOptions.bufferCount = kQueueCapacity;
+46:     txOptions.bufferSize = kTxBufferSize;
+47:     txOptions.maxBuffersPerPacket = 1;
+48:     txOptions.memorySegmentSize = kQueueCapacity * kTxBufferSize;
+49:     txOptions.poolFlags = 0;
+50:     txOptions._reserved = 0;
+51: 
+52:     RTW88WCLPoolOptionsAccess::PoolOptions rxOptions = txOptions;
+53:     rxOptions.bufferSize = kRxBufferSize;
+54:     rxOptions.memorySegmentSize = kQueueCapacity * kRxBufferSize;
+55: 
+56:     _txPool = IOSkywalkPacketBufferPool::withName(
+57:         "RTL88WiFi-WCL-TX", this, kIOSkywalkPacketTypeNetwork, &txOptions);
+58:     if (!_txPool)
+59:         goto no_memory;
+60: 
+61:     _rxPool = IOSkywalkPacketBufferPool::withName(
+62:         "RTL88WiFi-WCL-RX", this, kIOSkywalkPacketTypeNetwork, &rxOptions);
+63:     if (!_rxPool)
+64:         goto no_memory;
+65: 
+66:                                                                           
+67:                                                                             
+68:                                                                             
+69:                                                            
+70:     _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+71:         _txPool, kQueueCapacity, 0, this,
+72:         &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+73:     if (!_txSubmission)
+74:         goto no_memory;
+75: 
+76:     _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+77:         _txPool, kQueueCapacity, 0, this,
+78:         &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+79:     if (!_txCompletion)
+80:         goto no_memory;
+81: 
+82:     _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+83:         _rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),
+84:         this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+85:     if (!_rxSubmission)
+86:         goto no_memory;
+87: 
+88:     _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+89:         _rxPool, kQueueCapacity, 0, this,
+90:         &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+91:     if (!_rxCompletion)
+92:         goto no_memory;
+93: 
+94:     _allocated = true;
+95:     IOLog("rtl88wifi-wcl: allocated Skywalk pools and four queue objects (not registered)\n");
+96:     return kIOReturnSuccess;
+97: 
+98: no_memory:
+99:     destroyQueues();
+100:     return kIOReturnNoMemory;
+101: }
+
+===== FUNCTION RTW88WCLSkywalkQueues::destroyQueues SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp =====
+SOURCE_LINES=104-132
+104: {
+105:                                                                           
+106:                                                                            
+107:     if (_rxCompletion) {
+108:         _rxCompletion->release();
+109:         _rxCompletion = nullptr;
+110:     }
+111:     if (_rxSubmission) {
+112:         _rxSubmission->release();
+113:         _rxSubmission = nullptr;
+114:     }
+115:     if (_txCompletion) {
+116:         _txCompletion->release();
+117:         _txCompletion = nullptr;
+118:     }
+119:     if (_txSubmission) {
+120:         _txSubmission->release();
+121:         _txSubmission = nullptr;
+122:     }
+123:     if (_rxPool) {
+124:         _rxPool->release();
+125:         _rxPool = nullptr;
+126:     }
+127:     if (_txPool) {
+128:         _txPool->release();
+129:         _txPool = nullptr;
+130:     }
+131:     _allocated = false;
+132: }
+
+===== FUNCTION RTW88WCLSkywalkQueues::txSubmissionAction SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp =====
+SOURCE_LINES=150-170
+150: {
+151:     (void)refCon;
+152:     auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
+153:     if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+154:         return static_cast<IOReturn>(0);
+155: 
+156:                                                                            
+157:                                                                           
+158:                                                                            
+159:                                                              
+160:     for (UInt32 i = 0; i < packetCount; ++i) {
+161:         if (!packets[i])
+162:             return static_cast<IOReturn>(0);
+163:         RTW88WCLPacketView view = {};
+164:         if (!RTW88WCLResolveEthernetTxPacket(
+165:                 const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
+166:             return static_cast<IOReturn>(0);
+167:     }
+168: 
+169:     return static_cast<IOReturn>(0);
+170: }
+
+===== FUNCTION RTW88WCLSkywalkQueues::txCompletionAction SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp =====
+SOURCE_LINES=175-178
+175: {
+176:     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+177:     return static_cast<IOReturn>(0);
+178: }
+
+===== FUNCTION RTW88WCLSkywalkQueues::rxSubmissionAction SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp =====
+SOURCE_LINES=183-187
+183: {
+184:     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+185:                                                                        
+186:     return static_cast<IOReturn>(0);
+187: }
+
+===== FUNCTION RTW88WCLSkywalkQueues::rxCompletionAction SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp =====
+SOURCE_LINES=192-195
+192: {
+193:     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+194:     return static_cast<IOReturn>(0);
+195: }
+
+===== DRIVER_QUEUE_ARRAY_STORAGE_CANDIDATES =====
+CANDIDATE_COUNT=0
+
+===== IMPLEMENTATION_CALLS =====
+NATIVE_REGISTRATION_CALL_COUNT=0
+NATIVE_DEREGISTRATION_CALL_COUNT=0

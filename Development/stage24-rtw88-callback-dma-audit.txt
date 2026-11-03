@@ -1,0 +1,1388 @@
+RTL88WiFi Stage24 — RTW88 callback, DMA and teardown contract audit
+PURPOSE: targeted driver-owned source review, including RTW88 core callback implementations and PCI/DMA lifecycle.
+SCOPE: all driver source files counted; detailed contexts restricted to RTW88/RTL88/WCL/Skywalk/PCI/DMA-related paths.
+SOURCE_CHANGES: NONE
+BUILD: NOT RUN
+INSTALL: NOT RUN
+LOAD: NOT RUN
+OPENCORE_CHANGE: NONE
+QUEUE_REGISTRATION: NOT CALLED
+QUEUE_ENABLE: NOT CALLED
+RADIO_START: NOT RUN
+KNOWN_GOOD_LEGACY_KEXT: NOT TOUCHED
+
+=== SOURCE INVENTORY ===
+TOTAL_DRIVER_SOURCE_FILES: 1253
+TARGETED_SOURCE_FILES: 120
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/DriverKit/IODMACommand.h SHA256=18cbd761f735dfa64fcb0bc3bba05f36b2a601058ce9da3789b80db8a23136eb
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211SkywalkInterface.h SHA256=039e5871ab572eafd116122a5a260c1463a3911b7b2ea063578188d2e75a61f4
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IOSkywalkEthernetInterface.h SHA256=519ce14434515c2a6d3a0acf579225a2f325cb32200a39fc1af2121b904460cd
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMACommand.h SHA256=35d9513d987857f08df26b85ab664791feac444f504c05241c0a93aa6faec43d
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMAController.h SHA256=a22c974f3e5ee2f2fab4ff34340e8fa7a972643cd13c33fd69514cebc6158a2d
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMAEventSource.h SHA256=15e9e7b78f3669dea5ce16d836169b30b2ff889b1af4db10d4a4b48cdaab8e88
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/ata/IOPCIATA.h SHA256=c5e4cdb472d0f11e66842a5f9a3265eebba264996fa29a7418c992e6fd4e0961
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/hidsystem/IOHIKeyboardMapper.h SHA256=267bd524ed1893ddd63d98eac55eafb2c570ad52ff6b2171160c695c0a0fb771
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/network/IOSkywalkEthernetInterface.h SHA256=c90059e7db9cfb979f11fca22af0a169fd2292dca46c5471cf9dcab1e1fd1777
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOAGPDevice.h SHA256=c13750681881a176d6aad135aaa875beb2aaa06ce233509d3b6c0afcda4dfa50
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIBridge.h SHA256=a637e6f142c9033e0f0fd3750bb50771cfeb43d3e280555bea0e1cbb9b9d3d43
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h SHA256=64a32261140503d1b332dd67ab656d3f79e946f223a730ad739b81fe5bb5ae3a
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIFamilyDefinitions.h SHA256=2197e3271dd7b01d710a3e9a6e2ce861a336dd90864246616f48d7c8f01e4341
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkCloneableNetworkPacket.h SHA256=d1a30f1c817c3d6c24e8d27bf372811d0a98d8b063cbddf978ea9ac01132a841
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkController.h SHA256=e639e0246ac138e0e589c69cf3a9e5460d1779884268dd146da14222f305cf1c
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h SHA256=203290fb1761f1a76bbf99fb03b4809f66eab11b6ab425a3c2bcd70fd56e3b09
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkFamily.h SHA256=8a6e0da1ce6b82092a3289eec67ea81bc7ec6a7748ad38bf0b68bc10b03444dd
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkInterface.h SHA256=d3b23dee88e3cda788ae2ea595f686d54064bf19b8c8a7bd532237315097a373
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkMemorySegment.h SHA256=f19bcd0c3cb8afa1345db5f83998cc3ba067aa7e03beefeb1eb7a89db0a1664a
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkController.h SHA256=2418843be8b2065c6c04978e103ea50f4c9dd0cf58b00d956c1bcfd1ea2362be
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h SHA256=73b9072293bbc23b90173a0a3e14f96a90d1b461bf0032c78648799c82a0b213
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkPacket.h SHA256=7fe5faed54a5b7b3e9ff6d6c99b72daf9ba33eaa99df20938d8e53573b5d777b
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h SHA256=819c769e0aa411ae3fd5cce4ba64854c50629abb54b96c0278b73b0bb9afec0b
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketBuffer.h SHA256=f0cf6fc59fefa03a637636f4fee77298a810a0e6d0903cf5df6c1580551b5d28
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketBufferPool.h SHA256=d91c4ebc0c5ef9769f5cf6afb0b6a8341e99313551824c8d2af88236a74780c8
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h SHA256=02854aa74ee1e356d86c8d70214c792e8a20e67aecb52e79385080eb1bc92fef
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h SHA256=9647d957a0b9dcc797f084b509fcf4212162f7d48505ff3407a2540a66a0030a
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h SHA256=c5a6b8b15dbf608bcd2bbb8d2eb09b300b1970a206a175566cf5315b80f7e728
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkSupport.h SHA256=c178aa4d1d49d6fdf72ad728c7bb49976022fce6823a25ca53394cbffcd77bc0
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h SHA256=e86821feb473a51a7ccaff16b11a0f9f779f000ea2a330c3ff6febc3945ec4ee
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h SHA256=7f20b5277461bcfb02dd7505e91aabb805eb44540d89253f48605d0316e79cff
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTypes.h SHA256=0d5da11a0768a5b388b32b435308f134a23eb9a8b9ae517da85abf05229716b8
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOUserNetworkEthernetNicProxy.h SHA256=bcf4ee964c835f7261a10b5ae9e1d746b730ff5d98e434247be8e991300c8c3f
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/PCIDriverKit/IOPCIDevice.h SHA256=77c2d0af42ab3927c3983407c4790e54f51acf49c60e10e05d00a7b49c25531c
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/PCIDriverKit/IOPCIFamilyDefinitions.h SHA256=2197e3271dd7b01d710a3e9a6e2ce861a336dd90864246616f48d7c8f01e4341
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/PCIDriverKit/PCIDriverKit.h SHA256=24091e9c9ef64f46dac5042b2fa495a9e7153ecddebaedb90333f37ae105e20e
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/channel/channel_var.h SHA256=ee709ba72554b77fa971238327fe407f0b214381fdf176f302351ee38da17286
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/channel/os_channel.h SHA256=a8bb78f4f814373471fe35840eb96c39449f6258cfbad0f5503663674919bb77
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/channel/os_channel_event.h SHA256=5337dadc6d3a6b0ab23ee2fa3368e99d70fe7ee759328c8978b221d6f2211018
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/channel/os_channel_private.h SHA256=a485445306e0d710301ed85844701d085b7e0d7687004169adfacbdda0b1970c
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/core/skywalk_common.h SHA256=bf2a61c1f7c49ad037e8395e433d6b2f8c08098405131c889ba33a24da698e39
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/core/skywalk_var.h SHA256=3fbc3ed30e2f75a4717f7e467f2687ed0548f9cb3873b9095838a721492eabff
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/lib/cuckoo_hashtable.h SHA256=e3deed98cebaf270fd10ec2afc915dc1cf2fa04b1e8bf9ac855d07b7c6eadc58
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/lib/net_filter_event.h SHA256=7e081d1847175455ee4f1bcfdf951cab0b742dd3f340e720dae7ad322dc9d44e
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/mem/skmem_arena_var.h SHA256=311e406f5e5dd929fca6a9359bde26f8749d57e65603cfda49aba358e7e14bac
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/mem/skmem_cache_var.h SHA256=ee86a6b8680fe72f750c51a804075cc946ecfb6a37630502a9fb6fafd542571c
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/mem/skmem_region_var.h SHA256=d434a4a0da045e43473145904dcbc67f61de154e48308d0e49543d5b31dd01ba
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/mem/skmem_var.h SHA256=72afa1c269426f5f02f3725a2f69213d3bbbad78f15d18f4c570702f055980d2
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/namespace/netns.h SHA256=87f60658de213874a2fedfdc3e352eda805c2c64717db205b90b63b2fd29d113
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/namespace/protons.h SHA256=dce7d094b3a247ebcde0f8f8ba469ae6d1665bf528c8dfc49805b656dba0d53a
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/flowswitch/flow/flow_var.h SHA256=25e2606e9628a0d1bd66ffdc178168324582a909390946c6681c329879ad7cb1
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/flowswitch/fsw_var.h SHA256=40f081e2f0f0d2f4c8faf2a32ddfb504621de3f42d680463dbb8057928a8fff0
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/flowswitch/nx_flowswitch.h SHA256=9ab59881b05e81af61f2ac8c9af8e91c8e6b425a804d6593ec63be6d892fa1e2
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/kpipe/nx_kernel_pipe.h SHA256=0f5785ab6c35bb77ece3dfc4fd50b35407d88be37b50ddd425a09d9480d2ad6a
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/monitor/nx_monitor.h SHA256=85cf49d911faa7662352e00641dabd56630d1b1e7d857d1e64eadb979b6ca853
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/netif/nx_netif.h SHA256=1c0c2b5dac6a0ca3cbb3033ffa69660d7dcc42c138f480fd3f78edef3d8bbea1
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/netif/nx_netif_compat.h SHA256=13ef691af3f590692b867ff855caffe0fdfd37f6526c67607d57297150ddca9c
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/netif/nx_netif_host.h SHA256=a253e70935d5e416ed3e03a8baf6195e037361f0835113a3e97057e78fa566cd
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/nexus_adapter.h SHA256=dae73e6b284f6d55f00830fcf26941a6721b7e5999cfd1c935fc77b295763b64
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/nexus_common.h SHA256=4f8b2ec192ff5fa7356b519b9d368898e87d948b1a3d0dcff61b3dd886494818
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/nexus_mbq.h SHA256=7db23e6cb5312bed30c174e3d6b47788155ca50c3ad0c7a1d8affef4e9eaadde
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/nexus_pktq.h SHA256=758b2d3da7085db0c1804747b06f25af09c3d2e125e72724c3e17a63c5b6cf5a
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/nexus_var.h SHA256=c8c58356f453e8ff997c4d5a0b17785494f52efe1fc981fbc63d61a0866041e1
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/os_nexus.h SHA256=0c349b13798466e20a49a753eb0ce4623266384708f9d69faccd2ad65d0c8cc4
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/os_nexus_private.h SHA256=daad90b01a96c80ccfd9554290327b7175186692e522653c3cc46053ff7fba22
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/nexus/upipe/nx_user_pipe.h SHA256=998431d02f667fc5666c52798d839c6e937f1173dea7f19f7fd839239b480b07
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_skywalk.h SHA256=6438bde3e33acb3ead942e9acd705681b5c1379dc88ce74c40d3fffb2f99c0ba
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_skywalk_private.h SHA256=c58b8ea78a66446c6a9b071171d327cbe424388eee8236622f49d4d63c71c897
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_stats_private.h SHA256=e1337f7cc60a69ce53dd81ee7629b7673b863982af5281d2962a71387b409dd5
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_sysctls_private.h SHA256=49dd9554358cc643053a25d86967f170bcc2a66ab56493c3227d9bdc0747d2a9
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/packet/os_packet.h SHA256=8e638cb7a418036af299602e63ac83df043c6cbb15c2a719aa868721659fefc2
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/packet/os_packet_private.h SHA256=4368d30f6b68b2e17800c2be9df6d47213f3b9cfaec685df3e5bf56379d1765e
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/packet/packet_common.h SHA256=c9613c9dbde772d785f1af323ab263b641ab0eeedf8039e677408889116da5ef
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/packet/packet_queue.h SHA256=977e7fbd7e0896e5f4685409a2c05ff3756a46e836c85f1482053a1caccaf870
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/packet/packet_var.h SHA256=d57c2cc4780c8124c319682d6a28531c617b1009c1b1fbe649eadbc41eda6057
+SOURCE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/packet/pbufpool_var.h SHA256=30be7e105fd9c13424f8907700998dea7b275464e4f53cf4e1afa4ef9dc61015
+SOURCE: driver/RTL88WiFi/src/compat/linux/dma-mapping.h SHA256=27120e81f01b6b35ae209318cd0ffbac02e96a5b9cb73957dfcb0b12082af630
+SOURCE: driver/RTL88WiFi/src/compat/linux/pci.h SHA256=22a0946f50969fa58d96a243b8ef6137b788f7329e2af295f8d67312e53ba9c8
+SOURCE: driver/RTL88WiFi/src/compat/rtw88_compat.c SHA256=c2f72e5d077f87ae3878d8afb1f582076e2068b84566216495c74730a978f490
+SOURCE: driver/RTL88WiFi/src/compat/rtw88_compat.h SHA256=bacd9c1d7dc900487c28d48cc03df93e8b68fc064df04818b131c98ec04e26df
+SOURCE: driver/RTL88WiFi/src/compat/rtw88_firmware.c SHA256=e43ba81e89085a4b566fe47f297a60be61c8c4853695147a1fb9c1b4b29d6de9
+SOURCE: driver/RTL88WiFi/src/compat/rtw88_thread_call.c SHA256=f000f8e4bcd65ff1a1d1967c555a1b43b784f72ec5df8f6c2d35cfc8c6aa0b5c
+SOURCE: driver/RTL88WiFi/src/compat/rtw88_thread_call.h SHA256=617fb44206ebcf11d7be2d00da3f1246c6ef94abe2fde0929002f05e11326c9a
+SOURCE: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp SHA256=1aba5df922d448205fbe60b9d80f7d9cdb50208e6dd0eb5382f862bea4352744
+SOURCE: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp SHA256=b8356afef165afc3d2d473f80355eacf1c2184a7557e8dba63a7c28225bce66a
+SOURCE: driver/RTL88WiFi/src/kext/RTL88WiFiAWDL.cpp SHA256=d45c508941ea0085ce0ea199fffd0c50ab1a63da3e2dcd51e8a47b96e7bf0aa7
+SOURCE: driver/RTL88WiFi/src/kext/RTL88WiFiInterface.cpp SHA256=df7917336215670c25564a9191d60d4c8021d9fca511b1d8f7b466a10e89e1b5
+SOURCE: driver/RTL88WiFi/src/kext/RTL88WiFiInterface.hpp SHA256=5bc319b27430122ce99130a5034138b0a187ee3a3ec32ca01de2afa0ac7853cb
+SOURCE: driver/RTL88WiFi/src/kext/RTW88AWDLManager.cpp SHA256=bb275a0aefc07fe2c3d61042cf41044934ede0571c7071dff784b706f1366d22
+SOURCE: driver/RTL88WiFi/src/kext/RTW88AWDLManager.hpp SHA256=efdff03675f868adb39a9dfac1d16d43e306b3b1924c9085bcf792cd016f7117
+SOURCE: driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp SHA256=451ee4c26ca67b7cc7a297350aac6ebdeaa1bc1a5fccf2ae29f3fb06f5d7a4bb
+SOURCE: driver/RTL88WiFi/src/kext/RTW88AssocWire.hpp SHA256=09c7ca06deeec850870c324eeaa1443e8c2501ae1c3206913cfd152f49cc06a0
+SOURCE: driver/RTL88WiFi/src/kext/RTW88BaPolicy.hpp SHA256=aeaf822f95c9ef759d82b7579255a87bf7e509b67f7b239321f42519c3053983
+SOURCE: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp SHA256=3984d76592346bf3e9050195045a69f37328ccedc3b957ee23bc51ed22fae3d1
+SOURCE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp SHA256=5e7994b25a47d8748a096c68324fd80f859f460d489e7902baf2959046b14110
+SOURCE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp SHA256=1c1b768a862e0b5dcc525c90c0daeeb3b5cd2f6d9c76885714f11cc53c5dbc34
+SOURCE: driver/RTL88WiFi/src/kext/RTW88JoinPolicy.hpp SHA256=44e17933e77185bca7296d8d3a4758981b8c19f40c7730c650d010cf23fedd23
+SOURCE: driver/RTL88WiFi/src/kext/RTW88Kext.cpp SHA256=7157170e3de174902b2c16154dc52a19edd979171889fa592106e429b96bea02
+SOURCE: driver/RTL88WiFi/src/kext/RTW88Kext.hpp SHA256=258b1c0dc4621c8ed6c47126f2ca345e25e235471a51d9b5e78bcd483cd63b70
+SOURCE: driver/RTL88WiFi/src/kext/RTW88LinkMetrics.hpp SHA256=cdd91372200effa5be56f409702d129c12983597e48c9fa13db595b2eaeb8ef9
+SOURCE: driver/RTL88WiFi/src/kext/RTW88MgmtValidation.hpp SHA256=ccd43f082b4b235da37f353ed4cd7aff53c91fc6d010e2d9c88f1eb76b453977
+SOURCE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp SHA256=993e8e143ae6728a2e76ef23e69967bb8e91645c9aeb189ac2db0872aa09983a
+SOURCE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp SHA256=98e7180117fd5598a40775207a41707194c633960f5d0ff167c28ff8d5cbb991
+SOURCE: driver/RTL88WiFi/src/kext/RTW88RoamScanPolicy.hpp SHA256=84442c243820d8d5bd4ac2bd5d94f4db8d70fd7f3a513fac5a2fe2a4360ad852
+SOURCE: driver/RTL88WiFi/src/kext/RTW88UserClient.cpp SHA256=f1e854d9133c6e60c6f1f35a5210034dbf669657b6318cd96c2fe39e8a2abf72
+SOURCE: driver/RTL88WiFi/src/kext/RTW88UserClient.hpp SHA256=663e6b2b37afba799337466465dd78c16a347571fbe3b280a67823c7fc223442
+SOURCE: driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp SHA256=4b174561b2e076f75b75a5651b10344032276bf7b95bf6829091361e2adfcc6b
+SOURCE: driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.hpp SHA256=00789ac1f19e38988f4720a2b7864fdaba988f8059b0512b89d990b5defb2c4f
+SOURCE: driver/RTL88WiFi/src/kext/RTW88WCLRadioEventRing.hpp SHA256=846011fea2f9d025c4226db77073dd3c3d7ab3b35ae474bb392412d041893b30
+SOURCE: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp SHA256=6ded9d08bf1e91aa26b393c9a8bea990ca8f64196f36a0553109ed61829d29e7
+SOURCE: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.hpp SHA256=5cad32ee1bae3b40596a5757973689e2efa188347be753238ca44cb8583db41c
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp SHA256=a312895412fc504602189683a6a32ba013f5bafdc9bd8482da14734f4e55212a
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp SHA256=de41fcbd0bb9b8b6a165df0f8e2484b49d2751e32ba821211d753c081ea57e87
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp SHA256=2c67658a50b40ec65cc400fbc7f13295d054e95a039aaf7060a65457c6087059
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp SHA256=740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp SHA256=20f8fcf3be99c797a28df29612a765a1b6d362dbc032e6045a7113d7f2ec82e1
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLMbufRing.hpp SHA256=4138f41066f66ecef67b2bf989bcd2297c54dceb420b9c4eb809bdd1453f86c7
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp SHA256=2253d451b3242035510d21c317782a8e9f24ef46bd154b2ad842c713c296e9a4
+SOURCE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp SHA256=67e9ac69e2177754d617633f5f44274c5bfd6a7c8e1f27d85ade26e38da91c90
+
+=== OUTPUT_PACKET_WITH_COMPLETION ===
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h:89-97
+  00089:     bool clearTransferDirection( IOSkywalkPacketDirection direction );
+  00090: 
+  00091:     virtual UInt32 getPacketType();
+  00092:     virtual kern_buflet_t acquireWithPacketHandle( kern_packet_t handle, IOOptionBits options );
+  00093:     void cancelCompletionCallback();
+  00094:     virtual void disposePacket();
+  00095: 
+  00096: protected:
+  00097:     void *                      mReserved;      // 32 (0x20)
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketBuffer.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketBuffer.h:90-98
+  00090:     UInt64 getBufferHandle();
+  00091:     virtual void acquireWithBufferHandle( UInt64 handle );
+  00092: 
+  00093:     virtual void disposePacketBuffer();
+  00094:     void cancelCompletionCallback();
+  00095: 
+  00096: public:
+  00097:     void                      * mReserved;     // 32
+  00098:     IOSkywalkPacketBufferPool * mPool;         // 40
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp MATCHES: 4
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1242-1250
+  01242: /* ------------------------------------------------------------------ */
+  01243: 
+  01244: UInt32 RTW88IEEE80211::outputPacket(mbuf_t m)
+  01245: {
+  01246:     return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
+  01247: }
+  01248: 
+  01249: UInt32 RTW88IEEE80211::outputPacketWithCompletion(
+  01250:     mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie)
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1245-1253
+  01245: {
+  01246:     return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
+  01247: }
+  01248: 
+  01249: UInt32 RTW88IEEE80211::outputPacketWithCompletion(
+  01250:     mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie)
+  01251: {
+  01252:     if (!m) {
+  01253:         if (callback)
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1246-1254
+  01246:     return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
+  01247: }
+  01248: 
+  01249: UInt32 RTW88IEEE80211::outputPacketWithCompletion(
+  01250:     mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie)
+  01251: {
+  01252:     if (!m) {
+  01253:         if (callback)
+  01254:             callback(context, cookie, false);
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4883-4891
+  04883:     _parent->injectRxAWDLFrame(m);
+  04884: }
+  04885: 
+  04886: bool RTW88IEEE80211::txDataFrame(mbuf_t m,
+  04887:                                   RTW88TxCompletionCallback callback,
+  04888:                                   void *completionContext,
+  04889:                                   void *completionCookie)
+  04890: {
+  04891:     if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta) {
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp MATCHES: 4
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:171-179
+  00171: 
+  00172: /* ------------------------------------------------------------------ */
+  00173: /*  RTW88IEEE80211                                                       */
+  00174: /* ------------------------------------------------------------------ */
+  00175: typedef void (*RTW88TxCompletionCallback)(void *context, void *cookie,
+  00176:                                            bool transmitted);
+  00177: 
+  00178: class RTW88IEEE80211 : public OSObject {
+  00179: public:
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:220-228
+  00220:     UInt32    outputPacket(mbuf_t m);
+  00221:     /* Optional hardware completion hook for native packet adapters. The
+  00222:      * callback may run in interrupt/teardown context and must only enqueue a
+  00223:      * bounded completion record; it must not call Skywalk directly. */
+  00224:     UInt32    outputPacketWithCompletion(mbuf_t m,
+  00225:                                          RTW88TxCompletionCallback callback,
+  00226:                                          void *context, void *cookie);
+  00227:     bool      txRawManagementFrame(const uint8_t *frame, uint32_t len);
+  00228:     /* Native AWDL Ethernet -> 802.11 direct data encapsulation. Consumes m. */
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:221-229
+  00221:     /* Optional hardware completion hook for native packet adapters. The
+  00222:      * callback may run in interrupt/teardown context and must only enqueue a
+  00223:      * bounded completion record; it must not call Skywalk directly. */
+  00224:     UInt32    outputPacketWithCompletion(mbuf_t m,
+  00225:                                          RTW88TxCompletionCallback callback,
+  00226:                                          void *context, void *cookie);
+  00227:     bool      txRawManagementFrame(const uint8_t *frame, uint32_t len);
+  00228:     /* Native AWDL Ethernet -> 802.11 direct data encapsulation. Consumes m. */
+  00229:     bool      txAWDLDataFrame(mbuf_t m);
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:361-369
+  00361:     bool      txMgmtFrame(const uint8_t *frame, uint32_t len);
+  00362:     bool      txNullFunc(bool powerSave);
+  00363:     bool      txProbeRequest();
+  00364:     bool      txDataFrame(mbuf_t m,
+  00365:                           RTW88TxCompletionCallback callback = nullptr,
+  00366:                           void *completionContext = nullptr,
+  00367:                           void *completionCookie = nullptr);
+  00368:     bool      tryDeliverAWDLDataFrame(struct sk_buff *skb);
+  00369:     void      deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
+DISPLAYED_CONTEXTS: 10
+
+=== TX_SUBMIT_AND_COMPLETION ===
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_stats_private.h MATCHES: 5
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_stats_private.h:247-255
+  00247: 	/* Output stats */      \
+  00248: 	X(TCP_STATS_SNDTOTAL,		"SndTotalPkt",	"\t%llu packet sent\n") \
+  00249: 	X(TCP_STATS_SNDPACK,		"SndTotalDP",	"\t\t%llu data packet") \
+  00250: 	X(TCP_STATS_SNDBYTE,		"SndDataByte",	" (%llu byte)\n")       \
+  00251: 	X(TCP_STATS_SNDREXMITPACK,	"SndDPktReXmt",	"\t\t%llu data packet retransmitted")   \
+  00252: 	X(TCP_STATS_SNDREXMITBYTE,	"SndDByteReXmt"," (%llu byte)\n")       \
+  00253: 	X(TCP_STATS_MTURESENT,		"MTUReSnd",	"\t\t%llu resend initiated by MTU discovery\n") \
+  00254: 	X(TCP_STATS_SNDACKS,		"SndAck",	"\t\t%llu ack-only packet")     \
+  00255: 	X(TCP_STATS_DELACK,		"DelayAck",	" (%llu delayed)\n")    \
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_stats_private.h:369-377
+  00369: 	X(TCP_STATS_ECN_FALLBACK_CE,		"ECNFbCE",	"\t\t%llu connection fell back to non-ECN due to excessive CE-markings\n")      \
+  00370: 	X(TCP_STATS_ECN_FALLBACK_DROPRST,	"ECNFbDrpRST",	"\t\t%llu ECN fallback caused by connection drop due to RST\n") \
+  00371: 	X(TCP_STATS_ECN_FALLBACK_DROPRXMT,	"ECNFbDrpReXmt","\t\t%llu ECN fallback due to drop after multiple retransmits\n")       \
+  00372: 	X(TCP_STATS_DETECT_REORDERING,		"ReOrdDetect",	"\t%llu time packet reordering was detected on a connection\n") \
+  00373: 	X(TCP_STATS_REORDERED_PKTS,		"ReOrdPkt",	"\t\t%llu time transmitted packets were reordered\n")   \
+  00374: 	X(TCP_STATS_DELAY_RECOVERY,		"DlyFastRecvr",	"\t\t%llu time fast recovery was delayed to handle reordering\n")               \
+  00375: 	X(TCP_STATS_AVOID_RXMT,			"AvoidReXmt",	"\t\t%llu time retransmission was avoided by delaying recovery\n")      \
+  00376: 	X(TCP_STATS_UNNECESSARY_RXMT,		"UnNeedReXmt",	"\t\t%llu retransmission not needed\n")\
+  00377:         \
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_stats_private.h:421-429
+  00421: 	X(TCP_STATS_SNDREXMITBAD,		"BadReXmt",	"\t%llu unnecessary packet retransmissions\n")  \
+  00422:         \
+  00423: 	/* SYN Cache relaetd stats */   \
+  00424: 	X(TCP_STATS_SC_ADDED,			"SCAdded",	"\t%llu entry added to syncache\n")     \
+  00425: 	X(TCP_STATS_SC_RETRANSMITTED,		"SCReXmt",	"\t%llu syncache entry was retransmitted\n")    \
+  00426: 	X(TCP_STATS_SC_DUPSYN,			"SCDupSYN",	"\t%llu duplicate SYN packet\n")        \
+  00427: 	X(TCP_STATS_SC_DROPPED,			"SCDrop",	"\t%llu could not reply to packet\n")   \
+  00428: 	X(TCP_STATS_SC_COMPLETED,		"SCCompl",	"\t%llu successful extraction of entry\n")      \
+  00429: 	X(TCP_STATS_SC_BUCKETOVERFLOW,		"SCBktOF",	"\t%llu syncache per-bucket limit hit\n")       \
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_stats_private.h:530-538
+  00530: 	X(QUIC_STATS_SND1RTTCRYPTOFRAME,	"Snd1RttCryptoFrame",	"\t\t\t%llu 1-RTT CRYPTO frames sent")  \
+  00531: 	X(QUIC_STATS_SND1RTTCRYPTOBYTE,		"Snd1RttCryptoByte",	" (%llu bytes)\n")      \
+  00532: 	X(QUIC_STATS_SND0RTTCRYPTOFRAME,	"Snd1RttCryptoFrame",	"\t\t\t%llu 0-RTT CRYPTO frames sent")  \
+  00533: 	X(QUIC_STATS_SND0RTTCRYPTOBYTE,		"Snd1RttCryptoByte",	" (%llu bytes)\n")      \
+  00534: 	X(QUIC_STATS_SNDCRYPTOREXMTFRAME,	"SndReXmtCryptoFrame",	"\t\t\t%llu CRYPTO frames retransmitted")       \
+  00535: 	X(QUIC_STATS_SNDCRYPTOREXMTBYTE,	"SndReXmtCryptoByte",	" (%llu bytes)\n")      \
+  00536: 	X(QUIC_STATS_SNDDATABLKFRAME,		"SndDataBlockedFrame",	"\t\t%llu DATA_BLOCKED frames sent\n")  \
+  00537: 	X(QUIC_STATS_SNDREXMTPKT,		"SndReXmtPkt",		"\t\t%llu packets retransmitted")       \
+  00538: 	X(QUIC_STATS_SNDREXMTBYTE,		"SndReXmtByte",		" (%llu bytes)\n")      \
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/skywalk/os_stats_private.h:533-541
+  00533: 	X(QUIC_STATS_SND0RTTCRYPTOBYTE,		"Snd1RttCryptoByte",	" (%llu bytes)\n")      \
+  00534: 	X(QUIC_STATS_SNDCRYPTOREXMTFRAME,	"SndReXmtCryptoFrame",	"\t\t\t%llu CRYPTO frames retransmitted")       \
+  00535: 	X(QUIC_STATS_SNDCRYPTOREXMTBYTE,	"SndReXmtCryptoByte",	" (%llu bytes)\n")      \
+  00536: 	X(QUIC_STATS_SNDDATABLKFRAME,		"SndDataBlockedFrame",	"\t\t%llu DATA_BLOCKED frames sent\n")  \
+  00537: 	X(QUIC_STATS_SNDREXMTPKT,		"SndReXmtPkt",		"\t\t%llu packets retransmitted")       \
+  00538: 	X(QUIC_STATS_SNDREXMTBYTE,		"SndReXmtByte",		" (%llu bytes)\n")      \
+  00539: 	X(QUIC_STATS_SNDLOSTPKT,		"SndLostPkt",		"\t\t%llu packets lost")        \
+  00540: 	X(QUIC_STATS_SNDLOSTBYTE,		"SndLostByte",		" (%llu bytes)\n")      \
+  00541: 	/* End of Tx */ \
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp MATCHES: 4
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2256-2264
+  02256: 
+  02257: void RTW88IEEE80211::txStatus(struct sk_buff *skb)
+  02258: {
+  02259:     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+  02260:     const bool transmitted =
+  02261:         (info->flags & (IEEE80211_TX_STAT_ACK |
+  02262:                         IEEE80211_TX_STAT_NOACK_TRANSMITTED)) != 0;
+  02263:     rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
+  02264:     if (!(info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS))
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2258-2266
+  02258: {
+  02259:     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+  02260:     const bool transmitted =
+  02261:         (info->flags & (IEEE80211_TX_STAT_ACK |
+  02262:                         IEEE80211_TX_STAT_NOACK_TRANSMITTED)) != 0;
+  02263:     rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
+  02264:     if (!(info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS))
+  02265:         return;
+  02266: 
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2259-2267
+  02259:     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+  02260:     const bool transmitted =
+  02261:         (info->flags & (IEEE80211_TX_STAT_ACK |
+  02262:                         IEEE80211_TX_STAT_NOACK_TRANSMITTED)) != 0;
+  02263:     rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
+  02264:     if (!(info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS))
+  02265:         return;
+  02266: 
+  02267:     const char *frameName = "frame";
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4064-4072
+  04064: }
+  04065: 
+  04066: void RTW88IEEE80211::doDisconnect()
+  04067: {
+  04068:     /* A deauth must be transmitted on the infrastructure channel.  AWDL may
+  04069:      * currently own the single PHY, so hand it back before tearing down the
+  04070:      * association or clearing the visibility latch used by the restore path. */
+  04071:     if (_awdlOffChannel)
+  04072:         restoreSTAChannelAfterAWDL();
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp MATCHES: 1
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:172-180
+  00172: /* ------------------------------------------------------------------ */
+  00173: /*  RTW88IEEE80211                                                       */
+  00174: /* ------------------------------------------------------------------ */
+  00175: typedef void (*RTW88TxCompletionCallback)(void *context, void *cookie,
+  00176:                                            bool transmitted);
+  00177: 
+  00178: class RTW88IEEE80211 : public OSObject {
+  00179: public:
+  00180:     RTW88EventDelegate *_delegate = nullptr;
+DISPLAYED_CONTEXTS: 10
+
+=== DMA_ALLOC_FREE_MAP ===
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMACommand.h MATCHES: 6
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMACommand.h:41-49
+  00041: 	kIODMAMapOptionUnmapped     = 0x00000003,
+  00042: 	kIODMAMapOptionTypeMask     = 0x0000000f,
+  00043: 
+  00044: 	kIODMAMapOptionNoCacheStore = 0x00000010, // Memory in descriptor
+  00045: 	kIODMAMapOptionOnChip       = 0x00000020,// Indicates DMA is on South Bridge
+  00046: 	kIODMAMapOptionIterateOnly  = 0x00000040// DMACommand will be used as a cursor only
+  00047: };
+  00048: 
+  00049: /**************************** class IODMACommand ***************************/
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMACommand.h:42-50
+  00042: 	kIODMAMapOptionTypeMask     = 0x0000000f,
+  00043: 
+  00044: 	kIODMAMapOptionNoCacheStore = 0x00000010, // Memory in descriptor
+  00045: 	kIODMAMapOptionOnChip       = 0x00000020,// Indicates DMA is on South Bridge
+  00046: 	kIODMAMapOptionIterateOnly  = 0x00000040// DMACommand will be used as a cursor only
+  00047: };
+  00048: 
+  00049: /**************************** class IODMACommand ***************************/
+  00050: 
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMACommand.h:91-99
+  00091:  *   @constant kBypassed		Allow drivers to bypass any mapper
+  00092:  *   @constant kMaxMappingOptions	Internal use only
+  00093:  */
+  00094: 	enum MappingOptions {
+  00095: 		kMapped       = kIODMAMapOptionMapped,
+  00096: 		kBypassed     = kIODMAMapOptionBypassed,
+  00097: 		kNonCoherent  = kIODMAMapOptionNonCoherent,
+  00098: 		kUnmapped     = kIODMAMapOptionUnmapped,
+  00099: 		kTypeMask     = kIODMAMapOptionTypeMask,
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMACommand.h:94-102
+  00094: 	enum MappingOptions {
+  00095: 		kMapped       = kIODMAMapOptionMapped,
+  00096: 		kBypassed     = kIODMAMapOptionBypassed,
+  00097: 		kNonCoherent  = kIODMAMapOptionNonCoherent,
+  00098: 		kUnmapped     = kIODMAMapOptionUnmapped,
+  00099: 		kTypeMask     = kIODMAMapOptionTypeMask,
+  00100: 
+  00101: 		kNoCacheStore = kIODMAMapOptionNoCacheStore, // Memory in descriptor
+  00102: 		kOnChip       = kIODMAMapOptionOnChip,  // Indicates DMA is on South Bridge
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMACommand.h:98-106
+  00098: 		kUnmapped     = kIODMAMapOptionUnmapped,
+  00099: 		kTypeMask     = kIODMAMapOptionTypeMask,
+  00100: 
+  00101: 		kNoCacheStore = kIODMAMapOptionNoCacheStore, // Memory in descriptor
+  00102: 		kOnChip       = kIODMAMapOptionOnChip,  // Indicates DMA is on South Bridge
+  00103: 		kIterateOnly  = kIODMAMapOptionIterateOnly// DMACommand will be used as a cursor only
+  00104: 	};
+  00105: 
+  00106: 	struct SegmentOptions {
+OMITTED_MATCHES_IN_FILE: 1
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/hidsystem/IOHIKeyboardMapper.h MATCHES: 3
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/hidsystem/IOHIKeyboardMapper.h:119-127
+  00119: 
+  00120: private:
+  00121: 	IOHIKeyboard *		_delegate;					// KeyMap delegate
+  00122: 	bool				_mappingShouldBeFreed;		// true if map can be IOFree'd
+  00123: 	NXParsedKeyMapping	_parsedMapping;				// current system-wide keymap
+  00124: 	
+  00125: 	// binary compatibility padding
+  00126:     struct ExpansionData { 
+  00127:     
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/hidsystem/IOHIKeyboardMapper.h:136-144
+  00136:     };
+  00137:     ExpansionData * _reserved;				    // Reserved for future use.  (Internal use only)
+  00138:     
+  00139: public:
+  00140: 	static IOHIKeyboardMapper * keyboardMapper(
+  00141: 										IOHIKeyboard * delegate,
+  00142: 										const UInt8 *  mapping,
+  00143: 										UInt32         mappingLength,
+  00144: 										bool           mappingShouldBeFreed );
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/hidsystem/IOHIKeyboardMapper.h:171-179
+  00171: 
+  00172: 
+  00173: 	virtual bool parseKeyMapping(const UInt8 *        mapping,
+  00174: 								 UInt32               mappingLength,
+  00175: 							     NXParsedKeyMapping * parsedMapping) const;
+  00176: 	
+  00177: 	virtual void calcModBit(int bit, kbdBitVector keyBits);
+  00178: 	virtual void doModCalc(int key, kbdBitVector keyBits);
+  00179: 	virtual void doCharGen(int keyCode, bool down);
+FILE: driver/RTL88WiFi/src/compat/linux/dma-mapping.h MATCHES: 10
+CONTEXT: driver/RTL88WiFi/src/compat/linux/dma-mapping.h:1-6
+  00001: /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+  00002: #ifndef _RTW88_COMPAT_DMA_MAPPING_H
+  00003: #define _RTW88_COMPAT_DMA_MAPPING_H
+  00004: 
+  00005: #include "types.h"
+  00006: #include "slab.h"
+CONTEXT: driver/RTL88WiFi/src/compat/linux/dma-mapping.h:1-7
+  00001: /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+  00002: #ifndef _RTW88_COMPAT_DMA_MAPPING_H
+  00003: #define _RTW88_COMPAT_DMA_MAPPING_H
+  00004: 
+  00005: #include "types.h"
+  00006: #include "slab.h"
+  00007: 
+CONTEXT: driver/RTL88WiFi/src/compat/linux/dma-mapping.h:25-33
+  00025:     void       (*free_coherent)(struct device *dev, size_t size,
+  00026:                                  void *cpu_addr, dma_addr_t dma_handle);
+  00027:     dma_addr_t (*map_single)(struct device *dev, void *ptr,
+  00028:                               size_t size, int direction);
+  00029:     void       (*unmap_single)(struct device *dev, dma_addr_t addr,
+  00030:                                 size_t size, int direction);
+  00031:     void       (*sync_single_for_cpu)(struct device *dev, dma_addr_t addr,
+  00032:                                        size_t size, int dir);
+  00033:     void       (*sync_single_for_device)(struct device *dev, dma_addr_t addr,
+CONTEXT: driver/RTL88WiFi/src/compat/linux/dma-mapping.h:56-64
+  00056:     }
+  00057:     kfree(cpu_addr);
+  00058: }
+  00059: 
+  00060: static inline dma_addr_t dma_map_single(struct device *dev, void *ptr,
+  00061:                                           size_t size, int direction)
+  00062: {
+  00063:     if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+  00064:         return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+CONTEXT: driver/RTL88WiFi/src/compat/linux/dma-mapping.h:64-72
+  00064:         return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+  00065:     return (dma_addr_t)(uintptr_t)ptr;
+  00066: }
+  00067: 
+  00068: static inline void dma_unmap_single(struct device *dev, dma_addr_t addr,
+  00069:                                      size_t size, int direction)
+  00070: {
+  00071:     if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+  00072:         rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+OMITTED_MATCHES_IN_FILE: 5
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp MATCHES: 8
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:542-550
+  00542:     UInt32 value = _pciDev->findPCICapability((UInt8)cap, &offset);
+  00543:     return value ? (int)offset : 0;
+  00544: }
+  00545: 
+  00546: void *RTL88WiFi::allocCoherent(size_t size, IOPhysicalAddress *phys)
+  00547: {
+  00548:     /* DMA unmaps can be deferred by IRQ/NAPI. Reclaim them whenever allocation
+  00549:      * returns to a sleepable thread so sustained traffic cannot grow the list. */
+  00550:     if (preemption_enabled())
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:574-582
+  00574:     IOSimpleLockUnlock(_dmaLock);
+  00575:     return va;
+  00576: }
+  00577: 
+  00578: void RTL88WiFi::freeCoherent(size_t size, void *virt, IOPhysicalAddress phys)
+  00579: {
+  00580:     IOSimpleLockLock(_dmaLock);
+  00581:     RTW88DMAEntry **prev = &_dmaList;
+  00582:     for (RTW88DMAEntry *e = _dmaList; e; e = e->next) {
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:586-594
+  00586:             if (preemption_enabled()) {
+  00587:                 e->desc->complete(); e->desc->release(); IOFree(e, sizeof(*e));
+  00588:             } else {
+  00589:                 IOSimpleLockLock(_pendingFreeLock);
+  00590:                 e->next = _dmaPendingFree; _dmaPendingFree = e;
+  00591:                 IOSimpleLockUnlock(_pendingFreeLock);
+  00592:             }
+  00593:             return;
+  00594:         }
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:594-602
+  00594:         }
+  00595:         prev = &e->next;
+  00596:     }
+  00597:     IOSimpleLockUnlock(_dmaLock);
+  00598:     IOLog("RTL88WiFi: freeCoherent: virt %p not found\n", virt);
+  00599: }
+  00600: 
+  00601: void RTL88WiFi::freeCoherentByPhys(IOPhysicalAddress phys)
+  00602: {
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:597-605
+  00597:     IOSimpleLockUnlock(_dmaLock);
+  00598:     IOLog("RTL88WiFi: freeCoherent: virt %p not found\n", virt);
+  00599: }
+  00600: 
+  00601: void RTL88WiFi::freeCoherentByPhys(IOPhysicalAddress phys)
+  00602: {
+  00603:     IOSimpleLockLock(_dmaLock);
+  00604:     RTW88DMAEntry **prev = &_dmaList;
+  00605:     for (RTW88DMAEntry *e = _dmaList; e; e = e->next) {
+OMITTED_MATCHES_IN_FILE: 3
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp MATCHES: 4
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp:354-362
+  00354: 
+  00355:     bool setupInterrupt();
+  00356:     bool failStart(IOService *provider, const char *reason);
+  00357:     void teardown();
+  00358:     void releaseDMAEntries();
+  00359:     void handleInterrupt(IOInterruptEventSource *src, int count);
+  00360: 
+  00361:     /* RTW88HwOps -- acceso real a hardware, antes simulado con nullptr */
+  00362:     UInt8  pciReadByte(int offset) override;
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp:366-374
+  00366:     void   pciWriteWord(int offset, UInt16 val) override;
+  00367:     void   pciWriteDword(int offset, UInt32 val) override;
+  00368:     int    pciFindCapability(int cap) override;
+  00369:     volatile void *mmioBase() const override { return _mmioBase; }
+  00370:     void  *allocCoherent(size_t size, IOPhysicalAddress *phys) override;
+  00371:     void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) override;
+  00372:     void   freeCoherentByPhys(IOPhysicalAddress phys) override;
+  00373:     void   setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) override;
+  00374:     void   syncBounceForCpu(IOPhysicalAddress dma, size_t size) override;
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp:367-375
+  00367:     void   pciWriteDword(int offset, UInt32 val) override;
+  00368:     int    pciFindCapability(int cap) override;
+  00369:     volatile void *mmioBase() const override { return _mmioBase; }
+  00370:     void  *allocCoherent(size_t size, IOPhysicalAddress *phys) override;
+  00371:     void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) override;
+  00372:     void   freeCoherentByPhys(IOPhysicalAddress phys) override;
+  00373:     void   setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) override;
+  00374:     void   syncBounceForCpu(IOPhysicalAddress dma, size_t size) override;
+  00375:     void   resumeTxIfStalled() override;
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp:368-376
+  00368:     int    pciFindCapability(int cap) override;
+  00369:     volatile void *mmioBase() const override { return _mmioBase; }
+  00370:     void  *allocCoherent(size_t size, IOPhysicalAddress *phys) override;
+  00371:     void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) override;
+  00372:     void   freeCoherentByPhys(IOPhysicalAddress phys) override;
+  00373:     void   setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) override;
+  00374:     void   syncBounceForCpu(IOPhysicalAddress dma, size_t size) override;
+  00375:     void   resumeTxIfStalled() override;
+  00376:     void   drainPendingFree();
+FILE: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp MATCHES: 8
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:84-92
+  00084:                               dma_addr_t *dma_handle, gfp_t)
+  00085: {
+  00086:     if (!g_pci_dev_instance) return nullptr;
+  00087:     IOPhysicalAddress phys = 0;
+  00088:     void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+  00089:     if (dma_handle) *dma_handle = (dma_addr_t)phys;
+  00090:     return virt;
+  00091: }
+  00092: 
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:93-101
+  00093: static void compat_dma_free(struct device *, size_t size, void *cpu_addr,
+  00094:                             dma_addr_t dma_handle)
+  00095: {
+  00096:     if (g_pci_dev_instance)
+  00097:         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+  00098:                                          (IOPhysicalAddress)dma_handle);
+  00099: }
+  00100: 
+  00101: static dma_addr_t compat_dma_map(struct device *, void *ptr, size_t size, int dir)
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:97-105
+  00097:         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+  00098:                                          (IOPhysicalAddress)dma_handle);
+  00099: }
+  00100: 
+  00101: static dma_addr_t compat_dma_map(struct device *, void *ptr, size_t size, int dir)
+  00102: {
+  00103:     if (!g_pci_dev_instance || !ptr) return 0;
+  00104: 
+  00105:     IOPhysicalAddress phys = 0;
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:102-110
+  00102: {
+  00103:     if (!g_pci_dev_instance || !ptr) return 0;
+  00104: 
+  00105:     IOPhysicalAddress phys = 0;
+  00106:     void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+  00107:     if (!bounce) return 0;
+  00108: 
+  00109:     g_pci_dev_instance->setBounceOrigVA(phys, ptr);
+  00110:     if (dir == 1 || dir == 2)
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:111-119
+  00111:         memcpy(bounce, ptr, size);
+  00112:     return (dma_addr_t)phys;
+  00113: }
+  00114: 
+  00115: static void compat_dma_unmap(struct device *, dma_addr_t addr, size_t, int)
+  00116: {
+  00117:     if (g_pci_dev_instance)
+  00118:         g_pci_dev_instance->freeCoherentByPhys((IOPhysicalAddress)addr);
+  00119: }
+OMITTED_MATCHES_IN_FILE: 3
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp MATCHES: 3
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:84-92
+  00084:     virtual void   pciWriteWord(int offset, UInt16 val) = 0;
+  00085:     virtual void   pciWriteDword(int offset, UInt32 val) = 0;
+  00086:     virtual int    pciFindCapability(int cap) = 0;
+  00087:     virtual volatile void *mmioBase() const = 0;
+  00088:     virtual void  *allocCoherent(size_t size, IOPhysicalAddress *phys) = 0;
+  00089:     virtual void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) = 0;
+  00090:     virtual void   freeCoherentByPhys(IOPhysicalAddress phys) = 0;
+  00091:     virtual void   setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) = 0;
+  00092:     virtual void   syncBounceForCpu(IOPhysicalAddress dma, size_t size) = 0;
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:85-93
+  00085:     virtual void   pciWriteDword(int offset, UInt32 val) = 0;
+  00086:     virtual int    pciFindCapability(int cap) = 0;
+  00087:     virtual volatile void *mmioBase() const = 0;
+  00088:     virtual void  *allocCoherent(size_t size, IOPhysicalAddress *phys) = 0;
+  00089:     virtual void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) = 0;
+  00090:     virtual void   freeCoherentByPhys(IOPhysicalAddress phys) = 0;
+  00091:     virtual void   setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) = 0;
+  00092:     virtual void   syncBounceForCpu(IOPhysicalAddress dma, size_t size) = 0;
+  00093:     virtual void   resumeTxIfStalled() = 0;
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:86-94
+  00086:     virtual int    pciFindCapability(int cap) = 0;
+  00087:     virtual volatile void *mmioBase() const = 0;
+  00088:     virtual void  *allocCoherent(size_t size, IOPhysicalAddress *phys) = 0;
+  00089:     virtual void   freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) = 0;
+  00090:     virtual void   freeCoherentByPhys(IOPhysicalAddress phys) = 0;
+  00091:     virtual void   setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) = 0;
+  00092:     virtual void   syncBounceForCpu(IOPhysicalAddress dma, size_t size) = 0;
+  00093:     virtual void   resumeTxIfStalled() = 0;
+  00094:     virtual ~RTW88HwOps() {}
+FILE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp MATCHES: 13
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:108-116
+  00108:                                dma_addr_t *dma_handle, gfp_t flag)
+  00109: {
+  00110:     if (!g_pci_dev_instance) return nullptr;
+  00111:     IOPhysicalAddress phys = 0;
+  00112:     void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+  00113:     if (dma_handle) *dma_handle = (dma_addr_t)phys;
+  00114:     return virt;
+  00115: }
+  00116: static void compat_dma_free(struct device *dev, size_t size,
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:116-124
+  00116: static void compat_dma_free(struct device *dev, size_t size,
+  00117:                              void *cpu_addr, dma_addr_t dma_handle)
+  00118: {
+  00119:     if (g_pci_dev_instance)
+  00120:         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+  00121:                                           (IOPhysicalAddress)dma_handle);
+  00122: }
+  00123: static dma_addr_t compat_dma_map(struct device *dev, void *ptr,
+  00124:                                    size_t size, int dir)
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:119-127
+  00119:     if (g_pci_dev_instance)
+  00120:         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+  00121:                                           (IOPhysicalAddress)dma_handle);
+  00122: }
+  00123: static dma_addr_t compat_dma_map(struct device *dev, void *ptr,
+  00124:                                    size_t size, int dir)
+  00125: {
+  00126:     /*
+  00127:      * Always bounce: allocate a physically-contiguous <4GB buffer, record the
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:137-145
+  00137:      */
+  00138:     if (!g_pci_dev_instance || !ptr) return 0;
+  00139: 
+  00140:     IOPhysicalAddress phys = 0;
+  00141:     void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+  00142:     if (!bounce) return 0;
+  00143: 
+  00144:     /* Store the original VA so sync_for_cpu can copy the received data back */
+  00145:     g_pci_dev_instance->setBounceOrigVA((IOPhysicalAddress)phys, ptr);
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:149-157
+  00149:         memcpy(bounce, ptr, size);
+  00150: 
+  00151:     return (dma_addr_t)phys;
+  00152: }
+  00153: static void compat_dma_unmap(struct device *dev, dma_addr_t addr,
+  00154:                                size_t size, int dir)
+  00155: {
+  00156:     /* Free the bounce buffer; freeCoherentByPhys is a no-op if not found */
+  00157:     if (g_pci_dev_instance)
+OMITTED_MATCHES_IN_FILE: 8
+FILE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp MATCHES: 4
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp:94-102
+  00094:      * m_len and pkthdr.len consistently — required for inputPacket). */
+  00095:     mbuf_t allocateInputPacket(uint32_t len) override;
+  00096: 
+  00097:     /* DMA helpers — used by Linux compat dma_alloc_coherent */
+  00098:     void *allocCoherent(size_t size, IOPhysicalAddress *phys) override;
+  00099:     void  freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) override;
+  00100:     void  freeCoherentByPhys(IOPhysicalAddress phys) override;
+  00101:     /* Bounce buffer helpers for dma_map_single / dma_sync_single_for_cpu */
+  00102:     void  setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) override;
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp:95-103
+  00095:     mbuf_t allocateInputPacket(uint32_t len) override;
+  00096: 
+  00097:     /* DMA helpers — used by Linux compat dma_alloc_coherent */
+  00098:     void *allocCoherent(size_t size, IOPhysicalAddress *phys) override;
+  00099:     void  freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) override;
+  00100:     void  freeCoherentByPhys(IOPhysicalAddress phys) override;
+  00101:     /* Bounce buffer helpers for dma_map_single / dma_sync_single_for_cpu */
+  00102:     void  setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) override;
+  00103:     void  syncBounceForCpu(IOPhysicalAddress dma, size_t size) override;
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp:96-104
+  00096: 
+  00097:     /* DMA helpers — used by Linux compat dma_alloc_coherent */
+  00098:     void *allocCoherent(size_t size, IOPhysicalAddress *phys) override;
+  00099:     void  freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) override;
+  00100:     void  freeCoherentByPhys(IOPhysicalAddress phys) override;
+  00101:     /* Bounce buffer helpers for dma_map_single / dma_sync_single_for_cpu */
+  00102:     void  setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) override;
+  00103:     void  syncBounceForCpu(IOPhysicalAddress dma, size_t size) override;
+  00104: 
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp:97-105
+  00097:     /* DMA helpers — used by Linux compat dma_alloc_coherent */
+  00098:     void *allocCoherent(size_t size, IOPhysicalAddress *phys) override;
+  00099:     void  freeCoherent(size_t size, void *virt, IOPhysicalAddress phys) override;
+  00100:     void  freeCoherentByPhys(IOPhysicalAddress phys) override;
+  00101:     /* Bounce buffer helpers for dma_map_single / dma_sync_single_for_cpu */
+  00102:     void  setBounceOrigVA(IOPhysicalAddress phys, void *orig_va) override;
+  00103:     void  syncBounceForCpu(IOPhysicalAddress dma, size_t size) override;
+  00104: 
+  00105:     /* PCI config space — used by Linux compat pci_read/write_config_* */
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp MATCHES: 1
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:211-219
+  00211:         const IOReturn fenceStatus = _pciBackend->setRadioRunning(false);
+  00212:         if (fenceStatus != kIOReturnSuccess) {
+  00213:             IOLog("rtl88wifi-wcl: PCI interrupt/bus-master fence failed: 0x%08x\n",
+  00214:                   fenceStatus);
+  00215:             return fenceStatus; // Keep callbacks, mappings and DMA owner alive on failure.
+  00216:         }
+  00217:     }
+  00218: 
+  00219:     /* Remove the RX workloop source only after the RTW88 producer is stopped.
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp MATCHES: 12
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:208-216
+  00208:     }
+  00209: 
+  00210:     if (preemption_enabled())
+  00211:         drainPendingFree();
+  00212:     releaseDMAEntries();
+  00213: 
+  00214:     clearCompatLease();
+  00215: 
+  00216:     if (_pciDev) {
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:326-334
+  00326:     return _pciDev->findPCICapability(static_cast<UInt8>(capability), &offset)
+  00327:                ? static_cast<int>(offset) : 0;
+  00328: }
+  00329: 
+  00330: void *RTW88WCLPCIBackend::allocCoherent(size_t size,
+  00331:                                          IOPhysicalAddress *physical)
+  00332: {
+  00333:     if (physical) *physical = 0;
+  00334:     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:376-384
+  00376:     if (physical) *physical = address;
+  00377:     return virtualAddress;
+  00378: }
+  00379: 
+  00380: void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+  00381:                                       IOPhysicalAddress physical)
+  00382: {
+  00383:     (void)size;
+  00384:     (void)physical;
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:396-404
+  00396:         *previous = entry->next;
+  00397:     IOSimpleLockUnlock(_dmaLock);
+  00398: 
+  00399:     if (!entry) {
+  00400:         IOLog("rtl88wifi-wcl: freeCoherent: unknown virtual address %p\n",
+  00401:               virtualAddress);
+  00402:         return;
+  00403:     }
+  00404:     if (preemption_enabled()) {
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:401-409
+  00401:               virtualAddress);
+  00402:         return;
+  00403:     }
+  00404:     if (preemption_enabled()) {
+  00405:         freeDMAList(entry);
+  00406:     } else {
+  00407:         IOSimpleLockLock(_pendingFreeLock);
+  00408:         entry->next = _dmaPendingFree;
+  00409:         _dmaPendingFree = entry;
+OMITTED_MATCHES_IN_FILE: 7
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp MATCHES: 5
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:56-64
+  00056:     void pciWriteWord(int offset, UInt16 value) override;
+  00057:     void pciWriteDword(int offset, UInt32 value) override;
+  00058:     int pciFindCapability(int capability) override;
+  00059:     volatile void *mmioBase() const override { return _mmioBase; }
+  00060:     void *allocCoherent(size_t size, IOPhysicalAddress *physical) override;
+  00061:     void freeCoherent(size_t size, void *virtualAddress,
+  00062:                       IOPhysicalAddress physical) override;
+  00063:     void freeCoherentByPhys(IOPhysicalAddress physical) override;
+  00064:     void setBounceOrigVA(IOPhysicalAddress physical, void *originalAddress) override;
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:57-65
+  00057:     void pciWriteDword(int offset, UInt32 value) override;
+  00058:     int pciFindCapability(int capability) override;
+  00059:     volatile void *mmioBase() const override { return _mmioBase; }
+  00060:     void *allocCoherent(size_t size, IOPhysicalAddress *physical) override;
+  00061:     void freeCoherent(size_t size, void *virtualAddress,
+  00062:                       IOPhysicalAddress physical) override;
+  00063:     void freeCoherentByPhys(IOPhysicalAddress physical) override;
+  00064:     void setBounceOrigVA(IOPhysicalAddress physical, void *originalAddress) override;
+  00065:     void syncBounceForCpu(IOPhysicalAddress dmaAddress, size_t size) override;
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:59-67
+  00059:     volatile void *mmioBase() const override { return _mmioBase; }
+  00060:     void *allocCoherent(size_t size, IOPhysicalAddress *physical) override;
+  00061:     void freeCoherent(size_t size, void *virtualAddress,
+  00062:                       IOPhysicalAddress physical) override;
+  00063:     void freeCoherentByPhys(IOPhysicalAddress physical) override;
+  00064:     void setBounceOrigVA(IOPhysicalAddress physical, void *originalAddress) override;
+  00065:     void syncBounceForCpu(IOPhysicalAddress dmaAddress, size_t size) override;
+  00066:     void resumeTxIfStalled() override;
+  00067: 
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:65-73
+  00065:     void syncBounceForCpu(IOPhysicalAddress dmaAddress, size_t size) override;
+  00066:     void resumeTxIfStalled() override;
+  00067: 
+  00068: private:
+  00069:     static void freeDMAList(RTW88DMAEntry *list);
+  00070:     void drainPendingFree();
+  00071:     void releaseDMAEntries();
+  00072:     void handleInterrupt(IOInterruptEventSource *source, int count);
+  00073:     void clearCompatLease();
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:67-75
+  00067: 
+  00068: private:
+  00069:     static void freeDMAList(RTW88DMAEntry *list);
+  00070:     void drainPendingFree();
+  00071:     void releaseDMAEntries();
+  00072:     void handleInterrupt(IOInterruptEventSource *source, int count);
+  00073:     void clearCompatLease();
+  00074:     void closeResources();
+  00075: 
+DISPLAYED_CONTEXTS: 50
+
+=== RADIO_STOP_AND_QUIESCE ===
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMAController.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMAController.h:49-57
+  00049: 	virtual void registerDMAController(IOOptionBits options = 0);
+  00050: 	virtual IOReturn initDMAChannel(IOService *provider, IODMAEventSource *dmaES, UInt32 *dmaIndex, UInt32 reqIndex) = 0;
+  00051: 	virtual IOReturn startDMACommand(UInt32 dmaIndex, IODMACommand *dmaCommand, IODirection direction,
+  00052: 	    IOByteCount byteCount = 0, IOByteCount byteOffset = 0) = 0;
+  00053: 	virtual IOReturn stopDMACommand(UInt32 dmaIndex, bool flush = false, uint64_t timeout = UINT64_MAX) = 0;
+  00054: 	virtual void completeDMACommand(IODMAEventSource *dmaES, IODMACommand *dmaCommand);
+  00055: 	virtual void notifyDMACommand(IODMAEventSource *dmaES, IODMACommand *dmaCommand, IOReturn status, IOByteCount actualByteCount, AbsoluteTime timeStamp);
+  00056: 	virtual IOReturn queryDMACommand(UInt32 dmaIndex, IODMACommand **dmaCommand, IOByteCount *transferCount, bool waitForIdle = false) = 0;
+  00057: 	virtual IOByteCount getFIFODepth(UInt32 dmaIndex, IODirection direction) = 0;
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMAEventSource.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/IODMAEventSource.h:57-65
+  00057: 	    Action notification = NULL,
+  00058: 	    UInt32 dmaIndex = 0);
+  00059: 
+  00060: 	virtual IOReturn startDMACommand(IODMACommand *dmaCommand, IODirection direction, IOByteCount byteCount = 0, IOByteCount byteOffset = 0);
+  00061: 	virtual IOReturn stopDMACommand(bool flush = false, uint64_t timeout = UINT64_MAX);
+  00062: 
+  00063: 	virtual IOReturn queryDMACommand(IODMACommand **dmaCommand, IOByteCount *transferCount, bool waitForIdle = false);
+  00064: 
+  00065: 	virtual IOByteCount getFIFODepth(IODirection direction = kIODirectionNone);
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/ata/IOPCIATA.h MATCHES: 3
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/ata/IOPCIATA.h:32-40
+  00032: #include <IOKit/IOInterruptEventSource.h>
+  00033: 
+  00034: /*! @class IOPCIATA
+  00035:     @abstract The base class for  PCI-IDE ata controller family.
+  00036:     @discussion class defining the common elements of bus-mastering PCI ATA controllers which meet or at least loosely follow the pci bus mastering pci-ide controller spec. Header doc is incomplete, but source is heavily commented.
+  00037: 
+  00038: */
+  00039: 
+  00040: 
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/ata/IOPCIATA.h:128-136
+  00128: 	virtual IOReturn startDMA( void );
+  00129: 
+  00130: 	// override from IOATAController
+  00131: 	// safely halt the DMA engine  regardless of state
+  00132: 	virtual IOReturn stopDMA( void );
+  00133: 
+  00134: 	// allocate memory for the PRD descriptors.
+  00135: 	virtual bool allocDMAChannel(void);
+  00136: 	
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/ata/IOPCIATA.h:152-160
+  00152: 	// activate the DMA engine
+  00153: 	virtual void activateDMAEngine(void);
+  00154: 	
+  00155: 	// shutdown the DMA engine
+  00156: 	virtual void stopDMAEngine(void);
+  00157: 	
+  00158: 	// safely suspend the DMA engine
+  00159: 	virtual void shutDownATADMA (void);
+  00160: 	
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIBridge.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIBridge.h:482-490
+  00482: protected:
+  00483:     void allocateBridgeInterrupts(IOService * provider);
+  00484: 	void startBridgeInterrupts(IOService * provider);
+  00485: 	void enableBridgeInterrupts(void);
+  00486: 	void disableBridgeInterrupts(void);
+  00487: 
+  00488: private:
+  00489:     IOReturn setTunnelL1Enable(IOPCIDevice * device, IOService * client,
+  00490:     									bool l1Enable);
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h MATCHES: 6
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h:558-566
+  00558:     @result True if the I/O space response was previously enabled, false otherwise. */
+  00559: 
+  00560:     virtual bool setIOEnable( bool enable, bool exclusive = false );
+  00561: 
+  00562: /*! @function setBusMasterEnable
+  00563:     @abstract Sets the device's bus master enable.
+  00564:     @discussion This method sets the bus master enable bit in the device's command config space register to the passed value, and returns the previous state of the enable.
+  00565:     @param enable True or false to enable or disable bus mastering.
+  00566:     @result True if bus mastering was previously enabled, false otherwise. */
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h:559-567
+  00559: 
+  00560:     virtual bool setIOEnable( bool enable, bool exclusive = false );
+  00561: 
+  00562: /*! @function setBusMasterEnable
+  00563:     @abstract Sets the device's bus master enable.
+  00564:     @discussion This method sets the bus master enable bit in the device's command config space register to the passed value, and returns the previous state of the enable.
+  00565:     @param enable True or false to enable or disable bus mastering.
+  00566:     @result True if bus mastering was previously enabled, false otherwise. */
+  00567: 
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h:560-568
+  00560:     virtual bool setIOEnable( bool enable, bool exclusive = false );
+  00561: 
+  00562: /*! @function setBusMasterEnable
+  00563:     @abstract Sets the device's bus master enable.
+  00564:     @discussion This method sets the bus master enable bit in the device's command config space register to the passed value, and returns the previous state of the enable.
+  00565:     @param enable True or false to enable or disable bus mastering.
+  00566:     @result True if bus mastering was previously enabled, false otherwise. */
+  00567: 
+  00568:     virtual bool setBusMasterEnable( bool enable );
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h:561-569
+  00561: 
+  00562: /*! @function setBusMasterEnable
+  00563:     @abstract Sets the device's bus master enable.
+  00564:     @discussion This method sets the bus master enable bit in the device's command config space register to the passed value, and returns the previous state of the enable.
+  00565:     @param enable True or false to enable or disable bus mastering.
+  00566:     @result True if bus mastering was previously enabled, false otherwise. */
+  00567: 
+  00568:     virtual bool setBusMasterEnable( bool enable );
+  00569: 
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h:562-570
+  00562: /*! @function setBusMasterEnable
+  00563:     @abstract Sets the device's bus master enable.
+  00564:     @discussion This method sets the bus master enable bit in the device's command config space register to the passed value, and returns the previous state of the enable.
+  00565:     @param enable True or false to enable or disable bus mastering.
+  00566:     @result True if bus mastering was previously enabled, false otherwise. */
+  00567: 
+  00568:     virtual bool setBusMasterEnable( bool enable );
+  00569: 
+  00570: /*! @function findPCICapability
+OMITTED_MATCHES_IN_FILE: 1
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIFamilyDefinitions.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/pci/IOPCIFamilyDefinitions.h:127-135
+  00127: enum
+  00128: {
+  00129:     kIOPCICommandIOSpace          = 0x0001,
+  00130:     kIOPCICommandMemorySpace      = 0x0002,
+  00131:     kIOPCICommandBusMaster        = 0x0004,
+  00132:     kIOPCICommandSpecialCycles    = 0x0008,
+  00133:     kIOPCICommandMemWrInvalidate  = 0x0010,
+  00134:     kIOPCICommandPaletteSnoop     = 0x0020,
+  00135:     kIOPCICommandParityError      = 0x0040,
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/PCIDriverKit/IOPCIFamilyDefinitions.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/PCIDriverKit/IOPCIFamilyDefinitions.h:127-135
+  00127: enum
+  00128: {
+  00129:     kIOPCICommandIOSpace          = 0x0001,
+  00130:     kIOPCICommandMemorySpace      = 0x0002,
+  00131:     kIOPCICommandBusMaster        = 0x0004,
+  00132:     kIOPCICommandSpecialCycles    = 0x0008,
+  00133:     kIOPCICommandMemWrInvalidate  = 0x0010,
+  00134:     kIOPCICommandPaletteSnoop     = 0x0020,
+  00135:     kIOPCICommandParityError      = 0x0040,
+FILE: driver/RTL88WiFi/src/compat/rtw88_compat.c MATCHES: 10
+CONTEXT: driver/RTL88WiFi/src/compat/rtw88_compat.c:300-308
+  00300: {
+  00301:     return queue_delayed_work(system_wq, dwork, delay);
+  00302: }
+  00303: 
+  00304: void flush_workqueue(struct workqueue_struct *wq)
+  00305: {
+  00306:     if (!wq || !work_state_lock) return;
+  00307:     IOLockLock(work_state_lock);
+  00308:     while (!list_empty(&wq->queue) || wq->active)
+CONTEXT: driver/RTL88WiFi/src/compat/rtw88_compat.c:320-328
+  00320:     IOLockWakeup(work_state_lock, work, false);
+  00321:     return pending;
+  00322: }
+  00323: 
+  00324: bool cancel_work_sync(struct work_struct *work)
+  00325: {
+  00326:     if (!work || !work_state_lock) return false;
+  00327:     IOLockLock(work_state_lock);
+  00328:     work->canceling = true;
+CONTEXT: driver/RTL88WiFi/src/compat/rtw88_compat.c:360-368
+  00360:     IOLockUnlock(work_state_lock);
+  00361:     return pending;
+  00362: }
+  00363: 
+  00364: void flush_work(struct work_struct *work)
+  00365: {
+  00366:     if (!work || !work_state_lock) return;
+  00367:     IOLockLock(work_state_lock);
+  00368:     while (work->pending || work->executing)
+CONTEXT: driver/RTL88WiFi/src/compat/rtw88_compat.c:371-379
+  00371: }
+  00372: 
+  00373: void flush_scheduled_work(void)
+  00374: {
+  00375:     flush_workqueue(system_wq);
+  00376: }
+  00377: 
+  00378: /* ------------------------------------------------------------------ */
+  00379: /*  Timer implementation (thread_call)                                  */
+CONTEXT: driver/RTL88WiFi/src/compat/rtw88_compat.c:548-556
+  00548: void rtw88_devm_free_irq(struct device *dev, unsigned int irq, void *dev_id)
+  00549: {
+  00550:     (void)dev; (void)irq; (void)dev_id;
+  00551:     if (g_irq_work_initialized)
+  00552:         cancel_work_sync(&g_irq_work);
+  00553:     g_irq_handler = NULL;
+  00554:     g_irq_thread_fn = NULL;
+  00555:     g_irq_dev_id = NULL;
+  00556: }
+OMITTED_MATCHES_IN_FILE: 5
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp MATCHES: 12
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:231-239
+  00231:     _pendingFreeLock = IOSimpleLockAlloc();
+  00232:     if (!_dmaLock || !_pendingFreeLock)
+  00233:         return failStart(provider, "failed to allocate DMA locks");
+  00234: 
+  00235:     /* Habilitar bus mastering y espacio de memoria */
+  00236:     _pciDev->setBusMasterEnable(true);
+  00237:     _pciDev->setMemoryEnable(true);
+  00238: 
+  00239:     /* Mapear BAR2 -- rtw88 hardcodea bar_id=2 en pci.c */
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:232-240
+  00232:     if (!_dmaLock || !_pendingFreeLock)
+  00233:         return failStart(provider, "failed to allocate DMA locks");
+  00234: 
+  00235:     /* Habilitar bus mastering y espacio de memoria */
+  00236:     _pciDev->setBusMasterEnable(true);
+  00237:     _pciDev->setMemoryEnable(true);
+  00238: 
+  00239:     /* Mapear BAR2 -- rtw88 hardcodea bar_id=2 en pci.c */
+  00240:     _mmioMap = _pciDev->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress2);
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:729-737
+  00729:     }
+  00730:     /* Stop asynchronous output-queue wakeups before interface teardown. */
+  00731:     rtw88_set_tx_resume_cb(nullptr);
+  00732:     _txStalled = false;
+  00733:     (void)stopDMA();
+  00734:     if (_intrSrc)
+  00735:         _intrSrc->disable();
+  00736: 
+  00737:     if (_awdlManager)
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:792-800
+  00792:         rtw88_dma_ops = nullptr;
+  00793:     }
+  00794: 
+  00795:     if (_pciDev) {
+  00796:         _pciDev->setBusMasterEnable(false);
+  00797:         _pciDev->release();
+  00798:         _pciDev = nullptr;
+  00799:     }
+  00800: 
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:845-853
+  00845:     /* The Realtek core is now stopped and no longer owns descriptors.  Fence
+  00846:      * PCI DMA only after rtw_core_stop()/rtw_pci_stop() synchronized the IRQ
+  00847:      * bottom half.  This ordering is important for hibernate, where the PCI
+  00848:      * function may lose all device state while kernel memory is restored. */
+  00849:     IOReturn dmaRet = stopDMA();
+  00850:     if (_pciDev)
+  00851:         _pciDev->setMemoryEnable(false);
+  00852: 
+  00853:     if (preemption_enabled())
+OMITTED_MATCHES_IN_FILE: 7
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp MATCHES: 1
+CONTEXT: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp:196-204
+  00196: 
+  00197:     /* Puros virtuales de IO80211Controller que hay que implementar si o si
+  00198:      * para que la clase no quede abstracta (encontrados por el compilador,
+  00199:      * no los tenia contemplados en el primer intento). */
+  00200:     virtual SInt32 stopDMA() override;
+  00201:     virtual UInt32 hardwareOutputQueueDepth(IO80211Interface*) override;
+  00202:     virtual UInt32 getDataQueueDepth(OSObject *) override;
+  00203:     virtual IOReturn outputStart(IONetworkInterface *interface, IOOptionBits options) override;
+  00204:     void kickGatedOutput();
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp MATCHES: 1
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:953-961
+  00953:     _powered = false;
+  00954:     return kIOReturnError;
+  00955: }
+  00956: 
+  00957: void RTW88IEEE80211::stop()
+  00958: {
+  00959:     IOLog("rtw88: IEEE80211 stop\n");
+  00960:     cancelAuthentication();
+  00961:     _manualScanAbort = true;
+FILE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp MATCHES: 2
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:296-304
+  00296:         return false;
+  00297:     }
+  00298:     _pciDev->retain();
+  00299: 
+  00300:     /* Enable bus mastering & memory space */
+  00301:     _pciDev->setBusMasterEnable(true);
+  00302:     _pciDev->setMemoryEnable(true);
+  00303: 
+  00304:     /* Map BAR2 — rtw88 driver hardcodes bar_id=2 in pci.c */
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp:297-305
+  00297:     }
+  00298:     _pciDev->retain();
+  00299: 
+  00300:     /* Enable bus mastering & memory space */
+  00301:     _pciDev->setBusMasterEnable(true);
+  00302:     _pciDev->setMemoryEnable(true);
+  00303: 
+  00304:     /* Map BAR2 — rtw88 driver hardcodes bar_id=2 in pci.c */
+  00305:     _mmioMap = _pciDev->mapDeviceMemoryWithRegister(kIOPCIConfigBaseAddress2);
+FILE: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp MATCHES: 6
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp:46-54
+  00046:     IOSimpleLock *lock = _lock;
+  00047:     if (!lock)
+  00048:         return;
+  00049: 
+  00050:     IOInterruptState interruptState = IOSimpleLockLockDisableInterrupt(lock);
+  00051:     _stopping = 1;
+  00052:     _handler = nullptr;
+  00053:     _events.clear();
+  00054:     _pendingSignal = 0;
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp:117-125
+  00117:     if (!lock)
+  00118:         return;
+  00119: 
+  00120:     bool signal = false;
+  00121:     IOInterruptState interruptState = IOSimpleLockLockDisableInterrupt(lock);
+  00122:     if (!_stopping && enqueueLocked(event) && !_pendingSignal) {
+  00123:         _pendingSignal = 1;
+  00124:         signal = true;
+  00125:     }
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp:142-150
+  00142:         IOSimpleLock *lock = _lock;
+  00143:         if (!lock)
+  00144:             return false;
+  00145: 
+  00146:         IOInterruptState interruptState = IOSimpleLockLockDisableInterrupt(lock);
+  00147:         if (_stopping || !_events.pop(&event)) {
+  00148:             if (_stopping)
+  00149:                 _events.clear();
+  00150:             _pendingSignal = 0;
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp:162-170
+  00162: 
+  00163:     IOSimpleLock *lock = _lock;
+  00164:     if (!lock)
+  00165:         return false;
+  00166:     IOInterruptState interruptState = IOSimpleLockLockDisableInterrupt(lock);
+  00167:     const bool moreWork = !_stopping && !_events.empty();
+  00168:     if (!moreWork)
+  00169:         _pendingSignal = 0;
+  00170:     IOSimpleLockUnlockEnableInterrupt(lock, interruptState);
+CONTEXT: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp:175-183
+  00175: {
+  00176:     IOSimpleLock *lock = _lock;
+  00177:     if (!lock)
+  00178:         return _dropped;
+  00179:     IOInterruptState state = IOSimpleLockLockDisableInterrupt(lock);
+  00180:     const uint32_t value = _dropped;
+  00181:     IOSimpleLockUnlockEnableInterrupt(lock, state);
+  00182:     return value;
+  00183: }
+OMITTED_MATCHES_IN_FILE: 1
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp MATCHES: 1
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:209-217
+  00209: 
+  00210:     if (_pciBackend && _pciBackend->isRadioRunning()) {
+  00211:         const IOReturn fenceStatus = _pciBackend->setRadioRunning(false);
+  00212:         if (fenceStatus != kIOReturnSuccess) {
+  00213:             IOLog("rtl88wifi-wcl: PCI interrupt/bus-master fence failed: 0x%08x\n",
+  00214:                   fenceStatus);
+  00215:             return fenceStatus; // Keep callbacks, mappings and DMA owner alive on failure.
+  00216:         }
+  00217:     }
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp MATCHES: 11
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:61-69
+  00061:         return kIOReturnNoMemory;
+  00062:     }
+  00063: 
+  00064:     _pciDev->setMemoryEnable(true);
+  00065:     _pciDev->setBusMasterEnable(true);
+  00066:     const UInt16 enabledCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+  00067:     if ((enabledCommand & 0x0006U) != 0x0006U) {
+  00068:         IOLog("rtl88wifi-wcl: PCI memory/bus-master enable failed (command=0x%04x)\n",
+  00069:               enabledCommand);
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:64-72
+  00064:     _pciDev->setMemoryEnable(true);
+  00065:     _pciDev->setBusMasterEnable(true);
+  00066:     const UInt16 enabledCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+  00067:     if ((enabledCommand & 0x0006U) != 0x0006U) {
+  00068:         IOLog("rtl88wifi-wcl: PCI memory/bus-master enable failed (command=0x%04x)\n",
+  00069:               enabledCommand);
+  00070:         closeResources();
+  00071:         return kIOReturnNotReady;
+  00072:     }
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:142-150
+  00142:         return kIOReturnSuccess;
+  00143: 
+  00144:     if (running) {
+  00145:         _pciDev->setMemoryEnable(true);
+  00146:         _pciDev->setBusMasterEnable(true);
+  00147:         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+  00148:         if ((command & 0x0006U) != 0x0006U) {
+  00149:             _interruptSource->disable();
+  00150:             _pciDev->setBusMasterEnable(false);
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:146-154
+  00146:         _pciDev->setBusMasterEnable(true);
+  00147:         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
+  00148:         if ((command & 0x0006U) != 0x0006U) {
+  00149:             _interruptSource->disable();
+  00150:             _pciDev->setBusMasterEnable(false);
+  00151:             const UInt16 rollbackCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+  00152:             if (rollbackCommand & 0x0004U) {
+  00153:                 /* Bus mastering may still be active. Keep the backend marked
+  00154:                  * running so close/free cannot reclaim DMA mappings. */
+CONTEXT: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:149-157
+  00149:             _interruptSource->disable();
+  00150:             _pciDev->setBusMasterEnable(false);
+  00151:             const UInt16 rollbackCommand = _pciDev->configRead16(kIOPCIConfigCommand);
+  00152:             if (rollbackCommand & 0x0004U) {
+  00153:                 /* Bus mastering may still be active. Keep the backend marked
+  00154:                  * running so close/free cannot reclaim DMA mappings. */
+  00155:                 _radioRunning = true;
+  00156:                 IOLog("rtl88wifi-wcl: partial PCI enable rollback failed (command=0x%04x); DMA resources quarantined\n",
+  00157:                       rollbackCommand);
+OMITTED_MATCHES_IN_FILE: 6
+DISPLAYED_CONTEXTS: 38
+
+=== SKYWALK_QUEUE_HANDOFF ===
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h MATCHES: 3
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h:58-66
+  00058: 
+  00059:     virtual IOReturn setPacketPoller( IOSkywalkPacketPoller * poller ) APPLE_KEXT_OVERRIDE;
+  00060:     virtual IOReturn performCommand( UInt32 command, void * data, size_t dataSize ) APPLE_KEXT_OVERRIDE;
+  00061:     IOReturn gatedEnqueue( void * refCon, bool * );
+  00062:     virtual IOReturn requestEnqueue( void * packets, IOOptionBits options );
+  00063:     virtual IOReturn enqueuePackets( const IOSkywalkPacket ** packets, UInt32 packetCount, IOOptionBits options );
+  00064:     virtual IOReturn enqueuePackets( const queue_entry * packets, UInt32 packetCount, IOOptionBits options );
+  00065:     virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+  00066:     UInt32 getEffectiveCapacity( IOOptionBits options );
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h:59-67
+  00059:     virtual IOReturn setPacketPoller( IOSkywalkPacketPoller * poller ) APPLE_KEXT_OVERRIDE;
+  00060:     virtual IOReturn performCommand( UInt32 command, void * data, size_t dataSize ) APPLE_KEXT_OVERRIDE;
+  00061:     IOReturn gatedEnqueue( void * refCon, bool * );
+  00062:     virtual IOReturn requestEnqueue( void * packets, IOOptionBits options );
+  00063:     virtual IOReturn enqueuePackets( const IOSkywalkPacket ** packets, UInt32 packetCount, IOOptionBits options );
+  00064:     virtual IOReturn enqueuePackets( const queue_entry * packets, UInt32 packetCount, IOOptionBits options );
+  00065:     virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+  00066:     UInt32 getEffectiveCapacity( IOOptionBits options );
+  00067:     virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h:60-68
+  00060:     virtual IOReturn performCommand( UInt32 command, void * data, size_t dataSize ) APPLE_KEXT_OVERRIDE;
+  00061:     IOReturn gatedEnqueue( void * refCon, bool * );
+  00062:     virtual IOReturn requestEnqueue( void * packets, IOOptionBits options );
+  00063:     virtual IOReturn enqueuePackets( const IOSkywalkPacket ** packets, UInt32 packetCount, IOOptionBits options );
+  00064:     virtual IOReturn enqueuePackets( const queue_entry * packets, UInt32 packetCount, IOOptionBits options );
+  00065:     virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+  00066:     UInt32 getEffectiveCapacity( IOOptionBits options );
+  00067:     virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+  00068: 
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h:53-61
+  00053:     virtual void enable() APPLE_KEXT_OVERRIDE;
+  00054:     virtual void disable() APPLE_KEXT_OVERRIDE;
+  00055: 
+  00056:     void gatedDequeue( void * refCon );
+  00057:     virtual IOReturn requestDequeue( void * refCon, IOOptionBits options );
+  00058:     void retryDequeue();
+  00059: 
+  00060:     virtual IOReturn performCommand( UInt32 command, void * data, size_t dataSize ) APPLE_KEXT_OVERRIDE;
+  00061:     virtual void packetCompletion( IOSkywalkPacket * packet, IOSkywalkPacketQueue * queue, IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h MATCHES: 7
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:45-53
+  00045: 
+  00046: /*! @struct IOSkywalkTxCompletionQueueStats
+  00047:     @abstract A structure containing counters of serveral functions in the IOSkywalkTxCompletionQueue class.
+  00048:     @field enqueueCounter Increment with each successful enqueue operation, regardless of the function utilized.
+  00049:     @field checkForWorkCounter Increment with each call to checkForWork() if enqueueAndCompletePackets() is executed.
+  00050:     @field enqueueFailureCounter Increment with each failed enqueue operation.
+  00051:     @field completeCounter The number of packets completed, updated each time completePackets() is called.
+  00052: */
+  00053: struct IOSkywalkTxCompletionQueueStats
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:47-55
+  00047:     @abstract A structure containing counters of serveral functions in the IOSkywalkTxCompletionQueue class.
+  00048:     @field enqueueCounter Increment with each successful enqueue operation, regardless of the function utilized.
+  00049:     @field checkForWorkCounter Increment with each call to checkForWork() if enqueueAndCompletePackets() is executed.
+  00050:     @field enqueueFailureCounter Increment with each failed enqueue operation.
+  00051:     @field completeCounter The number of packets completed, updated each time completePackets() is called.
+  00052: */
+  00053: struct IOSkywalkTxCompletionQueueStats
+  00054: {
+  00055:     UInt64 enqueueCounter;
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:68-76
+  00068:     virtual void enable() APPLE_KEXT_OVERRIDE;
+  00069:     virtual void disable() APPLE_KEXT_OVERRIDE;
+  00070: 
+  00071:     virtual IOReturn performCommand( UInt32 command, void * data, size_t dataSize ) APPLE_KEXT_OVERRIDE;
+  00072:     virtual IOReturn requestEnqueue( void * packets, IOOptionBits options );
+  00073:     virtual IOReturn enqueuePackets( const IOSkywalkPacket ** packets, UInt32 packetCount, IOOptionBits options );
+  00074:     virtual IOReturn enqueuePackets( const queue_entry * packets, UInt32 packetCount, IOOptionBits options );
+  00075:     void completePackets();
+  00076:     IOReturn enqueueAndCompletePackets( void * packets );
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:69-77
+  00069:     virtual void disable() APPLE_KEXT_OVERRIDE;
+  00070: 
+  00071:     virtual IOReturn performCommand( UInt32 command, void * data, size_t dataSize ) APPLE_KEXT_OVERRIDE;
+  00072:     virtual IOReturn requestEnqueue( void * packets, IOOptionBits options );
+  00073:     virtual IOReturn enqueuePackets( const IOSkywalkPacket ** packets, UInt32 packetCount, IOOptionBits options );
+  00074:     virtual IOReturn enqueuePackets( const queue_entry * packets, UInt32 packetCount, IOOptionBits options );
+  00075:     void completePackets();
+  00076:     IOReturn enqueueAndCompletePackets( void * packets );
+  00077:     virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:70-78
+  00070: 
+  00071:     virtual IOReturn performCommand( UInt32 command, void * data, size_t dataSize ) APPLE_KEXT_OVERRIDE;
+  00072:     virtual IOReturn requestEnqueue( void * packets, IOOptionBits options );
+  00073:     virtual IOReturn enqueuePackets( const IOSkywalkPacket ** packets, UInt32 packetCount, IOOptionBits options );
+  00074:     virtual IOReturn enqueuePackets( const queue_entry * packets, UInt32 packetCount, IOOptionBits options );
+  00075:     void completePackets();
+  00076:     IOReturn enqueueAndCompletePackets( void * packets );
+  00077:     virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+  00078:     UInt32 getEffectiveCapacity( IOOptionBits options );
+OMITTED_MATCHES_IN_FILE: 2
+FILE: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h MATCHES: 1
+CONTEXT: driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:62-70
+  00062:     virtual IOReturn sendNotification( IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+  00063:     virtual IOReturn handleDoorbell( IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+  00064: 
+  00065:     void gatedDequeue( void * refCon );
+  00066:     virtual IOReturn requestDequeue( void * refCon, IOOptionBits options );
+  00067:     virtual void purgePackets();
+  00068: 
+  00069:     virtual IOReturn performCommand( UInt32 command, void * data, size_t dataSize ) APPLE_KEXT_OVERRIDE;
+  00070:     virtual void packetCompletion( IOSkywalkPacket * packet, IOSkywalkPacketQueue * queue, IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+DISPLAYED_CONTEXTS: 10
+
+=== REQUIRED CONTRACT QUESTIONS ===
+1. Locate exact outputPacketWithCompletion implementation and prove mbuf ownership for every return path.
+2. Prove synchronous/asynchronous callback timing, exactly-once behavior, and cancellation/reset/stop completion.
+3. Prove ticket publication ordering and prevent completion racing initialization or ticket reuse.
+4. Trace all RTW88 TX completion producers and supplied callback invocations, including errors and teardown.
+5. Trace coherent DMA allocation/free and descriptor prepare/complete pairing through reset, failed start and stop.
+6. Prove stop synchronizes workqueues, interrupt callbacks and DMA before bus-master disable/resource release.
+7. Match Skywalk queue callback return-count semantics and packet ownership transfer to the 24H32 ABI.
+
+STAGE24_STATUS: REVIEW_REQUIRED — targeted contexts require call-graph and branch analysis.
+ACTIVATION_GATE: BLOCKED — no queue registration/enable, packet handoff, BSD publication, radio start, build/install/load or OpenCore changes.

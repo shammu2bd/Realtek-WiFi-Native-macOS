@@ -1,0 +1,314 @@
+STAGE75_REGISTRATION_LIFECYCLE_AND_ROLLBACK_EVIDENCE
+
+===== FUNCTION RTW88WCLController::start SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp =====
+SOURCE_LINES=51-176
+51: {
+52:     if (!provider || _baseStarted || _pciBackend || _radio)
+53:         return false;
+54:     if (!super::start(provider))
+55:         return false;
+56:     _baseStarted = true;
+57: 
+58:                                                                          
+59:                                                       
+60:     if (!createWorkLoop()) {
+61:         IOLog("rtl88wifi-wcl: controller workloop creation failed\n");
+62:         goto fail;
+63:     }
+64: 
+65:                                                                          
+66:                                                                             
+67:     {
+68:         IOPCIDevice *pci = OSDynamicCast(IOPCIDevice, provider);
+69:         if (!pci) {
+70:             IOLog("rtl88wifi-wcl: provider is not an IOPCIDevice\n");
+71:             goto fail;
+72:         }
+73: 
+74:         _pciBackend = new RTW88WCLPCIBackend;
+75:         if (!_pciBackend) {
+76:             IOLog("rtl88wifi-wcl: PCI backend allocation failed\n");
+77:             goto fail;
+78:         }
+79:         if (!_pciBackend->init()) {
+80:             _pciBackend->release();
+81:             _pciBackend = nullptr;
+82:             IOLog("rtl88wifi-wcl: PCI backend initialization failed\n");
+83:             goto fail;
+84:         }
+85: 
+86:         const IOReturn openStatus = _pciBackend->open(pci, _workLoop, this);
+87:         if (openStatus != kIOReturnSuccess) {
+88:             IOLog("rtl88wifi-wcl: PCI backend open failed: 0x%08x\n",
+89:                   openStatus);
+90:             goto fail;
+91:         }
+92: 
+93:                                                                              
+94:                                                                            
+95:                                                                                 
+96:         struct pci_dev *compatPCI = _pciBackend->compatPCIDevice();
+97:         if (!compatPCI) {
+98:             IOLog("rtl88wifi-wcl: backend did not provide a compat PCI device\n");
+99:             goto fail;
+100:         }
+101:         RTW88IEEE80211 *radio = RTW88IEEE80211::createAirport(this, compatPCI);
+102:         if (!radio) {
+103:             IOLog("rtl88wifi-wcl: RTW88 state-machine allocation failed\n");
+104:             goto fail;
+105:         }
+106:         radio->setEventDelegate(this);
+107:         const IOReturn bindStatus = bindRadioBackend(radio);
+108:         radio->release();
+109:         if (bindStatus != kIOReturnSuccess) {
+110:             IOLog("rtl88wifi-wcl: RTW88 state-machine bind failed: 0x%08x\n",
+111:                   bindStatus);
+112:             goto fail;
+113:         }
+114:     }
+115: 
+116:                                                                            
+117:                                                                              
+118:                                                                         
+119:                                                                          
+120:     _skywalkQueues = new RTW88WCLSkywalkQueues;
+121:     if (!_skywalkQueues || !_skywalkQueues->init()) {
+122:         if (_skywalkQueues) {
+123:             _skywalkQueues->release();
+124:             _skywalkQueues = nullptr;
+125:         }
+126:         IOLog("rtl88wifi-wcl: Skywalk queue owner allocation failed\n");
+127:         goto fail;
+128:     }
+129:     {
+130:         const IOReturn queueStatus = _skywalkQueues->createQueues();
+131:         if (queueStatus != kIOReturnSuccess) {
+132:             IOLog("rtl88wifi-wcl: Skywalk queue/pool allocation failed: 0x%08x\n",
+133:                   queueStatus);
+134:             goto fail;
+135:         }
+136:     }
+137: 
+138:                                                                              
+139:                                                                         
+140:                                                                     
+141:     _rxAdapter = new RTW88WCLSkywalkRxAdapter;
+142:     if (!_rxAdapter || !_rxAdapter->init(
+143:             this, _workLoop, _skywalkQueues->rxPacketPool(),
+144:             &RTW88WCLController::stagedRxFrame, this)) {
+145:         if (_rxAdapter) {
+146:             _rxAdapter->release();
+147:             _rxAdapter = nullptr;
+148:         }
+149:         IOLog("rtl88wifi-wcl: RX packet adapter initialization failed\n");
+150:         goto fail;
+151:     }
+152: 
+153:     provider->setProperty("RTW88WCLControllerStage",
+154:                            "PCI, RTW88 and pool-backed RX packet conversion staged; datapath pending");
+155: 
+156:                                                                               
+157:                                                                                
+158:                                                                                
+159:     IOLog("rtl88wifi-wcl: backend lifecycle staged; refusing publication until Skywalk datapath is ready\n");
+160:     goto fail;
+161: 
+162: fail:
+163:     {
+164:         const IOReturn cleanupStatus = releaseNativeResources();
+165:         if (cleanupStatus != kIOReturnSuccess) {
+166:             IOLog("rtl88wifi-wcl: start-failure cleanup incomplete (0x%08x); retaining native resources\n",
+167:                   cleanupStatus);
+168:             return false;
+169:         }
+170:     }
+171:     if (_baseStarted) {
+172:         super::stop(provider);
+173:         _baseStarted = false;
+174:     }
+175:     return false;
+176: }
+
+===== FUNCTION RTW88WCLController::stop SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp =====
+SOURCE_LINES=179-190
+179: {
+180:     const IOReturn cleanupStatus = releaseNativeResources();
+181:     if (cleanupStatus != kIOReturnSuccess) {
+182:         IOLog("rtl88wifi-wcl: stop cleanup incomplete (0x%08x); deferring superclass stop and retaining resources\n",
+183:               cleanupStatus);
+184:         return;
+185:     }
+186:     if (_baseStarted) {
+187:         super::stop(provider);
+188:         _baseStarted = false;
+189:     }
+190: }
+
+===== FUNCTION RTW88WCLController::free SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp =====
+SOURCE_LINES=266-281
+266: {
+267:     const IOReturn cleanupStatus = releaseNativeResources();
+268:     if (cleanupStatus != kIOReturnSuccess) {
+269:         IOLog("rtl88wifi-wcl: controller shutdown incomplete (0x%08x); quarantining controller and retaining workloop/resources\n",
+270:               cleanupStatus);
+271:                                                                              
+272:                                                                                 
+273:                                                                                    
+274:         return;
+275:     }
+276:     if (_workLoop) {
+277:         _workLoop->release();
+278:         _workLoop = nullptr;
+279:     }
+280:     super::free();
+281: }
+
+===== FUNCTION RTW88WCLController::quiescePacketPath SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp =====
+SOURCE_LINES=429-463
+429: {
+430:     for (;;) {
+431:         uint32_t state = __atomic_load_n(&_packetPathState, __ATOMIC_ACQUIRE);
+432:         if (state == kPacketPathDisabled)
+433:             return kIOReturnSuccess;
+434:         if (state == kPacketPathBinding)
+435:             return kIOReturnBusy;
+436:         if (state == kPacketPathActive) {
+437:             uint32_t expected = kPacketPathActive;
+438:             if (!__atomic_compare_exchange_n(&_packetPathState, &expected,
+439:                                              kPacketPathQuiescing, false,
+440:                                              __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+441:                 continue;
+442:         } else if (state != kPacketPathQuiescing) {
+443:             return kIOReturnBusy;
+444:         }
+445:         break;
+446:     }
+447: 
+448:     if (__atomic_load_n(&_packetPathInFlight, __ATOMIC_ACQUIRE) != 0)
+449:         return kIOReturnBusy;
+450: 
+451:     uint32_t expected = kPacketPathQuiescing;
+452:     if (!__atomic_compare_exchange_n(&_packetPathState, &expected,
+453:                                      kPacketPathReleasing, false,
+454:                                      __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+455:         return kIOReturnBusy;
+456: 
+457:     IO80211SkywalkInterface *interface = _packetPathInterface;
+458:     _packetPathInterface = nullptr;
+459:     if (interface)
+460:         interface->release();
+461:     __atomic_store_n(&_packetPathState, kPacketPathDisabled, __ATOMIC_RELEASE);
+462:     return kIOReturnSuccess;
+463: }
+
+===== FUNCTION RTW88WCLController::recycleStagedRxPackets SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp =====
+SOURCE_LINES=527-556
+527: {
+528:     if (_stagedRxPackets.empty())
+529:         return kIOReturnSuccess;
+530:     if (!_skywalkQueues || !_skywalkQueues->rxPacketPool())
+531:         return kIOReturnNotReady;
+532: 
+533:     IOSkywalkPacketBufferPool *pool = _skywalkQueues->rxPacketPool();
+534:     IOSkywalkPacket *packet = nullptr;
+535:     bool disposalRequired = false;
+536:     while (_stagedRxPackets.pop(&packet)) {
+537:         if (!packet)
+538:             continue;
+539: 
+540:         const IOReturn status = pool->deallocatePacket(packet);
+541:         if (status != kIOReturnSuccess) {
+542:                                                                             
+543:                                                                            
+544:                                                                           
+545:                                                                     
+546:             IOLog("rtl88wifi-wcl: RX packet recycle returned 0x%08x; pool disposal required\n",
+547:                   status);
+548:             disposalRequired = true;
+549:         }
+550:         packet = nullptr;
+551:     }
+552: 
+553:     if (disposalRequired)
+554:         pool->disposeAllPackets();
+555:     return kIOReturnSuccess;
+556: }
+
+===== FUNCTION RTW88WCLInfraInterface::start SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp =====
+SOURCE_LINES=263-272
+263: {
+264:                                                                               
+265:                                                                              
+266:                                                    
+267:     if (provider) {
+268:         provider->setProperty("RTW88WCLInfraInterfaceStage",
+269:                               "24H32 protocol handlers; Skywalk datapath pending");
+270:     }
+271:     return false;
+272: }
+
+===== FUNCTION RTW88WCLInfraInterface::stop SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp =====
+SOURCE_LINES=275-281
+275: {
+276:     clearRegistrationInfo();
+277:     detachRadio();
+278:     if (provider)
+279:         provider->setProperty("RTW88WCLInfraInterfaceStopped", kOSBooleanTrue);
+280:     super::stop(provider);
+281: }
+
+===== FUNCTION RTW88WCLInfraInterface::free SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp =====
+SOURCE_LINES=222-227
+222: {
+223:     clearRegistrationInfo();
+224:     detachRadio();
+225:     _controller = nullptr;
+226:     super::free();
+227: }
+
+===== FUNCTION RTW88WCLInfraInterface::prepareRegistrationInfo SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp =====
+SOURCE_LINES=236-260
+236: {
+237:     using namespace RTW88WCLRegistrationInfo24H32;
+238: 
+239:     clearRegistrationInfo();
+240:     auto *info = reinterpret_cast<IOSkywalkEthernetInterface::RegistrationInfo *>(
+241:         _registrationInfo.bytes);
+242: 
+243:                                                                              
+244:                                                                           
+245:                                                                            
+246:        
+247:     if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+248:         clearRegistrationInfo();
+249:         return false;
+250:     }
+251: 
+252:     if (!applyAppleProducerWrites(_registrationInfo, address.octet) ||
+253:         !matchesApple24H32Template(_registrationInfo, address.octet)) {
+254:         clearRegistrationInfo();
+255:         return false;
+256:     }
+257: 
+258:     _registrationInfoPrepared = true;
+259:     return true;
+260: }
+
+===== FUNCTION RTW88WCLInfraInterface::detachRadio SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp =====
+SOURCE_LINES=204-219
+204: {
+205:     _stopping = true;
+206:                                                                               
+207:                                                                    
+208:     _bridge.detach();
+209:     if (_workQueue) {
+210:         _workQueue->stop();
+211:         _workQueue->release();
+212:         _workQueue = nullptr;
+213:     }
+214:     _scanActive = false;
+215:     _activeScanGeneration = 0;
+216:     _activeJoinGeneration = 0;
+217:     _assocNotified = false;
+218:     _connectNotified = false;
+219: }

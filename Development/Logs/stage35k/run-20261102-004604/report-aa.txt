@@ -1,0 +1,3299 @@
+========== STAGE 35K: RX DMA LIFECYCLE AUDIT ==========
+timestamp_utc=2026-11-02T00:46:05Z
+host=DESKTOP-65R32QP.localdomain
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+rtw88_pci_source=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c
+mode=read-only static source/call-chain audit
+
+--- Source snapshot hashes ---
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c bytes=52798 sha256=609dd80f41c66364e71762708bee25886c44d66dec3dc9bee39fe15500aebf83
+SOURCE path=src/compat/linux/dma-mapping.h bytes=5265 sha256=27120e81f01b6b35ae209318cd0ffbac02e96a5b9cb73957dfcb0b12082af630
+SOURCE path=src/kext/RTW88HwOps.cpp bytes=4321 sha256=3984d76592346bf3e9050195045a69f37328ccedc3b957ee23bc51ed22fae3d1
+SOURCE path=src/kext/wcl24h32/RTW88WCLPCIBackend.cpp bytes=16613 sha256=2253d451b3242035510d21c317782a8e9f24ef46bd154b2ad842c713c296e9a4
+SOURCE path=src/compat/rtw88_compat.c bytes=61127 sha256=c2f72e5d077f87ae3878d8afb1f582076e2068b84566216495c74730a978f490
+SOURCE path=../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h bytes=6806 sha256=49129551f28352e1edd567199261893a84f4d451d3fec3af04909085b41c219d
+
+--- Driver and helper DMA API call-site inventory ---
+dma_alloc_coherent_TOTAL=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:198 | head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:271 | head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+dma_free_coherent_TOTAL=3
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:129 | dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:163 | dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:314 | dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+dma_map_single_TOTAL=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:227 | dma = dma_map_single(&pdev->dev, skb->data, buf_sz, DMA_FROM_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:836 | dma = dma_map_single(&rtwpci->pdev->dev, skb->data, skb->len,
+dma_unmap_single_TOTAL=5
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:113 | dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:148 | dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:310 | dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:685 | dma_unmap_single(&rtwpci->pdev->dev, dma, prev->len, DMA_TO_DEVICE);
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:996 | dma_unmap_single(&rtwpci->pdev->dev, tx_data->dma, skb->len,
+dma_sync_single_for_cpu_TOTAL=1
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:1140 | dma_sync_single_for_cpu(rtwdev->dev, dma, RTK_PCI_RX_BUF_SIZE,
+dma_sync_single_for_device_TOTAL=1
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:249 | dma_sync_single_for_device(dev, dma, buf_sz, DMA_FROM_DEVICE);
+dma_mapping_error_TOTAL=2
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:228 | if (dma_mapping_error(&pdev->dev, dma))
+  ../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c:838 | if (dma_mapping_error(&rtwpci->pdev->dev, dma))
+
+--- RX ring source: allocation, map and initial device sync ---
+dma_map_single_OCCURRENCES=2
+
+[pci.c around dma_map_single at 227 lines 207-253]
+ 207 	tx_ring->r.len = len;
+ 208 	tx_ring->r.desc_size = desc_size;
+ 209 	tx_ring->r.wp = 0;
+ 210 	tx_ring->r.rp = 0;
+ 211 
+ 212 	return 0;
+ 213 }
+ 214 
+ 215 static int rtw_pci_reset_rx_desc(struct rtw_dev *rtwdev, struct sk_buff *skb,
+ 216 				 struct rtw_pci_rx_ring *rx_ring,
+ 217 				 u32 idx, u32 desc_sz)
+ 218 {
+ 219 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 220 	struct rtw_pci_rx_buffer_desc *buf_desc;
+ 221 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 222 	dma_addr_t dma;
+ 223 
+ 224 	if (!skb)
+ 225 		return -EINVAL;
+ 226 
+ 227 	dma = dma_map_single(&pdev->dev, skb->data, buf_sz, DMA_FROM_DEVICE);
+ 228 	if (dma_mapping_error(&pdev->dev, dma))
+ 229 		return -EBUSY;
+ 230 
+ 231 	*((dma_addr_t *)skb->cb) = dma;
+ 232 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 233 						     idx * desc_sz);
+ 234 	memset(buf_desc, 0, sizeof(*buf_desc));
+ 235 	buf_desc->buf_size = cpu_to_le16(RTK_PCI_RX_BUF_SIZE);
+ 236 	buf_desc->dma = cpu_to_le32(dma);
+ 237 
+ 238 	return 0;
+ 239 }
+ 240 
+ 241 static void rtw_pci_sync_rx_desc_device(struct rtw_dev *rtwdev, dma_addr_t dma,
+ 242 					struct rtw_pci_rx_ring *rx_ring,
+ 243 					u32 idx, u32 desc_sz)
+ 244 {
+ 245 	struct device *dev = rtwdev->dev;
+ 246 	struct rtw_pci_rx_buffer_desc *buf_desc;
+ 247 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 248 
+ 249 	dma_sync_single_for_device(dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 250 
+ 251 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 252 						     idx * desc_sz);
+ 253 	memset(buf_desc, 0, sizeof(*buf_desc));
+[END pci.c around dma_map_single at 227]
+
+[pci.c around dma_map_single at 836 lines 816-862]
+ 816 	u32 tx_pkt_desc_sz = chip->tx_pkt_desc_sz;
+ 817 	u32 tx_buf_desc_sz = chip->tx_buf_desc_sz;
+ 818 	u32 size;
+ 819 	u32 psb_len;
+ 820 	u8 *pkt_desc;
+ 821 	struct rtw_pci_tx_buffer_desc *buf_desc;
+ 822 
+ 823 	ring = &rtwpci->tx_rings[queue];
+ 824 
+ 825 	size = skb->len;
+ 826 
+ 827 	if (queue == RTW_TX_QUEUE_BCN)
+ 828 		rtw_pci_release_rsvd_page(rtwpci, ring);
+ 829 	else if (!avail_desc(ring->r.wp, ring->r.rp, ring->r.len))
+ 830 		return -ENOSPC;
+ 831 
+ 832 	pkt_desc = skb_push(skb, chip->tx_pkt_desc_sz);
+ 833 	memset(pkt_desc, 0, tx_pkt_desc_sz);
+ 834 	pkt_info->qsel = rtw_pci_get_tx_qsel(skb, queue);
+ 835 	rtw_tx_fill_tx_desc(rtwdev, pkt_info, skb);
+ 836 	dma = dma_map_single(&rtwpci->pdev->dev, skb->data, skb->len,
+ 837 			     DMA_TO_DEVICE);
+ 838 	if (dma_mapping_error(&rtwpci->pdev->dev, dma))
+ 839 		return -EBUSY;
+ 840 
+ 841 	/* after this we got dma mapped, there is no way back */
+ 842 	buf_desc = get_tx_buffer_desc(ring, tx_buf_desc_sz);
+ 843 	memset(buf_desc, 0, tx_buf_desc_sz);
+ 844 	psb_len = (skb->len - 1) / 128 + 1;
+ 845 	if (queue == RTW_TX_QUEUE_BCN)
+ 846 		psb_len |= 1 << RTK_PCI_TXBD_OWN_OFFSET;
+ 847 
+ 848 	buf_desc[0].psb_len = cpu_to_le16(psb_len);
+ 849 	buf_desc[0].buf_size = cpu_to_le16(tx_pkt_desc_sz);
+ 850 	buf_desc[0].dma = cpu_to_le32(dma);
+ 851 	buf_desc[1].buf_size = cpu_to_le16(size);
+ 852 	buf_desc[1].dma = cpu_to_le32(dma + tx_pkt_desc_sz);
+ 853 
+ 854 	tx_data = rtw_pci_get_tx_data(skb);
+ 855 	tx_data->dma = dma;
+ 856 	tx_data->sn = pkt_info->sn;
+ 857 
+ 858 	spin_lock_bh(&rtwpci->irq_lock);
+ 859 
+ 860 	skb_queue_tail(&ring->queue, skb);
+ 861 
+ 862 	if (queue == RTW_TX_QUEUE_BCN)
+[END pci.c around dma_map_single at 836]
+dma_sync_single_for_device_OCCURRENCES=1
+
+[pci.c around dma_sync_single_for_device at 249 lines 229-275]
+ 229 		return -EBUSY;
+ 230 
+ 231 	*((dma_addr_t *)skb->cb) = dma;
+ 232 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 233 						     idx * desc_sz);
+ 234 	memset(buf_desc, 0, sizeof(*buf_desc));
+ 235 	buf_desc->buf_size = cpu_to_le16(RTK_PCI_RX_BUF_SIZE);
+ 236 	buf_desc->dma = cpu_to_le32(dma);
+ 237 
+ 238 	return 0;
+ 239 }
+ 240 
+ 241 static void rtw_pci_sync_rx_desc_device(struct rtw_dev *rtwdev, dma_addr_t dma,
+ 242 					struct rtw_pci_rx_ring *rx_ring,
+ 243 					u32 idx, u32 desc_sz)
+ 244 {
+ 245 	struct device *dev = rtwdev->dev;
+ 246 	struct rtw_pci_rx_buffer_desc *buf_desc;
+ 247 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 248 
+ 249 	dma_sync_single_for_device(dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 250 
+ 251 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 252 						     idx * desc_sz);
+ 253 	memset(buf_desc, 0, sizeof(*buf_desc));
+ 254 	buf_desc->buf_size = cpu_to_le16(RTK_PCI_RX_BUF_SIZE);
+ 255 	buf_desc->dma = cpu_to_le32(dma);
+ 256 }
+ 257 
+ 258 static int rtw_pci_init_rx_ring(struct rtw_dev *rtwdev,
+ 259 				struct rtw_pci_rx_ring *rx_ring,
+ 260 				u8 desc_size, u32 len)
+ 261 {
+ 262 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 263 	struct sk_buff *skb = NULL;
+ 264 	dma_addr_t dma;
+ 265 	u8 *head;
+ 266 	int ring_sz = desc_size * len;
+ 267 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 268 	int i, allocated;
+ 269 	int ret = 0;
+ 270 
+ 271 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+ 272 	if (!head) {
+ 273 		rtw_err(rtwdev, "failed to allocate rx ring\n");
+ 274 		return -ENOMEM;
+ 275 	}
+[END pci.c around dma_sync_single_for_device at 249]
+dma_sync_single_for_cpu_OCCURRENCES=1
+
+[pci.c around dma_sync_single_for_cpu at 1140 lines 1120-1166]
+1120 	struct rtw_pci_rx_ring *ring = &rtwpci->rx_rings[RTW_RX_QUEUE_MPDU];
+1121 	struct rtw_rx_pkt_stat pkt_stat;
+1122 	struct ieee80211_rx_status rx_status;
+1123 	struct sk_buff *skb, *new;
+1124 	u32 cur_rp = ring->r.rp;
+1125 	u32 count, rx_done = 0;
+1126 	u32 pkt_offset;
+1127 	u32 pkt_desc_sz = chip->rx_pkt_desc_sz;
+1128 	u32 buf_desc_sz = chip->rx_buf_desc_sz;
+1129 	u32 new_len;
+1130 	u8 *rx_desc;
+1131 	dma_addr_t dma;
+1132 
+1133 	count = rtw_pci_get_hw_rx_ring_nr(rtwdev, rtwpci);
+1134 	count = min(count, limit);
+1135 
+1136 	while (count--) {
+1137 		rtw_pci_dma_check(rtwdev, ring, cur_rp);
+1138 		skb = ring->buf[cur_rp];
+1139 		dma = *((dma_addr_t *)skb->cb);
+1140 		dma_sync_single_for_cpu(rtwdev->dev, dma, RTK_PCI_RX_BUF_SIZE,
+1141 					DMA_FROM_DEVICE);
+1142 		rx_desc = skb->data;
+1143 		rtw_rx_query_rx_desc(rtwdev, rx_desc, &pkt_stat, &rx_status);
+1144 
+1145 		/* offset from rx_desc to payload */
+1146 		pkt_offset = pkt_desc_sz + pkt_stat.drv_info_sz +
+1147 			     pkt_stat.shift;
+1148 
+1149 		/* allocate a new skb for this frame,
+1150 		 * discard the frame if none available
+1151 		 */
+1152 		new_len = pkt_stat.pkt_len + pkt_offset;
+1153 		new = dev_alloc_skb(new_len);
+1154 		if (WARN_ONCE(!new, "rx routine starvation\n"))
+1155 			goto next_rp;
+1156 
+1157 		/* put the DMA data including rx_desc from phy to new skb */
+1158 		skb_put_data(new, skb->data, new_len);
+1159 
+1160 		if (pkt_stat.is_c2h) {
+1161 			rtw_fw_c2h_cmd_rx_irqsafe(rtwdev, pkt_offset, new);
+1162 		} else {
+1163 			/* remove rx_desc */
+1164 			skb_pull(new, pkt_offset);
+1165 
+1166 			rtw_update_rx_freq_for_invalid(rtwdev, new, &rx_status, &pkt_stat);
+[END pci.c around dma_sync_single_for_cpu at 1140]
+dma_unmap_single_OCCURRENCES=5
+
+[pci.c around dma_unmap_single at 113 lines 93-139]
+  93 {
+  94 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  95 
+  96 	writel(val, rtwpci->mmap + addr);
+  97 }
+  98 
+  99 static void rtw_pci_free_tx_ring_skbs(struct rtw_dev *rtwdev,
+ 100 				      struct rtw_pci_tx_ring *tx_ring)
+ 101 {
+ 102 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 103 	struct rtw_pci_tx_data *tx_data;
+ 104 	struct sk_buff *skb, *tmp;
+ 105 	dma_addr_t dma;
+ 106 
+ 107 	/* free every skb remained in tx list */
+ 108 	skb_queue_walk_safe(&tx_ring->queue, skb, tmp) {
+ 109 		__skb_unlink(skb, &tx_ring->queue);
+ 110 		tx_data = rtw_pci_get_tx_data(skb);
+ 111 		dma = tx_data->dma;
+ 112 
+ 113 		dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+ 114 		dev_kfree_skb_any(skb);
+ 115 	}
+ 116 }
+ 117 
+ 118 static void rtw_pci_free_tx_ring(struct rtw_dev *rtwdev,
+ 119 				 struct rtw_pci_tx_ring *tx_ring)
+ 120 {
+ 121 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 122 	u8 *head = tx_ring->r.head;
+ 123 	u32 len = tx_ring->r.len;
+ 124 	int ring_sz = len * tx_ring->r.desc_size;
+ 125 
+ 126 	rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+ 127 
+ 128 	/* free the ring itself */
+ 129 	dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+ 130 	tx_ring->r.head = NULL;
+ 131 }
+ 132 
+ 133 static void rtw_pci_free_rx_ring_skbs(struct rtw_dev *rtwdev,
+ 134 				      struct rtw_pci_rx_ring *rx_ring)
+ 135 {
+ 136 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 137 	struct sk_buff *skb;
+ 138 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 139 	dma_addr_t dma;
+[END pci.c around dma_unmap_single at 113]
+
+[pci.c around dma_unmap_single at 148 lines 128-174]
+ 128 	/* free the ring itself */
+ 129 	dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+ 130 	tx_ring->r.head = NULL;
+ 131 }
+ 132 
+ 133 static void rtw_pci_free_rx_ring_skbs(struct rtw_dev *rtwdev,
+ 134 				      struct rtw_pci_rx_ring *rx_ring)
+ 135 {
+ 136 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 137 	struct sk_buff *skb;
+ 138 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 139 	dma_addr_t dma;
+ 140 	int i;
+ 141 
+ 142 	for (i = 0; i < rx_ring->r.len; i++) {
+ 143 		skb = rx_ring->buf[i];
+ 144 		if (!skb)
+ 145 			continue;
+ 146 
+ 147 		dma = *((dma_addr_t *)skb->cb);
+ 148 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 149 		dev_kfree_skb(skb);
+ 150 		rx_ring->buf[i] = NULL;
+ 151 	}
+ 152 }
+ 153 
+ 154 static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+ 155 				 struct rtw_pci_rx_ring *rx_ring)
+ 156 {
+ 157 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 158 	u8 *head = rx_ring->r.head;
+ 159 	int ring_sz = rx_ring->r.desc_size * rx_ring->r.len;
+ 160 
+ 161 	rtw_pci_free_rx_ring_skbs(rtwdev, rx_ring);
+ 162 
+ 163 	dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+ 164 }
+ 165 
+ 166 static void rtw_pci_free_trx_ring(struct rtw_dev *rtwdev)
+ 167 {
+ 168 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 169 	struct rtw_pci_tx_ring *tx_ring;
+ 170 	struct rtw_pci_rx_ring *rx_ring;
+ 171 	int i;
+ 172 
+ 173 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+ 174 		tx_ring = &rtwpci->tx_rings[i];
+[END pci.c around dma_unmap_single at 148]
+
+[pci.c around dma_unmap_single at 310 lines 290-336]
+ 290 			allocated = i;
+ 291 			dev_kfree_skb_any(skb);
+ 292 			goto err_out;
+ 293 		}
+ 294 	}
+ 295 
+ 296 	rx_ring->r.dma = dma;
+ 297 	rx_ring->r.len = len;
+ 298 	rx_ring->r.desc_size = desc_size;
+ 299 	rx_ring->r.wp = 0;
+ 300 	rx_ring->r.rp = 0;
+ 301 
+ 302 	return 0;
+ 303 
+ 304 err_out:
+ 305 	for (i = 0; i < allocated; i++) {
+ 306 		skb = rx_ring->buf[i];
+ 307 		if (!skb)
+ 308 			continue;
+ 309 		dma = *((dma_addr_t *)skb->cb);
+ 310 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 311 		dev_kfree_skb_any(skb);
+ 312 		rx_ring->buf[i] = NULL;
+ 313 	}
+ 314 	dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+ 315 
+ 316 	rtw_err(rtwdev, "failed to init rx buffer\n");
+ 317 
+ 318 	return ret;
+ 319 }
+ 320 
+ 321 static int rtw_pci_init_trx_ring(struct rtw_dev *rtwdev)
+ 322 {
+ 323 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 324 	struct rtw_pci_tx_ring *tx_ring;
+ 325 	struct rtw_pci_rx_ring *rx_ring;
+ 326 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 327 	int i = 0, j = 0, tx_alloced = 0, rx_alloced = 0;
+ 328 	int tx_desc_size, rx_desc_size;
+ 329 	u32 len;
+ 330 	int ret;
+ 331 
+ 332 	tx_desc_size = chip->tx_buf_desc_sz;
+ 333 
+ 334 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+ 335 		tx_ring = &rtwpci->tx_rings[i];
+ 336 		len = max_num_of_tx_queue(i);
+[END pci.c around dma_unmap_single at 310]
+
+[pci.c around dma_unmap_single at 685 lines 665-711]
+ 665 		rtw_pci_deep_ps_enter(rtwdev);
+ 666 
+ 667 	if (!enter && test_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags))
+ 668 		rtw_pci_deep_ps_leave(rtwdev);
+ 669 
+ 670 	spin_unlock_bh(&rtwpci->irq_lock);
+ 671 }
+ 672 
+ 673 static void rtw_pci_release_rsvd_page(struct rtw_pci *rtwpci,
+ 674 				      struct rtw_pci_tx_ring *ring)
+ 675 {
+ 676 	struct sk_buff *prev = skb_dequeue(&ring->queue);
+ 677 	struct rtw_pci_tx_data *tx_data;
+ 678 	dma_addr_t dma;
+ 679 
+ 680 	if (!prev)
+ 681 		return;
+ 682 
+ 683 	tx_data = rtw_pci_get_tx_data(prev);
+ 684 	dma = tx_data->dma;
+ 685 	dma_unmap_single(&rtwpci->pdev->dev, dma, prev->len, DMA_TO_DEVICE);
+ 686 	dev_kfree_skb_any(prev);
+ 687 }
+ 688 
+ 689 static void rtw_pci_dma_check(struct rtw_dev *rtwdev,
+ 690 			      struct rtw_pci_rx_ring *rx_ring,
+ 691 			      u32 idx)
+ 692 {
+ 693 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 694 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 695 	struct rtw_pci_rx_buffer_desc *buf_desc;
+ 696 	u32 desc_sz = chip->rx_buf_desc_sz;
+ 697 	u16 total_pkt_size;
+ 698 
+ 699 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 700 						     idx * desc_sz);
+ 701 	total_pkt_size = le16_to_cpu(buf_desc->total_pkt_size);
+ 702 
+ 703 	/* rx tag mismatch, throw a warning */
+ 704 	if (total_pkt_size != rtwpci->rx_tag)
+ 705 		rtw_warn(rtwdev, "pci bus timeout, check dma status\n");
+ 706 
+ 707 	rtwpci->rx_tag = (rtwpci->rx_tag + 1) % RX_TAG_MAX;
+ 708 }
+ 709 
+ 710 static u32 __pci_get_hw_tx_ring_rp(struct rtw_dev *rtwdev, u8 pci_q)
+ 711 {
+[END pci.c around dma_unmap_single at 685]
+
+[pci.c around dma_unmap_single at 996 lines 976-1022]
+ 976 	 */
+ 977 	{
+ 978 		u32 queued = skb_queue_len(&ring->queue);
+ 979 		if (count > queued) {
+ 980 			IOLog("rtw88: TXISR DESYNC q%d: count=%u > queued=%u "
+ 981 			      "(cur_rp=%u rp=%u wp=%u len=%u), clamping\n",
+ 982 			      hw_queue, count, queued,
+ 983 			      cur_rp, ring->r.rp, ring->r.wp, ring->r.len);
+ 984 			count = queued;
+ 985 		}
+ 986 	}
+ 987 
+ 988 	while (count--) {
+ 989 		skb = skb_dequeue(&ring->queue);
+ 990 		if (!skb) {
+ 991 			rtw_err(rtwdev, "failed to dequeue %d skb TX queue %d, BD=0x%08x, rp %d -> %d\n",
+ 992 				count, hw_queue, bd_idx, ring->r.rp, cur_rp);
+ 993 			break;
+ 994 		}
+ 995 		tx_data = rtw_pci_get_tx_data(skb);
+ 996 		dma_unmap_single(&rtwpci->pdev->dev, tx_data->dma, skb->len,
+ 997 				 DMA_TO_DEVICE);
+ 998 
+ 999 		/* just free command packets from host to card */
+1000 		if (hw_queue == RTW_TX_QUEUE_H2C) {
+1001 			dev_kfree_skb_irq(skb);
+1002 			continue;
+1003 		}
+1004 
+1005 		if (ring->queue_stopped &&
+1006 		    avail_desc(ring->r.wp, rp_idx, ring->r.len) > 4) {
+1007 			q_map = skb_get_queue_mapping(skb);
+1008 			ieee80211_wake_queue(hw, q_map);
+1009 			ring->queue_stopped = false;
+1010 		}
+1011 
+1012 		if (++rp_idx >= ring->r.len)
+1013 			rp_idx = 0;
+1014 
+1015 		skb_pull(skb, rtwdev->chip->tx_pkt_desc_sz);
+1016 
+1017 		info = IEEE80211_SKB_CB(skb);
+1018 
+1019 		/* enqueue to wait for tx report */
+1020 		if (info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS) {
+1021 			rtw_tx_report_enqueue(rtwdev, skb, tx_data->sn);
+1022 			continue;
+[END pci.c around dma_unmap_single at 996]
+dma_alloc_coherent_OCCURRENCES=2
+
+[pci.c around dma_alloc_coherent at 198 lines 178-224]
+ 178 	for (i = 0; i < RTK_MAX_RX_QUEUE_NUM; i++) {
+ 179 		rx_ring = &rtwpci->rx_rings[i];
+ 180 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+ 181 	}
+ 182 }
+ 183 
+ 184 static int rtw_pci_init_tx_ring(struct rtw_dev *rtwdev,
+ 185 				struct rtw_pci_tx_ring *tx_ring,
+ 186 				u8 desc_size, u32 len)
+ 187 {
+ 188 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 189 	int ring_sz = desc_size * len;
+ 190 	dma_addr_t dma;
+ 191 	u8 *head;
+ 192 
+ 193 	if (len > TRX_BD_IDX_MASK) {
+ 194 		rtw_err(rtwdev, "len %d exceeds maximum TX entries\n", len);
+ 195 		return -EINVAL;
+ 196 	}
+ 197 
+ 198 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+ 199 	if (!head) {
+ 200 		rtw_err(rtwdev, "failed to allocate tx ring\n");
+ 201 		return -ENOMEM;
+ 202 	}
+ 203 
+ 204 	skb_queue_head_init(&tx_ring->queue);
+ 205 	tx_ring->r.head = head;
+ 206 	tx_ring->r.dma = dma;
+ 207 	tx_ring->r.len = len;
+ 208 	tx_ring->r.desc_size = desc_size;
+ 209 	tx_ring->r.wp = 0;
+ 210 	tx_ring->r.rp = 0;
+ 211 
+ 212 	return 0;
+ 213 }
+ 214 
+ 215 static int rtw_pci_reset_rx_desc(struct rtw_dev *rtwdev, struct sk_buff *skb,
+ 216 				 struct rtw_pci_rx_ring *rx_ring,
+ 217 				 u32 idx, u32 desc_sz)
+ 218 {
+ 219 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 220 	struct rtw_pci_rx_buffer_desc *buf_desc;
+ 221 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 222 	dma_addr_t dma;
+ 223 
+ 224 	if (!skb)
+[END pci.c around dma_alloc_coherent at 198]
+
+[pci.c around dma_alloc_coherent at 271 lines 251-297]
+ 251 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 252 						     idx * desc_sz);
+ 253 	memset(buf_desc, 0, sizeof(*buf_desc));
+ 254 	buf_desc->buf_size = cpu_to_le16(RTK_PCI_RX_BUF_SIZE);
+ 255 	buf_desc->dma = cpu_to_le32(dma);
+ 256 }
+ 257 
+ 258 static int rtw_pci_init_rx_ring(struct rtw_dev *rtwdev,
+ 259 				struct rtw_pci_rx_ring *rx_ring,
+ 260 				u8 desc_size, u32 len)
+ 261 {
+ 262 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 263 	struct sk_buff *skb = NULL;
+ 264 	dma_addr_t dma;
+ 265 	u8 *head;
+ 266 	int ring_sz = desc_size * len;
+ 267 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 268 	int i, allocated;
+ 269 	int ret = 0;
+ 270 
+ 271 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+ 272 	if (!head) {
+ 273 		rtw_err(rtwdev, "failed to allocate rx ring\n");
+ 274 		return -ENOMEM;
+ 275 	}
+ 276 	rx_ring->r.head = head;
+ 277 
+ 278 	for (i = 0; i < len; i++) {
+ 279 		skb = dev_alloc_skb(buf_sz);
+ 280 		if (!skb) {
+ 281 			allocated = i;
+ 282 			ret = -ENOMEM;
+ 283 			goto err_out;
+ 284 		}
+ 285 
+ 286 		memset(skb->data, 0, buf_sz);
+ 287 		rx_ring->buf[i] = skb;
+ 288 		ret = rtw_pci_reset_rx_desc(rtwdev, skb, rx_ring, i, desc_size);
+ 289 		if (ret) {
+ 290 			allocated = i;
+ 291 			dev_kfree_skb_any(skb);
+ 292 			goto err_out;
+ 293 		}
+ 294 	}
+ 295 
+ 296 	rx_ring->r.dma = dma;
+ 297 	rx_ring->r.len = len;
+[END pci.c around dma_alloc_coherent at 271]
+dma_free_coherent_OCCURRENCES=3
+
+[pci.c around dma_free_coherent at 129 lines 109-155]
+ 109 		__skb_unlink(skb, &tx_ring->queue);
+ 110 		tx_data = rtw_pci_get_tx_data(skb);
+ 111 		dma = tx_data->dma;
+ 112 
+ 113 		dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+ 114 		dev_kfree_skb_any(skb);
+ 115 	}
+ 116 }
+ 117 
+ 118 static void rtw_pci_free_tx_ring(struct rtw_dev *rtwdev,
+ 119 				 struct rtw_pci_tx_ring *tx_ring)
+ 120 {
+ 121 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 122 	u8 *head = tx_ring->r.head;
+ 123 	u32 len = tx_ring->r.len;
+ 124 	int ring_sz = len * tx_ring->r.desc_size;
+ 125 
+ 126 	rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+ 127 
+ 128 	/* free the ring itself */
+ 129 	dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+ 130 	tx_ring->r.head = NULL;
+ 131 }
+ 132 
+ 133 static void rtw_pci_free_rx_ring_skbs(struct rtw_dev *rtwdev,
+ 134 				      struct rtw_pci_rx_ring *rx_ring)
+ 135 {
+ 136 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 137 	struct sk_buff *skb;
+ 138 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 139 	dma_addr_t dma;
+ 140 	int i;
+ 141 
+ 142 	for (i = 0; i < rx_ring->r.len; i++) {
+ 143 		skb = rx_ring->buf[i];
+ 144 		if (!skb)
+ 145 			continue;
+ 146 
+ 147 		dma = *((dma_addr_t *)skb->cb);
+ 148 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 149 		dev_kfree_skb(skb);
+ 150 		rx_ring->buf[i] = NULL;
+ 151 	}
+ 152 }
+ 153 
+ 154 static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+ 155 				 struct rtw_pci_rx_ring *rx_ring)
+[END pci.c around dma_free_coherent at 129]
+
+[pci.c around dma_free_coherent at 163 lines 143-189]
+ 143 		skb = rx_ring->buf[i];
+ 144 		if (!skb)
+ 145 			continue;
+ 146 
+ 147 		dma = *((dma_addr_t *)skb->cb);
+ 148 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 149 		dev_kfree_skb(skb);
+ 150 		rx_ring->buf[i] = NULL;
+ 151 	}
+ 152 }
+ 153 
+ 154 static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+ 155 				 struct rtw_pci_rx_ring *rx_ring)
+ 156 {
+ 157 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 158 	u8 *head = rx_ring->r.head;
+ 159 	int ring_sz = rx_ring->r.desc_size * rx_ring->r.len;
+ 160 
+ 161 	rtw_pci_free_rx_ring_skbs(rtwdev, rx_ring);
+ 162 
+ 163 	dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+ 164 }
+ 165 
+ 166 static void rtw_pci_free_trx_ring(struct rtw_dev *rtwdev)
+ 167 {
+ 168 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 169 	struct rtw_pci_tx_ring *tx_ring;
+ 170 	struct rtw_pci_rx_ring *rx_ring;
+ 171 	int i;
+ 172 
+ 173 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+ 174 		tx_ring = &rtwpci->tx_rings[i];
+ 175 		rtw_pci_free_tx_ring(rtwdev, tx_ring);
+ 176 	}
+ 177 
+ 178 	for (i = 0; i < RTK_MAX_RX_QUEUE_NUM; i++) {
+ 179 		rx_ring = &rtwpci->rx_rings[i];
+ 180 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+ 181 	}
+ 182 }
+ 183 
+ 184 static int rtw_pci_init_tx_ring(struct rtw_dev *rtwdev,
+ 185 				struct rtw_pci_tx_ring *tx_ring,
+ 186 				u8 desc_size, u32 len)
+ 187 {
+ 188 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 189 	int ring_sz = desc_size * len;
+[END pci.c around dma_free_coherent at 163]
+
+[pci.c around dma_free_coherent at 314 lines 294-340]
+ 294 	}
+ 295 
+ 296 	rx_ring->r.dma = dma;
+ 297 	rx_ring->r.len = len;
+ 298 	rx_ring->r.desc_size = desc_size;
+ 299 	rx_ring->r.wp = 0;
+ 300 	rx_ring->r.rp = 0;
+ 301 
+ 302 	return 0;
+ 303 
+ 304 err_out:
+ 305 	for (i = 0; i < allocated; i++) {
+ 306 		skb = rx_ring->buf[i];
+ 307 		if (!skb)
+ 308 			continue;
+ 309 		dma = *((dma_addr_t *)skb->cb);
+ 310 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 311 		dev_kfree_skb_any(skb);
+ 312 		rx_ring->buf[i] = NULL;
+ 313 	}
+ 314 	dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+ 315 
+ 316 	rtw_err(rtwdev, "failed to init rx buffer\n");
+ 317 
+ 318 	return ret;
+ 319 }
+ 320 
+ 321 static int rtw_pci_init_trx_ring(struct rtw_dev *rtwdev)
+ 322 {
+ 323 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 324 	struct rtw_pci_tx_ring *tx_ring;
+ 325 	struct rtw_pci_rx_ring *rx_ring;
+ 326 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 327 	int i = 0, j = 0, tx_alloced = 0, rx_alloced = 0;
+ 328 	int tx_desc_size, rx_desc_size;
+ 329 	u32 len;
+ 330 	int ret;
+ 331 
+ 332 	tx_desc_size = chip->tx_buf_desc_sz;
+ 333 
+ 334 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+ 335 		tx_ring = &rtwpci->tx_rings[i];
+ 336 		len = max_num_of_tx_queue(i);
+ 337 		ret = rtw_pci_init_tx_ring(rtwdev, tx_ring, tx_desc_size, len);
+ 338 		if (ret)
+ 339 			goto out;
+ 340 	}
+[END pci.c around dma_free_coherent at 314]
+
+--- PCI RX/TX descriptor and buffer ownership context ---
+PCI_DESCRIPTOR_CONTEXT_WINDOWS=32
+
+[pci.c RX/TX descriptor context lines 54-332]
+  54 	}
+  55 };
+  56 
+  57 static u8 rtw_pci_read8(struct rtw_dev *rtwdev, u32 addr)
+  58 {
+  59 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  60 
+  61 	return readb(rtwpci->mmap + addr);
+  62 }
+  63 
+  64 static u16 rtw_pci_read16(struct rtw_dev *rtwdev, u32 addr)
+  65 {
+  66 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  67 
+  68 	return readw(rtwpci->mmap + addr);
+  69 }
+  70 
+  71 static u32 rtw_pci_read32(struct rtw_dev *rtwdev, u32 addr)
+  72 {
+  73 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  74 
+  75 	return readl(rtwpci->mmap + addr);
+  76 }
+  77 
+  78 static void rtw_pci_write8(struct rtw_dev *rtwdev, u32 addr, u8 val)
+  79 {
+  80 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  81 
+  82 	writeb(val, rtwpci->mmap + addr);
+  83 }
+  84 
+  85 static void rtw_pci_write16(struct rtw_dev *rtwdev, u32 addr, u16 val)
+  86 {
+  87 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  88 
+  89 	writew(val, rtwpci->mmap + addr);
+  90 }
+  91 
+  92 static void rtw_pci_write32(struct rtw_dev *rtwdev, u32 addr, u32 val)
+  93 {
+  94 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+  95 
+  96 	writel(val, rtwpci->mmap + addr);
+  97 }
+  98 
+  99 static void rtw_pci_free_tx_ring_skbs(struct rtw_dev *rtwdev,
+ 100 				      struct rtw_pci_tx_ring *tx_ring)
+ 101 {
+ 102 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 103 	struct rtw_pci_tx_data *tx_data;
+ 104 	struct sk_buff *skb, *tmp;
+ 105 	dma_addr_t dma;
+ 106 
+ 107 	/* free every skb remained in tx list */
+ 108 	skb_queue_walk_safe(&tx_ring->queue, skb, tmp) {
+ 109 		__skb_unlink(skb, &tx_ring->queue);
+ 110 		tx_data = rtw_pci_get_tx_data(skb);
+ 111 		dma = tx_data->dma;
+ 112 
+ 113 		dma_unmap_single(&pdev->dev, dma, skb->len, DMA_TO_DEVICE);
+ 114 		dev_kfree_skb_any(skb);
+ 115 	}
+ 116 }
+ 117 
+ 118 static void rtw_pci_free_tx_ring(struct rtw_dev *rtwdev,
+ 119 				 struct rtw_pci_tx_ring *tx_ring)
+ 120 {
+ 121 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 122 	u8 *head = tx_ring->r.head;
+ 123 	u32 len = tx_ring->r.len;
+ 124 	int ring_sz = len * tx_ring->r.desc_size;
+ 125 
+ 126 	rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+ 127 
+ 128 	/* free the ring itself */
+ 129 	dma_free_coherent(&pdev->dev, ring_sz, head, tx_ring->r.dma);
+ 130 	tx_ring->r.head = NULL;
+ 131 }
+ 132 
+ 133 static void rtw_pci_free_rx_ring_skbs(struct rtw_dev *rtwdev,
+ 134 				      struct rtw_pci_rx_ring *rx_ring)
+ 135 {
+ 136 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 137 	struct sk_buff *skb;
+ 138 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 139 	dma_addr_t dma;
+ 140 	int i;
+ 141 
+ 142 	for (i = 0; i < rx_ring->r.len; i++) {
+ 143 		skb = rx_ring->buf[i];
+ 144 		if (!skb)
+ 145 			continue;
+ 146 
+ 147 		dma = *((dma_addr_t *)skb->cb);
+ 148 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 149 		dev_kfree_skb(skb);
+ 150 		rx_ring->buf[i] = NULL;
+ 151 	}
+ 152 }
+ 153 
+ 154 static void rtw_pci_free_rx_ring(struct rtw_dev *rtwdev,
+ 155 				 struct rtw_pci_rx_ring *rx_ring)
+ 156 {
+ 157 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 158 	u8 *head = rx_ring->r.head;
+ 159 	int ring_sz = rx_ring->r.desc_size * rx_ring->r.len;
+ 160 
+ 161 	rtw_pci_free_rx_ring_skbs(rtwdev, rx_ring);
+ 162 
+ 163 	dma_free_coherent(&pdev->dev, ring_sz, head, rx_ring->r.dma);
+ 164 }
+ 165 
+ 166 static void rtw_pci_free_trx_ring(struct rtw_dev *rtwdev)
+ 167 {
+ 168 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 169 	struct rtw_pci_tx_ring *tx_ring;
+ 170 	struct rtw_pci_rx_ring *rx_ring;
+ 171 	int i;
+ 172 
+ 173 	for (i = 0; i < RTK_MAX_TX_QUEUE_NUM; i++) {
+ 174 		tx_ring = &rtwpci->tx_rings[i];
+ 175 		rtw_pci_free_tx_ring(rtwdev, tx_ring);
+ 176 	}
+ 177 
+ 178 	for (i = 0; i < RTK_MAX_RX_QUEUE_NUM; i++) {
+ 179 		rx_ring = &rtwpci->rx_rings[i];
+ 180 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+ 181 	}
+ 182 }
+ 183 
+ 184 static int rtw_pci_init_tx_ring(struct rtw_dev *rtwdev,
+ 185 				struct rtw_pci_tx_ring *tx_ring,
+ 186 				u8 desc_size, u32 len)
+ 187 {
+ 188 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 189 	int ring_sz = desc_size * len;
+ 190 	dma_addr_t dma;
+ 191 	u8 *head;
+ 192 
+ 193 	if (len > TRX_BD_IDX_MASK) {
+ 194 		rtw_err(rtwdev, "len %d exceeds maximum TX entries\n", len);
+ 195 		return -EINVAL;
+ 196 	}
+ 197 
+ 198 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+ 199 	if (!head) {
+ 200 		rtw_err(rtwdev, "failed to allocate tx ring\n");
+ 201 		return -ENOMEM;
+ 202 	}
+ 203 
+ 204 	skb_queue_head_init(&tx_ring->queue);
+ 205 	tx_ring->r.head = head;
+ 206 	tx_ring->r.dma = dma;
+ 207 	tx_ring->r.len = len;
+ 208 	tx_ring->r.desc_size = desc_size;
+ 209 	tx_ring->r.wp = 0;
+ 210 	tx_ring->r.rp = 0;
+ 211 
+ 212 	return 0;
+ 213 }
+ 214 
+ 215 static int rtw_pci_reset_rx_desc(struct rtw_dev *rtwdev, struct sk_buff *skb,
+ 216 				 struct rtw_pci_rx_ring *rx_ring,
+ 217 				 u32 idx, u32 desc_sz)
+ 218 {
+ 219 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 220 	struct rtw_pci_rx_buffer_desc *buf_desc;
+ 221 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 222 	dma_addr_t dma;
+ 223 
+ 224 	if (!skb)
+ 225 		return -EINVAL;
+ 226 
+ 227 	dma = dma_map_single(&pdev->dev, skb->data, buf_sz, DMA_FROM_DEVICE);
+ 228 	if (dma_mapping_error(&pdev->dev, dma))
+ 229 		return -EBUSY;
+ 230 
+ 231 	*((dma_addr_t *)skb->cb) = dma;
+ 232 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 233 						     idx * desc_sz);
+ 234 	memset(buf_desc, 0, sizeof(*buf_desc));
+ 235 	buf_desc->buf_size = cpu_to_le16(RTK_PCI_RX_BUF_SIZE);
+ 236 	buf_desc->dma = cpu_to_le32(dma);
+ 237 
+ 238 	return 0;
+ 239 }
+ 240 
+ 241 static void rtw_pci_sync_rx_desc_device(struct rtw_dev *rtwdev, dma_addr_t dma,
+ 242 					struct rtw_pci_rx_ring *rx_ring,
+ 243 					u32 idx, u32 desc_sz)
+ 244 {
+ 245 	struct device *dev = rtwdev->dev;
+ 246 	struct rtw_pci_rx_buffer_desc *buf_desc;
+ 247 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 248 
+ 249 	dma_sync_single_for_device(dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 250 
+ 251 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 252 						     idx * desc_sz);
+ 253 	memset(buf_desc, 0, sizeof(*buf_desc));
+ 254 	buf_desc->buf_size = cpu_to_le16(RTK_PCI_RX_BUF_SIZE);
+ 255 	buf_desc->dma = cpu_to_le32(dma);
+ 256 }
+ 257 
+ 258 static int rtw_pci_init_rx_ring(struct rtw_dev *rtwdev,
+ 259 				struct rtw_pci_rx_ring *rx_ring,
+ 260 				u8 desc_size, u32 len)
+ 261 {
+ 262 	struct pci_dev *pdev = to_pci_dev(rtwdev->dev);
+ 263 	struct sk_buff *skb = NULL;
+ 264 	dma_addr_t dma;
+ 265 	u8 *head;
+ 266 	int ring_sz = desc_size * len;
+ 267 	int buf_sz = RTK_PCI_RX_BUF_SIZE;
+ 268 	int i, allocated;
+ 269 	int ret = 0;
+ 270 
+ 271 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+ 272 	if (!head) {
+ 273 		rtw_err(rtwdev, "failed to allocate rx ring\n");
+ 274 		return -ENOMEM;
+ 275 	}
+ 276 	rx_ring->r.head = head;
+ 277 
+ 278 	for (i = 0; i < len; i++) {
+ 279 		skb = dev_alloc_skb(buf_sz);
+ 280 		if (!skb) {
+ 281 			allocated = i;
+ 282 			ret = -ENOMEM;
+ 283 			goto err_out;
+ 284 		}
+ 285 
+ 286 		memset(skb->data, 0, buf_sz);
+ 287 		rx_ring->buf[i] = skb;
+ 288 		ret = rtw_pci_reset_rx_desc(rtwdev, skb, rx_ring, i, desc_size);
+ 289 		if (ret) {
+ 290 			allocated = i;
+ 291 			dev_kfree_skb_any(skb);
+ 292 			goto err_out;
+ 293 		}
+ 294 	}
+ 295 
+ 296 	rx_ring->r.dma = dma;
+ 297 	rx_ring->r.len = len;
+ 298 	rx_ring->r.desc_size = desc_size;
+ 299 	rx_ring->r.wp = 0;
+ 300 	rx_ring->r.rp = 0;
+ 301 
+ 302 	return 0;
+ 303 
+ 304 err_out:
+ 305 	for (i = 0; i < allocated; i++) {
+ 306 		skb = rx_ring->buf[i];
+ 307 		if (!skb)
+ 308 			continue;
+ 309 		dma = *((dma_addr_t *)skb->cb);
+ 310 		dma_unmap_single(&pdev->dev, dma, buf_sz, DMA_FROM_DEVICE);
+ 311 		dev_kfree_skb_any(skb);
+ 312 		rx_ring->buf[i] = NULL;
+ 313 	}
+ 314 	dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+ 315 
+ 316 	rtw_err(rtwdev, "failed to init rx buffer\n");
+ 317 
+ 318 	return ret;
+ 319 }
+ 320 
+ 321 static int rtw_pci_init_trx_ring(struct rtw_dev *rtwdev)
+ 322 {
+ 323 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 324 	struct rtw_pci_tx_ring *tx_ring;
+ 325 	struct rtw_pci_rx_ring *rx_ring;
+ 326 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 327 	int i = 0, j = 0, tx_alloced = 0, rx_alloced = 0;
+ 328 	int tx_desc_size, rx_desc_size;
+ 329 	u32 len;
+ 330 	int ret;
+ 331 
+ 332 	tx_desc_size = chip->tx_buf_desc_sz;
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 337-353]
+ 337 		ret = rtw_pci_init_tx_ring(rtwdev, tx_ring, tx_desc_size, len);
+ 338 		if (ret)
+ 339 			goto out;
+ 340 	}
+ 341 
+ 342 	rx_desc_size = chip->rx_buf_desc_sz;
+ 343 
+ 344 	for (j = 0; j < RTK_MAX_RX_QUEUE_NUM; j++) {
+ 345 		rx_ring = &rtwpci->rx_rings[j];
+ 346 		ret = rtw_pci_init_rx_ring(rtwdev, rx_ring, rx_desc_size,
+ 347 					   RTK_MAX_RX_DESC_NUM);
+ 348 		if (ret)
+ 349 			goto out;
+ 350 	}
+ 351 
+ 352 	return 0;
+ 353 
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 358-384]
+ 358 		rtw_pci_free_tx_ring(rtwdev, tx_ring);
+ 359 	}
+ 360 
+ 361 	rx_alloced = j;
+ 362 	for (j = 0; j < rx_alloced; j++) {
+ 363 		rx_ring = &rtwpci->rx_rings[j];
+ 364 		rtw_pci_free_rx_ring(rtwdev, rx_ring);
+ 365 	}
+ 366 
+ 367 	return ret;
+ 368 }
+ 369 
+ 370 static void rtw_pci_deinit(struct rtw_dev *rtwdev)
+ 371 {
+ 372 	rtw_pci_free_trx_ring(rtwdev);
+ 373 }
+ 374 
+ 375 static int rtw_pci_init(struct rtw_dev *rtwdev)
+ 376 {
+ 377 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 378 	int ret = 0;
+ 379 
+ 380 	rtwpci->irq_mask[0] = IMR_HIGHDOK |
+ 381 			      IMR_MGNTDOK |
+ 382 			      IMR_BKDOK |
+ 383 			      IMR_BEDOK |
+ 384 			      IMR_VIDOK |
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 391-494]
+ 391 			      0;
+ 392 	rtwpci->irq_mask[3] = IMR_H2CDOK |
+ 393 			      0;
+ 394 	spin_lock_init(&rtwpci->irq_lock);
+ 395 	spin_lock_init(&rtwpci->hwirq_lock);
+ 396 	ret = rtw_pci_init_trx_ring(rtwdev);
+ 397 
+ 398 	return ret;
+ 399 }
+ 400 
+ 401 static void rtw_pci_reset_buf_desc(struct rtw_dev *rtwdev)
+ 402 {
+ 403 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 404 	u32 len;
+ 405 	u8 tmp;
+ 406 	dma_addr_t dma;
+ 407 
+ 408 	tmp = rtw_read8(rtwdev, RTK_PCI_CTRL + 3);
+ 409 	rtw_write8(rtwdev, RTK_PCI_CTRL + 3, tmp | 0xf7);
+ 410 
+ 411 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BCN].r.dma;
+ 412 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BCNQ, dma);
+ 413 
+ 414 	if (!rtw_chip_wcpu_8051(rtwdev)) {
+ 415 		len = rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.len;
+ 416 		dma = rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.dma;
+ 417 		rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.rp = 0;
+ 418 		rtwpci->tx_rings[RTW_TX_QUEUE_H2C].r.wp = 0;
+ 419 		rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_H2CQ, len & TRX_BD_IDX_MASK);
+ 420 		rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_H2CQ, dma);
+ 421 	}
+ 422 
+ 423 	len = rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.len;
+ 424 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.dma;
+ 425 	rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.rp = 0;
+ 426 	rtwpci->tx_rings[RTW_TX_QUEUE_BK].r.wp = 0;
+ 427 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_BKQ, len & TRX_BD_IDX_MASK);
+ 428 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BKQ, dma);
+ 429 
+ 430 	len = rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.len;
+ 431 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.dma;
+ 432 	rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.rp = 0;
+ 433 	rtwpci->tx_rings[RTW_TX_QUEUE_BE].r.wp = 0;
+ 434 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_BEQ, len & TRX_BD_IDX_MASK);
+ 435 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_BEQ, dma);
+ 436 
+ 437 	len = rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.len;
+ 438 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.dma;
+ 439 	rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.rp = 0;
+ 440 	rtwpci->tx_rings[RTW_TX_QUEUE_VO].r.wp = 0;
+ 441 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_VOQ, len & TRX_BD_IDX_MASK);
+ 442 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_VOQ, dma);
+ 443 
+ 444 	len = rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.len;
+ 445 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.dma;
+ 446 	rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.rp = 0;
+ 447 	rtwpci->tx_rings[RTW_TX_QUEUE_VI].r.wp = 0;
+ 448 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_VIQ, len & TRX_BD_IDX_MASK);
+ 449 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_VIQ, dma);
+ 450 
+ 451 	len = rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.len;
+ 452 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.dma;
+ 453 	rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.rp = 0;
+ 454 	rtwpci->tx_rings[RTW_TX_QUEUE_MGMT].r.wp = 0;
+ 455 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_MGMTQ, len & TRX_BD_IDX_MASK);
+ 456 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_MGMTQ, dma);
+ 457 
+ 458 	len = rtwpci->tx_rings[RTW_TX_QUEUE_HI0].r.len;
+ 459 	dma = rtwpci->tx_rings[RTW_TX_QUEUE_HI0].r.dma;
+ 460 	rtwpci->tx_rings[RTW_TX_QUEUE_HI0].r.rp = 0;
+ 461 	rtwpci->tx_rings[RTW_TX_QUEUE_HI0].r.wp = 0;
+ 462 	rtw_write16(rtwdev, RTK_PCI_TXBD_NUM_HI0Q, len & TRX_BD_IDX_MASK);
+ 463 	rtw_write32(rtwdev, RTK_PCI_TXBD_DESA_HI0Q, dma);
+ 464 
+ 465 	len = rtwpci->rx_rings[RTW_RX_QUEUE_MPDU].r.len;
+ 466 	dma = rtwpci->rx_rings[RTW_RX_QUEUE_MPDU].r.dma;
+ 467 	rtwpci->rx_rings[RTW_RX_QUEUE_MPDU].r.rp = 0;
+ 468 	rtwpci->rx_rings[RTW_RX_QUEUE_MPDU].r.wp = 0;
+ 469 	rtw_write16(rtwdev, RTK_PCI_RXBD_NUM_MPDUQ, len & TRX_BD_IDX_MASK);
+ 470 	rtw_write32(rtwdev, RTK_PCI_RXBD_DESA_MPDUQ, dma);
+ 471 
+ 472 	/* reset read/write point */
+ 473 	rtw_write32(rtwdev, RTK_PCI_TXBD_RWPTR_CLR, 0xffffffff);
+ 474 
+ 475 	/* reset H2C Queue index in a single write */
+ 476 	if (rtw_chip_wcpu_3081(rtwdev))
+ 477 		rtw_write32_set(rtwdev, RTK_PCI_TXBD_H2CQ_CSR,
+ 478 				BIT_CLR_H2CQ_HOST_IDX | BIT_CLR_H2CQ_HW_IDX);
+ 479 }
+ 480 
+ 481 static void rtw_pci_reset_trx_ring(struct rtw_dev *rtwdev)
+ 482 {
+ 483 	rtw_pci_reset_buf_desc(rtwdev);
+ 484 }
+ 485 
+ 486 void rtw_pci_enable_interrupt(struct rtw_dev *rtwdev,
+ 487 				     struct rtw_pci *rtwpci, bool exclude_rx)
+ 488 {
+ 489 	unsigned long flags;
+ 490 	u32 imr0_unmask = exclude_rx ? IMR_ROK : 0;
+ 491 
+ 492 	spin_lock_irqsave(&rtwpci->hwirq_lock, flags);
+ 493 
+ 494 	rtw_write32(rtwdev, RTK_PCI_HIMR0, rtwpci->irq_mask[0] & ~imr0_unmask);
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 500-512]
+ 500 
+ 501 	spin_unlock_irqrestore(&rtwpci->hwirq_lock, flags);
+ 502 }
+ 503 
+ 504 static void rtw_pci_disable_interrupt(struct rtw_dev *rtwdev,
+ 505 				      struct rtw_pci *rtwpci)
+ 506 {
+ 507 	unsigned long flags;
+ 508 
+ 509 	spin_lock_irqsave(&rtwpci->hwirq_lock, flags);
+ 510 
+ 511 	if (!rtwpci->irq_enabled)
+ 512 		goto out;
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 520-599]
+ 520 
+ 521 out:
+ 522 	spin_unlock_irqrestore(&rtwpci->hwirq_lock, flags);
+ 523 }
+ 524 
+ 525 static void rtw_pci_dma_reset(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci)
+ 526 {
+ 527 	/* reset dma and rx tag */
+ 528 	rtw_write32_set(rtwdev, RTK_PCI_CTRL,
+ 529 			BIT_RST_TRXDMA_INTF | BIT_RX_TAG_EN);
+ 530 	rtwpci->rx_tag = 0;
+ 531 }
+ 532 
+ 533 static int rtw_pci_setup(struct rtw_dev *rtwdev)
+ 534 {
+ 535 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 536 
+ 537 	rtw_pci_reset_trx_ring(rtwdev);
+ 538 	rtw_pci_dma_reset(rtwdev, rtwpci);
+ 539 
+ 540 	return 0;
+ 541 }
+ 542 
+ 543 static void rtw_pci_dma_release(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci)
+ 544 {
+ 545 	struct rtw_pci_tx_ring *tx_ring;
+ 546 	enum rtw_tx_queue_type queue;
+ 547 
+ 548 	rtw_pci_reset_trx_ring(rtwdev);
+ 549 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++) {
+ 550 		tx_ring = &rtwpci->tx_rings[queue];
+ 551 		rtw_pci_free_tx_ring_skbs(rtwdev, tx_ring);
+ 552 	}
+ 553 }
+ 554 
+ 555 static void rtw_pci_napi_start(struct rtw_dev *rtwdev)
+ 556 {
+ 557 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 558 
+ 559 	if (test_and_set_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+ 560 		return;
+ 561 
+ 562 	napi_enable(&rtwpci->napi);
+ 563 }
+ 564 
+ 565 static void rtw_pci_napi_stop(struct rtw_dev *rtwdev)
+ 566 {
+ 567 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 568 
+ 569 	if (!test_and_clear_bit(RTW_PCI_FLAG_NAPI_RUNNING, rtwpci->flags))
+ 570 		return;
+ 571 
+ 572 	napi_synchronize(&rtwpci->napi);
+ 573 	napi_disable(&rtwpci->napi);
+ 574 }
+ 575 
+ 576 static int rtw_pci_start(struct rtw_dev *rtwdev)
+ 577 {
+ 578 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 579 
+ 580 	rtw_pci_napi_start(rtwdev);
+ 581 
+ 582 	spin_lock_bh(&rtwpci->irq_lock);
+ 583 	rtwpci->running = true;
+ 584 	rtw_pci_enable_interrupt(rtwdev, rtwpci, false);
+ 585 	spin_unlock_bh(&rtwpci->irq_lock);
+ 586 
+ 587 	return 0;
+ 588 }
+ 589 
+ 590 static void rtw_pci_stop(struct rtw_dev *rtwdev)
+ 591 {
+ 592 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 593 	struct pci_dev *pdev = rtwpci->pdev;
+ 594 
+ 595 	spin_lock_bh(&rtwpci->irq_lock);
+ 596 	rtwpci->running = false;
+ 597 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+ 598 	spin_unlock_bh(&rtwpci->irq_lock);
+ 599 
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 605-618]
+ 605 	spin_unlock_bh(&rtwpci->irq_lock);
+ 606 }
+ 607 
+ 608 static void rtw_pci_deep_ps_enter(struct rtw_dev *rtwdev)
+ 609 {
+ 610 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 611 	struct rtw_pci_tx_ring *tx_ring;
+ 612 	enum rtw_tx_queue_type queue;
+ 613 	bool tx_empty = true;
+ 614 
+ 615 	if (rtw_fw_feature_check(&rtwdev->fw, FW_FEATURE_TX_WAKE))
+ 616 		goto enter_deep_ps;
+ 617 
+ 618 	lockdep_assert_held(&rtwpci->irq_lock);
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 627-639]
+ 627 			continue;
+ 628 
+ 629 		tx_ring = &rtwpci->tx_rings[queue];
+ 630 
+ 631 		/* check if there is any skb DMAing */
+ 632 		if (skb_queue_len(&tx_ring->queue)) {
+ 633 			tx_empty = false;
+ 634 			break;
+ 635 		}
+ 636 	}
+ 637 
+ 638 	if (!tx_empty) {
+ 639 		rtw_dbg(rtwdev, RTW_DBG_PS,
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 645-706]
+ 645 	rtw_power_mode_change(rtwdev, true);
+ 646 }
+ 647 
+ 648 static void rtw_pci_deep_ps_leave(struct rtw_dev *rtwdev)
+ 649 {
+ 650 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 651 
+ 652 	lockdep_assert_held(&rtwpci->irq_lock);
+ 653 
+ 654 	if (test_and_clear_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags))
+ 655 		rtw_power_mode_change(rtwdev, false);
+ 656 }
+ 657 
+ 658 static void rtw_pci_deep_ps(struct rtw_dev *rtwdev, bool enter)
+ 659 {
+ 660 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 661 
+ 662 	spin_lock_bh(&rtwpci->irq_lock);
+ 663 
+ 664 	if (enter && !test_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags))
+ 665 		rtw_pci_deep_ps_enter(rtwdev);
+ 666 
+ 667 	if (!enter && test_bit(RTW_FLAG_LEISURE_PS_DEEP, rtwdev->flags))
+ 668 		rtw_pci_deep_ps_leave(rtwdev);
+ 669 
+ 670 	spin_unlock_bh(&rtwpci->irq_lock);
+ 671 }
+ 672 
+ 673 static void rtw_pci_release_rsvd_page(struct rtw_pci *rtwpci,
+ 674 				      struct rtw_pci_tx_ring *ring)
+ 675 {
+ 676 	struct sk_buff *prev = skb_dequeue(&ring->queue);
+ 677 	struct rtw_pci_tx_data *tx_data;
+ 678 	dma_addr_t dma;
+ 679 
+ 680 	if (!prev)
+ 681 		return;
+ 682 
+ 683 	tx_data = rtw_pci_get_tx_data(prev);
+ 684 	dma = tx_data->dma;
+ 685 	dma_unmap_single(&rtwpci->pdev->dev, dma, prev->len, DMA_TO_DEVICE);
+ 686 	dev_kfree_skb_any(prev);
+ 687 }
+ 688 
+ 689 static void rtw_pci_dma_check(struct rtw_dev *rtwdev,
+ 690 			      struct rtw_pci_rx_ring *rx_ring,
+ 691 			      u32 idx)
+ 692 {
+ 693 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 694 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 695 	struct rtw_pci_rx_buffer_desc *buf_desc;
+ 696 	u32 desc_sz = chip->rx_buf_desc_sz;
+ 697 	u16 total_pkt_size;
+ 698 
+ 699 	buf_desc = (struct rtw_pci_rx_buffer_desc *)(rx_ring->r.head +
+ 700 						     idx * desc_sz);
+ 701 	total_pkt_size = le16_to_cpu(buf_desc->total_pkt_size);
+ 702 
+ 703 	/* rx tag mismatch, throw a warning */
+ 704 	if (total_pkt_size != rtwpci->rx_tag)
+ 705 		rtw_warn(rtwdev, "pci bus timeout, check dma status\n");
+ 706 
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 715-728]
+ 715 	return FIELD_GET(TRX_BD_IDX_MASK, bd_idx);
+ 716 }
+ 717 
+ 718 static void __pci_flush_queue(struct rtw_dev *rtwdev, u8 pci_q, bool drop)
+ 719 {
+ 720 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 721 	struct rtw_pci_tx_ring *ring = &rtwpci->tx_rings[pci_q];
+ 722 	u32 cur_rp;
+ 723 	u8 i;
+ 724 
+ 725 	/* Because the time taked by the I/O in __pci_get_hw_tx_ring_rp is a
+ 726 	 * bit dynamic, it's hard to define a reasonable fixed total timeout to
+ 727 	 * use read_poll_timeout* helper. Instead, we can ensure a reasonable
+ 728 	 * polling times, so we just use for loop with udelay here.
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 776-789]
+ 776 }
+ 777 
+ 778 static void rtw_pci_tx_kick_off_queue(struct rtw_dev *rtwdev,
+ 779 				      enum rtw_tx_queue_type queue)
+ 780 {
+ 781 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 782 	struct rtw_pci_tx_ring *ring;
+ 783 	u32 bd_idx;
+ 784 
+ 785 	ring = &rtwpci->tx_rings[queue];
+ 786 	bd_idx = rtw_pci_tx_queue_idx_addr[queue];
+ 787 
+ 788 	spin_lock_bh(&rtwpci->irq_lock);
+ 789 	if (!rtw_fw_feature_check(&rtwdev->fw, FW_FEATURE_TX_WAKE))
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 793-828]
+ 793 	spin_unlock_bh(&rtwpci->irq_lock);
+ 794 }
+ 795 
+ 796 static void rtw_pci_tx_kick_off(struct rtw_dev *rtwdev)
+ 797 {
+ 798 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 799 	enum rtw_tx_queue_type queue;
+ 800 
+ 801 	for (queue = 0; queue < RTK_MAX_TX_QUEUE_NUM; queue++)
+ 802 		if (test_and_clear_bit(queue, rtwpci->tx_queued))
+ 803 			rtw_pci_tx_kick_off_queue(rtwdev, queue);
+ 804 }
+ 805 
+ 806 static int rtw_pci_tx_write_data(struct rtw_dev *rtwdev,
+ 807 				 struct rtw_tx_pkt_info *pkt_info,
+ 808 				 struct sk_buff *skb,
+ 809 				 enum rtw_tx_queue_type queue)
+ 810 {
+ 811 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 812 	const struct rtw_chip_info *chip = rtwdev->chip;
+ 813 	struct rtw_pci_tx_ring *ring;
+ 814 	struct rtw_pci_tx_data *tx_data;
+ 815 	dma_addr_t dma;
+ 816 	u32 tx_pkt_desc_sz = chip->tx_pkt_desc_sz;
+ 817 	u32 tx_buf_desc_sz = chip->tx_buf_desc_sz;
+ 818 	u32 size;
+ 819 	u32 psb_len;
+ 820 	u8 *pkt_desc;
+ 821 	struct rtw_pci_tx_buffer_desc *buf_desc;
+ 822 
+ 823 	ring = &rtwpci->tx_rings[queue];
+ 824 
+ 825 	size = skb->len;
+ 826 
+ 827 	if (queue == RTW_TX_QUEUE_BCN)
+ 828 		rtw_pci_release_rsvd_page(rtwpci, ring);
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 845-867]
+ 845 	if (queue == RTW_TX_QUEUE_BCN)
+ 846 		psb_len |= 1 << RTK_PCI_TXBD_OWN_OFFSET;
+ 847 
+ 848 	buf_desc[0].psb_len = cpu_to_le16(psb_len);
+ 849 	buf_desc[0].buf_size = cpu_to_le16(tx_pkt_desc_sz);
+ 850 	buf_desc[0].dma = cpu_to_le32(dma);
+ 851 	buf_desc[1].buf_size = cpu_to_le16(size);
+ 852 	buf_desc[1].dma = cpu_to_le32(dma + tx_pkt_desc_sz);
+ 853 
+ 854 	tx_data = rtw_pci_get_tx_data(skb);
+ 855 	tx_data->dma = dma;
+ 856 	tx_data->sn = pkt_info->sn;
+ 857 
+ 858 	spin_lock_bh(&rtwpci->irq_lock);
+ 859 
+ 860 	skb_queue_tail(&ring->queue, skb);
+ 861 
+ 862 	if (queue == RTW_TX_QUEUE_BCN)
+ 863 		goto out_unlock;
+ 864 
+ 865 	/* update write-index, and kick it off later */
+ 866 	set_bit(queue, rtwpci->tx_queued);
+ 867 	if (++ring->r.wp >= ring->r.len)
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 923-936]
+ 923 static int rtw_pci_tx_write(struct rtw_dev *rtwdev,
+ 924 			    struct rtw_tx_pkt_info *pkt_info,
+ 925 			    struct sk_buff *skb)
+ 926 {
+ 927 	enum rtw_tx_queue_type queue = rtw_tx_queue_mapping(skb);
+ 928 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+ 929 	struct rtw_pci_tx_ring *ring;
+ 930 	int ret;
+ 931 
+ 932 	ret = rtw_pci_tx_write_data(rtwdev, pkt_info, skb, queue);
+ 933 	if (ret)
+ 934 		return ret;
+ 935 
+ 936 	ring = &rtwpci->tx_rings[queue];
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 942-960]
+ 942 	spin_unlock_bh(&rtwpci->irq_lock);
+ 943 
+ 944 	return 0;
+ 945 }
+ 946 
+ 947 static void rtw_pci_tx_isr(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci,
+ 948 			   u8 hw_queue)
+ 949 {
+ 950 	struct ieee80211_hw *hw = rtwdev->hw;
+ 951 	struct ieee80211_tx_info *info;
+ 952 	struct rtw_pci_tx_ring *ring;
+ 953 	struct rtw_pci_tx_data *tx_data;
+ 954 	struct sk_buff *skb;
+ 955 	u32 count;
+ 956 	u32 bd_idx_addr;
+ 957 	u32 bd_idx, cur_rp, rp_idx;
+ 958 	u16 q_map;
+ 959 
+ 960 	ring = &rtwpci->tx_rings[hw_queue];
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 973-985]
+ 973 	 * something is wrong (e.g. hw_rp > hw_wp race or ring desync).
+ 974 	 * Clamp to the actual queue depth to avoid cascading underrun
+ 975 	 * that permanently breaks the ring.
+ 976 	 */
+ 977 	{
+ 978 		u32 queued = skb_queue_len(&ring->queue);
+ 979 		if (count > queued) {
+ 980 			IOLog("rtw88: TXISR DESYNC q%d: count=%u > queued=%u "
+ 981 			      "(cur_rp=%u rp=%u wp=%u len=%u), clamping\n",
+ 982 			      hw_queue, count, queued,
+ 983 			      cur_rp, ring->r.rp, ring->r.wp, ring->r.len);
+ 984 			count = queued;
+ 985 		}
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 991-1003]
+ 991 			rtw_err(rtwdev, "failed to dequeue %d skb TX queue %d, BD=0x%08x, rp %d -> %d\n",
+ 992 				count, hw_queue, bd_idx, ring->r.rp, cur_rp);
+ 993 			break;
+ 994 		}
+ 995 		tx_data = rtw_pci_get_tx_data(skb);
+ 996 		dma_unmap_single(&rtwpci->pdev->dev, tx_data->dma, skb->len,
+ 997 				 DMA_TO_DEVICE);
+ 998 
+ 999 		/* just free command packets from host to card */
+1000 		if (hw_queue == RTW_TX_QUEUE_H2C) {
+1001 			dev_kfree_skb_irq(skb);
+1002 			continue;
+1003 		}
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1041-1147]
+1041  * helper bridges the gap.
+1042  */
+1043 void rtw88_get_be_ring_state(struct rtw_dev *rtwdev,
+1044 			     u32 *sw_wp, u32 *sw_rp, u32 *qlen)
+1045 {
+1046 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1047 	struct rtw_pci_tx_ring *ring = &rtwpci->tx_rings[RTW_TX_QUEUE_BE];
+1048 
+1049 	if (sw_wp) *sw_wp = ring->r.wp;
+1050 	if (sw_rp) *sw_rp = ring->r.rp;
+1051 	if (qlen)  *qlen  = skb_queue_len(&ring->queue);
+1052 }
+1053 
+1054 /* Free descriptor slots in the BE TX ring.  Used by the kext output path to
+1055  * decide when to apply backpressure (stall) instead of letting a full ring
+1056  * drop frames.  Lock-free read: wp is written only by the (serialized) TX
+1057  * submit path, rp only by tx_isr; a momentarily stale rp just yields a
+1058  * conservative (smaller) avail, which is safe. */
+1059 u32 rtw88_be_ring_avail(struct rtw_dev *rtwdev)
+1060 {
+1061 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1062 	struct rtw_pci_tx_ring *ring = &rtwpci->tx_rings[RTW_TX_QUEUE_BE];
+1063 
+1064 	return avail_desc(ring->r.wp, ring->r.rp, ring->r.len);
+1065 }
+1066 
+1067 /* Dump the BE buffer-descriptor at slot `idx` (each slot holds two 8-byte
+1068  * descriptors: [0]=tx_pkt_desc, [1]=frame body).  Used to inspect the exact
+1069  * descriptor the HW read pointer is parked on when TX DMA stalls. */
+1070 void rtw88_get_be_bd(struct rtw_dev *rtwdev, u32 idx,
+1071 		     u32 *dma0, u32 *dma1, u16 *bufsz0, u16 *bufsz1, u16 *psb0)
+1072 {
+1073 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1074 	struct rtw_pci_tx_ring *ring = &rtwpci->tx_rings[RTW_TX_QUEUE_BE];
+1075 	struct rtw_pci_tx_buffer_desc *bd;
+1076 
+1077 	if (!ring->r.head || idx >= ring->r.len)
+1078 		return;
+1079 
+1080 	bd = (struct rtw_pci_tx_buffer_desc *)((u8 *)ring->r.head +
+1081 					       idx * ring->r.desc_size);
+1082 	if (dma0)   *dma0   = le32_to_cpu(bd[0].dma);
+1083 	if (dma1)   *dma1   = le32_to_cpu(bd[1].dma);
+1084 	if (bufsz0) *bufsz0 = le16_to_cpu(bd[0].buf_size);
+1085 	if (bufsz1) *bufsz1 = le16_to_cpu(bd[1].buf_size);
+1086 	if (psb0)   *psb0   = le16_to_cpu(bd[0].psb_len);
+1087 }
+1088 
+1089 static void rtw_pci_rx_isr(struct rtw_dev *rtwdev)
+1090 {
+1091 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1092 	struct napi_struct *napi = &rtwpci->napi;
+1093 
+1094 	napi_schedule(napi);
+1095 }
+1096 
+1097 static int rtw_pci_get_hw_rx_ring_nr(struct rtw_dev *rtwdev,
+1098 				     struct rtw_pci *rtwpci)
+1099 {
+1100 	struct rtw_pci_rx_ring *ring;
+1101 	int count = 0;
+1102 	u32 tmp, cur_wp;
+1103 
+1104 	ring = &rtwpci->rx_rings[RTW_RX_QUEUE_MPDU];
+1105 	tmp = rtw_read32(rtwdev, RTK_PCI_RXBD_IDX_MPDUQ);
+1106 	cur_wp = u32_get_bits(tmp, TRX_BD_HW_IDX_MASK);
+1107 	if (cur_wp >= ring->r.wp)
+1108 		count = cur_wp - ring->r.wp;
+1109 	else
+1110 		count = ring->r.len - (ring->r.wp - cur_wp);
+1111 
+1112 	return count;
+1113 }
+1114 
+1115 static u32 rtw_pci_rx_napi(struct rtw_dev *rtwdev, struct rtw_pci *rtwpci,
+1116 			   u8 hw_queue, u32 limit)
+1117 {
+1118 	const struct rtw_chip_info *chip = rtwdev->chip;
+1119 	struct napi_struct *napi = &rtwpci->napi;
+1120 	struct rtw_pci_rx_ring *ring = &rtwpci->rx_rings[RTW_RX_QUEUE_MPDU];
+1121 	struct rtw_rx_pkt_stat pkt_stat;
+1122 	struct ieee80211_rx_status rx_status;
+1123 	struct sk_buff *skb, *new;
+1124 	u32 cur_rp = ring->r.rp;
+1125 	u32 count, rx_done = 0;
+1126 	u32 pkt_offset;
+1127 	u32 pkt_desc_sz = chip->rx_pkt_desc_sz;
+1128 	u32 buf_desc_sz = chip->rx_buf_desc_sz;
+1129 	u32 new_len;
+1130 	u8 *rx_desc;
+1131 	dma_addr_t dma;
+1132 
+1133 	count = rtw_pci_get_hw_rx_ring_nr(rtwdev, rtwpci);
+1134 	count = min(count, limit);
+1135 
+1136 	while (count--) {
+1137 		rtw_pci_dma_check(rtwdev, ring, cur_rp);
+1138 		skb = ring->buf[cur_rp];
+1139 		dma = *((dma_addr_t *)skb->cb);
+1140 		dma_sync_single_for_cpu(rtwdev->dev, dma, RTK_PCI_RX_BUF_SIZE,
+1141 					DMA_FROM_DEVICE);
+1142 		rx_desc = skb->data;
+1143 		rtw_rx_query_rx_desc(rtwdev, rx_desc, &pkt_stat, &rx_status);
+1144 
+1145 		/* offset from rx_desc to payload */
+1146 		pkt_offset = pkt_desc_sz + pkt_stat.drv_info_sz +
+1147 			     pkt_stat.shift;
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1189-1201]
+1189 
+1190 	return rx_done;
+1191 }
+1192 
+1193 static void rtw_pci_irq_recognized(struct rtw_dev *rtwdev,
+1194 				   struct rtw_pci *rtwpci, u32 *irq_status)
+1195 {
+1196 	unsigned long flags;
+1197 
+1198 	spin_lock_irqsave(&rtwpci->hwirq_lock, flags);
+1199 
+1200 	irq_status[0] = rtw_read32(rtwdev, RTK_PCI_HISR0);
+1201 	irq_status[1] = rtw_read32(rtwdev, RTK_PCI_HISR1);
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1215-1227]
+1215 }
+1216 
+1217 static irqreturn_t rtw_pci_interrupt_handler(int irq, void *dev)
+1218 {
+1219 	struct rtw_dev *rtwdev = dev;
+1220 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1221 
+1222 	/* disable RTW PCI interrupt to avoid more interrupts before the end of
+1223 	 * thread function
+1224 	 *
+1225 	 * disable HIMR here to also avoid new HISR flag being raised before
+1226 	 * the HISRs have been Write-1-cleared for MSI. If not all of the HISRs
+1227 	 * are cleared, the edge-triggered interrupt will not be generated when
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1233-1245]
+1233 }
+1234 
+1235 static irqreturn_t rtw_pci_interrupt_threadfn(int irq, void *dev)
+1236 {
+1237 	struct rtw_dev *rtwdev = dev;
+1238 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1239 	u32 irq_status[4];
+1240 	bool rx = false;
+1241 
+1242 	spin_lock_bh(&rtwpci->irq_lock);
+1243 	rtw_pci_irq_recognized(rtwdev, rtwpci, irq_status);
+1244 
+1245 	if (irq_status[0] & IMR_MGNTDOK)
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1272-1284]
+1272 }
+1273 
+1274 static int rtw_pci_io_mapping(struct rtw_dev *rtwdev,
+1275 			      struct pci_dev *pdev)
+1276 {
+1277 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1278 	unsigned long len;
+1279 	u8 bar_id = 2;
+1280 	int ret;
+1281 
+1282 	ret = pci_request_regions(pdev, KBUILD_MODNAME);
+1283 	if (ret) {
+1284 		rtw_err(rtwdev, "failed to request pci regions\n");
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1297-1309]
+1297 }
+1298 
+1299 static void rtw_pci_io_unmapping(struct rtw_dev *rtwdev,
+1300 				 struct pci_dev *pdev)
+1301 {
+1302 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1303 
+1304 	if (rtwpci->mmap) {
+1305 		pci_iounmap(pdev, rtwpci->mmap);
+1306 		pci_release_regions(pdev);
+1307 	}
+1308 }
+1309 
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1444-1456]
+1444 	rtw_dbi_write8(rtwdev, RTK_PCIE_LINK_CFG, value);
+1445 }
+1446 
+1447 static void rtw_pci_link_ps(struct rtw_dev *rtwdev, bool enter)
+1448 {
+1449 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1450 
+1451 	/* Like CLKREQ, ASPM is also implemented by two HW modules, and can
+1452 	 * only be enabled when host supports it.
+1453 	 *
+1454 	 * And ASPM mechanism should be enabled when driver/firmware enters
+1455 	 * power save mode, without having heavy traffic. Because we've
+1456 	 * experienced some inter-operability issues that the link tends
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1467-1479]
+1467 }
+1468 
+1469 static void rtw_pci_link_cfg(struct rtw_dev *rtwdev)
+1470 {
+1471 	const struct rtw_chip_info *chip = rtwdev->chip;
+1472 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1473 	struct pci_dev *pdev = rtwpci->pdev;
+1474 	u16 link_ctrl;
+1475 	int ret;
+1476 
+1477 	/* RTL8822CE has enabled REFCLK auto calibration, it does not need
+1478 	 * to add clock delay to cover the REFCLK timing gap.
+1479 	 */
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1523-1535]
+1523 	}
+1524 }
+1525 
+1526 static void rtw_pci_phy_cfg(struct rtw_dev *rtwdev)
+1527 {
+1528 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1529 	const struct rtw_chip_info *chip = rtwdev->chip;
+1530 	struct rtw_efuse *efuse = &rtwdev->efuse;
+1531 	struct pci_dev *pdev = rtwpci->pdev;
+1532 	const struct rtw_intf_phy_para *para;
+1533 	u16 cut;
+1534 	u16 value;
+1535 	u16 offset;
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1630-1645]
+1630 	pci_disable_device(pdev);
+1631 }
+1632 
+1633 static int rtw_pci_setup_resource(struct rtw_dev *rtwdev, struct pci_dev *pdev)
+1634 {
+1635 	struct rtw_pci *rtwpci;
+1636 	int ret;
+1637 
+1638 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+1639 	rtwpci->pdev = pdev;
+1640 
+1641 	/* after this driver can access to hw registers */
+1642 	ret = rtw_pci_io_mapping(rtwdev, pdev);
+1643 	if (ret) {
+1644 		rtw_err(rtwdev, "failed to request pci io region\n");
+1645 		goto err_out;
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1721-1733]
+1721 	pci_free_irq_vectors(pdev);
+1722 }
+1723 
+1724 static int rtw_pci_napi_poll(struct napi_struct *napi, int budget)
+1725 {
+1726 	struct rtw_pci *rtwpci = container_of(napi, struct rtw_pci, napi);
+1727 	struct rtw_dev *rtwdev = container_of((void *)rtwpci, struct rtw_dev,
+1728 					      priv);
+1729 	int work_done = 0;
+1730 
+1731 	if (rtwpci->rx_no_aspm)
+1732 		rtw_pci_link_ps(rtwdev, false);
+1733 
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1749-1772]
+1749 		/* When ISR happens during polling and before napi_complete
+1750 		 * while no further data is received. Data on the dma_ring will
+1751 		 * not be processed immediately. Check whether dma ring is
+1752 		 * empty and perform napi_schedule accordingly.
+1753 		 */
+1754 		if (rtw_pci_get_hw_rx_ring_nr(rtwdev, rtwpci))
+1755 			napi_schedule(napi);
+1756 	}
+1757 	if (rtwpci->rx_no_aspm)
+1758 		rtw_pci_link_ps(rtwdev, true);
+1759 
+1760 	return work_done;
+1761 }
+1762 
+1763 static int rtw_pci_napi_init(struct rtw_dev *rtwdev)
+1764 {
+1765 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1766 
+1767 #ifdef RTW88_MACOS
+1768 	rtwpci->netdev = NULL;
+1769 	netif_napi_add(NULL, &rtwpci->napi, rtw_pci_napi_poll);
+1770 #else
+1771 	rtwpci->netdev = alloc_netdev_dummy(0);
+1772 	if (!rtwpci->netdev)
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1777-1789]
+1777 	return 0;
+1778 }
+1779 
+1780 static void rtw_pci_napi_deinit(struct rtw_dev *rtwdev)
+1781 {
+1782 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
+1783 
+1784 	rtw_pci_napi_stop(rtwdev);
+1785 	netif_napi_del(&rtwpci->napi);
+1786 	if (rtwpci->netdev) {
+1787 		free_netdev(rtwpci->netdev);
+1788 		rtwpci->netdev = NULL;
+1789 	}
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1830-1860]
+1830 		  const struct pci_device_id *id)
+1831 {
+1832 	struct pci_dev *bridge = pci_upstream_bridge(pdev);
+1833 	struct ieee80211_hw *hw;
+1834 	struct rtw_dev *rtwdev;
+1835 	struct rtw_pci *rtwpci;
+1836 	int drv_data_size;
+1837 	int ret;
+1838 
+1839 	drv_data_size = sizeof(struct rtw_dev) + sizeof(struct rtw_pci);
+1840 	hw = ieee80211_alloc_hw(drv_data_size, &rtw_ops);
+1841 	if (!hw) {
+1842 		dev_err(&pdev->dev, "failed to allocate hw\n");
+1843 		return -ENOMEM;
+1844 	}
+1845 
+1846 	rtwdev = hw->priv;
+1847 	rtwdev->hw = hw;
+1848 	rtwdev->dev = &pdev->dev;
+1849 	rtwdev->chip = (struct rtw_chip_info *)id->driver_data;
+1850 	rtwdev->hci.ops = &rtw_pci_ops;
+1851 	rtwdev->hci.type = RTW_HCI_TYPE_PCIE;
+1852 
+1853 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+1854 	atomic_set(&rtwpci->link_usage, 1);
+1855 
+1856 	ret = rtw_core_init(rtwdev);
+1857 	if (ret)
+1858 		goto err_release_hw;
+1859 
+1860 	rtw_dbg(rtwdev, RTW_DBG_PCI,
+[END pci.c RX/TX descriptor context]
+
+[pci.c RX/TX descriptor context lines 1926-1944]
+1926 
+1927 void rtw_pci_remove(struct pci_dev *pdev)
+1928 {
+1929 	struct ieee80211_hw *hw = pci_get_drvdata(pdev);
+1930 	struct rtw_dev *rtwdev;
+1931 	struct rtw_pci *rtwpci;
+1932 
+1933 	if (!hw)
+1934 		return;
+1935 
+1936 	rtwdev = hw->priv;
+1937 	rtwpci = (struct rtw_pci *)rtwdev->priv;
+1938 
+1939 	rtw_unregister_hw(rtwdev, hw);
+1940 	rtw_pci_disable_interrupt(rtwdev, rtwpci);
+1941 	rtw_pci_free_irq(rtwdev, pdev);
+1942 	rtw_pci_napi_deinit(rtwdev);
+1943 	rtw_pci_destroy(rtwdev, pdev);
+1944 	rtw_pci_declaim(rtwdev, pdev);
+[END pci.c RX/TX descriptor context]
+
+--- DMA compatibility helper behavior ---
+
+[dma-mapping.h lines 1-141]
+   1 /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+   2 #ifndef _RTW88_COMPAT_DMA_MAPPING_H
+   3 #define _RTW88_COMPAT_DMA_MAPPING_H
+   4 
+   5 #include "types.h"
+   6 #include "slab.h"
+   7 
+   8 #define DMA_BIT_MASK(n)   ((u64)((n) < 64 ? (1ULL << (n)) - 1 : ~0ULL))
+   9 #define DMA_FROM_DEVICE    0
+  10 #define DMA_TO_DEVICE      1
+  11 #define DMA_BIDIRECTIONAL  2
+  12 #define DMA_NONE           3
+  13 
+  14 struct device;  /* forward decl */
+  15 
+  16 /*
+  17  * On macOS, DMA coherent memory is allocated by the kext using
+  18  * IOBufferMemoryDescriptor (kIOMemoryPhysicallyContiguous).
+  19  * The C driver code calls these helpers; the kext installs rtw88_dma_ops
+  20  * before probe so the fallback path never runs in production.
+  21  */
+  22 struct rtw88_dma_alloc_ops {
+  23     void      *(*alloc_coherent)(struct device *dev, size_t size,
+  24                                   dma_addr_t *dma_handle, gfp_t flag);
+  25     void       (*free_coherent)(struct device *dev, size_t size,
+  26                                  void *cpu_addr, dma_addr_t dma_handle);
+  27     dma_addr_t (*map_single)(struct device *dev, void *ptr,
+  28                               size_t size, int direction);
+  29     void       (*unmap_single)(struct device *dev, dma_addr_t addr,
+  30                                 size_t size, int direction);
+  31     void       (*sync_single_for_cpu)(struct device *dev, dma_addr_t addr,
+  32                                        size_t size, int dir);
+  33     void       (*sync_single_for_device)(struct device *dev, dma_addr_t addr,
+  34                                           size_t size, int dir);
+  35 };
+  36 
+  37 extern struct rtw88_dma_alloc_ops *rtw88_dma_ops;
+  38 
+  39 static inline void *dma_alloc_coherent(struct device *dev, size_t size,
+  40                                         dma_addr_t *dma_handle, gfp_t flag)
+  41 {
+  42     if (rtw88_dma_ops && rtw88_dma_ops->alloc_coherent)
+  43         return rtw88_dma_ops->alloc_coherent(dev, size, dma_handle, flag);
+  44     /* Fallback: plain kernel allocation (not DMA-safe) */
+  45     void *ptr = kzalloc(size, GFP_KERNEL);
+  46     if (ptr) *dma_handle = (dma_addr_t)(uintptr_t)ptr;
+  47     return ptr;
+  48 }
+  49 
+  50 static inline void dma_free_coherent(struct device *dev, size_t size,
+  51                                       void *cpu_addr, dma_addr_t dma_handle)
+  52 {
+  53     if (rtw88_dma_ops && rtw88_dma_ops->free_coherent) {
+  54         rtw88_dma_ops->free_coherent(dev, size, cpu_addr, dma_handle);
+  55         return;
+  56     }
+  57     kfree(cpu_addr);
+  58 }
+  59 
+  60 static inline dma_addr_t dma_map_single(struct device *dev, void *ptr,
+  61                                           size_t size, int direction)
+  62 {
+  63     if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+  64         return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+  65     return (dma_addr_t)(uintptr_t)ptr;
+  66 }
+  67 
+  68 static inline void dma_unmap_single(struct device *dev, dma_addr_t addr,
+  69                                      size_t size, int direction)
+  70 {
+  71     if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+  72         rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+  73 }
+  74 
+  75 static inline void dma_sync_single_for_cpu(struct device *dev,
+  76                                              dma_addr_t addr,
+  77                                              size_t size, int dir)
+  78 {
+  79     if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_cpu)
+  80         rtw88_dma_ops->sync_single_for_cpu(dev, addr, size, dir);
+  81 }
+  82 
+  83 static inline void dma_sync_single_for_device(struct device *dev,
+  84                                                 dma_addr_t addr,
+  85                                                 size_t size, int dir)
+  86 {
+  87     if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_device)
+  88         rtw88_dma_ops->sync_single_for_device(dev, addr, size, dir);
+  89 }
+  90 
+  91 static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask) { return 0; }
+  92 static inline int dma_set_mask(struct device *dev, u64 mask)              { return 0; }
+  93 static inline int dma_set_coherent_mask(struct device *dev, u64 mask)     { return 0; }
+  94 
+  95 /* Match what compat_dma_map actually returns on failure: it returns 0 when
+  96  * the bounce-buffer alloc fails.  Treat BOTH 0 and -1 as errors so the
+  97  * driver doesn't silently program HW descriptors with bogus DMA addresses
+  98  * (which corrupts the TX ring state — wp advances, HW chews garbage and
+  99  * advances rp, eventually deadlocking at wp+1 == rp). */
+ 100 static inline bool dma_mapping_error(struct device *dev, dma_addr_t addr)
+ 101 {
+ 102     return addr == 0 || addr == (dma_addr_t)-1;
+ 103 }
+ 104 
+ 105 /* Page abstraction for RX ring allocations */
+ 106 struct page {
+ 107     void      *virt;
+ 108     dma_addr_t phys;
+ 109 };
+ 110 
+ 111 static inline struct page *alloc_page(gfp_t flags)
+ 112 {
+ 113     /* Allocate struct page + 4096-byte data in one chunk */
+ 114     struct page *p = (struct page *)kzalloc(sizeof(*p) + 4096, flags);
+ 115     if (p) {
+ 116         p->virt = (void *)((char *)p + sizeof(*p));
+ 117         p->phys = (dma_addr_t)(uintptr_t)p->virt;
+ 118     }
+ 119     return p;
+ 120 }
+ 121 
+ 122 static inline void __free_page(struct page *page)
+ 123 {
+ 124     kfree(page);
+ 125 }
+ 126 
+ 127 static inline void *page_address(struct page *page)
+ 128 {
+ 129     return page ? page->virt : NULL;
+ 130 }
+ 131 
+ 132 static inline dma_addr_t dma_map_page(struct device *dev, struct page *page,
+ 133                                        size_t offset, size_t size, int dir)
+ 134 {
+ 135     return page->phys + offset;
+ 136 }
+ 137 
+ 138 static inline void dma_unmap_page(struct device *dev, dma_addr_t addr,
+ 139                                    size_t size, int dir) {}
+ 140 
+ 141 #endif /* _RTW88_COMPAT_DMA_MAPPING_H */
+[END dma-mapping.h]
+
+--- Shared DMA callback implementation ---
+
+[RTW88HwOps.cpp lines 1-137]
+   1 // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+   2 // Hardware shims shared by the Ethernet and Airport controller frontends.
+   3 
+   4 #include "RTW88IEEE80211.hpp"
+   5 #include <IOKit/IOLib.h>
+   6 
+   7 extern "C" {
+   8 #include "../compat/rtw88_compat.h"
+   9 }
+  10 
+  11 RTW88HwOps *g_pci_dev_instance = nullptr;
+  12 
+  13 static int compat_pci_read_config_byte(struct pci_dev *, int where, u8 *val)
+  14 {
+  15     if (!g_pci_dev_instance) { *val = 0xff; return -1; }
+  16     *val = g_pci_dev_instance->pciReadByte(where);
+  17     return 0;
+  18 }
+  19 
+  20 static int compat_pci_read_config_word(struct pci_dev *, int where, u16 *val)
+  21 {
+  22     if (!g_pci_dev_instance) { *val = 0xffff; return -1; }
+  23     *val = g_pci_dev_instance->pciReadWord(where);
+  24     return 0;
+  25 }
+  26 
+  27 static int compat_pci_read_config_dword(struct pci_dev *, int where, u32 *val)
+  28 {
+  29     if (!g_pci_dev_instance) { *val = 0xffffffff; return -1; }
+  30     *val = g_pci_dev_instance->pciReadDword(where);
+  31     return 0;
+  32 }
+  33 
+  34 static int compat_pci_write_config_byte(struct pci_dev *, int where, u8 val)
+  35 {
+  36     if (!g_pci_dev_instance) return -1;
+  37     g_pci_dev_instance->pciWriteByte(where, val);
+  38     return 0;
+  39 }
+  40 
+  41 static int compat_pci_write_config_word(struct pci_dev *, int where, u16 val)
+  42 {
+  43     if (!g_pci_dev_instance) return -1;
+  44     g_pci_dev_instance->pciWriteWord(where, val);
+  45     return 0;
+  46 }
+  47 
+  48 static int compat_pci_write_config_dword(struct pci_dev *, int where, u32 val)
+  49 {
+  50     if (!g_pci_dev_instance) return -1;
+  51     g_pci_dev_instance->pciWriteDword(where, val);
+  52     return 0;
+  53 }
+  54 
+  55 static void *compat_ioremap(struct pci_dev *, int, size_t)
+  56 {
+  57     return g_pci_dev_instance ? (void *)g_pci_dev_instance->mmioBase() : nullptr;
+  58 }
+  59 
+  60 static void compat_iounmap(struct pci_dev *, void *) {}
+  61 static int compat_enable_msi(struct pci_dev *) { return 0; }
+  62 static void compat_disable_msi(struct pci_dev *) {}
+  63 
+  64 static int compat_pci_find_capability(struct pci_dev *, int cap)
+  65 {
+  66     return g_pci_dev_instance ? g_pci_dev_instance->pciFindCapability(cap) : 0;
+  67 }
+  68 
+  69 struct pci_ops_rtw88 _pci_io_ops = {
+  70     .read_config_byte = compat_pci_read_config_byte,
+  71     .read_config_word = compat_pci_read_config_word,
+  72     .read_config_dword = compat_pci_read_config_dword,
+  73     .write_config_byte = compat_pci_write_config_byte,
+  74     .write_config_word = compat_pci_write_config_word,
+  75     .write_config_dword = compat_pci_write_config_dword,
+  76     .ioremap = compat_ioremap,
+  77     .iounmap = compat_iounmap,
+  78     .enable_msi = compat_enable_msi,
+  79     .disable_msi = compat_disable_msi,
+  80     .pci_find_capability = compat_pci_find_capability,
+  81 };
+  82 
+  83 static void *compat_dma_alloc(struct device *, size_t size,
+  84                               dma_addr_t *dma_handle, gfp_t)
+  85 {
+  86     if (!g_pci_dev_instance) return nullptr;
+  87     IOPhysicalAddress phys = 0;
+  88     void *virt = g_pci_dev_instance->allocCoherent(size, &phys);
+  89     if (dma_handle) *dma_handle = (dma_addr_t)phys;
+  90     return virt;
+  91 }
+  92 
+  93 static void compat_dma_free(struct device *, size_t size, void *cpu_addr,
+  94                             dma_addr_t dma_handle)
+  95 {
+  96     if (g_pci_dev_instance)
+  97         g_pci_dev_instance->freeCoherent(size, cpu_addr,
+  98                                          (IOPhysicalAddress)dma_handle);
+  99 }
+ 100 
+ 101 static dma_addr_t compat_dma_map(struct device *, void *ptr, size_t size, int dir)
+ 102 {
+ 103     if (!g_pci_dev_instance || !ptr) return 0;
+ 104 
+ 105     IOPhysicalAddress phys = 0;
+ 106     void *bounce = g_pci_dev_instance->allocCoherent(size, &phys);
+ 107     if (!bounce) return 0;
+ 108 
+ 109     g_pci_dev_instance->setBounceOrigVA(phys, ptr);
+ 110     if (dir == 1 || dir == 2)
+ 111         memcpy(bounce, ptr, size);
+ 112     return (dma_addr_t)phys;
+ 113 }
+ 114 
+ 115 static void compat_dma_unmap(struct device *, dma_addr_t addr, size_t, int)
+ 116 {
+ 117     if (g_pci_dev_instance)
+ 118         g_pci_dev_instance->freeCoherentByPhys((IOPhysicalAddress)addr);
+ 119 }
+ 120 
+ 121 static void compat_dma_sync_cpu(struct device *, dma_addr_t addr,
+ 122                                 size_t size, int dir)
+ 123 {
+ 124     if (dir == 0 && g_pci_dev_instance)
+ 125         g_pci_dev_instance->syncBounceForCpu((IOPhysicalAddress)addr, size);
+ 126 }
+ 127 
+ 128 static void compat_dma_sync_dev(struct device *, dma_addr_t, size_t, int) {}
+ 129 
+ 130 struct rtw88_dma_alloc_ops _dma_ops = {
+ 131     .alloc_coherent = compat_dma_alloc,
+ 132     .free_coherent = compat_dma_free,
+ 133     .map_single = compat_dma_map,
+ 134     .unmap_single = compat_dma_unmap,
+ 135     .sync_single_for_cpu = compat_dma_sync_cpu,
+ 136     .sync_single_for_device = compat_dma_sync_dev,
+ 137 };
+[END RTW88HwOps.cpp]
+
+--- Native backend DMA allocation, bounce, sync and release ---
+
+[RTW88WCLPCIBackend.cpp around allocCoherent lines 325-378]
+ 325     UInt8 offset = 0;
+ 326     return _pciDev->findPCICapability(static_cast<UInt8>(capability), &offset)
+ 327                ? static_cast<int>(offset) : 0;
+ 328 }
+ 329 
+ 330 void *RTW88WCLPCIBackend::allocCoherent(size_t size,
+ 331                                          IOPhysicalAddress *physical)
+ 332 {
+ 333     if (physical) *physical = 0;
+ 334     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+ 335         return nullptr;
+ 336     if (preemption_enabled())
+ 337         drainPendingFree();
+ 338 
+ 339     IOBufferMemoryDescriptor *descriptor =
+ 340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+ 341             kernel_task,
+ 342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+ 343                 kIOMemoryKernelUserShared,
+ 344             size, 0x00000000FFFFFFF0ULL);
+ 345     if (!descriptor)
+ 346         return nullptr;
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+[END RTW88WCLPCIBackend.cpp around allocCoherent]
+
+[RTW88WCLPCIBackend.cpp around freeCoherent lines 375-428]
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+ 381                                       IOPhysicalAddress physical)
+ 382 {
+ 383     (void)size;
+ 384     (void)physical;
+ 385     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+ 386         return;
+ 387 
+ 388     IOSimpleLockLock(_dmaLock);
+ 389     RTW88DMAEntry **previous = &_dmaList;
+ 390     RTW88DMAEntry *entry = _dmaList;
+ 391     while (entry && entry->virt != virtualAddress) {
+ 392         previous = &entry->next;
+ 393         entry = entry->next;
+ 394     }
+ 395     if (entry)
+ 396         *previous = entry->next;
+ 397     IOSimpleLockUnlock(_dmaLock);
+ 398 
+ 399     if (!entry) {
+ 400         IOLog("rtl88wifi-wcl: freeCoherent: unknown virtual address %p\n",
+ 401               virtualAddress);
+ 402         return;
+ 403     }
+ 404     if (preemption_enabled()) {
+ 405         freeDMAList(entry);
+ 406     } else {
+ 407         IOSimpleLockLock(_pendingFreeLock);
+ 408         entry->next = _dmaPendingFree;
+ 409         _dmaPendingFree = entry;
+ 410         IOSimpleLockUnlock(_pendingFreeLock);
+ 411     }
+ 412 }
+ 413 
+ 414 void RTW88WCLPCIBackend::freeCoherentByPhys(IOPhysicalAddress physical)
+ 415 {
+ 416     if (!_dmaLock || !_pendingFreeLock || !physical)
+ 417         return;
+ 418 
+ 419     IOSimpleLockLock(_dmaLock);
+ 420     RTW88DMAEntry **previous = &_dmaList;
+ 421     RTW88DMAEntry *entry = _dmaList;
+ 422     while (entry && entry->phys != physical) {
+ 423         previous = &entry->next;
+ 424         entry = entry->next;
+ 425     }
+ 426     if (entry)
+ 427         *previous = entry->next;
+ 428     IOSimpleLockUnlock(_dmaLock);
+[END RTW88WCLPCIBackend.cpp around freeCoherent]
+
+[RTW88WCLPCIBackend.cpp around freeCoherent lines 409-462]
+ 409         _dmaPendingFree = entry;
+ 410         IOSimpleLockUnlock(_pendingFreeLock);
+ 411     }
+ 412 }
+ 413 
+ 414 void RTW88WCLPCIBackend::freeCoherentByPhys(IOPhysicalAddress physical)
+ 415 {
+ 416     if (!_dmaLock || !_pendingFreeLock || !physical)
+ 417         return;
+ 418 
+ 419     IOSimpleLockLock(_dmaLock);
+ 420     RTW88DMAEntry **previous = &_dmaList;
+ 421     RTW88DMAEntry *entry = _dmaList;
+ 422     while (entry && entry->phys != physical) {
+ 423         previous = &entry->next;
+ 424         entry = entry->next;
+ 425     }
+ 426     if (entry)
+ 427         *previous = entry->next;
+ 428     IOSimpleLockUnlock(_dmaLock);
+ 429 
+ 430     if (!entry)
+ 431         return;
+ 432     if (preemption_enabled()) {
+ 433         freeDMAList(entry);
+ 434     } else {
+ 435         IOSimpleLockLock(_pendingFreeLock);
+ 436         entry->next = _dmaPendingFree;
+ 437         _dmaPendingFree = entry;
+ 438         IOSimpleLockUnlock(_pendingFreeLock);
+ 439     }
+ 440 }
+ 441 
+ 442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+ 443                                          void *originalAddress)
+ 444 {
+ 445     if (!_dmaLock || !physical)
+ 446         return;
+ 447     IOSimpleLockLock(_dmaLock);
+ 448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+ 455 }
+ 456 
+ 457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+ 458                                           size_t size)
+ 459 {
+ 460     if (!_dmaLock || !dmaAddress || !size)
+ 461         return;
+ 462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+[END RTW88WCLPCIBackend.cpp around freeCoherent]
+
+[RTW88WCLPCIBackend.cpp around freeCoherentByPhys lines 409-462]
+ 409         _dmaPendingFree = entry;
+ 410         IOSimpleLockUnlock(_pendingFreeLock);
+ 411     }
+ 412 }
+ 413 
+ 414 void RTW88WCLPCIBackend::freeCoherentByPhys(IOPhysicalAddress physical)
+ 415 {
+ 416     if (!_dmaLock || !_pendingFreeLock || !physical)
+ 417         return;
+ 418 
+ 419     IOSimpleLockLock(_dmaLock);
+ 420     RTW88DMAEntry **previous = &_dmaList;
+ 421     RTW88DMAEntry *entry = _dmaList;
+ 422     while (entry && entry->phys != physical) {
+ 423         previous = &entry->next;
+ 424         entry = entry->next;
+ 425     }
+ 426     if (entry)
+ 427         *previous = entry->next;
+ 428     IOSimpleLockUnlock(_dmaLock);
+ 429 
+ 430     if (!entry)
+ 431         return;
+ 432     if (preemption_enabled()) {
+ 433         freeDMAList(entry);
+ 434     } else {
+ 435         IOSimpleLockLock(_pendingFreeLock);
+ 436         entry->next = _dmaPendingFree;
+ 437         _dmaPendingFree = entry;
+ 438         IOSimpleLockUnlock(_pendingFreeLock);
+ 439     }
+ 440 }
+ 441 
+ 442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+ 443                                          void *originalAddress)
+ 444 {
+ 445     if (!_dmaLock || !physical)
+ 446         return;
+ 447     IOSimpleLockLock(_dmaLock);
+ 448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+ 455 }
+ 456 
+ 457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+ 458                                           size_t size)
+ 459 {
+ 460     if (!_dmaLock || !dmaAddress || !size)
+ 461         return;
+ 462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+[END RTW88WCLPCIBackend.cpp around freeCoherentByPhys]
+
+[RTW88WCLPCIBackend.cpp around setBounceOrigVA lines 437-490]
+ 437         _dmaPendingFree = entry;
+ 438         IOSimpleLockUnlock(_pendingFreeLock);
+ 439     }
+ 440 }
+ 441 
+ 442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+ 443                                          void *originalAddress)
+ 444 {
+ 445     if (!_dmaLock || !physical)
+ 446         return;
+ 447     IOSimpleLockLock(_dmaLock);
+ 448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+ 455 }
+ 456 
+ 457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+ 458                                           size_t size)
+ 459 {
+ 460     if (!_dmaLock || !dmaAddress || !size)
+ 461         return;
+ 462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+ 463      * racing a concurrent unmap/free against the original buffer pointer. */
+ 464     IOSimpleLockLock(_dmaLock);
+ 465     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 466         if (entry->phys == dmaAddress && entry->orig_va && entry->virt) {
+ 467             const size_t copyLength = size < entry->size ? size : entry->size;
+ 468             memcpy(entry->orig_va, entry->virt, copyLength);
+ 469             break;
+ 470         }
+ 471     }
+ 472     IOSimpleLockUnlock(_dmaLock);
+ 473 }
+ 474 
+ 475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+ 476 {
+ 477     if (_client)
+ 478         _client->rtw88WCLResumeTransmit();
+ 479 }
+ 480 
+ 481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+ 482                                           int count)
+ 483 {
+ 484     (void)source;
+ 485     (void)count;
+ 486     if (!_radioRunning || !g_pci_dev_instance ||
+ 487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+ 488             static_cast<RTW88HwOps *>(this))
+ 489         return;
+ 490     if (preemption_enabled())
+[END RTW88WCLPCIBackend.cpp around setBounceOrigVA]
+
+[RTW88WCLPCIBackend.cpp around syncBounceForCpu lines 452-505]
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+ 455 }
+ 456 
+ 457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+ 458                                           size_t size)
+ 459 {
+ 460     if (!_dmaLock || !dmaAddress || !size)
+ 461         return;
+ 462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+ 463      * racing a concurrent unmap/free against the original buffer pointer. */
+ 464     IOSimpleLockLock(_dmaLock);
+ 465     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 466         if (entry->phys == dmaAddress && entry->orig_va && entry->virt) {
+ 467             const size_t copyLength = size < entry->size ? size : entry->size;
+ 468             memcpy(entry->orig_va, entry->virt, copyLength);
+ 469             break;
+ 470         }
+ 471     }
+ 472     IOSimpleLockUnlock(_dmaLock);
+ 473 }
+ 474 
+ 475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+ 476 {
+ 477     if (_client)
+ 478         _client->rtw88WCLResumeTransmit();
+ 479 }
+ 480 
+ 481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+ 482                                           int count)
+ 483 {
+ 484     (void)source;
+ 485     (void)count;
+ 486     if (!_radioRunning || !g_pci_dev_instance ||
+ 487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+ 488             static_cast<RTW88HwOps *>(this))
+ 489         return;
+ 490     if (preemption_enabled())
+ 491         drainPendingFree();
+ 492     rtw88_trigger_interrupt();
+ 493 }
+ 494 
+ 495 void RTW88WCLPCIBackend::drainPendingFree()
+ 496 {
+ 497     if (!_pendingFreeLock)
+ 498         return;
+ 499     IOSimpleLockLock(_pendingFreeLock);
+ 500     RTW88DMAEntry *list = _dmaPendingFree;
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+[END RTW88WCLPCIBackend.cpp around syncBounceForCpu]
+
+[RTW88WCLPCIBackend.cpp around drainPendingFree lines 176-229]
+ 176               command);
+ 177         return kIOReturnNotReady;
+ 178     }
+ 179     _radioRunning = false;
+ 180     if (preemption_enabled())
+ 181         drainPendingFree();
+ 182     return kIOReturnSuccess;
+ 183 }
+ 184 
+ 185 IOReturn RTW88WCLPCIBackend::close()
+ 186 {
+ 187     if (_radioRunning)
+ 188         return kIOReturnBusy;
+ 189     closeResources();
+ 190     return kIOReturnSuccess;
+ 191 }
+ 192 
+ 193 void RTW88WCLPCIBackend::closeResources()
+ 194 {
+ 195     if (_interruptSource) {
+ 196         _interruptSource->disable();
+ 197         if (_workLoop)
+ 198             _workLoop->removeEventSource(_interruptSource);
+ 199         _interruptSource->release();
+ 200         _interruptSource = nullptr;
+ 201     }
+ 202 
+ 203     /* Stop all compat work before reclaiming DMA buffers and releasing the
+ 204      * callbacks they may invoke. The RTW88 core must already be stopped. */
+ 205     if (_compatInitialized) {
+ 206         rtw88_compat_exit();
+ 207         _compatInitialized = false;
+ 208     }
+ 209 
+ 210     if (preemption_enabled())
+ 211         drainPendingFree();
+ 212     releaseDMAEntries();
+ 213 
+ 214     clearCompatLease();
+ 215 
+ 216     if (_pciDev) {
+ 217         _pciDev->setBusMasterEnable(false);
+ 218         _pciDev->setMemoryEnable(false);
+ 219     }
+ 220     if (_compatPciDev) {
+ 221         IOFree(_compatPciDev, sizeof(*_compatPciDev));
+ 222         _compatPciDev = nullptr;
+ 223     }
+ 224     if (_mmioMap) {
+ 225         _mmioMap->release();
+ 226         _mmioMap = nullptr;
+ 227     }
+ 228     _mmioBase = nullptr;
+ 229 
+[END RTW88WCLPCIBackend.cpp around drainPendingFree]
+
+[RTW88WCLPCIBackend.cpp around drainPendingFree lines 206-259]
+ 206         rtw88_compat_exit();
+ 207         _compatInitialized = false;
+ 208     }
+ 209 
+ 210     if (preemption_enabled())
+ 211         drainPendingFree();
+ 212     releaseDMAEntries();
+ 213 
+ 214     clearCompatLease();
+ 215 
+ 216     if (_pciDev) {
+ 217         _pciDev->setBusMasterEnable(false);
+ 218         _pciDev->setMemoryEnable(false);
+ 219     }
+ 220     if (_compatPciDev) {
+ 221         IOFree(_compatPciDev, sizeof(*_compatPciDev));
+ 222         _compatPciDev = nullptr;
+ 223     }
+ 224     if (_mmioMap) {
+ 225         _mmioMap->release();
+ 226         _mmioMap = nullptr;
+ 227     }
+ 228     _mmioBase = nullptr;
+ 229 
+ 230     if (_workLoop) {
+ 231         _workLoop->release();
+ 232         _workLoop = nullptr;
+ 233     }
+ 234     if (_pciDev) {
+ 235         _pciDev->release();
+ 236         _pciDev = nullptr;
+ 237     }
+ 238     if (_pendingFreeLock) {
+ 239         IOSimpleLockFree(_pendingFreeLock);
+ 240         _pendingFreeLock = nullptr;
+ 241     }
+ 242     if (_dmaLock) {
+ 243         IOSimpleLockFree(_dmaLock);
+ 244         _dmaLock = nullptr;
+ 245     }
+ 246 
+ 247     _client = nullptr;
+ 248     _radioRunning = false;
+ 249     _opened = false;
+ 250 }
+ 251 
+ 252 void RTW88WCLPCIBackend::clearCompatLease()
+ 253 {
+ 254     if (!_compatLeaseHeld)
+ 255         return;
+ 256     RTW88HwOps *expectedOwner = static_cast<RTW88HwOps *>(this);
+ 257     if (__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+ 258                                     static_cast<RTW88HwOps *>(nullptr), false,
+ 259                                     __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE)) {
+[END RTW88WCLPCIBackend.cpp around drainPendingFree]
+
+[RTW88WCLPCIBackend.cpp around drainPendingFree lines 332-385]
+ 332 {
+ 333     if (physical) *physical = 0;
+ 334     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+ 335         return nullptr;
+ 336     if (preemption_enabled())
+ 337         drainPendingFree();
+ 338 
+ 339     IOBufferMemoryDescriptor *descriptor =
+ 340         IOBufferMemoryDescriptor::inTaskWithPhysicalMask(
+ 341             kernel_task,
+ 342             kIOMemoryPhysicallyContiguous | kIODirectionInOut |
+ 343                 kIOMemoryKernelUserShared,
+ 344             size, 0x00000000FFFFFFF0ULL);
+ 345     if (!descriptor)
+ 346         return nullptr;
+ 347     if (descriptor->prepare() != kIOReturnSuccess) {
+ 348         descriptor->release();
+ 349         return nullptr;
+ 350     }
+ 351 
+ 352     const IOPhysicalAddress address = descriptor->getPhysicalAddress();
+ 353     void *virtualAddress = descriptor->getBytesNoCopy();
+ 354     if (!virtualAddress || !address) {
+ 355         descriptor->complete();
+ 356         descriptor->release();
+ 357         return nullptr;
+ 358     }
+ 359     bzero(virtualAddress, size);
+ 360 
+ 361     RTW88DMAEntry *entry = static_cast<RTW88DMAEntry *>(IOMallocZero(sizeof(*entry)));
+ 362     if (!entry) {
+ 363         descriptor->complete();
+ 364         descriptor->release();
+ 365         return nullptr;
+ 366     }
+ 367     entry->desc = descriptor;
+ 368     entry->virt = virtualAddress;
+ 369     entry->phys = address;
+ 370     entry->size = size;
+ 371 
+ 372     IOSimpleLockLock(_dmaLock);
+ 373     entry->next = _dmaList;
+ 374     _dmaList = entry;
+ 375     IOSimpleLockUnlock(_dmaLock);
+ 376     if (physical) *physical = address;
+ 377     return virtualAddress;
+ 378 }
+ 379 
+ 380 void RTW88WCLPCIBackend::freeCoherent(size_t size, void *virtualAddress,
+ 381                                       IOPhysicalAddress physical)
+ 382 {
+ 383     (void)size;
+ 384     (void)physical;
+ 385     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+[END RTW88WCLPCIBackend.cpp around drainPendingFree]
+
+[RTW88WCLPCIBackend.cpp around drainPendingFree lines 486-537]
+ 486     if (!_radioRunning || !g_pci_dev_instance ||
+ 487         __atomic_load_n(&g_pci_dev_instance, __ATOMIC_ACQUIRE) !=
+ 488             static_cast<RTW88HwOps *>(this))
+ 489         return;
+ 490     if (preemption_enabled())
+ 491         drainPendingFree();
+ 492     rtw88_trigger_interrupt();
+ 493 }
+ 494 
+ 495 void RTW88WCLPCIBackend::drainPendingFree()
+ 496 {
+ 497     if (!_pendingFreeLock)
+ 498         return;
+ 499     IOSimpleLockLock(_pendingFreeLock);
+ 500     RTW88DMAEntry *list = _dmaPendingFree;
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+ 506 void RTW88WCLPCIBackend::releaseDMAEntries()
+ 507 {
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+[END RTW88WCLPCIBackend.cpp around drainPendingFree]
+
+[RTW88WCLPCIBackend.cpp around drainPendingFree lines 490-537]
+ 490     if (preemption_enabled())
+ 491         drainPendingFree();
+ 492     rtw88_trigger_interrupt();
+ 493 }
+ 494 
+ 495 void RTW88WCLPCIBackend::drainPendingFree()
+ 496 {
+ 497     if (!_pendingFreeLock)
+ 498         return;
+ 499     IOSimpleLockLock(_pendingFreeLock);
+ 500     RTW88DMAEntry *list = _dmaPendingFree;
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+ 506 void RTW88WCLPCIBackend::releaseDMAEntries()
+ 507 {
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+[END RTW88WCLPCIBackend.cpp around drainPendingFree]
+
+[RTW88WCLPCIBackend.cpp around releaseDMAEntries lines 207-260]
+ 207         _compatInitialized = false;
+ 208     }
+ 209 
+ 210     if (preemption_enabled())
+ 211         drainPendingFree();
+ 212     releaseDMAEntries();
+ 213 
+ 214     clearCompatLease();
+ 215 
+ 216     if (_pciDev) {
+ 217         _pciDev->setBusMasterEnable(false);
+ 218         _pciDev->setMemoryEnable(false);
+ 219     }
+ 220     if (_compatPciDev) {
+ 221         IOFree(_compatPciDev, sizeof(*_compatPciDev));
+ 222         _compatPciDev = nullptr;
+ 223     }
+ 224     if (_mmioMap) {
+ 225         _mmioMap->release();
+ 226         _mmioMap = nullptr;
+ 227     }
+ 228     _mmioBase = nullptr;
+ 229 
+ 230     if (_workLoop) {
+ 231         _workLoop->release();
+ 232         _workLoop = nullptr;
+ 233     }
+ 234     if (_pciDev) {
+ 235         _pciDev->release();
+ 236         _pciDev = nullptr;
+ 237     }
+ 238     if (_pendingFreeLock) {
+ 239         IOSimpleLockFree(_pendingFreeLock);
+ 240         _pendingFreeLock = nullptr;
+ 241     }
+ 242     if (_dmaLock) {
+ 243         IOSimpleLockFree(_dmaLock);
+ 244         _dmaLock = nullptr;
+ 245     }
+ 246 
+ 247     _client = nullptr;
+ 248     _radioRunning = false;
+ 249     _opened = false;
+ 250 }
+ 251 
+ 252 void RTW88WCLPCIBackend::clearCompatLease()
+ 253 {
+ 254     if (!_compatLeaseHeld)
+ 255         return;
+ 256     RTW88HwOps *expectedOwner = static_cast<RTW88HwOps *>(this);
+ 257     if (__atomic_compare_exchange_n(&g_pci_dev_instance, &expectedOwner,
+ 258                                     static_cast<RTW88HwOps *>(nullptr), false,
+ 259                                     __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE)) {
+ 260         rtw88_pci_io_ops = nullptr;
+[END RTW88WCLPCIBackend.cpp around releaseDMAEntries]
+
+[RTW88WCLPCIBackend.cpp around releaseDMAEntries lines 501-537]
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+ 506 void RTW88WCLPCIBackend::releaseDMAEntries()
+ 507 {
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+[END RTW88WCLPCIBackend.cpp around releaseDMAEntries]
+
+[RTW88WCLPCIBackend.cpp around freeDMAList lines 400-453]
+ 400         IOLog("rtl88wifi-wcl: freeCoherent: unknown virtual address %p\n",
+ 401               virtualAddress);
+ 402         return;
+ 403     }
+ 404     if (preemption_enabled()) {
+ 405         freeDMAList(entry);
+ 406     } else {
+ 407         IOSimpleLockLock(_pendingFreeLock);
+ 408         entry->next = _dmaPendingFree;
+ 409         _dmaPendingFree = entry;
+ 410         IOSimpleLockUnlock(_pendingFreeLock);
+ 411     }
+ 412 }
+ 413 
+ 414 void RTW88WCLPCIBackend::freeCoherentByPhys(IOPhysicalAddress physical)
+ 415 {
+ 416     if (!_dmaLock || !_pendingFreeLock || !physical)
+ 417         return;
+ 418 
+ 419     IOSimpleLockLock(_dmaLock);
+ 420     RTW88DMAEntry **previous = &_dmaList;
+ 421     RTW88DMAEntry *entry = _dmaList;
+ 422     while (entry && entry->phys != physical) {
+ 423         previous = &entry->next;
+ 424         entry = entry->next;
+ 425     }
+ 426     if (entry)
+ 427         *previous = entry->next;
+ 428     IOSimpleLockUnlock(_dmaLock);
+ 429 
+ 430     if (!entry)
+ 431         return;
+ 432     if (preemption_enabled()) {
+ 433         freeDMAList(entry);
+ 434     } else {
+ 435         IOSimpleLockLock(_pendingFreeLock);
+ 436         entry->next = _dmaPendingFree;
+ 437         _dmaPendingFree = entry;
+ 438         IOSimpleLockUnlock(_pendingFreeLock);
+ 439     }
+ 440 }
+ 441 
+ 442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+ 443                                          void *originalAddress)
+ 444 {
+ 445     if (!_dmaLock || !physical)
+ 446         return;
+ 447     IOSimpleLockLock(_dmaLock);
+ 448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+[END RTW88WCLPCIBackend.cpp around freeDMAList]
+
+[RTW88WCLPCIBackend.cpp around freeDMAList lines 428-481]
+ 428     IOSimpleLockUnlock(_dmaLock);
+ 429 
+ 430     if (!entry)
+ 431         return;
+ 432     if (preemption_enabled()) {
+ 433         freeDMAList(entry);
+ 434     } else {
+ 435         IOSimpleLockLock(_pendingFreeLock);
+ 436         entry->next = _dmaPendingFree;
+ 437         _dmaPendingFree = entry;
+ 438         IOSimpleLockUnlock(_pendingFreeLock);
+ 439     }
+ 440 }
+ 441 
+ 442 void RTW88WCLPCIBackend::setBounceOrigVA(IOPhysicalAddress physical,
+ 443                                          void *originalAddress)
+ 444 {
+ 445     if (!_dmaLock || !physical)
+ 446         return;
+ 447     IOSimpleLockLock(_dmaLock);
+ 448     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 449         if (entry->phys == physical) {
+ 450             entry->orig_va = originalAddress;
+ 451             break;
+ 452         }
+ 453     }
+ 454     IOSimpleLockUnlock(_dmaLock);
+ 455 }
+ 456 
+ 457 void RTW88WCLPCIBackend::syncBounceForCpu(IOPhysicalAddress dmaAddress,
+ 458                                           size_t size)
+ 459 {
+ 460     if (!_dmaLock || !dmaAddress || !size)
+ 461         return;
+ 462     /* Keep the entry pinned by the list lock for the bounded copy; this avoids
+ 463      * racing a concurrent unmap/free against the original buffer pointer. */
+ 464     IOSimpleLockLock(_dmaLock);
+ 465     for (RTW88DMAEntry *entry = _dmaList; entry; entry = entry->next) {
+ 466         if (entry->phys == dmaAddress && entry->orig_va && entry->virt) {
+ 467             const size_t copyLength = size < entry->size ? size : entry->size;
+ 468             memcpy(entry->orig_va, entry->virt, copyLength);
+ 469             break;
+ 470         }
+ 471     }
+ 472     IOSimpleLockUnlock(_dmaLock);
+ 473 }
+ 474 
+ 475 void RTW88WCLPCIBackend::resumeTxIfStalled()
+ 476 {
+ 477     if (_client)
+ 478         _client->rtw88WCLResumeTransmit();
+ 479 }
+ 480 
+ 481 void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+[END RTW88WCLPCIBackend.cpp around freeDMAList]
+
+[RTW88WCLPCIBackend.cpp around freeDMAList lines 498-537]
+ 498         return;
+ 499     IOSimpleLockLock(_pendingFreeLock);
+ 500     RTW88DMAEntry *list = _dmaPendingFree;
+ 501     _dmaPendingFree = nullptr;
+ 502     IOSimpleLockUnlock(_pendingFreeLock);
+ 503     freeDMAList(list);
+ 504 }
+ 505 
+ 506 void RTW88WCLPCIBackend::releaseDMAEntries()
+ 507 {
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+[END RTW88WCLPCIBackend.cpp around freeDMAList]
+
+[RTW88WCLPCIBackend.cpp around freeDMAList lines 508-537]
+ 508     if (_dmaLock) {
+ 509         IOSimpleLockLock(_dmaLock);
+ 510         RTW88DMAEntry *list = _dmaList;
+ 511         _dmaList = nullptr;
+ 512         IOSimpleLockUnlock(_dmaLock);
+ 513         freeDMAList(list);
+ 514     }
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+[END RTW88WCLPCIBackend.cpp around freeDMAList]
+
+[RTW88WCLPCIBackend.cpp around freeDMAList lines 515-537]
+ 515     if (_pendingFreeLock) {
+ 516         IOSimpleLockLock(_pendingFreeLock);
+ 517         RTW88DMAEntry *pending = _dmaPendingFree;
+ 518         _dmaPendingFree = nullptr;
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+[END RTW88WCLPCIBackend.cpp around freeDMAList]
+
+[RTW88WCLPCIBackend.cpp around freeDMAList lines 519-537]
+ 519         IOSimpleLockUnlock(_pendingFreeLock);
+ 520         freeDMAList(pending);
+ 521     }
+ 522 }
+ 523 
+ 524 void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+ 525 {
+ 526     while (list) {
+ 527         RTW88DMAEntry *next = list->next;
+ 528         if (list->desc) {
+ 529             list->desc->complete();
+ 530             list->desc->release();
+ 531         }
+ 532         IOFree(list, sizeof(*list));
+ 533         list = next;
+ 534     }
+ 535 }
+ 536 
+ 537 #undef super
+[END RTW88WCLPCIBackend.cpp around freeDMAList]
+
+--- Compatibility runtime globals and lifecycle ---
+
+[rtw88_compat.c global/runtime context lines 136-162]
+ 136 {
+ 137     return x ? (32 - __builtin_clz(x)) : 0;
+ 138 }
+ 139 
+ 140 /* ------------------------------------------------------------------ */
+ 141 /*  Global DMA / PCI / USB ops pointers                                 */
+ 142 /* ------------------------------------------------------------------ */
+ 143 
+ 144 struct rtw88_dma_alloc_ops *rtw88_dma_ops      = NULL;
+ 145 struct pci_ops_rtw88       *rtw88_pci_io_ops   = NULL;
+ 146 struct rtw88_usb_ops       *rtw88_usb_io_ops   = NULL;
+ 147 
+ 148 /* Until station iteration is implemented, main.c limits the watchdog to
+ 149  * chip-local thermal power tracking. Full DIG/RA needs valid station stats. */
+ 150 bool rtw88_disable_watchdog_work = true;
+ 151 
+ 152 /* ------------------------------------------------------------------ */
+ 153 /*  Workqueue implementation (kernel threads + IOLock)                  */
+ 154 /* ------------------------------------------------------------------ */
+ 155 
+ 156 /* One state lock also serializes transfers/cancellation across queues. */
+ 157 static IOLock *work_state_lock;
+ 158 struct workqueue_struct *system_wq      = NULL;
+ 159 struct workqueue_struct *system_long_wq = NULL;
+ 160 /* Keep PCI threaded IRQ + NAPI off the control-plane workqueues. */
+ 161 static struct workqueue_struct *g_datapath_wq = NULL;
+ 162 static uint32_t g_rtw88_rx_poll_active = 0;
+[END rtw88_compat.c global/runtime context]
+
+[rtw88_compat.c global/runtime context lines 1075-1101]
+1075 {
+1076     return del_timer_sync(timer);
+1077 }
+1078 
+1079 /* ------------------------------------------------------------------ */
+1080 /*  Init / exit                                                         */
+1081 /* ------------------------------------------------------------------ */
+1082 
+1083 int rtw88_compat_init(void)
+1084 {
+1085     if (system_wq || system_long_wq || g_datapath_wq || rtw88_log_lock)
+1086         return -EBUSY;
+1087 
+1088     work_state_lock = IOLockAlloc();
+1089     if (!work_state_lock) return -ENOMEM;
+1090     rtw88_log_lock = IOSimpleLockAlloc();
+1091     system_wq      = alloc_workqueue("rtw88_system_wq", 0, 0);
+1092     system_long_wq = alloc_workqueue("rtw88_long_wq",   0, 0);
+1093     g_datapath_wq  = alloc_ordered_workqueue("rtw88_datapath_wq", 0);
+1094     if (!system_wq || !system_long_wq || !g_datapath_wq || !rtw88_log_lock) {
+1095         destroy_workqueue(g_datapath_wq);
+1096         destroy_workqueue(system_wq);
+1097         destroy_workqueue(system_long_wq);
+1098         g_datapath_wq = NULL;
+1099         system_wq = system_long_wq = NULL;
+1100         if (rtw88_log_lock) {
+1101             IOSimpleLockFree(rtw88_log_lock);
+[END rtw88_compat.c global/runtime context]
+
+[rtw88_compat.c global/runtime context lines 1104-1130]
+1104         IOLockFree(work_state_lock);
+1105         work_state_lock = NULL;
+1106         return -ENOMEM;
+1107     }
+1108 
+1109     return 0;
+1110 }
+1111 
+1112 void rtw88_compat_exit(void)
+1113 {
+1114     if (g_irq_work_initialized)
+1115         cancel_work_sync(&g_irq_work);
+1116     destroy_workqueue(g_datapath_wq);
+1117     g_datapath_wq = NULL;
+1118     destroy_workqueue(system_wq);
+1119     destroy_workqueue(system_long_wq);
+1120     system_wq = system_long_wq = NULL;
+1121     if (work_state_lock) { IOLockFree(work_state_lock); work_state_lock = NULL; }
+1122     g_irq_handler   = NULL;
+1123     g_irq_thread_fn = NULL;
+1124     g_irq_dev_id    = NULL;
+1125     g_irq_work_initialized = false;
+1126     g_tx_resume_cb  = NULL;
+1127     g_hw_cbs        = NULL;
+1128     g_kext_hw       = NULL;
+1129     g_rtw88_vif     = NULL;
+1130     g_rtw88_sta = NULL;
+[END rtw88_compat.c global/runtime context]
+
+--- DMA direction and semantic checks ---
+DMA_FROM_DEVICE_VALUE=0
+DMA_TO_DEVICE_VALUE=1
+DMA_BIDIRECTIONAL_VALUE=2
+RX_DMA_MAP_CALLS=1
+DEVICE_SYNC_CALLS=1
+CPU_SYNC_CALLS=1
+UNMAP_CALLS=5
+EMPTY_DEVICE_SYNC_CALLBACK=True
+CPU_SYNC_USES_BOUNCE_COPY=True
+NATIVE_BACKEND_USES_PHYSICAL_BUFFER_DESCRIPTOR=True
+NATIVE_BACKEND_DEVICE_SYNC_METHOD_PRESENT=False
+NOTE=Call-site counts are static references; they do not prove runtime execution or every control-flow path.
+
+--- RX DMA questions requiring resolution ---
+OPEN_QUESTION_01=Does every RX buffer receive a valid backend-created physical mapping before descriptors are published?
+OPEN_QUESTION_02=Does the initial DMA_FROM_DEVICE device-sync require any copy, or only cache/device visibility?
+OPEN_QUESTION_03=After RX completion, does sync-for-CPU copy only the completed length and use the matching buffer identity?
+OPEN_QUESTION_04=Before the buffer is reposted, is a device-sync/cache operation required by this platform's DMA mapping contract?
+OPEN_QUESTION_05=Are map failure, partial ring allocation and teardown paths paired with exactly one unmap/free?
+OPEN_QUESTION_06=Can IRQ, NAPI/poll and reset/removal paths race the DMA entry list or bounce original pointer?
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+
+--- End Stage 35K ---
+ACTUAL_BUILD=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+HARDWARE_TEST=NOT_RUN

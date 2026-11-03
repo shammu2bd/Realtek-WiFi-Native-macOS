@@ -1,0 +1,92 @@
+========== STAGE 35E: SOURCE PROVENANCE COMPARISON ==========
+timestamp_utc=2026-11-02T00:24:34Z
+host=DESKTOP-65R32QP.localdomain
+local_source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+reference_repository=https://github.com/X1REN41L/RTL88WiFi.git
+
+--- Local source snapshot ---
+drwxr-xr-x@ 27 shohel  staff  864 Nov  2 02:48 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+drwxr-xr-x  13 shohel  staff  416 Nov  2 03:14 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi
+local_makefile_sha256=17030272d8f5592fcffecfa7bc3d8ba36973fac57db1ab159d4fb960706a7f8d
+
+--- Clone public reference into isolated diagnostic folder ---
+Cloning into '/Users/shohel/Downloads/Stage35E-run-20261102-002434/reference'...
+reference_head=8cebe79209d05e8760e17603af6a344941920381
+reference_branch=main
+reference_remote=https://github.com/X1REN41L/RTL88WiFi.git
+reference_makefile_sha256=7a15289d4c6807955e9b66535e7b17a7ab3d54de6dcc554a340d9d183d879e57
+
+--- Compare driver/RTL88WiFi file content (exclude build products and Git metadata) ---
+LOCAL_FILE_COUNT=1333
+REFERENCE_FILE_COUNT=1301
+IDENTICAL_FILES=1289
+DIFFERENT_FILES=12
+LOCAL_ONLY_FILES=32
+REFERENCE_ONLY_FILES=0
+
+[DIFFERENT FILES]
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h
+Makefile
+RTL88WiFi.kext/Contents/Info.plist
+src/compat/linux/skbuff.h
+src/kext/RTL88WiFi.cpp
+src/kext/RTL88WiFi.hpp
+src/kext/RTW88AWDLManager.cpp
+src/kext/RTW88AssocWire.hpp
+src/kext/RTW88IEEE80211.cpp
+src/kext/RTW88IEEE80211.hpp
+src/kext/kmod_info.c
+
+[LOCAL ONLY]
+.DS_Store
+RTL88WiFiNative.kext/Contents/Info.plist
+src/compat/linux/skbuff_tx_completion.h
+src/kext/RTW88BaPolicy.hpp
+src/kext/RTW88JoinPolicy.hpp
+src/kext/RTW88LinkMetrics.hpp
+src/kext/RTW88RoamScanPolicy.hpp
+src/kext/RTW88WCLRadioBridge.cpp
+src/kext/RTW88WCLRadioBridge.hpp
+src/kext/RTW88WCLRadioEventRing.hpp
+src/kext/RTW88WCLWorkQueue.cpp
+src/kext/RTW88WCLWorkQueue.hpp
+src/kext/wcl24h32/RTW88WCL24H32ABI.hpp
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp
+src/kext/wcl24h32/RTW88WCLController.cpp
+src/kext/wcl24h32/RTW88WCLController.hpp
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+src/kext/wcl24h32/RTW88WCLMbufRing.hpp
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp
+src/kext/wcl24h32/RTW88WCLPacketSpanValidation.hpp
+src/kext/wcl24h32/RTW88WCLPacketView.hpp
+src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp
+src/kext/wcl24h32/RTW88WCLRequestDecoder.hpp
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp
+src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp
+
+[REFERENCE ONLY]
+
+[KEY FILE HASH COMPARISON]
+Makefile | local=17030272d8f5592fcffecfa7bc3d8ba36973fac57db1ab159d4fb960706a7f8d | reference=7a15289d4c6807955e9b66535e7b17a7ab3d54de6dcc554a340d9d183d879e57
+src/kext/RTW88HwOps.cpp | local=3984d76592346bf3e9050195045a69f37328ccedc3b957ee23bc51ed22fae3d1 | reference=3984d76592346bf3e9050195045a69f37328ccedc3b957ee23bc51ed22fae3d1
+src/kext/RTW88PCIDevice.cpp | local=993e8e143ae6728a2e76ef23e69967bb8e91645c9aeb189ac2db0872aa09983a | reference=993e8e143ae6728a2e76ef23e69967bb8e91645c9aeb189ac2db0872aa09983a
+
+COMPARISON_SCOPE=driver/RTL88WiFi; excludes .git, build, DerivedData, dSYM, object/archive/dylib files and kext executable payloads
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+EXISTING_KEXT_MODIFIED=NO
+OPENCORE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+REFERENCE_CLONE_LOCATION=/Users/shohel/Downloads/Stage35E-run-20261102-002434/reference
+========== END STAGE 35E ==========

@@ -1,0 +1,186 @@
+STAGE56_GLOBAL_REGISTRATION_QUEUE_AND_DATAPATH_REFERENCE_INVENTORY
+
+REFERENCE=registration_info
+MATCHES_AT_LEAST=21
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:50: bool initRegistrationInfo( RegistrationInfo * info, IOOptionBits options, size_t size );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:51: IOReturn registerEthernetInterface( const RegistrationInfo * info, IOSkywalkPacketQueue ** queues, IOOptionBits queueOptions, IOSkywalkPacketBufferPool * pool1, IOSkywalkPacketBufferPool * pool2, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:52: IOReturn deregisterEthernetInterface( IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:55: IOReturn registerNetworkInterface( const RegistrationInfo * info, IOSkywalkPacketQueue ** queues, IOOptionBits queueOptions, IOSkywalkPacketBufferPool * pool1, IOSkywalkPacketBufferPool * pool2, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:56: IOReturn deregisterNetworkInterface( IOOptionBits options = 0 );
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:318: virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:322: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:325: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:328: IOReturn deregisterNetworkInterface(unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:436: bool initRegistrationInfo(RegistrationInfo *, unsigned int, size_t);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:437: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:443: IOReturn deregisterEthernetInterface(unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:687: IOReturn registerInfraEthernetInterface(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:235: bool RTW88WCLInfraInterface::prepareRegistrationInfo(const ether_addr &address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:243: /* 24H32 initRegistrationInfo requires option 1 and the exact 0x130 size.
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:247: if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:260: bool prepareRegistrationInfo(const ether_addr &address);
+src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp:76: * caller after initRegistrationInfo(). The initializer itself remains a
+src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp:93: /* Called only after the kernel initRegistrationInfo() method has returned
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:67: * are not passed to registerEthernetInterface() yet. Skywalk owns their
+
+REFERENCE=queue_and_link
+MATCHES_AT_LEAST=9
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:136: @function createQueues
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:144: virtual IOReturn createQueues( IOItemCount queueLength = 0, IOOptionBits options = 0 );
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:51: class IOSkywalkLogicalLink;
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:318: virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:325: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCLController.cpp:130: const IOReturn queueStatus = _skywalkQueues->createQueues();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:35: IOReturn RTW88WCLSkywalkQueues::createQueues()
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:23: IOReturn createQueues();
+
+REFERENCE=tx_callbacks
+MATCHES_AT_LEAST=13
+MacKernelSDK/Headers/IOKit/network/IOEthernetController.h:223: uint32_t fNextTimeSyncTransmitCallbackID;
+MacKernelSDK/Headers/IOKit/network/IOEthernetController.h:224: bool fHasTimeSyncTransmitCallbackIDAvailable;
+MacKernelSDK/Headers/IOKit/network/IOEthernetController.h:226: struct IOECTSCallbackEntry *fTimeSyncTransmitCallbackQueue;
+MacKernelSDK/Headers/IOKit/network/IOEthernetController.h:227: IOLock *fTimeSyncTransmitCallbackQueueLock;
+MacKernelSDK/Headers/IOKit/video/IOVideoDeviceLib.h:46: @typedef    IOVideoDeviceOutputCallback
+MacKernelSDK/Headers/IOKit/video/IOVideoDeviceLib.h:48: typedef void (*IOVideoDeviceOutputCallback)(    IOVideoDeviceRef    stream,
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76: IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126: uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:127: CompletionSink sink, void *context)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:19: using CompletionSink = void (*)(IOSkywalkPacket *packet,
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:32: * the Skywalk packet stays with this adapter until drainCompletions(). */
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33: IOReturn submitPacket(IOSkywalkPacket *packet);
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39: uint32_t drainCompletions(CompletionSink sink, void *context);
+
+REFERENCE=rx_callbacks
+MATCHES_AT_LEAST=73
+MacKernelSDK/Headers/DriverKit/IODataQueueDispatchSource.h:207: CheckForWork(bool synchronous) override LOCAL;
+MacKernelSDK/Headers/DriverKit/IODataQueueDispatchSource.h:259: #define IODataQueueDispatchSource_CheckForWork_Args \
+MacKernelSDK/Headers/DriverKit/IODataQueueDispatchSource.h:367: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:71: CheckForWork(bool synchronous) INVOKEREPLY = 0;
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:84: #define IODispatchSource_CheckForWork_ID            0xef19d38d4f945fd0ULL
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:94: #define IODispatchSource_CheckForWork_Args \
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:123: CheckForWork(\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:155: typedef kern_return_t (*CheckForWork_Handler)(OSMetaClassBase * target, IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:157: CheckForWork_Invoke(const IORPC rpc,\
+MacKernelSDK/Headers/DriverKit/IODispatchSource.h:159: CheckForWork_Handler func);\
+MacKernelSDK/Headers/DriverKit/IOInterruptDispatchSource.h:138: CheckForWork(bool synchronous) override LOCAL;
+MacKernelSDK/Headers/DriverKit/IOInterruptDispatchSource.h:178: #define IOInterruptDispatchSource_CheckForWork_Args \
+MacKernelSDK/Headers/DriverKit/IOInterruptDispatchSource.h:240: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/DriverKit/IOServiceNotificationDispatchSource.h:126: CheckForWork(bool synchronous) override LOCAL;
+MacKernelSDK/Headers/DriverKit/IOServiceNotificationDispatchSource.h:165: #define IOServiceNotificationDispatchSource_CheckForWork_Args \
+MacKernelSDK/Headers/DriverKit/IOServiceNotificationDispatchSource.h:229: CheckForWork_Impl(IODispatchSource_CheckForWork_Args);\
+MacKernelSDK/Headers/IOKit/IODMAEventSource.h:89: virtual bool checkForWork(void) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/IOEventSource.h:77: *       All subclasses of IOEventSource that wish to perform work on the work-loop thread are expected to implement the checkForWork() member function. As of Mac OS X, 10.7 (Darwin 11), checkForWork is no longer pure virtual, and should not be overridden if there is no work to be done.
+MacKernelSDK/Headers/IOKit/IOEventSource.h:80: *       checkForWork() is the key method in this class.	 It is called by some work-loop when convienient and is expected to evaluate its internal state and determine if an event has occurred since the last call.  In the case of an event having occurred then the instance defined target(owner)/action will be called.	 The action is stored as an ordinary C function pointer but the first parameter is always the owner.  This means that a C++ member function can be used as an action function though thi
+MacKernelSDK/Headers/IOKit/IOEventSource.h:160: *  be called by the checkForWork member function.	The first parameter of the
+MacKernelSDK/Headers/IOKit/IOEventSource.h:170: /*! @function checkForWork
+MacKernelSDK/Headers/IOKit/IOEventSource.h:180: virtual bool checkForWork();
+MacKernelSDK/Headers/IOKit/IOEventSource.h:248: *  state when checkForWork is called.  Calling this function will cause the
+MacKernelSDK/Headers/IOKit/IOEventSource.h:249: *  work-loop to be signalled so that a checkForWork is performed. */
+MacKernelSDK/Headers/IOKit/IOEventSource.h:255: *  state when checkForWork is called. */
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:119: /*! @function checkForWork
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:123: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:177: *  state when checkForWork is called.  Calling this function will cause the
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:178: *  work-loop to be signalled so that a checkForWork is performed. */
+MacKernelSDK/Headers/IOKit/IOInterruptEventSource.h:184: *  state when checkForWork is called. */
+MacKernelSDK/Headers/IOKit/IOTimerEventSource.h:202: /*! @function checkForWork
+MacKernelSDK/Headers/IOKit/IOTimerEventSource.h:206: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/IOWorkLoop.h:95: *       @abstract Checks if the event source passed in overrides checkForWork() to perform any work.
+MacKernelSDK/Headers/IOKit/IOWorkLoop.h:184: *   event list calling the checkForWork method in each event source.  If an
+MacKernelSDK/Headers/IOKit/IOWorkLoop.h:314: *   walks the event list calling the checkForWork method in each event source.
+MacKernelSDK/Headers/IOKit/bluetooth/IOBluetoothWorkLoop.h:63: /*! @function checkForWork
+MacKernelSDK/Headers/IOKit/bluetooth/IOBluetoothWorkLoop.h:65: *    @discussion This function overrides IOEventSource::checkForWork() so that it does nothing.
+MacKernelSDK/Headers/IOKit/bluetooth/IOBluetoothWorkLoop.h:69: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/bluetooth/IOWorkQueue.h:84: virtual bool     checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/firewire/IOFWAsyncStreamListener.h:51: bool initAll( IOFireWireController *control, UInt32 channel, FWAsyncStreamReceiveCallback proc, void *refcon );
+MacKernelSDK/Headers/IOKit/firewire/IOFWAsyncStreamListener.h:57: const FWAsyncStreamReceiveCallback setListenerHandler( FWAsyncStreamReceiveCallback inReceiver );
+MacKernelSDK/Headers/IOKit/firewire/IOFWAsyncStreamListener.h:100: FWAsyncStreamReceiveCallback	fClientProc;
+MacKernelSDK/Headers/IOKit/firewire/IOFWCommand.h:91: typedef void (*FWAsyncStreamReceiveCallback)(void *refcon, const void *buf);
+MacKernelSDK/Headers/IOKit/firewire/IOFireWireController.h:980: IOFWAsyncStreamListener *createAsyncStreamListener( UInt32	channel, FWAsyncStreamReceiveCallback proc, void *refcon );
+MacKernelSDK/Headers/IOKit/firewire/IOFireWireController.h:988: IOFWAsyncStreamReceiver *allocAsyncStreamReceiver( UInt32 channel, FWAsyncStreamReceiveCallback proc, void *refcon );
+MacKernelSDK/Headers/IOKit/network/IOEthernetController.h:228: struct IOECTSCallbackEntry *fTimeSyncReceiveCallbackQueue;
+MacKernelSDK/Headers/IOKit/network/IOEthernetController.h:229: IOLock *fTimeSyncReceiveCallbackQueueLock;
+MacKernelSDK/Headers/IOKit/pci/IOPCIDevice.h:298: virtual bool checkForWork( void ) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h:67: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h:65: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:49: @field checkForWorkCounter Increment with each call to checkForWork() if enqueueAndCompletePackets() is executed.
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:56: UInt64 checkForWorkCounter;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:79: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:144: *   Updated with the value of $link mWorkCounter whenever checkForWork() is called.
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:75: virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:348: @function inputCallback
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:355: The inputCallback() method is called as a result of a fast trap
+MacKernelSDK/Headers/IOKit/stream/IOStream.h:360: virtual void inputCallback( UInt32 token );
+MacKernelSDK/Headers/IOKit/video/IOVideoDevice.h:92: virtual void						inputCallback(UInt32 token);
+MacKernelSDK/Headers/sys/kdebugevents.h:1590: {0x5010004, "WL_CheckForWork"},
+src/kext/RTW88WCLWorkQueue.cpp:58: * synchronous with the IOWorkLoop and waits out an active checkForWork(). */
+src/kext/RTW88WCLWorkQueue.cpp:129: * source does the actual callback only in checkForWork() on that loop. */
+src/kext/RTW88WCLWorkQueue.cpp:134: bool RTW88WCLWorkQueue::checkForWork()
+src/kext/RTW88WCLWorkQueue.hpp:26: * Consumer context: IOWorkLoop calls checkForWork(), which drains the ring and
+src/kext/RTW88WCLWorkQueue.hpp:30: * stop() must run outside this event source's active checkForWork()/handler
+src/kext/RTW88WCLWorkQueue.hpp:47: bool checkForWork() override;
+src/kext/wcl24h32/RTW88WCLController.cpp:144: &RTW88WCLController::stagedRxFrame, this)) {
+src/kext/wcl24h32/RTW88WCLController.cpp:220: * stop() waits out an active checkForWork() and releases all staged mbufs. */
+src/kext/wcl24h32/RTW88WCLController.cpp:558: bool RTW88WCLController::stagedRxFrame(
+src/kext/wcl24h32/RTW88WCLController.hpp:89: static bool stagedRxFrame(IOSkywalkPacket *preparedPacket, void *context);
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:169: bool RTW88WCLSkywalkRxAdapter::checkForWork()
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:216: /* Synchronous removal serializes against checkForWork(). The owner
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp:38: bool checkForWork() override;
+
+REFERENCE=native_interface_factory
+MATCHES_AT_LEAST=54
+MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h:172: virtual IO80211SkywalkInterface* getPrimarySkywalkInterface(void);
+src/kext/RTL88WiFi.cpp:1612: skywalkInterface == getPrimarySkywalkInterface()) {
+src/kext/RTL88WiFi.cpp:1870: skywalkInterface == getPrimarySkywalkInterface()) {
+src/kext/wcl24h32/RTW88WCL24H32ABI.hpp:89: virtual IO80211SkywalkInterface *getPrimarySkywalkInterface();
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:9: #include "RTW88WCLInfraInterface.hpp"
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:16: OSDefineMetaClassAndStructors(RTW88WCLInfraInterface, IO80211InfraProtocol)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:139: bool RTW88WCLInfraInterface::init()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:157: bool RTW88WCLInfraInterface::init(IOService *provider, ether_addr *address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:166: if (!IO80211SkywalkInterface::init(provider, address))
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:173: IOReturn RTW88WCLInfraInterface::attachRadio(RTW88IEEE80211 *radio)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:203: void RTW88WCLInfraInterface::detachRadio()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:221: void RTW88WCLInfraInterface::free()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:229: void RTW88WCLInfraInterface::clearRegistrationInfo()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:235: bool RTW88WCLInfraInterface::prepareRegistrationInfo(const ether_addr &address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262: bool RTW88WCLInfraInterface::start(IOService *provider)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:268: provider->setProperty("RTW88WCLInfraInterfaceStage",
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:274: void RTW88WCLInfraInterface::stop(IOService *provider)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:279: provider->setProperty("RTW88WCLInfraInterfaceStopped", kOSBooleanTrue);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:283: IOReturn RTW88WCLInfraInterface::enable(unsigned int options)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:303: IOReturn RTW88WCLInfraInterface::disable(unsigned int options)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:317: SInt32 RTW88WCLInfraInterface::initBSDInterfaceParameters(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:322: * forwards to IO80211SkywalkInterface::initBSDInterfaceParameters().
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:329: IOReturn RTW88WCLInfraInterface::setMacAddress(ether_addr &address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:334: IOReturn RTW88WCLInfraInterface::getHardwareAddress(ether_addr *address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:341: IOReturn RTW88WCLInfraInterface::setHardwareAddress(ether_addr *address)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:347: IO80211Controller *RTW88WCLInfraInterface::getController()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:352: bool RTW88WCLInfraInterface::isChipInterfaceReady()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:357: bool RTW88WCLInfraInterface::isDebounceOnGoing()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:362: IO80211LinkState RTW88WCLInfraInterface::linkState()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:369: bool RTW88WCLInfraInterface::setLinkState(IO80211LinkState state,
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:377: int RTW88WCLInfraInterface::getAssocState()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:382: UInt RTW88WCLInfraInterface::getHardwareAssists()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:387: bool RTW88WCLInfraInterface::bpfTap(unsigned int direction, unsigned int flags)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:394: void RTW88WCLInfraInterface::hwConfigNicProxyData(nicproxy_info_s *info)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:400: IOReturn RTW88WCLInfraInterface::getCHANNEL(apple80211_channel_data *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:419: IOReturn RTW88WCLInfraInterface::getRSSI(apple80211_rssi_data *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:436: IOReturn RTW88WCLInfraInterface::getSUPPORTED_CHANNELS(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:462: IOReturn RTW88WCLInfraInterface::setCIPHER_KEY(apple80211_key *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:475: IOReturn RTW88WCLInfraInterface::setCLEAR_PMKSA_CACHE(void *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:482: IOReturn RTW88WCLInfraInterface::setWCL_LEAVE_NETWORK(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:503: IOReturn RTW88WCLInfraInterface::setWCL_SCAN_ABORT(void *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:510: IOReturn RTW88WCLInfraInterface::setWCL_JOIN_ABORT(void *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:527: IOReturn RTW88WCLInfraInterface::setWCL_SCAN_REQ(apple80211ScanRequest *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:588: IOReturn RTW88WCLInfraInterface::setWCL_ASSOCIATE(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:625: IOReturn RTW88WCLInfraInterface::setWCL_LINK_UP_DONE(void *data)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:632: IOReturn RTW88WCLInfraInterface::setWCL_LINK_STATE_UPDATE(
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:657: bool RTW88WCLInfraInterface::scanResultMatches(const RTW88BSS &bss) const
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:676: IOReturn RTW88WCLInfraInterface::postWCLMessage(unsigned int message,
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:684: void RTW88WCLInfraInterface::publishScanResults(IOReturn status)
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:723: void RTW88WCLInfraInterface::postConnectionComplete(uint16_t status,
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:735: void RTW88WCLInfraInterface::maybePublishConnected()
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:754: void RTW88WCLInfraInterface::handleRTW88WCLRadioEvent(
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:22: class RTW88WCLInfraInterface final : public IO80211InfraProtocol,
+src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:24: OSDeclareDefaultStructors(RTW88WCLInfraInterface)

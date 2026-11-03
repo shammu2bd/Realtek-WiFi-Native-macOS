@@ -1,0 +1,29 @@
+STAGE68_PACKET_BUFFER_PREPARATION_CALLSITE_CROSSWALK
+
+PACKET_PREPARE_WITH_QUEUE
+ffffff800297e505:      	mov	dword ptr [rdi + 0x64], 0x0
+ffffff800297e52a:      	mov	rdi, qword ptr [r15 + 0x28]
+ffffff800297e531:      	call	0xffffff8000a35490 <_uuid_unparse_upper+0xffffff8000a35490>
+ffffff800297e53e:      	mov	rdi, qword ptr [r15 + 0x40]
+ffffff800297e545:      	call	0xffffff80029a1dc8 <__ZNK25IOSkywalkPacketBufferPool31getPacketBufferWithBufletHandleEP13__kern_buflet>
+ffffff800297e553:      	call	0xffffff800297ed84 <__ZN21IOSkywalkPacketBuffer23acquireWithBufletHandleEP13__kern_buflet>
+ffffff800297e566:      	call	qword ptr [rax + 0x140]
+ffffff800297e575:      	call	0xffffff800297ed7a <__ZN21IOSkywalkPacketBuffer9setPacketEP15IOSkywalkPacketj>
+ffffff800297e57a:      	mov	rax, qword ptr [r15 + 0x30]
+ffffff800297e585:      	mov	eax, dword ptr [r15 + 0x60]
+ffffff800297e597:      	mov	dword ptr [r15 + 0x64], r12d
+ffffff800297e59b:      	mov	qword ptr [r15 + 0x38], rsi
+ffffff800297e5a7:      	mov	rax, qword ptr [rax + 0x190]
+
+POOL_ALLOCATE_PACKETS
+ffffff80029a1f6d:      	mov	rdi, qword ptr [r15 + 0x18]
+ffffff80029a1f82:      	call	0xffffff8000a3c800 <_uuid_unparse_upper+0xffffff8000a3c800>
+ffffff80029a1f90:      	call	0xffffff8000a3c8b0 <_uuid_unparse_upper+0xffffff8000a3c8b0>
+ffffff80029a1fd0:      	call	0xffffff8000a35730 <_uuid_unparse_upper+0xffffff8000a35730>
+ffffff80029a1fd5:      	mov	rdi, qword ptr [r15 + 0x60]
+ffffff80029a1fde:      	call	qword ptr [rcx + 0x1e8]
+ffffff80029a1ff9:      	call	qword ptr [rax + 0x1d8]
+
+PACKET_BUFFER_VTABLE_TARGETS=recorded by symbol and disassembly; slot semantics are not inferred from offset alone
+PACKET_VTABLE_SLOT_0x190=resolved independently; caller uses a tail jump after packet preparation
+OWNERSHIP=packet buffer allocation/acquire/setPacket/release semantics must be read from resolved method bodies; successful disassembly alone is not proof of driver-safe lifetime

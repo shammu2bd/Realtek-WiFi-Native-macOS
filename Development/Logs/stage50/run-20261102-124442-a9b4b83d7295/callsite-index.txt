@@ -1,0 +1,81 @@
+STAGE50_CODE_OCCURRENCE_INDEX
+COMMENTS_AND_QUOTED_LITERALS=EXCLUDED
+
+SYMBOL=initRegistrationInfo OCCURRENCES=2
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:436: bool initRegistrationInfo(RegistrationInfo *, unsigned int, size_t);
+src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:247: if (!initRegistrationInfo(info, 1, sizeof(_registrationInfo.bytes))) {
+
+SYMBOL=registerInfraEthernetInterface OCCURRENCES=1
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:687: IOReturn registerInfraEthernetInterface(
+
+SYMBOL=registerEthernetInterface OCCURRENCES=2
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:437: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+
+SYMBOL=registerNetworkInterface OCCURRENCES=2
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:322: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:325: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+
+SYMBOL=deregisterEthernetInterface OCCURRENCES=1
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:443: IOReturn deregisterEthernetInterface(unsigned int);
+
+SYMBOL=deregisterNetworkInterface OCCURRENCES=1
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:328: IOReturn deregisterNetworkInterface(unsigned int);
+
+SYMBOL=createWithQueues OCCURRENCES=0
+
+SYMBOL=createWithQueueSet OCCURRENCES=0
+
+SYMBOL=withPool OCCURRENCES=4
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:70: _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:76: _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:82: _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:88: _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+
+SYMBOL=setDefaultLogicalLink OCCURRENCES=0
+
+SYMBOL=setLogicalLink OCCURRENCES=0
+
+SYMBOL=setInterface OCCURRENCES=0
+
+SYMBOL=setQueueSet OCCURRENCES=0
+
+SYMBOL=txSubmissionAction OCCURRENCES=3
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:72: &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:147: IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:36: static IOReturn txSubmissionAction(OSObject *owner,
+
+SYMBOL=txCompletionAction OCCURRENCES=3
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:78: &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:172: IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:40: static IOReturn txCompletionAction(OSObject *owner,
+
+SYMBOL=rxSubmissionAction OCCURRENCES=3
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:84: this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:180: IOReturn RTW88WCLSkywalkQueues::rxSubmissionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:44: static IOReturn rxSubmissionAction(OSObject *owner,
+
+SYMBOL=rxCompletionAction OCCURRENCES=3
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:90: &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:189: IOReturn RTW88WCLSkywalkQueues::rxCompletionAction(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:48: static IOReturn rxCompletionAction(OSObject *owner,
+
+SYMBOL=submitPacket OCCURRENCES=2
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:76: IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:33: IOReturn submitPacket(IOSkywalkPacket *packet);
+
+SYMBOL=drainCompletions OCCURRENCES=2
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:126: uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp:39: uint32_t drainCompletions(CompletionSink sink, void *context);
+
+SYMBOL=enqueuePacketsForNetworking OCCURRENCES=0
+
+SYMBOL=enqueuePackets OCCURRENCES=0
+
+SYMBOL=completePackets OCCURRENCES=0
+
+SYMBOL=outputPacketWithCompletion OCCURRENCES=4
+src/kext/RTW88IEEE80211.cpp:1246: return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
+src/kext/RTW88IEEE80211.cpp:1249: UInt32 RTW88IEEE80211::outputPacketWithCompletion(
+src/kext/RTW88IEEE80211.hpp:224: UInt32    outputPacketWithCompletion(mbuf_t m,
+src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp:102: const UInt32 backendResult = _radio->outputPacketWithCompletion(

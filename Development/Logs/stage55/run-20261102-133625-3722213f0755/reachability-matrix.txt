@@ -1,0 +1,54 @@
+STAGE55_CONTROLLER_INTERFACE_REGISTRATION_AND_DATAPATH_MATRIX
+
+CHECK=controller constructs interface
+METHOD=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=controller calls attachRadio
+METHOD=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=controller publishes primary interface
+METHOD=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=controller explicitly prepares interface
+METHOD=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface init calls base initializer
+METHOD=RTW88WCLInfraInterface::init
+RESULT=PRESENT
+EVIDENCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp::RTW88WCLInfraInterface::init:9: if (!IO80211SkywalkInterface::init(provider, address))
+
+CHECK=interface start calls infra registration
+METHOD=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface start initializes registration info
+METHOD=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface start calls Ethernet registration
+METHOD=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface start calls Network registration
+METHOD=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface path creates QueueSet
+METHOD=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface path creates LogicalLink
+METHOD=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface path invokes TX adapter
+METHOD=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+
+CHECK=interface path invokes RX adapter
+METHOD=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY

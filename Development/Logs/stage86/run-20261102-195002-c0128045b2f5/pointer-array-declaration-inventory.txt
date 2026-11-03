@@ -1,0 +1,27 @@
+STAGE86_POINTER_ARRAY_DECLARATION_INVENTORY
+DECLARATION_PATTERN_HITS=2
+src/kext/wcl24h32/RTW88WCLPacketView.hpp:34:PATTERN=\b[A-Za-z_]\w*(?:IOSkywalk|Skywalk|Packet|Queue)[A-Za-z_0-9]*\s*\*+\s*[A-Za-z_]\w*\s*\[\s*\d*\s*\]: IOSkywalkPacketBuffer *buffers[1] = { nullptr };
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:92:PATTERN=\b[A-Za-z_]\w*(?:IOSkywalk|Skywalk|Packet|Queue)[A-Za-z_0-9]*\s*\*+\s*[A-Za-z_]\w*\s*\[\s*\d*\s*\]: IOSkywalkPacketBuffer *buffers[1] = { nullptr };
+
+ARRAY_AGGREGATION_AND_ADDRESS_CLUES=3
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:549:virtual void _abi_0c78() __asm__("__ZN23IO80211SkywalkInterface21findExistingFlowQueueE20IO80211FlowQueueHash");
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:550:virtual void _abi_0c80() __asm__("__ZN23IO80211SkywalkInterface17removePacketQueueEPK20IO80211FlowQueueHash");
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:551:public:
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:552:virtual void flushPacketQueues();
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:553:virtual void cachePeer(ether_addr *, unsigned int *);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:554:virtual bool shouldLog(unsigned long long);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:555:virtual void vlogDebug(unsigned long long, char const *, va_list);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:133:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:134:bool RTW88WCLSkywalkQueues::queuesAllocated() const
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:135:{
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:136:return _allocated && _txPool && _rxPool && _txSubmission &&
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:138:}
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:139:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:134:bool RTW88WCLSkywalkQueues::queuesAllocated() const
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:135:{
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:136:return _allocated && _txPool && _rxPool && _txSubmission &&
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:138:}
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:139:
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:140:/*

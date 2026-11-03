@@ -1,0 +1,446 @@
+========== STAGE 35H: NATIVE PCI/DMA MEMBERSHIP AUDIT ==========
+timestamp_utc=2026-11-02T00:37:25Z
+host=DESKTOP-65R32QP.localdomain
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+target=rtl88wifi-native
+mode=read-only source inspection + make -n -B
+
+--- Makefile safety preflight ---
+PREFLIGHT=PASS
+READ_ONLY_PARSE_SHELL line 18: HOST_CPUS := $(shell sysctl -n hw.logicalcpu 2>/dev/null || echo 4)
+READ_ONLY_PARSE_SHELL line 25: PROJ_ROOT    := $(shell pwd)
+READ_ONLY_PARSE_SHELL line 47: SDK          := $(shell xcrun --show-sdk-path)
+MAKE_DRY_RUN_EXIT=0
+
+--- Makefile declaration context ---
+
+[Makefile lines 157-164]
+ 157 # PCIe-only project: USB/SDIO device wrappers and transport backends are intentionally excluded
+ 158 KEXT_SRCS := \
+ 159     $(KEXT_SRC)/RTW88Kext.cpp \
+ 160     $(KEXT_SRC)/RTW88PCIDevice.cpp \
+ 161     $(KEXT_SRC)/RTW88UserClient.cpp \
+ 162     $(KEXT_SRC)/RTW88IEEE80211.cpp
+ 163 
+ 164 # ------------------------------------------------------------------ #
+
+[Makefile lines 331-338]
+ 331 AIRPORT_OUT_KEXT  := $(OUT_DIR)/RTL88WiFi.kext
+ 332 AIRPORT_OUT_BIN   := $(AIRPORT_OUT_KEXT)/Contents/MacOS/RTL88WiFi
+ 333 
+ 334 AIRPORT_KEXT_SRCS := \
+ 335     $(KEXT_SRC)/RTW88IEEE80211.cpp \
+ 336     $(KEXT_SRC)/RTW88HwOps.cpp \
+ 337     $(KEXT_SRC)/RTL88WiFi.cpp \
+ 338     $(KEXT_SRC)/RTL88WiFiAWDL.cpp \
+
+[Makefile lines 341-348]
+ 341     $(KEXT_SRC)/RTW88WCLRadioBridge.cpp \
+ 342     $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+ 343 
+ 344 AIRPORT_KEXT_OBJS := $(patsubst $(KEXT_SRC)/%.cpp, $(BUILD_DIR)/airport/%.o, $(AIRPORT_KEXT_SRCS))
+ 345 
+ 346 # Compile-only Sequoia 24H32 controller ABI slice. This object is deliberately
+ 347 # NOT linked into the legacy/bridge Kext: its IO80211Controller declaration has
+ 348 # a different vtable ABI from the legacy header used by the active target.
+
+[Makefile lines 351-358]
+ 351 WCL24H32_INFRA_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLInfraInterface.cpp
+ 352 WCL24H32_INFRA_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLInfraInterface.o
+ 353 WCL24H32_PCI_BACKEND_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.cpp
+ 354 WCL24H32_PCI_BACKEND_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLPCIBackend.o
+ 355 WCL24H32_SKYWALK_QUEUES_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.cpp
+ 356 WCL24H32_SKYWALK_QUEUES_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkQueues.o
+ 357 WCL24H32_TX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+ 358 WCL24H32_TX_ADAPTER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkTxAdapter.o
+
+[Makefile lines 362-369]
+ 362 
+ 363 AIRPORT_KMOD_OBJ := $(BUILD_DIR)/airport/kmod_info.o
+ 364 
+ 365 AIRPORT_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(AIRPORT_KEXT_OBJS)
+ 366 
+ 367 AIRPORT_LDFLAGS := \
+ 368     $(ARCH) -static -nostdlib -Xlinker -kext \
+ 369     $(MKSDK)/Library/x86_64/libkmod.a \
+
+[Makefile lines 386-393]
+ 386 # Kext still includes the legacy IO80211Controller declaration and must not
+ 387 # mix the incompatible ABI. The controller now owns the PCI backend and RTW88
+ 388 # state-machine object in a staged, fail-closed lifecycle.
+ 389 rtl88wifi-wcl-controller-abi-check: $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+ 390 
+ 391 $(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
+ 392     $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
+ 393     $(KEXT_SRC)/wcl24h32/RTW88WCL24H32InterfaceABI.hpp \
+
+[Makefile lines 413-420]
+ 413 	@echo "  WCL-ABI CXX  RTW88WCLInfraInterface.cpp (24H32, compile-only)"
+ 414 	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+ 415 
+ 416 $(WCL24H32_PCI_BACKEND_OBJ): $(WCL24H32_PCI_BACKEND_SRC) \
+ 417     $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
+ 418     $(KEXT_SRC)/RTW88IEEE80211.hpp \
+ 419     $(KEXT_SRC)/../compat/rtw88_compat.h \
+ 420     | $(BUILD_DIR)/wcl24h32
+
+[Makefile lines 459-466]
+ 459 NATIVE_OUT_KEXT := $(OUT_DIR)/RTL88WiFiNative.kext
+ 460 NATIVE_OUT_BIN := $(NATIVE_OUT_KEXT)/Contents/MacOS/RTL88WiFiNative
+ 461 NATIVE_CORE_OBJ_DIR := $(BUILD_DIR)/native
+ 462 NATIVE_CORE_SRCS := $(KEXT_SRC)/RTW88IEEE80211.cpp $(KEXT_SRC)/RTW88HwOps.cpp $(KEXT_SRC)/RTW88WCLRadioBridge.cpp $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+ 463 NATIVE_CORE_HEADERS := $(wildcard $(KEXT_SRC)/*.hpp) $(wildcard $(KEXT_SRC)/wcl24h32/*.hpp)
+ 464 NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88HwOps.o RTW88WCLRadioBridge.o RTW88WCLWorkQueue.o)
+ 465 NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+ 466 NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
+
+[Makefile lines 461-468]
+ 461 NATIVE_CORE_OBJ_DIR := $(BUILD_DIR)/native
+ 462 NATIVE_CORE_SRCS := $(KEXT_SRC)/RTW88IEEE80211.cpp $(KEXT_SRC)/RTW88HwOps.cpp $(KEXT_SRC)/RTW88WCLRadioBridge.cpp $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+ 463 NATIVE_CORE_HEADERS := $(wildcard $(KEXT_SRC)/*.hpp) $(wildcard $(KEXT_SRC)/wcl24h32/*.hpp)
+ 464 NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88HwOps.o RTW88WCLRadioBridge.o RTW88WCLWorkQueue.o)
+ 465 NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+ 466 NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
+ 467 
+ 468 .PHONY: rtl88wifi-native
+
+[Makefile lines 462-469]
+ 462 NATIVE_CORE_SRCS := $(KEXT_SRC)/RTW88IEEE80211.cpp $(KEXT_SRC)/RTW88HwOps.cpp $(KEXT_SRC)/RTW88WCLRadioBridge.cpp $(KEXT_SRC)/RTW88WCLWorkQueue.cpp
+ 463 NATIVE_CORE_HEADERS := $(wildcard $(KEXT_SRC)/*.hpp) $(wildcard $(KEXT_SRC)/wcl24h32/*.hpp)
+ 464 NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88HwOps.o RTW88WCLRadioBridge.o RTW88WCLWorkQueue.o)
+ 465 NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+ 466 NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
+ 467 
+ 468 .PHONY: rtl88wifi-native
+ 469 rtl88wifi-native: $(NATIVE_OUT_BIN)
+
+[Makefile lines 465-472]
+ 465 NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+ 466 NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
+ 467 
+ 468 .PHONY: rtl88wifi-native
+ 469 rtl88wifi-native: $(NATIVE_OUT_BIN)
+ 470 
+ 471 $(NATIVE_CORE_OBJ_DIR):
+ 472 	mkdir -p $@
+
+[Makefile lines 466-473]
+ 466 NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
+ 467 
+ 468 .PHONY: rtl88wifi-native
+ 469 rtl88wifi-native: $(NATIVE_OUT_BIN)
+ 470 
+ 471 $(NATIVE_CORE_OBJ_DIR):
+ 472 	mkdir -p $@
+ 473 
+
+[Makefile lines 478-485]
+ 478 $(NATIVE_OUT_KEXT)/Contents/MacOS:
+ 479 	mkdir -p $@
+ 480 
+ 481 $(NATIVE_OUT_BIN): $(NATIVE_ALL_OBJS) $(NATIVE_KEXT_SKEL)/Contents/Info.plist | $(NATIVE_OUT_KEXT)/Contents/MacOS
+ 482 	@echo "  NATIVE LD   $(notdir $@)"
+ 483 	$(LD) $(NATIVE_LDFLAGS) -o $@ $(NATIVE_ALL_OBJS)
+ 484 	@echo "  NATIVE SYNC $(NATIVE_OUT_KEXT)"
+ 485 	rsync -a --exclude='MacOS' $(NATIVE_KEXT_SKEL)/ $(NATIVE_OUT_KEXT)/
+
+[Makefile lines 480-487]
+ 480 
+ 481 $(NATIVE_OUT_BIN): $(NATIVE_ALL_OBJS) $(NATIVE_KEXT_SKEL)/Contents/Info.plist | $(NATIVE_OUT_KEXT)/Contents/MacOS
+ 482 	@echo "  NATIVE LD   $(notdir $@)"
+ 483 	$(LD) $(NATIVE_LDFLAGS) -o $@ $(NATIVE_ALL_OBJS)
+ 484 	@echo "  NATIVE SYNC $(NATIVE_OUT_KEXT)"
+ 485 	rsync -a --exclude='MacOS' $(NATIVE_KEXT_SKEL)/ $(NATIVE_OUT_KEXT)/
+ 486 	@echo "  NATIVE OK   $(NATIVE_OUT_KEXT)"
+ 487 
+
+[Makefile lines 510-517]
+ 510 	mkdir -p $@
+ 511 
+ 512 # Rebuild objects when one of their headers changes.
+ 513 DEPFILES = $(ALL_OBJS:.o=.d) $(AIRPORT_KEXT_OBJS:.o=.d) $(AIRPORT_KMOD_OBJ:.o=.d) \
+ 514            $(WCL24H32_CONTROLLER_OBJ:.o=.d) $(WCL24H32_INFRA_OBJ:.o=.d) \
+ 515            $(WCL24H32_PCI_BACKEND_OBJ:.o=.d) $(WCL24H32_SKYWALK_QUEUES_OBJ:.o=.d) \
+ 516            $(WCL24H32_TX_ADAPTER_OBJ:.o=.d) $(WCL24H32_RX_ADAPTER_OBJ:.o=.d)
+ 517 -include $(DEPFILES)
+
+[Makefile lines 512-519]
+ 512 # Rebuild objects when one of their headers changes.
+ 513 DEPFILES = $(ALL_OBJS:.o=.d) $(AIRPORT_KEXT_OBJS:.o=.d) $(AIRPORT_KMOD_OBJ:.o=.d) \
+ 514            $(WCL24H32_CONTROLLER_OBJ:.o=.d) $(WCL24H32_INFRA_OBJ:.o=.d) \
+ 515            $(WCL24H32_PCI_BACKEND_OBJ:.o=.d) $(WCL24H32_SKYWALK_QUEUES_OBJ:.o=.d) \
+ 516            $(WCL24H32_TX_ADAPTER_OBJ:.o=.d) $(WCL24H32_RX_ADAPTER_OBJ:.o=.d)
+ 517 -include $(DEPFILES)
+ 518 
+ 519 # Compiler flags and ABI macros in this file affect every object.
+
+--- Source-level PCI/DMA symbol scan ---
+src/kext/RTL88WiFi.cpp:17:extern "C" void rtw88_trigger_interrupt(void);  /* esta si es la unica con extern "C" real, ver RTW88PCIDevice.cpp */  /* struct RTW88StateResult vive aca */
+src/kext/RTL88WiFi.cpp:248:/* Instalar callbacks compartidos de compat (mismos que usa RTW88PCIDevice,
+src/kext/RTL88WiFi.cpp:252:rtw88_dma_ops       = &_dma_ops;
+src/kext/RTL88WiFi.cpp:500:_intrSrc = IOInterruptEventSource::interruptEventSource(
+src/kext/RTL88WiFi.cpp:502:OSMemberFunctionCast(IOInterruptEventSource::Action,
+src/kext/RTL88WiFi.cpp:517:void RTL88WiFi::handleInterrupt(IOInterruptEventSource *src, int count)
+src/kext/RTL88WiFi.cpp:792:rtw88_dma_ops = nullptr;
+src/kext/RTL88WiFi.hpp:21:#include <IOKit/IOInterruptEventSource.h>
+src/kext/RTL88WiFi.hpp:212:/* RTW88RxDelegate — antes RTW88IEEE80211 asumia un RTW88PCIDevice*
+src/kext/RTL88WiFi.hpp:349:* acceso a registro. Replica lo que ya hace RTW88PCIDevice. */
+src/kext/RTL88WiFi.hpp:352:IOInterruptEventSource  *_intrSrc      = nullptr;
+src/kext/RTL88WiFi.hpp:359:void handleInterrupt(IOInterruptEventSource *src, int count);
+src/kext/RTW88IEEE80211.cpp:9:#include "RTW88PCIDevice.hpp"
+src/kext/RTW88IEEE80211.cpp:544:RTW88IEEE80211 *RTW88IEEE80211::create(RTW88PCIDevice *dev, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.cpp:613:bool RTW88IEEE80211::init(RTW88PCIDevice *dev, struct pci_dev *pci)
+src/kext/RTW88IEEE80211.hpp:10:*  - Delivers decrypted data frames as Ethernet to RTW88PCIDevice
+src/kext/RTW88IEEE80211.hpp:53:class RTW88PCIDevice;
+src/kext/RTW88IEEE80211.hpp:56:* directo a metodos de RTW88PCIDevice via g_pci_dev_instance (tipado a
+src/kext/RTW88IEEE80211.hpp:57:* esa clase). Ahora cualquiera de los dos kexts (RTW88PCIDevice o
+src/kext/RTW88IEEE80211.hpp:61:* adentro de RTW88PCIDevice; ahora la comparten ambas clases. */
+src/kext/RTW88IEEE80211.hpp:99:* asumia directamente RTW88PCIDevice, lo cual rompia el link en
+src/kext/RTW88IEEE80211.hpp:184:static RTW88IEEE80211 *create(RTW88PCIDevice *dev, struct pci_dev *pci);
+src/kext/RTW88IEEE80211.hpp:187:bool      init(RTW88PCIDevice *dev, struct pci_dev *pci);
+src/kext/RTW88IEEE80211.hpp:191:/* Called by RTW88PCIDevice */
+src/kext/RTW88PCIDevice.cpp:3:// RTW88PCIDevice.cpp — IOEthernetController for PCIe rtw88 adapters
+src/kext/RTW88PCIDevice.cpp:5:#include "RTW88PCIDevice.hpp"
+src/kext/RTW88PCIDevice.cpp:23:OSDefineMetaClassAndStructors(RTW88PCIDevice, IOEthernetController)
+src/kext/RTW88PCIDevice.cpp:79:/* Handled by IOInterruptEventSource in setupInterrupt() */
+src/kext/RTW88PCIDevice.cpp:185:const char *RTW88PCIDevice::chipDisplayName() const
+src/kext/RTW88PCIDevice.cpp:204:const OSString *RTW88PCIDevice::newVendorString() const
+src/kext/RTW88PCIDevice.cpp:209:const OSString *RTW88PCIDevice::newModelString() const
+src/kext/RTW88PCIDevice.cpp:214:void RTW88PCIDevice::publishHardwareIdentity()
+src/kext/RTW88PCIDevice.cpp:279:bool RTW88PCIDevice::init(OSDictionary *props)
+src/kext/RTW88PCIDevice.cpp:281:IOLog("rtw88: RTW88PCIDevice::init\n");
+src/kext/RTW88PCIDevice.cpp:288:bool RTW88PCIDevice::start(IOService *provider)
+src/kext/RTW88PCIDevice.cpp:290:IOLog("rtw88: RTW88PCIDevice::start\n");
+src/kext/RTW88PCIDevice.cpp:317:rtw88_dma_ops      = &_dma_ops;
+src/kext/RTW88PCIDevice.cpp:389:this, &RTW88PCIDevice::debugTimerFired));
+src/kext/RTW88PCIDevice.cpp:400:void RTW88PCIDevice::debugTimerFired(IOTimerEventSource *src)
+src/kext/RTW88PCIDevice.cpp:410:void RTW88PCIDevice::stop(IOService *provider)
+src/kext/RTW88PCIDevice.cpp:412:IOLog("rtw88: RTW88PCIDevice::stop\n");
+src/kext/RTW88PCIDevice.cpp:417:void RTW88PCIDevice::free()
+src/kext/RTW88PCIDevice.cpp:425:void RTW88PCIDevice::teardown()
+src/kext/RTW88PCIDevice.cpp:458:rtw88_dma_ops      = nullptr;
+src/kext/RTW88PCIDevice.cpp:465:bool RTW88PCIDevice::setupInterrupt()
+src/kext/RTW88PCIDevice.cpp:467:_intrSrc = IOInterruptEventSource::interruptEventSource(
+src/kext/RTW88PCIDevice.cpp:469:OSMemberFunctionCast(IOInterruptEventSource::Action,
+src/kext/RTW88PCIDevice.cpp:470:this, &RTW88PCIDevice::handleInterrupt),
+src/kext/RTW88PCIDevice.cpp:482:void RTW88PCIDevice::handleInterrupt(IOInterruptEventSource *src, int count)
+src/kext/RTW88PCIDevice.cpp:492:bool RTW88PCIDevice::attachDevice()
+src/kext/RTW88PCIDevice.cpp:510:bool RTW88PCIDevice::setupMediumDict()
+src/kext/RTW88PCIDevice.cpp:534:void RTW88PCIDevice::addMedium(OSDictionary *mediums, IOMediumType type, UInt64 speed)
+src/kext/RTW88PCIDevice.cpp:543:IOReturn RTW88PCIDevice::enable(IONetworkInterface *iface)
+src/kext/RTW88PCIDevice.cpp:562:IOReturn RTW88PCIDevice::disable(IONetworkInterface *iface)
+src/kext/RTW88PCIDevice.cpp:574:IOOutputQueue *RTW88PCIDevice::createOutputQueue()
+src/kext/RTW88PCIDevice.cpp:592:UInt32 RTW88PCIDevice::outputPacket(mbuf_t m, void *param)
+src/kext/RTW88PCIDevice.cpp:616:void RTW88PCIDevice::resumeTxIfStalled()
+src/kext/RTW88PCIDevice.cpp:627:IOReturn RTW88PCIDevice::getHardwareAddress(IOEthernetAddress *addr)
+src/kext/RTW88PCIDevice.cpp:635:IOReturn RTW88PCIDevice::setHardwareAddress(const IOEthernetAddress *addr)
+src/kext/RTW88PCIDevice.cpp:641:IOReturn RTW88PCIDevice::getMaxPacketSize(UInt32 *maxSize) const
+src/kext/RTW88PCIDevice.cpp:647:IOReturn RTW88PCIDevice::setMaxPacketSize(UInt32 maxSize)
+src/kext/RTW88PCIDevice.cpp:652:IOReturn RTW88PCIDevice::selectMedium(const IONetworkMedium *medium)
+src/kext/RTW88PCIDevice.cpp:658:bool RTW88PCIDevice::configureInterface(IONetworkInterface *iface)
+src/kext/RTW88PCIDevice.cpp:666:IOReturn RTW88PCIDevice::getPacketFilters(const OSSymbol *group,
+src/kext/RTW88PCIDevice.cpp:676:IOReturn RTW88PCIDevice::setMulticastMode(bool active)
+src/kext/RTW88PCIDevice.cpp:681:IOReturn RTW88PCIDevice::setMulticastList(IOEthernetAddress *addrs, UInt32 count)
+src/kext/RTW88PCIDevice.cpp:686:IOReturn RTW88PCIDevice::setPromiscuousMode(bool active)
+src/kext/RTW88PCIDevice.cpp:691:IOReturn RTW88PCIDevice::powerStateWillChangeTo(IOPMPowerFlags flags,
+src/kext/RTW88PCIDevice.cpp:703:mbuf_t RTW88PCIDevice::allocateInputPacket(uint32_t len)
+src/kext/RTW88PCIDevice.cpp:713:void RTW88PCIDevice::injectRxFrame(mbuf_t m)
+src/kext/RTW88PCIDevice.cpp:750:void *RTW88PCIDevice::allocCoherent(size_t size, IOPhysicalAddress *phys)
+src/kext/RTW88PCIDevice.cpp:796:void RTW88PCIDevice::freeCoherent(size_t size, void *virt, IOPhysicalAddress phys)
+src/kext/RTW88PCIDevice.cpp:822:void RTW88PCIDevice::freeCoherentByPhys(IOPhysicalAddress phys)
+src/kext/RTW88PCIDevice.cpp:847:void RTW88PCIDevice::drainPendingFree()
+src/kext/RTW88PCIDevice.cpp:864:void RTW88PCIDevice::setBounceOrigVA(IOPhysicalAddress phys, void *orig_va)
+src/kext/RTW88PCIDevice.cpp:876:void RTW88PCIDevice::syncBounceForCpu(IOPhysicalAddress dma, size_t size)
+src/kext/RTW88PCIDevice.cpp:899:UInt8 RTW88PCIDevice::pciReadByte(int offset)
+src/kext/RTW88PCIDevice.cpp:903:UInt16 RTW88PCIDevice::pciReadWord(int offset)
+src/kext/RTW88PCIDevice.cpp:907:UInt32 RTW88PCIDevice::pciReadDword(int offset)
+src/kext/RTW88PCIDevice.cpp:911:void RTW88PCIDevice::pciWriteByte(int offset, UInt8 val)
+src/kext/RTW88PCIDevice.cpp:915:void RTW88PCIDevice::pciWriteWord(int offset, UInt16 val)
+src/kext/RTW88PCIDevice.cpp:919:void RTW88PCIDevice::pciWriteDword(int offset, UInt32 val)
+src/kext/RTW88PCIDevice.cpp:923:int RTW88PCIDevice::pciFindCapability(int cap)
+src/kext/RTW88PCIDevice.cpp:937:IOReturn RTW88PCIDevice::newUserClient(task_t owningTask, void *securityID,
+src/kext/RTW88PCIDevice.hpp:2:* RTW88PCIDevice.hpp — IOEthernetController subclass for PCIe rtw88 chips.
+src/kext/RTW88PCIDevice.hpp:23:#include <IOKit/IOInterruptEventSource.h>
+src/kext/RTW88PCIDevice.hpp:32:/* RTW88PCIDevice --------------------------------------------------------- */
+src/kext/RTW88PCIDevice.hpp:33:class RTW88PCIDevice : public IOEthernetController, public RTW88RxDelegate, public RTW88HwOps {
+src/kext/RTW88PCIDevice.hpp:34:OSDeclareDefaultStructors(RTW88PCIDevice)
+src/kext/RTW88PCIDevice.hpp:78:void handleInterrupt(IOInterruptEventSource *src, int count);
+src/kext/RTW88PCIDevice.hpp:97:/* DMA helpers — used by Linux compat dma_alloc_coherent */
+src/kext/RTW88PCIDevice.hpp:101:/* Bounce buffer helpers for dma_map_single / dma_sync_single_for_cpu */
+src/kext/RTW88PCIDevice.hpp:132:IOInterruptEventSource *src, int count);
+src/kext/RTW88PCIDevice.hpp:141:IOInterruptEventSource *_intrSrc      = nullptr;
+src/kext/RTW88UserClient.cpp:5:#include "RTW88PCIDevice.hpp"
+src/kext/RTW88UserClient.cpp:55:RTW88UserClient *RTW88UserClient::create(RTW88PCIDevice *dev, task_t owningTask)
+src/kext/RTW88UserClient.cpp:98:_provider = OSDynamicCast(RTW88PCIDevice, provider);
+src/kext/RTW88UserClient.cpp:100:IOLog("rtw88: RTW88UserClient::start() OSDynamicCast to RTW88PCIDevice failed\n");
+src/kext/RTW88UserClient.hpp:10:class RTW88PCIDevice;
+src/kext/RTW88UserClient.hpp:56:static RTW88UserClient *create(RTW88PCIDevice *dev, task_t owningTask);
+src/kext/RTW88UserClient.hpp:96:RTW88PCIDevice *_provider    = nullptr;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:106:rtw88_dma_ops = &_dma_ops;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:117:_interruptSource = IOInterruptEventSource::interruptEventSource(
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:119:OSMemberFunctionCast(IOInterruptEventSource::Action, this,
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:261:rtw88_dma_ops = nullptr;
+src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:481:void RTW88WCLPCIBackend::handleInterrupt(IOInterruptEventSource *source,
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:15:#include <IOKit/IOInterruptEventSource.h>
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:72:void handleInterrupt(IOInterruptEventSource *source, int count);
+src/kext/wcl24h32/RTW88WCLPCIBackend.hpp:79:IOInterruptEventSource *_interruptSource = nullptr;
+src/compat/rtw88_compat.c:144:struct rtw88_dma_alloc_ops *rtw88_dma_ops      = NULL;
+src/compat/linux/dma-mapping.h:19:* The C driver code calls these helpers; the kext installs rtw88_dma_ops
+src/compat/linux/dma-mapping.h:37:extern struct rtw88_dma_alloc_ops *rtw88_dma_ops;
+src/compat/linux/dma-mapping.h:39:static inline void *dma_alloc_coherent(struct device *dev, size_t size,
+src/compat/linux/dma-mapping.h:42:if (rtw88_dma_ops && rtw88_dma_ops->alloc_coherent)
+src/compat/linux/dma-mapping.h:43:return rtw88_dma_ops->alloc_coherent(dev, size, dma_handle, flag);
+src/compat/linux/dma-mapping.h:53:if (rtw88_dma_ops && rtw88_dma_ops->free_coherent) {
+src/compat/linux/dma-mapping.h:54:rtw88_dma_ops->free_coherent(dev, size, cpu_addr, dma_handle);
+src/compat/linux/dma-mapping.h:60:static inline dma_addr_t dma_map_single(struct device *dev, void *ptr,
+src/compat/linux/dma-mapping.h:63:if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+src/compat/linux/dma-mapping.h:64:return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+src/compat/linux/dma-mapping.h:68:static inline void dma_unmap_single(struct device *dev, dma_addr_t addr,
+src/compat/linux/dma-mapping.h:71:if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+src/compat/linux/dma-mapping.h:72:rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+src/compat/linux/dma-mapping.h:79:if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_cpu)
+src/compat/linux/dma-mapping.h:80:rtw88_dma_ops->sync_single_for_cpu(dev, addr, size, dir);
+src/compat/linux/dma-mapping.h:87:if (rtw88_dma_ops && rtw88_dma_ops->sync_single_for_device)
+src/compat/linux/dma-mapping.h:88:rtw88_dma_ops->sync_single_for_device(dev, addr, size, dir);
+src/compat/linux/dma-mapping.h:91:static inline int dma_set_mask_and_coherent(struct device *dev, u64 mask) { return 0; }
+src/compat/linux/dma-mapping.h:92:static inline int dma_set_mask(struct device *dev, u64 mask)              { return 0; }
+src/compat/linux/interrupt.h:22:/* In the kext, interrupts are registered via IOInterruptEventSource.
+src/compat/linux/interrupt.h:27:static inline int request_irq(unsigned int irq,
+src/compat/linux/interrupt.h:32:/* Handled by kext IOInterruptEventSource */
+src/compat/linux/pci.h:15:* DMA, interrupts) are provided by RTW88PCIDevice via the global
+
+--- Forced dry-run compile and link graph ---
+DRY_RUN_FILE_EXISTS=True
+COMPILE_TRANSLATIONS=40
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/main.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/mac.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/phy.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/phy.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/fw.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/fw.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/tx.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rx.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rx.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/sec.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/efuse.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/efuse.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/coex.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/coex.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/ps.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/ps.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/regd.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/regd.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/bf.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/bf.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sar.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/sar.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/util.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/util.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/pci.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/mac80211.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822b.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822b.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822b_table.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822b_table.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822be.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822be.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822c.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822c.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822c_table.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822c_table.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8822ce.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822ce.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821c.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c_table.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821c_table.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821ce.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/rtw88_thread_call.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_thread_call.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/rtw88_compat.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_compat.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/rtw88_firmware.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_firmware.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/fw_blobs.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/fw_blobs.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/kmod_info.c => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/airport/kmod_info.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88IEEE80211.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88HwOps.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88HwOps.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88WCLRadioBridge.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88WCLWorkQueue.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLPCIBackend.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkQueues.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkTxAdapter.o
+COMPILE /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp => /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+NATIVE_LINK_COMMANDS=1
+LINK_OUTPUT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+LINK_OBJECT_COUNT=40
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/main.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/mac.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/phy.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/fw.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/tx.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rx.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/sec.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/efuse.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/coex.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/ps.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/regd.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/bf.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/sar.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/util.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/pci.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/mac80211.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822b.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822b_table.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822be.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822c.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822c_table.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822ce.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821c.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821c_table.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821ce.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_thread_call.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_compat.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_firmware.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/fw_blobs.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/airport/kmod_info.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88IEEE80211.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88HwOps.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88WCLRadioBridge.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88WCLWorkQueue.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLPCIBackend.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkQueues.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkTxAdapter.o
+LINK_OBJECT=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+
+--- Membership determinations ---
+PCIDEVICE_SOURCE_COMPILE_COUNT=0
+PCIDEVICE_OBJECT_LINKED=NO
+RTW88HwOps.o_LINKED=YES
+RTW88WCLRadioBridge.o_LINKED=YES
+RTW88WCLWorkQueue.o_LINKED=YES
+RTW88WCLController.o_LINKED=YES
+RTW88WCLInfraInterface.o_LINKED=YES
+RTW88WCLPCIBackend.o_LINKED=YES
+RTW88WCLSkywalkQueues.o_LINKED=YES
+RTW88WCLSkywalkTxAdapter.o_LINKED=YES
+RTW88WCLSkywalkRxAdapter.o_LINKED=YES
+
+--- Existing object / binary evidence (read-only; may be stale) ---
+ARTIFACT path=build/native/RTW88HwOps.o exists=True
+  bytes=3320 mtime_epoch=1793569465 sha256=ad19e9b4f9e244f716bd0138d78921fffd4802ee81c22519bdeba4ed62e90297
+  file=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88HwOps.o: Mach-O 64-bit object x86_64
+  nm_exit=0
+  SYMBOL 0000000000000568 D __dma_ops
+ARTIFACT path=build/airport/RTW88PCIDevice.o exists=False
+ARTIFACT path=build/native/RTW88PCIDevice.o exists=False
+ARTIFACT path=build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative exists=True
+  bytes=1624760 mtime_epoch=1793569466 sha256=475d2ec90dad4f83aaafdf9ee17a9ffca8c7804951266cf7c41d02e58945cbc9
+  file=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative: Mach-O 64-bit kext bundle x86_64
+  nm_exit=0
+  SYMBOL 0000000000051700 T __ZN14RTW88IEEE802114initEP14RTW88PCIDeviceP7pci_dev
+  SYMBOL 0000000000051690 T __ZN14RTW88IEEE802116createEP14RTW88PCIDeviceP7pci_dev
+  SYMBOL 000000000006fb50 T __ZN18RTW88WCLPCIBackend15handleInterruptEP22IOInterruptEventSourcei
+  SYMBOL                  U __ZN22IOInterruptEventSource20interruptEventSourceEP8OSObjectPFvS1_PS_iEP9IOServicei
+  SYMBOL 0000000000158b48 D __dma_ops
+  SYMBOL 0000000000158b80 S _rtw88_dma_ops
+  SYMBOL 0000000000158b88 S _rtw88_pci_io_ops
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+
+--- Final status ---
+DRY_RUN_COMMANDS_SAVED=/Users/shohel/Downloads/Stage35H-run-20261102-003724/native-dry-run.txt
+REPORT=/Users/shohel/Downloads/Stage35H-run-20261102-003724/report.txt
+ACTUAL_BUILD=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+HARDWARE_TEST=NOT_RUN
+========== END STAGE 35H ==========

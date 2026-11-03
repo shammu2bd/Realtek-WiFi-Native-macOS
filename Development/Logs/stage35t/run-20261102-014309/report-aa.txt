@@ -1,0 +1,212 @@
+========== STAGE 35T: GUARDED WARNING FIX + NATIVE REBUILD ==========
+timestamp_utc=2026-11-02T01:43:10Z
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+target=rtl88wifi-native
+sdkroot=/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk
+predecessor=Stage35S run-20261102-013527
+patch_scope=three local scalar initializers only
+mac.c: u32 ltecoex_bckp = 0
+pci.c: DBI write u8 flag = 0
+pci.c: MDIO write u8 wflag = 0
+other changes=NONE
+
+--- Source hashes before patch ---
+df03d3957767e926a5a7493024bbdd90f50af35362518147761d49641980c6d8  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c
+609dd80f41c66364e71762708bee25886c44d66dec3dc9bee39fe15500aebf83  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c
+49129551f28352e1edd567199261893a84f4d451d3fec3af04909085b41c219d  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h
+f5b17292be0028da0b5296caa4bb062f879a8b92161ccc299e092bb64d39a8a8  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/util.c
+
+--- Patched source context ---
+788-	const u8 *data = fw->firmware->data;
+789-	u32 size = fw->firmware->size;
+790:	u32 ltecoex_bckp = 0;
+791-	int ret;
+792-
+1312-	u16 write_addr;
+1313-	u16 remainder = addr & ~(BITS_DBI_WREN | BITS_DBI_ADDR_MASK);
+1314:	u8 flag = 0;
+1315-	u8 cnt;
+1316-
+1359-{
+1360-	u8 page;
+1361:	u8 wflag = 0;
+1362-	u8 cnt;
+1363-
+DRYRUN_COMPILER_COMMANDS=41
+DRYRUN_COMPILE_COMMANDS=40
+DRYRUN_KEXT_LINK_COMMANDS=1
+DRYRUN_FIRMWARE_GENERATOR_COMMANDS=1
+DRYRUN_KEXT_TEMPLATE_COPY_COMMANDS=1
+DRYRUN_PREFLIGHT=PASS
+
+--- Actual native build ---
+NATIVE_BUILD_EXIT=0
+NATIVE_BUILD_LOG_BYTES=725742
+NATIVE_BUILD_LOG_LINES=5531
+COMPILE_ERROR_LINES=0
+WARNING_LINES=1152
+CONDITIONAL_UNINITIALIZED_WARNING_LINES=0
+PACKED_MEMBER_WARNING_LINES=16
+INVALID_OFFSETOF_WARNING_LINES=0
+
+--- High-risk warning matches ---
+896:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+899:#d:m:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.he:125:a22f:i nwarning: e  e_ taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]B3warning: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+904:_NP  284 |                 rtwdevQ&2 /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h(n) | BIT:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+920:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+1008:taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member] t      
+1044:22:   R >rwarning:   16Ttaking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]275i
+2870:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+2873:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+3218:(__In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.hG/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/iokit_shim.h:125:_PC38c/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.hold:22: warning: I:_taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]9_
+3247:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+3572:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+3594:  143 | #define THREAD_UNINT                    0x00000000  /* not :22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+3960:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+3964:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+4674:/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h:125:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+4683::130:22: warning: taking address of packed member 'w7' of class or structure 'rtw_tx_desc' may result in an unaligned pointer value [-Waddress-of-packed-member]
+
+--- Build tail ---
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:58:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+  WCL-ABI CXX  RTW88WCLSkywalkRxAdapter.cpp (24H32, pool-backed RX conversion; compile-only)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp -o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:59:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:63:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/../compat/net/mac80211.h:96:9: warning: struct has size 0 in C, size 1 in C++ [-Wextern-c-compat]
+   96 |         struct {
+      |         ^
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:5:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:453:15: warning: offset of on non-standard-layout type 'IOSkywalkEthernetInterface' [-Winvalid-offsetof]
+  453 | static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
+      |               ^                                      ~~~~~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/sys/_types.h:82:33: note: expanded from macro '__offsetof'
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+      |                                 ^                        ~~~~~
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:9:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:9:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:453:15: warning: offset of on non-standard-layout type 'IOSkywalkEthernetInterface' [-Winvalid-offsetof]
+  453 | static_assert(__offsetof(IOSkywalkEthernetInterface, mExpansionData2) == 0x108, "24H32 Ethernet expansion offset");
+      |               ^                                      ~~~~~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Headers/sys/_types.h:82:33: note: expanded from macro '__offsetof'
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+      |                                 ^                        ~~~~~
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:35:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1667:42: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 1667 |     bss->beacon_interval = skb->data[32] | (uint16_t(skb->data[33]) << 8);
+      |                          ~ ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1668:39: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1668 |     bss->capabilities = skb->data[34] | (uint16_t(skb->data[35]) << 8);
+      |                       ~ ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1746:39: warning: implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1746 |             bss->channel = (f - 2407) / 5;
+      |                          ~ ~~~~~~~~~~~^~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1748:39: warning: implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1748 |             bss->channel = (f - 5000) / 5;
+      |                          ~ ~~~~~~~~~~~^~~
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:52:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:58:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:59:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:63:
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/net/mac80211.h:96:9: warning: struct has size 0 in C, size 1 in C++ [-Wextern-c-compat]
+   96 |         struct {
+      |         ^
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3073:45: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+ 3073 |             hex[2 * i]     = hexd[b.ies[rsn + 2 + i] >> 4];
+      |                                         ~~~~^~~ ~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3074:45: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+ 3074 |             hex[2 * i + 1] = hexd[b.ies[rsn + 2 + i] & 0x0f];
+      |                                         ~~~~^~~ ~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3230:59: warning: implicit conversion loses integer precision: 'uint32_t' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 3228 |     _wpa2 = RTW88Join::useWpa2(externalSupplicant,
+      |             ~~~~~~~~~
+ 3229 |                                _targetBSS.cipher == WLAN_CIPHER_SUITE_CCMP,
+ 3230 |                                pmk != nullptr, _targetBSS.capabilities);
+      |                                                ~~~~~~~~~~~^~~~~~~~~~~~
+/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4397:38: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 4397 |     uint16_t fc = (uint16_t)frame[0] | ((uint16_t)frame[1] << 8);
+      |              ~~   ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+10 warnings generated.
+1 warning generated.
+1 warning generated.
+22 warnings generated.
+  NATIVE LD   RTL88WiFiNative
+xcrun clang++ -arch x86_64 -static -nostdlib -Xlinker -kext /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/MacKernelSDK/Library/x86_64/libkmod.a -Xlinker -undefined -Xlinker dynamic_lookup -o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/main.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/mac.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/phy.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/fw.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/tx.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rx.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/sec.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/efuse.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/coex.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/ps.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/regd.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/bf.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/sar.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/util.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/pci.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/mac80211.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822b.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822b_table.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822be.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822c.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822c_table.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8822ce.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821c.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821c_table.o   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/driver/rtw8821ce.o  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_thread_call.o  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_compat.o  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/rtw88_firmware.o  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/compat/fw_blobs.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/airport/kmod_info.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88IEEE80211.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88HwOps.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88WCLRadioBridge.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/native/RTW88WCLWorkQueue.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLPCIBackend.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkQueues.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkTxAdapter.o /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+  NATIVE SYNC /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+rsync -a --exclude='MacOS' /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/RTL88WiFiNative.kext/ /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/
+  NATIVE OK   /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+BUILD_VALIDATION_FAILED=plist or x86_64 architecture validation failed
+KEXT_BUNDLE_CREATED=NO
+REASON=Native compile/link failed or expected Kext files missing
+SOURCE_PATCH_ROLLBACK=COMPLETED
+SOURCE_PATCH_PERSISTED=NO
+
+--- Source hash after build and generated-file restoration ---
+df03d3957767e926a5a7493024bbdd90f50af35362518147761d49641980c6d8  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c
+609dd80f41c66364e71762708bee25886c44d66dec3dc9bee39fe15500aebf83  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c
+49129551f28352e1edd567199261893a84f4d451d3fec3af04909085b41c219d  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h
+f5b17292be0028da0b5296caa4bb062f879a8b92161ccc299e092bb64d39a8a8  /Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source/driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/util.c
+GENERATED_FW_SOURCE_RESTORED=YES
+PATCHED_SOURCE_FILES=mac.c,pci.c
+SOURCE_PATCH_ROLLED_BACK=YES
+
+--- Safety boundary ---
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+CODESIGN=NOT_RUN
+OPENCORE_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+========== END STAGE 35T ==========

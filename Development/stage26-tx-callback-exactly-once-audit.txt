@@ -1,0 +1,1172 @@
+RTL88WiFi Stage26 — exact TX completion and ticket ownership audit
+PURPOSE: capture complete implementations and enumerate all terminal completion paths.
+SCOPE: all non-SDK C/C++ implementation and project-header files under driver/RTL88WiFi.
+SOURCE_CHANGES: NONE
+BUILD: NOT RUN
+INSTALL: NOT RUN
+LOAD: NOT RUN
+OPENCORE_CHANGE: NONE
+KNOWN_GOOD_LEGACY_KEXT: NOT TOUCHED
+QUEUE_REGISTRATION/ENABLE: NOT CALLED
+RADIO_START: NOT RUN
+
+=== INVENTORY AND HASHES ===
+PROJECT_SOURCE_FILES_SCANNED: 99
+FILE: driver/RTL88WiFi/MacKernelSDK/Library/kmod/c_start.c SHA256=2dffd2880dbe7f37df5d5cd6fb0573a603e462ef759105caf959b2cb1406fe96
+FILE: driver/RTL88WiFi/MacKernelSDK/Library/kmod/c_stop.c SHA256=061a10dba798abc95bf5438ca302d9fbf3a996c262f9d0cbe9eadc420472ba83
+FILE: driver/RTL88WiFi/MacKernelSDK/Library/kmod/cplus_start.c SHA256=ca87fd83a4bcad3332312c7db8c7dbf556b53ebb6e27698133089243ca46570b
+FILE: driver/RTL88WiFi/MacKernelSDK/Library/kmod/cplus_stop.c SHA256=9358ae73e87e2afcbf2ae0ead803ef6049759be4d8d389740140ade2a019a555
+FILE: driver/RTL88WiFi/MacKernelSDK/Library/kmod/i386_builtins.c SHA256=342fca61137bb4e05ca7895831db904a34d5dfad689093fbc4064d16a1b8292e
+FILE: driver/RTL88WiFi/MacKernelSDK/Library/kmod/libkmodtest/libkmodtest.cpp SHA256=97656c44095f1481e7d243283c31ce5de20a867fcf4b7f8a38ea55f36851e071
+FILE: driver/RTL88WiFi/MacKernelSDK/Library/kmod/libkmodtest/libkmodtest.h SHA256=d505a520413718d3ea8b7f605dec4fc9d5fbe70f50a0d6da01edbeadc5d2aa53
+FILE: driver/RTL88WiFi/ctl/main.c SHA256=a98befd0b92db66a77e7ff613e43d6db9dee19a793742f082951a1b661958916
+FILE: driver/RTL88WiFi/src/compat/asm/byteorder.h SHA256=6afb06fe5bcf2b75beba7fef07670f903e83bb61a16d7f723f00badee3009f12
+FILE: driver/RTL88WiFi/src/compat/fw_blobs.c SHA256=3043b26a7c021d5bf4cda2b113debabc2481ce205bd79ec8e5b75ddefb446fe1
+FILE: driver/RTL88WiFi/src/compat/fw_blobs.h SHA256=a26563e79ba144c63708160da8e40370ba24b6679086f769b4a03941096cd44a
+FILE: driver/RTL88WiFi/src/compat/iokit_shim.h SHA256=e9542e7e2c38e29ea073715e8ff0a49ed8cac7762dcc849867932a4f37671011
+FILE: driver/RTL88WiFi/src/compat/linux/atomic.h SHA256=877cd26cb6cdf1f53df8a8cf61f3240cb825494554061c65146bf8f808c8a2c4
+FILE: driver/RTL88WiFi/src/compat/linux/average.h SHA256=bd172cfa7a90f5a1bc03d67c9dce9a3fbbb36cf1002152dd91650e5286659c35
+FILE: driver/RTL88WiFi/src/compat/linux/bcd.h SHA256=26ac1838737a8a9f99c7bfdf8b4cc26339dfffbc75a0b5b0b752a25caaaa1619
+FILE: driver/RTL88WiFi/src/compat/linux/bitfield.h SHA256=400cd608e91cd13e32fd57f67c5dcb24795e2c8c5a1741550b2d1468c62f6c7a
+FILE: driver/RTL88WiFi/src/compat/linux/bitops.h SHA256=4319652d10f9a3259b12a79ac204cf1377ffcbe460d37fa7f603235e97d16b74
+FILE: driver/RTL88WiFi/src/compat/linux/completion.h SHA256=ef5157eb548bbd4361a84a76e7204c1e160c293ddb91c6694f5c3cc4acd8a860
+FILE: driver/RTL88WiFi/src/compat/linux/delay.h SHA256=8989948bdd33be8e500586ec9c0a8b516bbe42faa3f56c6df154f5e2855bafe7
+FILE: driver/RTL88WiFi/src/compat/linux/devcoredump.h SHA256=423ded3f98810a8981194c85f88ed5679b57588d8b84013a09f36c8c91c0e8e7
+FILE: driver/RTL88WiFi/src/compat/linux/device.h SHA256=fcc62a159f1d1e8f2bd9697fe3a93bc93c74841774e3c30a1ccc99a4704888b8
+FILE: driver/RTL88WiFi/src/compat/linux/dma-mapping.h SHA256=27120e81f01b6b35ae209318cd0ffbac02e96a5b9cb73957dfcb0b12082af630
+FILE: driver/RTL88WiFi/src/compat/linux/etherdevice.h SHA256=0d665a50e4193f423a2dbe9c3b68c425d1e0f7beb4c49bc03c832bba5e523e37
+FILE: driver/RTL88WiFi/src/compat/linux/firmware.h SHA256=85fbcb69b0f5009d85a0e847e4aaaeb32d142c4d1880ea69e2c6c775dca67c06
+FILE: driver/RTL88WiFi/src/compat/linux/if_ether.h SHA256=a4bc258a98a0df27ce639fe8716dad47460670b897613ea11842f63d6ff5a55b
+FILE: driver/RTL88WiFi/src/compat/linux/interrupt.h SHA256=3a69b6c3416eaf2e5148ceef5b25dcc3e939b749dad52d902463400a8d4f9a29
+FILE: driver/RTL88WiFi/src/compat/linux/iopoll.h SHA256=2c67e00e8fe34c3b87b59943a1f84475b780b402e2d18b9edf64c7edb46b4215
+FILE: driver/RTL88WiFi/src/compat/linux/jiffies.h SHA256=96456a6d26736c7cb9b791fe521d3366b12d9ccf424a6c6c8f8bf3ab7b010822
+FILE: driver/RTL88WiFi/src/compat/linux/kernel.h SHA256=0ed78cd6157a707bc89358bef61b6180fd55de216837542699f1fac2fea6034f
+FILE: driver/RTL88WiFi/src/compat/linux/leds.h SHA256=7f19a4b7ba8030e83a6c05c08510b56aed1bd2b94423df293749e6072885acc3
+FILE: driver/RTL88WiFi/src/compat/linux/module.h SHA256=4703534678534c311f5d18c827e760aa561fb54ca68a05c738855ec5faf08365
+FILE: driver/RTL88WiFi/src/compat/linux/mutex.h SHA256=aa59a61219a3e488f538280019401e388417b2c161201a37254c699f3052a54c
+FILE: driver/RTL88WiFi/src/compat/linux/netdevice.h SHA256=aaee8367bd87319986f34e07a8c194078961ea05483185c93c2563bded115e1d
+FILE: driver/RTL88WiFi/src/compat/linux/pci.h SHA256=22a0946f50969fa58d96a243b8ef6137b788f7329e2af295f8d67312e53ba9c8
+FILE: driver/RTL88WiFi/src/compat/linux/seq_file.h SHA256=df9a6bdb9ae67b5976195aef8d8536a440abb7c5a0a835906ed9671d6c7ddb80
+FILE: driver/RTL88WiFi/src/compat/linux/skbuff.h SHA256=58b5304797d2d1996766072e1deb6f820ecf249547a291f4c167d285373aea67
+FILE: driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h SHA256=4a52b0ca7c2d89a844bd3b110f8132c40264d5cd4c0336a6662fb70de6e4a154
+FILE: driver/RTL88WiFi/src/compat/linux/slab.h SHA256=01f7eac75503be50a8bd80fb16c5bc40ca92e3bc7c4388202dc7d607c2435092
+FILE: driver/RTL88WiFi/src/compat/linux/spinlock.h SHA256=d1a0a7ce72b6c86125e1e690b113f4bd8b7d0da1af92c48d3d00990876d218f2
+FILE: driver/RTL88WiFi/src/compat/linux/timer.h SHA256=342108267c62ed445abc00c62d3fb8badb8e062c4fddfc8314b698d9c431299d
+FILE: driver/RTL88WiFi/src/compat/linux/types.h SHA256=7014e03b27f26abed1cae763ae26e1c69354e6e69077914ed714928a59c4f835
+FILE: driver/RTL88WiFi/src/compat/linux/usb.h SHA256=3849355eb8effe279fac2a4fc11621aaee1dc5d417d43baed9859c3ce49d1d3a
+FILE: driver/RTL88WiFi/src/compat/linux/vmalloc.h SHA256=f44cb3be2cd829fe90afaf5ac7c3d8e214b2f370b73271241cd0a96dfb85748d
+FILE: driver/RTL88WiFi/src/compat/linux/workqueue.h SHA256=bffc476d1e9c0b3ce1e0de980211a65c585eb6ae54948742df20e32b1a074d5e
+FILE: driver/RTL88WiFi/src/compat/net/mac80211.h SHA256=43814659948cc0640dee41e289294b4ccf0817a0b37341a25d7ae4745640296f
+FILE: driver/RTL88WiFi/src/compat/rtw88_compat.c SHA256=c2f72e5d077f87ae3878d8afb1f582076e2068b84566216495c74730a978f490
+FILE: driver/RTL88WiFi/src/compat/rtw88_compat.h SHA256=bacd9c1d7dc900487c28d48cc03df93e8b68fc064df04818b131c98ec04e26df
+FILE: driver/RTL88WiFi/src/compat/rtw88_firmware.c SHA256=e43ba81e89085a4b566fe47f297a60be61c8c4853695147a1fb9c1b4b29d6de9
+FILE: driver/RTL88WiFi/src/compat/rtw88_thread_call.c SHA256=f000f8e4bcd65ff1a1d1967c555a1b43b784f72ec5df8f6c2d35cfc8c6aa0b5c
+FILE: driver/RTL88WiFi/src/compat/rtw88_thread_call.h SHA256=617fb44206ebcf11d7be2d00da3f1246c6ef94abe2fde0929002f05e11326c9a
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp SHA256=1aba5df922d448205fbe60b9d80f7d9cdb50208e6dd0eb5382f862bea4352744
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp SHA256=b8356afef165afc3d2d473f80355eacf1c2184a7557e8dba63a7c28225bce66a
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFiAWDL.cpp SHA256=d45c508941ea0085ce0ea199fffd0c50ab1a63da3e2dcd51e8a47b96e7bf0aa7
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFiInterface.cpp SHA256=df7917336215670c25564a9191d60d4c8021d9fca511b1d8f7b466a10e89e1b5
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFiInterface.hpp SHA256=5bc319b27430122ce99130a5034138b0a187ee3a3ec32ca01de2afa0ac7853cb
+FILE: driver/RTL88WiFi/src/kext/RTW88AWDLManager.cpp SHA256=bb275a0aefc07fe2c3d61042cf41044934ede0571c7071dff784b706f1366d22
+FILE: driver/RTL88WiFi/src/kext/RTW88AWDLManager.hpp SHA256=efdff03675f868adb39a9dfac1d16d43e306b3b1924c9085bcf792cd016f7117
+FILE: driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp SHA256=451ee4c26ca67b7cc7a297350aac6ebdeaa1bc1a5fccf2ae29f3fb06f5d7a4bb
+FILE: driver/RTL88WiFi/src/kext/RTW88AssocWire.hpp SHA256=09c7ca06deeec850870c324eeaa1443e8c2501ae1c3206913cfd152f49cc06a0
+FILE: driver/RTL88WiFi/src/kext/RTW88BaPolicy.hpp SHA256=aeaf822f95c9ef759d82b7579255a87bf7e509b67f7b239321f42519c3053983
+FILE: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp SHA256=3984d76592346bf3e9050195045a69f37328ccedc3b957ee23bc51ed22fae3d1
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp SHA256=5e7994b25a47d8748a096c68324fd80f859f460d489e7902baf2959046b14110
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp SHA256=1c1b768a862e0b5dcc525c90c0daeeb3b5cd2f6d9c76885714f11cc53c5dbc34
+FILE: driver/RTL88WiFi/src/kext/RTW88JoinPolicy.hpp SHA256=44e17933e77185bca7296d8d3a4758981b8c19f40c7730c650d010cf23fedd23
+FILE: driver/RTL88WiFi/src/kext/RTW88Kext.cpp SHA256=7157170e3de174902b2c16154dc52a19edd979171889fa592106e429b96bea02
+FILE: driver/RTL88WiFi/src/kext/RTW88Kext.hpp SHA256=258b1c0dc4621c8ed6c47126f2ca345e25e235471a51d9b5e78bcd483cd63b70
+FILE: driver/RTL88WiFi/src/kext/RTW88LinkMetrics.hpp SHA256=cdd91372200effa5be56f409702d129c12983597e48c9fa13db595b2eaeb8ef9
+FILE: driver/RTL88WiFi/src/kext/RTW88MgmtValidation.hpp SHA256=ccd43f082b4b235da37f353ed4cd7aff53c91fc6d010e2d9c88f1eb76b453977
+FILE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp SHA256=993e8e143ae6728a2e76ef23e69967bb8e91645c9aeb189ac2db0872aa09983a
+FILE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp SHA256=98e7180117fd5598a40775207a41707194c633960f5d0ff167c28ff8d5cbb991
+FILE: driver/RTL88WiFi/src/kext/RTW88RoamScanPolicy.hpp SHA256=84442c243820d8d5bd4ac2bd5d94f4db8d70fd7f3a513fac5a2fe2a4360ad852
+FILE: driver/RTL88WiFi/src/kext/RTW88UserClient.cpp SHA256=f1e854d9133c6e60c6f1f35a5210034dbf669657b6318cd96c2fe39e8a2abf72
+FILE: driver/RTL88WiFi/src/kext/RTW88UserClient.hpp SHA256=663e6b2b37afba799337466465dd78c16a347571fbe3b280a67823c7fc223442
+FILE: driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp SHA256=4b174561b2e076f75b75a5651b10344032276bf7b95bf6829091361e2adfcc6b
+FILE: driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.hpp SHA256=00789ac1f19e38988f4720a2b7864fdaba988f8059b0512b89d990b5defb2c4f
+FILE: driver/RTL88WiFi/src/kext/RTW88WCLRadioEventRing.hpp SHA256=846011fea2f9d025c4226db77073dd3c3d7ab3b35ae474bb392412d041893b30
+FILE: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp SHA256=6ded9d08bf1e91aa26b393c9a8bea990ca8f64196f36a0553109ed61829d29e7
+FILE: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.hpp SHA256=5cad32ee1bae3b40596a5757973689e2efa188347be753238ca44cb8583db41c
+FILE: driver/RTL88WiFi/src/kext/kmod_info.c SHA256=3aae7ceb6f293102dcea5addb0efc05a9408041d24f18cd27416e7248c141179
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp SHA256=a312895412fc504602189683a6a32ba013f5bafdc9bd8482da14734f4e55212a
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp SHA256=de41fcbd0bb9b8b6a165df0f8e2484b49d2751e32ba821211d753c081ea57e87
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp SHA256=2c67658a50b40ec65cc400fbc7f13295d054e95a039aaf7060a65457c6087059
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp SHA256=740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp SHA256=20f8fcf3be99c797a28df29612a765a1b6d362dbc032e6045a7113d7f2ec82e1
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLMbufRing.hpp SHA256=4138f41066f66ecef67b2bf989bcd2297c54dceb420b9c4eb809bdd1453f86c7
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp SHA256=2253d451b3242035510d21c317782a8e9f24ef46bd154b2ad842c713c296e9a4
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp SHA256=67e9ac69e2177754d617633f5f44274c5bfd6a7c8e1f27d85ade26e38da91c90
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPacketSpanValidation.hpp SHA256=06c63ea6dbad3f33a99477c4b4ede09f7c6520fad7437e398b77e75562f06347
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPacketView.hpp SHA256=e8e205f65c1a764ca65f9f8cd25e1306ad780b7400f7672d4bc9b344998acbad
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp SHA256=c9fcc397927c0c0dbb8b034f264b34d13eb5fd77db5470e105ab068ebc89082d
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRequestDecoder.hpp SHA256=6f473988ab5c918ebc40ec3b731bf49e01cd6408e65894200031792a14f0c9b2
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp SHA256=9ee96d066731bad2844daaae2a117b77fc6b140de7601f1fe4797256a33014fd
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp SHA256=78af90d3d96c84afa83ae5aa04604d0d442f3055cbf505f2144bcaa197c213d0
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp SHA256=e1a66ffeaba3d71f4c4ef4ca5d0068de146a11cd8d98ea825920b45ce5079b7d
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp SHA256=8a6474d76c9ac4b4b094266100242f55a4f6d6e62061012aa399254cbaaba512
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp SHA256=6d97498a2a4a581be48607cab7de7c53bcc98c62c27a8c440ddfdcd0cac1e9da
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp SHA256=6fc48d17bd8def41f971cb195be3a239568cc0ca1ec2fe2fdc09851d5243ef62
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp SHA256=af7a498d3b5d2e4855609533bd7b823e40a5ef6c83e27c76abfe2e497f7c8f7f
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/compat/linux/interrupt.h ===
+--- SYMBOL synchronize_irq LINE 47 BODY_BYTES 81 ---
+synchronize_irq(unsigned int irq)
+{
+    (void)irq;
+    rtw88_synchronize_irq();
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/compat/linux/skbuff.h ===
+--- SYMBOL kfree_skb LINE 152 BODY_BYTES 449 ---
+kfree_skb(struct sk_buff *skb)
+{
+    if (skb) {
+        /* A reset, queue purge or early TX rejection can free an skb without
+         * reaching txStatus(). Report that terminal outcome before memory is
+         * reclaimed; the atomic claim prevents a completion/free race from
+         * notifying the packet owner twice. */
+        rtw88_skb_tx_completion_report(&skb->tx_completion, false);
+        kfree(skb->head);
+        kfree(skb);
+    }
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h ===
+--- SYMBOL rtw88_skb_tx_completion_dispatch LINE 66 BODY_BYTES 471 ---
+rtw88_skb_tx_completion_dispatch(
+    struct rtw88_skb_tx_completion_token *token, bool transmitted)
+{
+    if (!token)
+        return false;
+
+    rtw88_skb_tx_completion_fn callback = token->callback;
+    rtw88_skb_tx_completion_release_fn release = token->release;
+    void *context = token->context;
+    void *cookie = token->cookie;
+
+    if (callback)
+        callback(context, cookie, transmitted);
+    if (release)
+        release(token);
+    return callback != 0;
+}
+--- END SYMBOL ---
+--- SYMBOL rtw88_skb_tx_completion_report LINE 85 BODY_BYTES 293 ---
+rtw88_skb_tx_completion_report(struct rtw88_skb_tx_completion *completion,
+                               bool transmitted)
+{
+    struct rtw88_skb_tx_completion_token *token =
+        rtw88_skb_tx_completion_claim(completion);
+    return rtw88_skb_tx_completion_dispatch(token, transmitted);
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/compat/rtw88_compat.c ===
+--- SYMBOL flush_workqueue LINE 304 BODY_BYTES 271 ---
+flush_workqueue(struct workqueue_struct *wq)
+{
+    if (!wq || !work_state_lock) return;
+    IOLockLock(work_state_lock);
+    while (!list_empty(&wq->queue) || wq->active)
+        IOLockSleep(work_state_lock, &wq->queue, THREAD_UNINT);
+    IOLockUnlock(work_state_lock);
+}
+--- END SYMBOL ---
+--- SYMBOL cancel_work_sync LINE 324 BODY_BYTES 372 ---
+cancel_work_sync(struct work_struct *work)
+{
+    if (!work || !work_state_lock) return false;
+    IOLockLock(work_state_lock);
+    work->canceling = true;
+    bool pending = remove_pending_work(work);
+    while (work->executing)
+        IOLockSleep(work_state_lock, work, THREAD_UNINT);
+    work->canceling = false;
+    IOLockUnlock(work_state_lock);
+    return pending;
+}
+--- END SYMBOL ---
+--- SYMBOL ieee80211_tx_status_irqsafe LINE 677 BODY_BYTES 262 ---
+ieee80211_tx_status_irqsafe(struct ieee80211_hw *hw, struct sk_buff *skb)
+{
+    void *ctx = hw ? hw->kext_hw : NULL;
+    if (!ctx) ctx = g_kext_hw;
+    if (g_hw_cbs && g_hw_cbs->tx_status)
+        g_hw_cbs->tx_status(ctx, skb);
+    else
+        kfree_skb(skb);
+}
+--- END SYMBOL ---
+--- SYMBOL ieee80211_free_txskb LINE 692 BODY_BYTES 90 ---
+ieee80211_free_txskb(struct ieee80211_hw *hw, struct sk_buff *skb)
+{
+    kfree_skb(skb);
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp ===
+--- SYMBOL stop LINE 489 BODY_BYTES 124 ---
+stop() touching freed state. */
+    if (_superStarted) {
+        super::stop(provider);
+        _superStarted = false;
+    }
+--- END SYMBOL ---
+--- SYMBOL releaseDMAEntries LINE 685 BODY_BYTES 447 ---
+releaseDMAEntries()
+{
+    if (!_dmaLock) return;
+
+    IOSimpleLockLock(_dmaLock);
+    RTW88DMAEntry *list = _dmaList;
+    _dmaList = nullptr;
+    IOSimpleLockUnlock(_dmaLock);
+
+    for (RTW88DMAEntry *entry = list; entry; ) {
+        RTW88DMAEntry *next = entry->next;
+        if (entry->desc) {
+            entry->desc->complete();
+            entry->desc->release();
+        }
+        IOFree(entry, sizeof(*entry));
+        entry = next;
+    }
+}
+--- END SYMBOL ---
+--- SYMBOL stop LINE 973 BODY_BYTES 384 ---
+stop(IOService *provider)
+{
+    /* The reference IO80211 driver calls IO80211Controller::stop() before releasing its
+     * workloop/HAL/interface state. Keep the same ordering here so superclass
+     * teardown cannot observe a freed IO80211WorkLoop or Realtek backend. */
+    if (_superStarted) {
+        super::stop(provider);
+        _superStarted = false;
+    }
+    teardown();
+}
+--- END SYMBOL ---
+--- SYMBOL stop LINE 975 BODY_BYTES 277 ---
+stop() before releasing its
+     * workloop/HAL/interface state. Keep the same ordering here so superclass
+     * teardown cannot observe a freed IO80211WorkLoop or Realtek backend. */
+    if (_superStarted) {
+        super::stop(provider);
+        _superStarted = false;
+    }
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/RTW88AWDLManager.cpp ===
+--- SYMBOL reset LINE 113 BODY_BYTES 2173 ---
+reset()
+{
+    return awdlGated<void>(_workLoop, _owner, [&]() -> void {
+    /* Never release the backend while AWDL still owns the single PHY.  The
+     * STA must be back on its AP channel before the AWDL manager disappears. */
+    if (_backend) _backend->restoreSTAChannelAfterAWDL();
+    if (_timer) {
+        _timer->cancelTimeout();
+        if (_timerAttached && _workLoop) _workLoop->removeEventSource(_timer);
+        _timer->release(); _timer = nullptr; _timerAttached = false;
+    }
+    flushData();
+    flushActions();
+    if (_airTemplate) { IOFree(_airTemplate, _airTemplateLength); _airTemplate = nullptr; }
+    _airTemplateLength = 0;
+    _nativeSchedule = false; _masterSeenUS = 0;
+    _appleControlMask = 0; _lastAppleControlUS = 0; _vifEnabledUS = 0; _fallbackDeadlineUS = 0;
+    _nextActionUS = _nextPSFUS = 0; _lastMIFEAW = 0; _lastMIFEAWValid = false;
+    _nextSocialSweepUS = 0; _socialSweeps = 0; _discoverySocialIndex = 0; _discoveryChannel = 6;
+    _observedMasterChannel = 0; _nextAWChannel = 0; _masterChannelRaw = 0;
+    _lastActionRxUS = 0; _mifRx = 0; _versionRx = 0;
+    _mifPeersObserved = 0; _versionPeersObserved = 0;
+    if (_txBuffer) { IOFree(_txBuffer, RTW88AWDL::MaxFrame); _txBuffer = nullptr; }
+    _owner = nullptr;
+    bzero(_peers, sizeof(_peers));
+    _awdlInterface = nullptr;
+    _p2pInterface = nullptr;
+    _backend = nullptr;
+    _workLoop = nullptr;
+    _syncEnabled = true;
+    _p2pEnabled = false;
+    _electionMetric = 0;
+    _electionId = 0;
+    _masterChannel = 0;
+    _secondaryMasterChannel = 0;
+    _presenceMode = 0;
+    _syncState = 0;
+    _actionFrameTxMode = 0;
+    _minRate = 0;
+    _deviceCapabilities = 0;
+    memcpy(_bssid, RTW88AWDL::BSSID, sizeof(_bssid));
+    _peerRegistrations = 0;
+    bzero(_syncChannelSequence, sizeof(_syncChannelSequence));
+    _syncChannelSequenceLength = 0;
+    _availabilityWindowLength = 0;
+    _availabilityWindowPeriod = 0;
+    _extensionLength = 0;
+    _synchronizationFramePeriod = 0;
+    _syncParamsValid = false;
+    if (_syncTemplate) {
+        IOFree(_syncTemplate, _syncTemplateLength);
+        _syncTemplate = nullptr;
+        _syncTemplateLength = 0;
+    }
+    });
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/RTW88BaPolicy.hpp ===
+--- SYMBOL reset LINE 41 BODY_BYTES 1792 ---
+reset().  Times are a monotonic microsecond counter from the caller. */
+struct Recovery {
+    bool     wanted;          /* an ADDBA should be sent when due            */
+    uint64_t dueUS;           /* earliest time of that ADDBA                 */
+    unsigned failures;        /* consecutive failed / short-lived agreements */
+    uint64_t activeSinceUS;   /* when the current agreement began; 0 = none  */
+    uint64_t sentAtUS;        /* when the outstanding request was sent; 0 = none */
+
+    void reset()  { wanted = false; dueUS = 0; failures = 0; activeSinceUS = 0; sentAtUS = 0; }
+    /* Aggregation is not applicable (non-HT peer, unsupported cipher): stop asking. */
+    void cancel() { wanted = false; sentAtUS = 0; }
+
+    /* A request went out; wait for the response (or the timeout). */
+    void onRequestSent(uint64_t nowUS) { sentAtUS = nowUS; wanted = false; }
+
+    /* The AP accepted. */
+    void onAccepted(uint64_t nowUS) { activeSinceUS = nowUS; sentAtUS = 0; wanted = false; }
+
+    /* Declined, timed out, or could not be sent: try again after a backoff. */
+    void onFailed(uint64_t nowUS) { sentAtUS = 0; activeSinceUS = 0; schedule(nowUS); }
+
+    /* The AP tore the agreement down (DELBA).  One that proved stable restarts
+     * the backoff; a short-lived one keeps growing it. */
+    void onTornDown(uint64_t nowUS)
+    {
+        if (activeSinceUS && nowUS - activeSinceUS >= kStableUS) failures = 0;
+        sentAtUS = 0; activeSinceUS = 0;
+        schedule(nowUS);
+    }
+
+    bool responseOverdue(uint64_t nowUS) const { return sentAtUS && nowUS - sentAtUS >= kResponseTimeoutUS; }
+    bool due(uint64_t nowUS) const { return wanted && nowUS >= dueUS; }
+
+    void schedule(uint64_t nowUS) { wanted = true; dueUS = nowUS + retryDelayUS(failures); failures++; }
+}
+--- END SYMBOL ---
+--- SYMBOL reset LINE 49 BODY_BYTES 86 ---
+reset()  { wanted = false; dueUS = 0; failures = 0; activeSinceUS = 0; sentAtUS = 0; }
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp ===
+--- SYMBOL compat_tx_status LINE 527 BODY_BYTES 165 ---
+compat_tx_status(void *kext_hw, struct sk_buff *skb)
+{
+    RTW88IEEE80211 *self = (RTW88IEEE80211 *)kext_hw;
+    if (self) self->txStatus(skb);
+    kfree_skb(skb);
+}
+--- END SYMBOL ---
+--- SYMBOL stop LINE 957 BODY_BYTES 1474 ---
+stop()
+{
+    IOLog("rtw88: IEEE80211 stop\n");
+    cancelAuthentication();
+    _manualScanAbort = true;
+    if (_manualScanTC) thread_call_cancel_wait(_manualScanTC);
+    if (_connectTC) thread_call_cancel_wait(_connectTC);
+    if (_reorderTimer) { _reorderTimer->cancelTimeout(); _reorderTimer->disable(); }
+    if (_timer)
+        _timer->cancelTimeout();
+
+    if ((_state == RTW88_STATE_CONNECTED ||
+         (_state == RTW88_STATE_SCANNING &&
+          _scanReturnState == RTW88_STATE_CONNECTED)) && _powered)
+        doDisconnect();
+    else {
+        clearKeys();
+        releaseSta();
+    }
+
+    if (_state == RTW88_STATE_SCANNING && _hw && _hw->ops && _hw->ops->cancel_hw_scan)
+        _hw->ops->cancel_hw_scan(_hw, _vif);
+
+    if (_vif && _hw && _hw->ops) {
+        rtw88_unregister_vif();
+        if (_hw->ops->remove_interface) {
+            _hw->ops->remove_interface(_hw, _vif);
+        }
+        IOFree(_vif, _vifAllocSize);
+        _vifAllocSize = 0;
+        _vif = nullptr;
+    } else if (_vif) {
+        rtw88_unregister_vif();
+        IOFree(_vif, _vifAllocSize);
+        _vifAllocSize = 0;
+        _vif = nullptr;
+    }
+
+    if (_powered && _hw && _hw->ops && _hw->ops->stop)
+        _hw->ops->stop(_hw, false);
+    _powered = false;
+
+    if (_pcidev) rtw_pci_remove(_pcidev);
+    _rtwdev = nullptr;
+    _hw     = nullptr;
+    _state  = RTW88_STATE_IDLE;
+    _associatedVisible = false;
+    _scanReturnState = RTW88_STATE_IDLE;
+    _scanPartial = false;
+}
+--- END SYMBOL ---
+--- SYMBOL outputPacketWithCompletion LINE 1249 BODY_BYTES 1824 ---
+outputPacketWithCompletion(
+    mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie)
+{
+    if (!m) {
+        if (callback)
+            callback(context, cookie, false);
+        return kIOReturnOutputDropped;
+    }
+
+    /* Need an associated STA before data frames can be sent. */
+    bool connected = (_state == RTW88_STATE_CONNECTED) ||
+                     (_state == RTW88_STATE_SCANNING &&
+                      _scanReturnState == RTW88_STATE_CONNECTED &&
+                      (_manualScanChannelCount == 0 ||
+                       _manualScanOnHomeChannel));
+    if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
+        mbuf_freem(m);
+        if (callback)
+            callback(context, cookie, false);
+        return kIOReturnOutputDropped;
+    }
+
+    /* Apple RSN needs the BSD link marked up to exchange EAPOL, but before
+     * PTK+GTK are installed the controlled port must carry EAPOL only. */
+    if (_wpa2 && _externalSupplicant && !externalKeysReady()) {
+        uint8_t eh[14] = {};
+        if (mbuf_pkthdr_len(m) < sizeof(eh) ||
+            mbuf_copydata(m, 0, sizeof(eh), eh) != 0 ||
+            (uint16_t)((eh[12] << 8) | eh[13]) != ETH_P_PAE) {
+            mbuf_freem(m);
+            if (callback)
+                callback(context, cookie, false);
+            return kIOReturnOutputDropped;
+        }
+    }
+
+    /* txDataFrame() consumes m in all paths. Once its skb is handed to rtw88,
+     * the completion callback follows that skb until either the PCI TX status
+     * callback or an early free/reset path reports its terminal outcome. */
+    const bool submitted = txDataFrame(m, callback, context, cookie);
+    if (!submitted && callback)
+        callback(context, cookie, false);
+    return submitted ? kIOReturnOutputSuccess : kIOReturnOutputDropped;
+}
+--- END SYMBOL ---
+--- SYMBOL txStatus LINE 2257 BODY_BYTES 2618 ---
+txStatus(struct sk_buff *skb)
+{
+    struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+    const bool transmitted =
+        (info->flags & (IEEE80211_TX_STAT_ACK |
+                        IEEE80211_TX_STAT_NOACK_TRANSMITTED)) != 0;
+    rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
+    if (!(info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS))
+        return;
+
+    const char *frameName = "frame";
+    if (skb->len >= sizeof(struct ieee80211_hdr_3addr)) {
+        struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
+        uint16_t fc = le16_to_cpu(hdr->frame_control);
+
+        if ((fc & IEEE80211_FCTL_FTYPE) == IEEE80211_FTYPE_MGMT) {
+            switch (fc & IEEE80211_FCTL_STYPE) {
+            case IEEE80211_STYPE_AUTH:       frameName = "authentication"; break;
+            case IEEE80211_STYPE_ASSOC_REQ:  frameName = "association request"; break;
+            case IEEE80211_STYPE_DEAUTH:     frameName = "deauthentication"; break;
+            case IEEE80211_STYPE_ACTION:     frameName = "action"; break;
+            default:                         frameName = "management"; break;
+            }
+        } else if ((fc & IEEE80211_FCTL_FTYPE) == IEEE80211_FTYPE_DATA) {
+            uint16_t hdrlen = ieee80211_get_hdrlen_from_skb(skb);
+            if (skb->len >= hdrlen + 8) {
+                const uint8_t *llc = skb->data + hdrlen;
+                uint16_t ethertype = (uint16_t)((llc[6] << 8) | llc[7]);
+                if (llc[0] == 0xaa && llc[1] == 0xaa && llc[2] == 0x03 &&
+                    ethertype == ETH_P_PAE && skb->len >= hdrlen + 8 + 99) {
+                    /* Pairwise M2 carries the RSN IE; M4 has no key data. The
+                     * Secure bit cannot distinguish them during a rekey. */
+                    const uint8_t *eapol = llc + 8;
+                    uint16_t keyDataLen = (uint16_t)((eapol[97] << 8) | eapol[98]);
+                    uint16_t keyInfo = (uint16_t)((eapol[5] << 8) | eapol[6]);
+                    frameName = !(keyInfo & 0x0008) ? "EAPOL group M2" :
+                                keyDataLen ? "EAPOL M2" : "EAPOL M4";
+                } else if (fc & IEEE80211_FCTL_PROTECTED) {
+                    /* Only management and EAPOL request status, so a protected
+                     * data frame here is an encrypted EAPOL during rekey. */
+                    frameName = "protected EAPOL";
+                } else {
+                    frameName = "data";
+                }
+            }
+        }
+    }
+
+    IOLog("rtw88: TX status %s: %s\n", frameName,
+          (info->flags & IEEE80211_TX_STAT_ACK) ? "ACK" : "NO ACK");
+}
+--- END SYMBOL ---
+--- SYMBOL txDataFrame LINE 4886 BODY_BYTES 6172 ---
+txDataFrame(mbuf_t m,
+                                  RTW88TxCompletionCallback callback,
+                                  void *completionContext,
+                                  void *completionCookie)
+{
+    if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta) {
+        if (m) mbuf_freem(m);
+        return false;
+    }
+
+    /* The mbuf is an Ethernet frame: [DA(6)][SA(6)][ethertype(2)][payload].
+     * The rtw88 driver's tx op expects an 802.11 frame, so we must
+     * encapsulate: 802.11 data header (24) + LLC/SNAP (8) + IP payload.
+     * mac80211 normally does this; we are bypassing mac80211's tx path. */
+    size_t total = mbuf_pkthdr_len(m);
+    if (total < 14 || total > 2048) { mbuf_freem(m); return false; }
+    uint32_t paylen = (uint32_t)total - 14;
+
+    uint8_t eh[14];
+    if (mbuf_copydata(m, 0, 14, eh) != 0) { mbuf_freem(m); return false; }
+    uint16_t ethertype = (uint16_t)((eh[12] << 8) | eh[13]);
+
+    if (ethertype == ETH_P_PAE) {
+        IOLog("rtw88: EAPOL TX external=%d state=%d ptk=%p len=%u\n",
+              _externalSupplicant, _state, _ptkConf, paylen);
+    }
+
+    bool protected_frame = _wpa2 && _ptkConf &&
+        (ethertype != ETH_P_PAE || _eapolTxProtect);
+
+    /* Use a QoS Data frame (24-byte header + 2-byte QoS Control) when HT is in
+     * use — A-MPDU/BlockAck is strictly per-TID and a plain Data frame carries
+     * no TID.  TKIP links (where HT is disallowed) fall back to a plain non-QoS
+     * Data frame, the proven legacy path. */
+    bool qos = htAllowed();
+    uint32_t hlen = qos ? 26 : 24;
+    uint32_t framelen = hlen + (protected_frame ? 8 : 0) + 8 + paylen;
+    struct sk_buff *skb = alloc_skb(framelen + 128, GFP_ATOMIC);
+    if (!skb) { mbuf_freem(m); return false; }
+    skb_reserve(skb, 128);  /* TX descriptor headroom */
+
+    /* 802.11 data header (ToDS: station -> AP) */
+    struct ieee80211_hdr_3addr *h =
+        (struct ieee80211_hdr_3addr *)skb_put(skb, 24);
+    uint16_t fc = IEEE80211_FTYPE_DATA | IEEE80211_FCTL_TODS;
+    if (qos)
+        fc |= IEEE80211_STYPE_QOS_DATA;
+    if (protected_frame)
+        fc |= IEEE80211_FCTL_PROTECTED;
+    h->frame_control = cpu_to_le16(fc);
+    h->duration_id   = 0;
+    memcpy(h->addr1, _targetBSS.bssid, 6); /* RA = BSSID (the AP)        */
+    memcpy(h->addr2, _macAddr, 6);         /* TA = SA  (us)              */
+    memcpy(h->addr3, eh, 6);               /* DA = Ethernet destination  */
+    /* Each data frame needs a unique sequence number.  QoS data uses a
+     * dedicated per-TID space so the BlockAck window stays gap-free; non-QoS
+     * shares the mgmt counter (legacy behaviour).  rtw88 uses this header SN
+     * for data frames (no hw-assigned SN on the data path). */
+    h->seq_ctrl = cpu_to_le16((uint16_t)((qos ? _dataSeq++ : _txSeq++) & 0xFFF) << 4);
+
+    /* QoS Control (2 bytes, LE): TID in bits 0-3 (BE = 0), Normal-Ack, no
+     * A-MSDU. */
+    if (qos) {
+        uint8_t *qosc = skb_put(skb, 2);
+        qosc[0] = (uint8_t)(_baTid & IEEE80211_QOS_CTL_TID_MASK);
+        qosc[1] = 0;
+    }
+
+    if (protected_frame) {
+        for (int i = 0; i < 6; i++) {
+            if (++_ccmpTxPn[i] != 0)
+                break;
+        }
+
+        uint8_t *ccmp = skb_put(skb, 8);
+        ccmp[0] = _ccmpTxPn[0];
+        ccmp[1] = _ccmpTxPn[1];
+        ccmp[2] = 0x00;
+        ccmp[3] = (uint8_t)(0x20 | (((uint8_t)_ptkConf->keyidx & 0x3) << 6));
+        ccmp[4] = _ccmpTxPn[2];
+        ccmp[5] = _ccmpTxPn[3];
+        ccmp[6] = _ccmpTxPn[4];
+        ccmp[7] = _ccmpTxPn[5];
+    }
+
+    /* RFC 1042 LLC/SNAP header */
+    uint8_t *snap = skb_put(skb, 8);
+    snap[0] = 0xAA; snap[1] = 0xAA; snap[2] = 0x03;
+    snap[3] = 0x00; snap[4] = 0x00; snap[5] = 0x00;
+    snap[6] = (uint8_t)(ethertype >> 8);
+    snap[7] = (uint8_t)(ethertype & 0xff);
+
+    /* Payload (IP packet) copied straight from the Ethernet mbuf */
+    if (paylen) {
+        uint8_t *pay = (uint8_t *)skb_put(skb, paylen);
+        if (mbuf_copydata(m, 14, paylen, pay) != 0) {
+            kfree_skb(skb);
+            mbuf_freem(m);
+            return false;
+        }
+    }
+
+    /* Route to the Best-Effort hardware ring with a BE qsel.  queue_mapping
+     * picks the ring (ac_to_hwq[AC_BE] = RTW_TX_QUEUE_BE); priority becomes
+     * the TX-desc qsel (TID 0 = BE).  Without this the frame defaults to
+     * queue_mapping 0 (AC_VO) and lands in the wrong ring. */
+    skb_set_queue_mapping(skb, IEEE80211_AC_BE);
+    skb->priority = 0;
+    skb->protocol = cpu_to_be16(ethertype);
+
+    struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
+    memset(info, 0, sizeof(*info));
+    info->flags = IEEE80211_TX_CTL_FIRST_FRAGMENT;
+    /* Once the uplink BlockAck agreement is up, mark BE-TID frames for
+     * aggregation: rtw88 then sets the descriptor's AGG_EN bit and the hardware
+     * builds A-MPDUs. (rtw_tx reads this flag directly; the txq/RTW_TXQ_AMPDU
+     * path is unused by this port.) */
+    if (qos && _txBaActive && ethertype != ETH_P_PAE)
+        info->flags |= IEEE80211_TX_CTL_AMPDU;
+    info->band  = (_targetBSS.channel > 14) ? NL80211_BAND_5GHZ
+                                            : NL80211_BAND_2GHZ;
+    info->control.vif = _vif;
+    info->control.sta = _sta;
+    if (ethertype == ETH_P_PAE)
+        info->flags |= IEEE80211_TX_CTL_REQ_TX_STATUS;
+    if (protected_frame)
+        info->control.hw_key = _ptkConf;
+
+    if (callback) {
+        struct rtw88_skb_tx_completion_token *token =
+            (struct rtw88_skb_tx_completion_token *)kzalloc(
+                sizeof(*token), GFP_ATOMIC);
+        if (!token) {
+            kfree_skb(skb);
+            mbuf_freem(m);
+            return false;
+        }
+        token->callback = callback;
+        token->release = rtw88_release_skb_tx_completion_token;
+        token->context = completionContext;
+        token->cookie = completionCookie;
+        if (!rtw88_skb_tx_completion_bind(&skb->tx_completion, token)) {
+            kfree(token);
+            kfree_skb(skb);
+            mbuf_freem(m);
+            return false;
+        }
+    }
+
+    struct ieee80211_tx_control ctrl = { .sta = _sta };
+    _hw->ops->tx(_hw, &ctrl, skb);
+    mbuf_freem(m);
+    return true;
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/RTW88Kext.cpp ===
+--- SYMBOL stop LINE 30 BODY_BYTES 95 ---
+stop(IOService *provider)
+{
+    IOLog("rtw88: RTW88Kext::stop\n");
+    super::stop(provider);
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp ===
+--- SYMBOL stop LINE 410 BODY_BYTES 116 ---
+stop(IOService *provider)
+{
+    IOLog("rtw88: RTW88PCIDevice::stop\n");
+    teardown();
+    super::stop(provider);
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/RTW88UserClient.cpp ===
+--- SYMBOL stop LINE 106 BODY_BYTES 56 ---
+stop(IOService *provider)
+{
+    super::stop(provider);
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp ===
+--- SYMBOL stop LINE 44 BODY_BYTES 599 ---
+stop()
+{
+    IOSimpleLock *lock = _lock;
+    if (!lock)
+        return;
+
+    IOInterruptState interruptState = IOSimpleLockLockDisableInterrupt(lock);
+    _stopping = 1;
+    _handler = nullptr;
+    _events.clear();
+    _pendingSignal = 0;
+    IOSimpleLockUnlockEnableInterrupt(lock, interruptState);
+
+    /* Caller must have detached/quiesced the RTW88 event producer. Removal is
+     * synchronous with the IOWorkLoop and waits out an active checkForWork(). */
+    if (_registered && _workLoop) {
+        _workLoop->removeEventSource(this);
+        _registered = 0;
+    }
+    _workLoop = nullptr;
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp ===
+--- SYMBOL stop LINE 178 BODY_BYTES 396 ---
+stop(IOService *provider)
+{
+    const IOReturn cleanupStatus = releaseNativeResources();
+    if (cleanupStatus != kIOReturnSuccess) {
+        IOLog("rtl88wifi-wcl: stop cleanup incomplete (0x%08x); deferring superclass stop and retaining resources\n",
+              cleanupStatus);
+        return;
+    }
+    if (_baseStarted) {
+        super::stop(provider);
+        _baseStarted = false;
+    }
+}
+--- END SYMBOL ---
+--- SYMBOL stop LINE 220 BODY_BYTES 192 ---
+stop() waits out an active checkForWork() and releases all staged mbufs. */
+    if (_rxAdapter) {
+        _rxAdapter->stop();
+        _rxAdapter->release();
+        _rxAdapter = nullptr;
+    }
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp ===
+--- SYMBOL stop LINE 274 BODY_BYTES 202 ---
+stop(IOService *provider)
+{
+    clearRegistrationInfo();
+    detachRadio();
+    if (provider)
+        provider->setProperty("RTW88WCLInfraInterfaceStopped", kOSBooleanTrue);
+    super::stop(provider);
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLMbufRing.hpp ===
+--- SYMBOL reset LINE 27 BODY_BYTES 316 ---
+reset()
+    {
+        for (size_t i = 0; i < Capacity; ++i) {
+            _cells[i].value = T{};
+            __atomic_store_n(&_cells[i].sequence, i, __ATOMIC_RELAXED);
+        }
+        __atomic_store_n(&_enqueuePosition, 0, __ATOMIC_RELAXED);
+        __atomic_store_n(&_dequeuePosition, 0, __ATOMIC_RELAXED);
+    }
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp ===
+--- SYMBOL releaseDMAEntries LINE 506 BODY_BYTES 457 ---
+releaseDMAEntries()
+{
+    if (_dmaLock) {
+        IOSimpleLockLock(_dmaLock);
+        RTW88DMAEntry *list = _dmaList;
+        _dmaList = nullptr;
+        IOSimpleLockUnlock(_dmaLock);
+        freeDMAList(list);
+    }
+    if (_pendingFreeLock) {
+        IOSimpleLockLock(_pendingFreeLock);
+        RTW88DMAEntry *pending = _dmaPendingFree;
+        _dmaPendingFree = nullptr;
+        IOSimpleLockUnlock(_pendingFreeLock);
+        freeDMAList(pending);
+    }
+}
+--- END SYMBOL ---
+--- SYMBOL freeDMAList LINE 524 BODY_BYTES 268 ---
+freeDMAList(RTW88DMAEntry *list)
+{
+    while (list) {
+        RTW88DMAEntry *next = list->next;
+        if (list->desc) {
+            list->desc->complete();
+            list->desc->release();
+        }
+        IOFree(list, sizeof(*list));
+        list = next;
+    }
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp ===
+--- SYMBOL stop LINE 212 BODY_BYTES 635 ---
+stop()
+{
+    __atomic_store_n(&_stopping, 1U, __ATOMIC_RELEASE);
+    if (_registered && _workLoop) {
+        /* Synchronous removal serializes against checkForWork(). The owner
+         * must stop/quiesce RTW88 RX producers before invoking stop(). */
+        _workLoop->removeEventSource(this);
+        _registered = false;
+    }
+
+    mbuf_t packet = nullptr;
+    while (_frames.pop(&packet)) {
+        if (packet)
+            mbuf_freem(packet);
+        packet = nullptr;
+    }
+    _sink = nullptr;
+    _sinkContext = nullptr;
+    _workLoop = nullptr;
+    if (_rxPool) {
+        _rxPool->release();
+        _rxPool = nullptr;
+    }
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp ===
+--- SYMBOL submitPacket LINE 76 BODY_BYTES 1272 ---
+submitPacket(IOSkywalkPacket *packet)
+{
+    if (!packet)
+        return kIOReturnBadArgument;
+    if (!_radio || !_txPool)
+        return kIOReturnNotReady;
+
+    RTW88WCLPacketView view = {};
+    if (!RTW88WCLResolveEthernetTxPacket(packet, _txPool, &view))
+        return kIOReturnBadArgument;
+
+    mbuf_t mbuf = copyPacketToMbuf(view.bytes, view.length);
+    if (!mbuf)
+        return kIOReturnNoMemory;
+
+    packet->retain();
+    TicketPool::Ticket *ticket = _tickets.reserve(packet);
+    if (!ticket) {
+        packet->release();
+        mbuf_freem(mbuf);
+        return kIOReturnBusy;
+    }
+
+    /* Keep the adapter alive until the workloop-side completion drain drops
+     * this ticket. backendCompletion() intentionally does not release it. */
+    retain();
+    const UInt32 backendResult = _radio->outputPacketWithCompletion(
+        mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+
+    /* outputPacketWithCompletion consumes the mbuf and reports exactly one
+     * terminal callback, including synchronous drops. Once the ticket has
+     * been reserved, adapter acceptance is successful; the actual transmitted
+     * vs dropped result is delivered later through the completion sink. */
+    (void)backendResult;
+    return kIOReturnSuccess;
+}
+--- END SYMBOL ---
+--- SYMBOL backendCompletion LINE 113 BODY_BYTES 453 ---
+backendCompletion(
+    void *context, void *cookie, bool transmitted)
+{
+    auto *self = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+    auto *ticket = static_cast<TicketPool::Ticket *>(cookie);
+    if (!self || !ticket)
+        return;
+
+    /* No Skywalk API, OSObject release, allocation, or blocking operation is
+     * allowed here. A deferred consumer performs the completion handoff. */
+    (void)TicketPool::complete(ticket, transmitted);
+}
+--- END SYMBOL ---
+
+=== COMPLETE_FUNCTIONS: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp ===
+--- SYMBOL reset LINE 33 BODY_BYTES 231 ---
+reset()
+    {
+        for (uint32_t i = 0; i < Capacity; ++i) {
+            _slots[i].packet = nullptr;
+            _slots[i].transmitted = 0;
+            __atomic_store_n(&_slots[i].state, kFree, __ATOMIC_RELAXED);
+        }
+    }
+--- END SYMBOL ---
+--- SYMBOL claimCompleted LINE 84 BODY_BYTES 486 ---
+claimCompleted()
+    {
+        for (uint32_t i = 0; i < Capacity; ++i) {
+            Ticket *ticket = &_slots[i];
+            uint32_t expected = kCompleted;
+            if (__atomic_compare_exchange_n(&ticket->state, &expected,
+                                            kDraining, false,
+                                            __ATOMIC_ACQ_REL,
+                                            __ATOMIC_ACQUIRE))
+                return ticket;
+        }
+        return nullptr;
+    }
+--- END SYMBOL ---
+
+=== ALL_RELEVANT_OCCURRENCES ===
+FILE: driver/RTL88WiFi/src/compat/linux/dma-mapping.h MATCHES: 17
+  00002: #ifndef _RTW88_COMPAT_DMA_MAPPING_H
+  00003: #define _RTW88_COMPAT_DMA_MAPPING_H
+  00027:     dma_addr_t (*map_single)(struct device *dev, void *ptr,
+  00029:     void       (*unmap_single)(struct device *dev, dma_addr_t addr,
+  00050: static inline void dma_free_coherent(struct device *dev, size_t size,
+  00053:     if (rtw88_dma_ops && rtw88_dma_ops->free_coherent) {
+  00054:         rtw88_dma_ops->free_coherent(dev, size, cpu_addr, dma_handle);
+  00060: static inline dma_addr_t dma_map_single(struct device *dev, void *ptr,
+  00063:     if (rtw88_dma_ops && rtw88_dma_ops->map_single)
+  00064:         return rtw88_dma_ops->map_single(dev, ptr, size, direction);
+  00068: static inline void dma_unmap_single(struct device *dev, dma_addr_t addr,
+  00071:     if (rtw88_dma_ops && rtw88_dma_ops->unmap_single)
+  00072:         rtw88_dma_ops->unmap_single(dev, addr, size, direction);
+  00100: static inline bool dma_mapping_error(struct device *dev, dma_addr_t addr)
+  00132: static inline dma_addr_t dma_map_page(struct device *dev, struct page *page,
+  00138: static inline void dma_unmap_page(struct device *dev, dma_addr_t addr,
+  00141: #endif /* _RTW88_COMPAT_DMA_MAPPING_H */
+FILE: driver/RTL88WiFi/src/compat/linux/interrupt.h MATCHES: 3
+  00046: void rtw88_synchronize_irq(void);
+  00047: static inline void synchronize_irq(unsigned int irq)
+  00050:     rtw88_synchronize_irq();
+FILE: driver/RTL88WiFi/src/compat/linux/pci.h MATCHES: 1
+  00007: #include "dma-mapping.h"
+FILE: driver/RTL88WiFi/src/compat/linux/skbuff.h MATCHES: 11
+  00028:     u16       queue_mapping;  /* AC index — selects the hw TX ring (ac_to_hwq) */
+  00103: static inline void kfree_skb(struct sk_buff *skb);
+  00109:         kfree_skb(skb);
+  00152: static inline void kfree_skb(struct sk_buff *skb)
+  00159:         rtw88_skb_tx_completion_report(&skb->tx_completion, false);
+  00165: static inline void dev_kfree_skb_any(struct sk_buff *skb)
+  00167:     kfree_skb(skb);
+  00170: static inline void dev_kfree_skb_irq(struct sk_buff *skb)
+  00172:     kfree_skb(skb);
+  00177:     kfree_skb(skb);
+  00287: static inline void dev_kfree_skb(struct sk_buff *skb) { kfree_skb(skb); }
+FILE: driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h MATCHES: 3
+  00066: rtw88_skb_tx_completion_dispatch(
+  00085: rtw88_skb_tx_completion_report(struct rtw88_skb_tx_completion *completion,
+  00090:     return rtw88_skb_tx_completion_dispatch(token, transmitted);
+FILE: driver/RTL88WiFi/src/compat/linux/usb.h MATCHES: 2
+  00161: #define URB_NO_TRANSFER_DMA_MAP     (1 << 2)
+  00227:                          void (*complete)(void *ctx, void *buf, int len),
+FILE: driver/RTL88WiFi/src/compat/linux/workqueue.h MATCHES: 2
+  00063: void flush_workqueue(struct workqueue_struct *wq);
+  00064: bool cancel_work_sync(struct work_struct *work);
+FILE: driver/RTL88WiFi/src/compat/net/mac80211.h MATCHES: 5
+  00231:              __le32 tx_mcs_map; __le16 tx_highest; } vht_mcs;
+  00975:            IEEE80211_AMPDU_TX_STOP_CONT,
+  00976:            IEEE80211_AMPDU_TX_STOP_FLUSH, IEEE80211_AMPDU_TX_STOP_FLUSH_CONT,
+  01060: void ieee80211_tx_status_irqsafe(struct ieee80211_hw *hw, struct sk_buff *skb);
+  01064: void ieee80211_free_txskb(struct ieee80211_hw *hw, struct sk_buff *skb);
+FILE: driver/RTL88WiFi/src/compat/rtw88_compat.c MATCHES: 14
+  00304: void flush_workqueue(struct workqueue_struct *wq)
+  00324: bool cancel_work_sync(struct work_struct *work)
+  00375:     flush_workqueue(system_wq);
+  00552:         cancel_work_sync(&g_irq_work);
+  00568: void rtw88_synchronize_irq(void)
+  00621:     cancel_work_sync(&napi->work);
+  00668:         kfree_skb(skb);
+  00677: void ieee80211_tx_status_irqsafe(struct ieee80211_hw *hw, struct sk_buff *skb)
+  00684:         kfree_skb(skb);
+  00689:     ieee80211_tx_status_irqsafe(hw, skb);
+  00692: void ieee80211_free_txskb(struct ieee80211_hw *hw, struct sk_buff *skb)
+  00694:     kfree_skb(skb);
+  00944:         kfree_skb(skb);
+  01115:         cancel_work_sync(&g_irq_work);
+FILE: driver/RTL88WiFi/src/compat/rtw88_compat.h MATCHES: 1
+  00056: #include "linux/dma-mapping.h"
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFi.cpp MATCHES: 17
+  00232:     if (!_dmaLock || !_pendingFreeLock)
+  00407:         !__atomic_load_n(&self->_dmaStopped, __ATOMIC_SEQ_CST) && self->_ieee80211 &&
+  00524:     if (!__atomic_load_n(&_dmaStopped, __ATOMIC_ACQUIRE) &&
+  00590:                 e->next = _dmaPendingFree; _dmaPendingFree = e;
+  00613:                 e->next = _dmaPendingFree; _dmaPendingFree = e;
+  00675:     RTW88DMAEntry *list = _dmaPendingFree;
+  00676:     _dmaPendingFree = nullptr;
+  00685: void RTL88WiFi::releaseDMAEntries()
+  00762:     releaseDMAEntries();
+  00806:         IOSimpleLockFree(_dmaLock);
+  00849:     IOReturn dmaRet = stopDMA();
+  00908:     __atomic_store_n(&_dmaStopped, false, __ATOMIC_RELEASE);
+  00938:         __atomic_store_n(&_dmaStopped, true, __ATOMIC_RELEASE);
+  01000:     if (__atomic_load_n(&_dmaStopped, __ATOMIC_ACQUIRE)) {
+  01005:         __atomic_store_n(&_dmaStopped, false, __ATOMIC_RELEASE);
+  01157:     if (__atomic_load_n(&_dmaStopped, __ATOMIC_ACQUIRE) || !_ieee80211) {
+  03676:     __atomic_store_n(&_dmaStopped, true, __ATOMIC_RELEASE);
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFi.hpp MATCHES: 3
+  00282:     bool _dmaStopped = false;
+  00358:     void releaseDMAEntries();
+  00382:     RTW88DMAEntry *_dmaPendingFree = nullptr;
+FILE: driver/RTL88WiFi/src/kext/RTL88WiFiAWDL.cpp MATCHES: 4
+  00608:     if (__atomic_load_n(&_dmaStopped,__ATOMIC_ACQUIRE)) {
+  00619:     if (__atomic_load_n(&_dmaStopped,__ATOMIC_ACQUIRE)) {
+  00662:     if (__atomic_load_n(&_dmaStopped,__ATOMIC_ACQUIRE)) return;
+  00713:         __atomic_load_n(&self->_dmaStopped,__ATOMIC_ACQUIRE)) return;
+FILE: driver/RTL88WiFi/src/kext/RTW88AWDLManager.cpp MATCHES: 1
+  00135:     if (_txBuffer) { IOFree(_txBuffer, RTW88AWDL::MaxFrame); _txBuffer = nullptr; }
+FILE: driver/RTL88WiFi/src/kext/RTW88HwOps.cpp MATCHES: 6
+  00093: static void compat_dma_free(struct device *, size_t size, void *cpu_addr,
+  00101: static dma_addr_t compat_dma_map(struct device *, void *ptr, size_t size, int dir)
+  00115: static void compat_dma_unmap(struct device *, dma_addr_t addr, size_t, int)
+  00132:     .free_coherent = compat_dma_free,
+  00133:     .map_single = compat_dma_map,
+  00134:     .unmap_single = compat_dma_unmap,
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp MATCHES: 60
+  00527: void RTW88IEEE80211::compat_tx_status(void *kext_hw, struct sk_buff *skb)
+  00530:     if (self) self->txStatus(skb);
+  00531:     kfree_skb(skb);
+  00583:         .tx_status = RTW88IEEE80211::compat_tx_status,
+  00632:         .tx_status = RTW88IEEE80211::compat_tx_status,
+  01246:     return outputPacketWithCompletion(m, nullptr, nullptr, nullptr);
+  01249: UInt32 RTW88IEEE80211::outputPacketWithCompletion(
+  01288:     const bool submitted = txDataFrame(m, callback, context, cookie);
+  01301:     if (skb->len < 24) { kfree_skb(skb); return; }
+  01307:         kfree_skb(skb);
+  01329:         kfree_skb(skb);
+  01350:             kfree_skb(skb);
+  01370:         kfree_skb(skb);
+  01377:             kfree_skb(skb);
+  01384:             kfree_skb(skb);
+  01392:             kfree_skb(skb);
+  01406:                 kfree_skb(skb);
+  01447:         kfree_skb(skb);
+  01485:         kfree_skb(skb);
+  01489:         kfree_skb(skb);
+  01654:         kfree_skb(skb);
+  01665:     if (!bss) { kfree_skb(skb); return; }
+  01809:             kfree_skb(skb);
+  01820:     kfree_skb(skb);
+  01830:         kfree_skb(skb);
+  01845:         kfree_skb(skb);
+  01883:     if (skb->len < hdrlen) { kfree_skb(skb); return; }
+  01895:         kfree_skb(skb);
+  01905:         if (skb->len < hdrlen + 8 + trailer) { kfree_skb(skb); return; }
+  01922:         kfree_skb(skb);
+  01931:             if (skb->len < off + 8) { kfree_skb(skb); return; }
+  01935:         kfree_skb(skb);
+  01942:     if (skb->len < payload_off + 8) { kfree_skb(skb); return; }
+  01965:         kfree_skb(skb);
+  01977:             kfree_skb(skb);
+  01992:             kfree_skb(skb);
+  02011:     kfree_skb(skb);
+  02087:             if (r->buf[i]) { kfree_skb(r->buf[i]); r->buf[i] = nullptr; }
+  02116:             kfree_skb(freelist[i]);
+  02146:         kfree_skb(skb);
+  02168:         kfree_skb(skb);
+  02257: void RTW88IEEE80211::txStatus(struct sk_buff *skb)
+  02263:     rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
+  03419:             peer->vht.vht_mcs.tx_mcs_map =
+  03498:         u16 own_tx = le16_to_cpu(ov->vht_mcs.tx_mcs_map);
+  03500:         u16 ptx = le16_to_cpu(peer->vht.vht_mcs.tx_mcs_map);
+  03511:         peer->vht.vht_mcs.tx_mcs_map = cpu_to_le16(tx);
+  03525:     kfree_skb(skb);
+  03803:         uint16_t txmap = (uint16_t)le32_to_cpu(vht->vht_mcs.tx_mcs_map);
+  03807:         p[8] = (uint8_t)(txmap & 0xff); p[9] = (uint8_t)(txmap >> 8);
+  04378:     bool submitted = txDataFrame(m);
+  04775:             kfree_skb(skb);
+  04826:         kfree_skb(skb);
+  04831:             kfree_skb(skb);
+  04839:         kfree_skb(skb);
+  04859:     kfree_skb(skb);
+  04886: bool RTW88IEEE80211::txDataFrame(mbuf_t m,
+  04982:             kfree_skb(skb);
+  05019:             kfree_skb(skb);
+  05029:             kfree_skb(skb);
+FILE: driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp MATCHES: 4
+  00224:     UInt32    outputPacketWithCompletion(mbuf_t m,
+  00237:     void      txStatus(struct sk_buff *skb);
+  00364:     bool      txDataFrame(mbuf_t m,
+  00377:     static void compat_tx_status(void *kext_hw, struct sk_buff *skb);
+FILE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp MATCHES: 17
+  00116: static void compat_dma_free(struct device *dev, size_t size,
+  00123: static dma_addr_t compat_dma_map(struct device *dev, void *ptr,
+  00153: static void compat_dma_unmap(struct device *dev, dma_addr_t addr,
+  00178:     .free_coherent          = compat_dma_free,
+  00179:     .map_single             = compat_dma_map,
+  00180:     .unmap_single           = compat_dma_unmap,
+  00285:     return _dmaLock != nullptr && _pendingFreeLock != nullptr;
+  00421:     if (_dmaLock)         { IOSimpleLockFree(_dmaLock);        _dmaLock        = nullptr; }
+  00436:         _txQueue->stop();
+  00441:     drainPendingFree();   /* release any bounce bufs deferred during TX ISR */
+  00568:     if (_txQueue) _txQueue->stop();
+  00810:                 e->next = _dmaPendingFree;
+  00811:                 _dmaPendingFree = e;
+  00836:                 e->next = _dmaPendingFree;
+  00837:                 _dmaPendingFree = e;
+  00851:     DMAEntry *list      = _dmaPendingFree;
+  00852:     _dmaPendingFree     = nullptr;
+FILE: driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp MATCHES: 1
+  00173:     DMAEntry     *_dmaPendingFree    = nullptr;
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp MATCHES: 1
+  00215:             return fenceStatus; // Keep callbacks, mappings and DMA owner alive on failure.
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp MATCHES: 23
+  00034:     _dmaPendingFree = nullptr;
+  00059:     if (!_dmaLock || !_pendingFreeLock) {
+  00212:     releaseDMAEntries();
+  00243:         IOSimpleLockFree(_dmaLock);
+  00274:             IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\n",
+  00334:     if (!size || !_compatLeaseHeld || !_dmaLock || !_pendingFreeLock)
+  00385:     if (!_dmaLock || !_pendingFreeLock || !virtualAddress)
+  00405:         freeDMAList(entry);
+  00408:         entry->next = _dmaPendingFree;
+  00409:         _dmaPendingFree = entry;
+  00416:     if (!_dmaLock || !_pendingFreeLock || !physical)
+  00433:         freeDMAList(entry);
+  00436:         entry->next = _dmaPendingFree;
+  00437:         _dmaPendingFree = entry;
+  00500:     RTW88DMAEntry *list = _dmaPendingFree;
+  00501:     _dmaPendingFree = nullptr;
+  00503:     freeDMAList(list);
+  00506: void RTW88WCLPCIBackend::releaseDMAEntries()
+  00513:         freeDMAList(list);
+  00517:         RTW88DMAEntry *pending = _dmaPendingFree;
+  00518:         _dmaPendingFree = nullptr;
+  00520:         freeDMAList(pending);
+  00524: void RTW88WCLPCIBackend::freeDMAList(RTW88DMAEntry *list)
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.hpp MATCHES: 3
+  00069:     static void freeDMAList(RTW88DMAEntry *list);
+  00071:     void releaseDMAEntries();
+  00087:     RTW88DMAEntry *_dmaPendingFree = nullptr;
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp MATCHES: 4
+  00102:     const UInt32 backendResult = _radio->outputPacketWithCompletion(
+  00149:         TicketPool::finish(ticket);
+  00169: void RTW88WCLSkywalkTxAdapter::free()
+  00175:         IOLog("rtl88wifi-wcl: TX adapter free attempted with outstanding tickets\n");
+FILE: driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp MATCHES: 1
+  00098:     static void finish(Ticket *ticket)
+
+=== REQUIRED SEMANTIC DECISIONS ===
+1. For every outputPacketWithCompletion return branch, state whether callback fires synchronously, asynchronously, or not at all; prove who owns mbuf/skb.
+2. For txDataFrame, enumerate every allocation, conversion, early return, skb handoff and ownership transfer. Determine whether false return can coexist with a prior callback.
+3. For txStatus and every skb free/purge/reset path, prove one shared atomic token claim and exactly one callback/release; inspect races and callback reentrancy.
+4. For every ticket state transition, identify legal predecessor/successor states, producer/consumer concurrency, memory ordering, duplicate callback behavior, and ticket reuse safety.
+5. Prove adapter and packet retains are released exactly once on success, synchronous rejection, asynchronous completion, reset, stop and failed initialization.
+6. Enumerate every RTW88 caller of ieee80211_tx_status_irqsafe, ieee80211_tx_status and ieee80211_free_txskb; establish each skb's single terminal owner.
+7. Trace stop/reset work cancellation, interrupt synchronization and DMA engine stop before any callback token, skb, ticket, descriptor or adapter is freed.
+8. Pair each TX descriptor and payload DMA allocation/map/prepare with complete/unmap/free on all terminal paths; distinguish coherent rings from streaming mappings.
+9. Stage26 is source evidence only. A source-text scan cannot certify runtime race freedom or hardware behavior.
+
+STAGE26_STATUS: REVIEW_REQUIRED
+ACTIVATION_GATE: BLOCKED — do not enable Skywalk TX or RX, register queues, publish interface, start radio, build/install/load, or change OpenCore.

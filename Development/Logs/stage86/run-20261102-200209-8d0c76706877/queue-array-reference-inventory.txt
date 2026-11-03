@@ -1,0 +1,51 @@
+STAGE86_QUEUE_MEMBER_REFERENCE_INVENTORY
+SOURCE_FILES_SCANNED=91
+
+MEMBER=_txSubmission
+REFERENCE_COUNT=10
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:27:_txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:39:if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:70:_txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:73:if (!_txSubmission)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:119:if (_txSubmission) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:120:_txSubmission->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:121:_txSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:136:return _allocated && _txPool && _rxPool && _txSubmission &&
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:153:if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:55:IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+
+MEMBER=_txCompletion
+REFERENCE_COUNT=9
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:28:_txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:39:if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:76:_txCompletion = IOSkywalkTxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:79:if (!_txCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:115:if (_txCompletion) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:116:_txCompletion->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:117:_txCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:56:IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
+
+MEMBER=_rxSubmission
+REFERENCE_COUNT=9
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:29:_rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:40:_rxSubmission || _rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:82:_rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:85:if (!_rxSubmission)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:111:if (_rxSubmission) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:112:_rxSubmission->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:113:_rxSubmission = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:57:IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
+
+MEMBER=_rxCompletion
+REFERENCE_COUNT=9
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:30:_rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:40:_rxSubmission || _rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:88:_rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:91:if (!_rxCompletion)
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:107:if (_rxCompletion) {
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:108:_rxCompletion->release();
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:109:_rxCompletion = nullptr;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:137:_txCompletion && _rxSubmission && _rxCompletion;
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:58:IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;

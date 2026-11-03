@@ -1,0 +1,19 @@
+STAGE81_IMPLEMENTATION_CONTRACT_MATRIX
+RESULT_MEANING=PASS means evidence synthesis completed, not product readiness
+GATE=SOURCE_BASELINE|PASS|91 files match Stage73 fingerprint
+GATE=APPLE_REGISTRATION_WRAPPER|REVIEW_REQUIRED|Apple Infra wrapper forwarding
+GATE=GENERIC_ARRAY_TO_QUEUESET|REVIEW_REQUIRED|Queue count into QueueSet factory
+GATE=QUEUESET_TO_LOGICAL_LINK|REVIEW_REQUIRED|QueueSet then LogicalLink
+GATE=FOUR_QUEUE_TYPECODE_MATCH|4/4|Driver factories compared with Apple type codes
+GATE=QUEUE_POINTER_ARRAY|NOT_FOUND|Driver queue array absent
+GATE=NATIVE_REGISTRATION_CALLS|0|Native registration callsite absent
+GATE=NATIVE_DEREGISTRATION_CALLS|0|Native deregistration callsite absent
+GATE=QUEUESET_INFO_FORMAL_SIZE|UNRESOLVED|Observed control word does not prove formal type size
+GATE=LOGICALLINK_INFO_FORMAL_SIZE|UNRESOLVED|Observed staging buffer does not prove formal type size
+GATE=CONTROLLER_START|BLOCKED|Fail-closed start path remains
+GATE=INFRA_START|BLOCKED|No successful return or registration preparation call
+GATE=TX_SUBMISSION|MISSING|No adapter handoff
+GATE=TX_COMPLETION|MISSING|No deferred drain caller
+GATE=RX_SUBMISSION|MISSING|No refill
+GATE=RX_COMPLETION|MISSING|No delivery
+GATE=BUILD_INSTALL_LOAD|NOT_RUN|No build, install, load or hardware test

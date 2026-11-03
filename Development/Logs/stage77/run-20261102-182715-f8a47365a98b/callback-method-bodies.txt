@@ -1,0 +1,42 @@
+
+===== TX_SUBMISSION txSubmissionAction SOURCE_LINE=150 =====
+150: {
+151:     (void)refCon;
+152:     auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
+153:     if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+154:         return static_cast<IOReturn>(0);
+155: 
+156:                                                                            
+157:                                                                           
+158:                                                                            
+159:                                                              
+160:     for (UInt32 i = 0; i < packetCount; ++i) {
+161:         if (!packets[i])
+162:             return static_cast<IOReturn>(0);
+163:         RTW88WCLPacketView view = {};
+164:         if (!RTW88WCLResolveEthernetTxPacket(
+165:                 const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
+166:             return static_cast<IOReturn>(0);
+167:     }
+168: 
+169:     return static_cast<IOReturn>(0);
+170: }
+
+===== TX_COMPLETION txCompletionAction SOURCE_LINE=175 =====
+175: {
+176:     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+177:     return static_cast<IOReturn>(0);
+178: }
+
+===== RX_SUBMISSION rxSubmissionAction SOURCE_LINE=183 =====
+183: {
+184:     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+185:                                                                        
+186:     return static_cast<IOReturn>(0);
+187: }
+
+===== RX_COMPLETION rxCompletionAction SOURCE_LINE=192 =====
+192: {
+193:     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
+194:     return static_cast<IOReturn>(0);
+195: }

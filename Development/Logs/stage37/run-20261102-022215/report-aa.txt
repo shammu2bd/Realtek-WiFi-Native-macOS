@@ -1,0 +1,90 @@
+========== STAGE 37: KERNEL / SKYWALK SYMBOL RESOLUTION ==========
+script_version=STAGE37_V1_20261102
+timestamp_utc=2026-11-02T02:22:15Z
+product_version=15.8.1
+build_version=24H32
+architecture=x86_64
+source_root=/Users/shohel/Downloads/RTL88WiFi-1.0.11-WCL-Sequoia-24H32-stage26-clean-source
+mode=read-only installed kernel and kernel collection symbol inspection
+PREDECESSOR=Stage36 run-20261102-021830
+
+--- Source continuity ---
+SOURCE_FINGERPRINT_MATCH=src/kext/RTW88WCLWorkQueue.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/RTW88WCLWorkQueue.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLController.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLController.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
+SOURCE_FINGERPRINT_MATCH=src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+AUDITED_SOURCE_FINGERPRINTS=12
+SOURCE_FINGERPRINT_CONTINUITY=PASS
+--- Kernel and KernelCollection candidates ---
+BINARY_CANDIDATE_COUNT=13
+BINARY_CANDIDATE=/System/Library/KernelCollections/BootKernelExtensions.kc
+BINARY_FILE=/System/Library/KernelCollections/BootKernelExtensions.kc: Mach-O 64-bit x86_64
+NM_EXIT=0 NM_BYTES=26271278
+SYMBOL_initRegistrationInfo_1=IMPORT_OR_UNRESOLVED | (undefined) external __ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm (dynamically looked up)
+SYMBOL_initRegistrationInfo_2=DEFINED_OR_LOCAL | ffffff8002987ed6 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface20initRegistrationInfoEPNS_16RegistrationInfoEjm
+SYMBOL_registerEthernetInterface.queue_array_1=IMPORT_OR_UNRESOLVED | (undefined) external __ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j (dynamically looked up)
+SYMBOL_registerEthernetInterface.queue_array_2=IMPORT_OR_UNRESOLVED | (undefined) external __ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j (dynamically looked up)
+SYMBOL_registerEthernetInterface.queue_array_3=DEFINED_OR_LOCAL | ffffff8002988078 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface25registerEthernetInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j
+SYMBOL_registerEthernetInterface.logical_link=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_deregisterEthernetInterface_1=DEFINED_OR_LOCAL | ffffff80029880e8 (__TEXT,__text) external __ZN26IOSkywalkEthernetInterface27deregisterEthernetInterfaceEj
+SYMBOL_IO80211InfraInterface.registerInfraEthernetInterface_1=IMPORT_OR_UNRESOLVED | (undefined) external __ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_ (dynamically looked up)
+SYMBOL_IO80211InfraInterface.registerInfraEthernetInterface_2=DEFINED_OR_LOCAL | ffffff80022dcfce (__TEXT,__text) external __ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_
+BINARY_CANDIDATE=/System/Library/KernelCollections/SystemKernelExtensions.kc
+BINARY_FILE=/System/Library/KernelCollections/SystemKernelExtensions.kc: Mach-O 64-bit x86_64
+NM_EXIT=0 NM_BYTES=42613720
+SYMBOL_initRegistrationInfo=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_registerEthernetInterface.queue_array=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_registerEthernetInterface.logical_link=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_deregisterEthernetInterface=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_IO80211InfraInterface.registerInfraEthernetInterface=NOT_FOUND_IN_THIS_BINARY
+BINARY_CANDIDATE=/System/Library/Kernels/kernel
+BINARY_FILE=/System/Library/Kernels/kernel: Mach-O 64-bit executable x86_64
+NM_EXIT=0 NM_BYTES=1637703
+SYMBOL_initRegistrationInfo=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_registerEthernetInterface.queue_array=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_registerEthernetInterface.logical_link=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_deregisterEthernetInterface=NOT_FOUND_IN_THIS_BINARY
+SYMBOL_IO80211InfraInterface.registerInfraEthernetInterface=NOT_FOUND_IN_THIS_BINARY
+--- Targeted disassembly of defined methods only ---
+DISASM_initRegistrationInfo_EXIT=0 BYTES=83 INSTRUCTION_LINES=0
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+DISASM_registerEthernetInterface.queue_array_EXIT=0 BYTES=83 INSTRUCTION_LINES=0
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+DISASM_deregisterEthernetInterface_EXIT=0 BYTES=83 INSTRUCTION_LINES=0
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+DISASM_IO80211InfraInterface.registerInfraEthernetInterface_EXIT=0 BYTES=83 INSTRUCTION_LINES=0
+/System/Library/KernelCollections/BootKernelExtensions.kc:
+(__TEXT,__text) section
+
+--- Loaded system networking families ---
+   53   11 0xffffff8002624000 0x15ff4    0x15ff4    com.apple.iokit.IONetworkingFamily (3.4) 5D3F11B8-802B-3860-8A36-E9334980A117 <9 8 7 6 3 1>
+   55    5 0xffffff8004150000 0xce000    0xce000    com.apple.iokit.IOSkywalkFamily (1.0) 035A9AD9-6CDE-362F-8DEC-B664BC6431EC <54 53 9 8 7 6 3 1>
+   93    1 0xffffff8004645000 0x20a000   0x20a000   com.apple.iokit.IO80211FamilyLegacy (1200.12.2b1) 4C07538B-62EB-3D6D-AEF9-93BCDCF45FAB <92 55 53 27 23 10 9 8 7 6 3 1>
+
+--- Previous Stage36 evidence requiring resolution ---
+STAGE36_FOUND_REGISTER_INFRA_WRAPPER_DEFINED_IN_BOOT_KC=YES
+STAGE36_FOUND_REGISTER_ETHERNET_INTERFACE_AS_DYNAMIC_IMPORT=YES
+STAGE36_FOUND_INIT_REGISTRATION_INFO_AS_DYNAMIC_IMPORT=YES
+STAGE36_DEREGISTER_DISASSEMBLY_WAS_NOT_VALIDATED=YES
+
+--- Safety boundary ---
+SOURCE_TREE_MODIFIED=NO
+BUILD=NOT_RUN
+CODESIGN=NOT_RUN
+KEXT_INSTALL=NOT_RUN
+KEXT_LOAD=NOT_RUN
+OPENCORE_MODIFIED=NO
+HARDWARE_TEST=NOT_RUN
+IMPLEMENTATION_AUTHORIZED_BY_THIS_STAGE=NO
+========== END STAGE 37 ==========

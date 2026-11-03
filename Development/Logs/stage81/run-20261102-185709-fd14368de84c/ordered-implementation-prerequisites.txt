@@ -1,0 +1,9 @@
+STAGE81_ORDERED_IMPLEMENTATION_PREREQUISITES
+1. Resolve formal QueueSetInfo_s and LogicalLinkInfo_s size, alignment and full initialization requirements from matching 24H32 evidence.
+2. Resolve WMM predicate queue requirements and remaining registration-option dataflow. Do not infer mandatory array order from member declaration order.
+3. Materialize one IOSkywalkPacketQueue pointer per confirmed descriptor type: 1 TX submission, 2 TX completion, 3 RX submission, 4 RX completion. Pass the actual pointer count.
+4. Implement registration and matching deregistration as a transaction with explicit partial-failure rollback and queue/pool lifetime guarantees.
+5. Connect TX submission, TX completion drain, RX refill and RX delivery. Keep IOReturn Action callbacks distinct from packet-count callbacks.
+6. Prove packet ownership, RX acceptance/rejection, overflow, quiesce and teardown invariants.
+7. Request separate source-edit authorization before implementation. Compile/link and ABI checks precede install/load or OpenCore testing.
+IMPLEMENTATION_AUTHORIZED=NO

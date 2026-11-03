@@ -1,0 +1,81 @@
+STAGE59_QUEUESET_INITWITHQUEUES_INDIRECT_DISPATCH_CONTEXT
+QUEUESET_INITWITHQUEUES_METHOD=PRESENT
+CALLSITE_COUNT=2
+
+CALLSITE_CONTEXT_BEGIN
+ffffff800298a90d:      	mov	qword ptr [rdi + 0x78], r13
+ffffff800298a911:      	mov	r14, rdi
+ffffff800298a914:      	mov	qword ptr [rdi + 0x58], rdx
+ffffff800298a918:      	lea	r12, [rip + 0x305] ## 0xffffff800298ac24 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x386>
+ffffff800298a91f:      	xor	r15d, r15d
+ffffff800298a922:      	mov	rdi, qword ptr [rbx + 8*r15]
+ffffff800298a926:      	test	rdi, rdi
+ffffff800298a929:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+ffffff800298a92f:      	mov	qword ptr [rbp - 0x50], r13
+ffffff800298a933:      	mov	qword ptr [rbp - 0x58], r13
+ffffff800298a937:      	mov	rax, qword ptr [rdi]
+ffffff800298a93a:      	mov	ecx, 0x10
+ffffff800298a93f:      	mov	esi, 0x10000
+ffffff800298a944:      	lea	rdx, [rbp - 0x58]
+ffffff800298a948:      	call	qword ptr [rax + 0x218]
+ffffff800298a94e:      	mov	eax, dword ptr [rbp - 0x58]
+ffffff800298a951:      	dec	eax
+ffffff800298a953:      	cmp	eax, 0x3
+ffffff800298a956:      	ja	0xffffff800298a978 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0xda>
+ffffff800298a958:      	movsxd	rcx, dword ptr [r12 + 4*rax]
+ffffff800298a95c:      	add	rcx, r12
+ffffff800298a95f:      	mov	rax, qword ptr [rbp - 0x38]
+ffffff800298a963:      	jmp	rcx
+ffffff800298a965:      	mov	rax, qword ptr [rbp - 0x48]
+ffffff800298a969:      	jmp	0xffffff800298a975 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0xd7>
+ffffff800298a96b:      	mov	rax, qword ptr [rbp - 0x30]
+ffffff800298a96f:      	jmp	0xffffff800298a975 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0xd7>
+ffffff800298a971:      	mov	rax, qword ptr [rbp - 0x40]
+ffffff800298a975:      	inc	qword ptr [rax]
+ffffff800298a978:      	inc	r15
+ffffff800298a97b:      	cmp	r15, qword ptr [r14 + 0x58]
+ffffff800298a97f:      	jb	0xffffff800298a922 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x84>
+ffffff800298a981:      	mov	rax, qword ptr [rbp - 0x38]
+ffffff800298a985:      	mov	rax, qword ptr [rax]
+ffffff800298a988:      	test	rax, rax
+ffffff800298a98b:      	mov	r15, qword ptr [rbp - 0x48]
+CALLSITE_CONTEXT_END
+
+CALLSITE_CONTEXT_BEGIN
+ffffff800298aae4:      	xor	r15d, r15d
+ffffff800298aae7:      	mov	qword ptr [rbp - 0x30], 0x0
+ffffff800298aaef:      	mov	r13, qword ptr [rbx + 8*r12]
+ffffff800298aaf3:      	mov	rdi, r13
+ffffff800298aaf6:      	mov	rsi, r14
+ffffff800298aaf9:      	call	0xffffff8002980cfa <__ZN20IOSkywalkPacketQueue11setQueueSetEP17IOSkywalkQueueSet>
+ffffff800298aafe:      	xor	eax, eax
+ffffff800298ab00:      	mov	qword ptr [rbp - 0x50], rax
+ffffff800298ab04:      	mov	qword ptr [rbp - 0x58], rax
+ffffff800298ab08:      	mov	rax, qword ptr [r13]
+ffffff800298ab0c:      	mov	ecx, 0x10
+ffffff800298ab11:      	mov	rdi, r13
+ffffff800298ab14:      	mov	esi, 0x10000
+ffffff800298ab19:      	lea	rdx, [rbp - 0x58]
+ffffff800298ab1d:      	call	qword ptr [rax + 0x218]
+ffffff800298ab23:      	mov	eax, dword ptr [rbp - 0x58]
+ffffff800298ab26:      	dec	eax
+ffffff800298ab28:      	cmp	eax, 0x3
+ffffff800298ab2b:      	ja	0xffffff800298aba8 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x30a>
+ffffff800298ab2d:      	lea	rcx, [rip + 0x100] ## 0xffffff800298ac34 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x396>
+ffffff800298ab34:      	movsxd	rax, dword ptr [rcx + 4*rax]
+ffffff800298ab38:      	add	rax, rcx
+ffffff800298ab3b:      	jmp	rax
+ffffff800298ab3d:      	mov	rax, qword ptr [rbp - 0x38]
+ffffff800298ab41:      	mov	rcx, qword ptr [rbp - 0x68]
+ffffff800298ab45:      	cmp	rcx, qword ptr [rax]
+ffffff800298ab48:      	jae	0xffffff800298aba8 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x30a>
+ffffff800298ab4a:      	mov	rax, rcx
+ffffff800298ab4d:      	inc	rcx
+ffffff800298ab50:      	shl	rax, 0x3
+ffffff800298ab54:      	add	rax, qword ptr [r14 + 0x20]
+ffffff800298ab58:      	mov	qword ptr [rbp - 0x68], rcx
+ffffff800298ab5c:      	jmp	0xffffff800298aba5 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x307>
+ffffff800298ab5e:      	lea	rcx, [r15 + 0x1]
+ffffff800298ab62:      	shl	r15, 0x3
+ffffff800298ab66:      	add	r15, qword ptr [r14 + 0x30]
+CALLSITE_CONTEXT_END

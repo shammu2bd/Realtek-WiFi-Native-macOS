@@ -1,0 +1,47 @@
+STAGE59_GLOBAL_QUEUE_AND_REGISTRATION_SOURCE_INVENTORY
+SOURCE_FILES_SCANNED=1242
+
+REFERENCE=queueset_info_declarations
+MATCHES_AT_LEAST=0
+
+REFERENCE=logicallink_info_declarations
+MATCHES_AT_LEAST=0
+
+REFERENCE=packet_queue_virtual_api
+MATCHES_AT_LEAST=11
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkCloneableNetworkPacket.h:56: virtual UInt32 getPacketBufferCount() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h:73: virtual UInt32 getPacketBufferCount();
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h:69: virtual UInt32 getPacketCount() = 0;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h:70: virtual UInt32 getPacketBufferCount();
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h:71: virtual UInt32 getFreeSpace();
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h:65: virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h:63: virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:77: virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:72: virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
+src/kext/wcl24h32/RTW88WCLPacketView.hpp:31: packet->getPacketBufferCount() != 1)
+src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp:85: packet->getPacketBufferCount() != 1)
+
+REFERENCE=registration_api
+MATCHES_AT_LEAST=13
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:51: IOReturn registerEthernetInterface( const RegistrationInfo * info, IOSkywalkPacketQueue ** queues, IOOptionBits queueOptions, IOSkywalkPacketBufferPool * pool1, IOSkywalkPacketBufferPool * pool2, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h:52: IOReturn deregisterEthernetInterface( IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:55: IOReturn registerNetworkInterface( const RegistrationInfo * info, IOSkywalkPacketQueue ** queues, IOOptionBits queueOptions, IOSkywalkPacketBufferPool * pool1, IOSkywalkPacketBufferPool * pool2, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:56: IOReturn deregisterNetworkInterface( IOOptionBits options = 0 );
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:318: virtual IOReturn registerNetworkInterfaceWithLogicalLink(RegistrationInfo const *, IOSkywalkLogicalLink *, IOSkywalkPacketBufferPool *, IOSkywalkPacketBufferPool *, unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:322: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:325: IOReturn registerNetworkInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:328: IOReturn deregisterNetworkInterface(unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:437: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkPacketQueue **,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:440: IOReturn registerEthernetInterface(RegistrationInfo const *, IOSkywalkLogicalLink *,
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:443: IOReturn deregisterEthernetInterface(unsigned int);
+src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:687: IOReturn registerInfraEthernetInterface(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:67: * are not passed to registerEthernetInterface() yet. Skywalk owns their
+
+REFERENCE=queue_set_construction
+MATCHES_AT_LEAST=0
+
+REFERENCE=queue_type_terms
+MATCHES_AT_LEAST=3
+MacKernelSDK/Headers/IOKit/hidsystem/IOHIDShared.h:241: kIOHIDEventQueueTypeKernel  = 0,
+MacKernelSDK/Headers/IOKit/hidsystem/IOHIDShared.h:242: kIOHIDEventQueueTypeUser    = 1
+MacKernelSDK/Headers/kern/priority_queue.h:550: *              priority_queue_init(q, cmp_fn, queue_type)

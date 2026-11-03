@@ -1,0 +1,67 @@
+STAGE58_REGISTRATION_QUEUESET_LOGICALLINK_TRANSACTION_MATRIX
+APPLE_METHODS_RESOLVED=23
+APPLE_METHODS_DISASSEMBLED_PASS=23
+NATIVE_SOURCE_FILES_SCANNED=1242
+NATIVE_METHOD_DEFINITIONS_FOUND=12
+
+CHECK=controller creates the native infrastructure interface
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:50
+
+CHECK=controller creates the Skywalk queue owner
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=PRESENT
+MATCH=RTW88WCLSkywalkQueues
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:50
+
+CHECK=controller reaches native Skywalk registration
+METHOD_SCOPE=RTW88WCLController::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:50
+
+CHECK=interface start prepares RegistrationInfo
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262
+
+CHECK=interface start invokes Apple registration
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262
+
+CHECK=interface start creates or owns the four queues
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262
+
+CHECK=queue creation constructs QueueSet
+METHOD_SCOPE=RTW88WCLSkywalkQueues::createQueues
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:35
+
+CHECK=queue creation constructs LogicalLink
+METHOD_SCOPE=RTW88WCLSkywalkQueues::createQueues
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:35
+
+CHECK=queue teardown releases queues before pools
+METHOD_SCOPE=RTW88WCLSkywalkQueues::destroyQueues
+RESULT=PRESENT
+MATCH=_rxCompletion
+SOURCE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:103
+
+CHECK=registration source passes queue array and both pools
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262
+
+CHECK=RegistrationInfo helper is called by interface start
+METHOD_SCOPE=RTW88WCLInfraInterface::start
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:262
+
+CHECK=RX staged ring is handed to networking queue
+METHOD_SCOPE=RTW88WCLController::stagedRxFrame
+RESULT=NOT_FOUND_IN_METHOD_BODY
+SOURCE=src/kext/wcl24h32/RTW88WCLController.cpp:558

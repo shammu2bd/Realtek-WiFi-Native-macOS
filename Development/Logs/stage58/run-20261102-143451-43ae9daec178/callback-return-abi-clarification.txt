@@ -1,0 +1,10 @@
+STAGE58_CALLBACK_RETURN_TYPE_CLARIFICATION
+SOURCE=Stage57 V2 SDK header extraction, pinned predecessor artifact
+IOSkywalkTxSubmissionQueueAction=IOReturn (*)(OSObject*, IOSkywalkTxSubmissionQueue*, const IOSkywalkPacket**, UInt32 packetCount, void*)
+IOSkywalkTxCompletionQueueAction=IOReturn (*)(OSObject*, IOSkywalkTxCompletionQueue*, IOSkywalkPacket**, UInt32 packetCount, void*)
+IOSkywalkRxSubmissionQueueAction=IOReturn (*)(OSObject*, IOSkywalkRxSubmissionQueue*, const IOSkywalkPacket**, UInt32 packetCount, void*)
+IOSkywalkRxCompletionQueueAction=IOReturn (*)(OSObject*, IOSkywalkRxCompletionQueue*, IOSkywalkPacket**, UInt32 packetCount, void*)
+INTERPRETATION=The callback result is an IOReturn status value; packetCount is a separate input argument.
+ZERO_STATUS=kIOReturnSuccess (not a packet count).
+CAUTION=Do not infer packet ownership transfer or accepted packet count from the callback return type alone. The queue dispatcher and packet state transitions must be reviewed together.
+STAGE56_NOTE=Any statement that callback return zero inherently means zero packets accepted is not established by the SDK typedef. This audit corrects that interpretation without asserting that the currently stubbed datapath is active.

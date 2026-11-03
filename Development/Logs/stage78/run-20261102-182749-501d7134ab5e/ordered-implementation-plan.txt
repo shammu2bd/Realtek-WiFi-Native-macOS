@@ -1,0 +1,12 @@
+STAGE78_ORDERED_IMPLEMENTATION_PLAN
+RULE=No implementation edit should be made until the exact 24H32 registration call contract, queue-pointer order/count, pools and rollback semantics are established.
+STEP_1=Resolve the native IO80211InfraInterface registration caller and exact argument contract from matching 24H32 kernel/driver evidence. Queue order, array length, flags and pool mapping remain unknown; do not infer them from member declaration order.
+STEP_2=Design queue-array storage and registration/deregistration lifecycle with explicit partial-failure rollback. Preserve reverse-order teardown and packet-pool lifetime.
+STEP_3=Only after Step 1/2 are proven, implement registration on the interface startup path and controller publication gate; replace current fail-closed start behavior only after all rollback paths are defined.
+STEP_4=Connect TX submission Action to the existing TX adapter with explicit packet retain/ticket rules and error/acceptance semantics.
+STEP_5=Connect native TX completion handling to the deferred ticket drain and prove exactly-once completion/release under synchronous and asynchronous backend completion.
+STEP_6=Implement RX submission refill and RX completion delivery using the correct Skywalk packet-count callback contract; keep it distinct from IOReturn Action callbacks.
+STEP_7=Prove RX sink ownership transfer, rejection/deallocation, staged-ring overflow, stop/quiesce and pool disposal invariants.
+STEP_8=Run static checks and compile/link validation before any install/load proposal. Then separately prepare an OpenCore test plan and recovery path.
+DO_NOT=Do not use AirportRTW as a substitute, do not block IOSkywalkFamily as a workaround, and do not alter SIP/NVRAM/OpenCore during these audit stages.
+CURRENT_STATE=No working kext has been produced or validated by Stages 64–78.
