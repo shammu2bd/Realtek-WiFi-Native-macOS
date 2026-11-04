@@ -1,0 +1,277 @@
+========== STAGE 89 V5 — REMAINING READ-ONLY SERVICE-CLASS AUDIT ==========
+STAGE89_V5_SERVICE_CLASS_SETTER_AND_VTABLE_DISPATCH_AUDIT
+VERSION=STAGE89_V5_20261104
+TARGET=macOS_15.8.1_24H32_x86_64
+V4_PREDECESSOR=run-20261104-100629-7f12523c2a64
+SOURCE_TREE_REVALIDATION=PASS
+TARGET_KERNEL_WMM_TABLE_REVALIDATION=PASS
+SERVICE_CLASS_REGISTRATION_SYMBOLS=52
+SELECTED_METHODS_DISASSEMBLED=26
+SET_SERVICE_CLASS_METHOD_BODIES_DISASSEMBLED=6
+SET_SERVICE_CLASS_METHOD_SYMBOLS=__ZN36IOUserNetworkTxSubmissionQueueCompat21_SetServiceClass_ImplEj;__ZN30IOUserNetworkTxSubmissionQueue21_SetServiceClass_ImplEj;__ZN36IOUserNetworkTxSubmissionQueueCompat23_SetServiceClass_InvokeE5IORPCP15OSMetaClassBasePFiS2_jE;__ZN36IOUserNetworkTxSubmissionQueueCompat16_SetServiceClassEjPFiP15OSMetaClassBase5IORPCE;__ZN30IOUserNetworkTxSubmissionQueue23_SetServiceClass_InvokeE5IORPCP15OSMetaClassBasePFiS2_jE;__ZN30IOUserNetworkTxSubmissionQueue16_SetServiceClassEjPFiP15OSMetaClassBase5IORPCE
+SETTER_METHOD_DIRECT_FIELD_WRITES_AT_QUEUE_OFFSET_0xB8=2
+ALL_SELECTED_METHOD_FIELD_REFERENCES_AT_0xB8=10
+WMM_PREDICATE_METHOD=FOUND
+QUEUESET_INIT_METHOD=FOUND
+NETWORK_REGISTRATION_METHOD=FOUND
+QUEUESET_OBJECT_VPTR_CALL_OFFSET_0x218=RAW_ZTV_INDEX_69
+QUEUE_VTABLES_FOUND=17
+QUEUESET_PLUS_0x218_DISPATCH_SITES=3
+QUEUE_VTABLE_RAW_INDEX_69_MATCHES=15
+FOUR_QUEUE_WMM_MAPPING=NOT_PROVEN
+SERVICE_CLASS_ASSIGNMENT_PATH=NOT_PROVEN
+FOUR_QUEUE_POINTER_ARRAY=NOT_IMPLEMENTED
+NATIVE_REGISTRATION_CALLS=0
+CALLBACK_HANDOFFS_STILL_MISSING=4
+IMPLEMENTATION_AUTHORIZATION=NO
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+SIGNING=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+RESULT=REVIEW_REQUIRED
+ACTIVATION_GATE=BLOCKED
+NEXT=Review setter call traces and corrected vtable outputs. Do not create the queue array or call registration until all four service classes and ownership rules are proven.
+
+V4 CORRECTIONS:
+1. V4 found six SetServiceClass names but did not disassemble those setter bodies. V5 disassembles them and resolves direct call targets where possible.
+2. The C++ vtable address point is __ZTV + 0x10. Therefore object-vptr offset +0x218 maps to raw __ZTV index 69, not raw index 67.
+3. The crosswalk records raw indices 67–72 for each available queue-class vtable and highlights the +0x218 target.
+
+SETTER CALL TRACE:
+STAGE89_V5_SET_SERVICE_CLASS_DIRECT_CALL_TRACE
+SETTER_METHOD_BODIES=6
+SETTER_BODY OWNER=com.apple.iokit.IOSkywalkFamily ADDRESS=0xffffff800297c956 NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat21_SetServiceClass_ImplEj
+SETTER_BODY OWNER=com.apple.iokit.IOSkywalkFamily ADDRESS=0xffffff800298fb1a NAME=__ZN30IOUserNetworkTxSubmissionQueue21_SetServiceClass_ImplEj
+SETTER_BODY OWNER=com.apple.iokit.IOSkywalkFamily ADDRESS=0xffffff80029936fc NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat23_SetServiceClass_InvokeE5IORPCP15OSMetaClassBasePFiS2_jE
+SETTER_BODY OWNER=com.apple.iokit.IOSkywalkFamily ADDRESS=0xffffff8002993bd4 NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat16_SetServiceClassEjPFiP15OSMetaClassBase5IORPCE
+DIRECT_CALL FROM=0xffffff8002993bd4 TARGET=0xffffff8000b58410 OWNER=com.apple.kernel SYMBOL=__ZN15OSMetaClassBase6InvokeE5IORPC INSN=ffffff8002993cd8:      	call	0xffffff8000b58410 <_uuid_unparse_upper+0xffffff8000b58410>
+SETTER_BODY OWNER=com.apple.iokit.IOSkywalkFamily ADDRESS=0xffffff800299e9d0 NAME=__ZN30IOUserNetworkTxSubmissionQueue23_SetServiceClass_InvokeE5IORPCP15OSMetaClassBasePFiS2_jE
+SETTER_BODY OWNER=com.apple.iokit.IOSkywalkFamily ADDRESS=0xffffff800299eea8 NAME=__ZN30IOUserNetworkTxSubmissionQueue16_SetServiceClassEjPFiP15OSMetaClassBase5IORPCE
+DIRECT_CALL FROM=0xffffff800299eea8 TARGET=0xffffff8000b58410 OWNER=com.apple.kernel SYMBOL=__ZN15OSMetaClassBase6InvokeE5IORPC INSN=ffffff800299efac:      	call	0xffffff8000b58410 <_uuid_unparse_upper+0xffffff8000b58410>
+NOTE=Indirect RPC/vtable calls are separately identified and are not assumed to mutate queue fields.
+
+QUEUE SERVICE-CLASS FIELD ACCESS:
+STAGE89_V5_QUEUE_SERVICE_CLASS_FIELD_ACCESS_SCAN
+FIELD_OFFSET=0xb8
+GETTER_SYMBOL=__ZNK20IOSkywalkPacketQueue15getServiceClassEv
+SETTER_FIELD_REFERENCE METHOD=0xffffff800297c956 ffffff800297c95a:      	mov	dword ptr [rdi + 0xb8], esi
+SETTER_FIELD_WRITE METHOD=0xffffff800297c956 ffffff800297c95a:      	mov	dword ptr [rdi + 0xb8], esi
+SETTER_FIELD_REFERENCE METHOD=0xffffff800298fb1a ffffff800298fb1e:      	mov	dword ptr [rdi + 0xb8], esi
+SETTER_FIELD_WRITE METHOD=0xffffff800298fb1a ffffff800298fb1e:      	mov	dword ptr [rdi + 0xb8], esi
+METHOD_FIELD_REFERENCE OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff800297c956 NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat21_SetServiceClass_ImplEj INSN=ffffff800297c95a:      	mov	dword ptr [rdi + 0xb8], esi
+METHOD_FIELD_REFERENCE OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff8002980bb0 NAME=__ZNK20IOSkywalkPacketQueue15getServiceClassEv INSN=ffffff8002980bb4:      	mov	eax, dword ptr [rdi + 0xb8]
+METHOD_FIELD_REFERENCE OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff8002981b54 NAME=__ZN25IOSkywalkNetworkInterface26deregisterNetworkInterfaceEj INSN=ffffff8002981c6e:      	mov	rax, qword ptr [rbx + 0xb8]
+METHOD_FIELD_REFERENCE OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff8002981b54 NAME=__ZN25IOSkywalkNetworkInterface26deregisterNetworkInterfaceEj INSN=ffffff8002981c8f:      	mov	rax, qword ptr [rbx + 0xb8]
+METHOD_FIELD_REFERENCE OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff8002981eac NAME=__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j INSN=ffffff8002981f33:      	mov	rcx, qword ptr [r14 + 0xb8]
+METHOD_FIELD_REFERENCE OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff8002981eac NAME=__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j INSN=ffffff8002981fcb:      	mov	rcx, qword ptr [r14 + 0xb8]
+METHOD_FIELD_REFERENCE OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff8002981eac NAME=__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j INSN=ffffff80029820a2:      	mov	rax, qword ptr [r14 + 0xb8]
+METHOD_FIELD_REFERENCE OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff800298fb1a NAME=__ZN30IOUserNetworkTxSubmissionQueue21_SetServiceClass_ImplEj INSN=ffffff800298fb1e:      	mov	dword ptr [rdi + 0xb8], esi
+
+CORRECTED VTABLE CROSSWALK:
+STAGE89_V5_CORRECTED_QUEUE_VTABLE_CROSSWALK
+VTABLE_SYMBOL_BASE_TO_OBJECT_VPTR_ADDRESS_POINT_BIAS=0x10
+OBJECT_CALL_OFFSET=0x218
+CORRESPONDING_RAW_ZTV_TABLE_INDEX=69
+FORMULA=raw_index=(object_vptr_offset/8)+2
+CAPTURED_RAW_ZTV_INDICES=67,68,69,70,71,72
+===== CLASS=IOSkywalkPacketQueue VTABLE_ENTRIES=86 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002880c5a TARGET=0xffffff8002980c5a NAME=__ZN20IOSkywalkPacketQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOSkywalkTxSubmissionQueue VTABLE_ENTRIES=100 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002884f90 TARGET=0xffffff8002984f90 NAME=__ZN26IOSkywalkTxSubmissionQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002884e32 TARGET=0xffffff8002984e32 NAME=__ZN26IOSkywalkTxSubmissionQueue16packetCompletionEP15IOSkywalkPacketP20IOSkywalkPacketQueuej
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOSkywalkTxCompletionQueue VTABLE_ENTRIES=101 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x4000000288a156 TARGET=0xffffff800298a156 NAME=__ZN26IOSkywalkTxCompletionQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x4000000288a276 TARGET=0xffffff800298a276 NAME=__ZN26IOSkywalkTxCompletionQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOSkywalkRxSubmissionQueue VTABLE_ENTRIES=99 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002885dba TARGET=0xffffff8002985dba NAME=__ZN26IOSkywalkRxSubmissionQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002885caa TARGET=0xffffff8002985caa NAME=__ZN26IOSkywalkRxSubmissionQueue16packetCompletionEP15IOSkywalkPacketP20IOSkywalkPacketQueuej
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOSkywalkRxCompletionQueue VTABLE_ENTRIES=101 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x400000028868d0 TARGET=0xffffff80029868d0 NAME=__ZN26IOSkywalkRxCompletionQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002886b24 TARGET=0xffffff8002986b24 NAME=__ZN26IOSkywalkRxCompletionQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOSkywalkQueueSet VTABLE_ENTRIES=42 =====
+===== CLASS=IOUserNetworkPacketQueue VTABLE_ENTRIES=91 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002880c5a TARGET=0xffffff8002980c5a NAME=__ZN20IOSkywalkPacketQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkPacketQueueCompat VTABLE_ENTRIES=91 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002880c5a TARGET=0xffffff8002980c5a NAME=__ZN20IOSkywalkPacketQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkQueueSet VTABLE_ENTRIES=42 =====
+===== CLASS=IOUserNetworkRxCompletionQueue VTABLE_ENTRIES=92 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002890cdc TARGET=0xffffff8002990cdc NAME=__ZN30IOUserNetworkRxCompletionQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkRxCompletionQueueCompat VTABLE_ENTRIES=92 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002879ef8 TARGET=0xffffff8002979ef8 NAME=__ZN36IOUserNetworkRxCompletionQueueCompat14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkRxSubmissionQueue VTABLE_ENTRIES=92 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x40000002891980 TARGET=0xffffff8002991980 NAME=__ZN30IOUserNetworkRxSubmissionQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x4000000289186e TARGET=0xffffff800299186e NAME=__ZN30IOUserNetworkRxSubmissionQueue16packetCompletionEP15IOSkywalkPacketP20IOSkywalkPacketQueuej
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkRxSubmissionQueueCompat VTABLE_ENTRIES=92 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x4000000287abb0 TARGET=0xffffff800297abb0 NAME=__ZN36IOUserNetworkRxSubmissionQueueCompat14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x4000000287aa9e TARGET=0xffffff800297aa9e NAME=__ZN36IOUserNetworkRxSubmissionQueueCompat16packetCompletionEP15IOSkywalkPacketP20IOSkywalkPacketQueuej
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkTxCompletionQueue VTABLE_ENTRIES=92 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x400000028904a8 TARGET=0xffffff80029904a8 NAME=__ZN30IOUserNetworkTxCompletionQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkTxCompletionQueueCompat VTABLE_ENTRIES=92 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x4000000287b410 TARGET=0xffffff800297b410 NAME=__ZN36IOUserNetworkTxCompletionQueueCompat14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x40000002880c1e TARGET=0xffffff8002980c1e NAME=__ZN20IOSkywalkPacketQueue16packetCompletionEP15IOSkywalkPacketPS_j
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkTxSubmissionQueue VTABLE_ENTRIES=93 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x4000000288f440 TARGET=0xffffff800298f440 NAME=__ZN30IOUserNetworkTxSubmissionQueue14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x400000028a4616 TARGET=0xffffff80029a4616 NAME=__ZN30IOUserNetworkTxSubmissionQueue16packetCompletionEP15IOSkywalkPacketP20IOSkywalkPacketQueuej
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+===== CLASS=IOUserNetworkTxSubmissionQueueCompat VTABLE_ENTRIES=93 =====
+RAW_INDEX=67 RAW_OFFSET=0x218 OBJECT_VPTR_OFFSET=0x208 RAW=0x40000002880bf0 TARGET=0xffffff8002980bf0 NAME=__ZNK20IOSkywalkPacketQueue12getFreeSpaceEv
+RAW_INDEX=68 RAW_OFFSET=0x220 OBJECT_VPTR_OFFSET=0x210 RAW=0x40000002880bdc TARGET=0xffffff8002980bdc NAME=__ZN20IOSkywalkPacketQueue15setPacketPollerEP21IOSkywalkPacketPoller
+RAW_INDEX=69 RAW_OFFSET=0x228 OBJECT_VPTR_OFFSET=0x218 RAW=0x4000000287c218 TARGET=0xffffff800297c218 NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat14performCommandEjPvm <-- CALL +0x218
+RAW_INDEX=70 RAW_OFFSET=0x230 OBJECT_VPTR_OFFSET=0x220 RAW=0x400000028a1982 TARGET=0xffffff80029a1982 NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat16packetCompletionEP15IOSkywalkPacketP20IOSkywalkPacketQueuej
+RAW_INDEX=71 RAW_OFFSET=0x238 OBJECT_VPTR_OFFSET=0x228 RAW=0x40000002880c3c TARGET=0xffffff8002980c3c NAME=__ZN20IOSkywalkPacketQueue16bufferCompletionEP21IOSkywalkPacketBufferPS_j
+RAW_INDEX=72 RAW_OFFSET=0x240 OBJECT_VPTR_OFFSET=0x230 RAW=0x40000002880860 TARGET=0xffffff8002980860 NAME=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+
+QUEUESET VIRTUAL DISPATCH:
+STAGE89_V5_QUEUESET_VIRTUAL_DISPATCH_SITES
+OBJECT_VPTR_OFFSET=0x218
+RAW_ZTV_INDEX=69
+===== OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff800298a89e NAME=__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE =====
+ffffff800298a933:      	mov	qword ptr [rbp - 0x58], r13
+ffffff800298a937:      	mov	rax, qword ptr [rdi]
+ffffff800298a93a:      	mov	ecx, 0x10
+ffffff800298a93f:      	mov	esi, 0x10000
+ffffff800298a944:      	lea	rdx, [rbp - 0x58]
+ffffff800298a948:      	call	qword ptr [rax + 0x218]
+ffffff800298a94e:      	mov	eax, dword ptr [rbp - 0x58]
+ffffff800298a951:      	dec	eax
+ffffff800298a953:      	cmp	eax, 0x3
+ffffff800298a956:      	ja	0xffffff800298a978 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0xda>
+ffffff800298a958:      	movsxd	rcx, dword ptr [r12 + 4*rax]
+ffffff800298a95c:      	add	rcx, r12
+===== OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff800298a89e NAME=__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE =====
+ffffff800298ab08:      	mov	rax, qword ptr [r13]
+ffffff800298ab0c:      	mov	ecx, 0x10
+ffffff800298ab11:      	mov	rdi, r13
+ffffff800298ab14:      	mov	esi, 0x10000
+ffffff800298ab19:      	lea	rdx, [rbp - 0x58]
+ffffff800298ab1d:      	call	qword ptr [rax + 0x218]
+ffffff800298ab23:      	mov	eax, dword ptr [rbp - 0x58]
+ffffff800298ab26:      	dec	eax
+ffffff800298ab28:      	cmp	eax, 0x3
+ffffff800298ab2b:      	ja	0xffffff800298aba8 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x30a>
+ffffff800298ab2d:      	lea	rcx, [rip + 0x100] ## 0xffffff800298ac34 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x396>
+ffffff800298ab34:      	movsxd	rax, dword ptr [rcx + 4*rax]
+===== OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff800298ac44 NAME=__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem =====
+ffffff800298ac8d:      	mov	rdi, qword ptr [r14 + 8*r15]
+ffffff800298ac91:      	mov	rax, qword ptr [rdi]
+ffffff800298ac94:      	mov	ecx, 0x10
+ffffff800298ac99:      	mov	esi, 0x10000
+ffffff800298ac9e:      	lea	rdx, [rbp - 0x50]
+ffffff800298aca2:      	call	qword ptr [rax + 0x218]
+ffffff800298aca8:      	cmp	dword ptr [rbp - 0x50], 0x1
+ffffff800298acac:      	jne	0xffffff800298accf <__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem+0x8b>
+ffffff800298acae:      	mov	rdi, qword ptr [r14 + 8*r15]
+ffffff800298acb2:      	call	0xffffff8002980bb0 <__ZNK20IOSkywalkPacketQueue15getServiceClassEv>
+ffffff800298acb7:      	xor	ecx, ecx
+ffffff800298acb9:      	cmp	dword ptr [rcx + r13], eax
+DISPATCH_SITE_COUNT=3
+
+TARGET KERNEL WMM TABLE:
+STAGE89_V5_TARGET_KERNEL_WMM_TABLE_REVALIDATION
+TABLE_ADDRESS=0xffffff80029a6e40
+EXPECTED_BYTES=80001000000000000001380080014000
+ACTUAL_BYTES=80001000000000000001380080014000
+EXPECTED_VALUES=0x00100080,0x00000000,0x00380100,0x00400180
+RESULT=PASS
+
+METHOD INDEX:
+STAGE89_V5_METHOD_INDEX
+METHODS_DISASSEMBLED=26
+METHOD=0xffffff80022dcfce OWNER=com.apple.iokit.IO80211Family NAME=__ZN21IO80211InfraInterface30registerInfraEthernetInterfaceEPN26IOSkywalkEthernetInterface16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_ INSTRUCTIONS=177
+METHOD=0xffffff800297c956 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat21_SetServiceClass_ImplEj INSTRUCTIONS=6
+METHOD=0xffffff800297f170 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZNK22IOSkywalkNetworkPacket15getServiceClassEv INSTRUCTIONS=5
+METHOD=0xffffff800297fbf0 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN17IOUserNetworkWLAN23_DeleteLogicalLink_ImplEP24IOUserNetworkLogicalLink INSTRUCTIONS=4
+METHOD=0xffffff8002980bb0 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZNK20IOSkywalkPacketQueue15getServiceClassEv INSTRUCTIONS=5
+METHOD=0xffffff8002980cfa OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN20IOSkywalkPacketQueue11setQueueSetEP17IOSkywalkQueueSet INSTRUCTIONS=6
+METHOD=0xffffff8002981b54 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN25IOSkywalkNetworkInterface26deregisterNetworkInterfaceEj INSTRUCTIONS=85
+METHOD=0xffffff8002981d7e OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEPP20IOSkywalkPacketQueuejP25IOSkywalkPacketBufferPoolS7_j INSTRUCTIONS=81
+METHOD=0xffffff8002981eac OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN25IOSkywalkNetworkInterface24registerNetworkInterfaceEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j INSTRUCTIONS=143
+METHOD=0xffffff80029820d8 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN25IOSkywalkNetworkInterface39registerNetworkInterfaceWithLogicalLinkEPKNS_16RegistrationInfoEP20IOSkywalkLogicalLinkP25IOSkywalkPacketBufferPoolS6_j INSTRUCTIONS=4
+METHOD=0xffffff80029820e2 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN25IOSkywalkNetworkInterface17deleteLogicalLinkEP20IOSkywalkLogicalLink INSTRUCTIONS=36
+METHOD=0xffffff8002982414 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN25IOSkywalkNetworkInterface20getServiceClassIndexEjPj INSTRUCTIONS=13
+METHOD=0xffffff80029839c6 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN20IOSkywalkLogicalLink18createWithQueueSetEPP17IOSkywalkQueueSetmPNS_17LogicalLinkInfo_sE INSTRUCTIONS=44
+METHOD=0xffffff8002983a48 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN20IOSkywalkLogicalLink16initWithQueueSetEPP17IOSkywalkQueueSetmPNS_17LogicalLinkInfo_sE INSTRUCTIONS=90
+METHOD=0xffffff800298a81c OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN17IOSkywalkQueueSet16createWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE INSTRUCTIONS=44
+METHOD=0xffffff800298a89e OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE INSTRUCTIONS=253
+METHOD=0xffffff800298ac44 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem INSTRUCTIONS=67
+METHOD=0xffffff800298b03a OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN17IOSkywalkQueueSet13setQueueSetIdEy INSTRUCTIONS=6
+METHOD=0xffffff800298b05a OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN17IOSkywalkQueueSet20getQueueSetNexusInfoEv INSTRUCTIONS=5
+METHOD=0xffffff800298fb1a OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN30IOUserNetworkTxSubmissionQueue21_SetServiceClass_ImplEj INSTRUCTIONS=6
+METHOD=0xffffff80029936fc OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat23_SetServiceClass_InvokeE5IORPCP15OSMetaClassBasePFiS2_jE INSTRUCTIONS=33
+METHOD=0xffffff8002993bd4 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN36IOUserNetworkTxSubmissionQueueCompat16_SetServiceClassEjPFiP15OSMetaClassBase5IORPCE INSTRUCTIONS=81
+METHOD=0xffffff800299b0b8 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN17IOUserNetworkWLAN25_DeleteLogicalLink_InvokeE5IORPCP15OSMetaClassBasePFiS2_P24IOUserNetworkLogicalLinkE INSTRUCTIONS=50
+METHOD=0xffffff800299ba64 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN17IOUserNetworkWLAN18_DeleteLogicalLinkEP24IOUserNetworkLogicalLinkPFiP15OSMetaClassBase5IORPCE INSTRUCTIONS=77
+METHOD=0xffffff800299e9d0 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN30IOUserNetworkTxSubmissionQueue23_SetServiceClass_InvokeE5IORPCP15OSMetaClassBasePFiS2_jE INSTRUCTIONS=33
+METHOD=0xffffff800299eea8 OWNER=com.apple.iokit.IOSkywalkFamily NAME=__ZN30IOUserNetworkTxSubmissionQueue16_SetServiceClassEjPFiP15OSMetaClassBase5IORPCE INSTRUCTIONS=81
+
+INTERPRETATION:
+A user-network SetServiceClass RPC method is not proof that IOSkywalkPacketQueue::mServiceClass at offset 0xb8 is written. The actual field writer or a verified factory/constructor argument must be demonstrated for every required queue class.
+A packet-level service-class API is not treated as a queue-object service-class setter.
+Vtable entries provide a static target mapping; the runtime target depends on the concrete queue subclass vptr.
+
+SAFETY:
+No source file changed. No build, signing, install, load, hardware test, SIP/NVRAM change or OpenCore modification was performed.
+The four-pointer array and registration call remain absent. Preserve the known-good legacy RTL88WiFi setup.
