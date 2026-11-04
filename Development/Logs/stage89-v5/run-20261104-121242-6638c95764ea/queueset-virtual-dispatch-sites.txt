@@ -1,0 +1,43 @@
+STAGE89_V5_QUEUESET_VIRTUAL_DISPATCH_SITES
+OBJECT_VPTR_OFFSET=0x218
+RAW_ZTV_INDEX=69
+===== OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff800298a89e NAME=__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE =====
+ffffff800298a933:      	mov	qword ptr [rbp - 0x58], r13
+ffffff800298a937:      	mov	rax, qword ptr [rdi]
+ffffff800298a93a:      	mov	ecx, 0x10
+ffffff800298a93f:      	mov	esi, 0x10000
+ffffff800298a944:      	lea	rdx, [rbp - 0x58]
+ffffff800298a948:      	call	qword ptr [rax + 0x218]
+ffffff800298a94e:      	mov	eax, dword ptr [rbp - 0x58]
+ffffff800298a951:      	dec	eax
+ffffff800298a953:      	cmp	eax, 0x3
+ffffff800298a956:      	ja	0xffffff800298a978 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0xda>
+ffffff800298a958:      	movsxd	rcx, dword ptr [r12 + 4*rax]
+ffffff800298a95c:      	add	rcx, r12
+===== OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff800298a89e NAME=__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE =====
+ffffff800298ab08:      	mov	rax, qword ptr [r13]
+ffffff800298ab0c:      	mov	ecx, 0x10
+ffffff800298ab11:      	mov	rdi, r13
+ffffff800298ab14:      	mov	esi, 0x10000
+ffffff800298ab19:      	lea	rdx, [rbp - 0x58]
+ffffff800298ab1d:      	call	qword ptr [rax + 0x218]
+ffffff800298ab23:      	mov	eax, dword ptr [rbp - 0x58]
+ffffff800298ab26:      	dec	eax
+ffffff800298ab28:      	cmp	eax, 0x3
+ffffff800298ab2b:      	ja	0xffffff800298aba8 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x30a>
+ffffff800298ab2d:      	lea	rcx, [rip + 0x100] ## 0xffffff800298ac34 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x396>
+ffffff800298ab34:      	movsxd	rax, dword ptr [rcx + 4*rax]
+===== OWNER=com.apple.iokit.IOSkywalkFamily METHOD=0xffffff800298ac44 NAME=__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem =====
+ffffff800298ac8d:      	mov	rdi, qword ptr [r14 + 8*r15]
+ffffff800298ac91:      	mov	rax, qword ptr [rdi]
+ffffff800298ac94:      	mov	ecx, 0x10
+ffffff800298ac99:      	mov	esi, 0x10000
+ffffff800298ac9e:      	lea	rdx, [rbp - 0x50]
+ffffff800298aca2:      	call	qword ptr [rax + 0x218]
+ffffff800298aca8:      	cmp	dword ptr [rbp - 0x50], 0x1
+ffffff800298acac:      	jne	0xffffff800298accf <__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem+0x8b>
+ffffff800298acae:      	mov	rdi, qword ptr [r14 + 8*r15]
+ffffff800298acb2:      	call	0xffffff8002980bb0 <__ZNK20IOSkywalkPacketQueue15getServiceClassEv>
+ffffff800298acb7:      	xor	ecx, ecx
+ffffff800298acb9:      	cmp	dword ptr [rcx + r13], eax
+DISPATCH_SITE_COUNT=3
