@@ -1,0 +1,39 @@
+STAGE89_V6_NATIVE_SOURCE_QUEUE_CONSTRUCTION_MODEL
+SOURCE_FILE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+SOURCE_SHA256=9ee96d066731bad2844daaae2a117b77fc6b140de7601f1fe4797256a33014fd
+CALL_COUNT|IOSkywalkTxSubmissionQueue::withPoolAndServiceClass|0
+CALL_COUNT|IOSkywalkTxSubmissionQueue::withPool|1
+CALL_COUNT|IOSkywalkTxCompletionQueue::withPool|1
+CALL_COUNT|IOSkywalkRxSubmissionQueue::withPool|1
+CALL_COUNT|IOSkywalkRxCompletionQueue::withPool|1
+SOURCE_LINE|27|_txSubmission = nullptr;
+SOURCE_LINE|28|_txCompletion = nullptr;
+SOURCE_LINE|29|_rxSubmission = nullptr;
+SOURCE_LINE|30|_rxCompletion = nullptr;
+SOURCE_LINE|39|if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+SOURCE_LINE|40|_rxSubmission || _rxCompletion)
+SOURCE_LINE|70|_txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+SOURCE_LINE|73|if (!_txSubmission)
+SOURCE_LINE|76|_txCompletion = IOSkywalkTxCompletionQueue::withPool(
+SOURCE_LINE|79|if (!_txCompletion)
+SOURCE_LINE|82|_rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+SOURCE_LINE|85|if (!_rxSubmission)
+SOURCE_LINE|88|_rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+SOURCE_LINE|91|if (!_rxCompletion)
+SOURCE_LINE|107|if (_rxCompletion) {
+SOURCE_LINE|108|_rxCompletion->release();
+SOURCE_LINE|109|_rxCompletion = nullptr;
+SOURCE_LINE|111|if (_rxSubmission) {
+SOURCE_LINE|112|_rxSubmission->release();
+SOURCE_LINE|113|_rxSubmission = nullptr;
+SOURCE_LINE|115|if (_txCompletion) {
+SOURCE_LINE|116|_txCompletion->release();
+SOURCE_LINE|117|_txCompletion = nullptr;
+SOURCE_LINE|119|if (_txSubmission) {
+SOURCE_LINE|120|_txSubmission->release();
+SOURCE_LINE|121|_txSubmission = nullptr;
+SOURCE_LINE|136|return _allocated && _txPool && _rxPool && _txSubmission &&
+SOURCE_LINE|137|_txCompletion && _rxSubmission && _rxCompletion;
+SOURCE_LINE|153|if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+WMM_FACTORY_CURRENTLY_USED=NO
+NATIVE_TX_SUBMISSION_FACTORY_CALLS=1
