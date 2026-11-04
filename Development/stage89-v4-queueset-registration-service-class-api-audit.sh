@@ -84,7 +84,8 @@ TOOLS="https://raw.githubusercontent.com/watchthelight-labs/WTLKcAbi/cea28a52976
 # WMM table, immutable source baseline, parser and the two relevant SDK headers.
 pin v3g-audit-summary.txt 2604feb2bc3e8afbab3c04c91aabb539b35d412e "$BASE/stage89-v3g/run-20261104-095346-ff21baeb0c03/audit-summary.txt"
 pin stage62-method-status.txt f0d6e3bdfbc265453ed21e17df397f392f825625 "$BASE/stage62/run-20261102-161032-d54adc732d87/method-status.txt"
-pin stage62-queueset-crosswalk.txt c4e5106ebb95dc3807c9591d1d676c48fefceb1d "$BASE/stage88/run-20261102-205135-b4f4ddc49298/wmm-service-class-table.txt"
+pin stage62-queueset-crosswalk.txt ef25fdc28340d6e6bc18d6e80ff011b7df334a51 "$BASE/stage62/run-20261102-161032-d54adc732d87/queueset-info-word-crosswalk.txt"
+pin stage62-logical-link-crosswalk.txt 71802f2540ca976ffe5fe0b43b3f2b406fdb88fd "$BASE/stage62/run-20261102-161032-d54adc732d87/logical-link-info-crosswalk.txt"
 pin stage88-wmm-table.txt c4e5106ebb95dc3807c9591d1d676c48fefceb1d "$BASE/stage88/run-20261102-205135-b4f4ddc49298/wmm-service-class-table.txt"
 pin stage73-source-fingerprint.txt 74a6ab39ea5e273d1788d17ea8c99895a1fd86df "$BASE/stage73/run-20261102-180530-d711b3944b06/source-tree-fingerprint.txt"
 pin sdk-network-interface.h 64502f9c9f27b9a10ff7c1f4f45b52787554f174 "https://raw.githubusercontent.com/$REPO/main/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h"
