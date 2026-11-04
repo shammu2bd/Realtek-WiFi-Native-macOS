@@ -155,10 +155,11 @@ for name,pat in role_patterns.items():
 
 # QueueSet first groups every supplied queue by performCommand type code 1..4.
 qi=methods["queueset_init"]
-grouping_proven=("cmp eax, 0x3" in qi and "dec eax" in qi and
-                 "mov qword ptr [r14 + 0x20]" in qi and
-                 "mov qword ptr [r14 + 0x30]" in qi and
-                 "mov qword ptr [r14 + 0x38]" in qi)
+grouping_proven=(bool(re.search(r"\\bcmp\\s+eax,\\s*0x3",qi)) and
+                 bool(re.search(r"\\bdec\\s+eax",qi)) and
+                 bool(re.search(r"\\bmov\\s+qword ptr \\[r14 \\+ 0x20\\]",qi)) and
+                 bool(re.search(r"\\bmov\\s+qword ptr \\[r14 \\+ 0x30\\]",qi)) and
+                 bool(re.search(r"\\bmov\\s+qword ptr \\[r14 \\+ 0x38\\]",qi)))
 # The WMM predicate is invoked with role-1 queue array and its count.
 wmm_call=("mov\trdi, qword ptr [r14 + 0x20]" in qi and
           "mov\trsi, qword ptr [r14 + 0x60]" in qi and
