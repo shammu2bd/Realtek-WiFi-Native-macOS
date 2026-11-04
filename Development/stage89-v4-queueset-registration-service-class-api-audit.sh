@@ -219,6 +219,15 @@ for (owner,a),m in methods.items():
  method_rows.append("METHOD=0x%016x OWNER=%s NAMES=%s INSTRUCTIONS=%d"%(a,owner,";".join(m["names"]),len(m["ins"])))
 pathlib.Path(out,"registration-method-index.txt").write_text("\n".join(method_rows)+"\n")
 
+# Preserve every selected instruction stream in one compact, uploadable evidence file.
+disassembly_rows=["STAGE89_V4_REGISTRATION_QUEUESET_METHOD_DISASSEMBLY"]
+for (owner,a),m in methods.items():
+ disassembly_rows.append("===== OWNER=%s ADDRESS=0x%016x SYMBOLS=%s ====="%(owner,a,";".join(m["names"])))
+ disassembly_rows.extend(m["ins"])
+disassembly_rows.append("METHODS_DISASSEMBLED="+str(len(methods)))
+pathlib.Path(out,"registration-path-method-disassembly.txt").write_text("\n".join(disassembly_rows)+"\n")
+
+
 # Capture the PacketQueue vtable slot used by QueueSet::initWithQueues
 # (0x218-byte slot = index 67) to classify its indirect queue command.
 vt_rows=["STAGE89_V4_PACKET_QUEUE_VTABLE_SLOT_CROSSWALK"]
@@ -361,6 +370,7 @@ FILES=(
  "source-tree-revalidation.txt"
  "kernel-service-class-symbol-candidates.txt"
  "registration-method-index.txt"
+ "registration-path-method-disassembly.txt"
  "registration-path-field-access-scan.txt"
  "sdk-service-class-api-inventory.txt"
  "source-service-class-api-inventory.txt"
