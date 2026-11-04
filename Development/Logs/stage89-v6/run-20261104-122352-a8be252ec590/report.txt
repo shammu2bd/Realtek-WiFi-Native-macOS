@@ -1,0 +1,208 @@
+========== STAGE 89 V6 — NATIVE QUEUE FACTORY / WMM CONTRACT AUDIT ==========
+STAGE89_V6_NATIVE_QUEUE_FACTORY_WMM_CONTRACT_AUDIT
+VERSION=STAGE89_V6_20261104
+TARGET=macOS_15.8.1_24H32_x86_64
+SOURCE_TREE_REVALIDATION=PASS
+TARGET_KERNEL_WMM_TABLE_REVALIDATION=PASS
+NATIVE_QUEUE_CLASSES_CAPTURED=4
+NATIVE_QUEUE_METHODS_DISASSEMBLED=YES
+TX_WITH_POOL_AND_SERVICE_CLASS_SYMBOL_PRESENT=NO_IN_CAPTURED_METHODS
+TX_SUBMISSION_INIT_METHOD_PRESENT=YES
+TX_SUBMISSION_0xB8_WRITER_SEEN=YES
+NATIVE_QUEUE_PERFORMCOMMAND_METHODS_IN_DISASSEMBLY=25
+SOURCE_CURRENTLY_USES_EXPLICIT_TX_SERVICE_CLASS_FACTORY=NO
+SOURCE_CURRENTLY_HAS_ONE_TX_SUBMISSION_OBJECT=YES
+FOUR_QUEUE_ROLE_AND_WMM_CARDINALITY_MODEL=REQUIRES_REVIEW
+FOUR_QUEUE_POINTER_ARRAY=NOT_IMPLEMENTED
+CALLBACK_HANDOFFS_STILL_MISSING=4
+IMPLEMENTATION_AUTHORIZATION=NO
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+SIGNING=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+RESULT=REVIEW_REQUIRED
+ACTIVATION_GATE=BLOCKED
+NEXT=Interpret native performCommand results together with QueueSet initWithQueues cardinality and WMM predicate. Only then decide the required number and type of queue objects; do not change source in this audit.
+
+CURRENT SOURCE QUEUE MODEL:
+STAGE89_V6_NATIVE_SOURCE_QUEUE_CONSTRUCTION_MODEL
+SOURCE_FILE=src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+SOURCE_SHA256=9ee96d066731bad2844daaae2a117b77fc6b140de7601f1fe4797256a33014fd
+CALL_COUNT|IOSkywalkTxSubmissionQueue::withPoolAndServiceClass|0
+CALL_COUNT|IOSkywalkTxSubmissionQueue::withPool|1
+CALL_COUNT|IOSkywalkTxCompletionQueue::withPool|1
+CALL_COUNT|IOSkywalkRxSubmissionQueue::withPool|1
+CALL_COUNT|IOSkywalkRxCompletionQueue::withPool|1
+SOURCE_LINE|27|_txSubmission = nullptr;
+SOURCE_LINE|28|_txCompletion = nullptr;
+SOURCE_LINE|29|_rxSubmission = nullptr;
+SOURCE_LINE|30|_rxCompletion = nullptr;
+SOURCE_LINE|39|if (_txPool || _rxPool || _txSubmission || _txCompletion ||
+SOURCE_LINE|40|_rxSubmission || _rxCompletion)
+SOURCE_LINE|70|_txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+SOURCE_LINE|73|if (!_txSubmission)
+SOURCE_LINE|76|_txCompletion = IOSkywalkTxCompletionQueue::withPool(
+SOURCE_LINE|79|if (!_txCompletion)
+SOURCE_LINE|82|_rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
+SOURCE_LINE|85|if (!_rxSubmission)
+SOURCE_LINE|88|_rxCompletion = IOSkywalkRxCompletionQueue::withPool(
+SOURCE_LINE|91|if (!_rxCompletion)
+SOURCE_LINE|107|if (_rxCompletion) {
+SOURCE_LINE|108|_rxCompletion->release();
+SOURCE_LINE|109|_rxCompletion = nullptr;
+SOURCE_LINE|111|if (_rxSubmission) {
+SOURCE_LINE|112|_rxSubmission->release();
+SOURCE_LINE|113|_rxSubmission = nullptr;
+SOURCE_LINE|115|if (_txCompletion) {
+SOURCE_LINE|116|_txCompletion->release();
+SOURCE_LINE|117|_txCompletion = nullptr;
+SOURCE_LINE|119|if (_txSubmission) {
+SOURCE_LINE|120|_txSubmission->release();
+SOURCE_LINE|121|_txSubmission = nullptr;
+SOURCE_LINE|136|return _allocated && _txPool && _rxPool && _txSubmission &&
+SOURCE_LINE|137|_txCompletion && _rxSubmission && _rxCompletion;
+SOURCE_LINE|153|if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
+WMM_FACTORY_CURRENTLY_USED=NO
+NATIVE_TX_SUBMISSION_FACTORY_CALLS=1
+
+
+NATIVE QUEUE FACTORY / PERFORMCOMMAND FACTS:
+STAGE89_V6_NATIVE_QUEUE_FACTORY_AND_PERFORMCOMMAND_FACTS
+CLASS=IOSkywalkTxSubmissionQueue CAPTURED_METHODS=5
+METHOD=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_jj ADDRESS=0xffffff8002983ff0
+METHOD=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PP15IOSkywalkPacketjPvESB_jj ADDRESS=0xffffff800298409e
+METHOD=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j ADDRESS=0xffffff80029840c2
+METHOD=__ZN26IOSkywalkTxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_j ADDRESS=0xffffff80029840e8
+RELEVANT_INSN=ffffff8002984160:      	mov	dword ptr [rbx + 0xb8], r15d
+METHOD=__ZN26IOSkywalkTxSubmissionQueue14performCommandEjPvm ADDRESS=0xffffff8002984f90
+RELEVANT_INSN=ffffff8002984f90:      	lea	eax, [rsi - 0x10000]
+CLASS=IOSkywalkTxCompletionQueue CAPTURED_METHODS=3
+METHOD=__ZN26IOSkywalkTxCompletionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j ADDRESS=0xffffff8002989dec
+METHOD=__ZN26IOSkywalkTxCompletionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j ADDRESS=0xffffff8002989e96
+METHOD=__ZN26IOSkywalkTxCompletionQueue14performCommandEjPvm ADDRESS=0xffffff800298a276
+RELEVANT_INSN=ffffff800298a286:      	cmp	esi, 0x10000
+CLASS=IOSkywalkRxSubmissionQueue CAPTURED_METHODS=4
+METHOD=__ZN26IOSkywalkRxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j ADDRESS=0xffffff8002985724
+METHOD=__ZN26IOSkywalkRxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j ADDRESS=0xffffff80029857d4
+METHOD=__ZN26IOSkywalkRxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j ADDRESS=0xffffff80029857ee
+METHOD=__ZN26IOSkywalkRxSubmissionQueue14performCommandEjPvm ADDRESS=0xffffff8002985dba
+RELEVANT_INSN=ffffff8002985dc2:      	cmp	esi, 0x10000
+CLASS=IOSkywalkRxCompletionQueue CAPTURED_METHODS=3
+METHOD=__ZN26IOSkywalkRxCompletionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j ADDRESS=0xffffff80029863e0
+METHOD=__ZN26IOSkywalkRxCompletionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j ADDRESS=0xffffff800298648a
+METHOD=__ZN26IOSkywalkRxCompletionQueue14performCommandEjPvm ADDRESS=0xffffff8002986b24
+RELEVANT_INSN=ffffff8002986b34:      	cmp	esi, 0x10000
+QUEUESET_METHOD=__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE
+QUEUESET_INSN=ffffff800298a8ae:      	jb	0xffffff800298ac20 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x382>
+QUEUESET_INSN=ffffff800298a8b7:      	je	0xffffff800298ac20 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x382>
+QUEUESET_INSN=ffffff800298a8c0:      	je	0xffffff800298ac20 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x382>
+QUEUESET_INSN=ffffff800298a8d3:      	sub	rsp, 0x48
+QUEUESET_INSN=ffffff800298a8e2:      	mov	qword ptr [rbp - 0x38], rax
+QUEUESET_INSN=ffffff800298a8f1:      	mov	qword ptr [rbp - 0x48], rax
+QUEUESET_INSN=ffffff800298a8fd:      	mov	qword ptr [rbp - 0x30], rax
+QUEUESET_INSN=ffffff800298a909:      	mov	qword ptr [rbp - 0x40], rax
+QUEUESET_INSN=ffffff800298a918:      	lea	r12, [rip + 0x305] ## 0xffffff800298ac24 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x386>
+QUEUESET_INSN=ffffff800298a929:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+QUEUESET_INSN=ffffff800298a93f:      	mov	esi, 0x10000
+QUEUESET_INSN=ffffff800298a948:      	call	qword ptr [rax + 0x218]
+QUEUESET_INSN=ffffff800298a953:      	cmp	eax, 0x3
+QUEUESET_INSN=ffffff800298a95f:      	mov	rax, qword ptr [rbp - 0x38]
+QUEUESET_INSN=ffffff800298a965:      	mov	rax, qword ptr [rbp - 0x48]
+QUEUESET_INSN=ffffff800298a96b:      	mov	rax, qword ptr [rbp - 0x30]
+QUEUESET_INSN=ffffff800298a971:      	mov	rax, qword ptr [rbp - 0x40]
+QUEUESET_INSN=ffffff800298a981:      	mov	rax, qword ptr [rbp - 0x38]
+QUEUESET_INSN=ffffff800298a98b:      	mov	r15, qword ptr [rbp - 0x48]
+QUEUESET_INSN=ffffff800298a996:      	cmp	rax, 0x4
+QUEUESET_INSN=ffffff800298a99c:      	mov	rax, qword ptr [rbp - 0x38]
+QUEUESET_INSN=ffffff800298a9cc:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+QUEUESET_INSN=ffffff800298aa17:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+QUEUESET_INSN=ffffff800298aa1d:      	mov	rax, qword ptr [rbp - 0x30]
+QUEUESET_INSN=ffffff800298aa4b:      	mov	qword ptr [r14 + 0x30], rax
+QUEUESET_INSN=ffffff800298aa52:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+QUEUESET_INSN=ffffff800298aa58:      	mov	rax, qword ptr [rbp - 0x40]
+QUEUESET_INSN=ffffff800298aa86:      	mov	qword ptr [r14 + 0x38], rax
+QUEUESET_INSN=ffffff800298aa8d:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+QUEUESET_INSN=ffffff800298aac0:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+QUEUESET_INSN=ffffff800298aacb:      	je	0xffffff800298abc7 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x329>
+QUEUESET_INSN=ffffff800298aae7:      	mov	qword ptr [rbp - 0x30], 0x0
+QUEUESET_INSN=ffffff800298ab14:      	mov	esi, 0x10000
+QUEUESET_INSN=ffffff800298ab1d:      	call	qword ptr [rax + 0x218]
+QUEUESET_INSN=ffffff800298ab28:      	cmp	eax, 0x3
+QUEUESET_INSN=ffffff800298ab2b:      	ja	0xffffff800298aba8 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x30a>
+QUEUESET_INSN=ffffff800298ab2d:      	lea	rcx, [rip + 0x100] ## 0xffffff800298ac34 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x396>
+QUEUESET_INSN=ffffff800298ab3d:      	mov	rax, qword ptr [rbp - 0x38]
+QUEUESET_INSN=ffffff800298ab48:      	jae	0xffffff800298aba8 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x30a>
+QUEUESET_INSN=ffffff800298ab50:      	shl	rax, 0x3
+QUEUESET_INSN=ffffff800298ab5c:      	jmp	0xffffff800298aba5 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x307>
+QUEUESET_INSN=ffffff800298ab62:      	shl	r15, 0x3
+QUEUESET_INSN=ffffff800298ab66:      	add	r15, qword ptr [r14 + 0x30]
+QUEUESET_INSN=ffffff800298ab70:      	jmp	0xffffff800298aba5 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x307>
+QUEUESET_INSN=ffffff800298ab72:      	mov	rax, qword ptr [rbp - 0x30]
+QUEUESET_INSN=ffffff800298ab7a:      	shl	rax, 0x3
+QUEUESET_INSN=ffffff800298ab7e:      	add	rax, qword ptr [r14 + 0x38]
+QUEUESET_INSN=ffffff800298ab82:      	mov	qword ptr [rbp - 0x30], rcx
+QUEUESET_INSN=ffffff800298ab86:      	jmp	0xffffff800298aba5 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x307>
+QUEUESET_INSN=ffffff800298ab8c:      	mov	rcx, qword ptr [rbp - 0x48]
+QUEUESET_INSN=ffffff800298ab93:      	jae	0xffffff800298aba8 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x30a>
+QUEUESET_INSN=ffffff800298ab99:      	shl	rax, 0x3
+QUEUESET_INSN=ffffff800298abce:      	je	0xffffff800298abe1 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x343>
+QUEUESET_INSN=ffffff800298abdf:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+QUEUESET_INSN=ffffff800298abed:      	mov	qword ptr [r14 + 0x40], rax
+QUEUESET_INSN=ffffff800298abf4:      	je	0xffffff800298ac10 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x372>
+QUEUESET_INSN=ffffff800298abfa:      	mov	rcx, qword ptr [rbp - 0x38]
+QUEUESET_INSN=ffffff800298ac03:      	mov	rcx, qword ptr [rbp - 0x40]
+QUEUESET_INSN=ffffff800298ac09:      	mov	byte ptr [rax + 0x4], cl
+QUEUESET_INSN=ffffff800298ac0e:      	jmp	0xffffff800298ac12 <__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE+0x374>
+QUEUESET_INSN=ffffff800298ac12:      	add	rsp, 0x48
+QUEUESET_INSN=ffffff800298ac43:      	call	qword ptr [rbp + 0x48]
+QUEUESET_METHOD=__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem
+QUEUESET_INSN=ffffff800298ac5f:      	mov	qword ptr [rbp - 0x30], rax
+QUEUESET_INSN=ffffff800298ac65:      	mov	qword ptr [rbp - 0x38], rax
+QUEUESET_INSN=ffffff800298ac69:      	mov	qword ptr [rbp - 0x40], rax
+QUEUESET_INSN=ffffff800298ac85:      	mov	qword ptr [rbp - 0x48], r12
+QUEUESET_INSN=ffffff800298ac99:      	mov	esi, 0x10000
+QUEUESET_INSN=ffffff800298aca2:      	call	qword ptr [rax + 0x218]
+QUEUESET_INSN=ffffff800298acb2:      	call	0xffffff8002980bb0 <__ZNK20IOSkywalkPacketQueue15getServiceClassEv>
+QUEUESET_INSN=ffffff800298acbf:      	add	rcx, 0x4
+QUEUESET_INSN=ffffff800298accb:      	inc	dword ptr [rbp + rcx - 0x40]
+QUEUESET_INSN=ffffff800298acd5:      	jne	0xffffff800298ac85 <__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem+0x41>
+QUEUESET_INSN=ffffff800298acd9:      	cmp	dword ptr [rbp + 4*rcx - 0x40], 0x1
+QUEUESET_INSN=ffffff800298ace7:      	cmp	rcx, 0x3
+QUEUESET_INSN=ffffff800298acfe:      	cmp	rcx, qword ptr [rbp - 0x30]
+
+
+NATIVE QUEUE METHOD INDEX:
+STAGE89_V6_NATIVE_QUEUE_METHOD_INDEX
+METHODS_DISASSEMBLED=21
+METHOD=0xffffff8002980860 INSTRUCTIONS=56 SYMBOL=__ZN20IOSkywalkPacketQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjjP8OSObjectPFvS3_zEPv
+METHOD=0xffffff8002980bb0 INSTRUCTIONS=5 SYMBOL=__ZNK20IOSkywalkPacketQueue15getServiceClassEv
+METHOD=0xffffff8002980c5a INSTRUCTIONS=6 SYMBOL=__ZN20IOSkywalkPacketQueue14performCommandEjPvm
+METHOD=0xffffff8002983ff0 INSTRUCTIONS=55 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_jj
+METHOD=0xffffff800298409e INSTRUCTIONS=13 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PP15IOSkywalkPacketjPvESB_jj
+METHOD=0xffffff80029840c2 INSTRUCTIONS=15 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j
+METHOD=0xffffff80029840e8 INSTRUCTIONS=78 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_j
+METHOD=0xffffff8002984f90 INSTRUCTIONS=61 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue14performCommandEjPvm
+METHOD=0xffffff8002985724 INSTRUCTIONS=56 SYMBOL=__ZN26IOSkywalkRxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j
+METHOD=0xffffff80029857d4 INSTRUCTIONS=11 SYMBOL=__ZN26IOSkywalkRxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j
+METHOD=0xffffff80029857ee INSTRUCTIONS=80 SYMBOL=__ZN26IOSkywalkRxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j
+METHOD=0xffffff8002985dba INSTRUCTIONS=34 SYMBOL=__ZN26IOSkywalkRxSubmissionQueue14performCommandEjPvm
+METHOD=0xffffff80029863e0 INSTRUCTIONS=54 SYMBOL=__ZN26IOSkywalkRxCompletionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j
+METHOD=0xffffff800298648a INSTRUCTIONS=50 SYMBOL=__ZN26IOSkywalkRxCompletionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j
+METHOD=0xffffff8002986b24 INSTRUCTIONS=45 SYMBOL=__ZN26IOSkywalkRxCompletionQueue14performCommandEjPvm
+METHOD=0xffffff8002989dec INSTRUCTIONS=54 SYMBOL=__ZN26IOSkywalkTxCompletionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j
+METHOD=0xffffff8002989e96 INSTRUCTIONS=57 SYMBOL=__ZN26IOSkywalkTxCompletionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PP15IOSkywalkPacketjPvES8_j
+METHOD=0xffffff800298a276 INSTRUCTIONS=39 SYMBOL=__ZN26IOSkywalkTxCompletionQueue14performCommandEjPvm
+METHOD=0xffffff800298a81c INSTRUCTIONS=44 SYMBOL=__ZN17IOSkywalkQueueSet16createWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE
+METHOD=0xffffff800298a89e INSTRUCTIONS=253 SYMBOL=__ZN17IOSkywalkQueueSet14initWithQueuesEPP20IOSkywalkPacketQueuemPNS_14QueueSetInfo_sE
+METHOD=0xffffff800298ac44 INSTRUCTIONS=67 SYMBOL=__ZN17IOSkywalkQueueSet22isWMMSchedModelCapableEPP20IOSkywalkPacketQueuem
+
+
+INTERPRETATION:
+Stage V5 directly observed SetServiceClass writes in IOUserNetworkTxSubmissionQueue implementations, but the native driver uses IOSkywalkTxSubmissionQueue and the IOSkywalk* queue family. These are not conflated.
+Stage V6 records the native queue factory, initWithPool and performCommand implementations so that the WMM predicate can be interpreted for the actual classes used by the driver.
+The existing source presently creates one each of TX submission, TX completion, RX submission and RX completion. That observed source layout is not, by itself, proof it meets QueueSet WMM scheduling cardinality.
+
+SAFETY:
+No source file changed. No build, signing, install, load, hardware test, SIP/NVRAM change or OpenCore modification.
