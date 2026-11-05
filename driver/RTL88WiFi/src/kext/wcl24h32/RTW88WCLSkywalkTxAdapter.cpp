@@ -118,7 +118,8 @@ mbuf_t RTW88WCLSkywalkTxAdapter::copyPacketToMbuf(
     return mbuf;
 }
 
-IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
+IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(
+    IOSkywalkPacket *packet, uint8_t accessCategory, uint8_t tid)
 {
     if (!packet)
         return kIOReturnBadArgument;
@@ -128,14 +129,14 @@ IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
     /* The call-level retain covers every non-ticket exit and prevents a
      * concurrent owner release from destroying this adapter mid-copy. */
     retain();
-    const IOReturn result = submitPacketEntered(packet);
+    const IOReturn result = submitPacketEntered(packet, accessCategory, tid);
     _submissionGate.leaveSubmission();
     release();
     return result;
 }
 
 IOReturn RTW88WCLSkywalkTxAdapter::submitPacketEntered(
-    IOSkywalkPacket *packet)
+    IOSkywalkPacket *packet, uint8_t accessCategory, uint8_t tid)
 {
     if (!_radio || !_txPool)
         return kIOReturnNotReady;
@@ -163,7 +164,8 @@ IOReturn RTW88WCLSkywalkTxAdapter::submitPacketEntered(
      * ticket. backendCompletion() never releases OSObjects or calls Skywalk. */
     retain();
     const UInt32 backendResult = _radio->outputPacketWithCompletion(
-        mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
+        mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket,
+        accessCategory, tid);
 
     /* outputPacketWithCompletion consumes the mbuf and invokes exactly one
      * terminal callback, including synchronous drops. A reserved ticket is
@@ -206,13 +208,19 @@ uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
         const bool transmitted = TicketPool::transmitted(ticket);
 
         /* The sink runs in deferred context and borrows the retained packet.
-         * It must finish any Skywalk queue handoff before returning. */
-        if (packet)
-            sink(packet, transmitted, context);
+         * true means the Skywalk completion queue accepted the handoff. On
+         * false, restore the ticket to Completed and keep both packet and
+         * per-ticket adapter retains so the caller can retry on a later pass.
+         * Stop this drain pass to avoid spinning on the same failed ticket.
+         */
+        if (!packet || !sink(packet, transmitted, context)) {
+            if (!TicketPool::retry(ticket))
+                IOLog("rtl88wifi-wcl: completion ticket retry transition failed; retaining ownership\\n");
+            break;
+        }
 
         TicketPool::finish(ticket);
-        if (packet)
-            packet->release();
+        packet->release();
         release(); // matching per-ticket adapter retain
         ++drained;
     }
