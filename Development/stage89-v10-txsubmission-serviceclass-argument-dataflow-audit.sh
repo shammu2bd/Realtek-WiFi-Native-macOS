@@ -124,6 +124,7 @@ checks={
  "action_only_wrapper_pushes_minus_one":has(action_only,r"push\s+-0x1"),
  "all_three_factory_symbols_are_present":all(x in symbols for x in ["2983ff0","298409e","29840c2"]),
  "initializer_symbol_is_present": "29840e8" in symbols,
+ "target_has_no_exact_named_public_factory": "TARGET_EXACT_NAMED_WITHPOOLANDSERVICECLASS_SYMBOLS=0" in cross,
 }
 service_class_dataflow=all(checks[k] for k in [
  "main_factory_loads_final_stack_u32_into_edx",
@@ -145,7 +146,7 @@ wrapper_map=all(checks[k] for k in [
 # has two UInt32s before owner and two UInt32s after refCon (options, then serviceClass).
 has_explicit_header="withPoolAndServiceClass" in header
 header_line=next((x.strip() for x in header.splitlines() if "withPoolAndServiceClass" in x),"")
-target_main_symbol=next((x for x in cross.splitlines() if x.startswith("TARGET_FACTORY_ADDRESS=0x2983ff0")),"")
+target_main_symbol=next((x for x in cross.splitlines() if x.startswith("TARGET_FACTORY_ADDRESS=0xffffff8002983ff0")),"")
 header_target_direct_compat=False
 summary=[
  "STAGE89_V10_TXSUBMISSION_SERVICECLASS_ARGUMENT_DATAFLOW",
@@ -162,7 +163,7 @@ summary=[
  "ACTION_ONLY_WRAPPER_DEFAULT_SERVICE_CLASS=0xffffffff" if checks["action_only_wrapper_pushes_minus_one"] and service_class_dataflow else "ACTION_ONLY_DEFAULT_SERVICE_CLASS=NOT_PROVEN",
  "SDK_WITHPOOLANDSERVICECLASS_DECLARATION_PRESENT="+("YES" if has_explicit_header else "NO"),
  "SDK_DECLARATION_DIRECTLY_MATCHES_TARGET_WITHPOOL_ABI="+("YES" if header_target_direct_compat else "NO"),
- "SDK_TARGET_API_MAPPING=NOT_PROVEN_TARGET_METHOD_NAME_AND_ARGUMENT_ORDER_DIFFER",
+ "SDK_TARGET_API_MAPPING=NOT_EXPOSED_AS_MATCHING_OVERLOAD_IN_VENDORED_HEADER",
  "TARGET_SERVICE_CLASS_TRAILING_ARGUMENT_ORDER=AFTER_OPTIONS",
  "FOUR_TX_SUBMISSION_QUEUES_REQUIRED_BY_WMM=YES",
  "CURRENT_SOURCE_TX_SUBMISSION_QUEUES=1",
