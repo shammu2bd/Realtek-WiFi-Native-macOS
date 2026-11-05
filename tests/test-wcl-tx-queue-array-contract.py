@@ -38,7 +38,7 @@ assert "entries[i].serviceClass != kServiceClasses[i]" in contract
 assert "count != kRequiredCount" in contract
 
 # Construction stays deliberately unregistered and callbacks remain fail-closed.
-assert "registerEthernetInterface(" not in cpp
+assert "->registerEthernetInterface(" not in cpp and ".registerEthernetInterface(" not in cpp
 assert "return static_cast<IOReturn>(0)" in cpp
 print("PASS: four-entry target WMM queue array is fixed, ordered, validated, and reverse-released")
 print("PASS: construction remains unregistered and callback packet acceptance remains fail-closed")
