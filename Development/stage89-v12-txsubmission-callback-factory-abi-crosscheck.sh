@@ -131,9 +131,9 @@ header_has_const_action="const IOSkywalkPacket **" in header
 header_has_mutable_action=bool(re.search(r"(?<!const )IOSkywalkPacket\s*\*\*",header))
 
 # Target symbol spellings encode callback pointer constness and trailing integer count.
-main_symbol=next((x.split("SYMBOL=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff8002983ff0 " in x),"")
-mutable_symbol=next((x.split("SYMBOL=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff800298409e " in x),"")
-action_symbol=next((x.split("SYMBOL=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff80029840c2 " in x),"")
+main_symbol=next((x.split("MANGLED=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff8002983ff0 " in x and "MANGLED=" in x),"")
+mutable_symbol=next((x.split("MANGLED=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff800298409e " in x and "MANGLED=" in x),"")
+action_symbol=next((x.split("MANGLED=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff80029840c2 " in x and "MANGLED=" in x),"")
 def demangle(symbol):
  if not symbol: return "SYMBOL_NOT_FOUND"
  candidates=[symbol[1:] if symbol.startswith("_") else symbol, symbol[2:] if symbol.startswith("__") else symbol]
