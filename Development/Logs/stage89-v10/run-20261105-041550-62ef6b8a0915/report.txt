@@ -1,0 +1,65 @@
+========== STAGE 89 V10 — TXSUBMISSION SERVICE-CLASS ARGUMENT DATA-FLOW AUDIT ==========
+STAGE89_V10_TXSUBMISSION_SERVICECLASS_ARGUMENT_DATAFLOW
+VERSION=STAGE89_V10_20261105
+TARGET=macOS_15.8.1_24H32_x86_64
+V9_EVIDENCE_RUN=run-20261105-034922-6566f42c51aa
+V9_EVIDENCE_PINS=PASS
+CHECK_COUNT=17
+CHECKS_PASSED=17
+TARGET_FACTORY_FINAL_U32_IS_SERVICE_CLASS=PROVEN_BY_REGISTER_TO_FIELD_DATAFLOW
+TARGET_FACTORY_FIRST_U32_IS_CAPACITY=PROVEN
+TARGET_FACTORY_SECOND_U32_IS_QUEUE_ID=PROVEN
+MUTABLE_CALLBACK_WRAPPER_PRESERVES_SERVICE_CLASS=PROVEN
+ACTION_ONLY_WRAPPER_DEFAULT_SERVICE_CLASS=0xffffffff
+SDK_WITHPOOLANDSERVICECLASS_DECLARATION_PRESENT=YES
+SDK_DECLARATION_DIRECTLY_MATCHES_TARGET_WITHPOOL_ABI=NO
+SDK_TARGET_API_MAPPING=NOT_EXPOSED_AS_MATCHING_OVERLOAD_IN_VENDORED_HEADER
+TARGET_SERVICE_CLASS_TRAILING_ARGUMENT_ORDER=AFTER_OPTIONS
+FOUR_TX_SUBMISSION_QUEUES_REQUIRED_BY_WMM=YES
+CURRENT_SOURCE_TX_SUBMISSION_QUEUES=1
+QUEUE_POINTER_ARRAY=NOT_IMPLEMENTED
+NATIVE_REGISTRATION_CALLS=0
+CALLBACK_HANDOFFS_STILL_MISSING=4
+IMPLEMENTATION_AUTHORIZATION=NO
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+SIGNING=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+RESULT=REVIEW_REQUIRED
+ACTIVATION_GATE=BLOCKED
+NEXT=The target dataflow identifies a trailing service-class argument, but the vendored SDK header exposes no matching withPool overload. Continue read-only API-surface review; do not change the header or source until separately authorized.
+
+ARGUMENT DATA-FLOW CHECKS:
+main_factory_loads_final_stack_u32_into_edx=PASS
+main_factory_maps_first_u32_to_init_ecx=PASS
+main_factory_maps_second_u32_to_init_r8d=PASS
+main_factory_maps_options_from_stack_plus_18=PASS
+main_factory_passes_options_to_init=PASS
+main_factory_passes_refcon_to_init=PASS
+main_factory_calls_initializer_vtable_slot_2a8=PASS
+init_checks_ecx_capacity_minimum_8=PASS
+init_copies_edx_into_r15d=PASS
+init_persists_r15d_at_object_offset_b8=PASS
+init_preserves_second_u32_as_queue_id=PASS
+mutable_wrapper_forwards_final_stack_u32=PASS
+mutable_wrapper_forwards_options_with_bit_8=PASS
+action_only_wrapper_pushes_minus_one=PASS
+all_three_factory_symbols_are_present=PASS
+initializer_symbol_is_present=PASS
+target_has_no_exact_named_public_factory=PASS
+
+TARGET FACTORY TO INIT DATA-FLOW:
+The target withPool factory loads the final stack UInt32 from [rbp+0x20] into EDX before its virtual init call. The captured initializer moves EDX into R15D and stores R15D at object offset 0xb8. This register-to-field chain proves the trailing factory UInt32 supplies the TX submission service-class field.
+The factory maps its first UInt32 through ECX to the initializer, where ECX is checked against the minimum capacity threshold 8. It maps the second UInt32 through R8D, then the initializer preserves that value as the queue identifier while preparing the base initializer call.
+The mutable-callback wrapper forwards the final stack UInt32 and options (with option bit 0x8 added) to the main factory. The action-only wrapper instead pushes -1 as the final UInt32; because the same path writes that argument into the service-class field, its default class is 0xffffffff.
+
+SDK DECLARATION LIMITATION:
+The vendored SDK declares withPoolAndServiceClass with serviceClass before owner. The target kernel inventory contains no exact withPoolAndServiceClass symbol. The target withPool overload carrying service class is a different symbol shape: two UInt32 arguments before owner and two trailing UInt32 arguments after refCon (options followed by service class). Thus the semantic role of the final target argument is established, but a source-level direct call through the vendored SDK declaration is not established and must not be guessed.
+
+REMAINING STAGE89 BLOCKERS:
+The source still constructs one TX submission queue, not four; no stable four-pointer array exists; no registration call exists; and four TX/RX callback handoffs remain incomplete. Do not implement the queue array by inventing an API declaration, reorder SDK arguments, or write private object fields.
+
+SAFETY:
+Read-only analysis of pinned V9 target-kernel evidence. No source/header modification, build, signing, installation, load, hardware test, SIP/NVRAM or OpenCore modification occurred.
