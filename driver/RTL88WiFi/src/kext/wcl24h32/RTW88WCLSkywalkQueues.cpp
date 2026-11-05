@@ -8,6 +8,10 @@
 #include <IOKit/IOLib.h>
 #include <libkern/c++/OSMetaClass.h>
 
+static_assert(RTW88WCLTXQueueContract::kRequiredCount ==
+                  RTW88WCLSkywalkQueues::kTXSubmissionQueueCount,
+              "TX queue owner and contract counts must match");
+
 /* The bundled SDK declares PoolOptions before its public: label. Expose the
  * exact protected nested ABI type through a derived access shim; its layout is
  * unchanged and no shim object is instantiated. */
