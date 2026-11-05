@@ -46,6 +46,8 @@ for token in ("refCon != self", "ownsTXSubmissionQueue(queue)",
 assert "completeWithQueue" not in action
 assert "registerEthernetInterface(" not in action
 assert "addEventSource(" not in action
+assert "self->_txCallbackGate.enterSubmission()" in action
+assert "self->_txCallbackGate.leaveSubmission()" in action
 
 assert "kMaximumPacketsPerCallback = 16" in batch_h
 assert "if (!packets || packetCount == 0 || !submit)" in batch_h
@@ -119,11 +121,17 @@ assert "bool _txAdapterBoundToQueues = false;" in controller_h
 
 # Queue owner cannot be rolled back underneath the retained adapter context.
 assert "if (!adapter->isBoundToPool(_txPool))" in queues_cpp
+assert "_txCallbackGate.beginBind()" in queues_cpp
+assert "_txCallbackGate.finishBind()" in queues_cpp
+assert "_txCallbackGate.beginUnbind()" in queues_cpp
+assert "_txCallbackGate.canFinishUnbind()" in queues_cpp
+assert "_txCallbackGate.finishUnbind()" in queues_cpp
 assert "if (!adapter->isUnbound() || adapter->hasOutstandingCompletions())" in queues_cpp
 destroy_start = queues_cpp.index("void RTW88WCLSkywalkQueues::destroyQueues()")
 destroy_body = queues_cpp[destroy_start:]
 assert "if (_txAdapter)" in destroy_body
 assert "queue rollback deferred" in destroy_body
+assert "_txCallbackGate.isUnbound()" in destroy_body
 assert "bool RTW88WCLSkywalkQueues::resourcesReleased() const" in queues_cpp
 assert "return !_allocated && _acquisitionJournal.isEmpty() &&" in queues_cpp
 assert "_skywalkQueues->destroyQueues();" in controller_cpp
