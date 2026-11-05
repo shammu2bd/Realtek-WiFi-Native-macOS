@@ -14,6 +14,13 @@ static_assert(RTW88WCLTXQueueContract::kRequiredCount ==
                   RTW88WCLSkywalkQueues::kTXSubmissionQueueCount,
               "TX queue owner and contract counts must match");
 
+/* The queue callback is synchronous and bounded, so this route context can
+ * live on the callback stack while submitPrefix invokes submitTXPacket. */
+struct RTW88WCLTXSubmitContext {
+    RTW88WCLSkywalkTxAdapter *adapter;
+    RTW88WCLTXQueueContract::Route route;
+};
+
 /* The bundled SDK declares PoolOptions before its public: label. Expose the
  * exact protected nested ABI type through a derived access shim; its layout is
  * unchanged and no shim object is instantiated. */
@@ -377,10 +384,12 @@ IOReturn RTW88WCLSkywalkQueues::unbindTXAdapter(
  */
 int RTW88WCLSkywalkQueues::submitTXPacket(void *context, void *rawPacket)
 {
-    auto *adapter = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+    auto *submission = static_cast<RTW88WCLTXSubmitContext *>(context);
     auto *packet = static_cast<IOSkywalkPacket *>(rawPacket);
-    return adapter && packet
-               ? static_cast<int>(adapter->submitPacket(packet))
+    return submission && submission->adapter && packet
+               ? static_cast<int>(submission->adapter->submitPacket(
+                     packet, submission->route.accessCategory,
+                     submission->route.tid))
                : static_cast<int>(kIOReturnNotReady);
 }
 
@@ -401,15 +410,20 @@ UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(
     UInt32 accepted = 0;
     if (self->ownsTXSubmissionQueue(queue) && self->queuesAllocated() &&
         self->_txAdapter && packets && packetCount != 0) {
-        /* Accept only a bounded contiguous prefix. Each successful adapter
-         * call retains the Skywalk packet and reserves a completion ticket.
-         * On the first malformed/not-ready/full result, stop; that packet and
-         * the suffix remain Skywalk-owned. No completion or queue mutation is
-         * performed in this submit callback.
-         */
-        accepted = RTW88WCLTxSubmissionBatch::submitPrefix<IOSkywalkPacket>(
-            packets, packetCount, &RTW88WCLSkywalkQueues::submitTXPacket,
-            self->_txAdapter);
+        RTW88WCLTXSubmitContext submission = {};
+        submission.adapter = self->_txAdapter;
+        const UInt32 serviceClass = static_cast<UInt32>(queue->getServiceClass());
+        if (RTW88WCLTXQueueContract::routeForServiceClass(
+                serviceClass, &submission.route)) {
+            /* Preserve the calling queue's exact WMM class all the way into
+             * RTW88's AC ring and 802.11 QoS TID. Accept only a bounded
+             * contiguous prefix; the first rejected packet and suffix remain
+             * Skywalk-owned. No completion or queue mutation occurs here.
+             */
+            accepted = RTW88WCLTxSubmissionBatch::submitPrefix<IOSkywalkPacket>(
+                packets, packetCount, &RTW88WCLSkywalkQueues::submitTXPacket,
+                &submission);
+        }
     }
     self->_txCallbackGate.leaveSubmission();
     return accepted;
