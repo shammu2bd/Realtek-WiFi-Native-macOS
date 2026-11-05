@@ -3212,19 +3212,23 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
         return kIOReturnNotFound;
     }
     _missingBssRescanAttempted = false;
-    memcpy(&_targetBSS, target, sizeof(_targetBSS));
-    _joinTried.add(_targetBSS.bssid);
-    _curBssTim = false;
-    _rssi = target->rssi < 0 && target->rssi >= -127 ? target->rssi : -100;
+    RTW88BSS selected = {};
+    memcpy(&selected, target, sizeof(selected));
+    selected.next = nullptr;
+    _joinTried.add(selected.bssid);
+    const int16_t selectedRssi = selected.rssi;
     IOLockUnlock(_bssLock);
 
-    /* The reference IO80211 driver drives association from the Apple80211 AUTH/RSN request,
-     * not solely from security metadata recovered during scan.  Do the same:
-     * if Apple's association RSN IE selects CCMP-PSK, make that authoritative
-     * for this attempt.  This prevents a perfectly valid WPA2 network from
-     * being rejected just because our lightweight beacon parser missed or
-     * simplified its AKM/cipher list. */
-    applyAssocRsnOverride(externalSupplicant, pmk != nullptr, password && password[0]);
+    /* Publish the target descriptor and RSN override as one writer
+     * transaction so no transmitter can observe a partially updated AP. */
+    {
+        auto mutation = beginTxStateMutation();
+        memcpy(&_targetBSS, &selected, sizeof(_targetBSS));
+        _curBssTim = false;
+        _rssi = selectedRssi < 0 && selectedRssi >= -127 ? selectedRssi : -100;
+        applyAssocRsnOverride(externalSupplicant, pmk != nullptr, password && password[0]);
+        mutation.finish();
+    }
 
     if (_targetBSS.rsn_pmf_required) {
         IOLog("rtw88: connect refused: AP requires 802.11w PMF/BIP; this driver cannot negotiate it yet\n");
@@ -3253,17 +3257,21 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
     }
 
     _authAttempts = 0;
-    _externalSupplicant = externalSupplicant;
-    _pmkProvided = pmk != nullptr;
-    if (pmk) memcpy(_pmk, pmk, sizeof(_pmk));
-    strlcpy(_password, password ? password : "", sizeof(_password));
-    _wpa2 = RTW88Join::useWpa2(externalSupplicant,
-                               _targetBSS.cipher == WLAN_CIPHER_SUITE_CCMP,
-                               pmk != nullptr, _targetBSS.capabilities);
-    rtw88LogTargetSecurity(_targetBSS, _wpa2, pmk != nullptr);
-    _deauthReason = 0;
-    __atomic_store_n(&_connectCancelled, false, __ATOMIC_RELEASE);
-    _state = RTW88_STATE_AUTHENTICATING;
+    {
+        auto mutation = beginTxStateMutation();
+        _externalSupplicant = externalSupplicant;
+        _pmkProvided = pmk != nullptr;
+        if (pmk) memcpy(_pmk, pmk, sizeof(_pmk));
+        strlcpy(_password, password ? password : "", sizeof(_password));
+        _wpa2 = RTW88Join::useWpa2(externalSupplicant,
+                                   _targetBSS.cipher == WLAN_CIPHER_SUITE_CCMP,
+                                   pmk != nullptr, _targetBSS.capabilities);
+        rtw88LogTargetSecurity(_targetBSS, _wpa2, pmk != nullptr);
+        _deauthReason = 0;
+        __atomic_store_n(&_connectCancelled, false, __ATOMIC_RELEASE);
+        _state = RTW88_STATE_AUTHENTICATING;
+        mutation.finish();
+    }
 
     /* Run doAuthenticate on a background thread_call so the IOUserClient
      * call returns immediately.  The connect machinery (channel change,
@@ -5413,15 +5421,22 @@ IOReturn RTW88IEEE80211::setMACAddress(const uint8_t *mac)
     if (allZero || (mac[0] & 0x01))
         return kIOReturnBadArgument;
 
-    /* A station address must not change midway through auth/association. */
+    /* Serialize MAC/VIF writes against every transmitter, then recheck the
+     * state after admission closes. */
+    auto mutation = beginTxStateMutation();
     if (_state == RTW88_STATE_CONNECTED || _state == RTW88_STATE_ASSOCIATING ||
         _state == RTW88_STATE_AUTHENTICATING || _state == RTW88_STATE_HANDSHAKING ||
-        _state == RTW88_STATE_DISCONNECTING)
+        _state == RTW88_STATE_DISCONNECTING) {
+        mutation.finish();
         return kIOReturnBusy;
+    }
 
-    if (rtw88_set_station_mac(_hw, _vif, mac) != 0)
+    if (rtw88_set_station_mac(_hw, _vif, mac) != 0) {
+        mutation.finish();
         return kIOReturnError;
+    }
     memcpy(_macAddr, mac, ETH_ALEN);
+    mutation.finish();
 
     IOLog("rtw88: STA MAC programmed (locally-administered=%u)\n",
           (mac[0] & 0x02U) ? 1U : 0U);
