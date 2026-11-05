@@ -87,17 +87,23 @@ for token in ("#define IEEE80211_AC_VO 0", "#define IEEE80211_AC_VI 1",
 assert "queue = ac_to_hwq[q_mapping];" in rtw_tx
 assert "q_mapping = skb_get_queue_mapping(skb);" in rtw_tx
 
-# Four independently scheduled AC queues must not share QoS sequence numbers
-# or race the 48-bit CCMP packet-number generator.
-assert "uint16_t _dataSeq[8] = {};" in radio_h
-assert "uint16_t RTW88IEEE80211::nextDataSequence(uint8_t tid)" in radio_cpp
-assert "__atomic_fetch_add(&_dataSeq[tid], 1, __ATOMIC_RELAXED)" in radio_cpp
-assert "uint16_t RTW88IEEE80211::currentDataSequence(uint8_t tid) const" in radio_cpp
-assert "uint64_t _ccmpTxPn = 0;" in radio_h
-assert "__atomic_compare_exchange_n(&_ccmpTxPn" in radio_cpp
-assert "kCCMPTxPacketNumberMax" in radio_cpp
-assert "previous >= kCCMPTxPacketNumberMax" in radio_cpp
-assert "memset(_ccmpTxPn" not in radio_cpp
+# Four independently scheduled AC queues use the production atomic state
+# object for per-TID sequence spaces and one unique 48-bit CCMP PN allocator.
+sequence_h = (ROOT / "driver/RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp").read_text()
+assert '#include "RTW88TxSequenceNumbers.hpp"' in radio_h
+assert "RTW88TxSequenceNumbers _txSequenceNumbers;" in radio_h
+assert "return _txSequenceNumbers.nextNonQoS();" in radio_cpp
+assert "return _txSequenceNumbers.nextQoS(tid);" in radio_cpp
+assert "return _txSequenceNumbers.currentQoS(tid);" in radio_cpp
+assert "uint16_t _qos[kQoSTidCount] = {};" in sequence_h
+assert "__atomic_fetch_add(&_qos[tid], 1, __ATOMIC_RELAXED)" in sequence_h
+assert "__atomic_load_n(&_qos[tid], __ATOMIC_ACQUIRE)" in sequence_h
+assert "bool nextCCMP(uint64_t *packetNumber)" in sequence_h
+assert "__atomic_compare_exchange_n(&_ccmpPacketNumber" in sequence_h
+assert "previous >= kCCMPPacketNumberMax" in sequence_h
+assert "_txSequenceNumbers.nextCCMP(&packetNumber)" in radio_cpp
+assert "_txSequenceNumbers.resetQoS();" in radio_cpp
+assert "_txSequenceNumbers.resetCCMP();" in radio_cpp
 
 assert "kMaximumPacketsPerCallback = 16" in batch_h
 assert "if (!packets || packetCount == 0 || !submit)" in batch_h
