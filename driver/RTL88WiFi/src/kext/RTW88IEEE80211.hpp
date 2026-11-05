@@ -319,6 +319,9 @@ private:
     bool      installKey(struct ieee80211_key_conf **slot, bool pairwise,
                          uint8_t keyidx, uint32_t cipher,
                          const uint8_t *tk, uint8_t tk_len);
+    bool      installKeyUnderMutation(struct ieee80211_key_conf **slot, bool pairwise,
+                         uint8_t keyidx, uint32_t cipher, const uint8_t *tk,
+                         uint8_t tk_len, RTW88TxStateGate::MutationLease *mutation);
 
     bool      buildAssocReq(uint8_t *buf, uint32_t *len);
     bool      buildAuthReq(uint8_t *buf, uint32_t *len);
