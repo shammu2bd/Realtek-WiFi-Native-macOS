@@ -48,6 +48,7 @@ assert "registerEthernetInterface(" not in action
 assert "addEventSource(" not in action
 assert "self->_txCallbackGate.enterSubmission()" in action
 assert "self->_txCallbackGate.leaveSubmission()" in action
+assert action.index("self->_txCallbackGate.enterSubmission()") < action.index("ownsTXSubmissionQueue(queue)")
 
 assert "kMaximumPacketsPerCallback = 16" in batch_h
 assert "if (!packets || packetCount == 0 || !submit)" in batch_h
@@ -127,6 +128,12 @@ assert "_txCallbackGate.beginUnbind()" in queues_cpp
 assert "_txCallbackGate.canFinishUnbind()" in queues_cpp
 assert "_txCallbackGate.finishUnbind()" in queues_cpp
 assert "if (!adapter->isUnbound() || adapter->hasOutstandingCompletions())" in queues_cpp
+owner_unbind_start = queues_cpp.index("IOReturn RTW88WCLSkywalkQueues::unbindTXAdapter")
+owner_unbind_end = queues_cpp.index("/*\\n * The Sequoia", owner_unbind_start)
+owner_unbind = queues_cpp[owner_unbind_start:owner_unbind_end]
+assert owner_unbind.index("_txCallbackGate.beginUnbind()") < owner_unbind.index("_txCallbackGate.canFinishUnbind()")
+assert owner_unbind.index("_txCallbackGate.canFinishUnbind()") < owner_unbind.index("adapter->isUnbound()")
+assert "_txCallbackGate.isUnbound()" in queues_cpp[queues_cpp.index("bool RTW88WCLSkywalkQueues::hasOutstandingResources"):queues_cpp.index("bool RTW88WCLSkywalkQueues::txSubmissionQueuesValid")]
 destroy_start = queues_cpp.index("void RTW88WCLSkywalkQueues::destroyQueues()")
 destroy_body = queues_cpp[destroy_start:]
 assert "if (_txAdapter)" in destroy_body
