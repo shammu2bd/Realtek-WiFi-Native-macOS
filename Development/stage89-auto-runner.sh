@@ -10,6 +10,7 @@ BASE="$ROOT/run log/automation"
 STATE="$BASE/state"
 CACHE="$BASE/cache"
 LOCK="$BASE/lock"
+[[ -d "$ROOT/driver/RTL88WiFi/src" ]] || { echo "AUTOMATION_ERROR=project folder not found; no local folders created"; exit 1; }
 mkdir -p "$BASE/logs" "$STATE" "$CACHE"
 LOG="$BASE/logs/poll-$(date -u '+%Y%m%d-%H%M%S').log"
 exec > >(tee -a "$LOG") 2>&1
