@@ -34,7 +34,25 @@ assert "RTW88WCLTXQueueArrayContract.hpp" in cpp
 assert "RTW88WCLTXQueueContract::validate" in cpp
 assert "queue->getServiceClass()" in cpp
 assert "ownsTXSubmissionQueue(queue)" in cpp
-assert "for (UInt32 i = kTXSubmissionQueueCount; i > 0; --i)" in cpp
+
+# Stage90 replaces the former manual reverse-index release loop with a
+# typed acquisition journal. Verify journal-driven LIFO rollback and the
+# corresponding TX queue slot release/clear mapping instead.
+assert "RTW88WCLAcquisitionJournal::Journal _acquisitionJournal" in hpp
+assert "while (_acquisitionJournal.popRollback(&resource))" in cpp
+assert "releaseAcquiredResource(resource)" in cpp
+release_start = cpp.index("void RTW88WCLSkywalkQueues::releaseAcquiredResource")
+release_end = cpp.index("bool RTW88WCLSkywalkQueues::hasOutstandingResources", release_start)
+release = cpp[release_start:release_end]
+for token in (
+    "Resource::kTXSubmission3",
+    "Resource::kTXSubmission2",
+    "Resource::kTXSubmission1",
+    "Resource::kTXSubmission0",
+    "_txSubmissionQueues[index] = nullptr;",
+):
+    assert token in release
+
 assert "static_cast<UInt32>(RTW88WCLTXQueueContract::kServiceClasses[i])" in cpp
 assert "kIOSkywalkPacketTypeNetwork" in cpp
 assert "RTL88WiFi-WCL-TX" in cpp and "RTL88WiFi-WCL-RX" in cpp
@@ -62,4 +80,4 @@ assert "withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queu
 assert "WCL24H32_SKYWALK_QUEUES_OBJ" not in makefile.split("AIRPORT_ALL_OBJS :=", 1)[1].split("\n", 1)[0]
 assert "virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );" in rx_queue_sdk
 
-print("PASS: four Skywalk queue objects and pools are owned with rollback; callbacks remain fail-closed and unregistered")
+print("PASS: four Skywalk queue objects and pools are owned with journal rollback; callbacks remain fail-closed and unregistered")
