@@ -340,12 +340,12 @@ UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(
     return static_cast<UInt32>(0);
 }
 
-IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
+UInt32 RTW88WCLSkywalkQueues::txCompletionAction(
     OSObject *owner, IOSkywalkTxCompletionQueue *queue,
     IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
 {
     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
-    return static_cast<IOReturn>(0);
+    return static_cast<UInt32>(0);
 }
 
 IOReturn RTW88WCLSkywalkQueues::rxSubmissionAction(
