@@ -150,7 +150,7 @@ checks={
  "target_index_contains_tx_main_factory":"IOSkywalkTxSubmissionQueue8withPool" in idx,
  "target_index_has_no_named_explicit_factory_symbol":"IOSkywalkTxSubmissionQueue23withPoolAndServiceClass" not in idx,
  "target_index_inventories_action_only_wrapper":"IOSkywalkTxSubmissionQueue8withPool" in idx and "IOSkywalkTxSubmissionQueue12initWithPool" in idx,
- "target_action_only_default_sentinel_documented":"TARGET_ACTION_ONLY_DEFAULT_SERVICE_CLASS=0xffffffff" in cross,
+ "target_action_only_default_sentinel_documented":"TARGET_ACTION_ONLY_SERVICECLASS_DEFAULT=0xffffffff" in cross,
  "v12_crosswalk_records_sdk_target_mapping_not_found":"SDK_TO_TARGET_DIRECT_OVERLOAD_MAPPING=NOT_FOUND" in cross,
  "v12_crosswalk_records_main_target_arg_order":"TARGET_MAIN_FACTORY_ORDER=pool,capacity,queueId,owner,queryHandler,action,refCon,options,serviceClass" in v12summary,
  "v12_crosswalk_records_explicit_sdk_arg_order":"SDK_NAMED_WITHPOOLANDSERVICECLASS_ORDER=pool,capacity,queueId,serviceClass,owner,queryHandler,action,refCon,options" in v12summary,
