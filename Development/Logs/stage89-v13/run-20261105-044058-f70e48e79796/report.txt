@@ -1,0 +1,23 @@
+========== STAGE 89 V13 — TX SUBMISSION FACTORY ADAPTER FEASIBILITY ==========
+RUN=run-20261105-044058-f70e48e79796
+TARGET=macOS Sequoia 15.8.1 (24H32), x86_64, Intel Hackintosh, PCIe RTL8821CE
+SCOPE=Read-only assessment of whether the audited target TX submission factory can be called safely through the existing SDK declarations.
+CHECK_COUNT=13
+CHECKS_PASSED=12
+
+FINDINGS:
+1. The SDK exposes a query-handler/action withPool overload whose declared argument list ends with options, and a named withPoolAndServiceClass overload that places serviceClass before owner.
+2. The target primary factory evidence from V12 has the order pool, capacity, queueId, owner, queryHandler, action, refCon, options, serviceClass. This is not the same C++ declaration/mangled overload as either SDK declaration.
+3. The existing source calls the action-only SDK withPool overload. The audited target action-only wrapper supplies service class 0xffffffff, which does not satisfy the four WMM class requirement.
+4. The alternate mutable-packet callback wrapper is not declared by the SDK action typedef. Its option-bit behavior does not make it a safe substitute.
+5. No source-level adapter using only the existing SDK declarations is established by the pinned evidence. A cast, guessed private declaration, raw mangled-symbol call or private field write is not accepted as a safe adapter.
+
+DECISION:
+ADAPTER_FEASIBILITY=BLOCKED_PENDING_SEPARATE_ABI_REVIEW_AND_IMPLEMENTATION_AUTHORIZATION
+This is not permission to edit the SDK header or driver source. A follow-up must either prove an existing public thunk with exact symbol/calling convention or obtain explicit authorization for a separately reviewed ABI adapter.
+
+STAGE89 REMAINS OPEN:
+Four distinct TX submission queues, one per audited WMM class, and a stable ordered four-pointer array with count/uniqueness/order/lifetime tests are still absent. Native registration remains absent. Four callback handoffs remain incomplete. Stage90 is not unlocked.
+
+SAFETY:
+Source/header modification=NONE; build=NOT_RUN; signing=NOT_RUN; install=NOT_RUN; load=NOT_RUN; hardware test=NOT_RUN; OpenCore/SIP/NVRAM changes=NONE; known-good legacy kext/everyday EFI untouched.
