@@ -2752,7 +2752,11 @@ IOReturn RTW88IEEE80211::cmdAbortScan()
 IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
                                   uint32_t requestedCount)
 {
-    _awdlPreparedChannel = 0;
+    {
+        auto mutation = beginTxStateMutation();
+        _awdlPreparedChannel = 0;
+        mutation.finish();
+    }
     const bool connectedScan = (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);
     /* Associated scans are supported only through the bounded software scanner
      * below.  Authentication/association/disconnect transitions remain busy. */
@@ -3440,7 +3444,11 @@ void RTW88IEEE80211::connectTCFn(thread_call_param_t self, thread_call_param_t)
 
 void RTW88IEEE80211::doAuthenticate()
 {
-    _awdlPreparedChannel = 0;
+    {
+        auto mutation = beginTxStateMutation();
+        _awdlPreparedChannel = 0;
+        mutation.finish();
+    }
     if (authenticationCancelled() || !_powered || !_hw || !_vif) return;
     /* 1.0.2: with another node of this SSID still untried, give up on this one
      * after two silent attempts instead of three, then move on. */
