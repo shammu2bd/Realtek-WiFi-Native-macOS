@@ -1090,9 +1090,7 @@ IOReturn RTW88IEEE80211::setReceiveMulticast(bool active)
 
 IOReturn RTW88IEEE80211::setAWDLReceiveMode(bool active)
 {
-    /* Policy gate (1.0.2): do not enter AWDL receive mode, i.e. keep the
-     * normal BSSID/unicast RX filters instead of accepting every frame on the
-     * channel.  Reports success so IO80211 treats the interface as enabled. */
+    /* Policy gate (1.0.2): do not enter AWDL receive mode. */
     if (active && !_awdlRadioAllowed) {
         if (!_awdlPolicyLogged) {
             _awdlPolicyLogged = true;
@@ -1101,11 +1099,19 @@ IOReturn RTW88IEEE80211::setAWDLReceiveMode(bool active)
         }
         return kIOReturnSuccess;
     }
-    if (!_hw || !_hw->ops || !_hw->ops->configure_filter)
-        return kIOReturnNotReady;
 
-    if (!active && _awdlOffChannel)
+    /* If disabling while off-channel, restore the infrastructure channel
+     * before changing receive policy. restoreSTAChannelAfterAWDL owns its own
+     * writer and sends the AP null-data notification after releasing it. */
+    if (!active)
         restoreSTAChannelAfterAWDL();
+
+    auto mutation = beginTxStateMutation();
+    if (!_hw || !_hw->ops || !_hw->ops->configure_filter) {
+        mutation.finish();
+        return kIOReturnNotReady;
+    }
+
     _awdlReceiveMode = active;
     if (!active) {
         _awdlChannel = 0;
@@ -1113,16 +1119,15 @@ IOReturn RTW88IEEE80211::setAWDLReceiveMode(bool active)
         _awdlOffChannel = false;
     }
 
-    /* AWDL's virtual MAC is not programmed as the primary hardware address.
-     * FIF_OTHER_BSS maps to Realtek BIT_AAP (accept all physical addresses),
-     * allowing direct AWDL unicast frames to reach our software classifier.
-     * Preserve multicast reception while AWDL is active. */
-    // Accepting a second destination MAC is insufficient: AWDL uses its own
-    // BSSID too. Clear the hardware BSSID checks through the rtw88 filter API.
-    unsigned int changed = FIF_OTHER_BSS | FIF_ALLMULTI | FIF_BCN_PRBRESP_PROMISC;
-    unsigned int flags = active ? (FIF_OTHER_BSS | FIF_ALLMULTI | FIF_BCN_PRBRESP_PROMISC)
-                                : (_receiveMulticast ? FIF_ALLMULTI : 0);
-    if (_powered) _hw->ops->configure_filter(_hw, changed, &flags, 0);
+    unsigned int changed =
+        FIF_OTHER_BSS | FIF_ALLMULTI | FIF_BCN_PRBRESP_PROMISC;
+    unsigned int flags = active ?
+        (FIF_OTHER_BSS | FIF_ALLMULTI | FIF_BCN_PRBRESP_PROMISC) :
+        (_receiveMulticast ? FIF_ALLMULTI : 0);
+    if (_powered)
+        _hw->ops->configure_filter(_hw, changed, &flags, 0);
+    mutation.finish();
+
     IOLog("rtw88: AWDL receive mode %s flags=0x%x\n",
           active ? "enabled" : "disabled", flags);
     return kIOReturnSuccess;
@@ -1130,7 +1135,11 @@ IOReturn RTW88IEEE80211::setAWDLReceiveMode(bool active)
 
 void RTW88IEEE80211::setAWDLAddress(const uint8_t *mac)
 {
-    if (mac) memcpy(_awdlAddress, mac, sizeof(_awdlAddress));
+    if (!mac)
+        return;
+    auto mutation = beginTxStateMutation();
+    memcpy(_awdlAddress, mac, sizeof(_awdlAddress));
+    mutation.finish();
 }
 
 bool RTW88IEEE80211::canTransmitAWDL() const
@@ -1142,43 +1151,57 @@ bool RTW88IEEE80211::canTransmitAWDL() const
 
 void RTW88IEEE80211::restoreSTAChannelAfterAWDL()
 {
-    if (!_awdlOffChannel) return;
+    bool notifyAP = false;
+    {
+        auto mutation = beginTxStateMutation();
+        if (!_awdlOffChannel) {
+            mutation.finish();
+            return;
+        }
 
-    /* If association disappeared while AWDL owned the PHY, there is no AP
-     * channel to restore.  Just clear the ownership latch. */
-    if (!_powered || !_hw || !_vif || !associatedVisible() ||
-        __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED || !_targetBSS.channel) {
-        _awdlOffChannel = false;
-        _awdlPreparedChannel = 0;
-        return;
-    }
+        /* Close every submit queue before touching the shared channel
+         * definition or the VIF's hardware timeslice state. */
+        if (!_powered || !_hw || !_vif || !associatedVisible() ||
+            __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED ||
+            !_targetBSS.channel) {
+            _awdlOffChannel = false;
+            _awdlPreparedChannel = 0;
+            mutation.finish();
+            return;
+        }
 
-    struct ieee80211_channel *home = nullptr;
-    for (int b = 0; b < NL80211_NUM_BANDS && !home; ++b) {
-        struct ieee80211_supported_band *band = _hw->wiphy ? _hw->wiphy->bands[b] : nullptr;
-        if (!band) continue;
-        for (int i = 0; i < band->n_channels; ++i) {
-            if (band->channels[i].hw_value == _targetBSS.channel) {
-                home = &band->channels[i];
-                home->band = band->band;
-                break;
+        struct ieee80211_channel *home = nullptr;
+        for (int b = 0; b < NL80211_NUM_BANDS && !home; ++b) {
+            struct ieee80211_supported_band *band =
+                _hw->wiphy ? _hw->wiphy->bands[b] : nullptr;
+            if (!band) continue;
+            for (int i = 0; i < band->n_channels; ++i) {
+                if (band->channels[i].hw_value == _targetBSS.channel) {
+                    home = &band->channels[i];
+                    home->band = band->band;
+                    break;
+                }
             }
         }
-    }
-    if (!home) {
+        if (!home) {
+            _awdlOffChannel = false;
+            _awdlPreparedChannel = 0;
+            mutation.finish();
+            return;
+        }
+
+        setConnectedChandef(home);
+        rtw88_restore_connected_hw_timeslice(_hw, _vif, _targetBSS.bssid);
         _awdlOffChannel = false;
         _awdlPreparedChannel = 0;
-        return;
+        notifyAP = true;
+        mutation.finish();
     }
 
-    setConnectedChandef(home);
-    rtw88_restore_connected_hw_timeslice(_hw, _vif, _targetBSS.bssid);
-    _awdlOffChannel = false;
-    _awdlPreparedChannel = 0;
-
-    /* Tell the AP it may release buffered frames now that the single PHY is
-     * back on the infrastructure channel. */
-    (void)txNullFunc(false);
+    /* The AP null-data notification is itself a TX operation, so it happens
+     * only after the channel writer releases admission. */
+    if (notifyAP)
+        (void)txNullFunc(false);
 }
 
 IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
@@ -4834,10 +4857,18 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
     }
 }
 
-bool RTW88IEEE80211::txNullFunc(bool powerSave)
+bool RTW88IEEE80211::txNullFunc(
+    bool powerSave, RTW88TxStateGate::TransmitLease *existingLease)
 {
-    auto txLease = _txStateGate.tryEnterTransmit();
-    if (!txLease || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta)
+    RTW88TxStateGate::TransmitLease localLease;
+    if (!existingLease) {
+        localLease = _txStateGate.tryEnterTransmit();
+        if (!localLease)
+            return false;
+    } else if (!*existingLease) {
+        return false;
+    }
+    if (!_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta)
         return false;
 
     static const uint16_t IEEE80211_STYPE_NULLFUNC = 0x0040;
