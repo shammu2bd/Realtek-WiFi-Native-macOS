@@ -348,7 +348,8 @@ private:
     /* A-MPDU BlockAck (aggregation) negotiation */
     bool      htAllowed() const;   /* HT/VHT/A-MPDU usable on this link? */
     void      startTxAggregation();
-    void      sendAddbaRequest(uint8_t tid);
+    void      sendAddbaRequest(uint8_t tid,
+                               RTW88TxStateGate::TransmitLease *existingLease = nullptr);
     void      sendAddbaResponse(uint8_t tid, uint8_t dialog,
                                 uint16_t req_param, uint16_t ba_timeout,
                                 uint16_t status = 0);
@@ -383,6 +384,7 @@ private:
                           uint8_t accessCategory = 2,
                           uint8_t tid = 0,
                           bool protectEapol = false,
+                          bool allowHandshakeEapol = false,
                           RTW88TxStateGate::TransmitLease *existingLease = nullptr);
     bool      tryDeliverAWDLDataFrame(struct sk_buff *skb);
     void      deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
