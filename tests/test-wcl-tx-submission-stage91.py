@@ -62,8 +62,9 @@ for token in ("kServiceClassBackground", "kServiceClassBestEffort",
               "kAccessCategoryVoice"):
     assert token in route_h
 assert "routeForServiceClass(" in action
-assert "submission.route.accessCategory" in queues_cpp
-assert "submission.route.tid" in queues_cpp
+assert "submission.route" in action
+assert "submission->route.accessCategory" in queues_cpp
+assert "submission->route.tid" in queues_cpp
 assert "submission->adapter->submitPacket(" in queues_cpp
 assert "uint8_t accessCategory" in adapter_h
 assert "uint8_t tid" in adapter_h
