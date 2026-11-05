@@ -2,6 +2,23 @@
 
 ## Stage-specific host test artifacts
 
+Stage 89's four-entry TX submission queue contract has a portable C++ test and
+a source-integration audit. Run them from the repository root:
+
+```sh
+c++ -std=c++17 -Wall -Wextra -Werror -O2 tests/wcl_tx_submission_queue_array_test.cpp -o /tmp/wcl-tx-submission-queue-array-test
+/tmp/wcl-tx-submission-queue-array-test
+python3 tests/test-wcl-tx-queue-array-contract.py
+python3 tests/test-wcl-skywalk-queues.py
+```
+
+These tests validate pointer-array cardinality, non-null entries, pairwise
+uniqueness, exact WMM class ordering, and source-side reverse release. They
+do not establish kernel factory linkage, object retention by a live QueueSet,
+registration safety, or RTL8821CE hardware behavior. See
+docs/24H32-TX-SUBMISSION-FACTORY-ABI.md for the target symbol crosswalk.
+
+
 The Stage 18 synthetic regression result is retained in [results/STAGE18-HOST-TEST-RESULTS.txt](results/STAGE18-HOST-TEST-RESULTS.txt). It is a host-side fixture result, not a target-Mac evidence dossier and not permission to activate the native datapath.
 
 These ten suites exercise the actual driver functions with host substitutes
