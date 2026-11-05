@@ -88,7 +88,7 @@ pin v14-report.txt 69545562fe6cb6e3a96107cac941800e79f79973 "$LOGS/stage89-v14/$
 pin v14-verdict.txt dd8cc80f287dbf9424fb3e46c67a7c50edcbb151 "$LOGS/stage89-v14/$PREDECESSOR/abi-adjudication-verdict.txt"
 pin v9-disassembly.txt a4c4cd35016228e79953b9991426f45bcdc69089 "$LOGS/stage89-v9/run-20261105-034922-6566f42c51aa/target-txsubmission-factory-disassembly.txt"
 pin v12-crosswalk.txt 5c1afc5bd220a8da52e9dc9d6bfed6b7b8da6831 "$LOGS/stage89-v12/run-20261105-043238-9923f409a010/callback-factory-api-crosswalk.txt"
-pin wmm-table.txt c4e5106ebb95dc3807c9591d1d676c48fefceb1 "$LOGS/stage88/run-20261102-205135-b4f4ddc49298/wmm-service-class-table.txt"
+pin wmm-table.txt c4e5106ebb95dc3807c9591d1d676c48fefceb1d "$LOGS/stage88/run-20261102-205135-b4f4ddc49298/wmm-service-class-table.txt"
 pin queue-array-lifetime.txt 394c0ed715d6d219ae3e9990fab26ed0d2d49054 "$LOGS/stage88/run-20261102-205135-b4f4ddc49298/queue-array-lifetime-abi.txt"
 pin queueset-crosswalk.txt ef25fdc28340d6e6bc18d6e80ff011b7df334a51 "$LOGS/stage62/run-20261102-161032-d54adc732d87/queueset-info-word-crosswalk.txt"
 python3 - "$OUT/v14-checks.txt" "$OUT/v14-report.txt" "$OUT/v14-verdict.txt" "$OUT/v9-disassembly.txt" "$OUT/v12-crosswalk.txt" <<'PYFIX'
