@@ -720,6 +720,13 @@ RTW88TxStateGate::MutationLease RTW88IEEE80211::beginTxStateMutation()
     }
 }
 
+void RTW88IEEE80211::setRadioState(RTW88State state)
+{
+    auto mutation = beginTxStateMutation();
+    __atomic_store_n(&_state, state, __ATOMIC_RELEASE);
+    mutation.finish();
+}
+
 void RTW88IEEE80211::clearKeys()
 {
     /* Close the controlled port before waiting for existing submitters. EAPOL
@@ -760,7 +767,7 @@ void RTW88IEEE80211::clearKeys()
     memset(_replayCtr, 0, sizeof(_replayCtr));
     memset(_installedM3ReplayCtr, 0, sizeof(_installedM3ReplayCtr));
     _txBAState.clear();
-    _associatedVisible = false;
+    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     if (_lock) IOLockLock(_lock);
     _txBaPending = false;
     _baRecovery.reset();
@@ -981,8 +988,10 @@ IOReturn RTW88IEEE80211::start()
     RTW88_STAGE("add_interface done");
 
 
+    setRadioState(RTW88_STATE_IDLE);
+
     _state = RTW88_STATE_IDLE;
-    _associatedVisible = false;
+    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
     RTW88_STAGE("IEEE80211::start complete — SUCCESS");
@@ -1018,8 +1027,8 @@ void RTW88IEEE80211::stop()
     if (_timer)
         _timer->cancelTimeout();
 
-    if ((_state == RTW88_STATE_CONNECTED ||
-         (_state == RTW88_STATE_SCANNING &&
+    if ((__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED ||
+         (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
           _scanReturnState == RTW88_STATE_CONNECTED)) && _powered)
         doDisconnect();
     else {
@@ -1027,7 +1036,7 @@ void RTW88IEEE80211::stop()
         releaseSta();
     }
 
-    if (_state == RTW88_STATE_SCANNING && _hw && _hw->ops && _hw->ops->cancel_hw_scan)
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING && _hw && _hw->ops && _hw->ops->cancel_hw_scan)
         _hw->ops->cancel_hw_scan(_hw, _vif);
 
     /* Close admission for every remaining TX kind (management and AWDL too)
@@ -1054,8 +1063,8 @@ void RTW88IEEE80211::stop()
     if (_pcidev) rtw_pci_remove(_pcidev);
     _rtwdev = nullptr;
     _hw     = nullptr;
-    _state  = RTW88_STATE_IDLE;
-    _associatedVisible = false;
+    setRadioState(RTW88_STATE_IDLE);
+    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
     mutation.finish();
@@ -1122,7 +1131,7 @@ bool RTW88IEEE80211::canTransmitAWDL() const
 {
     return _powered && _awdlReceiveMode && _hw && _hw->conf.chandef.chan &&
         _awdlChannel && _hw->conf.chandef.chan->hw_value == _awdlChannel &&
-        (_state == RTW88_STATE_IDLE || _state == RTW88_STATE_CONNECTED);
+        (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_IDLE || __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);
 }
 
 void RTW88IEEE80211::restoreSTAChannelAfterAWDL()
@@ -1131,8 +1140,8 @@ void RTW88IEEE80211::restoreSTAChannelAfterAWDL()
 
     /* If association disappeared while AWDL owned the PHY, there is no AP
      * channel to restore.  Just clear the ownership latch. */
-    if (!_powered || !_hw || !_vif || !_associatedVisible ||
-        _state != RTW88_STATE_CONNECTED || !_targetBSS.channel) {
+    if (!_powered || !_hw || !_vif || !associatedVisible() ||
+        __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED || !_targetBSS.channel) {
         _awdlOffChannel = false;
         _awdlPreparedChannel = 0;
         return;
@@ -1194,7 +1203,7 @@ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
 
     /* Same-channel AWDL needs no timeslice at all.  If a previous window left
      * us off-channel, return home first. */
-    if (_state == RTW88_STATE_CONNECTED && _associatedVisible &&
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED && associatedVisible() &&
         channel == _targetBSS.channel) {
         if (_awdlOffChannel) restoreSTAChannelAfterAWDL();
         return (_hw->conf.chandef.chan &&
@@ -1206,7 +1215,7 @@ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
      * inside a bounded common availability window.  Put the AP into PS before
      * retuning so it buffers unicast traffic, exactly like our working
      * connected software-scan path. */
-    if (_state == RTW88_STATE_CONNECTED && _associatedVisible) {
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED && associatedVisible()) {
         if (_awdlOffChannel && _hw->conf.chandef.chan == target)
             return kIOReturnSuccess;
         if (_awdlOffChannel)
@@ -1226,7 +1235,7 @@ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
     }
 
     /* A scan/auth/join owns the radio exclusively. */
-    if (_state != RTW88_STATE_IDLE)
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_IDLE)
         return kIOReturnBusy;
 
     if (_awdlPreparedChannel == channel && _hw->conf.chandef.chan == target &&
@@ -1334,10 +1343,10 @@ UInt32 RTW88IEEE80211::outputPacketWithCompletion(
         return kIOReturnOutputDropped;
     }
 
-    const bool connected = (_state == RTW88_STATE_CONNECTED) ||
-        (_state == RTW88_STATE_SCANNING &&
+    const bool connected = (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED) ||
+        (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
          _scanReturnState == RTW88_STATE_CONNECTED &&
-         (_manualScanChannelCount == 0 || _manualScanOnHomeChannel));
+         (__atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE) == 0 || __atomic_load_n(&_manualScanOnHomeChannel, __ATOMIC_ACQUIRE)));
     if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
         mbuf_freem(m);
         if (callback)
@@ -1400,9 +1409,9 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
     switch (stype) {
     case 0x0080: /* beacon */
     case 0x0050: /* probe response */
-        if (_state == RTW88_STATE_SCANNING)
+        if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING)
             processScanResult(skb);
-        else if (stype == 0x0080 && _state == RTW88_STATE_CONNECTED &&
+        else if (stype == 0x0080 && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED &&
                  !_curBssTim && skb->len >= sizeof(struct ieee80211_hdr_3addr) &&
                  memcmp(((struct ieee80211_hdr_3addr *)skb->data)->addr3,
                         _targetBSS.bssid, 6) == 0)
@@ -1412,7 +1421,7 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
         break;
 
     case 0x00B0: /* auth */
-        if (_state == RTW88_STATE_AUTHENTICATING && !authenticationCancelled()) {
+        if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_AUTHENTICATING && !authenticationCancelled()) {
             uint16_t status = 0;
             if (rtw88AuthResponse(skb->data, skb->len, _macAddr, _targetBSS.bssid, &status)) {
                 if (status == 0) {
@@ -1432,14 +1441,14 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
         break;
 
     case 0x0010: /* assoc response */
-        if (_state == RTW88_STATE_ASSOCIATING)
+        if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_ASSOCIATING)
             processAssocResponse(skb);
         else
             kfree_skb(skb);
         break;
 
     case 0x0030: /* reassoc response */
-        if (_state == RTW88_STATE_ASSOCIATING)
+        if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_ASSOCIATING)
             processAssocResponse(skb);
         else
             kfree_skb(skb);
@@ -1453,9 +1462,9 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
             kfree_skb(skb);
             break;
         }
-        if (_state == RTW88_STATE_CONNECTED ||
-            _state == RTW88_STATE_HANDSHAKING ||
-            (_state == RTW88_STATE_SCANNING &&
+        if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED ||
+            __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_HANDSHAKING ||
+            (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
              _scanReturnState == RTW88_STATE_CONNECTED)) {
             struct ieee80211_hdr_3addr *h3 =
                 (struct ieee80211_hdr_3addr *)skb->data;
@@ -1479,11 +1488,11 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
                       (stype == 0x00C0) ? "deauth" : "disassoc", reason);
             }
             const bool lostLinkDuringConnectedScan =
-                (_state == RTW88_STATE_SCANNING &&
+                (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
                  _scanReturnState == RTW88_STATE_CONNECTED);
             clearKeys();
             rxBaTeardownAll();
-            _associatedVisible = false;
+            __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
             if (lostLinkDuringConnectedScan) {
                 /* Keep SCANNING latched until the worker exits.  Resetting the
                  * state here made scanDone() return early while the worker
@@ -1491,7 +1500,7 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
                 _manualScanAbort = true;
                 _scanReturnState = RTW88_STATE_IDLE;
             } else {
-                _state = RTW88_STATE_IDLE;
+                setRadioState(RTW88_STATE_IDLE);
                 _scanReturnState = RTW88_STATE_IDLE;
                 _scanPartial = false;
             }
@@ -1530,7 +1539,7 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
                                          rxChannel);
         }
 
-        if (_state == RTW88_STATE_CONNECTED) {
+        if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED) {
             struct ieee80211_hdr_3addr *h3 =
                 (struct ieee80211_hdr_3addr *)skb->data;
             const uint8_t *b = skb->data + sizeof(*h3);
@@ -1881,9 +1890,9 @@ void RTW88IEEE80211::processScanResult(struct sk_buff *skb)
 
 void RTW88IEEE80211::processRxData(struct sk_buff *skb)
 {
-    bool connected = (_state == RTW88_STATE_CONNECTED) ||
-                     (_state == RTW88_STATE_HANDSHAKING) ||
-                     (_state == RTW88_STATE_SCANNING &&
+    bool connected = (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED) ||
+                     (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_HANDSHAKING) ||
+                     (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
                       _scanReturnState == RTW88_STATE_CONNECTED);
     if (!connected) {
         kfree_skb(skb);
@@ -2045,8 +2054,8 @@ void RTW88IEEE80211::deliverDataFrame(struct sk_buff *skb)
 
         /* Check for EAPOL during handshake (never aggregated). */
         if (ethertype == ETH_P_PAE && !_externalSupplicant &&
-            (_state == RTW88_STATE_HANDSHAKING || _state == RTW88_STATE_CONNECTED ||
-             (_state == RTW88_STATE_SCANNING && _scanReturnState == RTW88_STATE_CONNECTED))) {
+            (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_HANDSHAKING || __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED ||
+             (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING && _scanReturnState == RTW88_STATE_CONNECTED))) {
             handleEAPOL(llc + 8, skb->len - payload_off - 8);
             kfree_skb(skb);
             return;
@@ -2486,11 +2495,11 @@ void RTW88IEEE80211::restoreConnectedChannel()
 
 bool RTW88IEEE80211::abortActiveScan(bool waitForIdle)
 {
-    if (_state != RTW88_STATE_SCANNING)
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_SCANNING)
         return true;
 
     RTW88State returnState = _scanReturnState;
-    if (_manualScanChannelCount) {
+    if (__atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE)) {
         _manualScanAbort = true;
     } else if (_hw && _hw->ops && _hw->ops->cancel_hw_scan) {
         _hw->ops->cancel_hw_scan(_hw, _vif);
@@ -2499,11 +2508,11 @@ bool RTW88IEEE80211::abortActiveScan(bool waitForIdle)
     if (!waitForIdle)
         return true;
 
-    for (int i = 0; i < 40 && _state == RTW88_STATE_SCANNING; i++)
+    for (int i = 0; i < 40 && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING; i++)
         IOSleep(50);
 
-    if (_state == RTW88_STATE_SCANNING) {
-        if (_manualScanChannelCount)
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING) {
+        if (__atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE))
             return false;
         if (returnState == RTW88_STATE_CONNECTED)
             restoreConnectedChannel();
@@ -2511,17 +2520,17 @@ bool RTW88IEEE80211::abortActiveScan(bool waitForIdle)
             RTW88_STATE_IDLE : returnState;
         _scanReturnState = RTW88_STATE_IDLE;
         _scanPartial = false;
-        _manualScanChannelCount = 0;
-        _manualScanOnHomeChannel = false;
+        __atomic_store_n(&_manualScanChannelCount, 0, __ATOMIC_RELEASE);
+        __atomic_store_n(&_manualScanOnHomeChannel, false, __ATOMIC_RELEASE);
     }
 
-    return _state != RTW88_STATE_SCANNING;
+    return __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_SCANNING;
 }
 
 void RTW88IEEE80211::scanDone(bool aborted)
 {
     // A late firmware completion after timeout must not finish a new join.
-    if (_state != RTW88_STATE_SCANNING) return;
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_SCANNING) return;
     if (_timer) _timer->cancelTimeout();
     const bool partialScan = _scanPartial;
     if (!aborted && !partialScan) {
@@ -2530,7 +2539,7 @@ void RTW88IEEE80211::scanDone(bool aborted)
         while (*link) {
             RTW88BSS *b = *link;
             RTW88State effectiveState =
-                (_state == RTW88_STATE_SCANNING) ? _scanReturnState : _state;
+                (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING) ? _scanReturnState : __atomic_load_n(&_state, __ATOMIC_ACQUIRE);
             bool isTarget = (effectiveState == RTW88_STATE_CONNECTED ||
                              effectiveState == RTW88_STATE_HANDSHAKING) &&
                             memcmp(b->bssid, _targetBSS.bssid, 6) == 0;
@@ -2549,7 +2558,7 @@ void RTW88IEEE80211::scanDone(bool aborted)
         IOLockUnlock(_bssLock);
     }
 
-    if (_state == RTW88_STATE_SCANNING) {
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING) {
         RTW88State returnState = _scanReturnState;
         /* Restore the infrastructure channel for every connected scan, not
          * only the manual fallback.  This keeps STA coherent if hw_scan is
@@ -2561,7 +2570,7 @@ void RTW88IEEE80211::scanDone(bool aborted)
         _state = (returnState == RTW88_STATE_IDLE) ?
             RTW88_STATE_IDLE : returnState;
         _scanReturnState = RTW88_STATE_IDLE;
-        _manualScanOnHomeChannel = false;
+        __atomic_store_n(&_manualScanOnHomeChannel, false, __ATOMIC_RELEASE);
         _scanPartial = false;
 
         /* A background CoreWiFi scan can leave an unassociated radio on its
@@ -2588,7 +2597,7 @@ void RTW88IEEE80211::scanDone(bool aborted)
         _delegate->rtw88Event(kRTW88EventScanDone, &result);
     }
 
-    if (_deferredConnectPending && _state == RTW88_STATE_IDLE && _powered) {
+    if (_deferredConnectPending && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_IDLE && _powered) {
         char ssid[sizeof(_deferredSSID)] = {};
         char password[sizeof(_deferredPassword)] = {};
         uint8_t pmk[sizeof(_deferredPMK)] = {};
@@ -2623,7 +2632,7 @@ void RTW88IEEE80211::scanDone(bool aborted)
 
 IOReturn RTW88IEEE80211::cmdAbortScan()
 {
-    if (_state != RTW88_STATE_SCANNING)
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_SCANNING)
         return kIOReturnSuccess;
     return abortActiveScan(true) ? kIOReturnSuccess : kIOReturnBusy;
 }
@@ -2632,11 +2641,11 @@ IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
                                   uint32_t requestedCount)
 {
     _awdlPreparedChannel = 0;
-    const bool connectedScan = (_state == RTW88_STATE_CONNECTED);
+    const bool connectedScan = (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);
     /* Associated scans are supported only through the bounded software scanner
      * below.  Authentication/association/disconnect transitions remain busy. */
-    if (_state != RTW88_STATE_IDLE && !connectedScan) {
-        IOLog("rtw88: physical scan busy state=%u\n", (unsigned)_state);
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_IDLE && !connectedScan) {
+        IOLog("rtw88: physical scan busy state=%u\n", (unsigned)__atomic_load_n(&_state, __ATOMIC_ACQUIRE));
         return kIOReturnBusy;
     }
     if (!_powered || !_hw || !_hw->ops || !_hw->wiphy)
@@ -2704,13 +2713,13 @@ IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
           (unsigned)returnState, connectedScan ? 1U : 0U,
           _scanPartial ? 1U : 0U);
     _scanReturnState = connectedScan ? RTW88_STATE_CONNECTED : RTW88_STATE_IDLE;
-    _state = RTW88_STATE_SCANNING;
+    setRadioState(RTW88_STATE_SCANNING);
 
     // Firmware retains the request until completion; neither object may live on the stack.
     if (!_scanRequest)
         _scanRequest = (ieee80211_scan_request *)IOMallocZero(sizeof(*_scanRequest));
     if (!_scanRequest) {
-        _state = returnState;
+        setRadioState(returnState);
         _scanReturnState = RTW88_STATE_IDLE;
         _scanPartial = false;
         return kIOReturnNoMemory;
@@ -2756,7 +2765,7 @@ IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
 
     if (n_chans == 0) {
         IOLog("rtw88: scan has no enabled channels\n");
-        _state = returnState;
+        setRadioState(returnState);
         _scanReturnState = RTW88_STATE_IDLE;
         _scanPartial = false;
         return kIOReturnNotReady;
@@ -2770,17 +2779,17 @@ IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
     _scanVisited2GHz = _scanVisited5GHz = 0;
     if (!firmwareScan) {
         if (!_manualScanTC) {
-            _state = returnState;
+            setRadioState(returnState);
             _scanReturnState = RTW88_STATE_IDLE;
             _scanPartial = false;
             return kIOReturnNotReady;
         }
 
-        _manualScanChannelCount = (uint32_t)n_chans;
+        __atomic_store_n(&_manualScanChannelCount, (uint32_t)n_chans, __ATOMIC_RELEASE);
         for (int i = 0; i < n_chans; i++)
             _manualScanChannels[i] = chans[i];
         _manualScanAbort = false;
-        _manualScanOnHomeChannel = false;
+        __atomic_store_n(&_manualScanOnHomeChannel, false, __ATOMIC_RELEASE);
         _rxFrameCount = 0;
 
         if (!_manualScanFallbackLogged || connectedScan) {
@@ -2807,11 +2816,11 @@ IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
               hw_scan_ret);
         if (_manualScanTC) {
             _scanEngine = "software-after-fw-error";
-            _manualScanChannelCount = (uint32_t)n_chans;
+            __atomic_store_n(&_manualScanChannelCount, (uint32_t)n_chans, __ATOMIC_RELEASE);
             for (int i = 0; i < n_chans; i++)
                 _manualScanChannels[i] = chans[i];
             _manualScanAbort = false;
-            _manualScanOnHomeChannel = false;
+            __atomic_store_n(&_manualScanOnHomeChannel, false, __ATOMIC_RELEASE);
             _rxFrameCount = 0;
             thread_call_enter(_manualScanTC);
 
@@ -2821,7 +2830,7 @@ IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
             _timer->wakeAtTime(d);
             return kIOReturnSuccess;
         }
-        _state = returnState;
+        setRadioState(returnState);
         _scanReturnState = RTW88_STATE_IDLE;
         _scanPartial = false;
         return kIOReturnError;
@@ -2843,11 +2852,11 @@ void RTW88IEEE80211::runManualScan()
 {
     if (!_hw || !_vif) {
         scanDone(true);
-        _manualScanChannelCount = 0;
+        __atomic_store_n(&_manualScanChannelCount, 0, __ATOMIC_RELEASE);
         return;
     }
 
-    uint32_t count = _manualScanChannelCount;
+    uint32_t count = __atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE);
     if (count > 256)
         count = 256;
     bool connectedScan = (_scanReturnState == RTW88_STATE_CONNECTED);
@@ -2859,7 +2868,7 @@ void RTW88IEEE80211::runManualScan()
         if (!chan)
             continue;
 
-        _manualScanOnHomeChannel = false;
+        __atomic_store_n(&_manualScanOnHomeChannel, false, __ATOMIC_RELEASE);
 
         if (connectedScan) {
             restoreConnectedChannel();
@@ -2889,19 +2898,19 @@ void RTW88IEEE80211::runManualScan()
         if (connectedScan && !_manualScanAbort) {
             restoreConnectedChannel();
             txNullFunc(false);
-            _manualScanOnHomeChannel = true;
+            __atomic_store_n(&_manualScanOnHomeChannel, true, __ATOMIC_RELEASE);
             IOSleep(80);
         }
     }
 
-    _manualScanOnHomeChannel = false;
+    __atomic_store_n(&_manualScanOnHomeChannel, false, __ATOMIC_RELEASE);
     rtw88_sw_scan_complete(_hw, _vif);
     /* Clear this worker's ownership before scanDone: its deferred-join callback
      * may immediately start a fresh scan.  Clearing these fields afterwards
      * would erase the next scan's channel list / abort state. */
     const bool aborted = _manualScanAbort;
     _manualScanAbort = false;
-    _manualScanChannelCount = 0;
+    __atomic_store_n(&_manualScanChannelCount, 0, __ATOMIC_RELEASE);
 
     /* scanDone restores/calibrates the home channel and clears AP power-save
      * once, including an aborted scan, before notifying IO80211. */
@@ -3068,7 +3077,7 @@ bool RTW88IEEE80211::retryOtherBss(const char *stage)
           _targetBSS.channel, (int)_targetBSS.rssi);
 
     if (_timer) _timer->cancelTimeout();
-    _state = RTW88_STATE_AUTHENTICATING;
+    setRadioState(RTW88_STATE_AUTHENTICATING);
     if (_connectTC) thread_call_enter(_connectTC);
     return true;
 }
@@ -3088,8 +3097,8 @@ bool RTW88IEEE80211::matchesPendingJoin(const char *ssid, const uint8_t *bssid,
      * from the BSSID macOS asked for to another node of the same SSID; a
      * repeat ASSOCIATE for the abandoned one is the same join, not a new one
      * (restarting it would cancel the fallback that is under way). */
-    const bool joining = _state == RTW88_STATE_AUTHENTICATING ||
-                         _state == RTW88_STATE_ASSOCIATING;
+    const bool joining = __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_AUTHENTICATING ||
+                         setRadioState(= RTW88_STATE_ASSOCIATING);
     const bool requested = bssid && _joinHasRequested &&
                            memcmp(bssid, _joinRequestedBssid, 6) == 0;
     return ssid && strcmp(ssid, _targetBSS.ssid) == 0 &&
@@ -3107,8 +3116,8 @@ void RTW88IEEE80211::failJoin(const char *stage)
     IOLog("rtw88: join failed stage=%s attempts=%u\n", stage, _authAttempts);
     __atomic_store_n(&_connectCancelled, true, __ATOMIC_RELEASE);
     if (_timer) _timer->cancelTimeout();
-    _associatedVisible = false;
-    _state = RTW88_STATE_IDLE;
+    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+    setRadioState(RTW88_STATE_IDLE);
     if (_parent) _parent->setLinkStatus(kIONetworkLinkValid);
     if (_delegate) _delegate->rtw88Event(kRTW88EventDisconnected, nullptr);
 }
@@ -3150,7 +3159,7 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
      * raw state was still SCANNING. Preserve the request and return success
      * immediately; scanDone() continues
      * the join into AUTH. */
-    if (_state == RTW88_STATE_SCANNING) {
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING) {
         strlcpy(_deferredSSID, ssid, sizeof(_deferredSSID));
         strlcpy(_deferredPassword, password ? password : "", sizeof(_deferredPassword));
         _deferredPMKValid = pmk != nullptr;
@@ -3164,7 +3173,7 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
         if (_scanReturnState == RTW88_STATE_IDLE)
             _missingBssRescanAttempted = true;
 
-        if (_manualScanChannelCount) {
+        if (__atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE)) {
             /* Do not let autojoin to an early 2.4 GHz result truncate the
              * initial software scan before the later 5 GHz channels. The
              * existing scan deadline still bounds this deferred join.
@@ -3179,12 +3188,12 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
         return kIOReturnSuccess;
     }
 
-    if (_state != RTW88_STATE_IDLE) return kIOReturnBusy;
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_IDLE) return kIOReturnBusy;
     if (!_powered || !_connectTC) return kIOReturnNotReady;
     clearKeys();
     releaseSta();
     /* A new join supersedes any previous externally-visible RUN state. */
-    _associatedVisible = false;
+    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
 
     /* Find the SSID in our BSS list */
     IOLockLock(_bssLock);
@@ -3296,7 +3305,7 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
         rtw88LogTargetSecurity(_targetBSS, _wpa2, pmk != nullptr);
         _deauthReason = 0;
         __atomic_store_n(&_connectCancelled, false, __ATOMIC_RELEASE);
-        _state = RTW88_STATE_AUTHENTICATING;
+        setRadioState(RTW88_STATE_AUTHENTICATING);
         mutation.finish();
     }
 
@@ -3419,7 +3428,7 @@ void RTW88IEEE80211::doAuthenticate()
     IOLog("rtw88: doAuthenticate: auth frame sent — waiting for response\n");
 
     // Do not overwrite a response-driven state transition after transmitting.
-    if (authenticationCancelled() || _state != RTW88_STATE_AUTHENTICATING) return;
+    if (authenticationCancelled() || __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_AUTHENTICATING) return;
     uint64_t d; clock_interval_to_deadline(3000, kMillisecondScale, &d);
     _timer->wakeAtTime(d);
 }
@@ -3433,12 +3442,12 @@ void RTW88IEEE80211::doAssociate()
     if (authenticationCancelled()) return;
     if (!buildAssocReq(assoc, &assoclen)) { failJoin("assoc-build"); return; }
     // Publish the state before TX: a fast response may arrive during submission.
-    _state = RTW88_STATE_ASSOCIATING;
+    setRadioState(RTW88_STATE_ASSOCIATING);
     if (!txMgmtFrame(assoc, assoclen)) {
         failJoin("assoc-tx");
         return;
     }
-    if (authenticationCancelled() || _state != RTW88_STATE_ASSOCIATING) return;
+    if (authenticationCancelled() || __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_ASSOCIATING) return;
     uint64_t d; clock_interval_to_deadline(3000, kMillisecondScale, &d); _timer->wakeAtTime(d);
 }
 
@@ -3611,7 +3620,7 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
         auto mutation = beginTxStateMutation();
         /* Association and station construction are one indivisible control
          * transaction relative to all four WMM transmitters. */
-        _associatedVisible = true;
+        __atomic_store_n(&_associatedVisible, true, __ATOMIC_RELEASE);
         if (!_sta && _hw->ops && _hw->ops->sta_add) {
             const size_t sta_sz = sizeof(struct ieee80211_sta) + _hw->sta_data_size;
             _sta = (struct ieee80211_sta *)IOMallocZero(sta_sz);
@@ -3699,7 +3708,7 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
         _delegate->rtw88Event(kRTW88EventAssocDone, nullptr);
 
     if (_wpa2 && !_externalSupplicant) {
-        _state = RTW88_STATE_HANDSHAKING;
+        setRadioState(RTW88_STATE_HANDSHAKING);
         IOLog("rtw88: WPA2 — waiting for EAPOL M1\n");
         /* Derive PMK from passphrase now */
         if (!_pmkProvided) derivePMK((uint8_t *)_password, (uint8_t *)_targetBSS.ssid,
@@ -3714,7 +3723,7 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
          * the reference IO80211 driver's net80211 flow. */
         {
             auto mutation = beginTxStateMutation();
-            _state = RTW88_STATE_CONNECTED;
+            setRadioState(RTW88_STATE_CONNECTED);
             if (!_wpa2)
                 __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
             mutation.finish();
@@ -3982,7 +3991,7 @@ IOReturn RTW88IEEE80211::cmdInstallExternalKey(bool pairwise, uint8_t keyidx, ui
         return kIOReturnBadArgument;
 
     auto mutation = beginTxStateMutation();
-    if (!_externalSupplicant || !_wpa2 || !_associatedVisible ||
+    if (!_externalSupplicant || !_wpa2 || !associatedVisible() ||
         (pairwise && !_sta)) {
         mutation.finish();
         return kIOReturnNotReady;
@@ -4051,19 +4060,19 @@ IOReturn RTW88IEEE80211::cmdDisconnect()
      * down.  The reference IO80211 driver's net80211 stays in SCAN here; it does not emit a
      * spurious link-disconnected event.  Cancel any queued join but preserve
      * the scan transaction so CoreWiFi can receive SCAN_DONE cleanly. */
-    if (_state == RTW88_STATE_SCANNING && !_associatedVisible &&
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING && !associatedVisible() &&
         _scanReturnState == RTW88_STATE_IDLE) {
         IOLog("rtw88: DISASSOCIATE acknowledged during disconnected scan (no link teardown)\n");
         return kIOReturnSuccess;
     }
 
     /* v52: a background scan deliberately changes the implementation state
-     * from CONNECTED to SCANNING while _associatedVisible keeps IO80211 in
+     * from CONNECTED to SCANNING while associatedVisible() keeps IO80211 in
      * RUN.  Tearing down the station without first terminating that scan lets
      * scanDone() race the new association and can resurrect stale channel/BSS
      * state.  That is exactly the shape of the issue #3 network-transition
      * failure.  Drain the connected scan synchronously before disassociation. */
-    if (_state == RTW88_STATE_SCANNING && _associatedVisible &&
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING && associatedVisible() &&
         _scanReturnState == RTW88_STATE_CONNECTED) {
         IOLog("rtw88: DISASSOCIATE aborting connected background scan before teardown\n");
         if (!abortActiveScan(true))
@@ -4078,8 +4087,8 @@ IOReturn RTW88IEEE80211::cmdDisconnect()
      * user's new join.  cmdConnect resets the reason to 0. */
     _deauthReason = 8;
     /* Explicit disassociation ends the IO80211 RUN latch immediately. */
-    _associatedVisible = false;
-    if (_state == RTW88_STATE_IDLE) return kIOReturnSuccess;
+    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_IDLE) return kIOReturnSuccess;
     doDisconnect();
     return kIOReturnSuccess;
 }
@@ -4094,7 +4103,7 @@ IOReturn RTW88IEEE80211::suspendForSystemSleep()
     clearDeferredJoin();
     cancelAuthentication();
 
-    if (_state == RTW88_STATE_SCANNING) {
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING) {
         const RTW88State returnState = _scanReturnState;
         (void)abortActiveScan(false);
         _manualScanAbort = true;
@@ -4102,11 +4111,11 @@ IOReturn RTW88IEEE80211::suspendForSystemSleep()
             thread_call_cancel_wait(_manualScanTC);
         if (returnState == RTW88_STATE_CONNECTED)
             restoreConnectedChannel();
-        _state = returnState == RTW88_STATE_IDLE ? RTW88_STATE_IDLE : returnState;
+        setRadioState(returnState == RTW88_STATE_IDLE ? RTW88_STATE_IDLE : returnState);
         _scanReturnState = RTW88_STATE_IDLE;
         _scanPartial = false;
-        _manualScanChannelCount = 0;
-        _manualScanOnHomeChannel = false;
+        __atomic_store_n(&_manualScanChannelCount, 0, __ATOMIC_RELEASE);
+        __atomic_store_n(&_manualScanOnHomeChannel, false, __ATOMIC_RELEASE);
     }
 
     if (_awdlOffChannel)
@@ -4118,8 +4127,8 @@ IOReturn RTW88IEEE80211::suspendForSystemSleep()
 IOReturn RTW88IEEE80211::cmdPowerOn()
 {
     IOReturn ret = powerOn();
-    if (ret == kIOReturnSuccess && _state == RTW88_STATE_DISCONNECTING)
-        _state = RTW88_STATE_IDLE;
+    if (ret == kIOReturnSuccess && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_DISCONNECTING)
+        setRadioState(RTW88_STATE_IDLE);
     return ret;
 }
 
@@ -4129,13 +4138,13 @@ IOReturn RTW88IEEE80211::cmdPowerOff()
      * Remove its queued association before draining either worker. */
     clearDeferredJoin();
     cancelAuthentication();
-    if (_state == RTW88_STATE_SCANNING && !abortActiveScan(true))
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING && !abortActiveScan(true))
         return kIOReturnBusy;
 
-    if (_state == RTW88_STATE_CONNECTED ||
-        _state == RTW88_STATE_AUTHENTICATING ||
-        _state == RTW88_STATE_ASSOCIATING ||
-        _state == RTW88_STATE_HANDSHAKING) {
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED ||
+        __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_AUTHENTICATING ||
+        __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_ASSOCIATING ||
+        __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_HANDSHAKING) {
         /* Final: Wi-Fi off and system sleep are voluntary, like r7's
          * DISASSOCIATE.  Reason 0 made airportd log "Dropped Connection:
          * reason=0" on wake and add the network to its "potentially
@@ -4149,8 +4158,8 @@ IOReturn RTW88IEEE80211::cmdPowerOff()
 
     powerOff();
     clearAssocRsnIE();
-    _state = RTW88_STATE_IDLE;
-    _associatedVisible = false;
+    setRadioState(RTW88_STATE_IDLE);
+    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
     if (_parent)
@@ -4167,8 +4176,8 @@ void RTW88IEEE80211::doDisconnect()
         restoreSTAChannelAfterAWDL();
 
     if (!_hw || !_vif) {
-        _state = RTW88_STATE_IDLE;
-        _associatedVisible = false;
+        setRadioState(RTW88_STATE_IDLE);
+        __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
         _scanReturnState = RTW88_STATE_IDLE;
         _scanPartial = false;
         return;
@@ -4201,8 +4210,9 @@ void RTW88IEEE80211::doDisconnect()
         _hw->ops->bss_info_changed(_hw, _vif, bss, BSS_CHANGED_ASSOC);
     releaseSta();
 
+    setRadioState(RTW88_STATE_IDLE);
     _state = RTW88_STATE_IDLE;
-    _associatedVisible = false;
+    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
     _timer->cancelTimeout();
@@ -4244,9 +4254,9 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
     if (is_g1) {
         /* Only on an established pairwise association: the MIC and key-data
          * wrapping use the installed PTK, and message 2 is sent under it. */
-        if (_state != RTW88_STATE_CONNECTED || !_m3KeysInstalled ||
+        if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED || !_m3KeysInstalled ||
             _handshakePending || !_ptkConf) {
-            IOLog("rtw88: group M1 dropped: no established PTK state=%d\n", (int)_state);
+            IOLog("rtw88: group M1 dropped: no established PTK state=%d\n", (int)__atomic_load_n(&_state, __ATOMIC_ACQUIRE));
             return;
         }
         int ctr = memcmp(data + 9, _replayCtr, 8);
@@ -4324,7 +4334,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
         }
         // Rekey also needs a bounded timeout; retain existing data keys until
         // authenticated M3 installs new material.
-        _state = RTW88_STATE_HANDSHAKING;
+        setRadioState(RTW88_STATE_HANDSHAKING);
         uint64_t d;
         clock_interval_to_deadline(5000, kMillisecondScale, &d);
         _timer->wakeAtTime(d);
@@ -4414,8 +4424,8 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
         IOLog("rtw88: M4 submitted duplicate=%d; AP acceptance unverified\n", duplicate);
         {
             auto mutation = beginTxStateMutation();
-            _associatedVisible = true;
-            _state = RTW88_STATE_CONNECTED;
+            __atomic_store_n(&_associatedVisible, true, __ATOMIC_RELEASE);
+            setRadioState(RTW88_STATE_CONNECTED);
             __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
             mutation.finish();
         }
@@ -4694,8 +4704,8 @@ void RTW88IEEE80211::startTxAggregation()
 void RTW88IEEE80211::housekeeping()
 {
     auto txLease = _txStateGate.tryEnterTransmit();
-    if (!txLease || _state != RTW88_STATE_CONNECTED ||
-        !_associatedVisible || !_sta || _handshakePending)
+    if (!txLease || __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED ||
+        !associatedVisible() || !_sta || _handshakePending)
         return;
 
     const uint64_t now = rtw88JoinNowUS();
@@ -4897,7 +4907,7 @@ bool RTW88IEEE80211::txAWDLDataFrame(mbuf_t m)
     auto txLease = _txStateGate.tryEnterTransmit();
     if (!txLease) { if (m) mbuf_freem(m); return false; }
     if (!m || !_powered || !_awdlReceiveMode ||
-        (_state != RTW88_STATE_IDLE && _state != RTW88_STATE_CONNECTED) ||
+        (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_IDLE && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED) ||
         !_hw || !_hw->ops || !_hw->ops->tx || !_vif ||
         !_hw->conf.chandef.chan || !_awdlChannel ||
         _hw->conf.chandef.chan->hw_value != _awdlChannel) {
@@ -5104,7 +5114,7 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
     }
 
     if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx ||
-        !_vif || !_sta || !_associatedVisible ||
+        !_vif || !_sta || !associatedVisible() ||
         accessCategory >= IEEE80211_NUM_ACS || tid > 7) {
         if (m) mbuf_freem(m);
         return false;
@@ -5314,10 +5324,10 @@ void RTW88IEEE80211::timerFired(OSObject *owner, IOTimerEventSource *timer)
 
 void RTW88IEEE80211::onTimer()
 {
-    switch (_state) {
+    switch (__atomic_load_n(&_state, __ATOMIC_ACQUIRE)) {
     case RTW88_STATE_SCANNING:
         IOLog("rtw88: scan timeout\n");
-        if (_manualScanChannelCount) {
+        if (__atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE)) {
             _manualScanAbort = true;
             break;
         } else if (_hw && _hw->ops && _hw->ops->cancel_hw_scan) {
@@ -5359,7 +5369,7 @@ IOReturn RTW88IEEE80211::cmdGetState(struct RTW88StateResult *result)
      * implementation state.  CoreWiFi immediately asks SSID/BSSID/CHANNEL
      * after ASSOC_DONE; returning anything except RUN there makes it abort a
      * link that may already have installed an RSN key. */
-    RTW88State reportedState = _associatedVisible ? RTW88_STATE_CONNECTED : _state;
+    RTW88State reportedState = associatedVisible() ? RTW88_STATE_CONNECTED : __atomic_load_n(&_state, __ATOMIC_ACQUIRE);
     result->state = reportedState;
     result->rssi = _rssi;
     memcpy(result->ssid, _targetBSS.ssid, sizeof(result->ssid));
@@ -5470,9 +5480,9 @@ IOReturn RTW88IEEE80211::setMACAddress(const uint8_t *mac)
         mutation.finish();
         return kIOReturnNotReady;
     }
-    if (_state == RTW88_STATE_CONNECTED || _state == RTW88_STATE_ASSOCIATING ||
-        _state == RTW88_STATE_AUTHENTICATING || _state == RTW88_STATE_HANDSHAKING ||
-        _state == RTW88_STATE_DISCONNECTING) {
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED || __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_ASSOCIATING ||
+        __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_AUTHENTICATING || __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_HANDSHAKING ||
+        __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_DISCONNECTING) {
         mutation.finish();
         return kIOReturnBusy;
     }
@@ -5505,11 +5515,11 @@ IOReturn RTW88IEEE80211::copyCurrentBSS(RTW88BSS *out)
     if (!out) return kIOReturnBadArgument;
 
     /* v52: use the same persistent RUN latch as cmdGetState().  A connected
-     * background scan has _state == SCANNING by design, but it is still the
+     * background scan has __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == SCANNING by design, but it is still the
      * current infrastructure network from CoreWiFi's point of view.  Returning
      * NotReady here made APPLE80211_IOC_CURRENT_NETWORK fail with -3903 while
      * the menu still showed an associated link (issue #3). */
-    if (!_powered || !_associatedVisible)
+    if (!_powered || !associatedVisible())
         return kIOReturnNotReady;
 
     /* CURRENT_NETWORK is queried aggressively by CoreWiFi/locationd.
