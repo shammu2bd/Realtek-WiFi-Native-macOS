@@ -76,4 +76,27 @@ echo "LOG_FILE=$LOG"
     echo "- Scope: portable/source tests only; registration remains disabled."
 } >> "$SUMMARY"
 
+BRANCH="$(git branch --show-current 2>/dev/null || true)"
+if [ "$BRANCH" != "work/stage90-transactional-queue-pool-rollback-v1" ]; then
+    echo "GITHUB_UPLOAD=REFUSED"
+    echo "REASON=runner must execute on the dedicated Stage90 branch"
+    exit 91
+fi
+
+git add -- "$LOG" "$SUMMARY" || exit 92
+if git diff --cached --quiet; then
+    echo "GITHUB_LOG_COMMIT=NO_CHANGES"
+else
+    git commit -m "Stage90: record transaction validation $STAMP" || exit 93
+fi
+
+git push origin HEAD
+PUSH_RESULT=$?
+echo "GITHUB_PUSH_EXIT_CODE=$PUSH_RESULT"
+if [ "$PUSH_RESULT" -ne 0 ]; then
+    echo "GITHUB_LOG_UPLOAD=FAILED"
+    exit 94
+fi
+
+echo "GITHUB_LOG_UPLOAD=PASS"
 exit "$RESULT"
