@@ -221,9 +221,12 @@ public:
     /* Optional hardware completion hook for native packet adapters. The
      * callback may run in interrupt/teardown context and must only enqueue a
      * bounded completion record; it must not call Skywalk directly. */
-    UInt32    outputPacketWithCompletion(mbuf_t m,
+    UInt32    outputPacketWithCompletion(
+                                         mbuf_t m,
                                          RTW88TxCompletionCallback callback,
-                                         void *context, void *cookie);
+                                         void *context, void *cookie,
+                                         uint8_t accessCategory = 2,
+                                         uint8_t tid = 0);
     bool      txRawManagementFrame(const uint8_t *frame, uint32_t len);
     /* Native AWDL Ethernet -> 802.11 direct data encapsulation. Consumes m. */
     bool      txAWDLDataFrame(mbuf_t m);
@@ -364,7 +367,9 @@ private:
     bool      txDataFrame(mbuf_t m,
                           RTW88TxCompletionCallback callback = nullptr,
                           void *completionContext = nullptr,
-                          void *completionCookie = nullptr);
+                          void *completionCookie = nullptr,
+                          uint8_t accessCategory = 2,
+                          uint8_t tid = 0);
     bool      tryDeliverAWDLDataFrame(struct sk_buff *skb);
     void      deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
                                   uint16_t ethertype,
