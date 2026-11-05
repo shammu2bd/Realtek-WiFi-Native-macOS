@@ -105,7 +105,7 @@ public:
         uint32_t expected = kDraining;
         return __atomic_compare_exchange_n(&ticket->state, &expected,
                                            kCompleted, false,
-                                           __ATOMIC_RELEASE,
+                                           __ATOMIC_ACQ_REL,
                                            __ATOMIC_ACQUIRE);
     }
 
