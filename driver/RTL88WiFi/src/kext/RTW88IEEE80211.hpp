@@ -23,6 +23,9 @@
 #include "RTW88RoamScanPolicy.hpp"
 #include "RTW88BaPolicy.hpp"
 #include "RTW88TxSequenceNumbers.hpp"
+#include "RTW88TxStateGate.hpp"
+#include "RTW88TxBAState.hpp"
+#include "RTW88TxFrameProtection.hpp"
 
 /* Opaque C driver handle */
 struct rtw_dev;
@@ -256,7 +259,7 @@ public:
                          const uint8_t *bssid = nullptr, bool externalSupplicant = false);
     IOReturn  cmdInstallExternalKey(bool pairwise, uint8_t keyidx, uint32_t cipher,
                                     const uint8_t *key, uint8_t key_len);
-    bool      externalKeysReady() const { return _externalPTKInstalled && _externalGTKInstalled; }
+    bool      externalKeysReady() const { return __atomic_load_n(&_externalPTKInstalled, __ATOMIC_ACQUIRE) && __atomic_load_n(&_externalGTKInstalled, __ATOMIC_ACQUIRE); }
     IOReturn  cmdSetAssocRsnIE(const uint8_t *ie, uint16_t len);
     void      clearAssocRsnIE();
     bool      matchesPendingJoin(const char *ssid, const uint8_t *bssid, const uint8_t *pmk) const;
@@ -275,7 +278,7 @@ public:
     uint8_t   txNSS() const;
     uint8_t channelWidthMHz() const { return _connChanWidth; }
     static void parseBssOperation(const uint8_t *ies, uint16_t ielen, RTW88BssOperation *op);
-    bool txAggregationActive() const { return _txBaActive; }
+    bool txAggregationActive() const { return _txBaState.active(); }
     /* 1.0.6: periodic upkeep of a connected link (currently: re-negotiating a lost
      * or declined uplink Block Ack agreement).  Called about every 5 s by the
      * controller's diagnostic timer, inside its hardware-safe window. */
@@ -308,6 +311,7 @@ private:
     void      setConnectedChandef(struct ieee80211_channel *chan);
     void      doHandshake(const uint8_t *eapol, uint32_t len);
     void      doDisconnect();
+    RTW88TxStateGate::MutationLease beginTxStateMutation();
     void      clearKeys();
     void      releaseSta();
     bool      abortActiveScan(bool waitForIdle);
@@ -362,7 +366,8 @@ private:
     static void reorderTimerFired(OSObject *owner, IOTimerEventSource *t);
 
     /* Frame transmission helpers */
-    bool      txMgmtFrame(const uint8_t *frame, uint32_t len);
+    bool      txMgmtFrame(const uint8_t *frame, uint32_t len,
+                          RTW88TxStateGate::TransmitLease *existingLease = nullptr);
     bool      txNullFunc(bool powerSave);
     bool      txProbeRequest();
     uint16_t  nextTxSequence();
@@ -373,7 +378,9 @@ private:
                           void *completionContext = nullptr,
                           void *completionCookie = nullptr,
                           uint8_t accessCategory = 2,
-                          uint8_t tid = 0);
+                          uint8_t tid = 0,
+                          bool protectEapol = false,
+                          RTW88TxStateGate::TransmitLease *existingLease = nullptr);
     bool      tryDeliverAWDLDataFrame(struct sk_buff *skb);
     void      deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
                                   uint16_t ethertype,
@@ -410,6 +417,8 @@ private:
     struct pci_dev     *_pcidev       = nullptr;
 
     IOWorkLoop         *_wl           = nullptr;
+    RTW88TxStateGate    _txStateGate;
+    volatile bool       _dataTxBlocked = true;
     IOCommandGate      *_gate         = nullptr;
     IOTimerEventSource *_timer        = nullptr;
     IOLock             *_lock         = nullptr;
@@ -499,7 +508,6 @@ private:
     bool     _snonceValid = false;
     bool     _m3KeysInstalled = false;
     bool     _handshakePending = false;
-    bool     _eapolTxProtect = false;  /* protect the next EAPOL TX (group M2) */
     RTW88TxSequenceNumbers _txSequenceNumbers;
     bool     _rxCcmpIvSkipLogged = false;
     /* r10: the scan-cache entry of the associated BSS has a TIM element
@@ -522,7 +530,7 @@ private:
     uint16_t _assocAID = 0;
 
     /* A-MPDU aggregation (BlockAck) state */
-    bool     _txBaActive = false;  /* uplink TX BlockAck agreement established */
+    RTW88TxBAState _txBaState;      /* atomic active+TID snapshot shared by four AC submitters */
     uint8_t  _baTid      = 0;      /* TID carrying aggregated data (BE)        */
     uint8_t  _connChanWidth = 20;  /* negotiated operating width: 20/40/80 MHz */
     uint8_t  _baDialog   = 0;      /* rolling ADDBA-request dialog token       */
