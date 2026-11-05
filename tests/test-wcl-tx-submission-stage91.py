@@ -40,7 +40,7 @@ action_start = queues_cpp.index("UInt32 RTW88WCLSkywalkQueues::txSubmissionActio
 action_end = queues_cpp.index("IOReturn RTW88WCLSkywalkQueues::txCompletionAction", action_start)
 action = queues_cpp[action_start:action_end]
 for token in ("refCon != self", "ownsTXSubmissionQueue(queue)",
-              "queuesAllocated()", "!self->_txAdapter", "packetCount == 0",
+              "queuesAllocated()", "self->_txAdapter && packets && packetCount != 0",
               "RTW88WCLTxSubmissionBatch::submitPrefix"):
     assert token in action
 assert "completeWithQueue" not in action
