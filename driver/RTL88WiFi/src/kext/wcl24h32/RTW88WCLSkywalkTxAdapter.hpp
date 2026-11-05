@@ -9,6 +9,7 @@
 #include <sys/mbuf.h>
 
 #include "RTW88WCLTxCompletionSlots.hpp"
+#include "RTW88WCLTxSubmissionGate.hpp"
 
 class RTW88IEEE80211;
 
@@ -26,10 +27,12 @@ public:
     IOReturn bind(RTW88IEEE80211 *radio,
                   IOSkywalkPacketBufferPool *txPool);
     IOReturn unbind();
+    bool isUnbound() const { return _submissionGate.isUnbound(); }
 
-    /* Copies a validated, single-buffer Skywalk Ethernet frame to an mbuf,
-     * then submits it to RTW88 with a bounded completion ticket. Ownership of
-     * the Skywalk packet stays with this adapter until drainCompletions(). */
+    /* Validation/copy/ticket reservation all complete before success is
+     * returned to the Skywalk action. On success the adapter retains packet
+     * ownership until the deferred completion sink returns it in Stage92.
+     * Rejected calls leave the packet with Skywalk. */
     IOReturn submitPacket(IOSkywalkPacket *packet);
 
     /* Must be called later from a serialized/deferred context. The sink may
@@ -48,7 +51,9 @@ private:
     static void backendCompletion(void *context, void *cookie,
                                   bool transmitted);
     static mbuf_t copyPacketToMbuf(const uint8_t *bytes, uint32_t length);
+    IOReturn submitPacketEntered(IOSkywalkPacket *packet);
 
+    RTW88WCLTxSubmissionGate _submissionGate;
     RTW88IEEE80211 *_radio = nullptr; // retained while bound
     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
     TicketPool _tickets;
