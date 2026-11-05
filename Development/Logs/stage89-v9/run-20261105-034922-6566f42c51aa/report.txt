@@ -1,0 +1,103 @@
+========== STAGE 89 V9 — TARGET TXSUBMISSION FACTORY SYMBOL / ABI INVENTORY ==========
+STAGE89_V9_TARGET_TXSUBMISSION_FACTORY_SYMBOL_ABI_INVENTORY
+VERSION=STAGE89_V9_20261105
+TARGET=macOS_15.8.1_24H32_x86_64
+SOURCE_TREE_REVALIDATION=PASS
+TXSUBMISSION_FACTORY_SYMBOLS_CAPTURED=3
+TXSUBMISSION_INIT_SYMBOLS_CAPTURED=1
+EXACT_WITHPOOLANDSERVICECLASS_TARGET_SYMBOLS=0
+CURRENT_SOURCE_ACTION_ONLY_FACTORY_CALL=YES
+CURRENT_SOURCE_DEFAULT_CLASS_PATH=0xffffffff (from V8 action-only wrapper proof)
+TARGET_INIT_WRITES_SERVICE_CLASS_OFFSET_0xB8=YES
+TX_INIT_VTABLE_SLOT_87=MATCH
+SDK_EXPLICIT_FACTORY_PUBLIC_DECLARATION_COUNT=1
+SDK_TO_TARGET_EXPLICIT_FACTORY_SYMBOL_MAPPING=NOT_PROVEN
+SDK_INIT_DECLARATION_COUNT=1
+QUEUESET_WMM_ROLE_1_REQUIRES_FOUR_TX_SUBMISSION_QUEUES=YES
+CURRENT_SOURCE_TX_SUBMISSION_QUEUE_COUNT=1
+QUEUE_POINTER_ARRAY=NOT_IMPLEMENTED
+NATIVE_REGISTRATION_CALLS=0
+CALLBACK_HANDOFFS_STILL_MISSING=4
+IMPLEMENTATION_AUTHORIZATION=NO
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+SIGNING=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+RESULT=REVIEW_REQUIRED
+ACTIVATION_GATE=BLOCKED
+NEXT=Review the complete target TX factory symbol/index/disassembly crosswalk. Do not guess a factory overload or alter the current SDK header; decide exact target-to-public API mapping and queue-role counts before Stage89 implementation.
+
+TARGET SYMBOL INDEX AND DEMANGLED SIGNATURES:
+STAGE89_V9_TARGET_TXSUBMISSION_FACTORY_SYMBOL_INDEX
+IOSKYWALK_SYMBOL_OWNER=com.apple.iokit.IOSkywalkFamily
+TXSUBMISSION_METHOD_SYMBOL_COUNT=4
+DEMANGLE_TOOL=/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++filt
+ADDRESS=0xffffff8002983ff0 MANGLED=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_jj
+DEMANGLED=_ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_jj
+ADDRESS=0xffffff800298409e MANGLED=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PP15IOSkywalkPacketjPvESB_jj
+DEMANGLED=_ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PP15IOSkywalkPacketjPvESB_jj
+ADDRESS=0xffffff80029840c2 MANGLED=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j
+DEMANGLED=_ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j
+ADDRESS=0xffffff80029840e8 MANGLED=__ZN26IOSkywalkTxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_j
+DEMANGLED=_ZN26IOSkywalkTxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_j
+
+TX FACTORY / HEADER CROSSWALK:
+STAGE89_V9_TX_FACTORY_SYMBOL_AND_DECLARATION_CROSSWALK
+HEADER_STATIC_FACTORY_DECLARATIONS=3
+HEADER_FACTORY=static IOSkywalkTxSubmissionQueue * withPoolAndServiceClass( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+HEADER_FACTORY=static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+HEADER_FACTORY=static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+HEADER_INIT_DECLARATIONS=1
+HEADER_INIT=virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+TARGET_FACTORY_METHODS=3
+TARGET_FACTORY_ADDRESS=0xffffff8002983ff0 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_jj
+TARGET_FACTORY_ADDRESS=0xffffff800298409e SYMBOL=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PP15IOSkywalkPacketjPvESB_jj
+TARGET_FACTORY_ADDRESS=0xffffff80029840c2 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j
+TARGET_EXACT_NAMED_WITHPOOLANDSERVICECLASS_SYMBOLS=0
+CURRENT_SOURCE_CALL_IS_ACTION_ONLY=YES
+CURRENT_SOURCE_CALL_USES_EXPLICIT_SERVICECLASS_FACTORY=NO
+TARGET_INIT_METHODS=1
+TARGET_INIT_ADDRESS=0xffffff80029840e8 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_j STORES_0xB8=YES
+FACTORY_METHOD=0xffffff8002983ff0 DEMANGLED=_ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_jj
+FACTORY_PUSH_MINUS_ONE=NO
+FACTORY_LOADS_FINAL_STACK_U32=YES
+FACTORY_DIRECT_CALL_TARGETS=0xffffff8000a4be90,0xffffff80029807b6,0xffffff8000a4a700
+FACTORY_METHOD=0xffffff800298409e DEMANGLED=_ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PP15IOSkywalkPacketjPvESB_jj
+FACTORY_PUSH_MINUS_ONE=NO
+FACTORY_LOADS_FINAL_STACK_U32=YES
+FACTORY_DIRECT_CALL_TARGETS=0xffffff8002983ff0
+FACTORY_METHOD=0xffffff80029840c2 DEMANGLED=_ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PKP15IOSkywalkPacketjPvES9_j
+FACTORY_PUSH_MINUS_ONE=YES
+FACTORY_LOADS_FINAL_STACK_U32=NO
+FACTORY_DIRECT_CALL_TARGETS=0xffffff8002983ff0
+INIT_METHOD=0xffffff80029840e8 DEMANGLED=_ZN26IOSkywalkTxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_j
+INIT_WRITES_M_SERVICE_CLASS_OFFSET_0xB8=YES
+INIT_REGISTER_EVIDENCE=ffffff80029840f6:      	cmp	ecx, 0x8
+INIT_REGISTER_EVIDENCE=ffffff8002984126:      	mov	r9d, r8d
+INIT_REGISTER_EVIDENCE=ffffff8002984129:      	mov	r8d, ecx
+INIT_REGISTER_EVIDENCE=ffffff800298412c:      	mov	r15d, edx
+INIT_REGISTER_EVIDENCE=ffffff8002984142:      	mov	ecx, 0x1
+INIT_REGISTER_EVIDENCE=ffffff8002984188:      	mov	ecx, r12d
+
+INIT VTABLE SLOT:
+STAGE89_V9_TXSUBMISSION_INIT_VTABLE_SLOT_AUDIT
+OBJECT_VPTR_CALL_OFFSET=0x2a8
+RAW_ZTV_INDEX=87
+RAW_INDEX=87 RAW=0x400000028840e8 TARGET=0xffffff80029840e8 NAME=__ZN26IOSkywalkTxSubmissionQueue12initWithPoolEP25IOSkywalkPacketBufferPooljjjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_j
+TX_INIT_METHOD_ADDRESSES=0xffffff80029840e8
+SLOT_87_TARGET_IS_CAPTURED_TX_INIT=YES
+
+CURRENT SOURCE FACTORY CALL:
+
+        _txPool, kQueueCapacity, 0, this,
+        &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0
+
+INTERPRETATION:
+This audit enumerates every IOSkywalkFamily instruction-section symbol whose exact class name is IOSkywalkTxSubmissionQueue and whose method name is withPool or initWithPool. It records raw mangled names, demangled prototypes when c++filt is available, every selected factory/init body, the service-class field writer, and the TXSubmission vtable slot used by the factory's virtual initializer call.
+A public SDK declaration named withPoolAndServiceClass is not accepted as a target implementation unless its exact target symbol or an independently proven wrapper mapping is found. A withPool overload with an extra UInt32 is recorded by its actual target signature and register flow; its extra parameter is not assigned a semantic name from its C++ symbol alone.
+The current source remains on its action-only withPool call. This read-only stage does not replace the header, change the factory call, construct extra TX queues or register queues.
+
+SAFETY:
+No source file changed. No build, signing, install, load, hardware test, SIP/NVRAM or OpenCore modification occurred.
