@@ -18,13 +18,12 @@ inline constexpr uint32_t kServiceClasses[kRequiredCount] = {
 struct Entry {
     const void *identity;
     uint32_t serviceClass;
-    uint32_t queueId;
 };
 
 /*
  * Validate the exact role-1 QueueSet contract before any future registration
- * argument assembly. Pointer identity, WMM class and queue ID are checked
- * independently; array order is the service-class order above.
+ * argument assembly. Pointer identity and WMM class are checked independently;
+ * array order is the service-class order above.
  */
 inline bool validate(const Entry *entries, uint32_t count)
 {
@@ -33,8 +32,7 @@ inline bool validate(const Entry *entries, uint32_t count)
 
     for (uint32_t i = 0; i < kRequiredCount; ++i) {
         if (!entries[i].identity ||
-            entries[i].serviceClass != kServiceClasses[i] ||
-            entries[i].queueId != i)
+            entries[i].serviceClass != kServiceClasses[i])
             return false;
 
         for (uint32_t j = 0; j < i; ++j) {
