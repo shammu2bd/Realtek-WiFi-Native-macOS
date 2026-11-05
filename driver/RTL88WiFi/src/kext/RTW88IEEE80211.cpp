@@ -1305,44 +1305,25 @@ UInt32 RTW88IEEE80211::outputPacketWithCompletion(
         return kIOReturnOutputDropped;
     }
 
-    /* Need an associated STA before data frames can be sent. */
-    bool connected = (_state == RTW88_STATE_CONNECTED) ||
-                     (_state == RTW88_STATE_SCANNING &&
-                      _scanReturnState == RTW88_STATE_CONNECTED &&
-                      (_manualScanChannelCount == 0 ||
-                       _manualScanOnHomeChannel));
-    if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
+    /* Acquire before reading association, key, station, or VIF state. The
+     * same lease is carried through RTW88 ops->tx() so a control writer cannot
+     * retire those objects between validation and descriptor construction. */
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease) {
         mbuf_freem(m);
         if (callback)
             callback(context, cookie, false);
         return kIOReturnOutputDropped;
     }
 
-    /* Apple RSN needs the BSD link marked up to exchange EAPOL, but before
-     * PTK+GTK are installed the controlled port must carry EAPOL only. */
-    if (_wpa2 && _externalSupplicant && !externalKeysReady()) {
-        uint8_t eh[14] = {};
-        if (mbuf_pkthdr_len(m) < sizeof(eh) ||
-            mbuf_copydata(m, 0, sizeof(eh), eh) != 0 ||
-            (uint16_t)((eh[12] << 8) | eh[13]) != ETH_P_PAE) {
-            mbuf_freem(m);
-            if (callback)
-                callback(context, cookie, false);
-            return kIOReturnOutputDropped;
-        }
-    }
-
-    /* txDataFrame() consumes m in all paths. Once its skb is handed to rtw88,
-     * the completion callback follows that skb until either the PCI TX status
-     * callback or an early free/reset path reports its terminal outcome. */
     const bool submitted = txDataFrame(
-        m, callback, context, cookie, accessCategory, tid);
+        m, callback, context, cookie, accessCategory, tid,
+        false, false, &txLease);
     if (!submitted && callback)
         callback(context, cookie, false);
     return submitted ? kIOReturnOutputSuccess : kIOReturnOutputDropped;
 }
 
-/* ------------------------------------------------------------------ */
 /*  RX path: sk_buff from driver → mbuf to macOS                       */
 /* ------------------------------------------------------------------ */
 
@@ -4370,32 +4351,34 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
 bool RTW88IEEE80211::sendEAPOLKey(int step, const uint8_t *replay_counter,
                                     bool install, bool ack, bool mic)
 {
+    /* Hold a read lease while copying the current BSSID/MAC/PTK-derived state
+     * into the handshake frame and through the synchronous RTW88 submit. */
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease)
+        return false;
+
     uint8_t frame[512] = {};
     uint8_t *eth = frame;
-    memcpy(eth,     _targetBSS.bssid, 6); /* DA = AP */
-    memcpy(eth + 6, _macAddr, 6);          /* SA = us */
-    eth[12] = 0x88; eth[13] = 0x8e;        /* EAPOL ethertype */
+    memcpy(eth,     _targetBSS.bssid, 6);
+    memcpy(eth + 6, _macAddr, 6);
+    eth[12] = 0x88; eth[13] = 0x8e;
 
     uint8_t *eapol = eth + 14;
-    eapol[0] = 2;  /* version 2 */
-    eapol[1] = 3;  /* EAPOL-Key */
+    eapol[0] = 2;
+    eapol[1] = 3;
 
     uint8_t *key = eapol + 4;
-    key[0] = 2;  /* key descriptor = RSN */
-    /* version=2 (HMAC-SHA1/AES); step 5 is Group Key Handshake message 2,
-     * which uses the group key type and carries no nonce or key data. */
+    key[0] = 2;
     uint16_t ki = (step == 5) ? 0x0002 : 0x000A;
-    if (mic)     ki |= 0x0100; /* MIC */
-    if (install) ki |= 0x0040; /* Install */
-    if (ack)     ki |= 0x0080; /* ACK */
-    if (step == 4 || step == 5) ki |= 0x0200; /* Secure (bit 9) */
+    if (mic)     ki |= 0x0100;
+    if (install) ki |= 0x0040;
+    if (ack)     ki |= 0x0080;
+    if (step == 4 || step == 5) ki |= 0x0200;
     key[1] = (uint8_t)(ki >> 8);
     key[2] = (uint8_t)(ki & 0xff);
-    key[3] = 0; key[4] = 0; /* RSN supplicant Key Length */
-    memcpy(key + 5, replay_counter, 8);  /* key[5..12]  = Replay Counter */
-    if (step == 2) memcpy(key + 13, _snonce, 32); /* M4 nonce is zero */
-    /* key[45..60] = Key IV (zeros), key[61..68] = RSC (zeros) */
-    /* key[69..76] = Reserved (zeros), key[77..92] = MIC (below) */
+    key[3] = 0; key[4] = 0;
+    memcpy(key + 5, replay_counter, 8);
+    if (step == 2) memcpy(key + 13, _snonce, 32);
 
     uint16_t key_data_len = 0;
     if (step == 2) {
@@ -4413,8 +4396,6 @@ bool RTW88IEEE80211::sendEAPOLKey(int step, const uint8_t *replay_counter,
     eapol[3] = (uint8_t)(eapol_key_len & 0xff);
 
     if (mic) {
-        /* MIC = first 16 bytes of HMAC-SHA1(KCK, EAPOL frame with MIC zeroed)
-         * KCK = _ptk[0..15]. */
         uint8_t mic_buf[20];
         kern_hmac_sha1(_ptk, 16, eapol, eapol_total, mic_buf);
         memcpy(key + 77, mic_buf, 16);
@@ -4423,45 +4404,55 @@ bool RTW88IEEE80211::sendEAPOLKey(int step, const uint8_t *replay_counter,
     uint32_t ethlen = 14 + eapol_total;
     mbuf_t m = rtw88_make_packet_mbuf(frame, ethlen);
     if (!m) return false;
-    /* Group message 2 is sent after the PTK is in use, so protect it with the
-     * TK as ordinary supplicants do. Pairwise M2/M4 keep the proven path. */
-    _eapolTxProtect = (step == 5);
-    bool submitted = txDataFrame(m);
-    _eapolTxProtect = false;
+
+    /* Protection is a per-frame property. Group M2 is protected with the PTK;
+     * other handshake steps keep the established path. */
+    const bool protectEapol = (step == 5);
+    bool submitted = txDataFrame(m, nullptr, nullptr, nullptr, 2, 0,
+                                 protectEapol, true, &txLease);
     IOLog("rtw88: EAPOL %s%d submission=%d len=%u\n", step == 5 ? "G" : "M",
           step == 5 ? 2 : step, submitted, ethlen);
     return submitted;
 }
 
-/* ------------------------------------------------------------------ */
 /*  Frame TX helpers                                                    */
 /* ------------------------------------------------------------------ */
 
 bool RTW88IEEE80211::txRawManagementFrame(const uint8_t *frame, uint32_t len)
 {
-    if (!frame || len < 24 || len > 4096)
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease || !frame || len < 24 || len > 4096)
         return false;
 
-    /* Accept management frames only. AWDL uses vendor/public action frames;
-     * keeping data/control frames out of this path protects the normal STA
-     * datapath and rtw88 queue assumptions. */
     uint16_t fc = (uint16_t)frame[0] | ((uint16_t)frame[1] << 8);
     if ((fc & 0x000c) != 0x0000)
         return false;
 
     if (len >= 40 && RTW88AWDL::actionHeader(frame + 24, len - 24) && !canTransmitAWDL())
         return false;
-    return txMgmtFrame(frame, len);
+    return txMgmtFrame(frame, len, &txLease);
 }
 
-bool RTW88IEEE80211::txMgmtFrame(const uint8_t *frame, uint32_t len)
+bool RTW88IEEE80211::txMgmtFrame(
+    const uint8_t *frame, uint32_t len,
+    RTW88TxStateGate::TransmitLease *existingLease)
 {
+    RTW88TxStateGate::TransmitLease localLease;
+    if (!existingLease) {
+        localLease = _txStateGate.tryEnterTransmit();
+        if (!localLease)
+            return false;
+    } else if (!*existingLease) {
+        return false;
+    }
+
     if (!_powered || !frame || len < 24 || len > 4096 ||
-        !_hw || !_hw->ops || !_hw->ops->tx || !_vif) return false;
+        !_hw || !_hw->ops || !_hw->ops->tx || !_vif)
+        return false;
 
     struct sk_buff *skb = alloc_skb(len + 128, GFP_ATOMIC);
     if (!skb) return false;
-    skb_reserve(skb, 128); /* headroom for TX descriptor (48 B) + pkt_offset padding */
+    skb_reserve(skb, 128);
     skb_put_data(skb, frame, len);
 
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
@@ -4476,7 +4467,6 @@ bool RTW88IEEE80211::txMgmtFrame(const uint8_t *frame, uint32_t len)
     return true;
 }
 
-/* ------------------------------------------------------------------ */
 /*  A-MPDU BlockAck negotiation                                          */
 /*                                                                      */
 /*  802.11n/ac throughput depends on A-MPDU aggregation, which requires */
@@ -4681,7 +4671,8 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
 
 bool RTW88IEEE80211::txNullFunc(bool powerSave)
 {
-    if (!_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta)
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta)
         return false;
 
     static const uint16_t IEEE80211_STYPE_NULLFUNC = 0x0040;
@@ -4720,7 +4711,8 @@ bool RTW88IEEE80211::txNullFunc(bool powerSave)
 
 bool RTW88IEEE80211::txProbeRequest()
 {
-    if (!_hw || !_hw->ops || !_hw->ops->tx)
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease || !_hw || !_hw->ops || !_hw->ops->tx)
         return false;
 
     uint8_t frame[128] = {};
@@ -4754,7 +4746,7 @@ bool RTW88IEEE80211::txProbeRequest()
     memcpy(body + 2, rates, ratesLen);
     body += 2 + ratesLen;
 
-    return txMgmtFrame(frame, (uint32_t)(body - frame));
+    return txMgmtFrame(frame, (uint32_t)(body - frame), &txLease);
 }
 
 /* AWDL uses a direct 802.11 data frame, not the infrastructure ToDS path.
@@ -4764,6 +4756,8 @@ bool RTW88IEEE80211::txProbeRequest()
  * selecting the vif MAC-ID and conservative 6 Mbps/20 MHz defaults. */
 bool RTW88IEEE80211::txAWDLDataFrame(mbuf_t m)
 {
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease) { if (m) mbuf_freem(m); return false; }
     if (!m || !_powered || !_awdlReceiveMode ||
         (_state != RTW88_STATE_IDLE && _state != RTW88_STATE_CONNECTED) ||
         !_hw || !_hw->ops || !_hw->ops->tx || !_vif ||
@@ -4954,18 +4948,30 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
                                   void *completionContext,
                                   void *completionCookie,
                                   uint8_t accessCategory,
-                                  uint8_t tid)
+                                  uint8_t tid,
+                                  bool protectEapol,
+                                  bool allowHandshakeEapol,
+                                  RTW88TxStateGate::TransmitLease *existingLease)
 {
-    if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta ||
+    RTW88TxStateGate::TransmitLease localLease;
+    if (!existingLease) {
+        localLease = _txStateGate.tryEnterTransmit();
+        if (!localLease) {
+            if (m) mbuf_freem(m);
+            return false;
+        }
+    } else if (!*existingLease) {
+        if (m) mbuf_freem(m);
+        return false;
+    }
+
+    if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx ||
+        !_vif || !_sta || !_associatedVisible ||
         accessCategory >= IEEE80211_NUM_ACS || tid > 7) {
         if (m) mbuf_freem(m);
         return false;
     }
 
-    /* The mbuf is an Ethernet frame: [DA(6)][SA(6)][ethertype(2)][payload].
-     * The rtw88 driver's tx op expects an 802.11 frame, so we must
-     * encapsulate: 802.11 data header (24) + LLC/SNAP (8) + IP payload.
-     * mac80211 normally does this; we are bypassing mac80211's tx path. */
     size_t total = mbuf_pkthdr_len(m);
     if (total < 14 || total > 2048) { mbuf_freem(m); return false; }
     uint32_t paylen = (uint32_t)total - 14;
@@ -4973,47 +4979,41 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
     uint8_t eh[14];
     if (mbuf_copydata(m, 0, 14, eh) != 0) { mbuf_freem(m); return false; }
     uint16_t ethertype = (uint16_t)((eh[12] << 8) | eh[13]);
+    const bool eapol = ethertype == ETH_P_PAE;
+    const bool dataBlocked = __atomic_load_n(&_dataTxBlocked, __ATOMIC_ACQUIRE);
+    const bool externalEapolAllowed =
+        _externalSupplicant && _wpa2 && !externalKeysReady();
+    if (dataBlocked && !(eapol && (allowHandshakeEapol || externalEapolAllowed))) {
+        mbuf_freem(m);
+        return false;
+    }
 
-    if (ethertype == ETH_P_PAE) {
+    if (eapol) {
         IOLog("rtw88: EAPOL TX external=%d state=%d ptk=%p len=%u\n",
               _externalSupplicant, _state, _ptkConf, paylen);
     }
 
-    bool protected_frame = _wpa2 && _ptkConf &&
-        (ethertype != ETH_P_PAE || _eapolTxProtect);
+    const bool protected_frame = RTW88ShouldProtectTxFrame(
+        _wpa2, _ptkConf != nullptr, ethertype, ETH_P_PAE, protectEapol);
 
-    /* Use a QoS Data frame (24-byte header + 2-byte QoS Control) when HT is in
-     * use — A-MPDU/BlockAck is strictly per-TID and a plain Data frame carries
-     * no TID.  TKIP links (where HT is disallowed) fall back to a plain non-QoS
-     * Data frame, the proven legacy path. */
     bool qos = htAllowed();
-    uint32_t hlen = qos ? 26 : 24;
-    uint32_t framelen = hlen + (protected_frame ? 8 : 0) + 8 + paylen;
+    uint32_t framelen = (qos ? 26 : 24) + (protected_frame ? 8 : 0) + 8 + paylen;
     struct sk_buff *skb = alloc_skb(framelen + 128, GFP_ATOMIC);
     if (!skb) { mbuf_freem(m); return false; }
-    skb_reserve(skb, 128);  /* TX descriptor headroom */
+    skb_reserve(skb, 128);
 
-    /* 802.11 data header (ToDS: station -> AP) */
     struct ieee80211_hdr_3addr *h =
         (struct ieee80211_hdr_3addr *)skb_put(skb, 24);
     uint16_t fc = IEEE80211_FTYPE_DATA | IEEE80211_FCTL_TODS;
-    if (qos)
-        fc |= IEEE80211_STYPE_QOS_DATA;
-    if (protected_frame)
-        fc |= IEEE80211_FCTL_PROTECTED;
+    if (qos) fc |= IEEE80211_STYPE_QOS_DATA;
+    if (protected_frame) fc |= IEEE80211_FCTL_PROTECTED;
     h->frame_control = cpu_to_le16(fc);
     h->duration_id   = 0;
-    memcpy(h->addr1, _targetBSS.bssid, 6); /* RA = BSSID (the AP)        */
-    memcpy(h->addr2, _macAddr, 6);         /* TA = SA  (us)              */
-    memcpy(h->addr3, eh, 6);               /* DA = Ethernet destination  */
-    /* Each data frame needs a unique sequence number.  QoS data uses a
-     * dedicated per-TID space so the BlockAck window stays gap-free; non-QoS
-     * shares the mgmt counter (legacy behaviour).  rtw88 uses this header SN
-     * for data frames (no hw-assigned SN on the data path). */
+    memcpy(h->addr1, _targetBSS.bssid, 6);
+    memcpy(h->addr2, _macAddr, 6);
+    memcpy(h->addr3, eh, 6);
     h->seq_ctrl = cpu_to_le16((uint16_t)((qos ? nextDataSequence(tid) : nextTxSequence()) & 0xFFF) << 4);
 
-    /* QoS Control carries the TID selected from the originating Skywalk
-     * service class (BK=1, BE=0, VI=5, VO=6). */
     if (qos) {
         uint8_t *qosc = skb_put(skb, 2);
         qosc[0] = (uint8_t)(tid & IEEE80211_QOS_CTL_TID_MASK);
@@ -5021,8 +5021,6 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
     }
 
     if (protected_frame) {
-        /* Allocate a unique 48-bit CCMP PN across concurrent WMM queue
-         * callbacks. Refuse exhaustion rather than wrap and reuse a nonce. */
         uint64_t packetNumber = 0;
         if (!_txSequenceNumbers.nextCCMP(&packetNumber)) {
             kfree_skb(skb);
@@ -5042,14 +5040,12 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
         ccmp[7] = static_cast<uint8_t>(packetNumber >> 40);
     }
 
-    /* RFC 1042 LLC/SNAP header */
     uint8_t *snap = skb_put(skb, 8);
     snap[0] = 0xAA; snap[1] = 0xAA; snap[2] = 0x03;
     snap[3] = 0x00; snap[4] = 0x00; snap[5] = 0x00;
     snap[6] = (uint8_t)(ethertype >> 8);
     snap[7] = (uint8_t)(ethertype & 0xff);
 
-    /* Payload (IP packet) copied straight from the Ethernet mbuf */
     if (paylen) {
         uint8_t *pay = (uint8_t *)skb_put(skb, paylen);
         if (mbuf_copydata(m, 14, paylen, pay) != 0) {
@@ -5059,9 +5055,6 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
         }
     }
 
-    /* Preserve the Skywalk WMM service class through mac80211's two
-     * distinct selectors: queue_mapping chooses the hardware AC ring and
-     * priority becomes the TX descriptor/QoS TID. */
     skb_set_queue_mapping(skb, accessCategory);
     skb->priority = tid;
     skb->protocol = cpu_to_be16(ethertype);
@@ -5069,16 +5062,16 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
     memset(info, 0, sizeof(*info));
     info->flags = IEEE80211_TX_CTL_FIRST_FRAGMENT;
-    /* The existing BlockAck agreement is for the infrastructure BE TID
-     * only. Never apply that BA state to BK/VI/VO traffic. */
+    const uint32_t baState = _txBAState.snapshot();
     if (qos && accessCategory == IEEE80211_AC_BE &&
-        tid == _baTid && _txBaActive && ethertype != ETH_P_PAE)
+        (baState & RTW88TxBAState::kActiveBit) &&
+        tid == (baState & RTW88TxBAState::kTidMask) && !eapol)
         info->flags |= IEEE80211_TX_CTL_AMPDU;
     info->band  = (_targetBSS.channel > 14) ? NL80211_BAND_5GHZ
                                             : NL80211_BAND_2GHZ;
     info->control.vif = _vif;
     info->control.sta = _sta;
-    if (ethertype == ETH_P_PAE)
+    if (eapol)
         info->flags |= IEEE80211_TX_CTL_REQ_TX_STATUS;
     if (protected_frame)
         info->control.hw_key = _ptkConf;
@@ -5110,7 +5103,6 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
     return true;
 }
 
-/* ------------------------------------------------------------------ */
 /*  mbuf ↔ sk_buff conversion                                           */
 /* ------------------------------------------------------------------ */
 
