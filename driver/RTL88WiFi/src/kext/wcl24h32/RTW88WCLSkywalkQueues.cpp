@@ -175,7 +175,7 @@ void RTW88WCLSkywalkQueues::destroyQueues()
      * this owner. Detach it only after admission is closed and its tickets are
      * drained; never roll back queue/pool resources underneath a live adapter. */
     if (_txAdapter) {
-        IOLog("rtl88wifi-wcl: TX adapter still attached; queue rollback deferred\\n");
+        IOLog("rtl88wifi-wcl: TX adapter still attached; queue rollback deferred\n");
         return;
     }
 
