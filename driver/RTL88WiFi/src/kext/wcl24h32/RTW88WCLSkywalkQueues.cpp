@@ -174,8 +174,8 @@ void RTW88WCLSkywalkQueues::destroyQueues()
     /* The adapter owns the TX pool and is retained as callback context by
      * this owner. Detach it only after admission is closed and its tickets are
      * drained; never roll back queue/pool resources underneath a live adapter. */
-    if (_txAdapter) {
-        IOLog("rtl88wifi-wcl: TX adapter still attached; queue rollback deferred\n");
+    if (_txAdapter || !_txCallbackGate.isUnbound()) {
+        IOLog("rtl88wifi-wcl: TX adapter/callback gate still attached; queue rollback deferred\n");
         return;
     }
 
@@ -276,7 +276,7 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
 
 bool RTW88WCLSkywalkQueues::hasOutstandingResources() const
 {
-    if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion || _txAdapter)
+    if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion || _txAdapter || !_txCallbackGate.isUnbound())
         return true;
     for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
         if (_txSubmissionQueues[i])
@@ -335,9 +335,17 @@ IOReturn RTW88WCLSkywalkQueues::bindTXAdapter(
         return kIOReturnBusy;
     if (!adapter->isBoundToPool(_txPool))
         return kIOReturnBusy;
+    if (!_txCallbackGate.beginBind())
+        return kIOReturnBusy;
 
     adapter->retain();
     _txAdapter = adapter;
+    if (!_txCallbackGate.finishBind()) {
+        _txAdapter = nullptr;
+        adapter->release();
+        _txCallbackGate.abortBind();
+        return kIOReturnBusy;
+    }
     return kIOReturnSuccess;
 }
 
@@ -346,10 +354,17 @@ IOReturn RTW88WCLSkywalkQueues::unbindTXAdapter(
 {
     if (!adapter || _txAdapter != adapter)
         return kIOReturnBadArgument;
+    if (!_txCallbackGate.beginUnbind() ||
+        !_txCallbackGate.canFinishUnbind())
+        return kIOReturnBusy;
     if (!adapter->isUnbound() || adapter->hasOutstandingCompletions())
         return kIOReturnBusy;
 
     _txAdapter = nullptr;
+    if (!_txCallbackGate.finishUnbind()) {
+        _txAdapter = adapter;
+        return kIOReturnBusy;
+    }
     adapter->release();
     return kIOReturnSuccess;
 }
@@ -374,20 +389,30 @@ UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(
     IOSkywalkPacket * const *packets, UInt32 packetCount, void *refCon)
 {
     auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
-    if (!self || refCon != self || !self->ownsTXSubmissionQueue(queue) ||
-        !self->queuesAllocated() || !self->_txAdapter || !packets ||
-        packetCount == 0)
+    if (!self || refCon != self ||
+        !self->_txCallbackGate.enterSubmission())
         return static_cast<UInt32>(0);
 
-    /* Accept only a bounded contiguous prefix. Each successful adapter call
-     * has retained the Skywalk packet and reserved an asynchronous RTW88
-     * completion ticket. On the first malformed/not-ready/full result, stop:
-     * that packet and the remaining suffix stay owned by Skywalk. No packet
-     * completion or queue mutation is performed in this submit callback.
+    /* Enter the owner gate before reading _txAdapter or queue pointers. The
+     * matching unbind closes this gate and waits for this entire callback,
+     * preventing teardown from detaching the adapter between pointer-load and
+     * the adapter's own submission-gate entry.
      */
-    return RTW88WCLTxSubmissionBatch::submitPrefix<IOSkywalkPacket>(
-        packets, packetCount, &RTW88WCLSkywalkQueues::submitTXPacket,
-        self->_txAdapter);
+    UInt32 accepted = 0;
+    if (self->ownsTXSubmissionQueue(queue) && self->queuesAllocated() &&
+        self->_txAdapter && packets && packetCount != 0) {
+        /* Accept only a bounded contiguous prefix. Each successful adapter
+         * call retains the Skywalk packet and reserves a completion ticket.
+         * On the first malformed/not-ready/full result, stop; that packet and
+         * the suffix remain Skywalk-owned. No completion or queue mutation is
+         * performed in this submit callback.
+         */
+        accepted = RTW88WCLTxSubmissionBatch::submitPrefix<IOSkywalkPacket>(
+            packets, packetCount, &RTW88WCLSkywalkQueues::submitTXPacket,
+            self->_txAdapter);
+    }
+    self->_txCallbackGate.leaveSubmission();
+    return accepted;
 }
 
 IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
