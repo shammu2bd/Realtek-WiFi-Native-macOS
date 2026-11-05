@@ -213,7 +213,7 @@ public:
     void setAWDLRadioAllowed(bool allowed) { _awdlRadioAllowed = allowed; }
     bool awdlRadioAllowed() const { return _awdlRadioAllowed; }
     bool canTransmitAWDL() const;
-    bool staAssociatedForAWDL() const { return _associatedVisible && _state == RTW88_STATE_CONNECTED; }
+    bool staAssociatedForAWDL() const { return __atomic_load_n(&_associatedVisible, __ATOMIC_ACQUIRE) && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED; }
     uint16_t infrastructureChannel() const { return _targetBSS.channel; }
     bool staTxBlockedByAWDL() const { return _awdlOffChannel; }
     void restoreSTAChannelAfterAWDL();
@@ -246,7 +246,7 @@ public:
 
     /* Control interface — called from RTW88UserClient */
     uint32_t deauthReason() const { return _deauthReason; }
-    RTW88State rawState() const { return _state; }
+    RTW88State rawState() const { return __atomic_load_n(&_state, __ATOMIC_ACQUIRE); }
     bool associatedVisible() const { return __atomic_load_n(&_associatedVisible, __ATOMIC_ACQUIRE); }
     /* Connected scans are bounded to candidate channels for the current ESS.
      * Disconnected scans retain the normal full-channel discovery behavior. */
