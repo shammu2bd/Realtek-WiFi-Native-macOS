@@ -27,7 +27,7 @@ For each candidate packet, the adapter:
 4. Retains the original Skywalk packet and reserves a bounded completion ticket.
 5. Retains the adapter for the ticket and invokes `outputPacketWithCompletion`.
 
-A successful adapter return means the packet has been accepted by RTW88 and the adapter holds the packet retain/ticket until the deferred completion handoff. A validation, allocation, not-ready or ticket-capacity error returns a non-success status before ownership transfer; the packet is not retained and remains with Skywalk. The batch helper stops on the first failed/null packet and returns only the accepted prefix count, leaving that packet and the suffix untouched for Skywalk retry/rejection handling.
+A successful adapter return means the packet has been accepted by RTW88 and the adapter holds the packet retain/ticket until the deferred completion handoff. A validation, mbuf-allocation, adapter-not-ready or ticket-capacity error returns a non-success status before ownership transfer; the packet is not retained and remains with Skywalk. Once the ticket is reserved and RTW88 is called, the packet is accepted even if RTW88 later encounters a TX queue/DMA-map failure: RTW88 consumes the mbuf and publishes a terminal failed ticket for Stage92 to report. The batch helper stops on the first failed/null pre-handoff packet and returns only the accepted prefix count, leaving that packet and the suffix untouched for Skywalk retry/rejection handling.
 
 The RTW88 backend callback is limited to the ticket's atomic terminal-state transition. It does not call Skywalk, release OSObjects, allocate memory, or block. Stage91 does not complete packets or invoke `completeWithQueue`; Stage92 will implement the TX completion handoff and deferred drain.
 
