@@ -240,7 +240,7 @@ IOReturn RTW88WCLController::releaseNativeResources()
     if (_txAdapter) {
         const IOReturn txQuiesceStatus = _txAdapter->quiesceSubmissions();
         if (txQuiesceStatus != kIOReturnSuccess) {
-            IOLog("rtl88wifi-wcl: TX submission callback quiesce deferred: 0x%08x\\n",
+            IOLog("rtl88wifi-wcl: TX submission callback quiesce deferred: 0x%08x\n",
                   txQuiesceStatus);
             return txQuiesceStatus;
         }
