@@ -63,6 +63,7 @@ latest_version="$(printf '%s' "$read_info" | cut -d '|' -f 1)"
 latest_run="$(printf '%s' "$read_info" | cut -d '|' -f 2)"
 echo "LATEST_CANONICAL_STAGE89_VERSION=$latest_version"
 echo "LATEST_CANONICAL_STAGE89_RUN=$latest_run"
+if (( latest_version >= 15 )) && [[ ! -f "$STATE/verified-v$latest_version" ]]; then fail "latest Stage89 V$latest_version lacks this supervisor\x27s local artifact-verification receipt"; fi
 [[ "$latest_version" =~ ^[0-9]+$ ]] || fail "bad latest Stage89 version"
 next_version=$((latest_version+1))
 if (( next_version >= 90 )); then
