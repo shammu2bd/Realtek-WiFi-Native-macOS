@@ -977,7 +977,11 @@ IOReturn RTW88IEEE80211::start()
         IOLog("rtw88: hw->ops->start failed: %d\n", ret);
         goto fail_vif;
     }
-    _powered = true;
+    {
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_powered, true, __ATOMIC_RELEASE);
+        mutation.finish();
+    }
 
     ret = _hw->ops->add_interface(_hw, _vif);
     if (ret != 0) {
@@ -988,8 +992,12 @@ IOReturn RTW88IEEE80211::start()
     RTW88_STAGE("add_interface done");
 
 
-    __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
-    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+    {
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
+        __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+        mutation.finish();
+    }
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
     RTW88_STAGE("IEEE80211::start complete — SUCCESS");
@@ -998,7 +1006,7 @@ IOReturn RTW88IEEE80211::start()
 fail_vif:
     if (_powered && _hw && _hw->ops && _hw->ops->stop) {
         _hw->ops->stop(_hw, false);
-        _powered = false;
+        __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
     }
     if (_vif) {
         IOFree(_vif, _vifAllocSize);
@@ -1490,7 +1498,6 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
                  _scanReturnState == RTW88_STATE_CONNECTED);
             clearKeys();
             rxBaTeardownAll();
-            __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
             if (lostLinkDuringConnectedScan) {
                 /* Keep SCANNING latched until the worker exits.  Resetting the
                  * state here made scanDone() return early while the worker
@@ -3114,8 +3121,12 @@ void RTW88IEEE80211::failJoin(const char *stage)
     IOLog("rtw88: join failed stage=%s attempts=%u\n", stage, _authAttempts);
     __atomic_store_n(&_connectCancelled, true, __ATOMIC_RELEASE);
     if (_timer) _timer->cancelTimeout();
-    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
-    setRadioState(RTW88_STATE_IDLE);
+    {
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+        __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
+        mutation.finish();
+    }
     if (_parent) _parent->setLinkStatus(kIONetworkLinkValid);
     if (_delegate) _delegate->rtw88Event(kRTW88EventDisconnected, nullptr);
 }
@@ -4084,8 +4095,10 @@ IOReturn RTW88IEEE80211::cmdDisconnect()
      * "Unexpected link down" and start auto-join, which then tore down the
      * user's new join.  cmdConnect resets the reason to 0. */
     _deauthReason = 8;
-    /* Explicit disassociation ends the IO80211 RUN latch immediately. */
+    /* End the RUN latch atomically with TX admission. */
+    auto mutation = beginTxStateMutation();
     __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+    mutation.finish();
     if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_IDLE) return kIOReturnSuccess;
     doDisconnect();
     return kIOReturnSuccess;
@@ -4156,8 +4169,12 @@ IOReturn RTW88IEEE80211::cmdPowerOff()
 
     powerOff();
     clearAssocRsnIE();
-    setRadioState(RTW88_STATE_IDLE);
-    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+    {
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
+        __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+        mutation.finish();
+    }
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
     if (_parent)
@@ -4174,10 +4191,12 @@ void RTW88IEEE80211::doDisconnect()
         restoreSTAChannelAfterAWDL();
 
     if (!_hw || !_vif) {
-        setRadioState(RTW88_STATE_IDLE);
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
         __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
         _scanReturnState = RTW88_STATE_IDLE;
         _scanPartial = false;
+        mutation.finish();
         return;
     }
     clearKeys();
@@ -4209,7 +4228,6 @@ void RTW88IEEE80211::doDisconnect()
     releaseSta();
 
     setRadioState(RTW88_STATE_IDLE);
-    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
     _timer->cancelTimeout();
