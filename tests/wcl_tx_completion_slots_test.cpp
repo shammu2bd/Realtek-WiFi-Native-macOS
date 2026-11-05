@@ -50,6 +50,36 @@ static void testCapacityAndExactlyOnce()
     assert(!pool.hasOutstanding());
 }
 
+static void testFailedHandoffRetainsTicketForRetry()
+{
+    RTW88WCLTxCompletionSlots<2> pool;
+    pool.reset();
+    int packet = 42;
+
+    auto *ticket = pool.reserve(&packet);
+    assert(ticket);
+    assert(RTW88WCLTxCompletionSlots<2>::complete(ticket, false));
+
+    auto *claimed = pool.claimCompleted();
+    assert(claimed == ticket);
+    assert(RTW88WCLTxCompletionSlots<2>::packet(claimed) == &packet);
+    assert(!RTW88WCLTxCompletionSlots<2>::transmitted(claimed));
+
+    // A failed sink handoff returns the draining ticket to Completed.
+    assert(RTW88WCLTxCompletionSlots<2>::retry(claimed));
+    assert(pool.hasOutstanding());
+    assert(pool.outstandingCount() == 1);
+
+    auto *retried = pool.claimCompleted();
+    assert(retried == ticket);
+    assert(RTW88WCLTxCompletionSlots<2>::packet(retried) == &packet);
+    assert(!RTW88WCLTxCompletionSlots<2>::transmitted(retried));
+
+    RTW88WCLTxCompletionSlots<2>::finish(retried);
+    assert(!pool.hasOutstanding());
+    assert(pool.outstandingCount() == 0);
+}
+
 static void testConcurrentProducersAndConsumer()
 {
     constexpr uint32_t kThreads = 12;
@@ -113,6 +143,7 @@ static void testConcurrentProducersAndConsumer()
 int main()
 {
     testCapacityAndExactlyOnce();
+    testFailedHandoffRetainsTicketForRetry();
     testConcurrentProducersAndConsumer();
     return 0;
 }
