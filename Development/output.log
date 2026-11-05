@@ -1431,3 +1431,14 @@ STAGE89_V20_LOGS: Development/Logs/stage89-v20/run-20261105-112544-ad7cb1db9420/
 - Result: PASS
 - Log: Development/Logs/stage91-native-wcl-compile-20261105T181953Z.log
 - Scope: six WCL object files; no full link, signing, install or load.
+
+## Stage91 WMM routing and completion retry fix — 20261106
+- Branch: work/stage91-tx-submission-callback-v1
+- Implementation commit before report: 0d03b1380a6f6fa73cb878297f69047a9f68df42
+- Result: SOURCE_CHANGES_COMMITTED_VALIDATION_PENDING
+- WMM: Background/Best Effort/Video/Voice service class is propagated to RTW88 AC ring and QoS TID.
+- Completion: sink returns success/failure; failed handoff keeps packet/ticket/adapter ownership and requeues ticket for a later drain pass.
+- Regression coverage: WMM routing, failed handoff retry, source-level propagation checks.
+- Full report: Development/Logs/stage91-wmm-completion-retry-fix-20261106.md
+- Required next validation: rerun all 10 Stage91 tests; compile six WCL objects plus build/native/RTW88IEEE80211.o.
+- Stage92 queue-completion consumer and native activation remain unimplemented/fenced.
