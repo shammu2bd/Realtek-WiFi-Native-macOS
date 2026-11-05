@@ -215,7 +215,7 @@ uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
          */
         if (!packet || !sink(packet, transmitted, context)) {
             if (!TicketPool::retry(ticket))
-                IOLog("rtl88wifi-wcl: completion ticket retry transition failed; retaining ownership\\n");
+                IOLog("rtl88wifi-wcl: completion ticket retry transition failed; retaining ownership\n");
             break;
         }
 
