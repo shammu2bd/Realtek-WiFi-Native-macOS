@@ -1,0 +1,23 @@
+STAGE89_V16_SERVICE_CLASS_CONSTRUCTOR_MATRIX
+ROLE_1_TX_SUBMISSION:
+  SDK_NAMED_FACTORY=withPoolAndServiceClass(pool,capacity,queueId,serviceClass,owner,handler,action,refCon,options)
+  TARGET_EXACT_NAMED_SYMBOL=NOT_FOUND_IN_CAPTURED_24H32_METHOD_INDEX
+  TARGET_PRIMARY_WITHPOOL=pool,capacity,queueId,owner,queryHandler,action,refCon,options,serviceClass
+  SDK_TO_TARGET_DIRECT_MAPPING=NOT_PROVEN
+  CURRENT_SOURCE_CALL=ACTION_ONLY_WITHPOOL
+  CURRENT_SOURCE_SERVICE_CLASS=0xffffffff_DEFAULT_SENTINEL
+  SAFE_FOUR_CLASS_CONSTRUCTION=BLOCKED
+ROLE_2_TX_COMPLETION:
+  SDK_FACTORY=withPool(pool,capacity,queueId,owner,action,refCon,options)
+  EXPLICIT_SERVICE_CLASS_ARGUMENT=NOT_DECLARED
+  NOTE=Not the QueueSet role-1 WMM array
+ROLE_3_RX_SUBMISSION:
+  SDK_FACTORY=withPool(pool,capacity,queueId,serviceClass,owner,action,refCon,options)
+  EXPLICIT_SERVICE_CLASS_ARGUMENT=DECLARED
+  NOTE=Role-3 queue; do not substitute it for role-1 TX queues
+ROLE_4_RX_COMPLETION:
+  SDK_FACTORY=withPool(pool,capacity,queueId,owner,action,refCon,options)
+  EXPLICIT_SERVICE_CLASS_ARGUMENT=NOT_DECLARED
+  NOTE=Not the QueueSet role-1 WMM array
+WMM_ROLE_1_REQUIREMENT=FOUR_DISTINCT_TX_SUBMISSION_QUEUES
+WMM_VALUES=0x00100080,0x00000000,0x00380100,0x00400180
