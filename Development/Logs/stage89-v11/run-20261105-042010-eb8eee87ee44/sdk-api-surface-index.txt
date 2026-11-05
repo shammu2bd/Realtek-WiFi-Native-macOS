@@ -1,0 +1,56 @@
+STAGE89_V11_PROJECT_API_SURFACE_INDEX
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkCloneableNetworkPacket.h:45:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, IOSkywalkPacketDescriptor * desc, IOOptionBits options ) APPLE_KEXT_OVERRIDE;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkFamily.h:47:#include <IOKit/skywalk/IOSkywalkTxSubmissionQueue.h>
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkMemorySegment.h:62:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, IOSkywalkMemorySegmentDescriptor * desc, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h:95:IOReturn getServiceClassIndex( kern_packet_svc_class_t serviceClass, UInt32 * index );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkPacket.h:57:kern_packet_svc_class_t getServiceClass();
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacket.h:67:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, IOSkywalkPacketDescriptor * desc, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketBuffer.h:59:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, IOSkywalkPacketBufferDescriptor * desc, IOOptionBits options = 0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h:63:kern_packet_svc_class_t getServiceClass();
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h:83:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 bufferSize, IODirection direction, UInt32 capacity, UInt32 queueId, OSObject * owner, IOEventSource::Action action, void * refCon );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h:112:kern_packet_svc_class_t mServiceClass; // 168
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h:70:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkRxCompletionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h:67:static IOSkywalkRxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h:68:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h:82:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxCompletionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:34:#ifndef _IOSKYWALKTXSUBMISSIONQUEUE_H
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:35:#define _IOSKYWALKTXSUBMISSIONQUEUE_H
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:39:class IOSkywalkTxSubmissionQueue;
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:43:typedef IOReturn (*IOSkywalkQueryFreeSpaceHandler) ( OSObject * owner, IOSkywalkTxSubmissionQueue * queue, UInt32 * outSpace );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:44:typedef IOReturn (*IOSkywalkTxSubmissionQueueAction)( OSObject * owner, IOSkywalkTxSubmissionQueue * queue, const IOSkywalkPacket **, UInt32, void * );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:46:struct IOSkywalkTxSubmissionQueueStats; // size = 128
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:48:class IOSkywalkTxSubmissionQueue : public IOSkywalkPacketQueue
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:50:OSDeclareDefaultStructors( IOSkywalkTxSubmissionQueue )
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:78:static UInt32 defaultQueryFreeSpaceHandler( OSObject * owner, IOSkywalkTxSubmissionQueue * queue, UInt32 * outSpace );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:81:static IOSkywalkTxSubmissionQueue * withPoolAndServiceClass( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:82:static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:83:static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:84:virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:90:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  0 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:91:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  1 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:92:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  2 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:93:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  3 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:94:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  4 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:95:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  5 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:96:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  6 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:97:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  7 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:98:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  8 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:99:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue,  9 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:100:OSMetaClassDeclareReservedUnused( IOSkywalkTxSubmissionQueue, 10 );
+MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h:108:IOSkywalkTxSubmissionQueueStats * mStats; // 232
+MacKernelSDK/Headers/skywalk/channel/channel_var.h:449:kern_packet_svc_class_t ckr_svc;
+MacKernelSDK/Headers/skywalk/channel/os_channel.h:312:kern_packet_svc_class_t *svc);
+MacKernelSDK/Headers/skywalk/channel/os_channel.h:314:kern_packet_svc_class_t *);
+MacKernelSDK/Headers/skywalk/nexus/flowswitch/flow/flow_var.h:265:kern_packet_svc_class_t fe_svc_class;
+MacKernelSDK/Headers/skywalk/nexus/netif/nx_netif.h:135:kern_packet_svc_class_t nq_svc; /* service class of TX queue */
+MacKernelSDK/Headers/skywalk/nexus/netif/nx_netif.h:581:kern_packet_svc_class_t, struct __kern_packet *);
+MacKernelSDK/Headers/skywalk/packet/os_packet.h:409:} kern_packet_svc_class_t;
+MacKernelSDK/Headers/skywalk/packet/os_packet.h:492:const kern_packet_svc_class_t);
+MacKernelSDK/Headers/skywalk/packet/os_packet.h:493:extern kern_packet_svc_class_t kern_packet_get_service_class(
+MacKernelSDK/Headers/skywalk/packet/os_packet.h:496:const kern_packet_svc_class_t, uint32_t *);
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:70:_txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:83:_rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp:148:OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:12:#include <IOKit/skywalk/IOSkywalkTxSubmissionQueue.h>
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:37:IOSkywalkTxSubmissionQueue *queue,
+src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp:55:IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
