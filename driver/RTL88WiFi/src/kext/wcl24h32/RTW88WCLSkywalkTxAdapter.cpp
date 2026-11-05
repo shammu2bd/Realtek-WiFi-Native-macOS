@@ -19,6 +19,7 @@ bool RTW88WCLSkywalkTxAdapter::init()
     _radio = nullptr;
     _txPool = nullptr;
     _tickets.reset();
+    _backendCompletionCallbacksInFlight = 0;
     _completionNotifier = nullptr;
     _completionNotifierContext = nullptr;
     return true;
@@ -71,10 +72,12 @@ IOReturn RTW88WCLSkywalkTxAdapter::unbind()
     if (quiesceStatus != kIOReturnSuccess)
         return quiesceStatus;
 
-    /* A later stage drains completed tickets through the Skywalk completion
-     * queue. Until every retained packet has a terminal handoff, preserve the
-     * radio, pool, adapter and queue-owner references. */
-    if (_tickets.hasOutstanding())
+    /* The Stage92 workloop worker returns completed packets through the
+     * target Skywalk TX-completion queue. Keep the radio, pool, adapter and
+     * queue-owner references until all tickets are free and every backend
+     * completion callback has returned from its notifier thunk. */
+    if (_tickets.hasOutstanding() ||
+        __atomic_load_n(&_backendCompletionCallbacksInFlight, __ATOMIC_ACQUIRE) != 0)
         return kIOReturnBusy;
 
     if (_submissionGate.isUnbound()) {
@@ -186,6 +189,13 @@ void RTW88WCLSkywalkTxAdapter::backendCompletion(
     if (!self || !ticket)
         return;
 
+    /* The accepted ticket's per-ticket retain keeps self alive on callback
+     * entry. This separate entrant count prevents a concurrently signaled
+     * worker from draining that ticket and allowing teardown to remove the
+     * worker while this callback is still executing its notifier thunk. */
+    __atomic_add_fetch(&self->_backendCompletionCallbacksInFlight, 1U,
+                       __ATOMIC_ACQ_REL);
+
     /* No Skywalk API, OSObject release, allocation, or blocking operation is
      * allowed here. Publish the ticket, then signal the already-attached
      * workloop event source through its IRQ-safe notifier. */
@@ -195,6 +205,9 @@ void RTW88WCLSkywalkTxAdapter::backendCompletion(
         if (notify)
             notify(notifyContext);
     }
+
+    __atomic_sub_fetch(&self->_backendCompletionCallbacksInFlight, 1U,
+                       __ATOMIC_ACQ_REL);
 }
 
 uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(

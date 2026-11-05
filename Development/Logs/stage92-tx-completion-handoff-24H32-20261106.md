@@ -49,7 +49,7 @@ The worker retains both the adapter and completion queue. The adapter's notifier
 
 ## Teardown ordering
 
-The controller first closes TX submission admission, then stops the radio and establishes the PCI/DMA fence. Adapter `unbind()` remains busy while any ticket is outstanding; in that case the controller leaves the workloop worker, adapter, queue owner, pools and PCI/backend context alive so completions can continue draining. After the ticket table becomes empty, teardown stops/removes the worker and timer, clears the notifier, detaches the adapter from the retained queue owner, and only then rolls back the queue/pool acquisition journal.
+The controller first closes TX submission admission, then stops the radio and establishes the PCI/DMA fence. Adapter `unbind()` remains busy while any ticket is outstanding **or** any RTW88 backend-completion callback is still in flight. The separate callback counter closes the race where another workloop signal drains a just-completed ticket before the original backend callback has returned from its notifier thunk. Either condition leaves the worker, adapter, queue owner, pools and PCI/backend context alive. Only after the ticket table is empty and the callback counter is zero does teardown stop/remove the worker and timer, clear the notifier, detach the adapter from the retained queue owner, and roll back the queue/pool acquisition journal.
 
 ## Deliberate limits and caveats
 

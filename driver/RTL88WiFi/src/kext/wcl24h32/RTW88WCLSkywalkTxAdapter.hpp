@@ -74,6 +74,7 @@ private:
     RTW88IEEE80211 *_radio = nullptr; // retained while bound
     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
     TicketPool _tickets;
+    volatile uint32_t _backendCompletionCallbacksInFlight = 0;
     CompletionNotify _completionNotifier = nullptr; // non-owning, signal-only
     void *_completionNotifierContext = nullptr;     // non-owning; cleared after drain
 };

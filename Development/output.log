@@ -1487,7 +1487,7 @@ STAGE89_V20_LOGS: Development/Logs/stage89-v20/run-20261105-112544-ad7cb1db9420/
 - Target ABI: 24H32 TX completion action uses UInt32 packet-count return; callback returns zero (no callback packets).
 - Handoff: deferred controller-workloop worker uses public IOSkywalkTxCompletionQueue::enqueuePackets(const IOSkywalkPacket **, UInt32, IOOptionBits) synchronously; success means the queue ran completePackets and the target packet/buffer completion chain before adapter packet retain is released.
 - Retry: enqueue preflight failure leaves ticket/packet/adapter retains intact and returns ticket to Completed for timer retry.
-- Teardown: worker remains alive while tickets exist; radio stop + PCI/DMA fence precede adapter unbind; worker removal and notifier clear follow empty-ticket proof; queue owner/pools released afterward.
+- Teardown: worker remains alive while tickets exist or backend-completion callbacks remain in flight; radio stop + PCI/DMA fence precede adapter unbind; worker removal and notifier clear follow empty-ticket plus zero-callback proof; queue owner/pools released afterward.
 - Caveat: Skywalk completion API has no verified per-packet Tx-success flag; RTW88 transmitted result is not encoded into undocumented option bits. Separate telemetry remains open.
 - Report: Development/Logs/stage92-tx-completion-handoff-24H32-20261106.md
 - Required target-Mac validation: 11 host/source tests plus eight compile-only objects; no link/sign/install/load/hardware test.

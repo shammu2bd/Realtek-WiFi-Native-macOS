@@ -153,8 +153,10 @@ assert "static_cast<IOReturn>(0)" not in entered
 completion_start = adapter_cpp.index("void RTW88WCLSkywalkTxAdapter::backendCompletion")
 completion_end = adapter_cpp.index("uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions", completion_start)
 completion = adapter_cpp[completion_start:completion_end]
+assert "__atomic_add_fetch(&self->_backendCompletionCallbacksInFlight" in completion
 assert "TicketPool::complete(ticket, transmitted)" in completion
 assert "if (TicketPool::complete(ticket, transmitted))" in completion
+assert "__atomic_sub_fetch(&self->_backendCompletionCallbacksInFlight" in completion
 assert "CompletionNotify notify = self->_completionNotifier;" in completion
 assert "notify(notifyContext);" in completion
 assert "completeWithQueue" not in completion
@@ -185,6 +187,7 @@ unbind_end = adapter_cpp.index("mbuf_t RTW88WCLSkywalkTxAdapter::copyPacketToMbu
 unbind = adapter_cpp[unbind_start:unbind_end]
 assert "quiesceSubmissions()" in unbind
 assert "_tickets.hasOutstanding()" in unbind
+assert "_backendCompletionCallbacksInFlight" in unbind
 assert "_radio = nullptr;" in unbind and "_txPool = nullptr;" in unbind
 assert "finishUnbind()" in unbind
 
