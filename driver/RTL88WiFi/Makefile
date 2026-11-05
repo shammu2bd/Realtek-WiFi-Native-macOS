@@ -398,6 +398,7 @@ $(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLMbufRing.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCL24H32ABI.hpp \
     $(KEXT_SRC)/RTW88IEEE80211.hpp \
+    $(KEXT_SRC)/RTW88TxSequenceNumbers.hpp \
     | $(BUILD_DIR)/wcl24h32
 	@echo "  WCL-ABI CXX  RTW88WCLController.cpp (24H32, bounded RX packet owner; compile-only)"
 	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
@@ -417,6 +418,7 @@ $(WCL24H32_INFRA_OBJ): $(WCL24H32_INFRA_SRC) \
 $(WCL24H32_PCI_BACKEND_OBJ): $(WCL24H32_PCI_BACKEND_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
     $(KEXT_SRC)/RTW88IEEE80211.hpp \
+    $(KEXT_SRC)/RTW88TxSequenceNumbers.hpp \
     $(KEXT_SRC)/../compat/rtw88_compat.h \
     | $(BUILD_DIR)/wcl24h32
 	@echo "  WCL-ABI CXX  RTW88WCLPCIBackend.cpp (ABI-neutral, compile-only)"
@@ -441,6 +443,7 @@ $(WCL24H32_TX_ADAPTER_OBJ): $(WCL24H32_TX_ADAPTER_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPacketView.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
     $(KEXT_SRC)/RTW88IEEE80211.hpp \
+    $(KEXT_SRC)/RTW88TxSequenceNumbers.hpp \
     | $(BUILD_DIR)/wcl24h32
 	@echo "  WCL-ABI CXX  RTW88WCLSkywalkTxAdapter.cpp (24H32, mbuf copy + deferred completion; compile-only)"
 	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
