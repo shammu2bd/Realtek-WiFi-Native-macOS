@@ -42,6 +42,7 @@ public:
 
 private:
     void releaseAcquiredResource(RTW88WCLAcquisitionJournal::Resource resource);
+    bool hasOutstandingResources() const;
     bool ownsTXSubmissionQueue(const IOSkywalkTxSubmissionQueue *queue) const;
 
     static UInt32 txSubmissionAction(OSObject *owner,
