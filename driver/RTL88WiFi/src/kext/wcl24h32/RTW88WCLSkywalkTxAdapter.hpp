@@ -29,6 +29,9 @@ public:
     IOReturn quiesceSubmissions();
     IOReturn unbind();
     bool isBound() const { return _submissionGate.isBound(); }
+    bool isBoundToPool(const IOSkywalkPacketBufferPool *pool) const {
+        return pool && _submissionGate.isBound() && _txPool == pool;
+    }
     bool isUnbound() const { return _submissionGate.isUnbound(); }
 
     /* Validation/copy/ticket reservation all complete before success is
