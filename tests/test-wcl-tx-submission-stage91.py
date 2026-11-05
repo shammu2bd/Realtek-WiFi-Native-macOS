@@ -77,6 +77,16 @@ assert "qosc[0] = (uint8_t)(tid & IEEE80211_QOS_CTL_TID_MASK);" in radio_cpp
 assert "accessCategory == IEEE80211_AC_BE" in radio_cpp
 assert "tid == _baTid" in radio_cpp
 
+# Confirm the selected IEEE80211_AC value actually selects the matching RTW88
+# hardware ring instead of being discarded by the PCI TX queue mapper.
+rtw_tx = (ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c").read_text()
+mac80211_h = (ROOT / "driver/RTL88WiFi/src/compat/net/mac80211.h").read_text()
+for token in ("#define IEEE80211_AC_VO 0", "#define IEEE80211_AC_VI 1",
+              "#define IEEE80211_AC_BE 2", "#define IEEE80211_AC_BK 3"):
+    assert token in mac80211_h
+assert "queue = ac_to_hwq[q_mapping];" in rtw_tx
+assert "q_mapping = skb_get_queue_mapping(skb);" in rtw_tx
+
 # Four independently scheduled AC queues must not share QoS sequence numbers
 # or race the 48-bit CCMP packet-number generator.
 assert "uint16_t _dataSeq[8] = {};" in radio_h
