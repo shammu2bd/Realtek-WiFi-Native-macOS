@@ -46,7 +46,7 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
     if (_allocated)
         return (_acquisitionJournal.isCommitted() && queuesAllocated())
                    ? kIOReturnSuccess : kIOReturnNotReady;
-    if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion)
+    if (_txAdapter || _txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion)
         return kIOReturnBusy;
     for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
         if (_txSubmissionQueues[i])
@@ -171,6 +171,14 @@ no_memory:
 
 void RTW88WCLSkywalkQueues::destroyQueues()
 {
+    /* The adapter owns the TX pool and is retained as callback context by
+     * this owner. Detach it only after admission is closed and its tickets are
+     * drained; never roll back queue/pool resources underneath a live adapter. */
+    if (_txAdapter) {
+        IOLog("rtl88wifi-wcl: TX adapter still attached; queue rollback deferred\\n");
+        return;
+    }
+
     if (_acquisitionJournal.isEmpty()) {
         if (hasOutstandingResources())
             IOLog("rtl88wifi-wcl: empty acquisition journal still has live queue/pool pointers; retaining owner\n");
