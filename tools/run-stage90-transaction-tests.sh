@@ -83,8 +83,9 @@ if [ "$BRANCH" != "work/stage90-transactional-queue-pool-rollback-v1" ]; then
     exit 91
 fi
 
-# The repository intentionally ignores *.log; force-add only these two Stage90 records.
-git add -f -- "$LOG" "$SUMMARY" || exit 92
+# The repository intentionally ignores *.log; force-add all Stage90 run logs,
+# including a prior failed attempt, plus the canonical tracked summary.
+git add -f -- "$ROOT"/Development/Logs/stage90-transaction-tests-*.log "$SUMMARY" || exit 92
 if git diff --cached --quiet; then
     echo "GITHUB_LOG_COMMIT=NO_CHANGES"
 else
