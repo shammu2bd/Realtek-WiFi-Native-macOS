@@ -3568,14 +3568,14 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
     _joinFail.forget(_targetBSS.bssid);   /* this node works: no longer suspect */
     IOLockUnlock(_bssLock);
     _assocAID = aid;
-    /* From this point until a real deauth/disconnect, IO80211 must observe
-     * the infrastructure interface as RUN.  The reference IO80211 driver gets this persistence
-     * from net80211's IEEE80211_S_RUN state; keep an explicit latch because
-     * rtw88 has additional transient implementation states. */
-    _associatedVisible = true;
-
-    /* ----- 1. Allocate and register peer STA ----- */
-    if (_sta == nullptr && _hw->ops && _hw->ops->sta_add) {
+    bool staAddFailed = false;
+    bool stationReady = false;
+    {
+        auto mutation = beginTxStateMutation();
+        /* Association and station construction are one indivisible control
+         * transaction relative to all four WMM transmitters. */
+        _associatedVisible = true;
+        if (_sta == nullptr && _hw->ops && _hw->ops->sta_add) {
         size_t sta_sz = sizeof(struct ieee80211_sta) + _hw->sta_data_size;
         _sta = (struct ieee80211_sta *)IOMallocZero(sta_sz);
         if (_sta) {
@@ -3619,14 +3619,23 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
                 IOFree(_sta, _staAllocSize);
                 _sta = nullptr;
                 _staAllocSize = 0;
-                failJoin("sta-add");
-                return;
+                staAddFailed = true;
             }
             rtw88_register_sta(_vif, _sta);
         }
     }
 
-    if (!_sta) {
+
+        }
+        stationReady = _sta != nullptr;
+        mutation.finish();
+    }
+
+    if (staAddFailed) {
+        failJoin("sta-add");
+        return;
+    }
+    if (!stationReady) {
         failJoin("sta-allocation");
         return;
     }
