@@ -2565,8 +2565,8 @@ void RTW88IEEE80211::scanDone(bool aborted)
             restoreConnectedChannel();
             txNullFunc(false);
         }
-        _state = (returnState == RTW88_STATE_IDLE) ?
-            RTW88_STATE_IDLE : returnState;
+        setRadioState((returnState == RTW88_STATE_IDLE) ?
+            RTW88_STATE_IDLE : returnState);
         _scanReturnState = RTW88_STATE_IDLE;
         __atomic_store_n(&_manualScanOnHomeChannel, false, __ATOMIC_RELEASE);
         _scanPartial = false;
