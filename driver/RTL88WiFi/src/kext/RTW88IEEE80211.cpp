@@ -726,7 +726,7 @@ void RTW88IEEE80211::clearKeys()
     _externalGTKInstalled = false;
     memset(_ptk, 0, sizeof(_ptk));
     memset(_gtk, 0, sizeof(_gtk));
-    memset(_ccmpTxPn, 0, sizeof(_ccmpTxPn));
+    __atomic_store_n(&_ccmpTxPn, 0ULL, __ATOMIC_RELEASE);
     _rxCcmpIvSkipLogged = false;
     _snonceValid = false;
     _m3KeysInstalled = false;
@@ -753,7 +753,8 @@ void RTW88IEEE80211::releaseSta()
     _sta = nullptr;
     _staAllocSize = 0;
     _txBaActive = false;
-    _dataSeq = 0;
+    for (uint8_t tid = 0; tid < 8; ++tid)
+        __atomic_store_n(&_dataSeq[tid], 0, __ATOMIC_RELEASE);
     rxBaTeardownAll();
 }
 
@@ -817,7 +818,7 @@ bool RTW88IEEE80211::installKey(struct ieee80211_key_conf **slot, bool pairwise,
 
     *slot = key;
     if (pairwise)
-        memset(_ccmpTxPn, 0, sizeof(_ccmpTxPn));
+        __atomic_store_n(&_ccmpTxPn, 0ULL, __ATOMIC_RELEASE);
     IOLog("rtw88: installed %s %s key idx=%u hw_idx=%u\n",
           pairwise ? "pairwise" : "group", rtw88CipherName(cipher),
           keyidx, key->hw_key_idx);
@@ -3674,7 +3675,7 @@ bool RTW88IEEE80211::buildAuthReq(uint8_t *buf, uint32_t *len)
     memcpy(hdr->addr1, _targetBSS.bssid, 6);
     memcpy(hdr->addr2, _macAddr, 6);
     memcpy(hdr->addr3, _targetBSS.bssid, 6);
-    hdr->seq_ctrl = cpu_to_le16((uint16_t)(_txSeq++ << 4));
+    hdr->seq_ctrl = cpu_to_le16((uint16_t)(nextTxSequence() << 4));
 
     uint8_t *body = buf + sizeof(*hdr);
     /* Algorithm: 0 (Open), Transaction: 1, Status: 0 */
@@ -3693,7 +3694,7 @@ bool RTW88IEEE80211::buildAssocReq(uint8_t *buf, uint32_t *len)
     memcpy(hdr->addr1, _targetBSS.bssid, 6);
     memcpy(hdr->addr2, _macAddr, 6);
     memcpy(hdr->addr3, _targetBSS.bssid, 6);
-    hdr->seq_ctrl = cpu_to_le16((uint16_t)(_txSeq++ << 4));
+    hdr->seq_ctrl = cpu_to_le16((uint16_t)(nextTxSequence() << 4));
 
     uint8_t *body = buf + sizeof(*hdr);
     /* Privacy is clear for open networks and set only for WPA2-protected
@@ -4450,7 +4451,7 @@ void RTW88IEEE80211::sendAddbaRequest(uint8_t tid)
     memcpy(h->addr1, _targetBSS.bssid, 6);
     memcpy(h->addr2, _macAddr, 6);
     memcpy(h->addr3, _targetBSS.bssid, 6);
-    h->seq_ctrl = cpu_to_le16((uint16_t)(_txSeq++ & 0xFFF) << 4);
+    h->seq_ctrl = cpu_to_le16((uint16_t)(nextTxSequence() & 0xFFF) << 4);
 
     if (++_baDialog == 0) _baDialog = 1;   /* dialog token must be non-zero */
 
@@ -4468,7 +4469,7 @@ void RTW88IEEE80211::sendAddbaRequest(uint8_t tid)
     b[5] = 0; b[6] = 0;   /* Block Ack Timeout = 0 (no timeout) */
     /* Block Ack Starting Sequence Control: SSN (bits 4-15) = next data SN, so
      * the AP's reorder window aligns with the TID-0 data stream. */
-    uint16_t ssc = (uint16_t)((uint16_t)(_dataSeq & 0xFFF) << 4);
+    uint16_t ssc = (uint16_t)((uint16_t)(currentDataSequence(tid) & 0xFFF) << 4);
     b[7] = (uint8_t)(ssc & 0xff);
     b[8] = (uint8_t)(ssc >> 8);
 
@@ -4486,7 +4487,7 @@ void RTW88IEEE80211::sendAddbaResponse(uint8_t tid, uint8_t dialog,
     memcpy(h->addr1, _targetBSS.bssid, 6);
     memcpy(h->addr2, _macAddr, 6);
     memcpy(h->addr3, _targetBSS.bssid, 6);
-    h->seq_ctrl = cpu_to_le16((uint16_t)(_txSeq++ & 0xFFF) << 4);
+    h->seq_ctrl = cpu_to_le16((uint16_t)(nextTxSequence() & 0xFFF) << 4);
 
     uint8_t *b = f + 24;
     b[0] = WLAN_CATEGORY_BACK;
@@ -4651,7 +4652,7 @@ bool RTW88IEEE80211::txNullFunc(bool powerSave)
     memcpy(h->addr1, _targetBSS.bssid, 6);
     memcpy(h->addr2, _macAddr, 6);
     memcpy(h->addr3, _targetBSS.bssid, 6);
-    h->seq_ctrl = cpu_to_le16((uint16_t)(_txSeq++ & 0xFFF) << 4);
+    h->seq_ctrl = cpu_to_le16((uint16_t)(nextTxSequence() & 0xFFF) << 4);
 
     skb_set_queue_mapping(skb, IEEE80211_AC_BE);
     skb->priority = 0;
@@ -4682,7 +4683,7 @@ bool RTW88IEEE80211::txProbeRequest()
     memset(hdr->addr1, 0xff, 6);
     memcpy(hdr->addr2, _macAddr, 6);
     memset(hdr->addr3, 0xff, 6);
-    hdr->seq_ctrl = cpu_to_le16((uint16_t)(_txSeq++ & 0xFFF) << 4);
+    hdr->seq_ctrl = cpu_to_le16((uint16_t)(nextTxSequence() & 0xFFF) << 4);
 
     uint8_t *body = frame + sizeof(*hdr);
     body[0] = WLAN_EID_SSID;
@@ -4755,7 +4756,7 @@ bool RTW88IEEE80211::txAWDLDataFrame(mbuf_t m)
     memcpy(h->addr2, _awdlAddress, 6); /* Same virtual identity as action frames. */
     static const uint8_t awdlBssid[6] = {0x00,0x25,0x00,0xff,0x94,0x73};
     memcpy(h->addr3, awdlBssid, sizeof(awdlBssid));
-    h->seq_ctrl = cpu_to_le16((uint16_t)(_txSeq++ & 0x0fff) << 4);
+    h->seq_ctrl = cpu_to_le16((uint16_t)(nextTxSequence() & 0x0fff) << 4);
 
     /* LLC/SNAP with Apple's AWDL OUI and AWDL protocol ID 0x0800. */
     uint8_t *snap = skb_put(skb, 8);
@@ -4885,6 +4886,28 @@ void RTW88IEEE80211::deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
     _parent->injectRxAWDLFrame(m);
 }
 
+uint16_t RTW88IEEE80211::nextTxSequence()
+{
+    return static_cast<uint16_t>(
+        __atomic_fetch_add(&_txSeq, 1, __ATOMIC_RELAXED) & 0x0fffU);
+}
+
+uint16_t RTW88IEEE80211::nextDataSequence(uint8_t tid)
+{
+    if (tid >= 8)
+        return 0;
+    return static_cast<uint16_t>(
+        __atomic_fetch_add(&_dataSeq[tid], 1, __ATOMIC_RELAXED) & 0x0fffU);
+}
+
+uint16_t RTW88IEEE80211::currentDataSequence(uint8_t tid) const
+{
+    if (tid >= 8)
+        return 0;
+    return static_cast<uint16_t>(
+        __atomic_load_n(&_dataSeq[tid], __ATOMIC_ACQUIRE) & 0x0fffU);
+}
+
 bool RTW88IEEE80211::txDataFrame(mbuf_t m,
                                   RTW88TxCompletionCallback callback,
                                   void *completionContext,
@@ -4946,7 +4969,7 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
      * dedicated per-TID space so the BlockAck window stays gap-free; non-QoS
      * shares the mgmt counter (legacy behaviour).  rtw88 uses this header SN
      * for data frames (no hw-assigned SN on the data path). */
-    h->seq_ctrl = cpu_to_le16((uint16_t)((qos ? _dataSeq++ : _txSeq++) & 0xFFF) << 4);
+    h->seq_ctrl = cpu_to_le16((uint16_t)((qos ? nextDataSequence(tid) : nextTxSequence()) & 0xFFF) << 4);
 
     /* QoS Control carries the TID selected from the originating Skywalk
      * service class (BK=1, BE=0, VI=5, VO=6). */
@@ -4957,20 +4980,36 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
     }
 
     if (protected_frame) {
-        for (int i = 0; i < 6; i++) {
-            if (++_ccmpTxPn[i] != 0)
+        /* Allocate a unique 48-bit CCMP PN across concurrent WMM queue
+         * callbacks. Refuse exhaustion rather than wrap and reuse a nonce. */
+        static constexpr uint64_t kCCMPTxPacketNumberMax = 0x0000FFFFFFFFFFFFULL;
+        uint64_t previous = __atomic_load_n(&_ccmpTxPn, __ATOMIC_RELAXED);
+        uint64_t packetNumber = 0;
+        for (;;) {
+            if (previous >= kCCMPTxPacketNumberMax) {
+                kfree_skb(skb);
+                mbuf_freem(m);
+                IOLog("rtw88: CCMP TX packet number exhausted; dropping frame\\n");
+                return false;
+            }
+            const uint64_t next = previous + 1;
+            if (__atomic_compare_exchange_n(&_ccmpTxPn, &previous, next, false,
+                                            __ATOMIC_ACQ_REL,
+                                            __ATOMIC_RELAXED)) {
+                packetNumber = next;
                 break;
+            }
         }
 
         uint8_t *ccmp = skb_put(skb, 8);
-        ccmp[0] = _ccmpTxPn[0];
-        ccmp[1] = _ccmpTxPn[1];
+        ccmp[0] = static_cast<uint8_t>(packetNumber);
+        ccmp[1] = static_cast<uint8_t>(packetNumber >> 8);
         ccmp[2] = 0x00;
         ccmp[3] = (uint8_t)(0x20 | (((uint8_t)_ptkConf->keyidx & 0x3) << 6));
-        ccmp[4] = _ccmpTxPn[2];
-        ccmp[5] = _ccmpTxPn[3];
-        ccmp[6] = _ccmpTxPn[4];
-        ccmp[7] = _ccmpTxPn[5];
+        ccmp[4] = static_cast<uint8_t>(packetNumber >> 16);
+        ccmp[5] = static_cast<uint8_t>(packetNumber >> 24);
+        ccmp[6] = static_cast<uint8_t>(packetNumber >> 32);
+        ccmp[7] = static_cast<uint8_t>(packetNumber >> 40);
     }
 
     /* RFC 1042 LLC/SNAP header */
