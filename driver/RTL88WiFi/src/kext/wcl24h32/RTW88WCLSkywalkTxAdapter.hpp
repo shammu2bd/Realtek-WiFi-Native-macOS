@@ -27,6 +27,7 @@ public:
     IOReturn bind(RTW88IEEE80211 *radio,
                   IOSkywalkPacketBufferPool *txPool);
     IOReturn unbind();
+    bool isBound() const { return _submissionGate.isBound(); }
     bool isUnbound() const { return _submissionGate.isUnbound(); }
 
     /* Validation/copy/ticket reservation all complete before success is
