@@ -1522,3 +1522,19 @@ STAGE89_V20_LOGS: Development/Logs/stage89-v20/run-20261105-112544-ad7cb1db9420/
 - Full log: Development/Logs/stage93-independent-tx-audit-20261105T194044Z.log
 - Scope: read-only source/SDK contract audit; driver source unchanged; no build, link, signing, install, load or hardware test.
 - Native activation: BLOCKED pending resolution of any Stage93 findings and fresh approval.
+
+
+## Stage94 shared radio TX synchronization design/model — 20261106
+- Branch: work/stage91-tx-submission-callback-v1
+- Result: PORTABLE_MODEL_PASS; DRIVER_INTEGRATION_NOT_DONE
+- Design: one radio-wide atomic admission gate shared by all four WMM submitters; TX leases span shared-state reads through synchronous RTW88 ops->tx() return; control writers close admission and defer mutation until readers drain.
+- EAPOL: per-frame policy helper/test added to eliminate shared _eapolTxProtect toggling during concurrent TX.
+- Counter policy: preserve CCMP PN and per-TID sequence counters for radio-object lifetime; remove runtime resets unless a proven need is documented and fenced.
+- Tests: C++11 model compiled with Clang 17.0.0 on Linux x86_64; PASS, plus 20/20 repeated concurrency stress runs.
+- Test: tests/rtw88_tx_state_gate_test.cpp
+- Runner: tools/run-stage94-radio-tx-sync-model-tests.sh
+- Design report: Development/Logs/stage94-radio-tx-sync-design-20261106.md
+- Model test log: Development/Logs/stage94-radio-tx-sync-model-20261106.log
+- Important: helper is not wired into RTW88IEEE80211.cpp; Stage93 production blockers carry forward. No target-Mac compile, link, signing, installation, loading or hardware TX test.
+- PR #4: remains draft/unmerged; pre-Stage94 GitHub check was mergeable=false and branch comparison was diverged (112 ahead / 64 behind main).
+- Native queue registration/enabling/interface publication/radio start remain blocked.
