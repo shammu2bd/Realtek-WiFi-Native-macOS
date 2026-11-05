@@ -34,6 +34,7 @@ echo "$$" > "$LOCK/pid"
 cleanup(){ rm -rf "$LOCK"; }
 trap cleanup EXIT
 for t in curl gh python3 sw_vers uname date tee; do command -v "$t" >/dev/null 2>&1 || fail "missing $t"; done
+if [[ -f "$BASE/STOP" ]]; then echo "AUTOMATION_PAUSED_BY_LOCAL_STOP_FILE=YES"; exit 0; fi
 [[ -d "$ROOT/driver/RTL88WiFi/src" ]] || fail "project folder not found at expected path"
 [[ "$(sw_vers -productVersion)" == "15.8.1" && "$(sw_vers -buildVersion)" == "24H32" && "$(uname -m)" == "x86_64" ]] || fail "wrong target OS/build/architecture; refusing to run"
 gh auth status >/dev/null 2>&1 || fail "GitHub CLI authentication unavailable"
@@ -63,7 +64,7 @@ latest_version="$(printf '%s' "$read_info" | cut -d '|' -f 1)"
 latest_run="$(printf '%s' "$read_info" | cut -d '|' -f 2)"
 echo "LATEST_CANONICAL_STAGE89_VERSION=$latest_version"
 echo "LATEST_CANONICAL_STAGE89_RUN=$latest_run"
-if (( latest_version >= 15 )) && [[ ! -f "$STATE/verified-v$latest_version" ]]; then fail "latest Stage89 V$latest_version lacks this supervisor\x27s local artifact-verification receipt"; fi
+if (( latest_version >= 15 )) && [[ ! -f "$STATE/verified-v$latest_version" ]]; then fail "latest Stage89 V$latest_version lacks a verified local artifact receipt"; fi
 [[ "$latest_version" =~ ^[0-9]+$ ]] || fail "bad latest Stage89 version"
 next_version=$((latest_version+1))
 if (( next_version >= 90 )); then
@@ -117,14 +118,27 @@ if (( attempts >= 3 )); then
 fi
 response="$CACHE/$runner.json"
 script="$CACHE/$runner"
+gh api "repos/$REPO/contents/Development/stage89-auto-allowlist.txt?ref=main" > "$BASE/allowlist.json" || fail "cannot fetch runner allowlist"
+python3 - "$BASE/allowlist.json" "$BASE/allowlist.txt" <<'PYALLOW'
+import base64,json,pathlib,sys
+o=json.load(open(sys.argv[1]))
+pathlib.Path(sys.argv[2]).write_bytes(base64.b64decode(o["content"]))
+PYALLOW
 gh api "repos/$REPO/contents/Development/$runner?ref=main" > "$response" || fail "cannot download approved runner metadata"
-python3 - "$response" "$script" <<'PYSCRIPT'
+python3 - "$response" "$script" "$BASE/allowlist.txt" <<'PYSCRIPT'
 import base64,hashlib,json,pathlib,sys
 o=json.load(open(sys.argv[1]))
 raw=base64.b64decode(o["content"])
 sha=hashlib.sha1(b"blob "+str(len(raw)).encode()+b"\0"+raw).hexdigest()
 if sha!=o.get("sha"): raise SystemExit("GitHub runner blob SHA mismatch")
 s=raw.decode("utf-8")
+entries={}
+for line in pathlib.Path(sys.argv[3]).read_text(errors="replace").splitlines():
+    if line.startswith("RUNNER|"):
+        _,name,pin=line.split("|",2)
+        entries[name]=pin
+if entries.get(pathlib.Path(sys.argv[2]).name)!=o.get("sha"):
+    raise SystemExit("Runner is not explicitly pinned in stage89-auto-allowlist.txt")
 head="\n".join(s.splitlines()[:12])
 if "# AUTO_SAFE_READ_ONLY=YES" not in head: raise SystemExit("runner lacks read-only automation marker")
 if "# AUTO_SCOPE=STAGE89_AUDIT" not in head: raise SystemExit("runner lacks Stage89-only scope marker")
