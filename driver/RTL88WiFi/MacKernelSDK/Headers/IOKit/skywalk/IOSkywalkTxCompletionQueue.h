@@ -43,6 +43,16 @@ class IOSkywalkPacketTable;
 
 typedef IOReturn (*IOSkywalkTxCompletionQueueAction)( OSObject * owner, IOSkywalkTxCompletionQueue *, IOSkywalkPacket **, UInt32, void * );
 
+/*
+ * Target-backed Sequoia 15.8.1 / 24H32 factory ABI.
+ * The 24H32 withPool export encodes a UInt32-returning callback (PFj), not
+ * the generic IOReturn callback (PFi) above. Keep this typedef separate so
+ * other SDK targets retain their existing declaration.
+ */
+typedef UInt32 (*IOSkywalkTxCompletionQueueAction24H32)(
+    OSObject * owner, IOSkywalkTxCompletionQueue *, IOSkywalkPacket **,
+    UInt32, void * );
+
 /*! @struct IOSkywalkTxCompletionQueueStats
     @abstract A structure containing counters of serveral functions in the IOSkywalkTxCompletionQueue class.
     @field enqueueCounter Increment with each successful enqueue operation, regardless of the function utilized.
@@ -79,6 +89,11 @@ public:
     virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
 
     static IOSkywalkTxCompletionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxCompletionQueueAction action, void * refCon, IOOptionBits options );
+    /* Exact Sequoia 15.8.1 / 24H32 overload; static only, no vtable change. */
+    static IOSkywalkTxCompletionQueue * withPool(
+        IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId,
+        OSObject * owner, IOSkywalkTxCompletionQueueAction24H32 action,
+        void * refCon, IOOptionBits options );
     virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxCompletionQueueAction action, void * refCon, IOOptionBits options );
     virtual void free() APPLE_KEXT_OVERRIDE;
 
