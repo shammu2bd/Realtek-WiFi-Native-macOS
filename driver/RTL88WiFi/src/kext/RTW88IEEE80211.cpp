@@ -4559,6 +4559,10 @@ void RTW88IEEE80211::sendAddbaRequest(
 
     uint8_t dialog = 0;
     if (_lock) IOLockLock(_lock);
+    if (_txBaPending) {
+        if (_lock) IOLockUnlock(_lock);
+        return;
+    }
     dialog = static_cast<uint8_t>(_baDialog + 1U);
     if (dialog == 0) dialog = 1;
     _baDialog = dialog;
@@ -4731,6 +4735,7 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
         uint8_t  tid    = (uint8_t)((param >> 2) & 0xf);
         bool matched = false;
         bool accepted = false;
+        auto mutation = beginTxStateMutation();
         if (_lock) IOLockLock(_lock);
         if (_txBaPending && b[2] == _baDialog && tid == _baTid) {
             matched = true;
@@ -4744,6 +4749,7 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
             }
         }
         if (_lock) IOLockUnlock(_lock);
+        mutation.finish();
         if (!matched) break;
         if (accepted)
             IOLog("rtw88: TX ADDBA accepted (tid=%u) — uplink A-MPDU on\n", tid);
@@ -4762,6 +4768,7 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
         const uint16_t reason = (uint16_t)(b[4] | (b[5] << 8));   /* 37 declined, 38 unknown BA, 39 timeout */
         bool tore = false;
         bool wasActive = false;
+        auto mutation = beginTxStateMutation();
         if (_lock) IOLockLock(_lock);
         tore = !initiator && tid == _baTid;
         wasActive = _txBAState.active();
@@ -4771,6 +4778,7 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
             _baRecovery.onTornDown(rtw88JoinNowUS());
         }
         if (_lock) IOLockUnlock(_lock);
+        mutation.finish();
         if (initiator)
             rxBaTeardown(tid);
         IOLog("rtw88: RX DELBA tid=%u initiator=%d reason=%u uplink_was_active=%d%s\n",
