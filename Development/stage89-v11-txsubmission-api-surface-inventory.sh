@@ -124,8 +124,10 @@ scan_roots=[root/"MacKernelSDK"/"Headers",root/"src"]
 surface_terms=re.compile(r"IOSkywalkTxSubmissionQueue|withPoolAndServiceClass|initWithPool|kern_packet_svc_class_t",re.I)
 surface_rows=["STAGE89_V11_PROJECT_API_SURFACE_INDEX"]
 header_decls=[]
+project_method_contexts=[]
 matches=0
 for base in scan_roots:
+ is_sdk_header=base.name=="Headers"
  for p in sorted(x for x in base.rglob("*") if x.is_file() and x.suffix.lower() in exts):
   try: lines=p.read_text(errors="replace").splitlines()
   except Exception: continue
@@ -138,7 +140,9 @@ for base in scan_roots:
     lo=max(0,i-1); hi=min(len(lines),i+3)
     block=" ".join(x.strip() for x in lines[lo:hi])
     if "withPool" in block or "initWithPool" in block:
-     header_decls.append((rel,i+1,block[:900]))
+     context=(rel,i+1,block[:900])
+     project_method_contexts.append(context)
+     if is_sdk_header: header_decls.append(context)
 (out/"sdk-api-surface-index.txt").write_text("\n".join(surface_rows)+"\n")
 
 # Parse the exact target fileset symbols. Include all class-owned symbols, not only factories.
@@ -210,7 +214,9 @@ cross=[
  "STAGE89_V11_PROJECT_SDK_TO_TARGET_API_CROSSWALK",
  "PROJECT_SURFACE_ROOTS=MacKernelSDK/Headers;src",
  "PROJECT_API_MATCH_LINES="+str(matches),
+ "PROJECT_METHOD_REFERENCE_CONTEXTS="+str(len(project_method_contexts)),
  "PROJECT_WITHPOOL_DECLARATION_CONTEXTS="+str(len(header_withpool)),
+ "PROJECT_SOURCE_METHOD_REFERENCE_CONTEXTS="+str(len(project_method_contexts)),
  "PROJECT_WITHPOOLANDSERVICECLASS_DECLARATION_CONTEXTS="+str(len(header_explicit)),
  "PROJECT_INITWITHPOOL_DECLARATION_CONTEXTS="+str(len(header_init)),
  "PROJECT_SOURCE_FILES_USING_TXSUBMISSION_STATIC_FACTORY="+str(len(source_withpool)),
