@@ -1247,7 +1247,8 @@ UInt32 RTW88IEEE80211::outputPacket(mbuf_t m)
 }
 
 UInt32 RTW88IEEE80211::outputPacketWithCompletion(
-    mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie)
+    mbuf_t m, RTW88TxCompletionCallback callback, void *context, void *cookie,
+    uint8_t accessCategory, uint8_t tid)
 {
     if (!m) {
         if (callback)
@@ -1285,7 +1286,8 @@ UInt32 RTW88IEEE80211::outputPacketWithCompletion(
     /* txDataFrame() consumes m in all paths. Once its skb is handed to rtw88,
      * the completion callback follows that skb until either the PCI TX status
      * callback or an early free/reset path reports its terminal outcome. */
-    const bool submitted = txDataFrame(m, callback, context, cookie);
+    const bool submitted = txDataFrame(
+        m, callback, context, cookie, accessCategory, tid);
     if (!submitted && callback)
         callback(context, cookie, false);
     return submitted ? kIOReturnOutputSuccess : kIOReturnOutputDropped;
@@ -4886,9 +4888,12 @@ void RTW88IEEE80211::deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
 bool RTW88IEEE80211::txDataFrame(mbuf_t m,
                                   RTW88TxCompletionCallback callback,
                                   void *completionContext,
-                                  void *completionCookie)
+                                  void *completionCookie,
+                                  uint8_t accessCategory,
+                                  uint8_t tid)
 {
-    if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta) {
+    if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta ||
+        accessCategory >= IEEE80211_NUM_ACS || tid > 7) {
         if (m) mbuf_freem(m);
         return false;
     }
@@ -4943,11 +4948,11 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
      * for data frames (no hw-assigned SN on the data path). */
     h->seq_ctrl = cpu_to_le16((uint16_t)((qos ? _dataSeq++ : _txSeq++) & 0xFFF) << 4);
 
-    /* QoS Control (2 bytes, LE): TID in bits 0-3 (BE = 0), Normal-Ack, no
-     * A-MSDU. */
+    /* QoS Control carries the TID selected from the originating Skywalk
+     * service class (BK=1, BE=0, VI=5, VO=6). */
     if (qos) {
         uint8_t *qosc = skb_put(skb, 2);
-        qosc[0] = (uint8_t)(_baTid & IEEE80211_QOS_CTL_TID_MASK);
+        qosc[0] = (uint8_t)(tid & IEEE80211_QOS_CTL_TID_MASK);
         qosc[1] = 0;
     }
 
@@ -4985,22 +4990,20 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
         }
     }
 
-    /* Route to the Best-Effort hardware ring with a BE qsel.  queue_mapping
-     * picks the ring (ac_to_hwq[AC_BE] = RTW_TX_QUEUE_BE); priority becomes
-     * the TX-desc qsel (TID 0 = BE).  Without this the frame defaults to
-     * queue_mapping 0 (AC_VO) and lands in the wrong ring. */
-    skb_set_queue_mapping(skb, IEEE80211_AC_BE);
-    skb->priority = 0;
+    /* Preserve the Skywalk WMM service class through mac80211's two
+     * distinct selectors: queue_mapping chooses the hardware AC ring and
+     * priority becomes the TX descriptor/QoS TID. */
+    skb_set_queue_mapping(skb, accessCategory);
+    skb->priority = tid;
     skb->protocol = cpu_to_be16(ethertype);
 
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
     memset(info, 0, sizeof(*info));
     info->flags = IEEE80211_TX_CTL_FIRST_FRAGMENT;
-    /* Once the uplink BlockAck agreement is up, mark BE-TID frames for
-     * aggregation: rtw88 then sets the descriptor's AGG_EN bit and the hardware
-     * builds A-MPDUs. (rtw_tx reads this flag directly; the txq/RTW_TXQ_AMPDU
-     * path is unused by this port.) */
-    if (qos && _txBaActive && ethertype != ETH_P_PAE)
+    /* The existing BlockAck agreement is for the infrastructure BE TID
+     * only. Never apply that BA state to BK/VI/VO traffic. */
+    if (qos && accessCategory == IEEE80211_AC_BE &&
+        tid == _baTid && _txBaActive && ethertype != ETH_P_PAE)
         info->flags |= IEEE80211_TX_CTL_AMPDU;
     info->band  = (_targetBSS.channel > 14) ? NL80211_BAND_5GHZ
                                             : NL80211_BAND_2GHZ;
