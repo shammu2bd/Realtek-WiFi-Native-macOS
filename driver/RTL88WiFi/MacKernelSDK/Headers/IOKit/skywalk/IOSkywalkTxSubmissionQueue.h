@@ -80,6 +80,15 @@ public:
 
     static IOSkywalkTxSubmissionQueue * withPoolAndServiceClass( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
     static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+    /*
+     * Target-backed Sequoia 15.8.1 / 24H32 x86_64 overload.
+     * The target exports this exact withPool symbol with two trailing UInt32
+     * arguments after refCon: options, then serviceClass. Its implementation
+     * forwards serviceClass, capacity, queueId to initWithPool in that order.
+     * Do not replace this with a guessed call to initWithPool: the public SDK
+     * declaration for that initializer has a different argument order.
+     */
+    static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options, UInt32 serviceClass );
     static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
     virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
     virtual void free() APPLE_KEXT_OVERRIDE;
