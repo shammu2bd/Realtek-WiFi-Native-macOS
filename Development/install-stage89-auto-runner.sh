@@ -8,7 +8,7 @@ SCRIPT="$BASE/stage89-auto-runner.sh"
 TMP="$BASE/stage89-auto-runner.sh.download"
 PLIST="$HOME/Library/LaunchAgents/com.realtekwifi.stage89-auto-runner.plist"
 LABEL="com.realtekwifi.stage89-auto-runner"
-EXPECTED_BLOB_SHA="600b8bc3a225393246cac7745909ac7dba3bd85f"
+EXPECTED_BLOB_SHA="5171dd683d55bbf0c9148515f43059273dc7c762"
 fail(){ echo "INSTALL_ERROR=$*" >&2; exit 1; }
 for t in curl gh python3 sw_vers uname launchctl; do command -v "$t" >/dev/null 2>&1 || fail "Missing command: $t"; done
 [[ -d "$ROOT/driver/RTL88WiFi/src" ]] || fail "Project folder not found: $ROOT"
