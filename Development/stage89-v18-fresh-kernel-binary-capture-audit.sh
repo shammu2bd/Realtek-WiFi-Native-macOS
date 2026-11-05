@@ -350,7 +350,7 @@ rows=[
  "TARGET_ACTION_ONLY_WRAPPER_PUSHES_0xffffffff="+("YES" if push_minus_one else "NOT_PROVEN"),
  "SOURCE_FACTORY_CALLS="+str(src_calls),
  "SOURCE_USES_EXPLICIT_SERVICECLASS_FACTORY="+("YES" if src_explicit else "NO"),
- "SDK_TO_TARGET_EXPLICIT_FACTORY_MAPPING="+("PROVEN" if len(explicit)>0 else "NOT_PROVEN"),
+ "SDK_TO_TARGET_EXPLICIT_FACTORY_MAPPING=NOT_PROVEN_PENDING_EXACT_DECLARATION_TO_TARGET_ABI_CROSSWALK",
  "TARGET_INIT_ABI_ORDER=REQUIRES_REGISTER_AND_STACK_ARGUMENT_REVIEW",
  "FOUR_WMM_SERVICE_CLASSES="+",".join(classes),
  "EXPECTED_FOUR_WMM_SERVICE_CLASSES="+",".join(expected),
@@ -363,7 +363,7 @@ gate=[
  "CURRENT_TX_SUBMISSION_QUEUE_COUNT="+str(src_calls),
  "REQUIRED_TX_SUBMISSION_QUEUE_COUNT=4",
  "WMM_SERVICE_CLASSES="+",".join(classes),
- "FOUR_DISTINCT_TX_QUEUE_CONSTRUCTION="+("FEASIBLE_ONLY_IF_VERIFIED_FACTORY_ABI" if len(explicit)>0 else "BLOCKED_UNPROVEN_FACTORY_MAPPING"),
+ "FOUR_DISTINCT_TX_QUEUE_CONSTRUCTION=BLOCKED_UNPROVEN_FACTORY_MAPPING",
  "STABLE_FOUR_POINTER_ARRAY=NOT_IMPLEMENTED_IN_CURRENT_SOURCE",
  "NATIVE_QUEUE_REGISTRATION=NOT_FOUND_IN_CURRENT_SOURCE" if not re.search(r"(?:createWithQueues|initWithQueues|registerNetworkInterface)",src) else "REGISTRATION_SYMBOL_REFERENCE_FOUND_REQUIRES_REVIEW",
  "PRIVATE_FIELD_WRITE=PROHIBITED",
@@ -445,7 +445,7 @@ check={
  "native_queue_registration_present":registration_calls>0,
  "v15_pointer_tests_executable":"STATUS=DESIGN_ONLY_NOT_IMPLEMENTED" not in ptr,
  "v15_ownership_tests_proven":"queueset_copies_control_word_and_initializes_from_queue_array=PASS" in own,
- "factory_abi_resolved":"SDK_TARGET_DIRECT_FACTORY_MAPPING=PROVEN" in (p/"factory-abi-crosswalk.txt").read_text(errors="replace"),
+ "factory_abi_resolved":"SDK_TO_TARGET_EXPLICIT_FACTORY_MAPPING=PROVEN" in (p/"factory-abi-crosswalk.txt").read_text(errors="replace"),
  "v17_native_setter_callability_proven":"NATIVE_QUEUE_USERNETWORK_SETTER_CALLABILITY=PROVEN" in v17,
  "all_four_callback_entrypoints_exist":callback_entrypoints_all,
  "callback_acceptance_no_longer_fail_closed":not callback_accept_fail_closed,
@@ -503,6 +503,19 @@ PY20
 esac
 
 {
+ echo "========== STAGE 89 V$V — AUDIT REPORT =========="
+ echo "RUN=$RUN"
+ echo "PREDECESSOR=$PREV_RUN"
+ echo
+ cat "$OUT/audit-summary.txt"
+ echo
+ cat "$OUT/decision.txt"
+ for name in bootkc-capture-metadata.txt fresh-kernel-binary-findings.txt factory-abi-crosswalk.txt four-queue-feasibility.txt stage89-exit-gate-matrix.txt; do
+  if [[ -f "$OUT/$name" ]]; then echo; echo "===== $name ====="; cat "$OUT/$name"; fi
+ done
+} > "$OUT/report.txt"
+
+{
  echo "========== STAGE 89 V$V — READ-ONLY AUDIT =========="
  echo "STAGE89_V$V_RUN: $RUN"
  echo "STAGE89_V$V_VERSION: READ_ONLY_AUDIT"
@@ -538,7 +551,7 @@ p=pathlib.Path(sys.argv[1]); v=sys.argv[2]; run=sys.argv[3]; prev=sys.argv[4]
 names=sys.argv[5:] if len(sys.argv)>5 else []
 # Include every purpose-built evidence file, excluding temporary/raw cache and console files.
 allowed=set([
- "bootkc-capture-metadata.txt","native-kernel-method-index.txt","native-kernel-method-disassembly.txt","fresh-kernel-binary-findings.txt",
+ "report.txt","bootkc-capture-metadata.txt","native-kernel-method-index.txt","native-kernel-method-disassembly.txt","fresh-kernel-binary-findings.txt",
  "factory-abi-crosswalk.txt","four-queue-feasibility.txt","stage89-exit-gate-matrix.txt",
  "audit-summary.txt","decision.txt","checkpoint-block.txt"
 ])
