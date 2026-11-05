@@ -9,7 +9,7 @@ SCRIPT="$APP/stage89-auto-runner.sh"
 TMP="$APP/stage89-auto-runner.sh.download"
 PLIST="$HOME/Library/LaunchAgents/com.realtekwifi.stage89-auto-runner.plist"
 LABEL="com.realtekwifi.stage89-auto-runner"
-EXPECTED_BLOB_SHA="3d701435569f2461bf642a5882ea0f3a58baf0ee"
+EXPECTED_BLOB_SHA="daa021bed038c14f512b9244925d340b3e6fe078"
 fail(){ echo "INSTALL_ERROR=$*" >&2; exit 1; }
 for t in curl gh python3 sw_vers uname launchctl; do command -v "$t" >/dev/null 2>&1 || fail "Missing command: $t"; done
 [[ "$(sw_vers -productVersion)" == "15.8.1" && "$(sw_vers -buildVersion)" == "24H32" && "$(uname -m)" == "x86_64" ]] || fail "This supervisor is pinned to macOS Sequoia 15.8.1 (24H32) x86_64"
