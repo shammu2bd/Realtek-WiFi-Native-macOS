@@ -115,7 +115,7 @@ assert adapter_unbind_pos < owner_detach_pos < queue_destroy_pos
 assert "bool _txAdapterBoundToQueues = false;" in controller_h
 
 # Queue owner cannot be rolled back underneath the retained adapter context.
-assert "if (!adapter->isBound())" in queues_cpp
+assert "if (!adapter->isBoundToPool(_txPool))" in queues_cpp
 assert "if (!adapter->isUnbound() || adapter->hasOutstandingCompletions())" in queues_cpp
 destroy_start = queues_cpp.index("void RTW88WCLSkywalkQueues::destroyQueues()")
 destroy_body = queues_cpp[destroy_start:]
