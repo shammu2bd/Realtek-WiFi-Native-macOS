@@ -1,0 +1,107 @@
+/* SPDX-License-Identifier: GPL-2.0-only */
+#include "../driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp"
+
+#include <atomic>
+#include <cassert>
+#include <cstdint>
+#include <thread>
+#include <vector>
+#include <sched.h>
+
+static void testLifecycleTransitions()
+{
+    RTW88WCLTxSubmissionGate gate;
+    assert(gate.isUnbound());
+    assert(!gate.enterSubmission());
+    assert(!gate.finishBind());
+
+    assert(gate.beginBind());
+    assert(!gate.beginBind());
+    assert(!gate.enterSubmission());
+    assert(gate.finishBind());
+    assert(gate.isBound());
+    assert(gate.enterSubmission());
+    assert(gate.inFlight() == 1);
+
+    assert(gate.beginUnbind());
+    assert(!gate.isBound());
+    assert(!gate.enterSubmission());
+    assert(!gate.canFinishUnbind());
+    gate.leaveSubmission();
+    assert(gate.canFinishUnbind());
+    assert(gate.finishUnbind());
+    assert(gate.isUnbound());
+    assert(!gate.finishUnbind());
+
+    /* A quiesced adapter can be rebound only after full unbind. */
+    assert(gate.beginBind());
+    assert(gate.finishBind());
+    assert(gate.beginUnbind());
+    assert(gate.finishUnbind());
+}
+
+static void testUnbindWaitsForRacingSubmitters()
+{
+    RTW88WCLTxSubmissionGate gate;
+    assert(gate.beginBind());
+    assert(gate.finishBind());
+
+    constexpr uint32_t kThreads = 8;
+    std::atomic<bool> stop{false};
+    std::atomic<uint32_t> active{0};
+    std::atomic<uint32_t> entered{0};
+    std::vector<std::thread> producers;
+    producers.reserve(kThreads);
+
+    for (uint32_t n = 0; n < kThreads; ++n) {
+        producers.emplace_back([&] {
+            while (!stop.load(std::memory_order_acquire)) {
+                if (!gate.enterSubmission()) {
+                    sched_yield();
+                    continue;
+                }
+                active.fetch_add(1, std::memory_order_acq_rel);
+                entered.fetch_add(1, std::memory_order_relaxed);
+                sched_yield();
+                active.fetch_sub(1, std::memory_order_acq_rel);
+                gate.leaveSubmission();
+            }
+        });
+    }
+
+    while (entered.load(std::memory_order_acquire) < 1000)
+        sched_yield();
+
+    assert(gate.beginUnbind());
+    stop.store(true, std::memory_order_release);
+    for (auto &producer : producers)
+        producer.join();
+
+    assert(active.load(std::memory_order_acquire) == 0);
+    assert(gate.inFlight() == 0);
+    assert(!gate.enterSubmission());
+    assert(gate.canFinishUnbind());
+    assert(gate.finishUnbind());
+    assert(gate.isUnbound());
+}
+
+static void testAbortAndBusyBinding()
+{
+    RTW88WCLTxSubmissionGate gate;
+    assert(gate.beginBind());
+    gate.abortBind();
+    assert(gate.isUnbound());
+
+    assert(gate.beginBind());
+    assert(!gate.beginUnbind()); // cannot tear down a partially bound adapter
+    gate.abortBind();
+    assert(gate.isUnbound());
+}
+
+int main()
+{
+    testLifecycleTransitions();
+    testUnbindWaitsForRacingSubmitters();
+    testAbortAndBusyBinding();
+    return 0;
+}
