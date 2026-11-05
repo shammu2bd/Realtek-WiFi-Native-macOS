@@ -726,7 +726,7 @@ void RTW88IEEE80211::clearKeys()
     _externalGTKInstalled = false;
     memset(_ptk, 0, sizeof(_ptk));
     memset(_gtk, 0, sizeof(_gtk));
-    __atomic_store_n(&_ccmpTxPn, 0ULL, __ATOMIC_RELEASE);
+    _txSequenceNumbers.resetCCMP();
     _rxCcmpIvSkipLogged = false;
     _snonceValid = false;
     _m3KeysInstalled = false;
@@ -753,8 +753,7 @@ void RTW88IEEE80211::releaseSta()
     _sta = nullptr;
     _staAllocSize = 0;
     _txBaActive = false;
-    for (uint8_t tid = 0; tid < 8; ++tid)
-        __atomic_store_n(&_dataSeq[tid], 0, __ATOMIC_RELEASE);
+    _txSequenceNumbers.resetQoS();
     rxBaTeardownAll();
 }
 
@@ -818,7 +817,7 @@ bool RTW88IEEE80211::installKey(struct ieee80211_key_conf **slot, bool pairwise,
 
     *slot = key;
     if (pairwise)
-        __atomic_store_n(&_ccmpTxPn, 0ULL, __ATOMIC_RELEASE);
+        _txSequenceNumbers.resetCCMP();
     IOLog("rtw88: installed %s %s key idx=%u hw_idx=%u\n",
           pairwise ? "pairwise" : "group", rtw88CipherName(cipher),
           keyidx, key->hw_key_idx);
@@ -4888,24 +4887,17 @@ void RTW88IEEE80211::deliverAWDLEthernet(const uint8_t *da, const uint8_t *sa,
 
 uint16_t RTW88IEEE80211::nextTxSequence()
 {
-    return static_cast<uint16_t>(
-        __atomic_fetch_add(&_txSeq, 1, __ATOMIC_RELAXED) & 0x0fffU);
+    return _txSequenceNumbers.nextNonQoS();
 }
 
 uint16_t RTW88IEEE80211::nextDataSequence(uint8_t tid)
 {
-    if (tid >= 8)
-        return 0;
-    return static_cast<uint16_t>(
-        __atomic_fetch_add(&_dataSeq[tid], 1, __ATOMIC_RELAXED) & 0x0fffU);
+    return _txSequenceNumbers.nextQoS(tid);
 }
 
 uint16_t RTW88IEEE80211::currentDataSequence(uint8_t tid) const
 {
-    if (tid >= 8)
-        return 0;
-    return static_cast<uint16_t>(
-        __atomic_load_n(&_dataSeq[tid], __ATOMIC_ACQUIRE) & 0x0fffU);
+    return _txSequenceNumbers.currentQoS(tid);
 }
 
 bool RTW88IEEE80211::txDataFrame(mbuf_t m,
@@ -4982,23 +4974,12 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
     if (protected_frame) {
         /* Allocate a unique 48-bit CCMP PN across concurrent WMM queue
          * callbacks. Refuse exhaustion rather than wrap and reuse a nonce. */
-        static constexpr uint64_t kCCMPTxPacketNumberMax = 0x0000FFFFFFFFFFFFULL;
-        uint64_t previous = __atomic_load_n(&_ccmpTxPn, __ATOMIC_RELAXED);
         uint64_t packetNumber = 0;
-        for (;;) {
-            if (previous >= kCCMPTxPacketNumberMax) {
-                kfree_skb(skb);
-                mbuf_freem(m);
-                IOLog("rtw88: CCMP TX packet number exhausted; dropping frame\n");
-                return false;
-            }
-            const uint64_t next = previous + 1;
-            if (__atomic_compare_exchange_n(&_ccmpTxPn, &previous, next, false,
-                                            __ATOMIC_ACQ_REL,
-                                            __ATOMIC_RELAXED)) {
-                packetNumber = next;
-                break;
-            }
+        if (!_txSequenceNumbers.nextCCMP(&packetNumber)) {
+            kfree_skb(skb);
+            mbuf_freem(m);
+            IOLog("rtw88: CCMP TX packet number exhausted; dropping frame\\n");
+            return false;
         }
 
         uint8_t *ccmp = skb_put(skb, 8);
