@@ -11,6 +11,7 @@ controller_h = (KEXT / "RTW88WCLController.hpp").read_text()
 controller_cpp = (KEXT / "RTW88WCLController.cpp").read_text()
 makefile = (ROOT / "driver/RTL88WiFi/Makefile").read_text()
 rx_queue_sdk = (ROOT / "driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxSubmissionQueue.h").read_text()
+tx_completion_sdk = (ROOT / "driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h").read_text()
 
 for queue, member in (
     ("IOSkywalkTxSubmissionQueue", "_txSubmissionQueues"),
@@ -59,12 +60,12 @@ assert "RTL88WiFi-WCL-TX" in cpp and "RTL88WiFi-WCL-RX" in cpp
 
 # No callbacks may pretend packets have been consumed or completed yet.
 for action in ("txSubmissionAction", "txCompletionAction", "rxSubmissionAction", "rxCompletionAction"):
-    return_type = "UInt32" if action == "txSubmissionAction" else "IOReturn"
+    return_type = "UInt32" if action in ("txSubmissionAction", "txCompletionAction") else "IOReturn"
     start = cpp.index(f"{return_type} RTW88WCLSkywalkQueues::{action}(")
     end = cpp.find("\n}\n", start)
     assert end > start, f"could not locate complete callback body: {action}"
     body = cpp[start:end]
-    expected_zero = "return static_cast<UInt32>(0)" if action == "txSubmissionAction" else "return static_cast<IOReturn>(0)"
+    expected_zero = "return static_cast<UInt32>(0)" if action in ("txSubmissionAction", "txCompletionAction") else "return static_cast<IOReturn>(0)"
     assert expected_zero in body, f"{action} must report zero accepted/completed packets"
     assert "completeWithQueue" not in body and "mbuf_freem" not in body
 
@@ -79,5 +80,8 @@ assert "WCL24H32_SKYWALK_QUEUES_OBJ" in makefile
 assert "withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler24H32 handler, IOSkywalkTxSubmissionQueueAction24H32 action, void * refCon, IOOptionBits options, UInt32 serviceClass );" in (ROOT / "driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h").read_text()
 assert "WCL24H32_SKYWALK_QUEUES_OBJ" not in makefile.split("AIRPORT_ALL_OBJS :=", 1)[1].split("\n", 1)[0]
 assert "virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );" in rx_queue_sdk
+assert "typedef UInt32 (*IOSkywalkTxCompletionQueueAction24H32)" in tx_completion_sdk
+assert "IOSkywalkTxCompletionQueueAction24H32 action" in tx_completion_sdk
+assert "static IOSkywalkTxCompletionQueue * withPool(" in tx_completion_sdk
 
 print("PASS: four Skywalk queue objects and pools are owned with journal rollback; callbacks remain fail-closed and unregistered")
