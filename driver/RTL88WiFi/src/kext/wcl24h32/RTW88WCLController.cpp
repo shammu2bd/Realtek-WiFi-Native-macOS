@@ -233,6 +233,19 @@ IOReturn RTW88WCLController::releaseNativeResources()
         return packetPathStatus; // Keep the radio, interface and PCI callbacks alive.
     }
 
+    /* Close TX callback admission before stopping RTW88. If a Skywalk
+     * submission callback is still copying/reserving a completion ticket,
+     * keep the radio and PCI callback context alive and retry teardown after
+     * that bounded callback leaves. */
+    if (_txAdapter) {
+        const IOReturn txQuiesceStatus = _txAdapter->quiesceSubmissions();
+        if (txQuiesceStatus != kIOReturnSuccess) {
+            IOLog("rtl88wifi-wcl: TX submission callback quiesce deferred: 0x%08x\\n",
+                  txQuiesceStatus);
+            return txQuiesceStatus;
+        }
+    }
+
     /* Stop the RTW88 RX/TX producer before removing its deferred consumers or
      * disabling PCI interrupts. The staged path currently leaves
      * _radioStarted false; preserve this ordering when native radio start is
