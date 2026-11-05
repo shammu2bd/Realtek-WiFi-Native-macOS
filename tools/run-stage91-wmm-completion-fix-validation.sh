@@ -1,6 +1,6 @@
 #!/bin/bash
 # Validate the Stage91 WMM-routing and completion-retry fixes.
-# Runs the existing ten-test host/source suite, then compiles only seven
+# Runs the existing eleven-test host/source suite, then compiles only seven
 # objects (six WCL objects plus RTW88IEEE80211.o). No link/sign/install/load.
 set -u
 
