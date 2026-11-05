@@ -1061,7 +1061,7 @@ void RTW88IEEE80211::stop()
     if (_pcidev) rtw_pci_remove(_pcidev);
     _rtwdev = nullptr;
     _hw     = nullptr;
-    setRadioState(RTW88_STATE_IDLE);
+    __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
     __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
@@ -2046,7 +2046,7 @@ void RTW88IEEE80211::deliverDataFrame(struct sk_buff *skb)
 
         if (ethertype == ETH_P_PAE) {
             IOLog("rtw88: EAPOL RX external=%d state=%d len=%u\n",
-                  _externalSupplicant, _state,
+                  _externalSupplicant, __atomic_load_n(&_state, __ATOMIC_ACQUIRE),
                   skb->len - payload_off - 8);
         }
 
@@ -2694,7 +2694,7 @@ IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
         }
     }
 
-    const RTW88State returnState = _state;
+    const RTW88State returnState = __atomic_load_n(&_state, __ATOMIC_ACQUIRE);
     _scanPartial = connectedScan;
     if (!connectedScan) {
         IOLockLock(_bssLock);
