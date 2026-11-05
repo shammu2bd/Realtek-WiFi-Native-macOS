@@ -156,7 +156,7 @@ checks={
  "v15_inventory_proves_one_base_tx_submission_queue":"one_factory_assignment_for__txSubmission=PASS" in inv,
  "wmm_requires_exact_four_distinct_values":"four_distinct_wmm_values=PASS" in own and "0x00100080,0x00000000,0x00380100,0x00400180" in contract,
  "four_pointer_test_contract_still_design_only":"STATUS=DESIGN_ONLY_NOT_IMPLEMENTED" in contract,
- "registration_remains_absent_in_source":not re.search(r"registerEthernetInterface\\s*\\(",re.sub(r"/\\*.*?\\*/|//[^\\n]*","",cpp,flags=re.S)),
+ "registration_remains_absent_in_source":not re.search(r"registerEthernetInterface\s*\(",re.sub(r"/\*.*?\*/|//[^\n]*","",cpp,flags=re.S)),
  "four_callback_entrypoints_remain_fail_closed":"callback_acceptance_is_currently_fail_closed=PASS" in inv
 }
 lines=["STAGE89_V16_FACTORY_COMPATIBILITY_CHECKS"]
