@@ -115,6 +115,7 @@ pin sdk-rx-completion.h 70f2858ddbb16185c674ccdf5366f20a8cb7a9b6 "$BASE/driver/R
 pin v6-method-index.txt 93a03a3200dd5e7f4770c3602f92bfae02bcde19 "$BASE/Development/Logs/stage89-v6/run-20261104-122352-a8be252ec590/native-queue-method-index.txt"
 pin v6-factory-facts.txt 4eb4433d8ec67dee4ccaab9860ec7448b7c38ddb "$BASE/Development/Logs/stage89-v6/run-20261104-122352-a8be252ec590/native-queue-factory-performcommand-facts.txt"
 pin v12-factory-crosswalk.txt 5c1afc5bd220a8da52e9dc9d6bfed6b7b8da6831 "$BASE/Development/Logs/stage89-v12/run-20261105-043238-9923f409a010/callback-factory-api-crosswalk.txt"
+pin v12-audit-summary.txt cfbfb24f1ef06870f9ab20e49889ffc816a2a1be "$BASE/Development/Logs/stage89-v12/run-20261105-043238-9923f409a010/audit-summary.txt"
 pin v15-queue-inventory.txt aa5ed15566deebd6bfe780f7655f081852973252 "$BASE/Development/Logs/stage89-v15/run-20261105-051755-b866b1583b4d/queue-construction-inventory.txt"
 pin v15-ownership-audit.txt c178cc420e81eba32a46b0a920f2d5354459f3ba "$BASE/Development/Logs/stage89-v15/run-20261105-051755-b866b1583b4d/ownership-lifetime-audit.txt"
 pin v15-pointer-contract.txt 89b8d0df989de5abe85fc2ecf168359aabe76b91 "$BASE/Development/Logs/stage89-v15/run-20261105-051755-b866b1583b4d/pointer-array-test-contract.txt"
@@ -131,6 +132,7 @@ rc=(p/"sdk-rx-completion.h").read_text()
 idx=(p/"v6-method-index.txt").read_text()
 facts=(p/"v6-factory-facts.txt").read_text()
 cross=(p/"v12-factory-crosswalk.txt").read_text()
+v12summary=(p/"v12-audit-summary.txt").read_text()
 inv=(p/"v15-queue-inventory.txt").read_text()
 own=(p/"v15-ownership-audit.txt").read_text()
 contract=(p/"v15-pointer-contract.txt").read_text()
@@ -149,9 +151,9 @@ checks={
  "target_index_has_no_named_explicit_factory_symbol":"IOSkywalkTxSubmissionQueue23withPoolAndServiceClass" not in idx,
  "target_index_inventories_action_only_wrapper":"IOSkywalkTxSubmissionQueue8withPool" in idx and "IOSkywalkTxSubmissionQueue12initWithPool" in idx,
  "target_action_only_default_sentinel_documented":"TARGET_ACTION_ONLY_DEFAULT_SERVICE_CLASS=0xffffffff" in cross,
- "v12_crosswalk_records_sdk_target_mapping_not_found":"DIRECT_SDK_TO_TARGET_FACTORY_MAPPING=NOT_FOUND" in cross,
- "v12_crosswalk_records_main_target_arg_order":"TARGET_MAIN_FACTORY_ORDER=pool,capacity,queueId,owner,queryHandler,action,refCon,options,serviceClass" in cross,
- "v12_crosswalk_records_explicit_sdk_arg_order":"SDK_NAMED_WITHPOOLANDSERVICECLASS_ORDER=pool,capacity,queueId,serviceClass,owner,queryHandler,action,refCon,options" in cross,
+ "v12_crosswalk_records_sdk_target_mapping_not_found":"SDK_TO_TARGET_DIRECT_OVERLOAD_MAPPING=NOT_FOUND" in cross,
+ "v12_crosswalk_records_main_target_arg_order":"TARGET_MAIN_FACTORY_ORDER=pool,capacity,queueId,owner,queryHandler,action,refCon,options,serviceClass" in v12summary,
+ "v12_crosswalk_records_explicit_sdk_arg_order":"SDK_NAMED_WITHPOOLANDSERVICECLASS_ORDER=pool,capacity,queueId,serviceClass,owner,queryHandler,action,refCon,options" in v12summary,
  "v15_inventory_proves_no_tx_array_and_no_registration":"no_four_entry_tx_submission_pointer_array=PASS" in inv and "no_registration_call_in_current_source=PASS" in inv,
  "v15_inventory_proves_one_base_tx_submission_queue":"one_factory_assignment_for__txSubmission=PASS" in inv,
  "wmm_requires_exact_four_distinct_values":"four_distinct_wmm_values=PASS" in own and "0x00100080,0x00000000,0x00380100,0x00400180" in contract,
