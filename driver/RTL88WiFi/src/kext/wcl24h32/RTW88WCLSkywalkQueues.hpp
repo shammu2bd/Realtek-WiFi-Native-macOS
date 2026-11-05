@@ -29,6 +29,7 @@ public:
     void destroyQueues();
     bool queuesAllocated() const;
     bool txSubmissionQueuesValid() const;
+    bool resourcesReleased() const;
 
     IOReturn bindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
     IOReturn unbindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
