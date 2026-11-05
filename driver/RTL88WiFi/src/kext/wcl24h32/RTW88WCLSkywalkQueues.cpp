@@ -4,6 +4,8 @@
 #include "RTW88WCLSkywalkQueues.hpp"
 #include "RTW88WCLPacketView.hpp"
 #include "RTW88WCLTXQueueArrayContract.hpp"
+#include "RTW88WCLSkywalkTxAdapter.hpp"
+#include "RTW88WCLTxSubmissionBatch.hpp"
 
 #include <IOKit/IOLib.h>
 #include <libkern/c++/OSMetaClass.h>
@@ -34,6 +36,7 @@ bool RTW88WCLSkywalkQueues::init()
     _txCompletion = nullptr;
     _rxSubmission = nullptr;
     _rxCompletion = nullptr;
+    _txAdapter = nullptr;
     _allocated = false;
     return true;
 }
@@ -265,7 +268,7 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
 
 bool RTW88WCLSkywalkQueues::hasOutstandingResources() const
 {
-    if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion)
+    if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion || _txAdapter)
         return true;
     for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
         if (_txSubmissionQueues[i])
@@ -307,37 +310,70 @@ bool RTW88WCLSkywalkQueues::queuesAllocated() const
            _txCompletion && _rxSubmission && _rxCompletion;
 }
 
+IOReturn RTW88WCLSkywalkQueues::bindTXAdapter(
+    RTW88WCLSkywalkTxAdapter *adapter)
+{
+    if (!adapter)
+        return kIOReturnBadArgument;
+    if (!queuesAllocated())
+        return kIOReturnNotReady;
+    if (_txAdapter)
+        return kIOReturnBusy;
+    if (!adapter->isUnbound())
+        return kIOReturnBusy;
+
+    adapter->retain();
+    _txAdapter = adapter;
+    return kIOReturnSuccess;
+}
+
+IOReturn RTW88WCLSkywalkQueues::unbindTXAdapter(
+    RTW88WCLSkywalkTxAdapter *adapter)
+{
+    if (!adapter || _txAdapter != adapter)
+        return kIOReturnBadArgument;
+    if (!adapter->isUnbound() || adapter->hasOutstandingCompletions())
+        return kIOReturnBusy;
+
+    _txAdapter = nullptr;
+    adapter->release();
+    return kIOReturnSuccess;
+}
+
 /*
- * Sequoia 24H32 callback contract: although the bundled Skywalk action
- * typedefs are declared as IOReturn, the audited queue dispatchers
- * consume these callback return values as packet counts. Zero means
- * that no packets were accepted or completed. Do not return nonzero
- * IOReturn error constants from these action callbacks.
+ * The Sequoia 15.8.1 / 24H32 x86_64 withPool symbol encodes the TX action as
+ * UInt32 (OSObject *, queue *, IOSkywalkPacket * const *, UInt32, void *).
+ * This differs from the generic SDK typedef and the earlier Stage72 source
+ * stub's IOReturn return. The target ABI's UInt32 is the accepted packet count.
  */
+int RTW88WCLSkywalkQueues::submitTXPacket(void *context, void *rawPacket)
+{
+    auto *adapter = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+    auto *packet = static_cast<IOSkywalkPacket *>(rawPacket);
+    return adapter && packet
+               ? static_cast<int>(adapter->submitPacket(packet))
+               : static_cast<int>(kIOReturnNotReady);
+}
+
 UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(
     OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
-    IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+    IOSkywalkPacket * const *packets, UInt32 packetCount, void *refCon)
 {
-    (void)refCon;
     auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
-    if (!self || !self->ownsTXSubmissionQueue(queue) ||
-        !packets || packetCount == 0)
+    if (!self || refCon != self || !self->ownsTXSubmissionQueue(queue) ||
+        !self->queuesAllocated() || !self->_txAdapter || !packets ||
+        packetCount == 0)
         return static_cast<UInt32>(0);
 
-    /* Validate every descriptor before a future TX path is allowed to copy
-     * bytes or hand ownership to RTW88. The callback remains fail-closed:
-     * a validated packet is not yet accepted until its hardware completion
-     * cookie is connected to the native completion queue. */
-    for (UInt32 i = 0; i < packetCount; ++i) {
-        if (!packets[i])
-            return static_cast<UInt32>(0);
-        RTW88WCLPacketView view = {};
-        if (!RTW88WCLResolveEthernetTxPacket(
-                packets[i], self->_txPool, &view))
-            return static_cast<UInt32>(0);
-    }
-
-    return static_cast<UInt32>(0);
+    /* Accept only a bounded contiguous prefix. Each successful adapter call
+     * has retained the Skywalk packet and reserved an asynchronous RTW88
+     * completion ticket. On the first malformed/not-ready/full result, stop:
+     * that packet and the remaining suffix stay owned by Skywalk. No packet
+     * completion or queue mutation is performed in this submit callback.
+     */
+    return RTW88WCLTxSubmissionBatch::submitPrefix<IOSkywalkPacket>(
+        packets, packetCount, &RTW88WCLSkywalkQueues::submitTXPacket,
+        self->_txAdapter);
 }
 
 IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
