@@ -4528,6 +4528,15 @@ void RTW88IEEE80211::sendAddbaRequest(
     } else if (!*existingLease) {
         return;
     }
+
+    uint8_t dialog = 0;
+    if (_lock) IOLockLock(_lock);
+    dialog = static_cast<uint8_t>(_baDialog + 1U);
+    if (dialog == 0) dialog = 1;
+    _baDialog = dialog;
+    _txBaPending = true;
+    if (_lock) IOLockUnlock(_lock);
+
     uint8_t f[24 + 9] = {};
     struct ieee80211_hdr_3addr *h = (struct ieee80211_hdr_3addr *)f;
     h->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT | IEEE80211_STYPE_ACTION);
@@ -4537,27 +4546,29 @@ void RTW88IEEE80211::sendAddbaRequest(
     memcpy(h->addr3, _targetBSS.bssid, 6);
     h->seq_ctrl = cpu_to_le16((uint16_t)(nextTxSequence() & 0xFFF) << 4);
 
-    if (++_baDialog == 0) _baDialog = 1;   /* dialog token must be non-zero */
-
     uint8_t *b = f + 24;
     b[0] = WLAN_CATEGORY_BACK;
     b[1] = WLAN_ACTION_ADDBA_REQ;
-    b[2] = _baDialog;
-    /* Block Ack Parameter Set: A-MSDU(bit0)=0, policy(bit1)=1 (immediate),
-     * TID(bits 2-5), Buffer Size(bits 6-15). */
+    b[2] = dialog;
     uint16_t param = (uint16_t)((1u << 1) |
                                 ((unsigned)(tid & 0xf) << 2) |
                                 ((unsigned)(_baBufSize & 0x3ff) << 6));
     b[3] = (uint8_t)(param & 0xff);
     b[4] = (uint8_t)(param >> 8);
-    b[5] = 0; b[6] = 0;   /* Block Ack Timeout = 0 (no timeout) */
-    /* Block Ack Starting Sequence Control: SSN (bits 4-15) = next data SN
-     * for this TID, aligning the AP's reorder window with its QoS stream. */
+    b[5] = 0; b[6] = 0;
     uint16_t ssc = (uint16_t)((uint16_t)(currentDataSequence(tid) & 0xFFF) << 4);
     b[7] = (uint8_t)(ssc & 0xff);
     b[8] = (uint8_t)(ssc >> 8);
 
-    _txBaPending = txMgmtFrame(f, sizeof(f), existingLease);
+    const bool submitted = txMgmtFrame(f, sizeof(f), existingLease);
+    if (_lock) IOLockLock(_lock);
+    if (!submitted) {
+        _txBaPending = false;
+        _baRecovery.onFailed(rtw88JoinNowUS());
+    } else {
+        _baRecovery.onRequestSent(rtw88JoinNowUS());
+    }
+    if (_lock) IOLockUnlock(_lock);
 }
 
 void RTW88IEEE80211::sendAddbaResponse(uint8_t tid, uint8_t dialog,
@@ -4580,9 +4591,8 @@ void RTW88IEEE80211::sendAddbaResponse(uint8_t tid, uint8_t dialog,
     b[0] = WLAN_CATEGORY_BACK;
     b[1] = WLAN_ACTION_ADDBA_RESP;
     b[2] = dialog;
-    b[3] = (uint8_t)(status & 0xff);   /* Status Code (0 = success) */
+    b[3] = (uint8_t)(status & 0xff);
     b[4] = (uint8_t)(status >> 8);
-    /* Echo the requester's A-MSDU bit; force immediate policy and our TID. */
     uint16_t param = (uint16_t)((unsigned)(req_param & 0x0001u) |
                                 (1u << 1) |
                                 ((unsigned)(tid & 0xf) << 2) |
@@ -4608,18 +4618,26 @@ bool RTW88IEEE80211::htAllowed() const
 
 void RTW88IEEE80211::startTxAggregation()
 {
-    if (_txBAState.active()) return;
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease)
+        return;
+    if (_txBAState.active())
+        return;
     if (!htAllowed() || !_sta || !_sta->deflink.ht_cap.ht_supported) {
-        _baRecovery.cancel();           /* not applicable to this peer: do not keep asking */
+        if (_lock) IOLockLock(_lock);
+        _baRecovery.cancel();
+        if (_lock) IOLockUnlock(_lock);
         return;
     }
-    IOLog("rtw88: starting TX A-MPDU — sending ADDBA request (tid=%u)\n", _baTid);
-    sendAddbaRequest(_baTid);
-    /* 1.0.6: remember the outcome so a lost, declined or torn-down agreement is
-     * retried (housekeeping()); it used to be asked for exactly once. */
-    const uint64_t now = rtw88JoinNowUS();
-    if (_txBaPending) _baRecovery.onRequestSent(now);
-    else              _baRecovery.onFailed(now);     /* could not even be sent */
+
+    if (_lock) IOLockLock(_lock);
+    const bool alreadyPending = _txBaPending;
+    if (_lock) IOLockUnlock(_lock);
+    if (alreadyPending)
+        return;
+
+    IOLog("rtw88: starting TX A-MPDU — sending ADDBA request (tid=%u)\\n", _baTid);
+    sendAddbaRequest(_baTid, &txLease);
 }
 
 /* Called about every 5 s while the radio is up.  Re-negotiates the uplink Block
@@ -4627,18 +4645,24 @@ void RTW88IEEE80211::startTxAggregation()
  * Idempotent and safe to skip: a missed tick only delays the next attempt. */
 void RTW88IEEE80211::housekeeping()
 {
-    if (_state != RTW88_STATE_CONNECTED || !_associatedVisible || !_sta || _handshakePending)
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease || _state != RTW88_STATE_CONNECTED ||
+        !_associatedVisible || !_sta || _handshakePending)
         return;
+
     const uint64_t now = rtw88JoinNowUS();
+    bool retry = false;
+    if (_lock) IOLockLock(_lock);
     if (_txBaPending && _baRecovery.responseOverdue(now)) {
         _txBaPending = false;
         _baRecovery.onFailed(now);
-        IOLog("rtw88: TX ADDBA response timed out; will retry\n");
+        IOLog("rtw88: TX ADDBA response timed out; will retry\\n");
     }
-    if (!_txBAState.active() && !_txBaPending && _baRecovery.due(now)) {
-        IOLog("rtw88: re-negotiating TX A-MPDU after a lost or declined agreement\n");
+    retry = !_txBAState.active() && !_txBaPending && _baRecovery.due(now);
+    if (_lock) IOLockUnlock(_lock);
+
+    if (retry)
         startTxAggregation();
-    }
 }
 
 void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
@@ -4678,16 +4702,26 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
         uint16_t status = (uint16_t)(b[3] | (b[4] << 8));
         uint16_t param  = (uint16_t)(b[5] | (b[6] << 8));
         uint8_t  tid    = (uint8_t)((param >> 2) & 0xf);
-        if (!_txBaPending || b[2] != _baDialog || tid != _baTid) break;
-        _txBaPending = false;
-        if (status == 0 && (param & (1u << 1))) {
-            _txBAState.activate(tid);
-            _baRecovery.onAccepted(rtw88JoinNowUS());
-            IOLog("rtw88: TX ADDBA accepted (tid=%u) — uplink A-MPDU on\n", tid);
-        } else {
-            _baRecovery.onFailed(rtw88JoinNowUS());
-            IOLog("rtw88: TX ADDBA rejected status=%u tid=%u; will retry\n", status, tid);
+        bool matched = false;
+        bool accepted = false;
+        if (_lock) IOLockLock(_lock);
+        if (_txBaPending && b[2] == _baDialog && tid == _baTid) {
+            matched = true;
+            _txBaPending = false;
+            accepted = status == 0 && (param & (1u << 1));
+            if (accepted) {
+                _txBAState.activate(tid);
+                _baRecovery.onAccepted(rtw88JoinNowUS());
+            } else {
+                _baRecovery.onFailed(rtw88JoinNowUS());
+            }
         }
+        if (_lock) IOLockUnlock(_lock);
+        if (!matched) break;
+        if (accepted)
+            IOLog("rtw88: TX ADDBA accepted (tid=%u) — uplink A-MPDU on\\n", tid);
+        else
+            IOLog("rtw88: TX ADDBA rejected status=%u tid=%u; will retry\\n", status, tid);
         break;
     }
     case WLAN_ACTION_DELBA: {
@@ -4699,14 +4733,17 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
          * — our uplink TX BA, so stop aggregating.  initiator=1: AP is the
          * originator — its downlink BA, so drop our RX reorder buffer. */
         const uint16_t reason = (uint16_t)(b[4] | (b[5] << 8));   /* 37 declined, 38 unknown BA, 39 timeout */
-        const bool tore = !initiator && tid == _baTid;
-        const bool wasActive = _txBAState.active();
+        bool tore = false;
+        bool wasActive = false;
+        if (_lock) IOLockLock(_lock);
+        tore = !initiator && tid == _baTid;
+        wasActive = _txBAState.active();
         if (tore) {
             _txBAState.clear();
             _txBaPending = false;
-            /* 1.0.6: ask again (with backoff) instead of staying un-aggregated forever. */
             _baRecovery.onTornDown(rtw88JoinNowUS());
         }
+        if (_lock) IOLockUnlock(_lock);
         if (initiator)
             rxBaTeardown(tid);
         IOLog("rtw88: RX DELBA tid=%u initiator=%d reason=%u uplink_was_active=%d%s\n",
