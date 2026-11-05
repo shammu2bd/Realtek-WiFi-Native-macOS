@@ -44,7 +44,8 @@ for action in ("txSubmissionAction", "txCompletionAction", "rxSubmissionAction",
     start = cpp.index(f"IOReturn RTW88WCLSkywalkQueues::{action}(")
     end = cpp.find("\n}\n", start)
     body = cpp[start:end]
-    assert "return static_cast<IOReturn>(0)" in body, f"{action} must report zero accepted/completed packets"
+    expected_zero = "return static_cast<UInt32>(0)" if action == "txSubmissionAction" else "return static_cast<IOReturn>(0)"
+    assert expected_zero in body, f"{action} must report zero accepted/completed packets"
     assert "completeWithQueue" not in body and "mbuf_freem" not in body
 
 assert "not registered" in cpp.lower()
