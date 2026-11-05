@@ -5,6 +5,7 @@
 #include "RTW88WCL24H32InterfaceABI.hpp"
 #include "RTW88WCLSkywalkQueues.hpp"
 #include "RTW88WCLSkywalkRxAdapter.hpp"
+#include "RTW88WCLSkywalkTxAdapter.hpp"
 #include "../RTW88IEEE80211.hpp"
 
 #include <IOKit/pci/IOPCIDevice.h>
@@ -27,6 +28,8 @@ bool RTW88WCLController::init(OSDictionary *properties)
     _pciBackend = nullptr;
     _skywalkQueues = nullptr;
     _rxAdapter = nullptr;
+    _txAdapter = nullptr;
+    _txAdapterBoundToQueues = false;
     _stagedRxPackets.reset();
     _radio = nullptr;
     _baseStarted = false;
@@ -114,9 +117,10 @@ bool RTW88WCLController::start(IOService *provider)
     }
 
     /* Stage D: reserve native Skywalk queue/pool objects while the PCI and
-     * RTW88 owners are still available for orderly unwind. These objects are
-     * intentionally not registered or scheduled until packet descriptor
-     * conversion and hardware completion correlation are implemented. */
+     * RTW88 owners are still available for orderly unwind. The TX submission
+     * action remains unreachable until a later registration stage enables
+     * queue scheduling; binding here only establishes lifetime ownership.
+     */
     _skywalkQueues = new RTW88WCLSkywalkQueues;
     if (!_skywalkQueues || !_skywalkQueues->init()) {
         if (_skywalkQueues) {
@@ -135,6 +139,37 @@ bool RTW88WCLController::start(IOService *provider)
         }
     }
 
+    /* Stage91: bind the TX adapter to the controller's RTW88 owner and the
+     * exact TX pool that backs all four WMM submission queues, then retain it
+     * in the queue owner as callback context. No queue registration, enable,
+     * event-source attachment, or radio start occurs in this stage. */
+    _txAdapter = new RTW88WCLSkywalkTxAdapter;
+    if (!_txAdapter || !_txAdapter->init()) {
+        if (_txAdapter) {
+            _txAdapter->release();
+            _txAdapter = nullptr;
+        }
+        IOLog("rtl88wifi-wcl: TX adapter allocation failed\n");
+        goto fail;
+    }
+    {
+        const IOReturn adapterStatus =
+            _txAdapter->bind(_radio, _skywalkQueues->txPacketPool());
+        if (adapterStatus != kIOReturnSuccess) {
+            IOLog("rtl88wifi-wcl: TX adapter bind failed: 0x%08x\n",
+                  adapterStatus);
+            goto fail;
+        }
+        const IOReturn queueBindStatus =
+            _skywalkQueues->bindTXAdapter(_txAdapter);
+        if (queueBindStatus != kIOReturnSuccess) {
+            IOLog("rtl88wifi-wcl: TX callback-owner bind failed: 0x%08x\n",
+                  queueBindStatus);
+            goto fail;
+        }
+        _txAdapterBoundToQueues = true;
+    }
+
     /* Stage E: bind the RX workloop consumer to the now-owned 4 KiB RX pool.
      * It copies frames into native packet buffers, but its sink remains
      * rejecting until the registration/completion ABI is closed. */
@@ -151,7 +186,7 @@ bool RTW88WCLController::start(IOService *provider)
     }
 
     provider->setProperty("RTW88WCLControllerStage",
-                           "PCI, RTW88 and pool-backed RX packet conversion staged; datapath pending");
+                           "Stage91 TX submission adapter bound; queues unregistered and radio stopped");
 
     /* Publication fence: do not probe or power the radio until Skywalk packet
      * registration, RX/TX rings, packet metadata and teardown are implemented.
@@ -214,6 +249,36 @@ IOReturn RTW88WCLController::releaseNativeResources()
                   fenceStatus);
             return fenceStatus; // Keep callbacks, mappings and DMA owner alive on failure.
         }
+    }
+
+    /* Stage91 TX callbacks are admitted only while the adapter is bound.
+     * Quiesce that admission after RTW88 has stopped and the PCI/DMA fence is
+     * down, then detach the retained callback context before releasing queues.
+     * Stage92 will add the deferred completion drain; if a ticket is still
+     * outstanding this returns BUSY and all owners remain alive. */
+    if (_txAdapter) {
+        const IOReturn txUnbindStatus = _txAdapter->unbind();
+        if (txUnbindStatus != kIOReturnSuccess) {
+            IOLog("rtl88wifi-wcl: TX adapter quiesce deferred: 0x%08x\n",
+                  txUnbindStatus);
+            return txUnbindStatus;
+        }
+        if (_txAdapterBoundToQueues) {
+            if (!_skywalkQueues) {
+                IOLog("rtl88wifi-wcl: TX adapter queue owner missing during detach\n");
+                return kIOReturnNotReady;
+            }
+            const IOReturn detachStatus =
+                _skywalkQueues->unbindTXAdapter(_txAdapter);
+            if (detachStatus != kIOReturnSuccess) {
+                IOLog("rtl88wifi-wcl: TX adapter callback detach deferred: 0x%08x\n",
+                      detachStatus);
+                return detachStatus;
+            }
+            _txAdapterBoundToQueues = false;
+        }
+        _txAdapter->release();
+        _txAdapter = nullptr;
     }
 
     /* Remove the RX workloop source only after the RTW88 producer is stopped.
