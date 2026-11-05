@@ -30,7 +30,7 @@ public:
     {
         uint32_t expected = kBinding;
         return __atomic_compare_exchange_n(&_state, &expected, kBound,
-                                           false, __ATOMIC_RELEASE,
+                                           false, __ATOMIC_ACQ_REL,
                                            __ATOMIC_ACQUIRE);
     }
 
@@ -38,7 +38,7 @@ public:
     {
         uint32_t expected = kBinding;
         (void)__atomic_compare_exchange_n(&_state, &expected, kUnbound,
-                                          false, __ATOMIC_RELEASE,
+                                          false, __ATOMIC_ACQ_REL,
                                           __ATOMIC_ACQUIRE);
     }
 
@@ -93,7 +93,7 @@ public:
             return false;
         uint32_t expected = kQuiescing;
         return __atomic_compare_exchange_n(&_state, &expected, kUnbound,
-                                           false, __ATOMIC_RELEASE,
+                                           false, __ATOMIC_ACQ_REL,
                                            __ATOMIC_ACQUIRE);
     }
 
