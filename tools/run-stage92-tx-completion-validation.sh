@@ -1,6 +1,6 @@
 #!/bin/bash
-# Validate the Stage92 WMM-routing and completion-retry fixes.
-# Runs the existing eleven-test host/source suite, then compiles only eight
+# Validate the Stage92 TX completion handoff and ownership lifecycle.
+# Runs the eleven-test Stage92 host/source suite, then compiles only eight
 # objects (seven WCL objects plus RTW88IEEE80211.o). No link/sign/install/load.
 set -u
 
@@ -24,7 +24,7 @@ git fetch origin || exit 1
 git merge --ff-only "origin/$BRANCH" || exit 1
 
 echo "===== STAGE92 HOST/SOURCE SUITE ====="
-bash tools/run-stage92-tx-submission-tests.sh
+bash tools/run-stage92-tx-completion-tests.sh
 TEST_RESULT=$?
 if [ "$TEST_RESULT" -ne 0 ]; then
     echo "HOST_SOURCE_SUITE=FAIL"
