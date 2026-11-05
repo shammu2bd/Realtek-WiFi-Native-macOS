@@ -22,6 +22,7 @@
 #include "RTW88JoinPolicy.hpp"
 #include "RTW88RoamScanPolicy.hpp"
 #include "RTW88BaPolicy.hpp"
+#include "RTW88TxSequenceNumbers.hpp"
 
 /* Opaque C driver handle */
 struct rtw_dev;
