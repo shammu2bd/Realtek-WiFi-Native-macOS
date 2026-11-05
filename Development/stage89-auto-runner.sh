@@ -254,7 +254,7 @@ status_read_info="$(python3 - "$BASE/output-log-after.json" <<'PYSTATUS'
 import base64,json,re,sys
 obj=json.load(open(sys.argv[1]))
 s=base64.b64decode(obj["content"]).decode(errors="replace")
-matches=list(re.finditer(r"STAGE89_V(\\d+)_RUN:\\s*(run-[A-Za-z0-9-]+)",s))
+matches=list(re.finditer(r"STAGE89_V(\d+)_RUN:\s*(run-[A-Za-z0-9-]+)",s))
 if not matches: raise SystemExit("No canonical Stage89 checkpoint for final heartbeat")
 m=matches[-1]
 print(m.group(1)+"|"+m.group(2))
