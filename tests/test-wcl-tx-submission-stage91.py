@@ -97,6 +97,8 @@ for token in ("[IEEE80211_AC_VO] = RTW_TX_QUEUE_VO",
 # Four independently scheduled AC queues use the production atomic state
 # object for per-TID sequence spaces and one unique 48-bit CCMP PN allocator.
 sequence_h = (ROOT / "driver/RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp").read_text()
+makefile = (ROOT / "driver/RTL88WiFi/Makefile").read_text()
+assert makefile.count("$(KEXT_SRC)/RTW88TxSequenceNumbers.hpp") == 3
 assert '#include "RTW88TxSequenceNumbers.hpp"' in radio_h
 assert "RTW88TxSequenceNumbers _txSequenceNumbers;" in radio_h
 assert "return _txSequenceNumbers.nextNonQoS();" in radio_cpp
