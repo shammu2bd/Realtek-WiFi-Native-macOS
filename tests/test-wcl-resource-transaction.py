@@ -38,6 +38,7 @@ assert "beginRollback()" in destroy
 assert "while (_acquisitionJournal.popRollback(&resource))" in destroy
 assert "releaseAcquiredResource(resource)" in destroy
 assert "finishRollback()" in destroy
+assert "hasOutstandingResources()" in destroy
 
 release_start = cpp.index("void RTW88WCLSkywalkQueues::releaseAcquiredResource")
 release_end = cpp.index("bool RTW88WCLSkywalkQueues::txSubmissionQueuesValid", release_start)
@@ -55,6 +56,12 @@ reverse_tokens = (
 )
 positions = [release.index(token) for token in reverse_tokens]
 assert positions == sorted(positions)
+assert "void RTW88WCLSkywalkQueues::free()" in cpp
+free_start = cpp.index("void RTW88WCLSkywalkQueues::free()")
+free_body = cpp[free_start:]
+assert "quarantining owner and retaining resources" in free_body
+assert "super::free();" in free_body
+assert free_body.index("quarantining owner") < free_body.index("super::free();")
 
 # The portable transaction contract requires the exact nine acquisitions,
 # ordered records, full commit, and reverse rollback.
