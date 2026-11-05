@@ -77,6 +77,18 @@ assert "qosc[0] = (uint8_t)(tid & IEEE80211_QOS_CTL_TID_MASK);" in radio_cpp
 assert "accessCategory == IEEE80211_AC_BE" in radio_cpp
 assert "tid == _baTid" in radio_cpp
 
+# Four independently scheduled AC queues must not share QoS sequence numbers
+# or race the 48-bit CCMP packet-number generator.
+assert "uint16_t _dataSeq[8] = {};" in radio_h
+assert "uint16_t RTW88IEEE80211::nextDataSequence(uint8_t tid)" in radio_cpp
+assert "__atomic_fetch_add(&_dataSeq[tid], 1, __ATOMIC_RELAXED)" in radio_cpp
+assert "uint16_t RTW88IEEE80211::currentDataSequence(uint8_t tid) const" in radio_cpp
+assert "uint64_t _ccmpTxPn = 0;" in radio_h
+assert "__atomic_compare_exchange_n(&_ccmpTxPn" in radio_cpp
+assert "kCCMPTxPacketNumberMax" in radio_cpp
+assert "previous >= kCCMPTxPacketNumberMax" in radio_cpp
+assert "memset(_ccmpTxPn" not in radio_cpp
+
 assert "kMaximumPacketsPerCallback = 16" in batch_h
 assert "if (!packets || packetCount == 0 || !submit)" in batch_h
 assert "if (!packet || submit(context, static_cast<void *>(packet)) != 0)" in batch_h
