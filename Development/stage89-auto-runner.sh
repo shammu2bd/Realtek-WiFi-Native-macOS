@@ -22,6 +22,48 @@ fail(){
  notify "Stage89 automation stopped: $1"
  exit 1
 }
+publish_status() {
+ local reason="$1"
+ local status_path="Development/Logs/automation-status/latest.txt"
+ local status_file="$BASE/status-latest.txt"
+ {
+  echo "RTL88WIFI_STAGE89_AUTOMATION_STATUS"
+  echo "UPDATED_UTC=$(date -u '+%Y-%m-%dT%H:%M:%SZ')"
+  echo "STATUS=$reason"
+  echo "LATEST_CANONICAL_STAGE89_VERSION=${latest_version:-UNKNOWN}"
+  echo "LATEST_CANONICAL_STAGE89_RUN=${latest_run:-UNKNOWN}"
+  echo "NEXT_STAGE89_VERSION=${next_version:-UNKNOWN}"
+  echo "NEXT_RUNNER=${runner:-NOT_CHECKED}"
+  echo "PROJECT_ROOT=$ROOT"
+  echo "POLICY=STAGE89_READ_ONLY_ONLY"
+  echo "SOURCE_PULL=DISABLED"
+  echo "BUILD_SIGN_INSTALL_LOAD=DISABLED"
+  echo "OPENCORE_SIP_NVRAM_CHANGES=DISABLED"
+  echo "POLL_LOG=$(basename "$LOG")"
+  echo
+  echo "----- LAST POLL OUTPUT -----"
+  tail -60 "$LOG" 2>/dev/null || true
+ } > "$status_file"
+ local encoded existing_sha
+ encoded="$(base64 < "$status_file" | tr -d '\r\n')"
+ existing_sha="$(gh api "repos/$REPO/contents/$status_path?ref=main" -q .sha 2>/dev/null || true)"
+ if [[ -n "$existing_sha" ]]; then
+  gh api --method PUT "repos/$REPO/contents/$status_path" \
+   -f message="Update Stage89 automation heartbeat" \
+   -f content="$encoded" -f sha="$existing_sha" >/dev/null 2>&1 || {
+    echo "GITHUB_STATUS_UPLOAD=FAILED"
+    return 0
+   }
+ else
+  gh api --method PUT "repos/$REPO/contents/$status_path" \
+   -f message="Publish Stage89 automation heartbeat" \
+   -f content="$encoded" >/dev/null 2>&1 || {
+    echo "GITHUB_STATUS_UPLOAD=FAILED"
+    return 0
+   }
+ fi
+ echo "GITHUB_STATUS_UPLOAD=PASS PATH=$status_path"
+}
 if ! mkdir "$LOCK" 2>/dev/null; then
  oldpid="$(cat "$LOCK/pid" 2>/dev/null || true)"
  if [[ "$oldpid" =~ ^[0-9]+$ ]] && kill -0 "$oldpid" 2>/dev/null; then
@@ -70,10 +112,12 @@ if (( latest_version >= 15 )) && [[ ! -f "$STATE/verified-v$latest_version" ]]; 
 next_version=$((latest_version+1))
 if (( next_version >= 90 )); then
  echo "STAGE90_AUTOMATION=LOCKED; Stage89 must be explicitly closed and later stages separately authorized"
+ publish_status "STAGE90_LOCKED"
  exit 0
 fi
 if grep -q "STAGE89_EXIT=PASS" "$BASE/output-log.txt"; then
  echo "STAGE89_EXIT_GATE=PASS_REQUIRES_SEPARATE_REVIEW; supervisor will not start Stage90"
+ publish_status "STAGE89_EXIT_REVIEW_REQUIRED"
  exit 0
 fi
 gh api "repos/$REPO/contents/Development?ref=main" > "$BASE/development-list.json" || fail "cannot list Development runners"
@@ -92,6 +136,7 @@ PYRUNNER
 )"
 if [[ "$runner" == "NONE" ]]; then
  echo "NEXT_RUNNER=NOT_PUBLISHED stage89-v$next_version"
+ publish_status "WAITING_FOR_V${next_version}_RUNNER"
  stamp="$STATE/notified-no-runner-v$next_version"
  if [[ ! -f "$stamp" ]]; then
   touch "$stamp"
@@ -101,6 +146,7 @@ if [[ "$runner" == "NONE" ]]; then
 fi
 if [[ "$runner" == "AMBIGUOUS" ]]; then fail "multiple Stage89 V$next_version runners found; refusing to guess"; fi
 echo "NEXT_RUNNER=$runner"
+publish_status "APPROVED_RUNNER_FOUND"
 attempt_file="$STATE/attempts-v$next_version"
 last_file="$STATE/last-attempt-v$next_version"
 attempts="$(cat "$attempt_file" 2>/dev/null || echo 0)"
@@ -110,10 +156,12 @@ now="$(date +%s)"
 [[ "$last" =~ ^[0-9]+$ ]] || last=0
 if (( now-last < 900 )); then
  echo "RETRY_COOLDOWN=ACTIVE"
+ publish_status "RUNNER_RETRY_COOLDOWN"
  exit 0
 fi
 if (( attempts >= 3 )); then
  echo "RUNNER_RETRY_LIMIT=3_REACHED version=$next_version"
+ publish_status "RUNNER_RETRY_LIMIT_REACHED"
  notify "Stage89 V$next_version reached its retry limit; review the run log."
  exit 0
 fi
@@ -153,6 +201,7 @@ attempts=$((attempts+1))
 printf '%s\n' "$attempts" > "$attempt_file"
 printf '%s\n' "$now" > "$last_file"
 echo "EXECUTING_APPROVED_RUNNER=$runner ATTEMPT=$attempts"
+publish_status "RUNNER_EXECUTING"
 run_status=0
 /bin/bash "$script" > >(tee -a "$BASE/logs/stage89-v$next_version-console.log") 2>&1 || run_status=$?
 echo "RUNNER_EXIT_CODE=$run_status"
@@ -198,4 +247,5 @@ touch "$STATE/verified-v$next_version"
 rm -f "$attempt_file" "$last_file" "$STATE/notified-no-runner-v$next_version"
 echo "STAGE89_V${next_version}_AUTOMATION=COMPLETED_AND_ARTIFACTS_VERIFIED"
 echo "RUN_ID=$run_id"
+publish_status "STAGE89_V${next_version}_COMPLETED_AND_VERIFIED"
 notify "Stage89 V$next_version complete; uploaded artifacts verified. Review status remains in GitHub."
