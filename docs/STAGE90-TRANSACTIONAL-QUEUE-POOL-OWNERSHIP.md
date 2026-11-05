@@ -30,7 +30,7 @@ Run the combined validation on the target Mac from the Stage90 Git checkout:
 bash tools/run-stage90-transaction-tests.sh
 ```
 
-The runner writes a timestamped full report under Development/Logs/ and appends a concise summary to Development/output.log.
+The runner writes a timestamped full report under Development/Logs/, appends a concise summary to Development/output.log, then commits and pushes both log files to the dedicated Stage90 branch. It refuses to push when run from another branch.
 
 ## Registration and activation boundary
 
