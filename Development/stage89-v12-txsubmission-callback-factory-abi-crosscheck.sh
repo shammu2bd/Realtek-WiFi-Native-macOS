@@ -131,9 +131,17 @@ header_has_const_action="const IOSkywalkPacket **" in header
 header_has_mutable_action=bool(re.search(r"(?<!const )IOSkywalkPacket\s*\*\*",header))
 
 # Target symbol spellings encode callback pointer constness and trailing integer count.
-main_symbol=next((x.split("MANGLED=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff8002983ff0 " in x and "MANGLED=" in x),"")
-mutable_symbol=next((x.split("MANGLED=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff800298409e " in x and "MANGLED=" in x),"")
-action_symbol=next((x.split("MANGLED=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff80029840c2 " in x and "MANGLED=" in x),"")
+def symbol_at(address):
+ for line in symbols.splitlines():
+  if ("ADDRESS=0x"+address) in line:
+   before, sep, value = line.partition("MANGLED=")
+   if sep and value.strip():
+    return value.strip()
+ return ""
+main_symbol=symbol_at("ffffff8002983ff0")
+mutable_symbol=symbol_at("ffffff800298409e")
+action_symbol=symbol_at("ffffff80029840c2")
+print("TARGET_SYMBOL_PARSE=main:%s mutable:%s action:%s"%(bool(main_symbol),bool(mutable_symbol),bool(action_symbol)),flush=True)
 def demangle(symbol):
  if not symbol: return "SYMBOL_NOT_FOUND"
  candidates=[symbol[1:] if symbol.startswith("_") else symbol, symbol[2:] if symbol.startswith("__") else symbol]
