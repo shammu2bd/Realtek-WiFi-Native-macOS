@@ -1,0 +1,19 @@
+========== STAGE 89 V14 — TARGET FACTORY ABI ADJUDICATION ==========
+RUN=run-20261105-044323-71e5e6619e48
+CHECK_COUNT=14
+CHECKS_PASSED=9
+
+V13 CHECK REVIEW:
+The V13 12/13 result is explained by a field-name mismatch in its audit predicate. The V12 crosswalk does not contain the exact key string the V13 check searched for; the target order itself is corroborated by the pinned V12 demangled factory symbol and V9 disassembly, including separate options and service-class stack words.
+
+ABI RESULT:
+The target primary factory order remains pool, capacity, queueId, owner, queryHandler, action, refCon, options, serviceClass. The public SDK withPoolAndServiceClass declaration orders serviceClass before owner. The target action-only wrapper supplies 0xffffffff, and the mutable wrapper is a separate callback shape that adds option bit 0x8. No direct public SDK symbol/thunk mapping is proven by this inventory.
+
+DECISION:
+Do not treat V13's one failed predicate as evidence of an ABI change. The substantive adapter blocker remains. Do not use guessed overloads, casts, private mangled-symbol calls, or private field writes. A separately reviewed and explicitly authorized ABI adapter would be required before source/header changes.
+
+NEXT:
+Proceed only with read-only queue-construction, queue-role, ownership/lifetime and pointer-array test-design audit. Stage89 remains open; Stage90 is locked.
+
+SAFETY:
+Source/header modified=NO; build/sign/install/load/hardware test=NOT_RUN; OpenCore/SIP/NVRAM changes=NONE; known-good legacy kext and everyday EFI untouched.
