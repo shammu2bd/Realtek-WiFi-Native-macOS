@@ -426,6 +426,7 @@ $(WCL24H32_SKYWALK_QUEUES_OBJ): $(WCL24H32_SKYWALK_QUEUES_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPacketView.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
     $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkFamily.h \
+    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h \
     | $(BUILD_DIR)/wcl24h32
 	@echo "  WCL-ABI CXX  RTW88WCLSkywalkQueues.cpp (24H32, unregistered queues)"
 	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
