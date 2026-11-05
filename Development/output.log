@@ -1454,3 +1454,14 @@ STAGE89_V20_LOGS: Development/Logs/stage89-v20/run-20261105-112544-ad7cb1db9420/
 - Full report: Development/Logs/stage91-wmm-completion-retry-fix-20261106.md
 - Required Mac validation: 11 host/source tests and seven compile-only objects (six WCL objects plus RTW88IEEE80211.o).
 - Stage92 completion queue consumer, queue registration and radio activation remain fenced.
+
+## Stage91 latest WMM / completion / concurrency source review — 20261106
+- Branch: work/stage91-tx-submission-callback-v1
+- Source head before report: f22982154647ffa763a9f016e0e9f287cfb33360
+- Result: SOURCE_CHECKS_CONSISTENT_VALIDATION_PENDING
+- WMM route: Skywalk service class -> AC -> RTW88 hardware queue ring, with TID propagated to QoS Control and descriptor qsel.
+- Concurrency: per-TID QoS sequence state and one atomic 48-bit CCMP packet-number allocator. Portable concurrency regression added as test 11.
+- Build dependencies: new sequence helper listed in all three WCL object rules that directly depend on RTW88IEEE80211.hpp.
+- Runner: tools/run-stage91-wmm-completion-fix-validation.sh runs 11 host/source tests and compiles seven objects without linking/sign/install/load.
+- Target Mac validation is still pending; previous PASS logs predate these source changes.
+- Stage92 TX-completion queue consumer and native activation remain unimplemented/fenced.
