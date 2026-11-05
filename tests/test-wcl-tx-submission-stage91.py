@@ -110,8 +110,11 @@ pci_fence_pos = controller_cpp.index("_pciBackend->setRadioRunning(false)")
 adapter_unbind_pos = controller_cpp.index("_txAdapter->unbind()")
 owner_detach_pos = controller_cpp.index("_skywalkQueues->unbindTXAdapter(_txAdapter)")
 queue_destroy_pos = controller_cpp.index("_skywalkQueues->destroyQueues()")
+queue_released_check_pos = controller_cpp.index("_skywalkQueues->resourcesReleased()", queue_destroy_pos)
+queue_owner_release_pos = controller_cpp.index("_skywalkQueues->release()", queue_destroy_pos)
 assert quiesce_pos < radio_stop_pos < pci_fence_pos < adapter_unbind_pos
 assert adapter_unbind_pos < owner_detach_pos < queue_destroy_pos
+assert queue_destroy_pos < queue_released_check_pos < queue_owner_release_pos
 assert "bool _txAdapterBoundToQueues = false;" in controller_h
 
 # Queue owner cannot be rolled back underneath the retained adapter context.
@@ -121,6 +124,10 @@ destroy_start = queues_cpp.index("void RTW88WCLSkywalkQueues::destroyQueues()")
 destroy_body = queues_cpp[destroy_start:]
 assert "if (_txAdapter)" in destroy_body
 assert "queue rollback deferred" in destroy_body
+assert "bool RTW88WCLSkywalkQueues::resourcesReleased() const" in queues_cpp
+assert "return !_allocated && _acquisitionJournal.isEmpty() &&" in queues_cpp
+assert "_skywalkQueues->destroyQueues();" in controller_cpp
+assert "_skywalkQueues->resourcesReleased()" in controller_cpp
 
 # Native activation remains outside Stage91.
 code = queues_cpp + controller_cpp
