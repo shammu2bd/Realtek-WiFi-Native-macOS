@@ -136,7 +136,7 @@ assert owner_unbind.index("_txCallbackGate.canFinishUnbind()") < owner_unbind.in
 assert "_txCallbackGate.isUnbound()" in queues_cpp[queues_cpp.index("bool RTW88WCLSkywalkQueues::hasOutstandingResources"):queues_cpp.index("bool RTW88WCLSkywalkQueues::txSubmissionQueuesValid")]
 destroy_start = queues_cpp.index("void RTW88WCLSkywalkQueues::destroyQueues()")
 destroy_body = queues_cpp[destroy_start:]
-assert "if (_txAdapter)" in destroy_body
+assert "if (_txAdapter || !_txCallbackGate.isUnbound())" in destroy_body
 assert "queue rollback deferred" in destroy_body
 assert "_txCallbackGate.isUnbound()" in destroy_body
 assert "bool RTW88WCLSkywalkQueues::resourcesReleased() const" in queues_cpp
