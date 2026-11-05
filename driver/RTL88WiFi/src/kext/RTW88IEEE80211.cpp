@@ -1453,7 +1453,7 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
                 (_state == RTW88_STATE_SCANNING &&
                  _scanReturnState == RTW88_STATE_CONNECTED);
             clearKeys();
-            _txBaActive = false;
+            _txBAState.clear();
             _baRecovery.reset();
             rxBaTeardownAll();
             _associatedVisible = false;
@@ -4480,8 +4480,18 @@ bool RTW88IEEE80211::txMgmtFrame(
 /*      (rtw88's ampdu_action is a no-op for RX_START/STOP).             */
 /* ------------------------------------------------------------------ */
 
-void RTW88IEEE80211::sendAddbaRequest(uint8_t tid)
+void RTW88IEEE80211::sendAddbaRequest(
+    uint8_t tid, RTW88TxStateGate::TransmitLease *existingLease)
 {
+    RTW88TxStateGate::TransmitLease localLease;
+    if (!existingLease) {
+        localLease = _txStateGate.tryEnterTransmit();
+        if (!localLease)
+            return;
+        existingLease = &localLease;
+    } else if (!*existingLease) {
+        return;
+    }
     uint8_t f[24 + 9] = {};
     struct ieee80211_hdr_3addr *h = (struct ieee80211_hdr_3addr *)f;
     h->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT | IEEE80211_STYPE_ACTION);
@@ -4511,13 +4521,16 @@ void RTW88IEEE80211::sendAddbaRequest(uint8_t tid)
     b[7] = (uint8_t)(ssc & 0xff);
     b[8] = (uint8_t)(ssc >> 8);
 
-    _txBaPending = txMgmtFrame(f, sizeof(f));
+    _txBaPending = txMgmtFrame(f, sizeof(f), existingLease);
 }
 
 void RTW88IEEE80211::sendAddbaResponse(uint8_t tid, uint8_t dialog,
                                        uint16_t req_param, uint16_t ba_timeout,
                                        uint16_t status)
 {
+    auto txLease = _txStateGate.tryEnterTransmit();
+    if (!txLease)
+        return;
     uint8_t f[24 + 9] = {};
     struct ieee80211_hdr_3addr *h = (struct ieee80211_hdr_3addr *)f;
     h->frame_control = cpu_to_le16(IEEE80211_FTYPE_MGMT | IEEE80211_STYPE_ACTION);
@@ -4543,7 +4556,7 @@ void RTW88IEEE80211::sendAddbaResponse(uint8_t tid, uint8_t dialog,
     b[7] = (uint8_t)(ba_timeout & 0xff);
     b[8] = (uint8_t)(ba_timeout >> 8);
 
-    txMgmtFrame(f, sizeof(f));
+    txMgmtFrame(f, sizeof(f), &txLease);
 }
 
 /* The HT restriction applies to the pairwise cipher. A mixed WPA/WPA2 AP
@@ -4559,7 +4572,7 @@ bool RTW88IEEE80211::htAllowed() const
 
 void RTW88IEEE80211::startTxAggregation()
 {
-    if (_txBaActive) return;
+    if (_txBAState.active()) return;
     if (!htAllowed() || !_sta || !_sta->deflink.ht_cap.ht_supported) {
         _baRecovery.cancel();           /* not applicable to this peer: do not keep asking */
         return;
@@ -4586,7 +4599,7 @@ void RTW88IEEE80211::housekeeping()
         _baRecovery.onFailed(now);
         IOLog("rtw88: TX ADDBA response timed out; will retry\n");
     }
-    if (!_txBaActive && !_txBaPending && _baRecovery.due(now)) {
+    if (!_txBAState.active() && !_txBaPending && _baRecovery.due(now)) {
         IOLog("rtw88: re-negotiating TX A-MPDU after a lost or declined agreement\n");
         startTxAggregation();
     }
@@ -4632,7 +4645,7 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
         if (!_txBaPending || b[2] != _baDialog || tid != _baTid) break;
         _txBaPending = false;
         if (status == 0 && (param & (1u << 1))) {
-            _txBaActive = true;
+            _txBAState.activate(tid);
             _baRecovery.onAccepted(rtw88JoinNowUS());
             IOLog("rtw88: TX ADDBA accepted (tid=%u) — uplink A-MPDU on\n", tid);
         } else {
@@ -4651,9 +4664,9 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
          * originator — its downlink BA, so drop our RX reorder buffer. */
         const uint16_t reason = (uint16_t)(b[4] | (b[5] << 8));   /* 37 declined, 38 unknown BA, 39 timeout */
         const bool tore = !initiator && tid == _baTid;
-        const bool wasActive = _txBaActive;
+        const bool wasActive = _txBAState.active();
         if (tore) {
-            _txBaActive = false;
+            _txBAState.clear();
             _txBaPending = false;
             /* 1.0.6: ask again (with backoff) instead of staying un-aggregated forever. */
             _baRecovery.onTornDown(rtw88JoinNowUS());
