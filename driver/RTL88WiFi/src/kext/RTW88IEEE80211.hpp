@@ -308,7 +308,8 @@ private:
     void      clearDeferredJoin();
     bool authenticationCancelled() const { return __atomic_load_n(&_connectCancelled, __ATOMIC_ACQUIRE); }
     void      doAssociate();
-    void      setConnectedChandef(struct ieee80211_channel *chan);
+    void      setConnectedChandef(struct ieee80211_channel *chan,
+                                  RTW88TxStateGate::MutationLease *existingMutation = nullptr);
     void      doHandshake(const uint8_t *eapol, uint32_t len);
     void      doDisconnect();
     RTW88TxStateGate::MutationLease beginTxStateMutation();
