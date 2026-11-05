@@ -1442,3 +1442,15 @@ STAGE89_V20_LOGS: Development/Logs/stage89-v20/run-20261105-112544-ad7cb1db9420/
 - Full report: Development/Logs/stage91-wmm-completion-retry-fix-20261106.md
 - Required next validation: rerun all 10 Stage91 tests; compile six WCL objects plus build/native/RTW88IEEE80211.o.
 - Stage92 queue-completion consumer and native activation remain unimplemented/fenced.
+
+## Stage91 WMM / completion retry / sequence hardening — 20261106
+- Branch: work/stage91-tx-submission-callback-v1
+- Source head before this summary update: 31c0d68988b5361900e6d21db6436cfa4e126377
+- Result: SOURCE_CHANGES_COMMITTED_VALIDATION_PENDING
+- WMM: Skywalk service class preserved through RTW88 AC queue mapping and QoS TID/qsel.
+- Concurrency: independent per-TID QoS sequence state and unique atomic 48-bit CCMP packet numbers; nonce exhaustion fails closed.
+- Completion: bool sink contract; failed handoffs retain/requeue ticket and packet references for a later retry.
+- Tests added: per-class routing, failed handoff retry, and concurrent sequence/CCMP PN regression (test 11).
+- Full report: Development/Logs/stage91-wmm-completion-retry-fix-20261106.md
+- Required Mac validation: 11 host/source tests and seven compile-only objects (six WCL objects plus RTW88IEEE80211.o).
+- Stage92 completion queue consumer, queue registration and radio activation remain fenced.
