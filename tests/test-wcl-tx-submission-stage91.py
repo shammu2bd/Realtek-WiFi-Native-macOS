@@ -62,6 +62,7 @@ for token in ("kServiceClassBackground", "kServiceClassBestEffort",
               "kAccessCategoryVoice"):
     assert token in route_h
 assert "routeForServiceClass(" in action
+assert "queue->getServiceClass()" in action
 assert "submission.route" in action
 assert "submission->route.accessCategory" in queues_cpp
 assert "submission->route.tid" in queues_cpp
@@ -86,6 +87,12 @@ for token in ("#define IEEE80211_AC_VO 0", "#define IEEE80211_AC_VI 1",
     assert token in mac80211_h
 assert "queue = ac_to_hwq[q_mapping];" in rtw_tx
 assert "q_mapping = skb_get_queue_mapping(skb);" in rtw_tx
+for token in ("[IEEE80211_AC_VO] = RTW_TX_QUEUE_VO",
+              "[IEEE80211_AC_VI] = RTW_TX_QUEUE_VI",
+              "[IEEE80211_AC_BE] = RTW_TX_QUEUE_BE",
+              "[IEEE80211_AC_BK] = RTW_TX_QUEUE_BK",
+              "pkt_info->qsel = skb->priority;"):
+    assert token in rtw_tx
 
 # Four independently scheduled AC queues use the production atomic state
 # object for per-TID sequence spaces and one unique 48-bit CCMP PN allocator.
