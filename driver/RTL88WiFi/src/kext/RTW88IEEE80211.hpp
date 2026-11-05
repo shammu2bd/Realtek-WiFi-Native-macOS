@@ -373,7 +373,8 @@ private:
     /* Frame transmission helpers */
     bool      txMgmtFrame(const uint8_t *frame, uint32_t len,
                           RTW88TxStateGate::TransmitLease *existingLease = nullptr);
-    bool      txNullFunc(bool powerSave);
+    bool      txNullFunc(bool powerSave,
+                          RTW88TxStateGate::TransmitLease *existingLease = nullptr);
     bool      txProbeRequest();
     uint16_t  nextTxSequence();
     uint16_t  nextDataSequence(uint8_t tid);
