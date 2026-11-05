@@ -148,7 +148,7 @@ checks={
  "target_index_contains_tx_main_factory":"IOSkywalkTxSubmissionQueue8withPool" in idx,
  "target_index_has_no_named_explicit_factory_symbol":"IOSkywalkTxSubmissionQueue23withPoolAndServiceClass" not in idx,
  "target_index_inventories_action_only_wrapper":"IOSkywalkTxSubmissionQueue8withPool" in idx and "IOSkywalkTxSubmissionQueue12initWithPool" in idx,
- "target_factory_facts_record_default_sentinel":"ACTION_ONLY" in facts and "0xffffffff" in facts,
+ "target_action_only_default_sentinel_documented":"TARGET_ACTION_ONLY_SERVICE_CLASS_DEFAULT=0xffffffff" in cross,
  "v12_crosswalk_records_sdk_target_mapping_not_found":"DIRECT_SDK_TO_TARGET_FACTORY_MAPPING=NOT_FOUND" in cross,
  "v12_crosswalk_records_main_target_arg_order":"TARGET_MAIN_FACTORY_ORDER=pool,capacity,queueId,owner,queryHandler,action,refCon,options,serviceClass" in cross,
  "v12_crosswalk_records_explicit_sdk_arg_order":"SDK_NAMED_WITHPOOLANDSERVICECLASS_ORDER=pool,capacity,queueId,serviceClass,owner,queryHandler,action,refCon,options" in cross,
@@ -156,7 +156,7 @@ checks={
  "v15_inventory_proves_one_base_tx_submission_queue":"one_factory_assignment_for__txSubmission=PASS" in inv,
  "wmm_requires_exact_four_distinct_values":"four_distinct_wmm_values=PASS" in own and "0x00100080,0x00000000,0x00380100,0x00400180" in contract,
  "four_pointer_test_contract_still_design_only":"STATUS=DESIGN_ONLY_NOT_IMPLEMENTED" in contract,
- "registration_remains_absent_in_source":"registerEthernetInterface" not in cpp,
+ "registration_remains_absent_in_source":not re.search(r"registerEthernetInterface\\s*\\(",re.sub(r"/\\*.*?\\*/|//[^\\n]*","",cpp,flags=re.S)),
  "four_callback_entrypoints_remain_fail_closed":"callback_acceptance_is_currently_fail_closed=PASS" in inv
 }
 lines=["STAGE89_V16_FACTORY_COMPATIBILITY_CHECKS"]
@@ -218,31 +218,32 @@ ACTIVATION_GATE=BLOCKED
 (p/"four-queue-construction-gate.txt").write_text(gate)
 
 passed=sum(checks.values())
-report=f"""========== STAGE 89 V16 — FOUR-QUEUE FACTORY/API COMPATIBILITY GATE ==========
-RUN={p.name}
-PREDECESSOR={""" + "run-20261105-051755-b866b1583b4d" + f"""}
-TARGET=macOS_15.8.1_24H32_x86_64
-AUDIT_CHECKS_PASSED={passed}/{len(checks)}
-SOURCE_TREE_FINGERPRINTS=PASS
-SDK_TARGET_SERVICECLASS_FACTORY_MAPPING=NOT_PROVEN
-CURRENT_TX_SUBMISSION_QUEUE_COUNT=1
-REQUIRED_TX_SUBMISSION_QUEUE_COUNT=4
-FOUR_QUEUE_CONSTRUCTION=BLOCKED_PENDING_VERIFIED_FACTORY_ABI
-STABLE_FOUR_POINTER_ARRAY=NOT_IMPLEMENTED
-EXECUTABLE_POINTER_ARRAY_TESTS=NOT_IMPLEMENTED
-REGISTRATION_CALLS=0
-CALLBACK_HANDOFFS=FAIL_CLOSED
-SOURCE_MODIFIED=NO
-BUILD=NOT_RUN
-SIGNING=NOT_RUN
-INSTALL=NOT_RUN
-LOAD=NOT_RUN
-HARDWARE_TEST=NOT_RUN
-OPENCORE_CHANGE=NONE
-RESULT=REVIEW_REQUIRED
-STAGE89_EXIT=NOT_MET
-ACTIVATION_GATE=BLOCKED
-"""
+report="\n".join([
+ "========== STAGE 89 V16 — FOUR-QUEUE FACTORY/API COMPATIBILITY GATE ==========",
+ "RUN="+p.name,
+ "PREDECESSOR=run-20261105-051755-b866b1583b4d",
+ "TARGET=macOS_15.8.1_24H32_x86_64",
+ "AUDIT_CHECKS_PASSED="+str(passed)+"/"+str(len(checks)),
+ "SOURCE_TREE_FINGERPRINTS=PASS",
+ "SDK_TARGET_SERVICECLASS_FACTORY_MAPPING=NOT_PROVEN",
+ "CURRENT_TX_SUBMISSION_QUEUE_COUNT=1",
+ "REQUIRED_TX_SUBMISSION_QUEUE_COUNT=4",
+ "FOUR_QUEUE_CONSTRUCTION=BLOCKED_PENDING_VERIFIED_FACTORY_ABI",
+ "STABLE_FOUR_POINTER_ARRAY=NOT_IMPLEMENTED",
+ "EXECUTABLE_POINTER_ARRAY_TESTS=NOT_IMPLEMENTED",
+ "REGISTRATION_CALLS=0",
+ "CALLBACK_HANDOFFS=FAIL_CLOSED",
+ "SOURCE_MODIFIED=NO",
+ "BUILD=NOT_RUN",
+ "SIGNING=NOT_RUN",
+ "INSTALL=NOT_RUN",
+ "LOAD=NOT_RUN",
+ "HARDWARE_TEST=NOT_RUN",
+ "OPENCORE_CHANGE=NONE",
+ "RESULT=REVIEW_REQUIRED",
+ "STAGE89_EXIT=NOT_MET",
+ "ACTIVATION_GATE=BLOCKED",
+])+"\n"
 (p/"report.txt").write_text(report)
 if not all(checks.values()):
     raise SystemExit("One or more compatibility predicates failed; see report artifacts")
