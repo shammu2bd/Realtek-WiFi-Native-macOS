@@ -15,8 +15,8 @@ import tarfile
 from pathlib import Path, PurePosixPath
 
 MAX_MEMBER = 16 * 1024 * 1024
-MAX_ASM_MEMBER = 512 * 1024
-MAX_ASM_TOTAL = 4 * 1024 * 1024
+MAX_ASM_MEMBER = 256 * 1024
+MAX_ASM_TOTAL = 700 * 1024
 
 REGEX = re.compile(
     r"registerInfraEthernetInterface|registerEthernetInterface|"
