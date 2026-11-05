@@ -702,8 +702,31 @@ void RTW88IEEE80211::free()
     super::free();
 }
 
+RTW88TxStateGate::MutationLease RTW88IEEE80211::beginTxStateMutation()
+{
+    /* Only passive control/RX workqueue paths may call this helper. The four
+     * WMM callbacks never wait: they use tryEnterTransmit() and drop/retry
+     * admission while a writer owns the barrier. IOSleep yields the control
+     * thread while a short in-flight synchronous RTW88 ops->tx() call drains. */
+    for (;;) {
+        RTW88TxStateGate::MutationLease mutation =
+            _txStateGate.tryBeginMutation();
+        if (mutation) {
+            while (!mutation.ready())
+                IOSleep(1);
+            return mutation;
+        }
+        IOSleep(1);
+    }
+}
+
 void RTW88IEEE80211::clearKeys()
 {
+    /* Close the controlled port before waiting for existing submitters. EAPOL
+     * remains available only through the explicit handshake paths below. */
+    __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
+    auto mutation = beginTxStateMutation();
+
     if (_powered && _hw && _hw->ops && _hw->ops->set_key) {
         if (_ptkConf)
             _hw->ops->set_key(_hw, DISABLE_KEY, _vif, _sta, _ptkConf);
@@ -722,11 +745,12 @@ void RTW88IEEE80211::clearKeys()
     memset(_pmk, 0, sizeof(_pmk));
     memset(_password, 0, sizeof(_password));
     _pmkProvided = false;
-    _externalPTKInstalled = false;
-    _externalGTKInstalled = false;
+    __atomic_store_n(&_externalPTKInstalled, false, __ATOMIC_RELEASE);
+    __atomic_store_n(&_externalGTKInstalled, false, __ATOMIC_RELEASE);
     memset(_ptk, 0, sizeof(_ptk));
     memset(_gtk, 0, sizeof(_gtk));
-    _txSequenceNumbers.resetCCMP();
+    /* Never reset the CCMP PN allocator. Reusing a packet number after a key
+     * re-install/reassociation is avoidable and unsafe if stale TX survives. */
     _rxCcmpIvSkipLogged = false;
     _snonceValid = false;
     _m3KeysInstalled = false;
@@ -735,26 +759,41 @@ void RTW88IEEE80211::clearKeys()
     memset(_snonce, 0, sizeof(_snonce));
     memset(_replayCtr, 0, sizeof(_replayCtr));
     memset(_installedM3ReplayCtr, 0, sizeof(_installedM3ReplayCtr));
+    _txBAState.clear();
+    _txBaPending = false;
+    _baRecovery.reset();
+    _associatedVisible = false;
+    _state = RTW88_STATE_IDLE;
+    mutation.finish();
 }
 
 void RTW88IEEE80211::releaseSta()
 {
+    __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
+
+    /* rtw88_unregister_sta() drains RX datapath readers and may sleep. Do it
+     * before taking the radio TX mutation lease: an RX callback that needs to
+     * mutate radio state must not deadlock behind a writer waiting for NAPI. */
+    struct ieee80211_sta *registered = _sta;
+    const bool quiesced = registered ? rtw88_unregister_sta(registered) : true;
+
+    auto mutation = beginTxStateMutation();
     _txBaPending = false;
     _baRecovery.reset();
-    if (!_sta)
-        return;
+    if (_sta) {
+        if (_hw && _hw->ops && _hw->ops->sta_remove && _vif)
+            _hw->ops->sta_remove(_hw, _vif, _sta);
 
-    bool quiesced = rtw88_unregister_sta(_sta);
-    if (_hw && _hw->ops && _hw->ops->sta_remove && _vif)
-        _hw->ops->sta_remove(_hw, _vif, _sta);
-
-    if (quiesced)
-        IOFree(_sta, _staAllocSize ? _staAllocSize : sizeof(struct ieee80211_sta));
-    _sta = nullptr;
-    _staAllocSize = 0;
-    _txBaActive = false;
-    _txSequenceNumbers.resetQoS();
+        if (quiesced)
+            IOFree(_sta, _staAllocSize ? _staAllocSize : sizeof(struct ieee80211_sta));
+        _sta = nullptr;
+        _staAllocSize = 0;
+    }
+    _txBAState.clear();
+    /* Sequence counters are monotonic for the lifetime of this radio object.
+     * They are deliberately not reset on station/key teardown. */
     rxBaTeardownAll();
+    mutation.finish();
 }
 
 static const char *rtw88CipherName(uint32_t cipher)
@@ -773,6 +812,17 @@ bool RTW88IEEE80211::installKey(struct ieee80211_key_conf **slot, bool pairwise,
                                 uint8_t keyidx, uint32_t cipher,
                                 const uint8_t *tk, uint8_t tk_len)
 {
+    auto mutation = beginTxStateMutation();
+    return installKeyUnderMutation(slot, pairwise, keyidx, cipher, tk, tk_len,
+                                   &mutation);
+}
+
+bool RTW88IEEE80211::installKeyUnderMutation(
+    struct ieee80211_key_conf **slot, bool pairwise,
+    uint8_t keyidx, uint32_t cipher, const uint8_t *tk, uint8_t tk_len,
+    RTW88TxStateGate::MutationLease *mutation)
+{
+    (void)mutation;
     if (!_hw || !_hw->ops || !_hw->ops->set_key || !slot || !tk || tk_len == 0 || tk_len > 32)
         return false;
     if (cipher != WLAN_CIPHER_SUITE_CCMP && cipher != WLAN_CIPHER_SUITE_TKIP)
@@ -816,8 +866,7 @@ bool RTW88IEEE80211::installKey(struct ieee80211_key_conf **slot, bool pairwise,
     }
 
     *slot = key;
-    if (pairwise)
-        _txSequenceNumbers.resetCCMP();
+    /* CCMP packet numbers are never reset here: this includes rekeys. */
     IOLog("rtw88: installed %s %s key idx=%u hw_idx=%u\n",
           pairwise ? "pairwise" : "group", rtw88CipherName(cipher),
           keyidx, key->hw_key_idx);
