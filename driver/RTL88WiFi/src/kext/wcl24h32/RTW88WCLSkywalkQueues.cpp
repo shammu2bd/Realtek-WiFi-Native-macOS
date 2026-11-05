@@ -201,7 +201,7 @@ bool RTW88WCLSkywalkQueues::queuesAllocated() const
  */
 UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(
     OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
-    IOSkywalkPacket * const *packets, UInt32 packetCount, void *refCon)
+    IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
 {
     (void)refCon;
     auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
