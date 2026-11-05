@@ -16,6 +16,8 @@
 #include <IOKit/skywalk/IOSkywalkRxCompletionQueue.h>
 #include <libkern/c++/OSObject.h>
 
+#include "RTW88WCLAcquisitionJournal.hpp"
+
 class RTW88WCLSkywalkQueues final : public OSObject {
     OSDeclareDefaultStructors(RTW88WCLSkywalkQueues)
 
@@ -39,6 +41,7 @@ public:
     IOSkywalkPacketBufferPool *rxPacketPool() const { return _rxPool; }
 
 private:
+    void releaseAcquiredResource(RTW88WCLAcquisitionJournal::Resource resource);
     bool ownsTXSubmissionQueue(const IOSkywalkTxSubmissionQueue *queue) const;
 
     static UInt32 txSubmissionAction(OSObject *owner,
@@ -64,5 +67,6 @@ private:
     IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
     IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
     IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+    RTW88WCLAcquisitionJournal::Journal _acquisitionJournal;
     bool _allocated = false;
 };
