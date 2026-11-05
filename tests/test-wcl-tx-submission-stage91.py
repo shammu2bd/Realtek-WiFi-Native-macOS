@@ -50,6 +50,32 @@ assert "self->_txCallbackGate.enterSubmission()" in action
 assert "self->_txCallbackGate.leaveSubmission()" in action
 assert action.index("self->_txCallbackGate.enterSubmission()") < action.index("ownsTXSubmissionQueue(queue)")
 
+# Keep the exact 24H32 Skywalk service class through queue callback, adapter,
+# Ethernet queue mapping and 802.11 QoS TID.
+route_h = (KEXT / "RTW88WCLTXQueueArrayContract.hpp").read_text()
+radio_h = (ROOT / "driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp").read_text()
+radio_cpp = (ROOT / "driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp").read_text()
+for token in ("kServiceClassBackground", "kServiceClassBestEffort",
+              "kServiceClassVideo", "kServiceClassVoice",
+              "routeForServiceClass", "kAccessCategoryBackground",
+              "kAccessCategoryBestEffort", "kAccessCategoryVideo",
+              "kAccessCategoryVoice"):
+    assert token in route_h
+assert "routeForServiceClass(" in action
+assert "submission.route.accessCategory" in queues_cpp
+assert "submission.route.tid" in queues_cpp
+assert "submitPacket(packet, submission->route.accessCategory" in queues_cpp
+assert "uint8_t accessCategory" in adapter_h
+assert "uint8_t tid" in adapter_h
+assert "accessCategory, tid" in adapter_cpp
+assert "uint8_t accessCategory = 2" in radio_h
+assert "uint8_t tid = 0" in radio_h
+assert "skb_set_queue_mapping(skb, accessCategory);" in radio_cpp
+assert "skb->priority = tid;" in radio_cpp
+assert "qosc[0] = (uint8_t)(tid & IEEE80211_QOS_CTL_TID_MASK);" in radio_cpp
+assert "accessCategory == IEEE80211_AC_BE" in radio_cpp
+assert "tid == _baTid" in radio_cpp
+
 assert "kMaximumPacketsPerCallback = 16" in batch_h
 assert "if (!packets || packetCount == 0 || !submit)" in batch_h
 assert "if (!packet || submit(context, static_cast<void *>(packet)) != 0)" in batch_h
@@ -62,7 +88,8 @@ submit_start = adapter_cpp.index("IOReturn RTW88WCLSkywalkTxAdapter::submitPacke
 submit_end = adapter_cpp.index("IOReturn RTW88WCLSkywalkTxAdapter::submitPacketEntered", submit_start)
 submit = adapter_cpp[submit_start:submit_end]
 assert "enterSubmission()" in submit and "leaveSubmission()" in submit
-assert submit.index("enterSubmission()") < submit.index("submitPacketEntered(packet)")
+assert submit.index("enterSubmission()") < submit.index("submitPacketEntered(packet, accessCategory, tid)")
+assert "uint8_t accessCategory, uint8_t tid" in submit
 assert "retain();" in submit and "release();" in submit
 
 entered_start = adapter_cpp.index("IOReturn RTW88WCLSkywalkTxAdapter::submitPacketEntered")
@@ -81,6 +108,7 @@ for token in (
     assert token in entered
 assert entered.index("RTW88WCLResolveEthernetTxPacket") < entered.index("packet->retain()")
 assert entered.index("_tickets.reserve(packet)") < entered.index("outputPacketWithCompletion(")
+assert "accessCategory, tid" in entered
 assert "if (!ticket)" in entered
 assert "static_cast<IOReturn>(0)" not in entered
 
@@ -91,6 +119,20 @@ assert "TicketPool::complete(ticket, transmitted)" in completion
 assert "completeWithQueue" not in completion
 assert "packet->release()" not in completion
 assert "release();" not in completion
+
+# Deferred handoff is retryable. A failed/invalid sink must not finish the
+# ticket or drop the retained packet/adapter references.
+assert "using CompletionSink = bool (*)(IOSkywalkPacket *packet" in adapter_h
+drain_start = adapter_cpp.index("uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions")
+drain_end = adapter_cpp.index("bool RTW88WCLSkywalkTxAdapter::hasOutstandingCompletions", drain_start)
+drain = adapter_cpp[drain_start:drain_end]
+assert "if (!packet || !sink(packet, transmitted, context))" in drain
+assert "TicketPool::retry(ticket)" in drain
+assert drain.index("TicketPool::retry(ticket)") < drain.index("TicketPool::finish(ticket)")
+assert "break;" in drain
+slots_h = (KEXT / "RTW88WCLTxCompletionSlots.hpp").read_text()
+assert "static bool retry(Ticket *ticket)" in slots_h
+assert "kDraining" in slots_h and "kCompleted" in slots_h
 
 # The gate closes submission admission before RTW88 stop and PCI/DMA fencing.
 for token in ("enterSubmission()", "leaveSubmission()", "beginUnbind()",
