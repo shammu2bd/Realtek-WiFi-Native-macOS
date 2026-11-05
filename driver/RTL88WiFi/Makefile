@@ -393,7 +393,11 @@ $(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCL24H32InterfaceABI.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLTxSubmissionBatch.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLTxSubmissionGate.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLMbufRing.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCL24H32ABI.hpp \
     $(KEXT_SRC)/RTW88IEEE80211.hpp \
