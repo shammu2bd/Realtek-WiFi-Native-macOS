@@ -19,6 +19,19 @@ int main()
     };
     assert(validate(good, kRequiredCount));
 
+    // Exact 24H32 Skywalk service classes retain their WMM AC and TID.
+    RTW88WCLTXQueueContract::Route route = {};
+    assert(RTW88WCLTXQueueContract::routeForServiceClass(kServiceClasses[0], &route));
+    assert(route.accessCategory == 3 && route.tid == 1); // BK
+    assert(RTW88WCLTXQueueContract::routeForServiceClass(kServiceClasses[1], &route));
+    assert(route.accessCategory == 2 && route.tid == 0); // BE
+    assert(RTW88WCLTXQueueContract::routeForServiceClass(kServiceClasses[2], &route));
+    assert(route.accessCategory == 1 && route.tid == 5); // VI
+    assert(RTW88WCLTXQueueContract::routeForServiceClass(kServiceClasses[3], &route));
+    assert(route.accessCategory == 0 && route.tid == 6); // VO
+    assert(!RTW88WCLTXQueueContract::routeForServiceClass(0xdeadbeefU, &route));
+    assert(!RTW88WCLTXQueueContract::routeForServiceClass(kServiceClasses[0], nullptr));
+
     Entry test[kRequiredCount];
 
     // Empty slot must fail.
