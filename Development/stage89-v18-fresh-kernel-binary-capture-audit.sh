@@ -17,7 +17,7 @@ BASE="https://raw.githubusercontent.com/$REPO/main"
 mkdir -p "$OUT"
 exec > >(tee -a "$OUT/console-output.log") 2>&1
 
-fail(){ echo "STAGE89_V$V_ERROR=$*" >&2; exit 2; }
+fail(){ echo "STAGE89_V${V}_ERROR=$*" >&2; exit 2; }
 blob(){
  python3 - "$1" <<'PYBLOB'
 import hashlib,pathlib,sys
@@ -121,7 +121,7 @@ on_exit(){
  local rc=$?
  if [[ "$rc" -ne 0 ]]; then
   {
-   echo "STAGE89_V$V_FAILURE"
+   echo "STAGE89_V${V}_FAILURE"
    echo "RUN=$RUN"
    echo "EXIT=$rc"
    tail -n 80 "$OUT/console-output.log" 2>/dev/null || true
@@ -147,7 +147,7 @@ if int(m[-1].group(1))!=expected: raise SystemExit("Expected latest Stage89 V%d;
 print(m[-1].group(2))
 PYPREV
 )" || fail "sequential predecessor gate failed"
-echo "STAGE89_V$V_RUN=$RUN"
+echo "STAGE89_V${V}_RUN=$RUN"
 echo "PREDECESSOR=$PREV_RUN"
 echo "TARGET=macOS_15.8.1_24H32_x86_64"
 echo "READ_ONLY=YES"
@@ -526,15 +526,15 @@ esac
 
 {
  echo "========== STAGE 89 V$V — READ-ONLY AUDIT =========="
- echo "STAGE89_V$V_RUN: $RUN"
- echo "STAGE89_V$V_VERSION: READ_ONLY_AUDIT"
- echo "STAGE89_V$V_PREDECESSOR: $PREV_RUN"
- echo "STAGE89_V$V_SOURCE_MODIFIED: NO"
- echo "STAGE89_V$V_BUILD: NOT_RUN"
- echo "STAGE89_V$V_SIGNING: NOT_RUN"
- echo "STAGE89_V$V_INSTALL: NOT_RUN"
- echo "STAGE89_V$V_LOAD: NOT_RUN"
- echo "STAGE89_V$V_OPENCORE_CHANGE: NONE"
+ echo "STAGE89_V${V}_RUN: $RUN"
+ echo "STAGE89_V${V}_VERSION: READ_ONLY_AUDIT"
+ echo "STAGE89_V${V}_PREDECESSOR: $PREV_RUN"
+ echo "STAGE89_V${V}_SOURCE_MODIFIED: NO"
+ echo "STAGE89_V${V}_BUILD: NOT_RUN"
+ echo "STAGE89_V${V}_SIGNING: NOT_RUN"
+ echo "STAGE89_V${V}_INSTALL: NOT_RUN"
+ echo "STAGE89_V${V}_LOAD: NOT_RUN"
+ echo "STAGE89_V${V}_OPENCORE_CHANGE: NONE"
  if [[ "$V" == "18" ]]; then
   echo "STAGE89_V18_FRESH_BOOTKC_CAPTURE: PASS"
   echo "STAGE89_V18_RUNNING_KERNEL_IMAGE_MATCH: NOT_PROVEN"
@@ -550,7 +550,7 @@ esac
   echo "STAGE89_V20_RESULT: REVIEW_REQUIRED_UNLESS_ALL_GATES_PASS"
   echo "STAGE89_V20_ACTIVATION_GATE: BLOCKED_UNLESS_ALL_GATES_PASS"
  fi
- echo "STAGE89_V$V_LOGS: $REMOTE/"
+ echo "STAGE89_V${V}_LOGS: $REMOTE/"
  echo "========================================================================"
 } > "$OUT/checkpoint-block.txt"
 
@@ -586,6 +586,6 @@ for f in "$OUT"/*; do
 done
 upload "$OUT/manifest.txt" "$REMOTE/manifest.txt" || fail "manifest upload/readback failed"
 append_checkpoint
-echo "STAGE89_V$V_RESULT=REVIEW_REQUIRED_OR_GATE_REPORTED"
+echo "STAGE89_V${V}_RESULT=REVIEW_REQUIRED_OR_GATE_REPORTED"
 echo "CANONICAL_HISTORY_UPDATE=PASS"
 echo "SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN OPENCORE_CHANGE=NONE"
