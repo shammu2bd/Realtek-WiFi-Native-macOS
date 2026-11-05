@@ -1,0 +1,9 @@
+STAGE89_V10_SDK_TARGET_API_CROSSWALK
+SDK_EXPLICIT_FACTORY_DECLARATION=static IOSkywalkTxSubmissionQueue * withPoolAndServiceClass( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+TARGET_MAIN_WITHPOOL_SYMBOL=TARGET_FACTORY_ADDRESS=0xffffff8002983ff0 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_jj
+TARGET_FACTORY_PARAMETER_FLOW=pool,capacity,queueId,owner,queryHandler,action,refCon,options,serviceClass
+TARGET_INIT_PARAMETER_FLOW=this,pool,serviceClass,capacity,queueId,owner,queryHandler,action,refCon,options
+TARGET_SERVICE_CLASS_DATAFLOW=PROVEN
+DIRECT_SDK_DECLARATION_MATCH=NO
+REASON=SDK named factory places serviceClass before owner; captured target withPool signature places its extra serviceClass UInt32 after options and uses a different method name
+IMPLEMENTATION_ACTION=NONE
