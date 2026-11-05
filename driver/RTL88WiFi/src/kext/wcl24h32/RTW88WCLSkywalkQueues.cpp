@@ -165,7 +165,6 @@ bool RTW88WCLSkywalkQueues::txSubmissionQueuesValid() const
             return false;
         entries[i].identity = queue;
         entries[i].serviceClass = static_cast<UInt32>(queue->getServiceClass());
-        entries[i].queueId = queue->getQueueId();
     }
     return RTW88WCLTXQueueContract::validate(
         entries, kTXSubmissionQueueCount);
