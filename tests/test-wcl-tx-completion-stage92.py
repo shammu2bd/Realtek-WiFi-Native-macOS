@@ -277,4 +277,4 @@ print("PASS: target 24H32 TX action ABI is UInt32 plus IOSkywalkPacket * const *
 print("PASS: callback accepts only a bounded contiguous prefix")
 print("PASS: rejected packets remain Skywalk-owned; accepted packets have retained completion tickets")
 print("PASS: submission quiesce precedes radio/PCI teardown and queue rollback")
-print("PASS: TX completion, RX callbacks and native registration remain fenced for later stages")
+print("PASS: Stage92 TX completion worker is source-wired; RX delivery and native registration remain fenced")

@@ -549,7 +549,8 @@ $(AIRPORT_OUT_KEXT)/Contents/MacOS:
 DEPFILES = $(ALL_OBJS:.o=.d) $(AIRPORT_KEXT_OBJS:.o=.d) $(AIRPORT_KMOD_OBJ:.o=.d) \
            $(WCL24H32_CONTROLLER_OBJ:.o=.d) $(WCL24H32_INFRA_OBJ:.o=.d) \
            $(WCL24H32_PCI_BACKEND_OBJ:.o=.d) $(WCL24H32_SKYWALK_QUEUES_OBJ:.o=.d) \
-           $(WCL24H32_TX_ADAPTER_OBJ:.o=.d) $(WCL24H32_RX_ADAPTER_OBJ:.o=.d)
+           $(WCL24H32_TX_ADAPTER_OBJ:.o=.d) $(WCL24H32_TX_COMPLETION_WORK_OBJ:.o=.d) \
+           $(WCL24H32_RX_ADAPTER_OBJ:.o=.d)
 -include $(DEPFILES)
 
 # Compiler flags and ABI macros in this file affect every object.
