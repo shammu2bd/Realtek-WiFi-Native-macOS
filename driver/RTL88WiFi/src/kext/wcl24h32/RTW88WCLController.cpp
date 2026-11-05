@@ -6,6 +6,7 @@
 #include "RTW88WCLSkywalkQueues.hpp"
 #include "RTW88WCLSkywalkRxAdapter.hpp"
 #include "RTW88WCLSkywalkTxAdapter.hpp"
+#include "RTW88WCLTxCompletionWorkQueue.hpp"
 #include "../RTW88IEEE80211.hpp"
 
 #include <IOKit/pci/IOPCIDevice.h>
@@ -29,6 +30,7 @@ bool RTW88WCLController::init(OSDictionary *properties)
     _skywalkQueues = nullptr;
     _rxAdapter = nullptr;
     _txAdapter = nullptr;
+    _txCompletionWorker = nullptr;
     _txAdapterBoundToQueues = false;
     _stagedRxPackets.reset();
     _radio = nullptr;
@@ -170,6 +172,22 @@ bool RTW88WCLController::start(IOService *provider)
         _txAdapterBoundToQueues = true;
     }
 
+    /* Stage92: RTW88 completion callbacks only publish ticket state and signal
+     * this controller-workloop consumer. The serialized consumer uses the
+     * target 24H32 synchronous TX-completion queue API; no Skywalk packet method
+     * is invoked in the backend callback context. */
+    _txCompletionWorker = new RTW88WCLTxCompletionWorkQueue;
+    if (!_txCompletionWorker ||
+        !_txCompletionWorker->init(this, _workLoop, _txAdapter,
+                                   _skywalkQueues->txCompletionQueue())) {
+        if (_txCompletionWorker) {
+            _txCompletionWorker->release();
+            _txCompletionWorker = nullptr;
+        }
+        IOLog("rtl88wifi-wcl: TX completion worker initialization failed\n");
+        goto fail;
+    }
+
     /* Stage E: bind the RX workloop consumer to the now-owned 4 KiB RX pool.
      * It copies frames into native packet buffers, but its sink remains
      * rejecting until the registration/completion ABI is closed. */
@@ -272,10 +290,22 @@ IOReturn RTW88WCLController::releaseNativeResources()
     if (_txAdapter) {
         const IOReturn txUnbindStatus = _txAdapter->unbind();
         if (txUnbindStatus != kIOReturnSuccess) {
-            IOLog("rtl88wifi-wcl: TX adapter quiesce deferred: 0x%08x\n",
+            IOLog("rtl88wifi-wcl: TX adapter completion drain deferred: 0x%08x\n",
                   txUnbindStatus);
             return txUnbindStatus;
         }
+    }
+
+    /* unbind() succeeds only after every ticket has returned through the
+     * synchronous completion queue. Remove the notifier/event source only
+     * after that proof, while the queue owner is still retained. */
+    if (_txCompletionWorker) {
+        _txCompletionWorker->stop();
+        _txCompletionWorker->release();
+        _txCompletionWorker = nullptr;
+    }
+
+    if (_txAdapter) {
         if (_txAdapterBoundToQueues) {
             if (!_skywalkQueues) {
                 IOLog("rtl88wifi-wcl: TX adapter queue owner missing during detach\n");

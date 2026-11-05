@@ -35,6 +35,9 @@ public:
     IOReturn bindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
     IOReturn unbindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
 
+    /* Borrowed reference; the worker must stop before destroyQueues(). */
+    IOSkywalkTxCompletionQueue *txCompletionQueue() const { return _txCompletion; }
+
     IOSkywalkTxSubmissionQueue * const *txSubmissionQueues() const {
         return _txSubmissionQueues;
     }
@@ -59,10 +62,10 @@ private:
                                      IOSkywalkTxSubmissionQueue *queue,
                                      IOSkywalkPacket * const *packets,
                                      UInt32 packetCount, void *refCon);
-    static IOReturn txCompletionAction(OSObject *owner,
-                                       IOSkywalkTxCompletionQueue *queue,
-                                       IOSkywalkPacket **packets,
-                                       UInt32 packetCount, void *refCon);
+    static UInt32 txCompletionAction(OSObject *owner,
+                                     IOSkywalkTxCompletionQueue *queue,
+                                     IOSkywalkPacket **packets,
+                                     UInt32 packetCount, void *refCon);
     static IOReturn rxSubmissionAction(OSObject *owner,
                                       IOSkywalkRxSubmissionQueue *queue,
                                       const IOSkywalkPacket **packets,

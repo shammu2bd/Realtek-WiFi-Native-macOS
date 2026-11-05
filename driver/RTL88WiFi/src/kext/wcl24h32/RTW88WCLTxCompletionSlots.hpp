@@ -147,6 +147,19 @@ public:
         return count;
     }
 
+    /* Tickets whose backend result is ready for the serialized Skywalk
+     * completion worker. Submitted and currently-draining tickets are not
+     * counted, so retries do not poll packets still in hardware. */
+    uint32_t completedCount() const
+    {
+        uint32_t count = 0;
+        for (uint32_t i = 0; i < Capacity; ++i) {
+            if (__atomic_load_n(&_slots[i].state, __ATOMIC_ACQUIRE) == kCompleted)
+                ++count;
+        }
+        return count;
+    }
+
     static constexpr uint32_t capacity() { return Capacity; }
 
 private:

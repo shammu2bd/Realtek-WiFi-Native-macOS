@@ -19,6 +19,8 @@ bool RTW88WCLSkywalkTxAdapter::init()
     _radio = nullptr;
     _txPool = nullptr;
     _tickets.reset();
+    _completionNotifier = nullptr;
+    _completionNotifierContext = nullptr;
     return true;
 }
 
@@ -185,8 +187,14 @@ void RTW88WCLSkywalkTxAdapter::backendCompletion(
         return;
 
     /* No Skywalk API, OSObject release, allocation, or blocking operation is
-     * allowed here. A deferred consumer performs the completion handoff. */
-    (void)TicketPool::complete(ticket, transmitted);
+     * allowed here. Publish the ticket, then signal the already-attached
+     * workloop event source through its IRQ-safe notifier. */
+    if (TicketPool::complete(ticket, transmitted)) {
+        CompletionNotify notify = self->_completionNotifier;
+        void *notifyContext = self->_completionNotifierContext;
+        if (notify)
+            notify(notifyContext);
+    }
 }
 
 uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
@@ -236,6 +244,37 @@ bool RTW88WCLSkywalkTxAdapter::hasOutstandingCompletions() const
 uint32_t RTW88WCLSkywalkTxAdapter::outstandingCompletionCount() const
 {
     return _tickets.outstandingCount();
+}
+
+uint32_t RTW88WCLSkywalkTxAdapter::readyCompletionCount() const
+{
+    return _tickets.completedCount();
+}
+
+IOReturn RTW88WCLSkywalkTxAdapter::setCompletionNotifier(
+    CompletionNotify notify, void *context)
+{
+    if (!notify || !context)
+        return kIOReturnBadArgument;
+    if (!_submissionGate.isBound())
+        return kIOReturnNotReady;
+    if (_completionNotifier || _completionNotifierContext)
+        return kIOReturnBusy;
+
+    /* Installed before TX can be enabled and removed only after radio stop
+     * plus an empty ticket table, so these non-owning fields are not rewritten
+     * while a backend completion callback can read them. */
+    _completionNotifierContext = context;
+    _completionNotifier = notify;
+    return kIOReturnSuccess;
+}
+
+void RTW88WCLSkywalkTxAdapter::clearCompletionNotifier(void *context)
+{
+    if (context && _completionNotifierContext == context) {
+        _completionNotifier = nullptr;
+        _completionNotifierContext = nullptr;
+    }
 }
 
 void RTW88WCLSkywalkTxAdapter::free()

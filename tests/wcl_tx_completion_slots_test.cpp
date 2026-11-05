@@ -59,6 +59,7 @@ static void testFailedHandoffRetainsTicketForRetry()
     auto *ticket = pool.reserve(&packet);
     assert(ticket);
     assert(RTW88WCLTxCompletionSlots<2>::complete(ticket, false));
+    assert(pool.completedCount() == 1);
 
     auto *claimed = pool.claimCompleted();
     assert(claimed == ticket);
@@ -67,6 +68,7 @@ static void testFailedHandoffRetainsTicketForRetry()
 
     // A failed sink handoff returns the draining ticket to Completed.
     assert(RTW88WCLTxCompletionSlots<2>::retry(claimed));
+    assert(pool.completedCount() == 1);
     assert(pool.hasOutstanding());
     assert(pool.outstandingCount() == 1);
 
@@ -76,6 +78,7 @@ static void testFailedHandoffRetainsTicketForRetry()
     assert(!RTW88WCLTxCompletionSlots<2>::transmitted(retried));
 
     RTW88WCLTxCompletionSlots<2>::finish(retried);
+    assert(pool.completedCount() == 0);
     assert(!pool.hasOutstanding());
     assert(pool.outstandingCount() == 0);
 }

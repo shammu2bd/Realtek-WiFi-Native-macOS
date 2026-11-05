@@ -128,9 +128,22 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
      * scheduling and packet lifetime only after a complete RegistrationInfo
      * + ring setup transaction, which is a later stage. */
 
+    /* 24H32's initWithPool symbol encodes this action as UInt32: the number
+     * of packet pointers produced. The pinned generic SDK typedef labels the
+     * function pointer IOReturn, so cast only at this target-specific boundary.
+     * This callback returns zero (no callback packets); Stage92 uses the
+     * synchronous enqueuePackets(packet-array) path from its own workloop. */
+    using TxCompletionAction24H32 = UInt32 (*)(
+        OSObject *, IOSkywalkTxCompletionQueue *, IOSkywalkPacket **,
+        UInt32, void *);
+    static_assert(sizeof(TxCompletionAction24H32) ==
+                      sizeof(IOSkywalkTxCompletionQueueAction),
+                  "24H32 TX completion callback pointer size mismatch");
     _txCompletion = IOSkywalkTxCompletionQueue::withPool(
         _txPool, kQueueCapacity, 0, this,
-        &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
+        reinterpret_cast<IOSkywalkTxCompletionQueueAction>(
+            &RTW88WCLSkywalkQueues::txCompletionAction),
+        this, 0);
     if (!_txCompletion)
         goto no_memory;
     if (!_acquisitionJournal.record(
@@ -429,12 +442,13 @@ UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(
     return accepted;
 }
 
-IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
+UInt32 RTW88WCLSkywalkQueues::txCompletionAction(
     OSObject *owner, IOSkywalkTxCompletionQueue *queue,
     IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
 {
     (void)owner; (void)queue; (void)packets; (void)packetCount; (void)refCon;
-    return static_cast<IOReturn>(0);
+    /* A 24H32 action result is a packet count, never an IOReturn status. */
+    return 0;
 }
 
 IOReturn RTW88WCLSkywalkQueues::rxSubmissionAction(

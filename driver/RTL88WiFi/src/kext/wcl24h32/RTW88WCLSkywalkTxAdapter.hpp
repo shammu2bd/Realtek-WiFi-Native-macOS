@@ -24,6 +24,7 @@ public:
     using CompletionSink = bool (*)(IOSkywalkPacket *packet,
                                     bool transmitted,
                                     void *context);
+    using CompletionNotify = void (*)(void *context);
 
     static constexpr uint32_t kCompletionCapacity = 128;
 
@@ -55,6 +56,9 @@ public:
 
     bool hasOutstandingCompletions() const;
     uint32_t outstandingCompletionCount() const;
+    uint32_t readyCompletionCount() const;
+    IOReturn setCompletionNotifier(CompletionNotify notify, void *context);
+    void clearCompletionNotifier(void *context);
     void free() override;
 
 private:
@@ -70,4 +74,6 @@ private:
     RTW88IEEE80211 *_radio = nullptr; // retained while bound
     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
     TicketPool _tickets;
+    CompletionNotify _completionNotifier = nullptr; // non-owning, signal-only
+    void *_completionNotifierContext = nullptr;     // non-owning; cleared after drain
 };

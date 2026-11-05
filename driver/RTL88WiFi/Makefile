@@ -356,6 +356,8 @@ WCL24H32_SKYWALK_QUEUES_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.cpp
 WCL24H32_SKYWALK_QUEUES_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkQueues.o
 WCL24H32_TX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
 WCL24H32_TX_ADAPTER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkTxAdapter.o
+WCL24H32_TX_COMPLETION_WORK_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp
+WCL24H32_TX_COMPLETION_WORK_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLTxCompletionWorkQueue.o
 WCL24H32_RX_ADAPTER_SRC := $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp
 WCL24H32_RX_ADAPTER_OBJ := $(BUILD_DIR)/wcl24h32/RTW88WCLSkywalkRxAdapter.o
 WCL24H32_CXXFLAGS := $(KEXT_CXXFLAGS) -D__IO80211_TARGET=__MAC_15_2 -I$(KEXT_SRC)/wcl24h32
@@ -386,7 +388,7 @@ wcl-abi-audit-24h32:
 # Kext still includes the legacy IO80211Controller declaration and must not
 # mix the incompatible ABI. The controller now owns the PCI backend and RTW88
 # state-machine object in a staged, fail-closed lifecycle.
-rtl88wifi-wcl-controller-abi-check: $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+rtl88wifi-wcl-controller-abi-check: $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_TX_COMPLETION_WORK_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
 
 $(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
@@ -394,6 +396,7 @@ $(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkRxAdapter.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLMbufRing.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCL24H32ABI.hpp \
@@ -446,6 +449,16 @@ $(WCL24H32_TX_ADAPTER_OBJ): $(WCL24H32_TX_ADAPTER_SRC) \
     $(KEXT_SRC)/RTW88TxSequenceNumbers.hpp \
     | $(BUILD_DIR)/wcl24h32
 	@echo "  WCL-ABI CXX  RTW88WCLSkywalkTxAdapter.cpp (24H32, mbuf copy + deferred completion; compile-only)"
+	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
+
+$(WCL24H32_TX_COMPLETION_WORK_OBJ): $(WCL24H32_TX_COMPLETION_WORK_SRC) \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLTxCompletionSlots.hpp \
+    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkTxCompletionQueue.h \
+    $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkPacket.h \
+    | $(BUILD_DIR)/wcl24h32
+	@echo "  WCL-ABI CXX  RTW88WCLTxCompletionWorkQueue.cpp (24H32, deferred synchronous TX completion; compile-only)"
 	$(CXX) $(WCL24H32_CXXFLAGS) -c $< -o $@
 
 
