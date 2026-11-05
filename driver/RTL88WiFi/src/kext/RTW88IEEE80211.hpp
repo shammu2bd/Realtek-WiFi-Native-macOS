@@ -364,6 +364,9 @@ private:
     bool      txMgmtFrame(const uint8_t *frame, uint32_t len);
     bool      txNullFunc(bool powerSave);
     bool      txProbeRequest();
+    uint16_t  nextTxSequence();
+    uint16_t  nextDataSequence(uint8_t tid);
+    uint16_t  currentDataSequence(uint8_t tid) const;
     bool      txDataFrame(mbuf_t m,
                           RTW88TxCompletionCallback callback = nullptr,
                           void *completionContext = nullptr,
@@ -496,7 +499,7 @@ private:
     bool     _m3KeysInstalled = false;
     bool     _handshakePending = false;
     bool     _eapolTxProtect = false;  /* protect the next EAPOL TX (group M2) */
-    uint8_t  _ccmpTxPn[6] = {};
+    uint64_t _ccmpTxPn = 0; /* atomic 48-bit CCMP transmit packet number */
     bool     _rxCcmpIvSkipLogged = false;
     /* r10: the scan-cache entry of the associated BSS has a TIM element
      * (beacon-derived). Until it does, beacons from that BSS refresh it while
@@ -513,8 +516,10 @@ private:
 
     /* Sequence number for TX frames */
     uint16_t _txSeq    = 0;
-    /* Separate SN space for QoS data (TID 0) so the BlockAck window is gap-free */
-    uint16_t _dataSeq  = 0;
+    /* 802.11 QoS sequence space is per TID; each access category has its own
+     * independent reorder/BlockAck window. These counters are atomic because
+     * the four Skywalk AC queues may submit concurrently. */
+    uint16_t _dataSeq[8] = {};
     uint16_t _awdlDataSeq = 0;
     uint16_t _assocAID = 0;
 
