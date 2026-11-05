@@ -33,9 +33,9 @@ The RTW88 backend callback is limited to the ticket's atomic terminal-state tran
 
 ## Teardown
 
-The adapter's atomic gate prevents new submissions once teardown begins. The controller calls `quiesceSubmissions()` before stopping RTW88 or fencing PCI/DMA, and returns without dismantling dependencies while a submission callback remains in flight.
+Two atomic gates cover different lifetimes. The queue-owner callback gate is entered before `txSubmissionAction` reads the retained adapter pointer; the adapter gate is entered before the adapter touches its retained radio/pool. This closes the pointer-load-to-adapter-entry race as well as the packet-copy race. The controller calls `quiesceSubmissions()` before stopping RTW88 or fencing PCI/DMA, and returns without dismantling dependencies while a submission callback remains in flight.
 
-After RTW88 is stopped and the PCI/DMA fence succeeds, `unbind()` releases radio/pool references only when there are no active submissions and no outstanding completion tickets. The queue owner then detaches its retained adapter callback context. It refuses queue/pool rollback while the adapter remains attached.
+After RTW88 is stopped and the PCI/DMA fence succeeds, `unbind()` releases radio/pool references only when there are no active submissions and no outstanding completion tickets. The queue owner then closes its callback gate, waits for the complete action callback to leave, and detaches its retained adapter context. It refuses queue/pool rollback while the adapter or callback gate remains attached. The controller also checks `resourcesReleased()` after rollback before releasing the queue owner or radio.
 
 A ticket still awaiting the Stage92 completion drain makes teardown return busy and keeps adapter, radio, pool, queue owner and controller references alive for retry. No callback is allowed to access an already released pool or radio.
 
