@@ -2,6 +2,15 @@
 
 ## Stage-specific host test artifacts
 
+Run the fail-fast combined validation from the repository root with:
+
+```sh
+bash tools/run-stage89-v4queue-tests.sh
+```
+
+The runner stops on the first failed command, preserves the real exit code,
+and overwrites `Development/output.log` with the complete results.
+
 Stage 89's four-entry TX submission queue contract has a portable C++ test and
 a source-integration audit. Run them from the repository root:
 
