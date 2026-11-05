@@ -27,7 +27,7 @@ assert re.search(
     r"UInt32\s+packetCount,\s*void\s*\*\s*refCon",
     tx_sdk,
 )
-assert "IOSkywalkPacket ** packets" in tx_sdk  # generic SDK declaration retained
+assert "const IOSkywalkPacket **" in tx_sdk  # generic SDK declaration retained
 assert "IOSkywalkPacket * const * packets" in tx_sdk  # target overload declaration
 
 # Four queue callbacks are wired to one owner-bound adapter. Prefix processing
