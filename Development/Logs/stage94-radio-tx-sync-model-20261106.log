@@ -1,0 +1,12 @@
+STAGE94 RADIO TX SYNCHRONIZATION MODEL TEST
+COMPILER=Clang 17.0.0
+HOST=Linux 6.18.57 x86_64
+FLAGS=-std=c++11 -O2 -Wall -Wextra -Werror -pthread
+RUN_1=PASS: admission/drain, writer exclusivity/cancellation, per-frame EAPOL policy, four-AC stress
+REPEATED_RUNS=20/20 PASS
+SCOPE=portable host model only; not a macOS kext compile, IOKit callback-context proof, live TX test, or driver integration.
+STAGE94_MODEL_TESTS=PASS
+STAGE94_DRIVER_INTEGRATION=NOT_DONE
+STAGE93_BLOCKERS=CARRY_FORWARD
+PR4_MERGE=NO
+NATIVE_ACTIVATION=BLOCKED
