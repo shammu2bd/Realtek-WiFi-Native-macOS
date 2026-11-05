@@ -196,6 +196,6 @@ PYVERIFY
 if (( run_status != 0 )); then fail "runner returned nonzero after checkpoint/artifact verification"; fi
 touch "$STATE/verified-v$next_version"
 rm -f "$attempt_file" "$last_file" "$STATE/notified-no-runner-v$next_version"
-echo "STAGE89_V$next_version_AUTOMATION=COMPLETED_AND_ARTIFACTS_VERIFIED"
+echo "STAGE89_V${next_version}_AUTOMATION=COMPLETED_AND_ARTIFACTS_VERIFIED"
 echo "RUN_ID=$run_id"
 notify "Stage89 V$next_version complete; uploaded artifacts verified. Review status remains in GitHub."
