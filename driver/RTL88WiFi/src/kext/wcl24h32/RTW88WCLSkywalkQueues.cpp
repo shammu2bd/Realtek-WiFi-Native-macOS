@@ -3,9 +3,14 @@
  */
 #include "RTW88WCLSkywalkQueues.hpp"
 #include "RTW88WCLPacketView.hpp"
+#include "RTW88WCLTXQueueArrayContract.hpp"
 
 #include <IOKit/IOLib.h>
 #include <libkern/c++/OSMetaClass.h>
+
+static_assert(RTW88WCLTXQueueContract::kRequiredCount ==
+                  RTW88WCLSkywalkQueues::kTXSubmissionQueueCount,
+              "TX queue owner and contract counts must match");
 
 /* The bundled SDK declares PoolOptions before its public: label. Expose the
  * exact protected nested ABI type through a derived access shim; its layout is
@@ -24,7 +29,8 @@ bool RTW88WCLSkywalkQueues::init()
         return false;
     _txPool = nullptr;
     _rxPool = nullptr;
-    _txSubmission = nullptr;
+    for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i)
+        _txSubmissionQueues[i] = nullptr;
     _txCompletion = nullptr;
     _rxSubmission = nullptr;
     _rxCompletion = nullptr;
@@ -36,9 +42,12 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
 {
     if (_allocated)
         return kIOReturnSuccess;
-    if (_txPool || _rxPool || _txSubmission || _txCompletion ||
-        _rxSubmission || _rxCompletion)
+    if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion)
         return kIOReturnBusy;
+    for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
+        if (_txSubmissionQueues[i])
+            return kIOReturnBusy;
+    }
 
     RTW88WCLPoolOptionsAccess::PoolOptions txOptions = {};
     txOptions.packetCount = kQueueCapacity;
@@ -63,15 +72,27 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
     if (!_rxPool)
         goto no_memory;
 
+    /* The target exports this explicit-service-class withPool overload.
+     * Its 24H32 ABI is:
+     *   withPool(pool, capacity, queueId, owner, queryHandler, action,
+     *            refCon, options, serviceClass)
+     * The wrapper passes serviceClass first to initWithPool, then capacity
+     * and queueId. Do not call initWithPool directly or write private fields.
+     * The action-only overload at 0xffffff80029840c2 hard-codes 0xffffffff.
+     */
+    for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
+        _txSubmissionQueues[i] = IOSkywalkTxSubmissionQueue::withPool(
+            _txPool, kQueueCapacity, i, this, nullptr,
+            &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0,
+            static_cast<UInt32>(RTW88WCLTXQueueContract::kServiceClasses[i]));
+        if (!_txSubmissionQueues[i])
+            goto no_memory;
+    }
+
     /* These queue objects are deliberately not added to an IOWorkLoop and
      * are not passed to registerEthernetInterface() yet. Skywalk owns their
      * scheduling and packet lifetime only after a complete RegistrationInfo
      * + ring setup transaction, which is a later stage. */
-    _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
-        _txPool, kQueueCapacity, 0, this,
-        &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
-    if (!_txSubmission)
-        goto no_memory;
 
     _txCompletion = IOSkywalkTxCompletionQueue::withPool(
         _txPool, kQueueCapacity, 0, this,
@@ -91,8 +112,11 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
     if (!_rxCompletion)
         goto no_memory;
 
+    if (!txSubmissionQueuesValid())
+        goto no_memory;
+
     _allocated = true;
-    IOLog("rtl88wifi-wcl: allocated Skywalk pools and four queue objects (not registered)\n");
+    IOLog("rtl88wifi-wcl: allocated Skywalk pools and four WMM TX submission queues (not registered)\n");
     return kIOReturnSuccess;
 
 no_memory:
@@ -116,9 +140,14 @@ void RTW88WCLSkywalkQueues::destroyQueues()
         _txCompletion->release();
         _txCompletion = nullptr;
     }
-    if (_txSubmission) {
-        _txSubmission->release();
-        _txSubmission = nullptr;
+    /* Reverse construction order; clear each slot immediately after release
+     * so repeated destroy calls remain idempotent. */
+    for (UInt32 i = kTXSubmissionQueueCount; i > 0; --i) {
+        IOSkywalkTxSubmissionQueue *queue = _txSubmissionQueues[i - 1];
+        if (queue) {
+            queue->release();
+            _txSubmissionQueues[i - 1] = nullptr;
+        }
     }
     if (_rxPool) {
         _rxPool->release();
@@ -131,9 +160,35 @@ void RTW88WCLSkywalkQueues::destroyQueues()
     _allocated = false;
 }
 
+bool RTW88WCLSkywalkQueues::txSubmissionQueuesValid() const
+{
+    RTW88WCLTXQueueContract::Entry entries[kTXSubmissionQueueCount] = {};
+    for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
+        IOSkywalkTxSubmissionQueue *queue = _txSubmissionQueues[i];
+        if (!queue)
+            return false;
+        entries[i].identity = queue;
+        entries[i].serviceClass = static_cast<UInt32>(queue->getServiceClass());
+    }
+    return RTW88WCLTXQueueContract::validate(
+        entries, kTXSubmissionQueueCount);
+}
+
+bool RTW88WCLSkywalkQueues::ownsTXSubmissionQueue(
+    const IOSkywalkTxSubmissionQueue *queue) const
+{
+    if (!queue)
+        return false;
+    for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
+        if (_txSubmissionQueues[i] == queue)
+            return true;
+    }
+    return false;
+}
+
 bool RTW88WCLSkywalkQueues::queuesAllocated() const
 {
-    return _allocated && _txPool && _rxPool && _txSubmission &&
+    return _allocated && _txPool && _rxPool && txSubmissionQueuesValid() &&
            _txCompletion && _rxSubmission && _rxCompletion;
 }
 
@@ -144,14 +199,15 @@ bool RTW88WCLSkywalkQueues::queuesAllocated() const
  * that no packets were accepted or completed. Do not return nonzero
  * IOReturn error constants from these action callbacks.
  */
-IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(
     OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
-    const IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+    IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
 {
     (void)refCon;
     auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
-    if (!self || queue != self->_txSubmission || !packets || packetCount == 0)
-        return static_cast<IOReturn>(0);
+    if (!self || !self->ownsTXSubmissionQueue(queue) ||
+        !packets || packetCount == 0)
+        return static_cast<UInt32>(0);
 
     /* Validate every descriptor before a future TX path is allowed to copy
      * bytes or hand ownership to RTW88. The callback remains fail-closed:
@@ -159,14 +215,14 @@ IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
      * cookie is connected to the native completion queue. */
     for (UInt32 i = 0; i < packetCount; ++i) {
         if (!packets[i])
-            return static_cast<IOReturn>(0);
+            return static_cast<UInt32>(0);
         RTW88WCLPacketView view = {};
         if (!RTW88WCLResolveEthernetTxPacket(
-                const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
-            return static_cast<IOReturn>(0);
+                packets[i], self->_txPool, &view))
+            return static_cast<UInt32>(0);
     }
 
-    return static_cast<IOReturn>(0);
+    return static_cast<UInt32>(0);
 }
 
 IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
