@@ -273,7 +273,7 @@ public:
     IOReturn  cmdPowerOn();
     IOReturn  cmdPowerOff();
     IOReturn  suspendForSystemSleep();
-    bool      isPowered() const { return _powered; }
+    bool      isPowered() const { return __atomic_load_n(&_powered, __ATOMIC_ACQUIRE); }
     IOReturn  cmdGetState(struct RTW88StateResult *result);
     uint8_t   txNSS() const;
     uint8_t channelWidthMHz() const { return _connChanWidth; }
