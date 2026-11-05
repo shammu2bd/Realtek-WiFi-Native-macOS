@@ -20,7 +20,7 @@ IOSkywalkTxSubmissionQueue::withPool(IOSkywalkPacketBufferPool*, UInt32, UInt32,
 
 The two trailing integers after refCon are options, then serviceClass. The wrapper passes pool in RSI, capacity in ESI, queue ID in EDX, owner in RCX, query handler in R8, action in R9, and refCon/options/serviceClass in the stack argument slots.
 
-The mangled callback parameter types are also target-specific: both callback return types are UInt32, and the action receives IOSkywalkPacket * const *. The generic SDK typedefs instead use IOReturn and const IOSkywalkPacket **; reusing them would produce a different C++ symbol. The header therefore defines separate 24H32 callback typedefs for this overload. The action-only wrapper proves a null query handler is an accepted path.
+The mangled callback parameter types are also target-specific: both callback return types are UInt32, and the action receives IOSkywalkPacket **. The generic SDK typedefs instead use IOReturn and const IOSkywalkPacket **; reusing them would produce a different C++ symbol. The header therefore defines separate 24H32 callback typedefs for this overload. The action-only wrapper proves a null query handler is an accepted path.
 
 The wrapper reads the final stack argument at [RBP+0x20] into EDX before dispatching to initWithPool. It passes capacity in ECX and queue ID in R8D. The target initializer stores the service-class value at object offset 0xb8. The target IOSkywalkPacketQueue::getServiceClass implementation at 0xffffff8002980bb0 reads the same offset [RDI+0xb8].
 
