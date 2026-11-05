@@ -319,7 +319,7 @@ IOReturn RTW88WCLSkywalkQueues::bindTXAdapter(
         return kIOReturnNotReady;
     if (_txAdapter)
         return kIOReturnBusy;
-    if (!adapter->isUnbound())
+    if (!adapter->isBound())
         return kIOReturnBusy;
 
     adapter->retain();
