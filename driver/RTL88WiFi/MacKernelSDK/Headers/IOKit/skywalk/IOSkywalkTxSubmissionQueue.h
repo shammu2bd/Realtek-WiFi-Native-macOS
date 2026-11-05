@@ -52,7 +52,7 @@ typedef UInt32 (*IOSkywalkQueryFreeSpaceHandler24H32)(
     OSObject * owner, IOSkywalkTxSubmissionQueue * queue, UInt32 * outSpace );
 typedef UInt32 (*IOSkywalkTxSubmissionQueueAction24H32)(
     OSObject * owner, IOSkywalkTxSubmissionQueue * queue,
-    IOSkywalkPacket * const * packets, UInt32 packetCount, void * refCon );
+    IOSkywalkPacket ** packets, UInt32 packetCount, void * refCon );
 
 struct IOSkywalkTxSubmissionQueueStats; // size = 128
 
