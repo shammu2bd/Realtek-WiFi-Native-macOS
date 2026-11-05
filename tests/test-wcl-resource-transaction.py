@@ -81,7 +81,7 @@ assert "_phase = Phase::kIdle" in journal
 
 # Stage90 remains an acquisition/rollback step only. No live registration,
 # queue enabling, packet consumption, or event-source attachment is allowed.
-code_without_comments = re.sub(r"/\\*.*?\\*/|//[^\\n]*", "", cpp, flags=re.S)
+code_without_comments = re.sub(r"/\*.*?\*/|//[^\n]*", "", cpp, flags=re.S)
 assert "registerEthernetInterface(" not in code_without_comments
 assert "addEventSource(" not in code_without_comments
 assert "return static_cast<UInt32>(0)" in cpp
