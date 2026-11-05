@@ -43,7 +43,7 @@ private:
 
     static UInt32 txSubmissionAction(OSObject *owner,
                                      IOSkywalkTxSubmissionQueue *queue,
-                                     IOSkywalkPacket * const *packets,
+                                     IOSkywalkPacket **packets,
                                      UInt32 packetCount, void *refCon);
     static IOReturn txCompletionAction(OSObject *owner,
                                        IOSkywalkTxCompletionQueue *queue,
