@@ -31,10 +31,23 @@ assert "queue->getServiceClass()" in cpp
 assert "kern_packet_svc_class_t getServiceClass() const;" in (ROOT / "driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h").read_text()
 assert "RTW88WCLTXQueueContract::validate" in cpp
 
-# The actual role-1 array is a fixed member; all acquired queues are released
-# in reverse index order and cleared after release.
-assert "for (UInt32 i = kTXSubmissionQueueCount; i > 0; --i)" in cpp
-assert "_txSubmissionQueues[i - 1] = nullptr;" in cpp
+# The role-1 array is owner-resident. Stage90 replaces the original
+# manual reverse-index loop with a typed acquisition journal whose LIFO pop
+# dispatches the matching queue slot and clears it immediately after release.
+assert "RTW88WCLAcquisitionJournal::Journal _acquisitionJournal" in hpp
+assert "while (_acquisitionJournal.popRollback(&resource))" in cpp
+assert "releaseAcquiredResource(resource)" in cpp
+release_start = cpp.index("void RTW88WCLSkywalkQueues::releaseAcquiredResource")
+release_end = cpp.index("bool RTW88WCLSkywalkQueues::hasOutstandingResources", release_start)
+release = cpp[release_start:release_end]
+for token in (
+    "Resource::kTXSubmission3",
+    "Resource::kTXSubmission2",
+    "Resource::kTXSubmission1",
+    "Resource::kTXSubmission0",
+    "_txSubmissionQueues[index] = nullptr;",
+):
+    assert token in release
 assert "ownsTXSubmissionQueue(queue)" in cpp
 
 # The exact WMM order is explicit and the portable contract rejects aliases.
@@ -47,5 +60,5 @@ assert "count != kRequiredCount" in contract
 # Construction stays deliberately unregistered and callbacks remain fail-closed.
 assert "->registerEthernetInterface(" not in cpp and ".registerEthernetInterface(" not in cpp
 assert "return static_cast<IOReturn>(0)" in cpp
-print("PASS: four-entry target WMM queue array is fixed, ordered, validated, and reverse-released")
+print("PASS: four-entry target WMM queue array is fixed, ordered, validated, and journal-rollback compatible")
 print("PASS: construction remains unregistered and callback packet acceptance remains fail-closed")
