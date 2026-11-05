@@ -499,7 +499,7 @@ private:
     bool     _m3KeysInstalled = false;
     bool     _handshakePending = false;
     bool     _eapolTxProtect = false;  /* protect the next EAPOL TX (group M2) */
-    uint64_t _ccmpTxPn = 0; /* atomic 48-bit CCMP transmit packet number */
+    RTW88TxSequenceNumbers _txSequenceNumbers;
     bool     _rxCcmpIvSkipLogged = false;
     /* r10: the scan-cache entry of the associated BSS has a TIM element
      * (beacon-derived). Until it does, beacons from that BSS refresh it while
@@ -515,11 +515,8 @@ private:
     uint16_t _assocRsnIELen = 0;
 
     /* Sequence number for TX frames */
-    uint16_t _txSeq    = 0;
-    /* 802.11 QoS sequence space is per TID; each access category has its own
-     * independent reorder/BlockAck window. These counters are atomic because
-     * the four Skywalk AC queues may submit concurrently. */
-    uint16_t _dataSeq[8] = {};
+    /* RTW88TxSequenceNumbers owns the atomic management, per-TID QoS and
+     * 48-bit CCMP packet-number spaces shared by concurrent AC callbacks. */
     uint16_t _awdlDataSeq = 0;
     uint16_t _assocAID = 0;
 
