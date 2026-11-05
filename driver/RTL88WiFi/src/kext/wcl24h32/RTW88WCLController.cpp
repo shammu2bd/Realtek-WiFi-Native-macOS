@@ -317,6 +317,10 @@ IOReturn RTW88WCLController::releaseNativeResources()
      * adapter and the prepared-packet ownership ring have been drained. */
     if (_skywalkQueues) {
         _skywalkQueues->destroyQueues();
+        if (!_skywalkQueues->resourcesReleased()) {
+            IOLog("rtl88wifi-wcl: Skywalk queue/pool rollback incomplete; retaining radio and owner\\n");
+            return kIOReturnBusy;
+        }
         _skywalkQueues->release();
         _skywalkQueues = nullptr;
     }
