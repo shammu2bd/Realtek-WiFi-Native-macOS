@@ -27,25 +27,51 @@ IOReturn RTW88WCLSkywalkTxAdapter::bind(
 {
     if (!radio || !txPool)
         return kIOReturnBadArgument;
-    if (_radio || _txPool || _tickets.hasOutstanding())
+    if (!_submissionGate.beginBind())
         return kIOReturnBusy;
+    if (_tickets.hasOutstanding()) {
+        _submissionGate.abortBind();
+        return kIOReturnBusy;
+    }
 
     radio->retain();
     txPool->retain();
     _radio = radio;
     _txPool = txPool;
+    if (!_submissionGate.finishBind()) {
+        _radio = nullptr;
+        _txPool = nullptr;
+        txPool->release();
+        radio->release();
+        _submissionGate.abortBind();
+        return kIOReturnBusy;
+    }
     return kIOReturnSuccess;
 }
 
 IOReturn RTW88WCLSkywalkTxAdapter::unbind()
 {
-    if (_tickets.hasOutstanding())
+    if (!_submissionGate.beginUnbind())
+        return kIOReturnBusy;
+
+    /* Stop new entries before testing either in-flight copies or deferred
+     * completion tickets. Keep the retained radio/pool pair on BUSY so a
+     * later teardown attempt can retry without invalidating a callback. */
+    if (!_submissionGate.canFinishUnbind() || _tickets.hasOutstanding())
         return kIOReturnBusy;
 
     RTW88IEEE80211 *radio = _radio;
     IOSkywalkPacketBufferPool *pool = _txPool;
     _radio = nullptr;
     _txPool = nullptr;
+    if (!_submissionGate.finishUnbind()) {
+        /* A failed finish is an invariant violation. Restore the references
+         * and retain the quiescing state rather than losing their owners. */
+        _radio = radio;
+        _txPool = pool;
+        return kIOReturnBusy;
+    }
+
     if (pool)
         pool->release();
     if (radio)
@@ -77,6 +103,21 @@ IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
 {
     if (!packet)
         return kIOReturnBadArgument;
+    if (!_submissionGate.enterSubmission())
+        return kIOReturnNotReady;
+
+    /* The call-level retain covers every non-ticket exit and prevents a
+     * concurrent owner release from destroying this adapter mid-copy. */
+    retain();
+    const IOReturn result = submitPacketEntered(packet);
+    _submissionGate.leaveSubmission();
+    release();
+    return result;
+}
+
+IOReturn RTW88WCLSkywalkTxAdapter::submitPacketEntered(
+    IOSkywalkPacket *packet)
+{
     if (!_radio || !_txPool)
         return kIOReturnNotReady;
 
@@ -88,6 +129,9 @@ IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
     if (!mbuf)
         return kIOReturnNoMemory;
 
+    /* The original Skywalk packet remains with Skywalk on every rejection.
+     * Ownership crosses only after a retained packet has a completion ticket
+     * and the RTW88 completion contract is invoked. */
     packet->retain();
     TicketPool::Ticket *ticket = _tickets.reserve(packet);
     if (!ticket) {
@@ -96,16 +140,17 @@ IOReturn RTW88WCLSkywalkTxAdapter::submitPacket(IOSkywalkPacket *packet)
         return kIOReturnBusy;
     }
 
-    /* Keep the adapter alive until the workloop-side completion drain drops
-     * this ticket. backendCompletion() intentionally does not release it. */
+    /* Keep the adapter alive until the deferred completion drain drops this
+     * ticket. backendCompletion() never releases OSObjects or calls Skywalk. */
     retain();
     const UInt32 backendResult = _radio->outputPacketWithCompletion(
         mbuf, &RTW88WCLSkywalkTxAdapter::backendCompletion, this, ticket);
 
-    /* outputPacketWithCompletion consumes the mbuf and reports exactly one
-     * terminal callback, including synchronous drops. Once the ticket has
-     * been reserved, adapter acceptance is successful; the actual transmitted
-     * vs dropped result is delivered later through the completion sink. */
+    /* outputPacketWithCompletion consumes the mbuf and invokes exactly one
+     * terminal callback, including synchronous drops. A reserved ticket is
+     * accepted even when RTW88 immediately reports a failed transmission;
+     * Stage92 will return that terminal result through the completion queue.
+     */
     (void)backendResult;
     return kIOReturnSuccess;
 }
@@ -149,10 +194,10 @@ uint32_t RTW88WCLSkywalkTxAdapter::drainCompletions(
         TicketPool::finish(ticket);
         if (packet)
             packet->release();
-        release();
+        release(); // matching per-ticket adapter retain
         ++drained;
     }
-    release();
+    release(); // drain-loop retain
     return drained;
 }
 
@@ -168,11 +213,14 @@ uint32_t RTW88WCLSkywalkTxAdapter::outstandingCompletionCount() const
 
 void RTW88WCLSkywalkTxAdapter::free()
 {
-    /* A per-ticket retain prevents free() while hardware callbacks are still
-     * pending. The owning controller must drain every completion before its
-     * final reference is released. */
-    if (_tickets.hasOutstanding())
-        IOLog("rtl88wifi-wcl: TX adapter free attempted with outstanding tickets\n");
-    unbind();
+    const IOReturn status = unbind();
+    if (status != kIOReturnSuccess || !_submissionGate.isUnbound() ||
+        _tickets.hasOutstanding()) {
+        IOLog("rtl88wifi-wcl: TX adapter free deferred; submission or completion ownership remains
+");
+        /* Retained callbacks/tickets may still reference this adapter and its
+         * radio/pool. Quarantine it instead of destroying live callback state. */
+        return;
+    }
     super::free();
 }
