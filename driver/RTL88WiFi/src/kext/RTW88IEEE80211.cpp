@@ -1206,53 +1206,135 @@ void RTW88IEEE80211::restoreSTAChannelAfterAWDL()
 
 IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
 {
-    /* Policy gate (1.0.2): never retune the radio away from the AP for AWDL. */
     if (!_awdlRadioAllowed)
         return kIOReturnNotReady;
-    if (!_powered || !_hw || !_hw->wiphy || channel == 0)
-        return kIOReturnNotReady;
+    if (channel == 0)
+        return kIOReturnBadArgument;
 
     struct ieee80211_channel *target = nullptr;
+    bool connected = false;
+    bool idle = false;
+    bool wasOffChannel = false;
+    bool alreadyOnTarget = false;
+    bool sameAsHome = false;
+    bool sentPowerSave = false;
+
+    /* Pin the WCL/radio objects while inspecting the channel table and the
+     * currently active timeslice. This lease is dropped before requesting a
+     * writer because a connected off-channel switch must first send NullFunc. */
+    {
+        auto txLease = _txStateGate.tryEnterTransmit();
+        if (!txLease)
+            return kIOReturnBusy;
+        if (!_powered || !_hw || !_hw->wiphy)
+            return kIOReturnNotReady;
+
+        for (int b = 0; b < NL80211_NUM_BANDS && !target; ++b) {
+            struct ieee80211_supported_band *band = _hw->wiphy->bands[b];
+            if (!band) continue;
+            for (int i = 0; i < band->n_channels; ++i) {
+                if (band->channels[i].hw_value == channel &&
+                    !(band->channels[i].flags &
+                      (IEEE80211_CHAN_DISABLED | IEEE80211_CHAN_NO_IR |
+                       IEEE80211_CHAN_RADAR))) {
+                    target = &band->channels[i];
+                    target->band = band->band;
+                    break;
+                }
+            }
+        }
+        if (!target)
+            return kIOReturnUnsupported;
+
+        const RTW88State state = __atomic_load_n(&_state, __ATOMIC_ACQUIRE);
+        connected = state == RTW88_STATE_CONNECTED && associatedVisible();
+        idle = state == RTW88_STATE_IDLE;
+        wasOffChannel = _awdlOffChannel;
+        sameAsHome = connected && channel == _targetBSS.channel;
+        alreadyOnTarget = wasOffChannel && _hw->conf.chandef.chan == target;
+
+        if (!connected && !idle)
+            return kIOReturnBusy;
+
+        if (connected && !sameAsHome && !alreadyOnTarget && !wasOffChannel) {
+            if (!txNullFunc(true, &txLease))
+                return kIOReturnNotReady;
+            sentPowerSave = true;
+        }
+    }
+
+    /* A previous timeslice is returned home first; after that, retry this
+     * request so the AP is placed in power-save before the next retune. */
+    if (connected && wasOffChannel && !sameAsHome && !alreadyOnTarget) {
+        restoreSTAChannelAfterAWDL();
+        return setAWDLChannel(channel);
+    }
+
+    if (connected && wasOffChannel && sameAsHome)
+        restoreSTAChannelAfterAWDL();
+
+    if (connected && sentPowerSave)
+        IOSleep(6);
+
+    auto mutation = beginTxStateMutation();
+    if (!_powered || !_hw || !_vif || !_hw->wiphy) {
+        mutation.finish();
+        return kIOReturnNotReady;
+    }
+
+    const RTW88State currentState = __atomic_load_n(&_state, __ATOMIC_ACQUIRE);
+    const bool currentConnected =
+        currentState == RTW88_STATE_CONNECTED && associatedVisible();
+    const bool currentIdle = currentState == RTW88_STATE_IDLE;
+
+    if ((connected && !currentConnected) || (idle && !currentIdle)) {
+        mutation.finish();
+        return kIOReturnBusy;
+    }
+
+    /* Re-resolve the channel after obtaining the writer. The Wiphy pointer is
+     * now protected against stop/power teardown until this transaction ends. */
+    target = nullptr;
     for (int b = 0; b < NL80211_NUM_BANDS && !target; ++b) {
         struct ieee80211_supported_band *band = _hw->wiphy->bands[b];
         if (!band) continue;
         for (int i = 0; i < band->n_channels; ++i) {
             if (band->channels[i].hw_value == channel &&
-                !(band->channels[i].flags & (IEEE80211_CHAN_DISABLED | IEEE80211_CHAN_NO_IR | IEEE80211_CHAN_RADAR))) {
+                !(band->channels[i].flags &
+                  (IEEE80211_CHAN_DISABLED | IEEE80211_CHAN_NO_IR |
+                   IEEE80211_CHAN_RADAR))) {
                 target = &band->channels[i];
                 target->band = band->band;
                 break;
             }
         }
     }
-    if (!target)
+    if (!target) {
+        mutation.finish();
         return kIOReturnUnsupported;
+    }
 
     _awdlChannel = channel;
 
-    /* Same-channel AWDL needs no timeslice at all.  If a previous window left
-     * us off-channel, return home first. */
-    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED && associatedVisible() &&
-        channel == _targetBSS.channel) {
-        if (_awdlOffChannel) restoreSTAChannelAfterAWDL();
-        return (_hw->conf.chandef.chan &&
-                _hw->conf.chandef.chan->hw_value == channel)
-                   ? kIOReturnSuccess : kIOReturnNotReady;
+    if (currentConnected && channel == _targetBSS.channel) {
+        const bool home = _hw->conf.chandef.chan &&
+                          _hw->conf.chandef.chan->hw_value == channel;
+        mutation.finish();
+        return home ? kIOReturnSuccess : kIOReturnNotReady;
     }
 
-    /* Connected single-PHY coexistence.  The AWDL scheduler calls this only
-     * inside a bounded common availability window.  Put the AP into PS before
-     * retuning so it buffers unicast traffic, exactly like our working
-     * connected software-scan path. */
-    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED && associatedVisible()) {
-        if (_awdlOffChannel && _hw->conf.chandef.chan == target)
+    if (currentConnected) {
+        /* A concurrent scheduler call may have already completed the same
+         * retune while this request was yielding to the AP power-save frame. */
+        if (_awdlOffChannel && _hw->conf.chandef.chan == target) {
+            mutation.finish();
             return kIOReturnSuccess;
-        if (_awdlOffChannel)
+        }
+        if (_awdlOffChannel) {
+            mutation.finish();
             restoreSTAChannelAfterAWDL();
-
-        if (!txNullFunc(true))
-            return kIOReturnNotReady;
-        IOSleep(6);
+            return setAWDLChannel(channel);
+        }
 
         _hw->conf.chandef.chan = target;
         _hw->conf.chandef.width = NL80211_CHAN_WIDTH_20_NOHT;
@@ -1260,26 +1342,26 @@ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
         rtw88_awdl_timeslice_switch_channel(_hw);
         _awdlPreparedChannel = channel;
         _awdlOffChannel = true;
+        mutation.finish();
         return kIOReturnSuccess;
     }
 
-    /* A scan/auth/join owns the radio exclusively. */
-    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_IDLE)
-        return kIOReturnBusy;
-
-    if (_awdlPreparedChannel == channel && _hw->conf.chandef.chan == target &&
-        _hw->conf.chandef.width == NL80211_CHAN_WIDTH_20_NOHT)
+    if (_awdlPreparedChannel == channel &&
+        _hw->conf.chandef.chan == target &&
+        _hw->conf.chandef.width == NL80211_CHAN_WIDTH_20_NOHT) {
+        mutation.finish();
         return kIOReturnSuccess;
+    }
 
     _hw->conf.chandef.chan = target;
     _hw->conf.chandef.width = NL80211_CHAN_WIDTH_20_NOHT;
     _hw->conf.chandef.center_freq1 = target->center_freq;
     rtw88_awdl_switch_channel(_hw);
     _awdlPreparedChannel = channel;
+    _awdlOffChannel = false;
+    mutation.finish();
     return kIOReturnSuccess;
 }
-
-
 
 IOReturn RTW88IEEE80211::powerOn()
 {
@@ -1372,10 +1454,12 @@ UInt32 RTW88IEEE80211::outputPacketWithCompletion(
         return kIOReturnOutputDropped;
     }
 
-    const bool connected = (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED) ||
-        (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
-         _scanReturnState == RTW88_STATE_CONNECTED &&
-         (__atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE) == 0 || __atomic_load_n(&_manualScanOnHomeChannel, __ATOMIC_ACQUIRE)));
+    const bool connected = ! _awdlOffChannel &&
+        ((__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED) ||
+         (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
+          _scanReturnState == RTW88_STATE_CONNECTED &&
+          (__atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE) == 0 ||
+           __atomic_load_n(&_manualScanOnHomeChannel, __ATOMIC_ACQUIRE))));
     if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
         mbuf_freem(m);
         if (callback)
@@ -5005,7 +5089,7 @@ bool RTW88IEEE80211::txAWDLDataFrame(mbuf_t m)
     /* AWDL data header: LE magic 0x0403, LE sequence, zero pad, BE EtherType. */
     uint8_t *aw = skb_put(skb, 8);
     aw[0] = 0x03; aw[1] = 0x04;
-    uint16_t seq = _awdlDataSeq++;
+    uint16_t seq = __atomic_fetch_add(&_awdlDataSeq, 1, __ATOMIC_RELAXED);
     aw[2] = (uint8_t)(seq & 0xff); aw[3] = (uint8_t)(seq >> 8);
     aw[4] = 0; aw[5] = 0;
     aw[6] = (uint8_t)(ethertype >> 8); aw[7] = (uint8_t)ethertype;
