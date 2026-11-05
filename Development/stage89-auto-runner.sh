@@ -245,7 +245,24 @@ PYVERIFY
 if (( run_status != 0 )); then fail "runner returned nonzero after checkpoint/artifact verification"; fi
 touch "$STATE/verified-v$next_version"
 rm -f "$attempt_file" "$last_file" "$STATE/notified-no-runner-v$next_version"
-echo "STAGE89_V${next_version}_AUTOMATION=COMPLETED_AND_ARTIFACTS_VERIFIED"
+completed_version="$next_version"
+echo "STAGE89_V${completed_version}_AUTOMATION=COMPLETED_AND_ARTIFACTS_VERIFIED"
 echo "RUN_ID=$run_id"
-publish_status "STAGE89_V${next_version}_COMPLETED_AND_VERIFIED"
-notify "Stage89 V$next_version complete; uploaded artifacts verified. Review status remains in GitHub."
+# Refresh status metadata from the post-run canonical history before publishing
+# the final heartbeat, so latest version/next version aren't left at pre-run values.
+status_read_info="$(python3 - "$BASE/output-log-after.json" <<'PYSTATUS'
+import base64,json,re,sys
+obj=json.load(open(sys.argv[1]))
+s=base64.b64decode(obj["content"]).decode(errors="replace")
+matches=list(re.finditer(r"STAGE89_V(\\d+)_RUN:\\s*(run-[A-Za-z0-9-]+)",s))
+if not matches: raise SystemExit("No canonical Stage89 checkpoint for final heartbeat")
+m=matches[-1]
+print(m.group(1)+"|"+m.group(2))
+PYSTATUS
+)"
+latest_version="$(printf '%s' "$status_read_info" | cut -d '|' -f 1)"
+latest_run="$(printf '%s' "$status_read_info" | cut -d '|' -f 2)"
+next_version=$((latest_version+1))
+runner="NONE"
+publish_status "STAGE89_V${completed_version}_COMPLETED_AND_VERIFIED"
+notify "Stage89 V$completed_version complete; uploaded artifacts verified. Review status remains in GitHub."
