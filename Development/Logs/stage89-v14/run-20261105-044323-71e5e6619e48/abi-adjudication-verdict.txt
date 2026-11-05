@@ -1,0 +1,11 @@
+STAGE89_V14_TARGET_FACTORY_ABI_ADJUDICATION
+V13_CHECK_CORRECTION=The single failed V13 check searched for TARGET_MAIN_FACTORY_ORDER in the V12 crosswalk, while V12 stores the same ordered ABI in its report summary under TARGET_MAIN_FACTORY_ORDER and its detailed crosswalk uses TARGET_MAIN_EXTRA_STACK_U32S plus the demangled symbol. Revalidation uses the pinned V12 crosswalk and symbol/disassembly evidence.
+TARGET_PRIMARY_ORDER=pool,capacity,queueId,owner,queryHandler,action,refCon,options,serviceClass
+SDK_NAMED_WITHPOOLSERVICECLASS_ORDER=pool,capacity,queueId,serviceClass,owner,queryHandler,action,refCon,options
+TARGET_PRIMARY_IS_NOT_DIRECTLY_DECLARED_BY_EXISTING_SDK=YES
+TARGET_ACTION_ONLY_WRAPPER_DEFAULT_SERVICE_CLASS=0xffffffff
+TARGET_MUTABLE_WRAPPER_ADDS_OPTION_BIT=0x8
+EXISTING_PUBLIC_THUNK_PROVEN=NO
+ABI_ADAPTER_DECISION=BLOCKED; do not cast/reinterpret SDK declarations, call guessed/private symbols, or write private fields
+NEXT_ALLOWED_WORK=Read-only queue-construction and ownership requirements audit; implementation requires separate explicit authorization
+STAGE89_EXIT=NOT_MET; four TX submission queues, stable pointer array, and tests are not implemented
