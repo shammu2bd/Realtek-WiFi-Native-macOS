@@ -4467,8 +4467,8 @@ void RTW88IEEE80211::sendAddbaRequest(uint8_t tid)
     b[3] = (uint8_t)(param & 0xff);
     b[4] = (uint8_t)(param >> 8);
     b[5] = 0; b[6] = 0;   /* Block Ack Timeout = 0 (no timeout) */
-    /* Block Ack Starting Sequence Control: SSN (bits 4-15) = next data SN, so
-     * the AP's reorder window aligns with the TID-0 data stream. */
+    /* Block Ack Starting Sequence Control: SSN (bits 4-15) = next data SN
+     * for this TID, aligning the AP's reorder window with its QoS stream. */
     uint16_t ssc = (uint16_t)((uint16_t)(currentDataSequence(tid) & 0xFFF) << 4);
     b[7] = (uint8_t)(ssc & 0xff);
     b[8] = (uint8_t)(ssc >> 8);
