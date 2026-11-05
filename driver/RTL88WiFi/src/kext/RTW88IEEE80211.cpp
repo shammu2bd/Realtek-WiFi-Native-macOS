@@ -762,8 +762,6 @@ void RTW88IEEE80211::clearKeys()
     _txBAState.clear();
     _txBaPending = false;
     _baRecovery.reset();
-    _associatedVisible = false;
-    _state = RTW88_STATE_IDLE;
     mutation.finish();
 }
 
@@ -3677,8 +3675,10 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
          * RTL8822BE while keeping controlled-port semantics in our own path. */
         if (_parent)
             _parent->setLinkStatus(kIONetworkLinkActive | kIONetworkLinkValid);
-        if (!_wpa2)
+        if (!_wpa2) {
+            __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
             startTxAggregation();
+        }
         _timer->cancelTimeout();
         if (_externalSupplicant) {
             IOLog("rtw88: associated — Apple RSN active; waiting for PTK/GTK before link-up\n");
@@ -3927,35 +3927,47 @@ IOReturn RTW88IEEE80211::copyTargetRsnIE(uint8_t *out, uint16_t capacity, uint16
 IOReturn RTW88IEEE80211::cmdInstallExternalKey(bool pairwise, uint8_t keyidx, uint32_t cipher,
                                                 const uint8_t *key, uint8_t key_len)
 {
-    if (!_externalSupplicant || !_wpa2 || !_associatedVisible)
+    if (!key || !key_len)
+        return kIOReturnBadArgument;
+
+    auto mutation = beginTxStateMutation();
+    if (!_externalSupplicant || !_wpa2 || !_associatedVisible ||
+        (pairwise && !_sta)) {
+        mutation.finish();
         return kIOReturnNotReady;
-    if (!key || !key_len) return kIOReturnBadArgument;
-    if (pairwise && !_sta) return kIOReturnNotReady;
+    }
 
     struct ieee80211_key_conf **slot = pairwise ? &_ptkConf : &_gtkConf;
-    if (!installKey(slot, pairwise, keyidx, cipher, key, key_len))
+    if (!installKeyUnderMutation(slot, pairwise, keyidx, cipher, key, key_len,
+                                 &mutation)) {
+        mutation.finish();
         return kIOReturnUnsupported;
+    }
 
     if (pairwise)
-        _externalPTKInstalled = true;
+        __atomic_store_n(&_externalPTKInstalled, true, __ATOMIC_RELEASE);
     else
-        _externalGTKInstalled = true;
+        __atomic_store_n(&_externalGTKInstalled, true, __ATOMIC_RELEASE);
 
-    IOLog("rtw88: Apple RSN key installed type=%s ptk=%d gtk=%d\n",
-          pairwise ? "PTK" : "GTK", _externalPTKInstalled, _externalGTKInstalled);
+    const bool keysReady =
+        __atomic_load_n(&_externalPTKInstalled, __ATOMIC_ACQUIRE) &&
+        __atomic_load_n(&_externalGTKInstalled, __ATOMIC_ACQUIRE);
+    if (keysReady)
+        __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
+    mutation.finish();
 
-    /* The controlled port becomes valid only once both keys are present.
-     * This mirrors the reference IO80211 driver's setGTK()->ieee80211_set_link_state(UP)
-     * sequencing while tolerating an unusual key callback order. */
-    if (_externalPTKInstalled && _externalGTKInstalled) {
+    IOLog("rtw88: Apple RSN key installed type=%s ptk=%d gtk=%d\\n",
+          pairwise ? "pairwise" : "group",
+          __atomic_load_n(&_externalPTKInstalled, __ATOMIC_ACQUIRE),
+          __atomic_load_n(&_externalGTKInstalled, __ATOMIC_ACQUIRE));
+
+    if (keysReady) {
         if (_parent)
             _parent->setLinkStatus(kIONetworkLinkActive | kIONetworkLinkValid);
         startTxAggregation();
     }
-
     return kIOReturnSuccess;
 }
-
 /* ------------------------------------------------------------------ */
 /*  Disconnect                                                          */
 /* ------------------------------------------------------------------ */
@@ -4319,14 +4331,27 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
         }
         memcpy(_replayCtr, data + 9, 8);
 
-        if (!installKey(&_ptkConf, true, 0, WLAN_CIPHER_SUITE_CCMP,
-                        _ptk + 32, 16))
-            return;
-        uint32_t groupCipher = (_targetBSS.group_cipher == WLAN_CIPHER_SUITE_TKIP) ?
-            WLAN_CIPHER_SUITE_TKIP : WLAN_CIPHER_SUITE_CCMP;
-        if (gtk_len && !installKey(&_gtkConf, false, gtk_idx, groupCipher,
-                                   gtk, gtk_len))
-            return;
+        /* Replace both keys as one writer transaction. */
+        {
+            auto mutation = beginTxStateMutation();
+            if (!installKeyUnderMutation(&_ptkConf, true, 0,
+                                         WLAN_CIPHER_SUITE_CCMP,
+                                         _ptk + 32, 16, &mutation)) {
+                mutation.finish();
+                return;
+            }
+            uint32_t groupCipher =
+                (_targetBSS.group_cipher == WLAN_CIPHER_SUITE_TKIP) ?
+                WLAN_CIPHER_SUITE_TKIP : WLAN_CIPHER_SUITE_CCMP;
+            if (gtk_len &&
+                !installKeyUnderMutation(&_gtkConf, false, gtk_idx,
+                                         groupCipher, gtk, gtk_len,
+                                         &mutation)) {
+                mutation.finish();
+                return;
+            }
+            mutation.finish();
+        }
 
         memcpy(_installedM3ReplayCtr, _replayCtr, 8);
         _m3KeysInstalled = true;
@@ -4336,6 +4361,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             return;
         }
         IOLog("rtw88: M4 submitted duplicate=%d; AP acceptance unverified\n", duplicate);
+        __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
         _associatedVisible = true;
         _state = RTW88_STATE_CONNECTED;
         _timer->cancelTimeout();
