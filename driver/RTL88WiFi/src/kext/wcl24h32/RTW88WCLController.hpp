@@ -16,6 +16,7 @@
 class RTW88IEEE80211;
 class RTW88WCLSkywalkQueues;
 class RTW88WCLSkywalkRxAdapter;
+class RTW88WCLSkywalkTxAdapter;
 class IOSkywalkPacket;
 
 class RTW88WCLController final : public IO80211Controller,
@@ -108,6 +109,8 @@ private:
     RTW88WCLPCIBackend *_pciBackend = nullptr; // retained
     RTW88WCLSkywalkQueues *_skywalkQueues = nullptr; // retained, unregistered
     RTW88WCLSkywalkRxAdapter *_rxAdapter = nullptr; // retained, workloop-bound
+    RTW88WCLSkywalkTxAdapter *_txAdapter = nullptr; // retained, queue-owner-bound
+    bool _txAdapterBoundToQueues = false;
     /* Accepted RX packets remain pool-owned here until a verified completion
      * queue can consume them. This ring is bounded to the RX pool packet count. */
     RTW88WCLMbufRing<IOSkywalkPacket *, kStagedRxPacketCapacity> _stagedRxPackets;
