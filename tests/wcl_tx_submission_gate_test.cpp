@@ -98,10 +98,67 @@ static void testAbortAndBusyBinding()
     assert(gate.isUnbound());
 }
 
+
+static void testOwnerGateProtectsAdapterPointerLoadWindow()
+{
+    RTW88WCLTxSubmissionGate ownerGate;
+    RTW88WCLTxSubmissionGate adapterGate;
+    std::atomic<bool> pointerAttached{true};
+    std::atomic<bool> pointerLoaded{false};
+    std::atomic<bool> continueCallback{false};
+    std::atomic<bool> adapterRejected{false};
+
+    assert(ownerGate.beginBind());
+    assert(ownerGate.finishBind());
+    assert(adapterGate.beginBind());
+    assert(adapterGate.finishBind());
+
+    std::thread callback([&] {
+        assert(ownerGate.enterSubmission());
+        assert(pointerAttached.load(std::memory_order_acquire));
+        pointerLoaded.store(true, std::memory_order_release);
+
+        while (!continueCallback.load(std::memory_order_acquire))
+            sched_yield();
+
+        /* The adapter may already be quiesced, but the owner gate keeps its
+         * pointer/context retained until this callback has stopped reading it.
+         */
+        const bool entered = adapterGate.enterSubmission();
+        adapterRejected.store(!entered, std::memory_order_release);
+        if (entered)
+            adapterGate.leaveSubmission();
+        ownerGate.leaveSubmission();
+    });
+
+    while (!pointerLoaded.load(std::memory_order_acquire))
+        sched_yield();
+
+    /* Model the controller's order: close adapter admission first, then ask
+     * the queue owner to detach. The owner gate must still report in-flight.
+     */
+    assert(adapterGate.beginUnbind());
+    assert(adapterGate.canFinishUnbind());
+    assert(adapterGate.finishUnbind());
+    assert(ownerGate.beginUnbind());
+    assert(!ownerGate.canFinishUnbind());
+    assert(pointerAttached.load(std::memory_order_acquire));
+
+    continueCallback.store(true, std::memory_order_release);
+    callback.join();
+
+    assert(adapterRejected.load(std::memory_order_acquire));
+    assert(ownerGate.canFinishUnbind());
+    assert(ownerGate.finishUnbind());
+    pointerAttached.store(false, std::memory_order_release);
+    assert(!pointerAttached.load(std::memory_order_acquire));
+}
+
 int main()
 {
     testLifecycleTransitions();
     testUnbindWaitsForRacingSubmitters();
     testAbortAndBusyBinding();
+    testOwnerGateProtectsAdapterPointerLoadWindow();
     return 0;
 }
