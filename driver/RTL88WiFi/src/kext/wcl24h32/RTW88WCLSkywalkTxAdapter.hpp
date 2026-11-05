@@ -17,7 +17,10 @@ class RTW88WCLSkywalkTxAdapter final : public OSObject {
     OSDeclareDefaultStructors(RTW88WCLSkywalkTxAdapter)
 
 public:
-    using CompletionSink = void (*)(IOSkywalkPacket *packet,
+    /* Return true only after the packet was successfully accepted by the
+     * Skywalk TX-completion handoff. False leaves the ticket and packet retain
+     * outstanding so a later drain pass can retry safely. */
+    using CompletionSink = bool (*)(IOSkywalkPacket *packet,
                                     bool transmitted,
                                     void *context);
 
@@ -38,7 +41,8 @@ public:
      * returned to the Skywalk action. On success the adapter retains packet
      * ownership until the deferred completion sink returns it in Stage92.
      * Rejected calls leave the packet with Skywalk. */
-    IOReturn submitPacket(IOSkywalkPacket *packet);
+    IOReturn submitPacket(IOSkywalkPacket *packet,
+                          uint8_t accessCategory, uint8_t tid);
 
     /* Must be called later from a serialized/deferred context. The sink may
      * enqueue the packet to Skywalk's TX-completion queue once that queue's
@@ -56,7 +60,8 @@ private:
     static void backendCompletion(void *context, void *cookie,
                                   bool transmitted);
     static mbuf_t copyPacketToMbuf(const uint8_t *bytes, uint32_t length);
-    IOReturn submitPacketEntered(IOSkywalkPacket *packet);
+    IOReturn submitPacketEntered(IOSkywalkPacket *packet,
+                                 uint8_t accessCategory, uint8_t tid);
 
     RTW88WCLTxSubmissionGate _submissionGate;
     RTW88IEEE80211 *_radio = nullptr; // retained while bound
