@@ -22,6 +22,7 @@ assert "IOSkywalkTxSubmissionQueue::withPool(" in cpp
 assert "this, nullptr," in cpp
 assert "RTW88WCLTXQueueContract::kServiceClasses[i]" in cpp
 assert "queue->getServiceClass()" in cpp
+assert "kern_packet_svc_class_t getServiceClass() const;" in (ROOT / "driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkPacketQueue.h").read_text()
 assert "RTW88WCLTXQueueContract::validate" in cpp
 
 # The actual role-1 array is a fixed member; all acquired queues are released
