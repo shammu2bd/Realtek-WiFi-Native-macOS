@@ -426,6 +426,7 @@ $(WCL24H32_SKYWALK_QUEUES_OBJ): $(WCL24H32_SKYWALK_QUEUES_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLTxSubmissionBatch.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLTxSubmissionGate.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPacketView.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPacketSpanValidation.hpp \
     $(MKSDK)/Headers/IOKit/skywalk/IOSkywalkFamily.h \
