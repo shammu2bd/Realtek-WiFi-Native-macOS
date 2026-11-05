@@ -56,7 +56,7 @@ assert "_skywalkQueues->createQueues()" in controller_cpp
 assert "_skywalkQueues->destroyQueues()" in controller_cpp
 assert controller_cpp.index("_skywalkQueues->destroyQueues()") < controller_cpp.index("unbindRadioBackend()")
 assert "WCL24H32_SKYWALK_QUEUES_OBJ" in makefile
-assert "withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options, UInt32 serviceClass );" in (ROOT / "driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h").read_text()
+assert "withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler24H32 handler, IOSkywalkTxSubmissionQueueAction24H32 action, void * refCon, IOOptionBits options, UInt32 serviceClass );" in (ROOT / "driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h").read_text()
 assert "WCL24H32_SKYWALK_QUEUES_OBJ" not in makefile.split("AIRPORT_ALL_OBJS :=", 1)[1].split("\n", 1)[0]
 assert "virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkRxSubmissionQueueAction action, void * refCon, IOOptionBits options );" in rx_queue_sdk
 
