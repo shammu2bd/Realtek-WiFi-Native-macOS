@@ -169,7 +169,10 @@ no_memory:
 void RTW88WCLSkywalkQueues::destroyQueues()
 {
     if (_acquisitionJournal.isEmpty()) {
-        _allocated = false;
+        if (hasOutstandingResources())
+            IOLog("rtl88wifi-wcl: empty acquisition journal still has live queue/pool pointers; retaining owner\n");
+        else
+            _allocated = false;
         return;
     }
 
@@ -203,18 +206,24 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
         if (_rxCompletion) {
             _rxCompletion->release();
             _rxCompletion = nullptr;
+        } else {
+            IOLog("rtl88wifi-wcl: rollback journal expected RX completion queue\n");
         }
         break;
     case Resource::kRXSubmission:
         if (_rxSubmission) {
             _rxSubmission->release();
             _rxSubmission = nullptr;
+        } else {
+            IOLog("rtl88wifi-wcl: rollback journal expected RX submission queue\n");
         }
         break;
     case Resource::kTXCompletion:
         if (_txCompletion) {
             _txCompletion->release();
             _txCompletion = nullptr;
+        } else {
+            IOLog("rtl88wifi-wcl: rollback journal expected TX completion queue\n");
         }
         break;
     case Resource::kTXSubmission3:
@@ -226,6 +235,9 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
         if (index < kTXSubmissionQueueCount && _txSubmissionQueues[index]) {
             _txSubmissionQueues[index]->release();
             _txSubmissionQueues[index] = nullptr;
+        } else {
+            IOLog("rtl88wifi-wcl: rollback journal expected TX submission queue %u\n",
+                  index);
         }
         break;
     }
@@ -233,18 +245,33 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
         if (_rxPool) {
             _rxPool->release();
             _rxPool = nullptr;
+        } else {
+            IOLog("rtl88wifi-wcl: rollback journal expected RX pool\n");
         }
         break;
     case Resource::kTXPool:
         if (_txPool) {
             _txPool->release();
             _txPool = nullptr;
+        } else {
+            IOLog("rtl88wifi-wcl: rollback journal expected TX pool\n");
         }
         break;
     case Resource::kInvalid:
         IOLog("rtl88wifi-wcl: invalid resource in queue rollback journal\n");
         break;
     }
+}
+
+bool RTW88WCLSkywalkQueues::hasOutstandingResources() const
+{
+    if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion)
+        return true;
+    for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
+        if (_txSubmissionQueues[i])
+            return true;
+    }
+    return false;
 }
 
 bool RTW88WCLSkywalkQueues::txSubmissionQueuesValid() const
@@ -341,5 +368,13 @@ IOReturn RTW88WCLSkywalkQueues::rxCompletionAction(
 void RTW88WCLSkywalkQueues::free()
 {
     destroyQueues();
+    if (!_acquisitionJournal.isEmpty() || hasOutstandingResources() || _allocated) {
+        IOLog("rtl88wifi-wcl: queue-owner rollback incomplete; quarantining owner and retaining resources\n");
+        /* A live queue/pool may retain this owner as its callback context.
+         * Never destroy the owner while any journaled or residual resource
+         * could still reference it.
+         */
+        return;
+    }
     super::free();
 }
