@@ -1017,7 +1017,7 @@ fail_probe:
     rtw_pci_remove(_pcidev);
     _rtwdev = nullptr;
     _hw = nullptr;
-    _powered = false;
+    __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
     return kIOReturnError;
 }
 
@@ -1064,7 +1064,7 @@ void RTW88IEEE80211::stop()
 
     if (_powered && _hw && _hw->ops && _hw->ops->stop)
         _hw->ops->stop(_hw, false);
-    _powered = false;
+    __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
 
     if (_pcidev) rtw_pci_remove(_pcidev);
     _rtwdev = nullptr;
@@ -1276,7 +1276,7 @@ IOReturn RTW88IEEE80211::powerOn()
         mutation.finish();
         return kIOReturnError;
     }
-    _powered = true;
+    __atomic_store_n(&_powered, true, __ATOMIC_RELEASE);
     _awdlPreparedChannel = 0;
     _awdlOffChannel = false;
     mutation.finish();
@@ -1302,7 +1302,7 @@ void RTW88IEEE80211::powerOff()
     }
     if (_hw && _hw->ops && _hw->ops->stop)
         _hw->ops->stop(_hw, false);
-    _powered = false;
+    __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
     _awdlPreparedChannel = 0;
     _awdlOffChannel = false;
     mutation.finish();
@@ -4096,9 +4096,11 @@ IOReturn RTW88IEEE80211::cmdDisconnect()
      * user's new join.  cmdConnect resets the reason to 0. */
     _deauthReason = 8;
     /* End the RUN latch atomically with TX admission. */
-    auto mutation = beginTxStateMutation();
-    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
-    mutation.finish();
+    {
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+        mutation.finish();
+    }
     if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_IDLE) return kIOReturnSuccess;
     doDisconnect();
     return kIOReturnSuccess;
@@ -5153,7 +5155,7 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
 
     if (eapol) {
         IOLog("rtw88: EAPOL TX external=%d state=%d ptk=%p len=%u\n",
-              _externalSupplicant, _state, _ptkConf, paylen);
+              _externalSupplicant, __atomic_load_n(&_state, __ATOMIC_ACQUIRE), _ptkConf, paylen);
     }
 
     const bool protected_frame = RTW88ShouldProtectTxFrame(
