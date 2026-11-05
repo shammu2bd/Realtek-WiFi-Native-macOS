@@ -49,16 +49,35 @@ IOReturn RTW88WCLSkywalkTxAdapter::bind(
     return kIOReturnSuccess;
 }
 
-IOReturn RTW88WCLSkywalkTxAdapter::unbind()
+IOReturn RTW88WCLSkywalkTxAdapter::quiesceSubmissions()
 {
+    /* An already-unbound adapter is a valid partial-construction cleanup
+     * state. Otherwise close admission and wait for the callback's bounded
+     * copy/ticket reservation section to leave before radio teardown starts.
+     */
+    if (_submissionGate.isUnbound())
+        return kIOReturnSuccess;
     if (!_submissionGate.beginUnbind())
         return kIOReturnBusy;
+    return _submissionGate.canFinishUnbind()
+               ? kIOReturnSuccess : kIOReturnBusy;
+}
 
-    /* Stop new entries before testing either in-flight copies or deferred
-     * completion tickets. Keep the retained radio/pool pair on BUSY so a
-     * later teardown attempt can retry without invalidating a callback. */
-    if (!_submissionGate.canFinishUnbind() || _tickets.hasOutstanding())
+IOReturn RTW88WCLSkywalkTxAdapter::unbind()
+{
+    const IOReturn quiesceStatus = quiesceSubmissions();
+    if (quiesceStatus != kIOReturnSuccess)
+        return quiesceStatus;
+
+    /* A later stage drains completed tickets through the Skywalk completion
+     * queue. Until every retained packet has a terminal handoff, preserve the
+     * radio, pool, adapter and queue-owner references. */
+    if (_tickets.hasOutstanding())
         return kIOReturnBusy;
+
+    if (_submissionGate.isUnbound()) {
+        return (!_radio && !_txPool) ? kIOReturnSuccess : kIOReturnBusy;
+    }
 
     RTW88IEEE80211 *radio = _radio;
     IOSkywalkPacketBufferPool *pool = _txPool;
