@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Stage90 source integration checks for journaled queue/pool ownership."""
 from pathlib import Path
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 KEXT = ROOT / "driver/RTL88WiFi/src/kext/wcl24h32"
@@ -80,8 +81,9 @@ assert "_phase = Phase::kIdle" in journal
 
 # Stage90 remains an acquisition/rollback step only. No live registration,
 # queue enabling, packet consumption, or event-source attachment is allowed.
-assert "registerEthernetInterface(" not in cpp
-assert "addEventSource" not in cpp
+code_without_comments = re.sub(r"/\\*.*?\\*/|//[^\\n]*", "", cpp, flags=re.S)
+assert "registerEthernetInterface(" not in code_without_comments
+assert "addEventSource(" not in code_without_comments
 assert "return static_cast<UInt32>(0)" in cpp
 assert "return static_cast<IOReturn>(0)" in cpp
 
