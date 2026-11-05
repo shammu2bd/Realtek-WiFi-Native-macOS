@@ -2998,11 +2998,18 @@ void RTW88IEEE80211::runManualScan()
             IOSleep(10);
         }
 
-        _hw->conf.chandef.chan = chan;
-        _hw->conf.chandef.width = NL80211_CHAN_WIDTH_20_NOHT;
-        _hw->conf.chandef.center_freq1 = chan->center_freq;
-
-        rtw88_sw_scan_switch_channel(_hw);
+        {
+            auto mutation = beginTxStateMutation();
+            if (!_powered || !_hw || !_vif || _manualScanAbort) {
+                mutation.finish();
+                break;
+            }
+            _hw->conf.chandef.chan = chan;
+            _hw->conf.chandef.width = NL80211_CHAN_WIDTH_20_NOHT;
+            _hw->conf.chandef.center_freq1 = chan->center_freq;
+            rtw88_sw_scan_switch_channel(_hw);
+            mutation.finish();
+        }
 
         bool passiveOnly = (chan->flags &
             (IEEE80211_CHAN_NO_IR | IEEE80211_CHAN_RADAR)) != 0;
