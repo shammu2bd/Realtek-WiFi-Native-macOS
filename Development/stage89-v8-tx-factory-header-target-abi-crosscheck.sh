@@ -16,7 +16,7 @@ fail(){ echo "ERROR: $*" >&2; exit 2; }
 blob(){ python3 - "$1" <<'PYBLOB'
 import hashlib,pathlib,sys
 b=pathlib.Path(sys.argv[1]).read_bytes()
-print(hashlib.sha1(b"blob "+str(len(b)).encode()+b"\\0"+b).hexdigest())
+print(hashlib.sha1(b"blob "+str(len(b)).encode()+bytes([0])+b).hexdigest())
 PYBLOB
 }
 pin(){
@@ -85,14 +85,14 @@ gh api "repos/$REPO/contents/Development/output.log" > "$OUT/output-preflight.js
 python3 - "$OUT/output-preflight.json" "$V7_RUN" <<'PYLOG'
 import base64,json,re,sys
 log=base64.b64decode(json.load(open(sys.argv[1]))["content"]).decode(errors="replace")
-runs=re.findall(r"STAGE89_V7_RUN:\\s*(run-[A-Za-z0-9-]+)",log)
+runs=re.findall(r"STAGE89_V7_RUN:\s*(run-[A-Za-z0-9-]+)",log)
 if not runs or runs[-1]!=sys.argv[2]: raise SystemExit("Latest V7 checkpoint does not match pinned run")
 if "STAGE89_V7_RESULT: REVIEW_REQUIRED" not in log: raise SystemExit("V7 REVIEW_REQUIRED checkpoint missing")
 if "STAGE89_V8_RUN:" in log: raise SystemExit("A V8 checkpoint already exists; inspect it instead of duplicating")
 print("PREDECESSOR_GATE=PASS V7_RUN="+runs[-1])
 PYLOG
 
-python3 - "$SRC" "$OUT/stage73-source-fingerprint.txt" "$OUT/v6-method-disassembly.txt" "$OUT/v6-method-index.txt" "$OUT/v6-source-model.txt" "$OUT/v7-audit-summary.txt" "$OUT/v7-queue-role-analysis.txt" "$OUT/v7-factory-crosswalk.txt" "$OUT/tx-submission-header.txt" "$OUT/native-queue-source.cpp" "$OUT/stage88-wmm-table.txt" "$OUT" <<'PYAUDIT'
+python3 - "$SRC" "$OUT/stage73-source-fingerprint.txt" "$OUT/v6-method-disassembly.txt" "$OUT/v6-method-index.txt" "$OUT/v6-source-model.txt" "$OUT/v7-audit-summary.txt" "$OUT/v7-queue-role-analysis.txt" "$OUT/v7-factory-crosswalk.txt" "$OUT/tx-submission-header.txt" "$OUT/native-queue-source.cpp" "$OUT/stage88-wmm-table.txt" "$OUT" "$RUN" "$V7_RUN" "$REMOTE" <<'PYAUDIT'
 import hashlib,pathlib,re,sys
 src=pathlib.Path(sys.argv[1]); out=pathlib.Path(sys.argv[12])
 expected={}
@@ -112,13 +112,9 @@ if not tree_ok: raise SystemExit("Native source tree differs from pinned Stage73
 dis=pathlib.Path(sys.argv[3]).read_text(errors="replace")
 index=pathlib.Path(sys.argv[4]).read_text(errors="replace")
 source_model=pathlib.Path(sys.argv[5]).read_text(errors="replace")
-v7_summary=pathlib.Path(sys.argv[6]).read_text(errors="replace")
-v7_roles=pathlib.Path(sys.argv[7]).read_text(errors="replace")
-v7_cross=pathlib.Path(sys.argv[8]).read_text(errors="replace")
 header=pathlib.Path(sys.argv[9]).read_text(errors="replace")
 source=pathlib.Path(sys.argv[10]).read_text(errors="replace")
 wmm=pathlib.Path(sys.argv[11]).read_text(errors="replace")
-
 blocks=re.split(r"(?=^===== ADDRESS=)",dis,flags=re.M)
 def method_at(addr):
  hits=[b for b in blocks if b.startswith("===== ADDRESS="+addr+" ")]
@@ -129,77 +125,74 @@ wrapper_class=method_at("0xffffff800298409e")
 wrapper_default=method_at("0xffffff80029840c2")
 tx_init=method_at("0xffffff80029840e8")
 
-# Verify the main factory receives its extra UInt32 from the caller's final stack slot,
-# forwards it to EDX for initWithPool, and then init stores EDX to mServiceClass.
 main_checks={
- "factory_loads_final_stack_u32":bool(re.search(r"mov\\s+edx, dword ptr \\[rbp \\+ 0x20\\]",main)),
- "factory_forwards_capacity_to_ecx":bool(re.search(r"mov\\s+ecx, r14d",main)),
- "factory_forwards_queueid_to_r8d":bool(re.search(r"mov\\s+r8d, r13d",main)),
- "factory_calls_virtual_init":bool(re.search(r"call\\s+qword ptr \\[rax \\+ 0x2a8\\]",main)),
- "class_wrapper_passes_final_u32":bool(re.search(r"mov\\s+eax, dword ptr \\[rbp \\+ 0x20\\]",wrapper_class) and re.search(r"push\\s+rax",wrapper_class)),
- "default_wrapper_pushes_minus_one":bool(re.search(r"push\\s+-0x1",wrapper_default))
+ "factory_loads_final_stack_u32":bool(re.search(r"mov\s+edx, dword ptr \[rbp \+ 0x20\]",main)),
+ "factory_forwards_capacity_to_ecx":bool(re.search(r"mov\s+ecx, r14d",main)),
+ "factory_forwards_queueid_to_r8d":bool(re.search(r"mov\s+r8d, r13d",main)),
+ "factory_calls_virtual_init":bool(re.search(r"call\s+qword ptr \[rax \+ 0x2a8\]",main)),
+ "class_wrapper_passes_final_u32":bool(re.search(r"mov\s+eax, dword ptr \[rbp \+ 0x20\]",wrapper_class) and re.search(r"push\s+rax",wrapper_class)),
+ "default_wrapper_pushes_minus_one":bool(re.search(r"push\s+-0x1",wrapper_default))
 }
 init_checks={
- "init_saves_edx":bool(re.search(r"mov\\s+r15d, edx",tx_init)),
- "init_validates_ecx_minimum_8":bool(re.search(r"cmp\\s+ecx, 0x8",tx_init)),
- "init_stores_saved_edx_to_service_class_offset":bool(re.search(r"mov\\s+dword ptr \\[rbx \\+ 0xb8\\], r15d",tx_init))
+ "init_saves_edx":bool(re.search(r"mov\s+r15d, edx",tx_init)),
+ "init_validates_ecx_minimum_8":bool(re.search(r"cmp\s+ecx, 0x8",tx_init)),
+ "init_stores_saved_edx_to_service_class_offset":bool(re.search(r"mov\s+dword ptr \[rbx \+ 0xb8\], r15d",tx_init))
 }
 if not all(main_checks.values()) or not all(init_checks.values()):
  raise SystemExit("Target factory/init register dataflow checks did not all pass")
 
-# The SDK declaration labels the three UInt32 init arguments as capacity, queueId,
-# serviceClass. The target factory dataflow instead places the service-class value in
-# the first UInt32 register (EDX), which the target init stores at mServiceClass.
-init_decl=re.search(r"initWithPool\\s*\\(\\s*IOSkywalkPacketBufferPool\\s*\\*\\s*pool\\s*,([^;]+);",header,re.S)
+init_decl=re.search(r"initWithPool\s*\(\s*IOSkywalkPacketBufferPool\s*\*\s*pool\s*,([^;]+);",header,re.S)
 if not init_decl: raise SystemExit("Could not parse SDK initWithPool declaration")
 sig=init_decl.group(1)
-header_named=bool(re.search(r"UInt32\\s+capacity\\s*,\\s*UInt32\\s+queueId\\s*,\\s*kern_packet_svc_class_t\\s+serviceClass",sig))
+header_named=bool(re.search(r"UInt32\s+capacity\s*,\s*UInt32\s+queueId\s*,\s*kern_packet_svc_class_t\s+serviceClass",sig))
 header_order=["capacity","queueId","serviceClass"] if header_named else ["UNPARSED"]
-target_order=["serviceClass","capacity","queueId"]
-init_order_conflict=header_named
 
 decls=[line.strip() for line in header.splitlines() if "static IOSkywalkTxSubmissionQueue *" in line]
 has_explicit=any("withPoolAndServiceClass" in x for x in decls)
-header_two_callback=any("withPool(" in x and "QueryFreeSpaceHandler" in x and "TxSubmissionQueueAction" in x for x in decls)
+header_action_only=any("withPool(" in x and "IOSkywalkTxSubmissionQueueAction action" in x and "IOSkywalkQueryFreeSpaceHandler" not in x for x in decls)
 target_named_explicit="withPoolAndServiceClass" in index
-target_main_named="SYMBOL=__ZN26IOSkywalkTxSubmissionQueue8withPool" in main
-source_uses_two_callback="IOSkywalkTxSubmissionQueue::withPool(" in source and "txSubmissionAction" in source and "defaultQueryFreeSpaceHandler" in source
-source_has_explicit_call="IOSkywalkTxSubmissionQueue::withPoolAndServiceClass(" in source
+target_action_symbol="__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_S4_PKP15IOSkywalkPacketjPvES9_j"
+target_action_only=target_action_symbol in index
+src_match=re.search(r"IOSkywalkTxSubmissionQueue::withPool\s*\((.*?)\);",source,re.S)
+source_call=src_match.group(1) if src_match else ""
+source_action_only=("txSubmissionAction" in source_call and "QueryFreeSpace" not in source_call and bool(src_match))
+source_explicit_call="IOSkywalkTxSubmissionQueue::withPoolAndServiceClass(" in source
 source_counts={}
 for line in source_model.splitlines():
- m=re.match(r"CALL_COUNT\\|(.+)\\|(\\d+)$",line)
+ m=re.match(r"CALL_COUNT\|(.+)\|(\d+)$",line)
  if m: source_counts[m.group(1)]=int(m.group(2))
-wmm_values=re.findall(r"^WMM_SERVICE_CLASS_\\d+=(0x[0-9a-fA-F]{8})",wmm,re.M)
+wmm_values=re.findall(r"^WMM_SERVICE_CLASS_\d+=(0x[0-9a-fA-F]{8})",wmm,re.M)
 if len(wmm_values)!=4: raise SystemExit("Four WMM class values not found in pinned Stage88 table")
+if "SOURCE_TREE_REVALIDATION=PASS" not in pathlib.Path(sys.argv[6]).read_text():
+ raise SystemExit("Pinned V7 source baseline was not passing")
 
-# The checked-in call path and factory declarations are reported separately from the
-# lower-level target factory: similar names/types alone are not proof of a matching symbol.
+# The action-only factory wrapper's exact target symbol is present and pushes -1
+# before forwarding into the main factory. The source uses this action-only form.
+current_path_proven=header_action_only and target_action_only and source_action_only and main_checks["default_wrapper_pushes_minus_one"]
+
 factory_rows=[
  "STAGE89_V8_TX_FACTORY_HEADER_TARGET_ABI_CROSSCHECK",
  "TARGET_MAIN_FACTORY_ADDRESS=0xffffff8002983ff0",
  "TARGET_CLASS_FORWARDING_WRAPPER_ADDRESS=0xffffff800298409e",
- "TARGET_DEFAULT_CLASS_WRAPPER_ADDRESS=0xffffff80029840c2",
+ "TARGET_DEFAULT_ACTION_ONLY_WRAPPER_ADDRESS=0xffffff80029840c2",
  "TARGET_TX_INIT_ADDRESS=0xffffff80029840e8",
- "TARGET_FACTORY_DATAFLOW="+("PASS" if all(main_checks.values()) else "REVIEW_REQUIRED"),
- *["FACTORY_CHECK_%s=%s"%(k.upper(), "PASS" if v else "FAIL") for k,v in main_checks.items()],
+ "TARGET_FACTORY_REGISTER_DATAFLOW="+("PASS" if all(main_checks.values()) else "REVIEW_REQUIRED"),
+ *["FACTORY_CHECK_%s=%s"%(k.upper(),"PASS" if v else "FAIL") for k,v in main_checks.items()],
  "TX_INIT_DATAFLOW="+("PASS" if all(init_checks.values()) else "REVIEW_REQUIRED"),
- *["INIT_CHECK_%s=%s"%(k.upper(), "PASS" if v else "FAIL") for k,v in init_checks.items()],
+ *["INIT_CHECK_%s=%s"%(k.upper(),"PASS" if v else "FAIL") for k,v in init_checks.items()],
  "TARGET_SERVICE_CLASS_REGISTER=EDX_FIRST_UINT32_AFTER_POOL",
  "TARGET_SERVICE_CLASS_FIELD_OFFSET=0xb8",
- "SDK_INIT_DECLARATION_PARSED="+("YES" if init_decl else "NO"),
  "SDK_INIT_NAMED_PARAMETER_ORDER="+",".join(header_order),
- "TARGET_INIT_EFFECTIVE_REGISTER_ORDER="+",".join(target_order),
- "SDK_VS_TARGET_INIT_ORDER="+("CONFLICT" if init_order_conflict else "NOT_PROVEN"),
+ "TARGET_FACTORY_REGISTER_ORDER=SERVICE_CLASS,THEN_CAPACITY,THEN_QUEUE_ID",
+ "SDK_VS_TARGET_INIT_ORDER="+("CONFLICT" if header_named else "NOT_PROVEN"),
  "SDK_DECLARES_EXPLICIT_WITHPOOLANDSERVICECLASS="+("YES" if has_explicit else "NO"),
  "TARGET_INDEX_HAS_NAMED_WITHPOOLANDSERVICECLASS="+("YES" if target_named_explicit else "NO"),
- "SDK_DECLARES_TWO_CALLBACK_WITHPOOL="+("YES" if header_two_callback else "NO"),
- "CURRENT_SOURCE_USES_TWO_CALLBACK_WITHPOOL="+("YES" if source_uses_two_callback else "NO"),
- "CURRENT_SOURCE_USES_EXPLICIT_SERVICECLASS_FACTORY="+("YES" if source_has_explicit_call else "NO"),
- "TARGET_MAIN_FACTORY_IS_NAMED_WITHPOOL="+("YES" if target_main_named else "NO"),
- "TARGET_MAIN_FACTORY_HAS_FINAL_CLASS_U32=YES",
- "TARGET_DEFAULT_WRAPPER_CLASS=0xffffffff",
- "TARGET_FACTORY_SYMBOL_TO_PUBLIC_HEADER_MAPPING=NOT_PROVEN",
- "SOURCE_CALL_ABI_SAFE_TO_CHANGE=NO",
+ "SDK_DECLARES_ACTION_ONLY_WITHPOOL="+("YES" if header_action_only else "NO"),
+ "TARGET_HAS_MATCHING_ACTION_ONLY_WITHPOOL_SYMBOL="+("YES" if target_action_only else "NO"),
+ "CURRENT_SOURCE_USES_ACTION_ONLY_WITHPOOL="+("YES" if source_action_only else "NO"),
+ "CURRENT_SOURCE_ACTION_ONLY_FACTORY_PATH="+("PROVEN_DEFAULT_SENTINEL_0xffffffff" if current_path_proven else "NOT_PROVEN"),
+ "CURRENT_SOURCE_USES_EXPLICIT_SERVICECLASS_FACTORY="+("YES" if source_explicit_call else "NO"),
+ "EXPLICIT_FACTORY_SYMBOL_MAPPING=NOT_PROVEN",
  "WMM_CLASS_VALUES="+",".join(wmm_values),
  "WMM_ROLE_1_CARDINALITY=FOUR_TX_SUBMISSION_QUEUES",
  "CURRENT_SOURCE_TX_SUBMISSION_QUEUE_COUNT=1",
@@ -219,14 +212,14 @@ summary=[
  "SOURCE_TREE_REVALIDATION=PASS",
  "TARGET_FACTORY_REGISTER_DATAFLOW=PASS",
  "TARGET_INIT_SERVICE_CLASS_STORE=PASS",
+ "CURRENT_SOURCE_ACTION_ONLY_FACTORY_PATH="+("PROVEN_DEFAULT_SENTINEL_0xffffffff" if current_path_proven else "NOT_PROVEN"),
  "SDK_INIT_NAMED_PARAMETER_ORDER=capacity,queueId,serviceClass",
- "TARGET_INIT_EFFECTIVE_REGISTER_ORDER=serviceClass,capacity,queueId",
+ "TARGET_FACTORY_REGISTER_ORDER=serviceClass,capacity,queueId",
  "SDK_VS_TARGET_INIT_ORDER=CONFLICT",
- "PUBLIC_FACTORY_SYMBOL_MAPPING=NOT_PROVEN",
- "CURRENT_SOURCE_TX_FACTORY_CALL=WITH_QUERY_FREE_SPACE_HANDLER_AND_ACTION",
- "CURRENT_SOURCE_EXPLICIT_SERVICECLASS_FACTORY_CALL=NO",
+ "PUBLIC_EXPLICIT_FACTORY_SYMBOL_MAPPING=NOT_PROVEN",
+ "CURRENT_SOURCE_TX_SUBMISSION_QUEUE_COUNT=1",
  "WMM_ROLE_1_REQUIRES_FOUR_TX_SUBMISSION_QUEUES=YES",
- "CURRENT_TX_SUBMISSION_QUEUE_COUNT=1",
+ "CURRENT_SOURCE_EXPLICIT_SERVICECLASS_FACTORY_CALL=NO",
  "TX_FACTORY_CALL_SAFE_TO_CHANGE=NO",
  "FOUR_QUEUE_POINTER_ARRAY=NOT_IMPLEMENTED",
  "NATIVE_REGISTRATION_CALLS=0",
@@ -240,7 +233,7 @@ summary=[
  "OPENCORE_CHANGE=NONE",
  "RESULT=REVIEW_REQUIRED",
  "ACTIVATION_GATE=BLOCKED",
- "NEXT=Resolve the exported target factory symbol and exact public/header call ABI before any service-class factory use. Then finalize the complete role counts and Stage89 queue-array design. Stage90 remains blocked."
+ "NEXT=Resolve the explicit service-class factory's exported target symbol and the initWithPool parameter contract before altering any call. Then finalize queue role counts and Stage89 pointer-array design. Stage90 remains blocked."
 ]
 (out/"audit-summary.txt").write_text("\n".join(summary)+"\n")
 report=[
@@ -248,18 +241,19 @@ report=[
  *summary,"",
  "TARGET DATAFLOW:",
  *factory_rows,"",
- "SDK INIT DECLARATION:",
+ "SDK INIT / FACTORY DECLARATIONS:",
  "\n".join(x.strip() for x in header.splitlines() if "initWithPool(" in x or "withPoolAndServiceClass(" in x or "static IOSkywalkTxSubmissionQueue * withPool(" in x),
  "",
  "CURRENT SOURCE CALL:",
  "\n".join(source.splitlines()[64:77]),
  "",
- "STAGE V7 CONCLUSION REVIEW:",
- "The V7 report marked SDK_DECLARATION_TO_TARGET_ABI_ORDER_MATCH=YES. This V8 check does not accept that as proven. In the target factory/init dataflow, the factory's final service-class UInt32 reaches EDX, and target init stores EDX at mServiceClass offset 0xb8. The checked-in initWithPool declaration names its first UInt32 after pool as capacity, not serviceClass. These contracts conflict by parameter name/order and must not be treated as equivalent without a separately proven call wrapper or corrected target header declaration.",
- "The target method index also lacks a symbol named withPoolAndServiceClass, despite the SDK header declaring that name. The current source uses the two-callback withPool form and does not pass an explicit service class. A successful compile/link milestone does not by itself prove that the runtime factory maps this source call to the audited service-class overload.",
+ "REVIEW OF V7:",
+ "V7 marked SDK_DECLARATION_TO_TARGET_ABI_ORDER_MATCH=YES based on a partial parameter check. This V8 review does not accept that conclusion. In the target factory/init dataflow, the explicit class value is forwarded to EDX and target init stores EDX at mServiceClass offset 0xb8. The checked-in initWithPool declaration names its first UInt32 after pool as capacity, not serviceClass. The names/order therefore conflict and require a real ABI wrapper or corrected declaration proof.",
+ "The current source does not use the explicit-class helper. Its action-only withPool call matches the action-only target wrapper in the selected method index; that wrapper pushes -1, so the current TX submission queue receives the default 0xffffffff service class. This is not one of the four WMM values.",
+ "The SDK declares withPoolAndServiceClass, but the selected target method index contains no symbol with that name. Do not call that declaration or guess another overload until the public-to-target symbol mapping is proven.",
  "",
  "QUEUE TOPOLOGY:",
- "The WMM predicate checks only role-1 TX-submission queues and requires exactly one of each of the four pinned WMM values. The source has one TX-submission queue. The other role counts are not approved by this report; a seven-object layout remains only a candidate.",
+ "The QueueSet WMM predicate checks only role-1 TX-submission queues and requires exactly one of each of the four pinned WMM values. The source has one TX-submission queue with the default service class. Other queue-role counts remain unresolved; a seven-object layout is still only a candidate.",
  "",
  "SAFETY:",
  "No driver source changed. No build, signing, install/load, hardware test, SIP/NVRAM or OpenCore action occurred."
@@ -267,14 +261,15 @@ report=[
 (out/"report.txt").write_text("\n".join(report)+"\n")
 checkpoint=[
  "========== STAGE 89 V8 — TARGET TX FACTORY / SDK HEADER ABI CROSS-CHECK ==========",
- "STAGE89_V8_RUN: "+pathlib.Path(sys.argv[0]).stem,
+ "STAGE89_V8_RUN: "+sys.argv[13],
  "STAGE89_V8_VERSION: STAGE89_V8_20261105",
- "STAGE89_V8_PREDECESSOR: "+pathlib.Path(sys.argv[0]).stem,
+ "STAGE89_V8_PREDECESSOR: "+sys.argv[14],
  "STAGE89_V8_SOURCE_TREE_REVALIDATION: PASS",
  "STAGE89_V8_TARGET_FACTORY_REGISTER_DATAFLOW: PASS",
  "STAGE89_V8_TARGET_INIT_SERVICE_CLASS_STORE: PASS",
+ "STAGE89_V8_CURRENT_SOURCE_ACTION_ONLY_FACTORY_PATH="+("PROVEN_DEFAULT_SENTINEL_0xffffffff" if current_path_proven else "NOT_PROVEN"),
  "STAGE89_V8_SDK_VS_TARGET_INIT_ORDER: CONFLICT",
- "STAGE89_V8_PUBLIC_FACTORY_SYMBOL_MAPPING: NOT_PROVEN",
+ "STAGE89_V8_PUBLIC_EXPLICIT_FACTORY_SYMBOL_MAPPING: NOT_PROVEN",
  "STAGE89_V8_CURRENT_TX_SUBMISSION_QUEUE_COUNT: 1",
  "STAGE89_V8_WMM_ROLE_1_QUEUE_REQUIREMENT: 4",
  "STAGE89_V8_QUEUE_ARRAY: NOT_IMPLEMENTED",
@@ -288,26 +283,16 @@ checkpoint=[
  "STAGE89_V8_OPENCORE_CHANGE: NONE",
  "STAGE89_V8_RESULT: REVIEW_REQUIRED",
  "STAGE89_V8_ACTIVATION_GATE: BLOCKED",
- "STAGE89_V8_LOGS: "+sys.argv[13]+"/"
+ "STAGE89_V8_LOGS: "+sys.argv[15]+"/"
 ]
 (out/"checkpoint-block.txt").write_text("\n".join(checkpoint)+"\n")
 print("TARGET_FACTORY_REGISTER_DATAFLOW=PASS")
 print("TARGET_INIT_SERVICE_CLASS_STORE=PASS")
+print("CURRENT_SOURCE_ACTION_ONLY_FACTORY_PATH="+("PROVEN_DEFAULT_SENTINEL_0xffffffff" if current_path_proven else "NOT_PROVEN"))
 print("SDK_VS_TARGET_INIT_ORDER=CONFLICT")
-print("PUBLIC_FACTORY_SYMBOL_MAPPING=NOT_PROVEN")
+print("PUBLIC_EXPLICIT_FACTORY_SYMBOL_MAPPING=NOT_PROVEN")
 print("STAGE89_V8_RESULT=REVIEW_REQUIRED")
 PYAUDIT
-
-# Replace run ID placeholders in the checkpoint with the actual generated values.
-python3 - "$OUT/checkpoint-block.txt" "$RUN" "$V7_RUN" "$REMOTE" <<'PYPATCH'
-import pathlib,sys
-p=pathlib.Path(sys.argv[1])
-s=p.read_text()
-s=s.replace(pathlib.Path(sys.argv[0]).stem,sys.argv[2])
-s=s.replace("STAGE89_V8_PREDECESSOR: "+sys.argv[2],"STAGE89_V8_PREDECESSOR: "+sys.argv[3])
-s=s.replace("STAGE89_V8_LOGS: "+sys.argv[4]+"/","STAGE89_V8_LOGS: "+sys.argv[4]+"/")
-p.write_text(s)
-PYPATCH
 
 python3 - "$OUT" <<'PYMANIFEST'
 import hashlib,pathlib,sys
@@ -316,7 +301,7 @@ names=["source-tree-revalidation.txt","tx-factory-header-target-abi-crosscheck.t
 rows=["STAGE89_V8_MANIFEST","RUN="+out.name,"SOURCE_MODIFIED=NO","BUILD=NOT_RUN","INSTALL=NOT_RUN","LOAD=NOT_RUN","OPENCORE_CHANGE=NONE"]
 for n in names:
  b=(out/n).read_bytes()
- sha=hashlib.sha1(b"blob "+str(len(b)).encode()+b"\0"+b).hexdigest()
+ sha=hashlib.sha1(b"blob "+str(len(b)).encode()+bytes([0])+b).hexdigest()
  rows.append("ARTIFACT|%s|%s|%d"%(n,sha,len(b)))
 (out/"manifest.txt").write_text("\n".join(rows)+"\n")
 PYMANIFEST
