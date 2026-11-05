@@ -988,9 +988,7 @@ IOReturn RTW88IEEE80211::start()
     RTW88_STAGE("add_interface done");
 
 
-    setRadioState(RTW88_STATE_IDLE);
-
-    _state = RTW88_STATE_IDLE;
+    __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
     __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
@@ -2516,8 +2514,8 @@ bool RTW88IEEE80211::abortActiveScan(bool waitForIdle)
             return false;
         if (returnState == RTW88_STATE_CONNECTED)
             restoreConnectedChannel();
-        _state = (returnState == RTW88_STATE_IDLE) ?
-            RTW88_STATE_IDLE : returnState;
+        setRadioState((returnState == RTW88_STATE_IDLE) ?
+            RTW88_STATE_IDLE : returnState);
         _scanReturnState = RTW88_STATE_IDLE;
         _scanPartial = false;
         __atomic_store_n(&_manualScanChannelCount, 0, __ATOMIC_RELEASE);
@@ -3098,7 +3096,7 @@ bool RTW88IEEE80211::matchesPendingJoin(const char *ssid, const uint8_t *bssid,
      * repeat ASSOCIATE for the abandoned one is the same join, not a new one
      * (restarting it would cancel the fallback that is under way). */
     const bool joining = __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_AUTHENTICATING ||
-                         setRadioState(= RTW88_STATE_ASSOCIATING);
+                         __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_ASSOCIATING;
     const bool requested = bssid && _joinHasRequested &&
                            memcmp(bssid, _joinRequestedBssid, 6) == 0;
     return ssid && strcmp(ssid, _targetBSS.ssid) == 0 &&
@@ -3193,7 +3191,7 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
     clearKeys();
     releaseSta();
     /* A new join supersedes any previous externally-visible RUN state. */
-    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+    /* clearKeys() already published the disconnected latch under the writer gate. */
 
     /* Find the SSID in our BSS list */
     IOLockLock(_bssLock);
@@ -3305,7 +3303,7 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
         rtw88LogTargetSecurity(_targetBSS, _wpa2, pmk != nullptr);
         _deauthReason = 0;
         __atomic_store_n(&_connectCancelled, false, __ATOMIC_RELEASE);
-        setRadioState(RTW88_STATE_AUTHENTICATING);
+        __atomic_store_n(&_state, RTW88_STATE_AUTHENTICATING, __ATOMIC_RELEASE);
         mutation.finish();
     }
 
@@ -3723,7 +3721,7 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
          * the reference IO80211 driver's net80211 flow. */
         {
             auto mutation = beginTxStateMutation();
-            setRadioState(RTW88_STATE_CONNECTED);
+            __atomic_store_n(&_state, RTW88_STATE_CONNECTED, __ATOMIC_RELEASE);
             if (!_wpa2)
                 __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
             mutation.finish();
@@ -4211,7 +4209,6 @@ void RTW88IEEE80211::doDisconnect()
     releaseSta();
 
     setRadioState(RTW88_STATE_IDLE);
-    _state = RTW88_STATE_IDLE;
     __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
@@ -4425,7 +4422,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
         {
             auto mutation = beginTxStateMutation();
             __atomic_store_n(&_associatedVisible, true, __ATOMIC_RELEASE);
-            setRadioState(RTW88_STATE_CONNECTED);
+            __atomic_store_n(&_state, RTW88_STATE_CONNECTED, __ATOMIC_RELEASE);
             __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
             mutation.finish();
         }
