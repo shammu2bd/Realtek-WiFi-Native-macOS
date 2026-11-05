@@ -41,13 +41,16 @@ bool RTW88WCLSkywalkQueues::init()
 IOReturn RTW88WCLSkywalkQueues::createQueues()
 {
     if (_allocated)
-        return kIOReturnSuccess;
+        return (_acquisitionJournal.isCommitted() && queuesAllocated())
+                   ? kIOReturnSuccess : kIOReturnNotReady;
     if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion)
         return kIOReturnBusy;
     for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
         if (_txSubmissionQueues[i])
             return kIOReturnBusy;
     }
+    if (!_acquisitionJournal.begin())
+        return kIOReturnBusy;
 
     RTW88WCLPoolOptionsAccess::PoolOptions txOptions = {};
     txOptions.packetCount = kQueueCapacity;
@@ -66,11 +69,23 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
         "RTL88WiFi-WCL-TX", this, kIOSkywalkPacketTypeNetwork, &txOptions);
     if (!_txPool)
         goto no_memory;
+    if (!_acquisitionJournal.record(
+            RTW88WCLAcquisitionJournal::Resource::kTXPool)) {
+        _txPool->release();
+        _txPool = nullptr;
+        goto no_memory;
+    }
 
     _rxPool = IOSkywalkPacketBufferPool::withName(
         "RTL88WiFi-WCL-RX", this, kIOSkywalkPacketTypeNetwork, &rxOptions);
     if (!_rxPool)
         goto no_memory;
+    if (!_acquisitionJournal.record(
+            RTW88WCLAcquisitionJournal::Resource::kRXPool)) {
+        _rxPool->release();
+        _rxPool = nullptr;
+        goto no_memory;
+    }
 
     /* The target exports this explicit-service-class withPool overload.
      * Its 24H32 ABI is:
@@ -87,6 +102,15 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
             static_cast<UInt32>(RTW88WCLTXQueueContract::kServiceClasses[i]));
         if (!_txSubmissionQueues[i])
             goto no_memory;
+
+        RTW88WCLAcquisitionJournal::Resource resource =
+            RTW88WCLAcquisitionJournal::Resource::kInvalid;
+        if (!RTW88WCLAcquisitionJournal::txSubmissionResource(i, &resource) ||
+            !_acquisitionJournal.record(resource)) {
+            _txSubmissionQueues[i]->release();
+            _txSubmissionQueues[i] = nullptr;
+            goto no_memory;
+        }
     }
 
     /* These queue objects are deliberately not added to an IOWorkLoop and
@@ -99,20 +123,38 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
         &RTW88WCLSkywalkQueues::txCompletionAction, this, 0);
     if (!_txCompletion)
         goto no_memory;
+    if (!_acquisitionJournal.record(
+            RTW88WCLAcquisitionJournal::Resource::kTXCompletion)) {
+        _txCompletion->release();
+        _txCompletion = nullptr;
+        goto no_memory;
+    }
 
     _rxSubmission = IOSkywalkRxSubmissionQueue::withPool(
         _rxPool, kQueueCapacity, 0, static_cast<kern_packet_svc_class_t>(0),
         this, &RTW88WCLSkywalkQueues::rxSubmissionAction, this, 0);
     if (!_rxSubmission)
         goto no_memory;
+    if (!_acquisitionJournal.record(
+            RTW88WCLAcquisitionJournal::Resource::kRXSubmission)) {
+        _rxSubmission->release();
+        _rxSubmission = nullptr;
+        goto no_memory;
+    }
 
     _rxCompletion = IOSkywalkRxCompletionQueue::withPool(
         _rxPool, kQueueCapacity, 0, this,
         &RTW88WCLSkywalkQueues::rxCompletionAction, this, 0);
     if (!_rxCompletion)
         goto no_memory;
+    if (!_acquisitionJournal.record(
+            RTW88WCLAcquisitionJournal::Resource::kRXCompletion)) {
+        _rxCompletion->release();
+        _rxCompletion = nullptr;
+        goto no_memory;
+    }
 
-    if (!txSubmissionQueuesValid())
+    if (!txSubmissionQueuesValid() || !_acquisitionJournal.commit())
         goto no_memory;
 
     _allocated = true;
@@ -126,38 +168,83 @@ no_memory:
 
 void RTW88WCLSkywalkQueues::destroyQueues()
 {
-    /* Release queues before their pools: queue implementations retain and
-     * reference their associated pool for packet and buffer accounting. */
-    if (_rxCompletion) {
-        _rxCompletion->release();
-        _rxCompletion = nullptr;
+    if (_acquisitionJournal.isEmpty()) {
+        _allocated = false;
+        return;
     }
-    if (_rxSubmission) {
-        _rxSubmission->release();
-        _rxSubmission = nullptr;
+
+    /* The journal contains only successful acquisitions. Popping it releases
+     * each resource in exact reverse order, including every partial-failure
+     * prefix. It remains committed until teardown explicitly begins.
+     */
+    if (!_acquisitionJournal.beginRollback()) {
+        IOLog("rtl88wifi-wcl: invalid queue acquisition journal; retaining resources\n");
+        return;
     }
-    if (_txCompletion) {
-        _txCompletion->release();
-        _txCompletion = nullptr;
-    }
-    /* Reverse construction order; clear each slot immediately after release
-     * so repeated destroy calls remain idempotent. */
-    for (UInt32 i = kTXSubmissionQueueCount; i > 0; --i) {
-        IOSkywalkTxSubmissionQueue *queue = _txSubmissionQueues[i - 1];
-        if (queue) {
-            queue->release();
-            _txSubmissionQueues[i - 1] = nullptr;
-        }
-    }
-    if (_rxPool) {
-        _rxPool->release();
-        _rxPool = nullptr;
-    }
-    if (_txPool) {
-        _txPool->release();
-        _txPool = nullptr;
+
+    RTW88WCLAcquisitionJournal::Resource resource =
+        RTW88WCLAcquisitionJournal::Resource::kInvalid;
+    while (_acquisitionJournal.popRollback(&resource))
+        releaseAcquiredResource(resource);
+
+    if (!_acquisitionJournal.finishRollback()) {
+        IOLog("rtl88wifi-wcl: queue acquisition rollback incomplete; retaining owner state\n");
+        return;
     }
     _allocated = false;
+}
+
+void RTW88WCLSkywalkQueues::releaseAcquiredResource(
+    RTW88WCLAcquisitionJournal::Resource resource)
+{
+    using RTW88WCLAcquisitionJournal::Resource;
+    switch (resource) {
+    case Resource::kRXCompletion:
+        if (_rxCompletion) {
+            _rxCompletion->release();
+            _rxCompletion = nullptr;
+        }
+        break;
+    case Resource::kRXSubmission:
+        if (_rxSubmission) {
+            _rxSubmission->release();
+            _rxSubmission = nullptr;
+        }
+        break;
+    case Resource::kTXCompletion:
+        if (_txCompletion) {
+            _txCompletion->release();
+            _txCompletion = nullptr;
+        }
+        break;
+    case Resource::kTXSubmission3:
+    case Resource::kTXSubmission2:
+    case Resource::kTXSubmission1:
+    case Resource::kTXSubmission0: {
+        const UInt32 index = static_cast<UInt32>(resource) -
+            static_cast<UInt32>(Resource::kTXSubmission0);
+        if (index < kTXSubmissionQueueCount && _txSubmissionQueues[index]) {
+            _txSubmissionQueues[index]->release();
+            _txSubmissionQueues[index] = nullptr;
+        }
+        break;
+    }
+    case Resource::kRXPool:
+        if (_rxPool) {
+            _rxPool->release();
+            _rxPool = nullptr;
+        }
+        break;
+    case Resource::kTXPool:
+        if (_txPool) {
+            _txPool->release();
+            _txPool = nullptr;
+        }
+        break;
+    case Resource::kInvalid:
+        IOLog("rtl88wifi-wcl: invalid resource in queue rollback journal\n");
+        break;
+    }
 }
 
 bool RTW88WCLSkywalkQueues::txSubmissionQueuesValid() const
@@ -188,7 +275,8 @@ bool RTW88WCLSkywalkQueues::ownsTXSubmissionQueue(
 
 bool RTW88WCLSkywalkQueues::queuesAllocated() const
 {
-    return _allocated && _txPool && _rxPool && txSubmissionQueuesValid() &&
+    return _allocated && _acquisitionJournal.isCommitted() &&
+           _txPool && _rxPool && txSubmissionQueuesValid() &&
            _txCompletion && _rxSubmission && _rxCompletion;
 }
 
