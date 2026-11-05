@@ -150,8 +150,8 @@ ptr=(p/"v15-pointer-contract.txt").read_text()
 gate=(p/"v16-construction-gate.txt").read_text()
 recon=(p/"v16-predicate-reconciliation.txt").read_text()
 
-native_block=re.search(r"CLASS=IOSkywalkTxSubmissionQueue\n(.*?)(?=\nCLASS=|\Z)",v2,re.S)
-native_service_count=bool(native_block and "SERVICE_CLASS_NAMED_METHODS=0" in native_block.group(1) and "SERVICE_CLASS_SETTER_CANDIDATES=0" in native_block.group(1))
+native_service_count=("CLASS=IOSkywalkTxSubmissionQueue\n" in v2 and
+ "SERVICE_CLASS_NAMED_METHODS=0\nSERVICE_CLASS_SETTER_CANDIDATES=0\n\nCLASS=IOSkywalkTxCompletionQueue" in v2)
 setter_rows=[x for x in index.splitlines() if x.startswith("METHOD=") and "SetServiceClass" in x]
 impl_rows=[x for x in setter_rows if "_SetServiceClass_ImplEj" in x]
 expected_impl={
@@ -174,9 +174,9 @@ for line in write_rows:
  if m and m.group(1).lower() in addr_to_method:
   owner,name=addr_to_method[m.group(1).lower()]
   write_classes.append(owner);write_names.append(name)
-native_vtable=re.search(r"CLASS=IOSkywalkTxSubmissionQueue VTABLE_ENTRIES=\d+\n(.*?)(?=\n===== CLASS=|\Z)",vt,re.S)
+native_vtable=re.search(r"===== CLASS=IOSkywalkTxSubmissionQueue VTABLE_ENTRIES=\d+ =====\n(.*?)(?=\n===== CLASS=|\Z)",vt,re.S)
 native_slot69=bool(native_vtable and re.search(r"RAW_INDEX=69 .*NAME=__ZN26IOSkywalkTxSubmissionQueue14performCommandEjPvm",native_vtable.group(1)))
-user_vtable=re.search(r"CLASS=IOUserNetworkTxSubmissionQueue VTABLE_ENTRIES=\d+\n(.*?)(?=\n===== CLASS=|\Z)",vt,re.S)
+user_vtable=re.search(r"===== CLASS=IOUserNetworkTxSubmissionQueue VTABLE_ENTRIES=\d+ =====\n(.*?)(?=\n===== CLASS=|\Z)",vt,re.S)
 user_slot69=bool(user_vtable and "IOUserNetworkTxSubmissionQueue14performCommand" in user_vtable.group(1))
 uncommented=cpp.replace("/*","/*",1)
 uncommented=re.sub(r"/\*[\s\S]*?\*/|//[^\n]*","",uncommented)
@@ -193,7 +193,7 @@ checks={
  "target_native_tx_class_has_zero_named_setter_candidates":native_service_count,
  "target_usernetwork_setter_impls_are_two_distinct_symbols":observed_impl==expected_impl,
  "field_scan_has_exactly_two_direct_setter_writes":len(write_rows)==2,
- "both_direct_field_writes_map_to_usernetwork_classes":len(write_classes)==2 and all("IOUserNetworkTxSubmissionQueue" in x for x in write_classes),
+ "both_direct_field_writes_map_to_usernetwork_classes":len(write_names)==2 and all("IOUserNetworkTxSubmissionQueue" in x for x in write_names),
  "setter_method_bodies_write_offset_b8":"mov\tdword ptr [rdi + 0xb8], esi" in dis and all(x in dis for x in expected_impl),
  "rpc_wrappers_route_through_osmetaclassbase_invoke":"__ZN15OSMetaClassBase6InvokeE5IORPC" in trace,
  "setter_call_trace_contains_no_native_ioskywalk_setter":"IOSkywalkTxSubmissionQueue" not in trace,
