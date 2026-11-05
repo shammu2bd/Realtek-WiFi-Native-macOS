@@ -18,11 +18,11 @@ assert "txSubmissionQueuesValid() const" in hpp
 # The target-backed overload carries options followed by the service class.
 assert "IOSkywalkQueryFreeSpaceHandler24H32" in sdk
 assert "IOSkywalkTxSubmissionQueueAction24H32" in sdk
-assert "IOSkywalkPacket * const * packets" in sdk
+assert "IOSkywalkPacket ** packets" in sdk
 assert "UInt32 serviceClass );" in sdk
 assert "withPoolAndServiceClass(" not in cpp
 assert "UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(" in cpp
-assert "IOSkywalkPacket * const *packets" in cpp
+assert "IOSkywalkPacket **packets" in cpp
 assert "static_cast<UInt32>(0)" in cpp
 assert "IOSkywalkTxSubmissionQueue::withPool(" in cpp
 assert "this, nullptr," in cpp
