@@ -318,6 +318,12 @@ bool RTW88WCLSkywalkQueues::queuesAllocated() const
            _txCompletion && _rxSubmission && _rxCompletion;
 }
 
+bool RTW88WCLSkywalkQueues::resourcesReleased() const
+{
+    return !_allocated && _acquisitionJournal.isEmpty() &&
+           !hasOutstandingResources();
+}
+
 IOReturn RTW88WCLSkywalkQueues::bindTXAdapter(
     RTW88WCLSkywalkTxAdapter *adapter)
 {
