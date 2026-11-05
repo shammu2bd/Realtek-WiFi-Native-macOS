@@ -3575,57 +3575,58 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
         /* Association and station construction are one indivisible control
          * transaction relative to all four WMM transmitters. */
         _associatedVisible = true;
-        if (_sta == nullptr && _hw->ops && _hw->ops->sta_add) {
-        size_t sta_sz = sizeof(struct ieee80211_sta) + _hw->sta_data_size;
-        _sta = (struct ieee80211_sta *)IOMallocZero(sta_sz);
-        if (_sta) {
-            _staAllocSize = sta_sz;
-            memcpy(_sta->addr, _targetBSS.bssid, ETH_ALEN);
-            _sta->aid  = aid;
-            _sta->wme  = true;
+        if (!_sta && _hw->ops && _hw->ops->sta_add) {
+            const size_t sta_sz = sizeof(struct ieee80211_sta) + _hw->sta_data_size;
+            _sta = (struct ieee80211_sta *)IOMallocZero(sta_sz);
+            if (_sta) {
+                _staAllocSize = sta_sz;
+                memcpy(_sta->addr, _targetBSS.bssid, ETH_ALEN);
+                _sta->aid = aid;
+                _sta->wme = true;
 
-            /* Populate supported rates so rtw_update_sta_info() builds a
-             * non-empty rate-adaptation mask. */
-            _sta->deflink.supp_rates[NL80211_BAND_2GHZ] = 0xFFF; /* CCK+OFDM */
-            _sta->deflink.supp_rates[NL80211_BAND_5GHZ] = 0xFF;  /* OFDM     */
-            _sta->deflink.bandwidth =
-                (_connChanWidth == 80) ? IEEE80211_STA_RX_BW_80 :
-                (_connChanWidth == 40) ? IEEE80211_STA_RX_BW_40 :
-                                         IEEE80211_STA_RX_BW_20;
+                /* Populate supported rates so rtw_update_sta_info() builds a
+                 * non-empty rate-adaptation mask. */
+                _sta->deflink.supp_rates[NL80211_BAND_2GHZ] = 0xFFF;
+                _sta->deflink.supp_rates[NL80211_BAND_5GHZ] = 0xFF;
+                _sta->deflink.bandwidth =
+                    (_connChanWidth == 80) ? IEEE80211_STA_RX_BW_80 :
+                    (_connChanWidth == 40) ? IEEE80211_STA_RX_BW_40 :
+                                             IEEE80211_STA_RX_BW_20;
 
-            enum nl80211_band sta_band =
-                (_targetBSS.channel > 14) ? NL80211_BAND_5GHZ
-                                          : NL80211_BAND_2GHZ;
-            rtw88_restrict_peer_caps(&peer,
-                (_hw->wiphy) ? _hw->wiphy->bands[sta_band] : nullptr);
-            if (htAllowed() && peer.have_ht) {
-                _sta->deflink.ht_cap = peer.ht;
-                if (_connChanWidth < 40)
-                    _sta->deflink.ht_cap.cap &=
-                        ~(uint16_t)(IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
-                                    IEEE80211_HT_CAP_SGI_40 |
-                                    IEEE80211_HT_CAP_DSSSCCK40);
-                if (_targetBSS.channel > 14 && peer.have_vht)
-                    _sta->deflink.vht_cap = peer.vht;
+                enum nl80211_band sta_band =
+                    (_targetBSS.channel > 14) ? NL80211_BAND_5GHZ :
+                                                NL80211_BAND_2GHZ;
+                rtw88_restrict_peer_caps(&peer,
+                    (_hw->wiphy) ? _hw->wiphy->bands[sta_band] : nullptr);
+                if (htAllowed() && peer.have_ht) {
+                    _sta->deflink.ht_cap = peer.ht;
+                    if (_connChanWidth < 40)
+                        _sta->deflink.ht_cap.cap &=
+                            ~(uint16_t)(IEEE80211_HT_CAP_SUP_WIDTH_20_40 |
+                                        IEEE80211_HT_CAP_SGI_40 |
+                                        IEEE80211_HT_CAP_DSSSCCK40);
+                    if (_targetBSS.channel > 14 && peer.have_vht)
+                        _sta->deflink.vht_cap = peer.vht;
+                }
+
+                IOLog("rtw88: peer HT=%d VHT=%d width=%u rx_mcs0=0x%02x ht_cap=0x%04x vht_cap=0x%08x vht_rx=0x%04x\n",
+                      _sta->deflink.ht_cap.ht_supported,
+                      _sta->deflink.vht_cap.vht_supported, _connChanWidth,
+                      _sta->deflink.ht_cap.mcs.rx_mask[0],
+                      _sta->deflink.ht_cap.cap, _sta->deflink.vht_cap.cap,
+                      le16_to_cpu(_sta->deflink.vht_cap.vht_mcs.rx_mcs_map));
+
+                const int staRet = _hw->ops->sta_add(_hw, _vif, _sta);
+                if (staRet) {
+                    IOLog("rtw88: sta_add failed ret=%d\n", staRet);
+                    IOFree(_sta, _staAllocSize);
+                    _sta = nullptr;
+                    _staAllocSize = 0;
+                    staAddFailed = true;
+                } else {
+                    rtw88_register_sta(_vif, _sta);
+                }
             }
-            IOLog("rtw88: peer HT=%d VHT=%d width=%u rx_mcs0=0x%02x ht_cap=0x%04x vht_cap=0x%08x vht_rx=0x%04x\n",
-                  _sta->deflink.ht_cap.ht_supported, _sta->deflink.vht_cap.vht_supported,
-                  _connChanWidth, _sta->deflink.ht_cap.mcs.rx_mask[0],
-                  _sta->deflink.ht_cap.cap, _sta->deflink.vht_cap.cap,
-                  le16_to_cpu(_sta->deflink.vht_cap.vht_mcs.rx_mcs_map));
-            int staRet = _hw->ops->sta_add(_hw, _vif, _sta);
-            if (staRet) {
-                IOLog("rtw88: sta_add failed ret=%d\n", staRet);
-                IOFree(_sta, _staAllocSize);
-                _sta = nullptr;
-                _staAllocSize = 0;
-                staAddFailed = true;
-            }
-            rtw88_register_sta(_vif, _sta);
-        }
-    }
-
-
         }
         stationReady = _sta != nullptr;
         mutation.finish();
