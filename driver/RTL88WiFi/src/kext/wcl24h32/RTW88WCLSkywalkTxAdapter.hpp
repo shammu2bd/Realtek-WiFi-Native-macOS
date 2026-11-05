@@ -26,6 +26,7 @@ public:
     bool init() override;
     IOReturn bind(RTW88IEEE80211 *radio,
                   IOSkywalkPacketBufferPool *txPool);
+    IOReturn quiesceSubmissions();
     IOReturn unbind();
     bool isBound() const { return _submissionGate.isBound(); }
     bool isUnbound() const { return _submissionGate.isUnbound(); }
