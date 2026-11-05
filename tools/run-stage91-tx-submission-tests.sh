@@ -99,7 +99,15 @@ SUMMARY="$ROOT/Development/output.log"
     echo "PASS: Stage91 target ABI, ownership and teardown source audit"
 
     echo
-    echo "ALL TEN STAGE91 TESTS PASSED"
+    echo "===== TEST 11: ATOMIC PER-TID SEQUENCE / CCMP PN REGRESSION ====="
+    c++ -std=c++17 -Wall -Wextra -Werror -O2 -pthread \\
+        tests/rtw88_tx_sequence_numbers_test.cpp \\
+        -o /tmp/rtl88-stage91-sequence-number-test
+    /tmp/rtl88-stage91-sequence-number-test
+    echo "PASS: per-TID QoS sequences and CCMP packet numbers are unique under concurrency"
+
+    echo
+    echo "ALL ELEVEN STAGE91 TESTS PASSED"
 ) > "$LOG" 2>&1
 RESULT=$?
 
@@ -116,7 +124,7 @@ echo "LOG_FILE=$LOG"
     echo "- Commit: $(git rev-parse HEAD)"
     echo "- Result: $([ "$RESULT" -eq 0 ] && echo PASS || echo FAIL)"
     echo "- Full log: Development/Logs/$(basename "$LOG")"
-    echo "- Scope: 10 host C++/source tests; no native build or packet-path activation."
+    echo "- Scope: 11 host C++/source tests; no native build or packet-path activation."
 } >> "$SUMMARY"
 
 git add -f -- "$LOG" "$SUMMARY" || exit 92
