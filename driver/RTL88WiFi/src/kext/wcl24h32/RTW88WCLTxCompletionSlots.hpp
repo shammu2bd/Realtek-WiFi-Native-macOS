@@ -95,6 +95,20 @@ public:
         return nullptr;
     }
 
+    /* A failed deferred Skywalk handoff is not terminal. Return the
+     * ticket to Completed without changing its packet or result so the
+     * serialized consumer can retry later. */
+    static bool retry(Ticket *ticket)
+    {
+        if (!ticket)
+            return false;
+        uint32_t expected = kDraining;
+        return __atomic_compare_exchange_n(&ticket->state, &expected,
+                                           kCompleted, false,
+                                           __ATOMIC_RELEASE,
+                                           __ATOMIC_ACQUIRE);
+    }
+
     static void finish(Ticket *ticket)
     {
         if (!ticket)
