@@ -1008,6 +1008,7 @@ fail_probe:
 void RTW88IEEE80211::stop()
 {
     IOLog("rtw88: IEEE80211 stop\n");
+    __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
     cancelAuthentication();
     _manualScanAbort = true;
     if (_manualScanTC) thread_call_cancel_wait(_manualScanTC);
@@ -1028,11 +1029,13 @@ void RTW88IEEE80211::stop()
     if (_state == RTW88_STATE_SCANNING && _hw && _hw->ops && _hw->ops->cancel_hw_scan)
         _hw->ops->cancel_hw_scan(_hw, _vif);
 
+    /* Close admission for every remaining TX kind (management and AWDL too)
+     * before VIF removal, hardware stop, or release of PCI/backend context. */
+    auto mutation = beginTxStateMutation();
     if (_vif && _hw && _hw->ops) {
         rtw88_unregister_vif();
-        if (_hw->ops->remove_interface) {
+        if (_hw->ops->remove_interface)
             _hw->ops->remove_interface(_hw, _vif);
-        }
         IOFree(_vif, _vifAllocSize);
         _vifAllocSize = 0;
         _vif = nullptr;
@@ -1054,11 +1057,8 @@ void RTW88IEEE80211::stop()
     _associatedVisible = false;
     _scanReturnState = RTW88_STATE_IDLE;
     _scanPartial = false;
+    mutation.finish();
 }
-
-/* ------------------------------------------------------------------ */
-/*  Power on/off (called from enable/disable)                          */
-/* ------------------------------------------------------------------ */
 
 IOReturn RTW88IEEE80211::setReceiveMulticast(bool active)
 {
@@ -1307,11 +1307,21 @@ UInt32 RTW88IEEE80211::outputPacketWithCompletion(
         return kIOReturnOutputDropped;
     }
 
-    /* Acquire before reading association, key, station, or VIF state. The
-     * same lease is carried through RTW88 ops->tx() so a control writer cannot
-     * retire those objects between validation and descriptor construction. */
+    /* Acquire before any association/key/station/VIF read. The lease follows
+     * the packet through the synchronous RTW88 ops->tx() descriptor build. */
     auto txLease = _txStateGate.tryEnterTransmit();
     if (!txLease) {
+        mbuf_freem(m);
+        if (callback)
+            callback(context, cookie, false);
+        return kIOReturnOutputDropped;
+    }
+
+    const bool connected = (_state == RTW88_STATE_CONNECTED) ||
+        (_state == RTW88_STATE_SCANNING &&
+         _scanReturnState == RTW88_STATE_CONNECTED &&
+         (_manualScanChannelCount == 0 || _manualScanOnHomeChannel));
+    if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
         mbuf_freem(m);
         if (callback)
             callback(context, cookie, false);
@@ -3685,7 +3695,13 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
          * receive the AP's handshake frames.  The link becomes usable only after
          * CIPHER_KEY installs the PTK/GTK, but exposing RUN here mirrors
          * the reference IO80211 driver's net80211 flow. */
-        _state = RTW88_STATE_CONNECTED;
+        {
+            auto mutation = beginTxStateMutation();
+            _state = RTW88_STATE_CONNECTED;
+            if (!_wpa2)
+                __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
+            mutation.finish();
+        }
         /* Our Apple-RSN path injects EAPOL through the normal BSD Ethernet
          * interface, unlike the reference IO80211 driver's net80211 path.  The interface must
          * therefore be LINK_UP for EAPOLController to receive/send 0x888e.
@@ -3695,10 +3711,8 @@ void RTW88IEEE80211::processAssocResponse(struct sk_buff *skb)
          * RTL8822BE while keeping controlled-port semantics in our own path. */
         if (_parent)
             _parent->setLinkStatus(kIONetworkLinkActive | kIONetworkLinkValid);
-        if (!_wpa2) {
-            __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
+        if (!_wpa2)
             startTxAggregation();
-        }
         _timer->cancelTimeout();
         if (_externalSupplicant) {
             IOLog("rtw88: associated — Apple RSN active; waiting for PTK/GTK before link-up\n");
@@ -4381,9 +4395,13 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             return;
         }
         IOLog("rtw88: M4 submitted duplicate=%d; AP acceptance unverified\n", duplicate);
-        __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
-        _associatedVisible = true;
-        _state = RTW88_STATE_CONNECTED;
+        {
+            auto mutation = beginTxStateMutation();
+            _associatedVisible = true;
+            _state = RTW88_STATE_CONNECTED;
+            __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
+            mutation.finish();
+        }
         _timer->cancelTimeout();
         if (_parent)
             _parent->setLinkStatus(kIONetworkLinkActive | kIONetworkLinkValid);
