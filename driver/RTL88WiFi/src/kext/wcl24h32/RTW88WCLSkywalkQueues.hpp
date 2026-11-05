@@ -41,10 +41,10 @@ public:
 private:
     bool ownsTXSubmissionQueue(const IOSkywalkTxSubmissionQueue *queue) const;
 
-    static IOReturn txSubmissionAction(OSObject *owner,
-                                      IOSkywalkTxSubmissionQueue *queue,
-                                      const IOSkywalkPacket **packets,
-                                      UInt32 packetCount, void *refCon);
+    static UInt32 txSubmissionAction(OSObject *owner,
+                                     IOSkywalkTxSubmissionQueue *queue,
+                                     IOSkywalkPacket * const *packets,
+                                     UInt32 packetCount, void *refCon);
     static IOReturn txCompletionAction(OSObject *owner,
                                        IOSkywalkTxCompletionQueue *queue,
                                        IOSkywalkPacket **packets,
