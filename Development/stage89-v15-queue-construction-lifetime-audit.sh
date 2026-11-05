@@ -5,7 +5,7 @@
 # READ ONLY. No source/header changes, build, signing, install/load, hardware test or OpenCore/SIP/NVRAM change.
 set -Eeuo pipefail
 REPO="shammu2bd/Realtek-WiFi-Native-macOS"
-ROOT="$HOME/Downloads/Realtek-WiFi-Native-macOS-Main (Local)"
+ROOT="$HOME/Developer/Realtek-WiFi-Native-macOS-Main (Local)"
 RUN="run-$(date -u '+%Y%m%d-%H%M%S')-$(python3 -c 'import secrets;print(secrets.token_hex(6))')"
 OUT="$ROOT/run log/stage89-v15/$RUN"
 REMOTE="Development/Logs/stage89-v15/$RUN"
