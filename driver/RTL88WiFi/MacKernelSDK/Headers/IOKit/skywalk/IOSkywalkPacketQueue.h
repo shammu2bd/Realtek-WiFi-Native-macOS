@@ -60,7 +60,7 @@ public:
     void setInterface( IOSkywalkInterface * interface );
 
     bool isQueueReady();
-    kern_packet_svc_class_t getServiceClass();
+    kern_packet_svc_class_t getServiceClass() const;
 
     IODirection getDirection();
     UInt32 getQueueId();
