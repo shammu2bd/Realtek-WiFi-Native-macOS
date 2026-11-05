@@ -3,7 +3,7 @@
 Date: 2026-11-06
 Branch: `work/stage91-tx-submission-callback-v1`
 Source baseline reviewed: `feba82c19a228a315309f7fa2e5fb926cbbe800e`
-Implementation revision: `31c0d68988b5361900e6d21db6436cfa4e126377`
+Implementation revision: `f22982154647ffa763a9f016e0e9f287cfb33360`
 Target: macOS Sequoia 15.8.1 / 24H32 / x86_64
 
 ## Fix 1 — preserve WMM service class end-to-end
@@ -44,7 +44,7 @@ The updated 11-test runner must be rerun against this revision. The native compi
 1. Six WCL objects from `rtl88wifi-wcl-controller-abi-check`.
 2. `build/native/RTW88IEEE80211.o`, because the RTW88 frame-builder API was extended.
 
-The previous 10/10 test PASS and six-object compile PASS predate these changes and do not validate this revision. The portable sequence-number stress test was also run in a local host shell; the complete 11-test repository runner and seven-object macOS compile still need to run on the user's Mac.
+The previous 10/10 test PASS and six-object compile PASS predate these changes and do not validate this revision. The portable sequence-number stress test passed in a local host shell, but the complete 11-test repository runner and seven-object macOS compile still need to run on the target Mac.
 
 ## Remaining Stage92 boundary
 
