@@ -1,0 +1,22 @@
+RTL88WIFI STAGE93 INDEPENDENT TX COMPLETION / RADIO CONCURRENCY AUDIT
+SCOPE=READ_ONLY_SOURCE_AUDIT
+PASS: BACKEND_CALLBACK_CONTEXT: callback-count bracket surrounds ticket publication and notifier; no direct Skywalk/packet release or blocking call found
+PASS: TICKET_STATE_MACHINE: fixed ticket slots expose reserved/submitted/completing/completed/draining, retry and finish transitions
+PASS: RETRY_OWNERSHIP: failed sink restores Completed and preserves packet/ticket; packet retain is released only after successful handoff
+PASS: DEFERRED_WORKER: one retained controller-workloop consumer performs synchronous completion handoff and timer retry
+PASS: WORKER_STOP_ORDER: notifier clear, timer cancellation/removal, worker removal, then retained queue/adapter release
+PASS: WORKLOOP_REMOVE_CONTRACT: pinned IOWorkLoop header documents synchronous event-source removal acknowledgement
+PASS: CONTROLLER_TEARDOWN_ORDER: submission admission closes before radio stop/PCI fence; adapter unbind precedes worker stop, owner detach, and queue rollback
+PASS: ADAPTER_UNBIND_BARRIER: adapter unbind refuses to drop radio/pool while tickets or backend completion callbacks remain
+PASS: QUEUE_OWNER_DETACH_BARRIER: queue-owner callback gate and adapter completion state must both be quiescent before detach
+PASS: SEQUENCE_AND_PN_ALLOCATORS: per-TID sequence allocation and 48-bit CCMP PN allocation use atomics
+BLOCKER: RADIO_KEY_STATE_CONCURRENCY: txDataFrame (RTW88IEEE80211.cpp:4903) reads _ptkConf/_wpa2/_eapolTxProtect/_sta/_vif/_targetBSS without a TX lock or command-gate action; installKey frees/replaces key objects, clearKeys frees _ptkConf, releaseSta clears/frees station state, and sendEAPOLKey toggles the shared protection flag. Four independent WMM queues must not be enabled until this state is serialized or safely snapshotted/refcounted.
+BLOCKER: RADIO_BA_STATE_CONCURRENCY: txDataFrame reads _txBaActive/_baTid while BA response/DELBA paths mutate BA state; no common radio TX lock or gate action is visible in this source
+BLOCKER: SEQUENCE_RESET_VS_INFLIGHT_TX: atomic counters are reset during key/station teardown or key install; prove all transmitters are quiesced before reset, or serialize resets with nonce/sequence allocation
+OPEN: UNUSED_RADIO_LOCK: radio allocates _lock but this source has no IOLockLock(_lock) use; establish intended locking contract before reusing it
+OPEN: TARGET_RUNTIME_AND_BINARY: no kernel load, hardware TX/RX, or fresh 24H32 running-kernel disassembly was performed by this read-only source audit
+PASS_COUNT=10
+BLOCKER_COUNT=3
+OPEN_COUNT=2
+STAGE93_RESULT=BLOCKED
+NATIVE_ACTIVATION=BLOCKED
