@@ -2,9 +2,10 @@
  * Sequoia Skywalk queue/pool resource owner.
  *
  * This stage allocates the native queue objects and packet pools but does not
- * register them with IOSkywalkEthernetInterface. Queue callbacks intentionally
- * fail closed until packet layout, completion semantics and RX buffer refill
- * have been validated against the 24H32 runtime.
+ * register them with IOSkywalkEthernetInterface. TX submission consists of
+ * four service-class-specific queues held in a stable, owner-resident array.
+ * Queue callbacks intentionally fail closed until packet layout, completion
+ * semantics and RX buffer refill have been validated against the 24H32 runtime.
  */
 #pragma once
 
@@ -23,9 +24,14 @@ public:
     IOReturn createQueues();
     void destroyQueues();
     bool queuesAllocated() const;
+    bool txSubmissionQueuesValid() const;
+    IOSkywalkTxSubmissionQueue * const *txSubmissionQueues() const {
+        return _txSubmissionQueues;
+    }
     void free() override;
 
     static constexpr UInt32 kQueueCapacity = 128;
+    static constexpr UInt32 kTXSubmissionQueueCount = 4;
     static constexpr UInt32 kTxBufferSize = 2048;
     static constexpr UInt32 kRxBufferSize = 4096;
 
@@ -33,10 +39,12 @@ public:
     IOSkywalkPacketBufferPool *rxPacketPool() const { return _rxPool; }
 
 private:
-    static IOReturn txSubmissionAction(OSObject *owner,
-                                      IOSkywalkTxSubmissionQueue *queue,
-                                      const IOSkywalkPacket **packets,
-                                      UInt32 packetCount, void *refCon);
+    bool ownsTXSubmissionQueue(const IOSkywalkTxSubmissionQueue *queue) const;
+
+    static UInt32 txSubmissionAction(OSObject *owner,
+                                     IOSkywalkTxSubmissionQueue *queue,
+                                     IOSkywalkPacket * const *packets,
+                                     UInt32 packetCount, void *refCon);
     static IOReturn txCompletionAction(OSObject *owner,
                                        IOSkywalkTxCompletionQueue *queue,
                                        IOSkywalkPacket **packets,
@@ -52,7 +60,7 @@ private:
 
     IOSkywalkPacketBufferPool *_txPool = nullptr;
     IOSkywalkPacketBufferPool *_rxPool = nullptr;
-    IOSkywalkTxSubmissionQueue *_txSubmission = nullptr;
+    IOSkywalkTxSubmissionQueue *_txSubmissionQueues[kTXSubmissionQueueCount] = {};
     IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
     IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
     IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
