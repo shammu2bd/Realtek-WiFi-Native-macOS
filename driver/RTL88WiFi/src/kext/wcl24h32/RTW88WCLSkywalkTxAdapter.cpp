@@ -235,8 +235,7 @@ void RTW88WCLSkywalkTxAdapter::free()
     const IOReturn status = unbind();
     if (status != kIOReturnSuccess || !_submissionGate.isUnbound() ||
         _tickets.hasOutstanding()) {
-        IOLog("rtl88wifi-wcl: TX adapter free deferred; submission or completion ownership remains
-");
+        IOLog("rtl88wifi-wcl: TX adapter free deferred; submission or completion ownership remains\n");
         /* Retained callbacks/tickets may still reference this adapter and its
          * radio/pool. Quarantine it instead of destroying live callback state. */
         return;
