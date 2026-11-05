@@ -43,6 +43,17 @@ class IOSkywalkRing;
 typedef IOReturn (*IOSkywalkQueryFreeSpaceHandler) ( OSObject * owner, IOSkywalkTxSubmissionQueue * queue, UInt32 * outSpace );
 typedef IOReturn (*IOSkywalkTxSubmissionQueueAction)( OSObject * owner, IOSkywalkTxSubmissionQueue * queue, const IOSkywalkPacket **, UInt32, void * );
 
+/*
+ * Exact callback pointer types used by the additional 24H32 target withPool
+ * symbol. They intentionally remain separate from the generic SDK typedefs:
+ * the target symbol encodes UInt32 returns and IOSkywalkPacket * const *.
+ */
+typedef UInt32 (*IOSkywalkQueryFreeSpaceHandler24H32)(
+    OSObject * owner, IOSkywalkTxSubmissionQueue * queue, UInt32 * outSpace );
+typedef UInt32 (*IOSkywalkTxSubmissionQueueAction24H32)(
+    OSObject * owner, IOSkywalkTxSubmissionQueue * queue,
+    IOSkywalkPacket * const * packets, UInt32 packetCount, void * refCon );
+
 struct IOSkywalkTxSubmissionQueueStats; // size = 128
 
 class IOSkywalkTxSubmissionQueue : public IOSkywalkPacketQueue
@@ -88,7 +99,7 @@ public:
      * Do not replace this with a guessed call to initWithPool: the public SDK
      * declaration for that initializer has a different argument order.
      */
-    static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options, UInt32 serviceClass );
+    static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler24H32 handler, IOSkywalkTxSubmissionQueueAction24H32 action, void * refCon, IOOptionBits options, UInt32 serviceClass );
     static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
     virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
     virtual void free() APPLE_KEXT_OVERRIDE;
