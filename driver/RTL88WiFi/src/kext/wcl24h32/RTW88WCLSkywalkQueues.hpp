@@ -17,6 +17,7 @@
 #include <libkern/c++/OSObject.h>
 
 #include "RTW88WCLAcquisitionJournal.hpp"
+#include "RTW88WCLTxSubmissionGate.hpp"
 
 class RTW88WCLSkywalkTxAdapter;
 
@@ -78,6 +79,7 @@ private:
     IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
     IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
     RTW88WCLSkywalkTxAdapter *_txAdapter = nullptr; // retained; action callback context
+    RTW88WCLTxSubmissionGate _txCallbackGate;
     RTW88WCLAcquisitionJournal::Journal _acquisitionJournal;
     bool _allocated = false;
 };
