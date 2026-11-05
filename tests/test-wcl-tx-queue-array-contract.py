@@ -18,12 +18,15 @@ assert "txSubmissionQueuesValid() const" in hpp
 # The target-backed overload carries options followed by the service class.
 assert "IOSkywalkQueryFreeSpaceHandler24H32" in sdk
 assert "IOSkywalkTxSubmissionQueueAction24H32" in sdk
-assert "IOSkywalkPacket ** packets" in sdk
+assert "typedef IOReturn (*IOSkywalkTxSubmissionQueueAction)" in sdk
+assert "const IOSkywalkPacket **" in sdk  # generic SDK ABI remains unchanged
+assert "IOSkywalkPacket * const * packets" in sdk  # target-only 24H32 overload
 assert "UInt32 serviceClass );" in sdk
 assert "withPoolAndServiceClass(" not in cpp
 assert "UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(" in cpp
-assert "IOSkywalkPacket **packets" in cpp
-assert "static_cast<UInt32>(0)" in cpp
+assert "IOSkywalkPacket * const *packets" in cpp
+assert "RTW88WCLTxSubmissionBatch::submitPrefix<IOSkywalkPacket>" in cpp
+assert "return accepted;" in cpp
 assert "IOSkywalkTxSubmissionQueue::withPool(" in cpp
 assert "this, nullptr," in cpp
 assert "RTW88WCLTXQueueContract::kServiceClasses[i]" in cpp
@@ -57,8 +60,10 @@ assert "entries[i].identity == entries[j].identity" in contract
 assert "entries[i].serviceClass != kServiceClasses[i]" in contract
 assert "count != kRequiredCount" in contract
 
-# Construction stays deliberately unregistered and callbacks remain fail-closed.
+# Construction stays deliberately unregistered. TX submission returns the
+# accepted prefix count; the not-yet-implemented completion/RX callbacks remain
+# inert and return their legacy IOReturn success value.
 assert "->registerEthernetInterface(" not in cpp and ".registerEthernetInterface(" not in cpp
 assert "return static_cast<IOReturn>(0)" in cpp
 print("PASS: four-entry target WMM queue array is fixed, ordered, validated, and journal-rollback compatible")
-print("PASS: construction remains unregistered and callback packet acceptance remains fail-closed")
+print("PASS: target TX action reports accepted prefix; native registration remains fenced")
