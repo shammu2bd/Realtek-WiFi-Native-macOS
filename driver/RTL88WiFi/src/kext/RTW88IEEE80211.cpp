@@ -760,6 +760,7 @@ void RTW88IEEE80211::clearKeys()
     memset(_replayCtr, 0, sizeof(_replayCtr));
     memset(_installedM3ReplayCtr, 0, sizeof(_installedM3ReplayCtr));
     _txBAState.clear();
+    _associatedVisible = false;
     if (_lock) IOLockLock(_lock);
     _txBaPending = false;
     _baRecovery.reset();
@@ -1245,37 +1246,53 @@ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
 IOReturn RTW88IEEE80211::powerOn()
 {
     IOLog("rtw88: IEEE80211 powerOn\n");
-    if (_powered) return kIOReturnSuccess;
-    if (!_hw || !_hw->ops || !_hw->ops->start) return kIOReturnNotReady;
+    auto mutation = beginTxStateMutation();
+    if (_powered) {
+        mutation.finish();
+        return kIOReturnSuccess;
+    }
+    if (!_hw || !_hw->ops || !_hw->ops->start) {
+        mutation.finish();
+        return kIOReturnNotReady;
+    }
     int ret = _hw->ops->start(_hw);
     if (ret) {
         IOLog("rtw88: rtw_core_start failed: %d\n", ret);
+        mutation.finish();
         return kIOReturnError;
     }
     _powered = true;
     _awdlPreparedChannel = 0;
     _awdlOffChannel = false;
+    mutation.finish();
+
     if (rtw88_restore_interface(_hw, _vif) != 0) {
         powerOff();
         return kIOReturnError;
     }
     IOReturn filterResult = _awdlReceiveMode ? setAWDLReceiveMode(true) : setReceiveMulticast(_receiveMulticast);
-    if (filterResult != kIOReturnSuccess) powerOff();
+    if (filterResult != kIOReturnSuccess)
+        powerOff();
     return filterResult;
 }
 
 void RTW88IEEE80211::powerOff()
 {
     IOLog("rtw88: IEEE80211 powerOff\n");
-    if (!_powered) return;
+    __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
+    auto mutation = beginTxStateMutation();
+    if (!_powered) {
+        mutation.finish();
+        return;
+    }
     if (_hw && _hw->ops && _hw->ops->stop)
         _hw->ops->stop(_hw, false);
     _powered = false;
     _awdlPreparedChannel = 0;
     _awdlOffChannel = false;
+    mutation.finish();
 }
 
-/* ------------------------------------------------------------------ */
 /*  Interrupt dispatch                                                  */
 /* ------------------------------------------------------------------ */
 
@@ -5440,16 +5457,19 @@ void RTW88IEEE80211::getPermanentMACAddress(uint8_t *mac)
 
 IOReturn RTW88IEEE80211::setMACAddress(const uint8_t *mac)
 {
-    if (!mac || !_rtwdev || !_vif)
-        return kIOReturnNotReady;
+    if (!mac)
+        return kIOReturnBadArgument;
 
     const bool allZero = !(mac[0] | mac[1] | mac[2] | mac[3] | mac[4] | mac[5]);
     if (allZero || (mac[0] & 0x01))
         return kIOReturnBadArgument;
 
-    /* Serialize MAC/VIF writes against every transmitter, then recheck the
-     * state after admission closes. */
+    /* The VIF/backend pointers are not sampled until TX admission is closed. */
     auto mutation = beginTxStateMutation();
+    if (!_rtwdev || !_hw || !_vif) {
+        mutation.finish();
+        return kIOReturnNotReady;
+    }
     if (_state == RTW88_STATE_CONNECTED || _state == RTW88_STATE_ASSOCIATING ||
         _state == RTW88_STATE_AUTHENTICATING || _state == RTW88_STATE_HANDSHAKING ||
         _state == RTW88_STATE_DISCONNECTING) {
