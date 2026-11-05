@@ -76,7 +76,7 @@ private:
     IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
     IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
     IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
-    RTW88WCLTxAdapter *_txAdapter = nullptr; // retained; action callback context
+    RTW88WCLSkywalkTxAdapter *_txAdapter = nullptr; // retained; action callback context
     RTW88WCLAcquisitionJournal::Journal _acquisitionJournal;
     bool _allocated = false;
 };
