@@ -1,0 +1,102 @@
+========== STAGE 89 V8 — TARGET TX FACTORY / SDK HEADER ABI CROSS-CHECK ==========
+STAGE89_V8_TARGET_TX_FACTORY_HEADER_ABI_CROSSCHECK
+VERSION=STAGE89_V8_20261105
+TARGET=macOS_15.8.1_24H32_x86_64
+SOURCE_TREE_REVALIDATION=PASS
+TARGET_FACTORY_REGISTER_DATAFLOW=PASS
+TARGET_INIT_SERVICE_CLASS_STORE=PASS
+CURRENT_SOURCE_ACTION_ONLY_FACTORY_PATH=PROVEN_DEFAULT_SENTINEL_0xffffffff
+SDK_INIT_NAMED_PARAMETER_ORDER=capacity,queueId,serviceClass
+TARGET_FACTORY_REGISTER_ORDER=serviceClass,capacity,queueId
+SDK_VS_TARGET_INIT_ORDER=CONFLICT
+PUBLIC_EXPLICIT_FACTORY_SYMBOL_MAPPING=NOT_PROVEN
+CURRENT_SOURCE_TX_SUBMISSION_QUEUE_COUNT=1
+WMM_ROLE_1_REQUIRES_FOUR_TX_SUBMISSION_QUEUES=YES
+CURRENT_SOURCE_EXPLICIT_SERVICECLASS_FACTORY_CALL=NO
+TX_FACTORY_CALL_SAFE_TO_CHANGE=NO
+FOUR_QUEUE_POINTER_ARRAY=NOT_IMPLEMENTED
+NATIVE_REGISTRATION_CALLS=0
+CALLBACK_HANDOFFS_STILL_MISSING=4
+IMPLEMENTATION_AUTHORIZATION=NO
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+SIGNING=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+RESULT=REVIEW_REQUIRED
+ACTIVATION_GATE=BLOCKED
+NEXT=Resolve the explicit service-class factory's exported target symbol and the initWithPool parameter contract before altering any call. Then finalize queue role counts and Stage89 pointer-array design. Stage90 remains blocked.
+
+TARGET DATAFLOW:
+STAGE89_V8_TX_FACTORY_HEADER_TARGET_ABI_CROSSCHECK
+TARGET_MAIN_FACTORY_ADDRESS=0xffffff8002983ff0
+TARGET_CLASS_FORWARDING_WRAPPER_ADDRESS=0xffffff800298409e
+TARGET_DEFAULT_ACTION_ONLY_WRAPPER_ADDRESS=0xffffff80029840c2
+TARGET_TX_INIT_ADDRESS=0xffffff80029840e8
+TARGET_FACTORY_REGISTER_DATAFLOW=PASS
+FACTORY_CHECK_FACTORY_LOADS_FINAL_STACK_U32=PASS
+FACTORY_CHECK_FACTORY_FORWARDS_CAPACITY_TO_ECX=PASS
+FACTORY_CHECK_FACTORY_FORWARDS_QUEUEID_TO_R8D=PASS
+FACTORY_CHECK_FACTORY_CALLS_VIRTUAL_INIT=PASS
+FACTORY_CHECK_CLASS_WRAPPER_PASSES_FINAL_U32=PASS
+FACTORY_CHECK_DEFAULT_WRAPPER_PUSHES_MINUS_ONE=PASS
+TX_INIT_DATAFLOW=PASS
+INIT_CHECK_INIT_SAVES_EDX=PASS
+INIT_CHECK_INIT_VALIDATES_ECX_MINIMUM_8=PASS
+INIT_CHECK_INIT_STORES_SAVED_EDX_TO_SERVICE_CLASS_OFFSET=PASS
+TARGET_SERVICE_CLASS_REGISTER=EDX_FIRST_UINT32_AFTER_POOL
+TARGET_SERVICE_CLASS_FIELD_OFFSET=0xb8
+SDK_INIT_NAMED_PARAMETER_ORDER=capacity,queueId,serviceClass
+TARGET_FACTORY_REGISTER_ORDER=SERVICE_CLASS,THEN_CAPACITY,THEN_QUEUE_ID
+SDK_VS_TARGET_INIT_ORDER=CONFLICT
+SDK_DECLARES_EXPLICIT_WITHPOOLANDSERVICECLASS=YES
+TARGET_INDEX_HAS_NAMED_WITHPOOLANDSERVICECLASS=NO
+SDK_DECLARES_ACTION_ONLY_WITHPOOL=YES
+TARGET_HAS_MATCHING_ACTION_ONLY_WITHPOOL_SYMBOL=YES
+CURRENT_SOURCE_USES_ACTION_ONLY_WITHPOOL=YES
+CURRENT_SOURCE_ACTION_ONLY_FACTORY_PATH=PROVEN_DEFAULT_SENTINEL_0xffffffff
+CURRENT_SOURCE_USES_EXPLICIT_SERVICECLASS_FACTORY=NO
+EXPLICIT_FACTORY_SYMBOL_MAPPING=NOT_PROVEN
+WMM_CLASS_VALUES=0x00100080,0x00000000,0x00380100,0x00400180
+WMM_ROLE_1_CARDINALITY=FOUR_TX_SUBMISSION_QUEUES
+CURRENT_SOURCE_TX_SUBMISSION_QUEUE_COUNT=1
+CURRENT_SOURCE_TX_CLASS_FACTORY_CALLS=0
+CURRENT_SOURCE_TX_ORDINARY_FACTORY_CALLS=1
+QUEUE_POINTER_ARRAY=NOT_IMPLEMENTED
+NATIVE_REGISTRATION_CALLS=0
+CALLBACK_HANDOFFS_STILL_MISSING=4
+RESULT=REVIEW_REQUIRED
+ACTIVATION_GATE=BLOCKED
+
+SDK INIT / FACTORY DECLARATIONS:
+static IOSkywalkTxSubmissionQueue * withPoolAndServiceClass( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+static IOSkywalkTxSubmissionQueue * withPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, OSObject * owner, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+virtual bool initWithPool( IOSkywalkPacketBufferPool * pool, UInt32 capacity, UInt32 queueId, kern_packet_svc_class_t serviceClass, OSObject * owner, IOSkywalkQueryFreeSpaceHandler handler, IOSkywalkTxSubmissionQueueAction action, void * refCon, IOOptionBits options );
+
+CURRENT SOURCE CALL:
+
+    /* These queue objects are deliberately not added to an IOWorkLoop and
+     * are not passed to registerEthernetInterface() yet. Skywalk owns their
+     * scheduling and packet lifetime only after a complete RegistrationInfo
+     * + ring setup transaction, which is a later stage. */
+    _txSubmission = IOSkywalkTxSubmissionQueue::withPool(
+        _txPool, kQueueCapacity, 0, this,
+        &RTW88WCLSkywalkQueues::txSubmissionAction, this, 0);
+    if (!_txSubmission)
+        goto no_memory;
+
+    _txCompletion = IOSkywalkTxCompletionQueue::withPool(
+        _txPool, kQueueCapacity, 0, this,
+
+REVIEW OF V7:
+V7 marked SDK_DECLARATION_TO_TARGET_ABI_ORDER_MATCH=YES based on a partial parameter check. This V8 review does not accept that conclusion. In the target factory/init dataflow, the explicit class value is forwarded to EDX and target init stores EDX at mServiceClass offset 0xb8. The checked-in initWithPool declaration names its first UInt32 after pool as capacity, not serviceClass. The names/order therefore conflict and require a real ABI wrapper or corrected declaration proof.
+The current source does not use the explicit-class helper. Its action-only withPool call matches the action-only target wrapper in the selected method index; that wrapper pushes -1, so the current TX submission queue receives the default 0xffffffff service class. This is not one of the four WMM values.
+The SDK declares withPoolAndServiceClass, but the selected target method index contains no symbol with that name. Do not call that declaration or guess another overload until the public-to-target symbol mapping is proven.
+
+QUEUE TOPOLOGY:
+The QueueSet WMM predicate checks only role-1 TX-submission queues and requires exactly one of each of the four pinned WMM values. The source has one TX-submission queue with the default service class. Other queue-role counts remain unresolved; a seven-object layout is still only a candidate.
+
+SAFETY:
+No driver source changed. No build, signing, install/load, hardware test, SIP/NVRAM or OpenCore action occurred.
