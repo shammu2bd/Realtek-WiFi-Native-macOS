@@ -67,14 +67,19 @@ static void testMalformedAndNullInputsRemainUnaccepted()
     const uint32_t accepted =
         RTW88WCLTxSubmissionBatch::submitPrefix(list, 3, submit, &state);
     assert(accepted == 1);
-    assert(state.calls == 2);
+    /* Only the first packet reaches submit(). The null second slot must stop
+     * the contiguous prefix; the third packet must never be visited. */
+    assert(state.calls == 1);
+    assert(state.accepted[0] == 1);
 
+    SubmitState invalidState = {-1, 0, {}};
     assert(RTW88WCLTxSubmissionBatch::submitPrefix<Packet>(
-        nullptr, 3, submit, &state) == 0);
+        nullptr, 3, submit, &invalidState) == 0);
     assert(RTW88WCLTxSubmissionBatch::submitPrefix<Packet>(
-        list, 0, submit, &state) == 0);
+        list, 0, submit, &invalidState) == 0);
     assert(RTW88WCLTxSubmissionBatch::submitPrefix<Packet>(
-        list, 3, nullptr, &state) == 0);
+        list, 3, nullptr, &invalidState) == 0);
+    assert(invalidState.calls == 0);
 }
 
 int main()
