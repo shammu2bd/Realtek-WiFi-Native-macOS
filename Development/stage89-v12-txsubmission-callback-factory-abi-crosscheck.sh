@@ -128,7 +128,7 @@ for typedef_name in ["IOSkywalkQueryFreeSpaceHandler","IOSkywalkTxSubmissionQueu
  if m: typedefs[typedef_name]=(re.sub(r"\s+"," ",m.group(1)).strip(),re.sub(r"\s+"," ",m.group(2)).strip())
 factories=[re.sub(r"\s+"," ",x).strip() for x in re.findall(r"static\s+IOSkywalkTxSubmissionQueue\s*\*\s*(?:withPoolAndServiceClass|withPool)\s*\([^;]+;",header,re.S)]
 header_has_const_action="const IOSkywalkPacket **" in header
-header_has_mutable_action="IOSkywalkPacket **" in header
+header_has_mutable_action=bool(re.search(r"(?<!const )IOSkywalkPacket\s*\*\*",header))
 
 # Target symbol spellings encode callback pointer constness and trailing integer count.
 main_symbol=next((x.split("SYMBOL=",1)[1] for x in symbols.splitlines() if "ADDRESS=0xffffff8002983ff0 " in x),"")
