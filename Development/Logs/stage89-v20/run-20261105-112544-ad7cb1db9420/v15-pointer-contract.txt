@@ -1,0 +1,19 @@
+STAGE89_V15_POINTER_ARRAY_TEST_CONTRACT
+STATUS=DESIGN_ONLY_NOT_IMPLEMENTED
+ROLE=ROLE_1_TX_SUBMISSION_ARRAY_ONLY
+EXPECTED_COUNT=4
+EXPECTED_WMM_ORDER=0x00100080,0x00000000,0x00380100,0x00400180
+REQUIRED_ASSERTIONS:
+1. Exactly four TX submission queue objects are constructed; no missing or extra role-1 queue.
+2. Every pointer is non-null before registration argument assembly.
+3. All four pointers are pairwise unique; aliasing two service classes is a failure.
+4. Each queue reports the expected numeric service class; each class occurs exactly once.
+5. Pointer-array order is deterministic and matches EXPECTED_WMM_ORDER.
+6. The array address and its four entries remain unchanged for the complete synchronous registration call.
+7. Queue objects remain retained and alive for the full registration/QueueSet ownership transition; an array copy does not imply that caller-owned queue objects can be released early.
+8. Any construction failure releases only successfully acquired objects in reverse acquisition order and leaves registration unreachable.
+9. Repeat create/destroy, partial-construction failure and double-destroy tests must prove idempotence and no stale pointers.
+10. No test may infer a private service-class setter or use the unproven SDK/target factory mapping.
+TEST_CASES_REQUIRED=empty_slot;duplicate_pointer;wrong_order;duplicate_service_class;unknown_service_class;array_mutated_during_call;queue_release_before_queue_set_retains;fourth_constructor_failure;repeat_destroy
+REGISTRATION_POLICY=FAIL_CLOSED; no live registration in Stage89 V15
+GATE=Stage89 exit remains blocked until a reviewed implementation and executable tests prove these properties.
