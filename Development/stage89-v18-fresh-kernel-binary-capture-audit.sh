@@ -294,7 +294,6 @@ PY18
   ARTIFACTS="bootkc-capture-metadata.txt native-kernel-method-index.txt native-kernel-method-disassembly.txt fresh-kernel-binary-findings.txt audit-summary.txt decision.txt"
   ;;
 19)
-  fetch_previous_artifact "$PREV_RUN" report.txt
   fetch_previous_artifact "$PREV_RUN" native-kernel-method-index.txt
   fetch_previous_artifact "$PREV_RUN" native-kernel-method-disassembly.txt
   fetch_previous_artifact "$PREV_RUN" fresh-kernel-binary-findings.txt
@@ -322,6 +321,9 @@ push_minus_one="push\t-0x1" in action_block or "push -0x1" in action_block
 init_pos=dis.find("IOSkywalkTxSubmissionQueue12initWithPool")
 init_block=dis[init_pos:init_pos+6500] if init_pos>=0 else ""
 stores_0xb8=bool(re.search(r"mov\s+dword ptr \[[a-z0-9]+\s*\+\s*0xb8\],",init_block,re.I))
+init_serviceclass_reg=bool(re.search(r"mov\s+r15d,\s*edx",init_block,re.I))
+init_capacity_reg=bool(re.search(r"cmp\s+ecx,\s*0x8",init_block,re.I))
+init_queueid_reg=bool(re.search(r"mov\s+r8d,\s*ecx",init_block,re.I))
 sdk_explicit="withPoolAndServiceClass" in sdk
 src_calls=src.count("IOSkywalkTxSubmissionQueue::withPool(")+src.count("IOSkywalkTxSubmissionQueue::withPoolAndServiceClass(")
 src_explicit="IOSkywalkTxSubmissionQueue::withPoolAndServiceClass(" in src
@@ -347,11 +349,19 @@ rows=[
  "TARGET_NATIVE_TX_SETTER_SYMBOLS="+str(len(native_setters)),
  "SDK_WITHPOOLANDSERVICECLASS_DECLARED="+("YES" if sdk_explicit else "NO"),
  "TARGET_INIT_WRITES_SERVICECLASS_OFFSET_0xB8="+("YES" if stores_0xb8 else "NOT_PROVEN"),
+ "TARGET_INIT_EDX_STORED_AS_SERVICECLASS="+("YES" if init_serviceclass_reg and stores_0xb8 else "NOT_PROVEN"),
+ "TARGET_INIT_ECX_CHECKED_AS_CAPACITY="+("YES" if init_capacity_reg else "NOT_PROVEN"),
+ "TARGET_INIT_R8D_ASSIGNED_QUEUEID="+("YES" if init_queueid_reg else "NOT_PROVEN"),
+ "TARGET_INIT_EFFECTIVE_ORDER=SERVICECLASS_CAPACITY_QUEUEID" if init_serviceclass_reg and init_capacity_reg and init_queueid_reg and stores_0xb8 else "TARGET_INIT_EFFECTIVE_ORDER=NOT_PROVEN",
+ "SDK_INIT_DECLARED_ORDER=CAPACITY_QUEUEID_SERVICECLASS",
  "TARGET_ACTION_ONLY_WRAPPER_PUSHES_0xffffffff="+("YES" if push_minus_one else "NOT_PROVEN"),
  "SOURCE_FACTORY_CALLS="+str(src_calls),
  "SOURCE_USES_EXPLICIT_SERVICECLASS_FACTORY="+("YES" if src_explicit else "NO"),
  "SDK_TO_TARGET_EXPLICIT_FACTORY_MAPPING=NOT_PROVEN_PENDING_EXACT_DECLARATION_TO_TARGET_ABI_CROSSWALK",
- "TARGET_INIT_ABI_ORDER=REQUIRES_REGISTER_AND_STACK_ARGUMENT_REVIEW",
+ "TARGET_INIT_EDX_IS_SERVICECLASS="+("YES" if init_serviceclass_reg and stores_0xb8 else "NOT_PROVEN"),
+ "TARGET_INIT_ECX_IS_CAPACITY="+("YES" if init_capacity_reg else "NOT_PROVEN"),
+ "TARGET_INIT_R8D_IS_QUEUEID="+("YES" if init_queueid_reg else "NOT_PROVEN"),
+ "TARGET_INIT_ABI_ORDER=SERVICECLASS_CAPACITY_QUEUEID" if init_serviceclass_reg and init_capacity_reg and init_queueid_reg and stores_0xb8 else "TARGET_INIT_ABI_ORDER=NOT_PROVEN",
  "FOUR_WMM_SERVICE_CLASSES="+",".join(classes),
  "EXPECTED_FOUR_WMM_SERVICE_CLASSES="+",".join(expected),
  "CHECKS_PASSED=%d/%d"%(sum(checks.values()),len(checks)),
@@ -406,7 +416,6 @@ PY19
   ARTIFACTS="factory-abi-crosswalk.txt four-queue-feasibility.txt audit-summary.txt decision.txt"
   ;;
 20)
-  fetch_previous_artifact "$PREV_RUN" report.txt
   fetch_previous_artifact "$PREV_RUN" factory-abi-crosswalk.txt
   fetch_previous_artifact "$PREV_RUN" four-queue-feasibility.txt
   pin source-queues.cpp 59501f4ed08b5e30e82af810c99552bec2018213 "$BASE/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp"
