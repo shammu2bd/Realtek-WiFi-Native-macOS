@@ -89,6 +89,7 @@ pin v14-verdict.txt dd8cc80f287dbf9424fb3e46c67a7c50edcbb151 "$LOGS/stage89-v14/
 pin v9-disassembly.txt a4c4cd35016228e79953b9991426f45bcdc69089 "$LOGS/stage89-v9/run-20261105-034922-6566f42c51aa/target-txsubmission-factory-disassembly.txt"
 pin v12-crosswalk.txt 5c1afc5bd220a8da52e9dc9d6bfed6b7b8da6831 "$LOGS/stage89-v12/run-20261105-043238-9923f409a010/callback-factory-api-crosswalk.txt"
 pin wmm-table.txt c4e5106ebb95dc3807c9591d1d676c48fefceb1 "$LOGS/stage88/run-20261102-205135-b4f4ddc49298/wmm-service-class-table.txt"
+pin queue-array-lifetime.txt 394c0ed715d6d219ae3e9990fab26ed0d2d49054 "$LOGS/stage88/run-20261102-205135-b4f4ddc49298/queue-array-lifetime-abi.txt"
 pin queueset-crosswalk.txt ef25fdc28340d6e6bc18d6e80ff011b7df334a51 "$LOGS/stage62/run-20261102-161032-d54adc732d87/queueset-info-word-crosswalk.txt"
 python3 - "$OUT/v14-checks.txt" "$OUT/v14-report.txt" "$OUT/v14-verdict.txt" "$OUT/v9-disassembly.txt" "$OUT/v12-crosswalk.txt" <<'PYFIX'
 import pathlib,re,sys
@@ -143,7 +144,7 @@ for name,typ in [("_txSubmission","IOSkywalkTxSubmissionQueue"),("_txCompletion"
  add("one_factory_assignment_for_"+name, len(re.findall(r"\b"+re.escape(name)+r"\s*=\s*"+re.escape(typ)+r"::withPool\s*\(",code))==1)
 add("tx_submission_factory_is_action_only_withpool", bool(re.search(r"_txSubmission\s*=\s*IOSkywalkTxSubmissionQueue::withPool\s*\(",code)))
 add("no_named_serviceclass_factory_in_source","withPoolAndServiceClass" not in code)
-add("current_source_constructs_four_role_objects_once", all(len(re.findall(r"\b"+n+r"\s*=",code))==1 for n in ["_txSubmission","_txCompletion","_rxSubmission","_rxCompletion"]))
+add("current_source_constructs_one_of_each_base_role", all(len(re.findall(r"\b"+re.escape(n)+r"\s*=\s*"+re.escape(t)+r"::withPool\s*\(",code))==1 for n,t in [("_txSubmission","IOSkywalkTxSubmissionQueue"),("_txCompletion","IOSkywalkTxCompletionQueue"),("_rxSubmission","IOSkywalkRxSubmissionQueue"),("_rxCompletion","IOSkywalkRxCompletionQueue")]))
 add("no_four_entry_tx_submission_pointer_array", re.search(r"IOSkywalkTxSubmissionQueue\s*\*\s*\w+\s*\[\s*4\s*\]",hpp+code) is None)
 add("no_tx_submission_pointer_array_member", re.search(r"IOSkywalkTxSubmissionQueue\s*\*\s*\w+\s*\[\s*\]",hpp) is None)
 add("no_registration_call_in_current_source", re.search(r"\bregisterEthernetInterface\s*\(",code) is None)
@@ -162,6 +163,7 @@ python3 - "$OUT" <<'PY'
 import pathlib,re,sys
 out=pathlib.Path(sys.argv[1])
 wmm=(out/"wmm-table.txt").read_text()
+life=(out/"queue-array-lifetime.txt").read_text()
 qs=(out/"queueset-crosswalk.txt").read_text()
 cpp=(out/"queue-construction-inventory.txt").read_text()
 vals=re.findall(r"WMM_SERVICE_CLASS_\d+=(0x[0-9a-fA-F]+)",wmm)
