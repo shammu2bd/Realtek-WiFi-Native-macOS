@@ -1,0 +1,53 @@
+Stage91 — TX completion callback ABI alignment
+=============================================
+
+Target
+------
+macOS Sequoia 15.8.1, build 24H32, x86_64.
+
+Evidence
+--------
+The pinned 24H32 kernel ABI archive used by the preceding Stage91
+evidence scan has SHA-256:
+
+0030e67237141060b57d3e7c6fdff75ca9d5003438d8dd8382cbf95c86d550e2
+
+The 24H32 IOSkywalkTxCompletionQueue::withPool symbol encodes a callback
+function pointer with UInt32 return (PFj). The bundled generic SDK
+declaration used an IOReturn-returning callback (PFi). The return types
+are both 32-bit at the machine level but have distinct C++ manglings and
+must not be treated as interchangeable for factory symbol resolution.
+
+Source changes
+--------------
+1. Added IOSkywalkTxCompletionQueueAction24H32 with UInt32 return and the
+   target's packet pointer/count/refCon arguments.
+2. Added a static withPool overload taking that target-specific callback.
+   The generic SDK typedef and generic overload remain available.
+3. Changed RTW88WCLSkywalkQueues::txCompletionAction declaration and
+   definition to return UInt32.
+4. Kept the callback body fail-closed: it returns zero and performs no
+   packet completion, enqueue, ownership transfer, or release.
+5. Added the completion-queue header to the queue-owner object dependency.
+6. Updated tests/test-wcl-skywalk-queues.py to assert the target typedef,
+   factory overload, and zero-return callback contract.
+
+Safety boundary
+---------------
+No virtual method was added or changed. The factory overload is static,
+so this patch does not add a vtable slot. The existing queue factory is
+still called only during resource allocation; queue registration is not
+added. TX submission still returns zero and TX completion action remains
+a no-op returning zero.
+
+Validation status
+-----------------
+GitHub source review: PASS.
+Regression test source updated: YES; execution pending on target checkout.
+Compile-only validation: NOT RUN.
+Full link: NOT RUN.
+Signing/install/load/hardware/OpenCore changes: NOT RUN.
+
+Result
+------
+SOURCE_PATCH_COMMITTED; COMPILE_VALIDATION_PENDING.
