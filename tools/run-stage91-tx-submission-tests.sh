@@ -100,8 +100,8 @@ SUMMARY="$ROOT/Development/output.log"
 
     echo
     echo "===== TEST 11: ATOMIC PER-TID SEQUENCE / CCMP PN REGRESSION ====="
-    c++ -std=c++17 -Wall -Wextra -Werror -O2 -pthread \\
-        tests/rtw88_tx_sequence_numbers_test.cpp \\
+    c++ -std=c++17 -Wall -Wextra -Werror -O2 -pthread \
+        tests/rtw88_tx_sequence_numbers_test.cpp \
         -o /tmp/rtl88-stage91-sequence-number-test
     /tmp/rtl88-stage91-sequence-number-test
     echo "PASS: per-TID QoS sequences and CCMP packet numbers are unique under concurrency"
