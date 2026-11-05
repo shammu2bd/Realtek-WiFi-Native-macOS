@@ -1,0 +1,46 @@
+========== STAGE 89 V11 — TXSUBMISSION PROJECT API-SURFACE INVENTORY ==========
+STAGE89_V11_TXSUBMISSION_PROJECT_API_SURFACE_INVENTORY
+VERSION=STAGE89_V11_20261105
+TARGET=macOS_15.8.1_24H32_x86_64
+V9_V10_EVIDENCE_PINS=PASS
+SOURCE_TREE_REVALIDATION=PASS
+PROJECT_API_MATCH_LINES=55
+PROJECT_WITHPOOL_DECLARATION_CONTEXTS=12
+PROJECT_EXPLICIT_SERVICECLASS_DECLARATION_CONTEXTS=2
+TARGET_TXSUBMISSION_CLASS_SYMBOLS=61
+TARGET_TXSUBMISSION_FACTORY_SYMBOLS=3
+TARGET_TXSUBMISSION_INIT_SYMBOLS=1
+TARGET_EXACT_WITHPOOLANDSERVICECLASS_SYMBOLS=0
+FILESSET_GLOBAL_WITHPOOLANDSERVICECLASS_SYMBOLS=0
+DIRECT_SDK_TO_TARGET_FACTORY_MAPPING=NOT_FOUND
+V10_TARGET_SERVICECLASS_DATAFLOW=PROVEN
+CURRENT_SOURCE_TX_SUBMISSION_QUEUE_COUNT=1
+FOUR_TX_SUBMISSION_QUEUES_REQUIRED=YES
+QUEUE_POINTER_ARRAY=NOT_IMPLEMENTED
+NATIVE_REGISTRATION_CALLS=0
+CALLBACK_HANDOFFS_STILL_MISSING=4
+IMPLEMENTATION_AUTHORIZATION=NO
+SOURCE_MODIFIED=NO
+BUILD=NOT_RUN
+SIGNING=NOT_RUN
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE_CHANGE=NONE
+RESULT=REVIEW_REQUIRED
+ACTIVATION_GATE=BLOCKED
+NEXT=Review the complete symbol and declaration inventories. If no matching declaration exists, keep Stage89 fail-closed and request explicit implementation authorization before designing a minimal ABI wrapper.
+
+SDK/SOURCE API SURFACE:
+The inventory scans every supported source/header file under MacKernelSDK/Headers and src for IOSkywalkTxSubmissionQueue, withPoolAndServiceClass, initWithPool and kern_packet_svc_class_t. It records matching source lines and declaration contexts.
+
+TARGET KERNEL CLASS SURFACE:
+The inventory enumerates every symbol owned by IOSkywalkTxSubmissionQueue in the IOSkywalkFamily fileset, not just withPool/initWithPool. It separately counts withPool factory methods, initWithPool methods and any exact withPoolAndServiceClass method, and records demangled forms when c++filt is available.
+
+INTERPRETATION:
+V10 established that the target withPool factory's trailing UInt32 becomes the service-class field. This V11 run checks whether the rest of the project already exposes a declaration matching that target ABI. It does not infer a declaration from the SDK method name, reorder arguments, or propose private object-field writes.
+
+REMAINING STAGE89 BLOCKERS:
+Four TX submission queues and their stable pointer array are not implemented or tested. Native queue registration remains absent and four callback handoffs remain incomplete. An API-surface inventory cannot satisfy the queue construction/lifetime exit criteria.
+
+SAFETY:
+Read-only source/header and target-kernel symbol inventory only. No source/header modification, build, signing, install, load, hardware test, SIP/NVRAM or OpenCore change.
