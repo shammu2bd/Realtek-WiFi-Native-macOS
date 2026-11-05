@@ -760,8 +760,10 @@ void RTW88IEEE80211::clearKeys()
     memset(_replayCtr, 0, sizeof(_replayCtr));
     memset(_installedM3ReplayCtr, 0, sizeof(_installedM3ReplayCtr));
     _txBAState.clear();
+    if (_lock) IOLockLock(_lock);
     _txBaPending = false;
     _baRecovery.reset();
+    if (_lock) IOLockUnlock(_lock);
     mutation.finish();
 }
 
@@ -776,8 +778,10 @@ void RTW88IEEE80211::releaseSta()
     const bool quiesced = registered ? rtw88_unregister_sta(registered) : true;
 
     auto mutation = beginTxStateMutation();
+    if (_lock) IOLockLock(_lock);
     _txBaPending = false;
     _baRecovery.reset();
+    if (_lock) IOLockUnlock(_lock);
     if (_sta) {
         if (_hw && _hw->ops && _hw->ops->sta_remove && _vif)
             _hw->ops->sta_remove(_hw, _vif, _sta);
@@ -1451,8 +1455,6 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
                 (_state == RTW88_STATE_SCANNING &&
                  _scanReturnState == RTW88_STATE_CONNECTED);
             clearKeys();
-            _txBAState.clear();
-            _baRecovery.reset();
             rxBaTeardownAll();
             _associatedVisible = false;
             if (lostLinkDuringConnectedScan) {
@@ -3966,7 +3968,7 @@ IOReturn RTW88IEEE80211::cmdInstallExternalKey(bool pairwise, uint8_t keyidx, ui
         __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
     mutation.finish();
 
-    IOLog("rtw88: Apple RSN key installed type=%s ptk=%d gtk=%d\\n",
+    IOLog("rtw88: Apple RSN key installed type=%s ptk=%d gtk=%d\n",
           pairwise ? "pairwise" : "group",
           __atomic_load_n(&_externalPTKInstalled, __ATOMIC_ACQUIRE),
           __atomic_load_n(&_externalGTKInstalled, __ATOMIC_ACQUIRE));
@@ -4535,6 +4537,7 @@ void RTW88IEEE80211::sendAddbaRequest(
     if (dialog == 0) dialog = 1;
     _baDialog = dialog;
     _txBaPending = true;
+    _baRecovery.onRequestSent(rtw88JoinNowUS());
     if (_lock) IOLockUnlock(_lock);
 
     uint8_t f[24 + 9] = {};
@@ -4562,11 +4565,9 @@ void RTW88IEEE80211::sendAddbaRequest(
 
     const bool submitted = txMgmtFrame(f, sizeof(f), existingLease);
     if (_lock) IOLockLock(_lock);
-    if (!submitted) {
+    if (!submitted && _txBaPending && _baDialog == dialog) {
         _txBaPending = false;
         _baRecovery.onFailed(rtw88JoinNowUS());
-    } else {
-        _baRecovery.onRequestSent(rtw88JoinNowUS());
     }
     if (_lock) IOLockUnlock(_lock);
 }
@@ -4636,7 +4637,7 @@ void RTW88IEEE80211::startTxAggregation()
     if (alreadyPending)
         return;
 
-    IOLog("rtw88: starting TX A-MPDU — sending ADDBA request (tid=%u)\\n", _baTid);
+    IOLog("rtw88: starting TX A-MPDU — sending ADDBA request (tid=%u)\n", _baTid);
     sendAddbaRequest(_baTid, &txLease);
 }
 
@@ -4656,7 +4657,7 @@ void RTW88IEEE80211::housekeeping()
     if (_txBaPending && _baRecovery.responseOverdue(now)) {
         _txBaPending = false;
         _baRecovery.onFailed(now);
-        IOLog("rtw88: TX ADDBA response timed out; will retry\\n");
+        IOLog("rtw88: TX ADDBA response timed out; will retry\n");
     }
     retry = !_txBAState.active() && !_txBaPending && _baRecovery.due(now);
     if (_lock) IOLockUnlock(_lock);
@@ -4719,9 +4720,9 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
         if (_lock) IOLockUnlock(_lock);
         if (!matched) break;
         if (accepted)
-            IOLog("rtw88: TX ADDBA accepted (tid=%u) — uplink A-MPDU on\\n", tid);
+            IOLog("rtw88: TX ADDBA accepted (tid=%u) — uplink A-MPDU on\n", tid);
         else
-            IOLog("rtw88: TX ADDBA rejected status=%u tid=%u; will retry\\n", status, tid);
+            IOLog("rtw88: TX ADDBA rejected status=%u tid=%u; will retry\n", status, tid);
         break;
     }
     case WLAN_ACTION_DELBA: {
