@@ -3,10 +3,9 @@
 # Runs only the next Stage89 script marked AUTO_SAFE_READ_ONLY=YES and AUTO_SCOPE=STAGE89_AUDIT.
 # Never enters Stage90; never updates/pulls source; never builds, signs, installs, loads or changes OpenCore.
 set -Eeuo pipefail
-trap 'notify "Automation error; inspect run log for details."' ERR
 REPO="shammu2bd/Realtek-WiFi-Native-macOS"
-ROOT="$HOME/Downloads/Realtek-WiFi-Native-macOS-Main (Local)"
-BASE="$ROOT/run log/automation"
+ROOT="$HOME/Developer/Realtek-WiFi-Native-macOS-Main (Local)"
+BASE="$HOME/Library/Application Support/RTL88WiFi-Automation"
 STATE="$BASE/state"
 CACHE="$BASE/cache"
 LOCK="$BASE/lock"
@@ -17,6 +16,7 @@ exec > >(tee -a "$LOG") 2>&1
 notify(){
  /usr/bin/osascript -e "display notification \"$1\" with title \"RTL88WiFi Stage89 automation\"" >/dev/null 2>&1 || true
 }
+trap 'notify "Automation error; inspect run log for details."' ERR
 fail(){
  echo "AUTOMATION_ERROR=$*"
  notify "Stage89 automation stopped: $1"
