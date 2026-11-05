@@ -3,6 +3,7 @@
 # Runs only the next Stage89 script marked AUTO_SAFE_READ_ONLY=YES and AUTO_SCOPE=STAGE89_AUDIT.
 # Never enters Stage90; never updates/pulls source; never builds, signs, installs, loads or changes OpenCore.
 set -Eeuo pipefail
+trap 'notify "Automation error; inspect run log for details."' ERR
 REPO="shammu2bd/Realtek-WiFi-Native-macOS"
 ROOT="$HOME/Downloads/Realtek-WiFi-Native-macOS-Main (Local)"
 BASE="$ROOT/run log/automation"
@@ -157,19 +158,28 @@ import base64,json,pathlib,sys
 o=json.load(open(sys.argv[1]))
 pathlib.Path(sys.argv[2]).write_bytes(base64.b64decode(o["content"]))
 PYMAN
-python3 - "$BASE/manifest.txt" "$BASE" "$REPO" <<'PYVERIFY'
-import pathlib,subprocess,sys
-manifest=pathlib.Path(sys.argv[1]).read_text(errors="replace")
-base=pathlib.Path(sys.argv[2]); repo=sys.argv[3]
+python3 - "$BASE/manifest.txt" "$run_id" "$stage_tag" <<'PYVERIFY'
+import pathlib,sys,subprocess
+lines=pathlib.Path(sys.argv[1]).read_text(errors="replace").splitlines()
+run=sys.argv[2]; stage=sys.argv[3]
+if "RUN="+run not in lines: raise SystemExit("Manifest run ID mismatch")
 arts=[]
-for line in manifest.splitlines():
+for line in lines:
     if line.startswith("ARTIFACT|"):
-        _,name,sha,size=line.split("|",3)
-        arts.append((name,sha))
+        bits=line.split("|",3)
+        if len(bits)!=4: raise SystemExit("Malformed artifact manifest line")
+        arts.append((bits[1],bits[2]))
 if not arts: raise SystemExit("Manifest has no artifacts")
+print("MANIFEST_ARTIFACT_COUNT="+str(len(arts)))
 for name,want in arts:
-    path=str(pathlib.PurePosixPath(manifest.splitlines()[1].split("=",1)[1]) / name) if False else None
-    # Use the run and stage encoded by the manifest's parent path supplied by caller.
-    # The manifest file is in the exact stage directory returned with its run ID.
-    pass
+    path="Development/Logs/"+stage+"/"+run+"/"+name
+    got=subprocess.check_output(["gh","api","repos/shammu2bd/Realtek-WiFi-Native-macOS/contents/"+path+"?ref=main","-q",".sha"],text=True).strip()
+    if got!=want: raise SystemExit("Artifact SHA mismatch "+name+" expected="+want+" actual="+got)
+    print("ARTIFACT_SHA_VERIFIED="+name+" "+got)
 PYVERIFY
+if (( run_status != 0 )); then fail "runner returned nonzero after checkpoint/artifact verification"; fi
+touch "$STATE/verified-v$next_version"
+rm -f "$attempt_file" "$last_file" "$STATE/notified-no-runner-v$next_version"
+echo "STAGE89_V$next_version_AUTOMATION=COMPLETED_AND_ARTIFACTS_VERIFIED"
+echo "RUN_ID=$run_id"
+notify "Stage89 V$next_version complete; uploaded artifacts verified. Review status remains in GitHub."
