@@ -7,6 +7,7 @@
 #include <IOKit/skywalk/IOSkywalkPacketBufferPool.h>
 #include <libkern/c++/OSObject.h>
 #include <sys/mbuf.h>
+#include <stdint.h>
 
 #include "RTW88WCLTxCompletionSlots.hpp"
 #include "RTW88WCLTxSubmissionGate.hpp"
@@ -46,8 +47,10 @@ public:
 
     /* Must be called later from a serialized/deferred context. The sink may
      * enqueue the packet to Skywalk's TX-completion queue once that queue's
-     * ABI and lifecycle have been validated. The adapter releases its packet
-     * retain after the sink returns. */
+     * ABI and lifecycle have been validated. Return true only after the queue
+     * accepted the packet and ownership transfer is complete. Return false
+     * only if no handoff occurred; the adapter retains the packet and ticket
+     * for a later retry. The adapter drops its retain only on true. */
     uint32_t drainCompletions(CompletionSink sink, void *context);
 
     bool hasOutstandingCompletions() const;
