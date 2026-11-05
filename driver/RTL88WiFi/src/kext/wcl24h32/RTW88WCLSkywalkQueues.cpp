@@ -199,15 +199,15 @@ bool RTW88WCLSkywalkQueues::queuesAllocated() const
  * that no packets were accepted or completed. Do not return nonzero
  * IOReturn error constants from these action callbacks.
  */
-IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
+UInt32 RTW88WCLSkywalkQueues::txSubmissionAction(
     OSObject *owner, IOSkywalkTxSubmissionQueue *queue,
-    const IOSkywalkPacket **packets, UInt32 packetCount, void *refCon)
+    IOSkywalkPacket * const *packets, UInt32 packetCount, void *refCon)
 {
     (void)refCon;
     auto *self = OSDynamicCast(RTW88WCLSkywalkQueues, owner);
     if (!self || !self->ownsTXSubmissionQueue(queue) ||
         !packets || packetCount == 0)
-        return static_cast<IOReturn>(0);
+        return static_cast<UInt32>(0);
 
     /* Validate every descriptor before a future TX path is allowed to copy
      * bytes or hand ownership to RTW88. The callback remains fail-closed:
@@ -215,14 +215,14 @@ IOReturn RTW88WCLSkywalkQueues::txSubmissionAction(
      * cookie is connected to the native completion queue. */
     for (UInt32 i = 0; i < packetCount; ++i) {
         if (!packets[i])
-            return static_cast<IOReturn>(0);
+            return static_cast<UInt32>(0);
         RTW88WCLPacketView view = {};
         if (!RTW88WCLResolveEthernetTxPacket(
-                const_cast<IOSkywalkPacket *>(packets[i]), self->_txPool, &view))
-            return static_cast<IOReturn>(0);
+                packets[i], self->_txPool, &view))
+            return static_cast<UInt32>(0);
     }
 
-    return static_cast<IOReturn>(0);
+    return static_cast<UInt32>(0);
 }
 
 IOReturn RTW88WCLSkywalkQueues::txCompletionAction(
