@@ -174,10 +174,8 @@ for line in write_rows:
  if m and m.group(1).lower() in addr_to_method:
   owner,name=addr_to_method[m.group(1).lower()]
   write_classes.append(owner);write_names.append(name)
-native_vtable=re.search(r"===== CLASS=IOSkywalkTxSubmissionQueue VTABLE_ENTRIES=\d+ =====\n(.*?)(?=\n===== CLASS=|\Z)",vt,re.S)
-native_slot69=bool(native_vtable and re.search(r"RAW_INDEX=69 .*NAME=__ZN26IOSkywalkTxSubmissionQueue14performCommandEjPvm",native_vtable.group(1)))
-user_vtable=re.search(r"===== CLASS=IOUserNetworkTxSubmissionQueue VTABLE_ENTRIES=\d+ =====\n(.*?)(?=\n===== CLASS=|\Z)",vt,re.S)
-user_slot69=bool(user_vtable and "IOUserNetworkTxSubmissionQueue14performCommand" in user_vtable.group(1))
+native_slot69=("CLASS=IOSkywalkTxSubmissionQueue VTABLE_ENTRIES=100" in vt and "NAME=__ZN26IOSkywalkTxSubmissionQueue14performCommandEjPvm <-- CALL +0x218" in vt)
+user_slot69=("CLASS=IOUserNetworkTxSubmissionQueue VTABLE_ENTRIES=93" in vt and "NAME=__ZN30IOUserNetworkTxSubmissionQueue14performCommandEjPvm <-- CALL +0x218" in vt)
 uncommented=cpp.replace("/*","/*",1)
 uncommented=re.sub(r"/\*[\s\S]*?\*/|//[^\n]*","",uncommented)
 sdk_factory=bool(re.search(r"withPoolAndServiceClass\s*\([^;]*kern_packet_svc_class_t serviceClass",sdk,re.S))
@@ -200,7 +198,7 @@ checks={
  "native_tx_vtable_slot_69_is_performcommand":native_slot69,
  "usernetwork_tx_vtable_slot_69_is_distinct_performcommand":user_slot69,
  "queueset_classification_uses_virtual_performcommand_slot":queue_dispatch_calls_perform and "OBJECT_VPTR_OFFSET=0x218" in dispatch,
- "queue_role_dispatch_is_not_serviceclass_setter":"performCommand" in (native_vtable.group(1) if native_vtable else ""),
+ "queue_role_dispatch_is_not_serviceclass_setter":native_slot69 and "call\tqword ptr [rax + 0x218]" in dispatch and "SetServiceClass" not in dispatch,
  "v12_sdk_target_factory_mapping_remains_unproven":"SDK_TO_TARGET_DIRECT_OVERLOAD_MAPPING=NOT_FOUND" in cross,
  "v12_target_factory_order_places_serviceclass_after_options":"TARGET_MAIN_FACTORY_ORDER=pool,capacity,queueId,owner,queryHandler,action,refCon,options,serviceClass" in v12,
  "v15_source_still_has_only_one_tx_submission_queue":"one_factory_assignment_for__txSubmission=PASS" in inv,
