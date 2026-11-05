@@ -16,7 +16,7 @@ The nine journal entries are:
 8. RX submission queue
 9. RX completion queue
 
-The journal records an entry only after its factory returns a non-null object. It rejects out-of-order/duplicate records, cannot commit an incomplete prefix, and exposes only LIFO rollback. The queue owner releases the matching OSObject for each popped entry. The empty journal makes repeated destroyQueues() / free() teardown harmless.
+The journal records an entry only after its factory returns a non-null object. It rejects out-of-order/duplicate records, cannot commit an incomplete prefix, and exposes only LIFO rollback. The queue owner releases the matching OSObject for each popped entry. The empty journal makes repeated destroyQueues() teardown harmless. If journal state or live pointers disagree, teardown logs the invariant failure and free() quarantines the owner rather than destroying an object that may still be referenced by a queue callback.
 
 ## Fault-injection coverage
 
