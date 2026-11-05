@@ -4978,7 +4978,7 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
         if (!_txSequenceNumbers.nextCCMP(&packetNumber)) {
             kfree_skb(skb);
             mbuf_freem(m);
-            IOLog("rtw88: CCMP TX packet number exhausted; dropping frame\\n");
+            IOLog("rtw88: CCMP TX packet number exhausted; dropping frame\n");
             return false;
         }
 
