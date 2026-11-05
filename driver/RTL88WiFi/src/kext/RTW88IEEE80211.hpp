@@ -247,7 +247,7 @@ public:
     /* Control interface — called from RTW88UserClient */
     uint32_t deauthReason() const { return _deauthReason; }
     RTW88State rawState() const { return _state; }
-    bool associatedVisible() const { return _associatedVisible; }
+    bool associatedVisible() const { return __atomic_load_n(&_associatedVisible, __ATOMIC_ACQUIRE); }
     /* Connected scans are bounded to candidate channels for the current ESS.
      * Disconnected scans retain the normal full-channel discovery behavior. */
     IOReturn  cmdScan(const uint16_t *requestedChannels = nullptr,
@@ -312,6 +312,7 @@ private:
     void      doHandshake(const uint8_t *eapol, uint32_t len);
     void      doDisconnect();
     RTW88TxStateGate::MutationLease beginTxStateMutation();
+    void      setRadioState(RTW88State state);
     void      clearKeys();
     void      releaseSta();
     bool      abortActiveScan(bool waitForIdle);
