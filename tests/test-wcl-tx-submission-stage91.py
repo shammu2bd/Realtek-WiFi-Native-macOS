@@ -129,7 +129,7 @@ assert "_txCallbackGate.canFinishUnbind()" in queues_cpp
 assert "_txCallbackGate.finishUnbind()" in queues_cpp
 assert "if (!adapter->isUnbound() || adapter->hasOutstandingCompletions())" in queues_cpp
 owner_unbind_start = queues_cpp.index("IOReturn RTW88WCLSkywalkQueues::unbindTXAdapter")
-owner_unbind_end = queues_cpp.index("/*\\n * The Sequoia", owner_unbind_start)
+owner_unbind_end = queues_cpp.index("/*\n * The Sequoia", owner_unbind_start)
 owner_unbind = queues_cpp[owner_unbind_start:owner_unbind_end]
 assert owner_unbind.index("_txCallbackGate.beginUnbind()") < owner_unbind.index("_txCallbackGate.canFinishUnbind()")
 assert owner_unbind.index("_txCallbackGate.canFinishUnbind()") < owner_unbind.index("adapter->isUnbound()")
