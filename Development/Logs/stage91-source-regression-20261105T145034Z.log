@@ -1,0 +1,11 @@
+===== STAGE91 SOURCE REGRESSION =====
+PASS: four Skywalk queue objects and pools are owned with journal rollback; callbacks remain fail-closed and unregistered
+PASS: all nine queue/pool acquisitions are journaled and committed only when complete
+PASS: partial and committed teardown pop resources in reverse order
+PASS: registration and packet callbacks remain fail-closed
+PASS: registration payloads/expansion blocks remain opaque; disputed APIs are fenced; native service publication stays disabled
+
+SKYWALK_QUEUE_TEST=0
+RESOURCE_TRANSACTION_TEST=0
+REGISTRATION_GUARD_TEST=0
+STAGE91_SOURCE_REGRESSION=PASS
