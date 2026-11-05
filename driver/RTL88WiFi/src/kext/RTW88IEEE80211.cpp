@@ -1190,7 +1190,7 @@ void RTW88IEEE80211::restoreSTAChannelAfterAWDL()
             return;
         }
 
-        setConnectedChandef(home);
+        setConnectedChandef(home, &mutation);
         rtw88_restore_connected_hw_timeslice(_hw, _vif, _targetBSS.bssid);
         _awdlOffChannel = false;
         _awdlPreparedChannel = 0;
@@ -2517,8 +2517,17 @@ void RTW88IEEE80211::parseBssOperation(const uint8_t *ies, uint16_t ielen, RTW88
     }
 }
 
-void RTW88IEEE80211::setConnectedChandef(struct ieee80211_channel *chan)
+void RTW88IEEE80211::setConnectedChandef(
+    struct ieee80211_channel *chan,
+    RTW88TxStateGate::MutationLease *existingMutation)
 {
+    RTW88TxStateGate::MutationLease localMutation;
+    if (!existingMutation) {
+        localMutation = beginTxStateMutation();
+    } else if (!*existingMutation) {
+        return;
+    }
+
     _hw->conf.chandef.chan         = chan;
     _hw->conf.chandef.width        = NL80211_CHAN_WIDTH_20_NOHT;
     _hw->conf.chandef.center_freq1 = chan->center_freq;
@@ -2536,15 +2545,13 @@ void RTW88IEEE80211::setConnectedChandef(struct ieee80211_channel *chan)
     bool chip40 = (sb->ht_cap.cap & IEEE80211_HT_CAP_SUP_WIDTH_20_40) != 0;
     bool chip80 = chip40 && bnd == NL80211_BAND_5GHZ && sb->vht_cap.vht_supported;
 
-    /* Parse HT/VHT Operation from the cached beacon IEs. */
     RTW88BssOperation op;
     parseBssOperation(_targetBSS.ies, _targetBSS.ies_len, &op);
-    const int     sco        = op.sco;
-    const bool    htStaWidth = op.htStaWidth;
-    const int     vhtWidth   = op.vhtWidth;
-    const uint8_t vhtSeg0    = op.vhtSeg0;
+    const int sco = op.sco;
+    const bool htStaWidth = op.htStaWidth;
+    const int vhtWidth = op.vhtWidth;
+    const uint8_t vhtSeg0 = op.vhtSeg0;
 
-    /* 40 MHz (HT). */
     if (chip40 && htStaWidth && (sco == 1 || sco == 3)) {
         _connChanWidth = 40;
         _hw->conf.chandef.width = NL80211_CHAN_WIDTH_40;
@@ -2552,16 +2559,11 @@ void RTW88IEEE80211::setConnectedChandef(struct ieee80211_channel *chan)
             (uint32_t)((int)chan->center_freq + (sco == 1 ? 10 : -10));
     }
 
-    /* 80 MHz (VHT) — overrides 40 when the AP runs an 80 MHz BSS.  width==1 is
-     * the 80/160/80+80 indicator; seg0 is the 80 MHz center either way, so we
-     * use it and cap to 80 (the chip's max).  Deprecated width 2/3 are ignored. */
     if (chip80 && vhtWidth == 1 && vhtSeg0 != 0) {
         _connChanWidth = 80;
         _hw->conf.chandef.width = NL80211_CHAN_WIDTH_80;
         _hw->conf.chandef.center_freq1 = (uint32_t)(5000 + 5 * vhtSeg0);
     }
-
-    /* Channel telemetry stays in IORegistry; avoid per-transition console spam. */
 }
 
 /* ------------------------------------------------------------------ */
@@ -2570,8 +2572,11 @@ void RTW88IEEE80211::setConnectedChandef(struct ieee80211_channel *chan)
 
 void RTW88IEEE80211::restoreConnectedChannel()
 {
-    if (_scanReturnState != RTW88_STATE_CONNECTED || !_hw || !_vif)
+    auto mutation = beginTxStateMutation();
+    if (_scanReturnState != RTW88_STATE_CONNECTED || !_hw || !_vif) {
+        mutation.finish();
         return;
+    }
 
     struct ieee80211_channel *chan = nullptr;
     for (int b = 0; b < NL80211_NUM_BANDS && !chan; b++) {
@@ -2588,7 +2593,7 @@ void RTW88IEEE80211::restoreConnectedChannel()
     }
 
     if (chan) {
-        setConnectedChandef(chan);
+        setConnectedChandef(chan, &mutation);
     } else {
         IOLog("rtw88: scan restore: ch=%u not in band table\n",
               _targetBSS.channel);
@@ -2603,6 +2608,7 @@ void RTW88IEEE80211::restoreConnectedChannel()
     bss->aid   = _assocAID;
     _vif->cfg.assoc = true;
     _vif->cfg.aid   = _assocAID;
+    mutation.finish();
 }
 
 bool RTW88IEEE80211::abortActiveScan(bool waitForIdle)
@@ -3518,11 +3524,13 @@ void RTW88IEEE80211::doAuthenticate()
         }
     }
     if (chan) {
-        setConnectedChandef(chan);
+        auto mutation = beginTxStateMutation();
+        setConnectedChandef(chan, &mutation);
         IOLog("rtw88: doAuthenticate: calling connect_hw_setup ch=%u\n",
               _targetBSS.channel);
         rtw88_connect_hw_setup(_hw, _vif, _targetBSS.bssid);
         IOLog("rtw88: doAuthenticate: connect_hw_setup done\n");
+        mutation.finish();
     } else {
         failJoin("channel-not-found");
         return;
