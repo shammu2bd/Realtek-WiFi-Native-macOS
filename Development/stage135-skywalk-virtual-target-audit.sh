@@ -29,7 +29,7 @@ curl -fsSLo "$WORK/kcfile.py" "https://raw.githubusercontent.com/watchthelight-l
 python3 - "$WORK/kcfile.py" "$UPSTREAM_KCFILE_SHA" <<'PY'
 import hashlib,pathlib,sys
 d=pathlib.Path(sys.argv[1]).read_bytes()
-h=hashlib.sha1(b"blob "+str(len(d)).encode()+b"\\0"+d).hexdigest()
+h=hashlib.sha1(b"blob "+str(len(d)).encode()+b"\0"+d).hexdigest()
 print("STAGE135_KCFILE_GIT_BLOB_SHA="+h)
 if h!=sys.argv[2]: raise SystemExit("Pinned reader SHA mismatch")
 PY
@@ -117,7 +117,7 @@ for owner in owners:
   print("VIRTUAL_METHOD_RANGE=0x%x..0x%x"%(va,end))
   selected=[]
   for line in lines:
-   m=re.match(r"^\\s*(?:0x)?([0-9a-fA-F]{8,}):?\\s+(.*)$",line)
+   m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):?\s+(.*)$",line)
    if m:
     a=int(m.group(1),16)
     if va<=a<end: selected.append((a,line.strip(),m.group(2)))
@@ -127,7 +127,7 @@ for owner in owners:
   print("VIRTUAL_METHOD_INSTRUCTION_COUNT=%d"%len(selected))
   for a,raw,asm in selected:
    print(raw)
-   if re.search(r"\\b(call|jmp)q?\\b",asm):
+   if re.search(r"\b(call|jmp)q?\b",asm):
     print("VIRTUAL_METHOD_CONTROL_FLOW=0x%x %s"%(a,asm))
 print("\nSTAGE135_RESOLUTION_POLICY=EXACT_SYMBOL_AND_EXECUTABLE_OWNER_REQUIRED")
 PY
@@ -144,7 +144,7 @@ import base64,hashlib,json,pathlib,subprocess,sys,tempfile,time
 report=pathlib.Path(sys.argv[1]); stamp,repo=sys.argv[2:]
 data=report.read_bytes(); dest="Development/Logs/stage135-skywalk-virtual-targets-"+stamp+".log"
 payload={"message":"Stage135: publish read-only Skywalk virtual target resolution","branch":"main","content":base64.b64encode(data).decode("ascii")}
-expected=hashlib.sha1(("blob "+str(len(data))+"\\0").encode("ascii")+data).hexdigest()
+expected=hashlib.sha1(("blob "+str(len(data))+"\0").encode("ascii")+data).hexdigest()
 last=""
 for attempt in range(1,4):
  with tempfile.NamedTemporaryFile(mode="w",suffix=".json") as f:
