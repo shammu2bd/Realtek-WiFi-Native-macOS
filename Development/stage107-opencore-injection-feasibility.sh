@@ -7,7 +7,7 @@ EXPECTED_BRANCH="work/stage91-tx-submission-callback-v1"
 EXPECTED_BIN_SHA="5d63db951e4a5c0228d4d73e664ab8e9457fc1fe805cce23444fe022f04f2513"
 NATIVE_BUNDLE_ID="io.github.x1ren41l.RTL88WiFi"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-LOG_REL="Development/Logs/stage107-opencore-injection-feasibility-\${STAMP}.log"
+LOG_REL="Development/Logs/stage107-opencore-injection-feasibility-${STAMP}.log"
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "ERROR: run inside repository"; exit 2; }
 cd "$ROOT" || exit 2
 [ "$(git branch --show-current)" = "$EXPECTED_BRANCH" ] || { echo "ERROR: wrong branch"; exit 2; }
@@ -22,7 +22,9 @@ PLIST="$BUNDLE/Contents/Info.plist"
 [ -f "$BIN" ] && [ -f "$PLIST" ] || { echo "ERROR: Stage103 candidate bundle missing"; exit 2; }
 mkdir -p Development/Logs || exit 2
 LOG="$ROOT/$LOG_REL"
-TMP="$(mktemp -d "\${TMPDIR:-/tmp}/stage107.XXXXXX")" || exit 2
+TMP_BASE="${TMPDIR:-/tmp}"
+[ -d "$TMP_BASE" ] && [ -w "$TMP_BASE" ] || TMP_BASE="/tmp"
+TMP="$(mktemp -d "$TMP_BASE/stage107.XXXXXX")" || { echo "ERROR: unable to create Stage107 temporary directory"; exit 2; }
 trap 'rm -rf "$TMP"' EXIT
 exec 3>&1 4>&2
 exec > >(tee "$LOG") 2>&1
@@ -30,7 +32,7 @@ PASS=0; FAIL=0; WARN=0
 pass(){ PASS=$((PASS+1)); echo "PASS: $*"; }
 fail(){ FAIL=$((FAIL+1)); echo "FAIL: $*"; }
 warn(){ WARN=$((WARN+1)); echo "WARN: $*"; }
-capture(){ local n="$1"; shift; "$@" >"$TMP/$n.txt" 2>&1; local r=$?; echo "$r" >"$TMP/$n.rc"; echo "COMMAND_\${n}_EXIT=$r"; return 0; }
+capture(){ local n="$1"; shift; "$@" >"$TMP/$n.txt" 2>&1; local r=$?; echo "$r" >"$TMP/$n.rc"; echo "COMMAND_${n}_EXIT=$r"; return 0; }
 rc(){ [ -f "$TMP/$1.rc" ] && cat "$TMP/$1.rc" || echo 999; }
 
 echo "========== STAGE107 OPENCORE INJECTION FEASIBILITY =========="
@@ -69,7 +71,7 @@ if [ -n "$SECURITY_ARGS" ]; then
   else pass "no recognized AMFI/code-signing bypass boot argument detected"; fi
 else echo "SECURITY_RELEVANT_BOOT_ARGS=NONE_DETECTED"; pass "no recognized AMFI/code-signing bypass boot argument detected"; fi
 
-CONFIG_PATH="\${OPENCORE_CONFIG:-}"
+CONFIG_PATH="${OPENCORE_CONFIG:-}"
 if [ -n "$CONFIG_PATH" ]; then
   if [ ! -f "$CONFIG_PATH" ]; then echo "ERROR: OPENCORE_CONFIG path is not readable"; exit 2; fi
   CONFIG_SOURCE=EXPLICIT_READ_ONLY_PATH
