@@ -2086,8 +2086,9 @@ struct rtw_dev {
 	struct work_struct fw_recovery_work;
 	struct work_struct update_beacon_work;
 
-	/* used to protect txqs list */
+	/* Protects txqs and serializes TXQ admission with worker execution. */
 	spinlock_t txq_lock;
+	bool txq_quiescing;
 	struct list_head txqs;
 	struct workqueue_struct *tx_wq;
 	struct work_struct tx_work;
