@@ -12,6 +12,7 @@ struct rtw_hci_ops {
 			struct sk_buff *skb);
 	void (*tx_kick_off)(struct rtw_dev *rtwdev);
 	void (*flush_queues)(struct rtw_dev *rtwdev, u32 queues, bool drop);
+	bool (*flush_queues_sync)(struct rtw_dev *rtwdev, u32 queues, bool drop);
 	int (*setup)(struct rtw_dev *rtwdev);
 	int (*start)(struct rtw_dev *rtwdev);
 	void (*stop)(struct rtw_dev *rtwdev);
@@ -284,6 +285,14 @@ static inline void rtw_hci_flush_all_queues(struct rtw_dev *rtwdev, bool drop)
 		rtwdev->hci.ops->flush_queues(rtwdev,
 					      BIT(rtwdev->hw->queues) - 1,
 					      drop);
+}
+
+static inline bool rtw_hci_flush_all_queues_sync(struct rtw_dev *rtwdev, bool drop)
+{
+	if (!rtwdev->hci.ops->flush_queues_sync)
+		return false;
+	return rtwdev->hci.ops->flush_queues_sync(
+		rtwdev, BIT(rtwdev->hw->queues) - 1, drop);
 }
 
 #endif
