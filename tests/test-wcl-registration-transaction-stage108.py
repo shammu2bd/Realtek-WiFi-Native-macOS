@@ -185,3 +185,13 @@ print("PASS: RX sink transfers only accepted packets after both interface and qu
 print("PASS: failed local registration rollback quarantines all queue owners")
 print("PASS: radio events and power controls flow through the registered infra interface")
 print("PASS: obsolete bool registration shortcuts are absent")
+
+# RTW88 TX ring wakeups ask Skywalk to resume dequeue only after the registration
+# transaction is committed; a duplicate outstanding request is treated as busy.
+resume = queues_cpp[queues_cpp.index("IOReturn RTW88WCLSkywalkQueues::requestTXSubmissionDequeue()"):
+                   queues_cpp.index("bool RTW88WCLSkywalkQueues::ownsTXSubmissionQueue")]
+assert "_registrationTransaction.isRegistered()" in resume
+assert "queue->requestDequeue(this, 0)" in resume
+assert "kIOReturnBusy" in resume
+assert "_skywalkQueues->requestTXSubmissionDequeue()" in controller_cpp
+print("PASS: RTW88 TX-resume callback wakes all four registered WMM queues")
