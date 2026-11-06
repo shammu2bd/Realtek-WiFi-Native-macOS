@@ -46,6 +46,8 @@ private:
     static void deferredTokenReap(thread_call_param_t context,
                                   thread_call_param_t unused);
     void scheduleTokenReap();
+    bool enterWorkCallback();
+    void leaveWorkCallback();
 
     enum : uint32_t {
         kTokenReapScheduled = 1U << 0,
@@ -56,6 +58,11 @@ private:
     IOTimerEventSource *_retryTimer = nullptr; // retained by this object
     thread_call_t _tokenReapCall = nullptr; // native deferred context for IOFree
     volatile uint32_t _tokenReapState = 0;   // scheduled/resignal handshake
+    enum : uint32_t {
+        kWorkCallbackGateClosed = 0x80000000U,
+        kWorkCallbackGateActive = 0x7FFFFFFFU
+    };
+    volatile uint32_t _workCallbackGate = kWorkCallbackGateClosed;
     RTW88WCLSkywalkTxAdapter *_adapter = nullptr; // retained
     IOSkywalkTxCompletionQueue *_completionQueue = nullptr; // retained
     bool _eventSourceRegistered = false;
