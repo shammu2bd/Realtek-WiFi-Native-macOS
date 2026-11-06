@@ -382,11 +382,13 @@ bool RTW88WCLSkywalkQueues::registrationQueuesValid() const
 
 IOReturn RTW88WCLSkywalkQueues::beginRegistrationTransaction()
 {
-    if (!queuesAllocated())
-        return kIOReturnNotReady;
+    /* Pin every queue/pool owner before inspecting the stable registration
+     * vector. destroyQueues() observes the same state and cannot race this
+     * preflight or the subsequent Apple registration call. */
     if (!_registrationTransaction.beginRegistration())
         return kIOReturnBusy;
-    if (!registrationQueuesValid()) {
+
+    if (!queuesAllocated() || !registrationQueuesValid()) {
         if (!_registrationTransaction.abortRegistration())
             _registrationTransaction.quarantine();
         return kIOReturnNotReady;
