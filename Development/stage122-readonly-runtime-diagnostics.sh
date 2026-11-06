@@ -107,7 +107,9 @@ echo "STAGE122_RTL8821CE_PCI=$PCI_STATE"
 echo
 
 echo "----- 6. Stage121 controller/interface stage properties -----"
-STAGE_PROPERTIES="$(printf '%s\n%s\n' "$CONTROLLER_IOREG" "$INTERFACE_IOREG" | grep -i -E -B 3 -A 4 'RTW88WCLControllerStage|RTW88WCLInfraInterfaceStage|RTW88WCLInfraInterfaceStopped')"
+# ControllerStage is attached to the PCI provider; InfraInterfaceStage is
+# attached to the controller. Search the complete read-only service tree.
+STAGE_PROPERTIES="$(ioreg -p IOService -l -w0 2>&1 | grep -i -E -B 3 -A 4 'RTW88WCLControllerStage|RTW88WCLInfraInterfaceStage|RTW88WCLInfraInterfaceStopped')"
 STAGE_PROPERTIES_EXIT=$?
 printf '%s\n' "$STAGE_PROPERTIES"
 echo "STAGE_PROPERTY_FILTER_EXIT=$STAGE_PROPERTIES_EXIT"
