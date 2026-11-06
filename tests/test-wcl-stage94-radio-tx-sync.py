@@ -10,6 +10,8 @@ HPP = ROOT / "driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp"
 GATE = ROOT / "driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp"
 BA = ROOT / "driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp"
 PCI = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c"
+TX = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c"
+MAIN_H = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h"
 MAC = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c"
 MAC80211 = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c"
 HCI = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h"
@@ -72,6 +74,8 @@ hpp = read(HPP)
 gate = read(GATE)
 ba = read(BA)
 pci = read(PCI)
+tx = read(TX)
+main_h = read(MAIN_H)
 mac = read(MAC)
 mac80211 = read(MAC80211)
 hci = read(HCI)
@@ -175,14 +179,28 @@ check("HCI_SYNC_DRAIN_IS_MANDATORY",
       "return false;" in function(hci, "static inline bool rtw_hci_flush_all_queues_sync("),
       "missing synchronous HCI drain callback fails closed")
 set_key = function(mac80211, "static int rtw_ops_set_key(")
+txq_quiesce = function(tx, "void rtw_txq_quiesce(")
+txq_resume = function(tx, "void rtw_txq_resume(")
+txq_worker = function(tx, "void __rtw_tx_work(")
+txq_barrier_ok = (
+    "rtw_txq_quiesce(rtwdev)" in set_key and
+    "rtw_txq_resume(rtwdev)" in set_key and
+    "flush_work(&rtwdev->tx_work)" in txq_quiesce and
+    "rtwdev->txq_quiescing = true" in txq_quiesce and
+    "rtwdev->txq_quiescing = false" in txq_resume and
+    "flush_work(&rtwdev->tx_work)" in txq_resume and
+    "queue_work(rtwdev->tx_wq, &rtwdev->tx_work)" in txq_resume and
+    "if (rtwdev->txq_quiescing)" in txq_worker and
+    "spin_lock_bh(&rtwdev->txq_lock)" in txq_worker
+)
 check("CAM_CLEAR_REQUIRES_BOTH_DRAINS",
-      "flush_work(&rtwdev->tx_work)" in set_key and
+      txq_barrier_ok and
       "rtw_hci_flush_all_queues_sync(rtwdev, false)" in set_key and
       "rtw_mac_flush_all_queues_sync(rtwdev, false)" in set_key and
       set_key.find("if (!hci_drained || !mac_drained)") <
       set_key.find("rtw_sec_clear_cam(rtwdev, sec, key->hw_key_idx)") and
       "ret = -ETIMEDOUT" in set_key,
-      "CAM slot is cleared only after queued work, PCI DMA and MAC FIFO drains all confirm success")
+      "shared queued/inline TXQ barrier plus PCI and MAC FIFO drains precede CAM clear")
 
 # PTK/GTK and station pointer replacement/retirement are writer-controlled.
 clear_keys = function(cpp, "void RTW88IEEE80211::clearKeys()")
@@ -242,13 +260,13 @@ check("HCI_SYNC_FLUSH_MISSING_CALLBACK_FAILS_CLOSED",
       "return false;" in hci_all_flush,
       "a transport without a result-bearing flush contract cannot retire a key")
 check("CAM_REMOVAL_REQUIRES_ALL_DRAINS",
-      "flush_work(&rtwdev->tx_work)" in set_key and
+      txq_barrier_ok and
       "rtw_hci_flush_all_queues_sync(rtwdev, false)" in set_key and
       "rtw_mac_flush_all_queues_sync(rtwdev, false)" in set_key and
       set_key.find("if (!hci_drained || !mac_drained)") <
       set_key.find("rtw_sec_clear_cam(rtwdev, sec, key->hw_key_idx)") and
       "ret = -ETIMEDOUT" in set_key,
-      "CAM key is cleared only after queued work, PCI DMA and firmware FIFO drains confirm success")
+      "CAM removal requires shared TXQ quiescence plus PCI and firmware FIFO drains")
 check("DISABLE_USES_ASSIGNED_CAM_INDEX",
       "if (cmd == DISABLE_KEY)" in set_key and
       "hw_key_idx = key->hw_key_idx;" in set_key,
