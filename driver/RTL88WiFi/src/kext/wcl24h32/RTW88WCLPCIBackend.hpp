@@ -71,7 +71,7 @@ private:
     void releaseDMAEntries();
     void handleInterrupt(IOInterruptEventSource *source, int count);
     void clearCompatLease();
-    void closeResources();
+    bool closeResources();
 
     IOPCIDevice *_pciDev = nullptr;                // retained
     IOMemoryMap *_mmioMap = nullptr;               // retained
