@@ -610,11 +610,22 @@ static int rtw_ops_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 		rtw_sec_write_cam(rtwdev, sec, sta, key,
 				  hw_key_type, hw_key_idx);
 		break;
-	case DISABLE_KEY:
-		rtw_hci_flush_all_queues(rtwdev, false);
-		rtw_mac_flush_all_queues(rtwdev, false);
+	case DISABLE_KEY: {
+		/* Never clear a CAM slot unless both PCI DMA rings and firmware
+		 * priority queues explicitly report drained. The legacy void flush
+		 * callbacks only log timeouts and cannot protect key-slot reuse. */
+		bool hci_drained = rtw_hci_flush_all_queues_sync(rtwdev, false);
+		bool mac_drained = rtw_mac_flush_all_queues_sync(rtwdev, false);
+		if (!hci_drained || !mac_drained) {
+			ret = -ETIMEDOUT;
+			rtw_warn(rtwdev,
+				 "refusing to clear CAM key slot %u: TX queues not drained (hci=%d mac=%d)\\n",
+				 key->hw_key_idx, hci_drained, mac_drained);
+			break;
+		}
 		rtw_sec_clear_cam(rtwdev, sec, key->hw_key_idx);
 		break;
+	}
 	}
 
 	/* download new cam settings for PG to backup */
