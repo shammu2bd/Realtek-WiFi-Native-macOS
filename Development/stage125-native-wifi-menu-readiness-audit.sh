@@ -24,8 +24,8 @@ if ! git merge-base --is-ancestor "$BASE_STAGE124" HEAD; then
 fi
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-TMPROOT="\${TMPDIR:-/tmp}"
-REPORT="$(mktemp "\${TMPROOT%/}/stage125-native-wifi-menu-readiness-XXXXXX")"
+TMPROOT="${TMPDIR:-/tmp}"
+REPORT="$(mktemp "${TMPROOT%/}/stage125-native-wifi-menu-readiness-XXXXXX")"
 SOURCE_COMMIT="$(git rev-parse HEAD)"
 
 set +e
