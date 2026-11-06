@@ -403,18 +403,18 @@ IOReturn RTW88WCLSkywalkQueues::setRegistered(bool registered)
     return kIOReturnSuccess;
 }
 
-IOReturn RTW88WCLSkywalkQueues::enqueueRXPacketForNetworking(
+UInt32 RTW88WCLSkywalkQueues::enqueueRXPacketForNetworking(
     IOSkywalkPacket *packet)
 {
     if (!packet)
-        return kIOReturnBadArgument;
+        return 0;
     if (!_registered || !_rxCompletion || !_rxPool ||
         packet->getPacketBufferPool() != _rxPool)
-        return kIOReturnNotReady;
+        return 0;
 
     const IOSkywalkPacket *packets[1] = { packet };
-    /* The 24H32 networking enqueue helper is the queue-to-stack handoff.
-     * Caller retains packet ownership unless the helper reports success. */
+    /* 24H32 disassembly returns the UInt32 aggregate accepted-packet count,
+     * not IOReturn. A single-buffer network packet contributes one. */
     return _rxCompletion->enqueuePacketsForNetworking(packets, 1, 0);
 }
 
