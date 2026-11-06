@@ -1011,6 +1011,18 @@ void RTW88WCLInfraInterface::maybePublishConnected()
 
     _connectNotified = true;
     _assocNotified = true;
+
+    /* Synchronize the base IO80211InfraInterface current-AP cache before
+     * publishing link-up. The CoreWLAN interface queries this cache separately
+     * from the WCL connection/link event payloads. The join request decoder
+     * validates _targetBSSID as a nonzero unicast address before it is stored.
+     * setCurrentApAddress copies the supplied address during this call; the
+     * WCL link-state handler also passes its short-lived input record here.
+     */
+    ether_addr currentAP = {};
+    memcpy(currentAP.octet, _targetBSSID, sizeof(currentAP.octet));
+    setCurrentApAddress(&currentAP);
+
     postConnectionComplete(0, 0, kIOReturnSuccess);
     setLinkState(kIO80211NetworkLinkUp, 0, false, 0);
 

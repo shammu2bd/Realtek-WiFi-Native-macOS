@@ -401,3 +401,23 @@ The consolidated chronological record is maintained in [RTL88WiFi-STAGE-HISTORY.
 ## Native implementation roadmap — Stages 89–101
 
 The next implementation sequence is documented in [RTL88WiFi-ROADMAP-STAGE89-101.md](./RTL88WiFi-ROADMAP-STAGE89-101.md). It defines Stages 89–101, implementation dependencies, exit criteria, and mandatory gates before registration, package/load testing and hardware validation. The roadmap is a plan, not activation authorization; current implementation authorization remains **NO**.
+
+
+## Stage124 — native Wi-Fi current-AP state publication
+
+Stage124 synchronizes the validated join target BSSID into the inherited
+`IO80211InfraInterface` current-AP cache before publishing connection
+completion and link-up. This closes a control-plane gap: WCL connection/link
+events carried the BSSID, but the native interface did not explicitly update
+the base current-AP cache on the successful join path. Deauth, disconnect and
+leave continue to clear that cache.
+
+The stage adds a focused source-contract test and a target-Mac runner that runs
+the Stage121 attachment and registration regressions, then builds and validates
+the unsigned x86_64 native bundle using Xcode 16.4. The runner publishes its
+timestamped report to `main/Development/Logs/`.
+
+This is a source/control-plane correction and build validation only. It does
+not sign, install, load or unload the kext, activate hardware, test the visible
+Wi-Fi menu, or change OpenCore, EFI, SIP or NVRAM. The menu remains unverified
+until a separately authorized runtime load can succeed.
