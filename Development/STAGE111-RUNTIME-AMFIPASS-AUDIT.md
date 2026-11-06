@@ -6,7 +6,7 @@
 
 ## What is inspected
 
-- OpenCore `Kernel -> Add`: AMFIPass and Lilu presence, enabled state, executable/version/hash/architecture metadata and relative order.
+- OpenCore `Kernel -> Add`: AMFIPass and Lilu presence, enabled state, executable/version/hash/architecture metadata, and whether an enabled Lilu entry precedes an enabled AMFIPass entry.
 - Native Realtek entry: enabled count, executable SHA-256 compared with the Stage108 candidate, and other Realtek frontend entries in the same Add array.
 - Configured AMFI-related boot-argument tokens and live `kern.bootargs`, reported separately.
 - SIP status.
