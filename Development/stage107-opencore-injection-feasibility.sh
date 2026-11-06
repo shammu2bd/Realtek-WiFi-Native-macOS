@@ -131,22 +131,34 @@ for i,e in enumerate(add):
     bp=str(e.get("BundlePath","")); enabled=bool(e.get("Enabled",False))
     arch=str(e.get("Arch","")); exe=str(e.get("ExecutablePath","")); pp=str(e.get("PlistPath",""))
     ident=""; version=""
-    ip=ocdir/bp/"Contents/Info.plist"
+    # OpenCore Kernel->Add BundlePath is resolved relative to EFI/OC/Kexts.
+    candidates=[ocdir/"Kexts"/bp, ocdir/bp]
+    bundle=next((x for x in candidates if bp and x.is_dir()), candidates[0])
+    ip=bundle/"Contents/Info.plist"
     if bp and ip.is_file():
         try:
             with ip.open("rb") as f: item=plistlib.load(f)
             ident=str(item.get("CFBundleIdentifier","")); version=str(item.get("CFBundleVersion",""))
         except Exception: ident="PLIST_READ_ERROR"
-    if "RTL88" in bp.upper() or "REALTEK" in bp.upper() or ident.lower()==native_id.lower():
-        print(f"KERNEL_ADD[{i}]=enabled:{enabled};arch:{arch};bundle:{bp};id:{ident};version:{version};executable:{exe};plist:{pp}")
-    if ident.lower()==native_id.lower(): native.append((i,enabled,bp))
-    if ("RTL88" in bp.upper() or "REALTEK" in bp.upper()) and "NATIVE" not in bp.upper(): legacy.append((i,enabled,bp,ident))
-    if ident=="com.apple.iokit.IOSkywalkFamily" or "IOSkywalkFamily.kext" in bp: sky.append((i,enabled,bp,ident))
-    if "IO80211FamilyLegacy" in bp or ident.endswith("IO80211FamilyLegacy"): famlegacy.append((i,enabled,bp,ident))
+    relevant=("RTL88" in bp.upper() or "IOSKYWALKFAMILY" in bp.upper()
+              or "IO80211FAMILYLEGACY" in bp.upper()
+              or ident.lower()==native_id.lower()
+              or ident=="com.apple.iokit.IOSkywalkFamily"
+              or ident=="com.apple.iokit.IO80211FamilyLegacy")
+    if relevant:
+        print(f"KERNEL_ADD[{i}]=enabled:{enabled};arch:{arch};bundle:{bp};resolved:{bundle};id:{ident};version:{version};executable:{exe};plist:{pp}")
+    if ident.lower()==native_id.lower(): native.append((i,enabled,bp,ident,version))
+    # RealtekRTL8111 is an Ethernet driver, not the RTL88 Wi-Fi driver.
+    if (ident.lower()==native_id.lower() or "RTL88WIFI" in bp.upper() or "RTL8821" in bp.upper()):
+        legacy.append((i,enabled,bp,ident,version))
+    if ident=="com.apple.iokit.IOSkywalkFamily" or "IOSKYWALKFAMILY.KEXT" in bp.upper():
+        sky.append((i,enabled,bp,ident,version))
+    if "IO80211FAMILYLEGACY" in bp.upper() or ident.endswith("IO80211FamilyLegacy"):
+        famlegacy.append((i,enabled,bp,ident,version))
 print("NATIVE_KERNEL_ADD_ENTRY="+("FOUND" if native else "ABSENT"))
 print("NATIVE_KERNEL_ADD_ENABLED="+str(any(x[1] for x in native)))
 print("LEGACY_REALTEK_KERNEL_ADD_ENTRIES="+str(len(legacy)))
-for x in legacy: print("LEGACY_REALTEK_ENTRY="+repr(x))
+for x in legacy: print("RTL88_WIFI_KERNEL_ADD_ENTRY="+repr(x))
 print("INJECTED_IOSKYWALK_FAMILY_ENTRIES="+str(len(sky)))
 for x in sky: print("INJECTED_IOSKYWALK_ENTRY="+repr(x))
 print("INJECTED_IO80211FAMILYLEGACY_ENTRIES="+str(len(famlegacy)))
