@@ -1,0 +1,228 @@
+========== STAGE126 APPLE POWER STATE ABI AUDIT ==========
+STAGE126_SOURCE_COMMIT=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE126_EXECUTION_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE126_WORKTREE_STATUS_ENTRIES=198
+STAGE126_STAGE125_BASE=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE126_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE126_SCOPE=READ_ONLY_APPLE_24H32_POWER_METHOD_DISASSEMBLY
+STAGE126_KC_MACHO_SHA256=8e95c4ec87ed99e3732354f32ad9eed45b7607e7bc7034f32ff7437e0c6ec878
+STAGE126_KC_MACHO_PATH=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho
+STAGE126_DRIVER_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+
+--- Exact Apple power-state symbols (numeric nm entries) ---
+ffffff80022610f2 T __ZN22IO80211MacAddressAgent18setInterfaceEnableEb
+ffffff800226576a T __ZN23IO80211SkywalkInterface18isInterfaceEnabledEv
+ffffff800226592e T __ZN23IO80211SkywalkInterface14enableDatapathEv
+ffffff8002265936 T __ZN23IO80211SkywalkInterface15disableDatapathEv
+ffffff8002265946 T __ZN23IO80211SkywalkInterface6enableEj
+ffffff800226595c T __ZN23IO80211SkywalkInterface7disableEj
+ffffff8002265a04 T __ZN23IO80211SkywalkInterface18setInterfaceEnableEb
+ffffff80022dc416 T __ZN21IO80211InfraInterface18setInterfaceEnableEb
+
+--- Address-bounded Mach-O method disassembly ---
+STAGE126_DISASSEMBLY_METHOD=--macho --disassemble --start-address --stop-address
+STAGE126_RANGE_POLICY=from_exact_nm_symbol_to_next_global_text_symbol_capped_at_1536_bytes
+===== SYMBOL __ZN21IO80211InfraInterface18setInterfaceEnableEb =====
+STAGE126_SYMBOL_START=0xffffff80022dc416
+STAGE126_SYMBOL_STOP=0xffffff80022dc5c6
+STAGE126_SYMBOL_RANGE_BYTES=0x1b0
+STAGE126_SYMBOL_RANGE_REASON=NEXT_GLOBAL_TEXT_SYMBOL
+STAGE126_SYMBOL_DISASSEMBLY=OBJDUMP_REPORTED_ERROR
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+===== SYMBOL __ZN22IO80211MacAddressAgent18setInterfaceEnableEb =====
+STAGE126_SYMBOL_START=0xffffff80022610f2
+STAGE126_SYMBOL_STOP=0xffffff8002261168
+STAGE126_SYMBOL_RANGE_BYTES=0x76
+STAGE126_SYMBOL_RANGE_REASON=NEXT_GLOBAL_TEXT_SYMBOL
+STAGE126_SYMBOL_DISASSEMBLY=OBJDUMP_REPORTED_ERROR
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+===== SYMBOL __ZN23IO80211SkywalkInterface14enableDatapathEv =====
+STAGE126_SYMBOL_START=0xffffff800226592e
+STAGE126_SYMBOL_STOP=0xffffff8002265936
+STAGE126_SYMBOL_RANGE_BYTES=0x8
+STAGE126_SYMBOL_RANGE_REASON=NEXT_GLOBAL_TEXT_SYMBOL
+STAGE126_SYMBOL_DISASSEMBLY=OBJDUMP_REPORTED_ERROR
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+===== SYMBOL __ZN23IO80211SkywalkInterface15disableDatapathEv =====
+STAGE126_SYMBOL_START=0xffffff8002265936
+STAGE126_SYMBOL_STOP=0xffffff800226593e
+STAGE126_SYMBOL_RANGE_BYTES=0x8
+STAGE126_SYMBOL_RANGE_REASON=NEXT_GLOBAL_TEXT_SYMBOL
+STAGE126_SYMBOL_DISASSEMBLY=OBJDUMP_REPORTED_ERROR
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+===== SYMBOL __ZN23IO80211SkywalkInterface18isInterfaceEnabledEv =====
+STAGE126_SYMBOL_START=0xffffff800226576a
+STAGE126_SYMBOL_STOP=0xffffff800226577a
+STAGE126_SYMBOL_RANGE_BYTES=0x10
+STAGE126_SYMBOL_RANGE_REASON=NEXT_GLOBAL_TEXT_SYMBOL
+STAGE126_SYMBOL_DISASSEMBLY=OBJDUMP_REPORTED_ERROR
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+===== SYMBOL __ZN23IO80211SkywalkInterface18setInterfaceEnableEb =====
+STAGE126_SYMBOL_START=0xffffff8002265a04
+STAGE126_SYMBOL_STOP=0xffffff8002265ae4
+STAGE126_SYMBOL_RANGE_BYTES=0xe0
+STAGE126_SYMBOL_RANGE_REASON=NEXT_GLOBAL_TEXT_SYMBOL
+STAGE126_SYMBOL_DISASSEMBLY=OBJDUMP_REPORTED_ERROR
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+===== SYMBOL __ZN23IO80211SkywalkInterface6enableEj =====
+STAGE126_SYMBOL_START=0xffffff8002265946
+STAGE126_SYMBOL_STOP=0xffffff800226595c
+STAGE126_SYMBOL_RANGE_BYTES=0x16
+STAGE126_SYMBOL_RANGE_REASON=NEXT_GLOBAL_TEXT_SYMBOL
+STAGE126_SYMBOL_DISASSEMBLY=OBJDUMP_REPORTED_ERROR
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+===== SYMBOL __ZN23IO80211SkywalkInterface7disableEj =====
+STAGE126_SYMBOL_START=0xffffff800226595c
+STAGE126_SYMBOL_STOP=0xffffff800226596e
+STAGE126_SYMBOL_RANGE_BYTES=0x12
+STAGE126_SYMBOL_RANGE_REASON=NEXT_GLOBAL_TEXT_SYMBOL
+STAGE126_SYMBOL_DISASSEMBLY=OBJDUMP_REPORTED_ERROR
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+STAGE126_POWER_SYMBOL_COUNT=8
+STAGE126_POWER_DISASSEMBLY_VERIFIED_COUNT=0
+STAGE126_POWER_METHODS=INCOMPLETE
+
+--- Apple controller power selector symbols ---
+
+STAGE126_POWER_CALL_GRAPH=REVIEW_REQUIRED
+STAGE126_DRIVER_SOURCE_MODIFIED=NO
+STAGE126_BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+========== END STAGE126 ==========
