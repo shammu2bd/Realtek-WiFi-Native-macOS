@@ -100,7 +100,7 @@ IOReturn RTW88WCLTxCompletionWorkQueue::stop()
     if (_tokenReapCall) {
         (void)thread_call_cancel_wait(_tokenReapCall);
         if (!thread_call_free(_tokenReapCall)) {
-            IOLog("rtl88wifi-wcl: token reaper thread-call still active; retaining worker owners\\n");
+            IOLog("rtl88wifi-wcl: token reaper thread-call still active; retaining worker owners\n");
             return kIOReturnBusy;
         }
         _tokenReapCall = nullptr;
