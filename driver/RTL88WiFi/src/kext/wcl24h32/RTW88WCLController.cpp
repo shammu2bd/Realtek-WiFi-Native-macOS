@@ -302,9 +302,14 @@ IOReturn RTW88WCLController::releaseNativeResources()
         }
     }
 
-    /* unbind() succeeds only after every ticket has returned through the
-     * synchronous completion queue. Remove the notifier/event source only
-     * after that proof, while the queue owner is still retained. */
+    /* unbind() waits ticket completion, but the enclosing mac80211 status
+     * callback still has to return after publishing completion and enqueueing
+     * skb reclamation. Join the full compat callback before releasing worker. */
+    if (_pciBackend)
+        rtw88_compat_quiesce_tx_status();
+
+    /* Remove the notifier/event source only after the callback quiescence
+     * proof, while the completion queue owner is still retained. */
     if (_txCompletionWorker) {
         const IOReturn workerStopStatus = _txCompletionWorker->stop();
         if (workerStopStatus != kIOReturnSuccess) {
