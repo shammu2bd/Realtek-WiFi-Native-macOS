@@ -319,7 +319,7 @@ bool RTW88PCIDevice::start(IOService *provider)
     /* Initialise compat runtime (workqueues, timers) */
     const int compatStatus = rtw88_compat_init();
     if (compatStatus != 0) {
-        IOLog("rtw88: compatibility runtime initialization failed (%d)\\n", compatStatus);
+        IOLog("rtw88: compatibility runtime initialization failed (%d)\n", compatStatus);
         return false;
     }
     _compatInitialized = true;
