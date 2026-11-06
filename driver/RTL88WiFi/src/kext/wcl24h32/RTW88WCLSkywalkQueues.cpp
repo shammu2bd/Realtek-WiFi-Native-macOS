@@ -44,7 +44,7 @@ bool RTW88WCLSkywalkQueues::init()
     _rxSubmission = nullptr;
     _rxCompletion = nullptr;
     bzero(_registrationQueues, sizeof(_registrationQueues));
-    _registered = false;
+    _registrationTransaction.resetForFreshOwner();
     _txAdapter = nullptr;
     _allocated = false;
     return true;
@@ -55,7 +55,7 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
     if (_allocated)
         return (_acquisitionJournal.isCommitted() && queuesAllocated())
                    ? kIOReturnSuccess : kIOReturnNotReady;
-    if (_registered || _txAdapter || _txPool || _rxPool ||
+    if (_registrationTransaction.ownsQueues() || _txAdapter || _txPool || _rxPool ||
         _txCompletion || _rxSubmission || _rxCompletion)
         return kIOReturnBusy;
     for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
@@ -206,8 +206,8 @@ void RTW88WCLSkywalkQueues::destroyQueues()
 {
     /* Registered QueueSets own queue scheduling and packet lifetime. The
      * interface must deregister before queue/pool callback context is freed. */
-    if (_registered) {
-        IOLog("rtl88wifi-wcl: Skywalk queues still registered; rollback deferred\n");
+    if (_registrationTransaction.ownsQueues()) {
+        IOLog("rtl88wifi-wcl: Skywalk registration transaction still owns queues; rollback deferred\n");
         return;
     }
 
@@ -248,7 +248,6 @@ void RTW88WCLSkywalkQueues::destroyQueues()
         return;
     }
     bzero(_registrationQueues, sizeof(_registrationQueues));
-    _registered = false;
     _allocated = false;
 }
 
@@ -324,7 +323,7 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
 
 bool RTW88WCLSkywalkQueues::hasOutstandingResources() const
 {
-    if (_registered || _txPool || _rxPool || _txCompletion || _rxSubmission ||
+    if (_registrationTransaction.ownsQueues() || _txPool || _rxPool || _txCompletion || _rxSubmission ||
         _rxCompletion || _txAdapter || !_txCallbackGate.isUnbound())
         return true;
     for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
@@ -354,53 +353,90 @@ bool RTW88WCLSkywalkQueues::registrationQueuesValid() const
         !_txCompletion || !_rxSubmission || !_rxCompletion)
         return false;
 
-    struct alignas(8) QueueDescriptor24H32 {
-        UInt32 type;
-        UInt32 capacity;
-        IOSkywalkPacketBufferPool *pool;
-    };
-    static_assert(sizeof(QueueDescriptor24H32) == 0x10,
-                  "24H32 QueueSet descriptor must be 16 bytes");
-
+    /* The captured 24H32 performCommand(0x10000) contract exposes the
+     * queue-role code in the first UInt32 of a 16-byte result. The remaining
+     * bytes are opaque: do not assign guessed capacity or pool fields. */
     const UInt32 expectedTypes[kRegistrationQueueCount] = {
         1, 1, 1, 1, 2, 3, 4
     };
     for (UInt32 i = 0; i < kRegistrationQueueCount; ++i) {
         IOSkywalkPacketQueue *queue = _registrationQueues[i];
-        if (!queue)
+        IOSkywalkPacketQueue *expectedQueue =
+            i < kTXSubmissionQueueCount ? _txSubmissionQueues[i] :
+            (i == 4 ? static_cast<IOSkywalkPacketQueue *>(_txCompletion) :
+             (i == 5 ? static_cast<IOSkywalkPacketQueue *>(_rxSubmission) :
+                       static_cast<IOSkywalkPacketQueue *>(_rxCompletion)));
+        if (!queue || queue != expectedQueue)
             return false;
-        QueueDescriptor24H32 descriptor = {};
+
+        alignas(8) UInt8 descriptor[16] = {};
         const IOReturn status =
-            queue->performCommand(0x10000, &descriptor, sizeof(descriptor));
-        if (status != kIOReturnSuccess ||
-            descriptor.type != expectedTypes[i])
-            return false;
-        IOSkywalkPacketBufferPool *expectedPool =
-            (i < kTXSubmissionQueueCount || i == 4) ? _txPool : _rxPool;
-        if (descriptor.pool != expectedPool)
-            return false;
-        if ((descriptor.type == 1 || descriptor.type == 4) &&
-            descriptor.capacity != queue->getCapacity())
-            return false;
-        if ((descriptor.type == 2 || descriptor.type == 3) &&
-            descriptor.capacity != 0)
+            queue->performCommand(0x10000, descriptor, sizeof(descriptor));
+        UInt32 queueType = 0;
+        memcpy(&queueType, descriptor, sizeof(queueType));
+        if (status != kIOReturnSuccess || queueType != expectedTypes[i])
             return false;
     }
     return true;
 }
 
-IOReturn RTW88WCLSkywalkQueues::setRegistered(bool registered)
+IOReturn RTW88WCLSkywalkQueues::beginRegistrationTransaction()
 {
-    if (registered == _registered)
-        return registered ? kIOReturnBusy : kIOReturnSuccess;
-    if (registered) {
-        if (!queuesAllocated() || !registrationQueuesValid())
-            return kIOReturnNotReady;
-        _registered = true;
+    if (!queuesAllocated())
+        return kIOReturnNotReady;
+    if (!_registrationTransaction.beginRegistration())
+        return kIOReturnBusy;
+    if (!registrationQueuesValid()) {
+        (void)_registrationTransaction.abortRegistration();
+        return kIOReturnNotReady;
+    }
+    return kIOReturnSuccess;
+}
+
+IOReturn RTW88WCLSkywalkQueues::commitRegistrationTransaction()
+{
+    return _registrationTransaction.commitRegistration()
+               ? kIOReturnSuccess : kIOReturnBusy;
+}
+
+IOReturn RTW88WCLSkywalkQueues::abortRegistrationTransaction(bool quarantine)
+{
+    if (quarantine) {
+        _registrationTransaction.quarantine();
         return kIOReturnSuccess;
     }
-    _registered = false;
-    return kIOReturnSuccess;
+    if (_registrationTransaction.state() ==
+        RTW88WCLRegistrationTransaction::State::kUnregistered)
+        return kIOReturnSuccess;
+    return _registrationTransaction.abortRegistration()
+               ? kIOReturnSuccess : kIOReturnBusy;
+}
+
+IOReturn RTW88WCLSkywalkQueues::beginDeregistrationTransaction()
+{
+    if (_registrationTransaction.isQuarantined() ||
+        _registrationTransaction.isInProgress())
+        return kIOReturnBusy;
+    return _registrationTransaction.beginDeregistration()
+               ? kIOReturnSuccess : kIOReturnNotReady;
+}
+
+IOReturn RTW88WCLSkywalkQueues::finishDeregistrationTransaction()
+{
+    return _registrationTransaction.commitDeregistration()
+               ? kIOReturnSuccess : kIOReturnBusy;
+}
+
+IOReturn RTW88WCLSkywalkQueues::abortDeregistrationTransaction(bool quarantine)
+{
+    if (quarantine) {
+        _registrationTransaction.quarantine();
+        return kIOReturnSuccess;
+    }
+    if (_registrationTransaction.isRegistered())
+        return kIOReturnSuccess;
+    return _registrationTransaction.abortDeregistration()
+               ? kIOReturnSuccess : kIOReturnBusy;
 }
 
 UInt32 RTW88WCLSkywalkQueues::enqueueRXPacketForNetworking(
@@ -408,7 +444,7 @@ UInt32 RTW88WCLSkywalkQueues::enqueueRXPacketForNetworking(
 {
     if (!packet)
         return 0;
-    if (!_registered || !_rxCompletion || !_rxPool ||
+    if (!_registrationTransaction.isRegistered() || !_rxCompletion || !_rxPool ||
         packet->getPacketBufferPool() != _rxPool)
         return 0;
 
