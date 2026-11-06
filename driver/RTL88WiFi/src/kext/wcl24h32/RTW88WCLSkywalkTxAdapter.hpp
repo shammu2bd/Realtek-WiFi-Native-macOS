@@ -11,7 +11,7 @@
 
 #include "RTW88WCLTxCompletionSlots.hpp"
 #include "RTW88WCLTxSubmissionGate.hpp"
-#include "RTW88WCLCompletionTokenRetireList.hpp"
+#include "../../compat/linux/mpsc_bounded_queue.h"
 
 struct rtw88_skb_tx_completion_token;
 
@@ -83,9 +83,9 @@ private:
     RTW88IEEE80211 *_radio = nullptr; // retained while bound
     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
     TicketPool _tickets;
-    RTW88WCLCompletionTokenRetireList<rtw88_skb_tx_completion_token>
-        _retiredCompletionTokens;
+    struct rtw88_mpsc_bounded_queue _retiredCompletionTokens {};
     volatile uint32_t _retiredCompletionTokenCount = 0;
+    volatile uint32_t _retiredCompletionTokenRejectedCount = 0;
     volatile uint32_t _backendCompletionCallbacksInFlight = 0;
     CompletionNotify _completionNotifier = nullptr; // non-owning, signal-only
     void *_completionNotifierContext = nullptr;     // non-owning; cleared after drain
