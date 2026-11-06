@@ -1,0 +1,177 @@
+========== STAGE118 PREBOOT OBSERVABILITY PROFILE ==========
+UTC_STAMP=20261106T135023Z
+BRANCH=work/stage118-preboot-observability
+HEAD=6c33bc1d4f72793be0fe450104b40f15ee67c45c
+BASE_COMMIT=b74c0f8b5539a3a3c17375e1c1cacbe124ae8e42
+RUNNER_GIT_BLOB_SHA=a1d06d0b8d6600e4478687991e50b8be0c5d0661
+TARGET=15.8.1 (24H32) x86_64
+TARGET_MATCH_24H32=True
+SCOPE=READ_ONLY_EFI_CONFIG_DEBUG_PROFILE_IOREGISTRY_RUNTIME
+CONFIG_WRITE=NONE EFI_WRITE=NONE MOUNT=NOT_RUN SIP_CHANGE=NONE NVRAM_CHANGE=NONE
+SIGNING=NOT_RUN BUILD=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_RUN REBOOT=NOT_RUN HARDWARE_TEST=NOT_RUN
+PROPOSAL_ONLY=TRUE
+SIP_STATUS_EXIT=0
+----- SIP_STATUS -----
+System Integrity Protection status: enabled.
+----- END SIP_STATUS -----
+SIP_STATE=ENABLED
+OPENCORE_CONFIG_PLUTIL_EXIT=0
+----- OPENCORE_CONFIG_PLUTIL -----
+/Volumes/EFI/EFI/OC/config.plist: OK
+----- END OPENCORE_CONFIG_PLUTIL -----
+OPENCORE_CONFIG_PATH=/Volumes/EFI/EFI/OC/config.plist
+OPENCORE_CONFIG_STATE=PARSED
+NATIVE_KERNEL_ADD_ROWS=[{"bundle_id": "io.github.x1ren41l.RTL88WiFi", "bundle_path": "RTL88WiFiNative.kext", "enabled": true, "executable_exists": true, "index": 31, "sha256": "409137db0772c6f5326af89f9f6dc699f8f18a13eb9025bc194b58e5bb92cd0a"}]
+NATIVE_KERNEL_ADD_COUNT=1
+NATIVE_KERNEL_ADD_ENABLED_COUNT=1
+NATIVE_EXECUTABLE_SHA_MATCH_STAGE113=True
+CURRENT_OPENCORE_DEBUG={"AppleDebug": true, "ApplePanic": true, "DisableWatchDog": false, "DisplayLevel": 2147483650, "SysReport": false, "Target": 0}
+CURRENT_TARGET_HEX=0x0
+CURRENT_DISPLAY_LEVEL_HEX=0x80000002
+PROPOSED_TARGET_DECIMAL=65
+PROPOSED_TARGET_HEX=0x41
+PROPOSED_TARGET_BITS=ENABLE_LOGGING|FILE_LOGGING
+PROPOSED_DISPLAY_LEVEL_DECIMAL=2147483714
+PROPOSED_DISPLAY_LEVEL_HEX=0x80000042
+PROPOSED_DISPLAY_LEVEL_BITS=DEBUG_ERROR|DEBUG_WARN|DEBUG_INFO
+PROPOSAL_DIFF_TARGET=True
+PROPOSAL_DIFF_DISPLAY_LEVEL=True
+PROPOSAL_DIFF_APPLE_DEBUG=False
+PROPOSAL_DIFF_APPLE_PANIC=False
+OPENCORE_DEBUG_PROFILE_PROPOSAL=TARGET_65_DISPLAYLEVEL_2147483714
+OPENCORE_CONFIG_WRITE_PERFORMED=False
+OPENCORE_CONFIG_RESULT=PARSED
+EFI_DISKUTIL_INFO_EXIT=0
+----- EFI_DISKUTIL_INFO -----
+   Device Identifier:         disk3s1
+   Device Node:               /dev/disk3s1
+   Whole:                     No
+   Part of Whole:             disk3
+
+   Volume Name:               EFI
+   Mounted:                   Yes
+   Mount Point:               /Volumes/EFI
+
+   Partition Type:            EFI
+   File System Personality:   MS-DOS FAT32
+   Type (Bundle):             msdos
+   Name (User Visible):       MS-DOS (FAT32)
+
+   OS Can Be Installed:       No
+   Media Type:                Generic
+   Protocol:                  USB
+   SMART Status:              Not Supported
+   Volume UUID:               0E239BC6-F960-3107-89CF-1C97F78BB46B
+   Disk / Partition UUID:     803DA4F1-7C15-4113-84D7-C6FA6A077DC6
+   Partition Offset:          20480 Bytes (40 512-Byte-Device-Blocks)
+
+   Disk Size:                 209.7 MB (209715200 Bytes) (exactly 409600 512-Byte-Units)
+   Device Block Size:         512 Bytes
+
+   Volume Total Space:        206.5 MB (206472704 Bytes) (exactly 403267 512-Byte-Units)
+   Volume Used Space:         35.4 MB (35373568 Bytes) (exactly 69089 512-Byte-Units) (17.1%)
+   Volume Free Space:         171.1 MB (171099136 Bytes) (exactly 334178 512-Byte-Units) (82.9%)
+   Allocation Block Size:     512 Bytes
+
+   Media OS Use Only:         No
+   Media Read-Only:           No
+   Volume Read-Only:          No
+
+   Device Location:           Internal
+   Removable Media:           Removable
+   Media Removal:             Software-Activated
+
+   Solid State:               Info not available
+
+----- END EFI_DISKUTIL_INFO -----
+----- EFI_MOUNT_LINE -----
+/dev/disk3s1 on /Volumes/EFI (msdos, local, nodev, nosuid, noowners, noatime, fskit)
+----- END EFI_MOUNT_LINE -----
+EFI_FILESYSTEM_PERSONALITY=MS-DOS FAT32
+EFI_MOUNT_NOOWNERS=True
+EFI_OWNER_WARNINGS_FROM_STAGE116_INTERPRETATION=FAT32_NOOWNERS_MOUNT_EMULATION_NOT_PER_FILE_OWNER_PROOF
+OPENCORE_LOG_DIRECTORY=/Volumes/EFI/EFI/OC/Logs
+OPENCORE_LOG_FILES_FOUND=0
+OPENCORE_BINARY_FINGERPRINT={"file": "/Volumes/EFI/EFI/OC/OpenCore.efi: MS-DOS executable PE32+ executable (EFI application) x86-64, for MS Windows", "path": "/Volumes/EFI/EFI/OC/OpenCore.efi", "sha256": "9ef21f9d846a992c030fa5858736a6d9efa70a3b4ad88b8d747338bb457b14d4", "size": 626688}
+OPENCORE_BINARY_FINGERPRINT={"file": "/Volumes/EFI/EFI/OC/Drivers/OpenRuntime.efi: MS-DOS executable PE32+ executable (EFI runtime driver) x86-64, for MS Windows", "path": "/Volumes/EFI/EFI/OC/Drivers/OpenRuntime.efi", "sha256": "c67be56660047237360df5eb7f080a2b13129d68e829bee9ad0230e45d516be8", "size": 24576}
+OPENCORE_BINARY_FINGERPRINT={"file": "/Volumes/EFI/EFI/BOOT/BOOTx64.efi: MS-DOS executable PE32+ executable (EFI application) x86-64, for MS Windows", "path": "/Volumes/EFI/EFI/BOOT/BOOTx64.efi", "sha256": "d0163dfbe5d2ea46aececd7d7349acfa5b75dfed2993e8489816f3dda71914c8", "size": 24576}
+IOREG_IOPCIDEVICE_CLASS_QUERY_EXIT=0
+----- RTL8821CE_IOPCIDEVICE_MATCH_CONTEXT -----
+      |   "acpi-device" = "IOACPIPlatformDevice is not serializable"
+      |   "IOPCIMSIMode" = Yes
+      |   "assigned-addresses" = <10000181000000000040000000000000000100001800018200000000004030b100000000001000002000018200000000000030b10000000000400000>
+      |   "vendor-id" = <ec100000>
+      |   "class-code" = <00000200>
+      |   "subsystem-vendor-id" = <3c100000>
+      |   "IOPCIExpressLinkCapabilities" = 4684817
+      |   "IOName" = "ethernet"
+      |   "pcidebug" = "1:0:0"
+      |   "IOChildIndex" = 1
+      |   "IOPCIExpressLinkStatus" = 4113
+          "acpi-device" = "IOACPIPlatformDevice is not serializable"
+          "IOBusyInterest" = "IOCommand is not serializable"
+          "IOInterruptControllers" = ("io-apic-0","IOPCIMessagedInterruptController")
+          "vendor-id" = <ec100000>
+          "name" = <"pci10ec,c821">
+          "device-id" = <21c80000>
+          "IOChildIndex" = 1
+          "acpi-pmcap-offset" = 64
+          "IOPCIResourced" = Yes
+          "compatible" = <"pci103c,831a","pci10ec,c821","pciclass,028000","PXSX">
+          "IOPCIExpressLinkCapabilities" = 482321
+          "IOBusyInterest" = "IOCommand is not serializable"
+          "IOInterruptControllers" = ("io-apic-0","IOPCIMessagedInterruptController")
+          "vendor-id" = <ec100000>
+          "name" = <"pci10ec,c821">
+          "device-id" = <21c80000>
+          "IOChildIndex" = 1
+          "acpi-pmcap-offset" = 64
+          "IOPCIResourced" = Yes
+          "compatible" = <"pci103c,831a","pci10ec,c821","pciclass,028000","PXSX">
+          "IOPCIExpressLinkCapabilities" = 482321
+          "IOServiceDEXTEntitlements" = (("com.apple.developer.driverkit.transport.pci"))
+          "IOInterruptControllers" = ("io-apic-0","IOPCIMessagedInterruptController")
+          "vendor-id" = <ec100000>
+          "name" = <"pci10ec,c821">
+          "device-id" = <21c80000>
+          "IOChildIndex" = 1
+          "acpi-pmcap-offset" = 64
+          "IOPCIResourced" = Yes
+          "compatible" = <"pci103c,831a","pci10ec,c821","pciclass,028000","PXSX">
+          "IOPCIExpressLinkCapabilities" = 482321
+          "IOServiceDEXTEntitlements" = (("com.apple.developer.driverkit.transport.pci"))
+          "acpi-path" = "IOACPIPlane:/_SB/PCI0@0/RP10@1d0001/PXSX@0"
+----- END RTL8821CE_IOPCIDEVICE_MATCH_CONTEXT -----
+IOREG_RTL8821CE_MATCH_IN_IOPCIDEVICE_INSTANCES=True
+IOREG_IOPCIDEVICE_INSTANCE_COUNT=20
+IOREG_RTW88WCLController_EXIT=0
+----- IOREG_RTW88WCLController -----
+(no output)
+----- END IOREG_RTW88WCLController -----
+IOREG_RTW88WCLController_STATE=NO_MATCH
+IOREG_RTW88WCLInfraInterface_EXIT=0
+----- IOREG_RTW88WCLInfraInterface -----
+(no output)
+----- END IOREG_RTW88WCLInfraInterface -----
+IOREG_RTW88WCLInfraInterface_STATE=NO_MATCH
+----- LOADED_RELEVANT_KEXTS -----
+   55    3 0xffffff8002973000 0x33ff8    0x33ff8    com.apple.iokit.IOSkywalkFamily (1.0) 70DFAA8E-E369-3417-B6FD-B19FB6D5D49B <54 53 9 8 7 6 3 1>
+   57   14 0xffffff8004013000 0x31000    0x31000    as.vit9696.Lilu (1.7.2) C2A303B8-6D22-3163-A905-5DB8E340D285 <9 7 6 3 2 1>
+   58    0 0xffffff8004044000 0xcf000    0xcf000    com.dhinakg.AMFIPass (1.4.1) 7DF1CDFC-7EFE-3D82-A3A2-7DACE8B1D097 <57 9 8 7 6 3 2 1>
+  129    0 0xffffff8004643000 0xb40000   0xb40000   com.realtek.driver.RtWlanU (1830.32.b27) DB501FB3-487F-382A-A630-86C151C13BFB <98 53 7 6 3 1>
+----- END LOADED_RELEVANT_KEXTS -----
+NATIVE_KEXT_PRESENT_IN_SHOWLOADED=False
+USB_BACKUP_RTWLANU_PRESENT=True
+STAGE118_PRIMARY_DIAGNOSIS=OPENCORE_TARGET_ZERO_PREVENTS_BOOT_LOG_CAPTURE_REVIEW_DEBUG_PROFILE
+STAGE118_SIGNATURE_POLICY_REFERENCE=AirportRTW_RELEASE_BUILD_USES_CODE_SIGNING_ALLOWED_NO
+STAGE118_PROPOSED_TARGET_DECIMAL=65
+STAGE118_PROPOSED_DISPLAY_LEVEL_DECIMAL=2147483714
+STAGE118_RTL8821CE_PCI_MATCH=True
+STAGE118_NATIVE_CONTROLLER_IOREGISTRY=NO_MATCH
+STAGE118_NATIVE_INTERFACE_IOREGISTRY=NO_MATCH
+STAGE118_NATIVE_KEXT_PRESENT_IN_SHOWLOADED=False
+STAGE118_USB_BACKUP_PRESERVED=True
+STAGE118_OPENCORE_LOG_FILES=0
+STAGE118_RESULT=EVIDENCE_CAPTURED_PROPOSAL_ONLY
+STAGE118_CONFIG_CHANGE=NONE EFI_WRITE=NONE REBOOT=NOT_RUN
+STAGE118_ACTIVATION=BLOCKED PR4_MERGE=BLOCKED
