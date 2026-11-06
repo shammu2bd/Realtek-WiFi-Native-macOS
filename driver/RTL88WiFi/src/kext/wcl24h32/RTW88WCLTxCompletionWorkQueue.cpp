@@ -7,8 +7,9 @@
 #include <IOKit/IOLib.h>
 #include <libkern/c++/OSMetaClass.h>
 
-extern "C" void rtw88_set_skb_tx_completion_token_releaser(
-    void (*hook)(void *context, void *token));
+extern "C" {
+#include "../../compat/linux/skbuff_tx_completion.h"
+}
 extern "C" void rtw88_wcl_defer_skb_tx_completion_token(
     void *context, void *token);
 
