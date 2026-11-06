@@ -1,0 +1,485 @@
+========== STAGE152 POST OFFICE COMMONGLUE INTERFACE AUDIT ==========
+STAGE152_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE152_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE152_WORKTREE_STATUS_ENTRIES=198
+STAGE152_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE152_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE152_STAGE151_REPORT_SHA=d53e563dabadc21ce48b0c2147611f1bc2ab616c
+STAGE152_SCOPE=READ_ONLY_AUDIT_POSTOFFICE_CLASS_VTABLE_COMMONGLUE_MESSAGE_ABI_AND_LIFETIME
+STAGE152_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE152_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+STAGE152_FILES_BASE=0xffffff8000100000
+STAGE152_FILESET_ENTRY_COUNT=211
+STAGE152_SYMBOL_COUNT=165349
+POSTOFFICE_CLASS_COUNT=1
+POSTOFFICE_CLASS NAME=IO80211PostOffice VTABLE=0xffffff80023deee0 INSTANCE_SIZE=24
+POSTOFFICE_VTABLE_SLOT CLASS=IO80211PostOffice OFFSET=0x120 RAW=0x400000021b286e TARGET=0xffffff80022b286e OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZN17IO80211PostOffice8sendMailEP23IO80211SkywalkInterfacejPvmb
+POSTOFFICE_VTABLE_SLOT CLASS=IO80211PostOffice OFFSET=0x128 RAW=0x400000021b2808 TARGET=0xffffff80022b2808 OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZN17IO80211PostOffice12sendMailSyncEP23IO80211SkywalkInterfacejPvmb
+POSTOFFICE_VTABLE_SLOT CLASS=IO80211PostOffice OFFSET=0x130 RAW=0x400000021b2996 TARGET=0xffffff80022b2996 OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZN17IO80211PostOffice14deliverMessageEP23IO80211SkywalkInterfacejPvmb
+POSTOFFICE_VTABLE_SLOT CLASS=IO80211PostOffice OFFSET=0x138 RAW=0x1000000021b29b6 TARGET=0xffffff80022b29b6 OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZN17IO80211PostOffice14outForDeliveryEv
+POSTOFFICE_VTABLE_SLOT CLASS=IO80211PostOffice OFFSET=0x140 RAW=0x0 TARGET=0x0 OWNER=UNATTRIBUTED SYMBOL=-
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=0 TARGET=0x0 SYMBOL=-
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=1 TARGET=0x0 SYMBOL=-
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=2 TARGET=0xffffff80022b25cc SYMBOL=__ZN17IO80211PostOfficeD1Ev
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=3 TARGET=0xffffff80022b25d6 SYMBOL=__ZN17IO80211PostOfficeD0Ev
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=4 TARGET=0xffffff8000a4b590 SYMBOL=__ZNK8OSObject7releaseEi
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=5 TARGET=0xffffff8000a4b5b0 SYMBOL=__ZNK8OSObject14getRetainCountEv
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=6 TARGET=0xffffff8000a4b5c0 SYMBOL=__ZNK8OSObject6retainEv
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=7 TARGET=0xffffff8000a4b5d0 SYMBOL=__ZNK8OSObject7releaseEv
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=8 TARGET=0xffffff8000a4b5e0 SYMBOL=__ZNK8OSObject9serializeEP11OSSerialize
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=9 TARGET=0xffffff80022b2616 SYMBOL=__ZNK17IO80211PostOffice12getMetaClassEv
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=10 TARGET=0xffffff8000a494e0 SYMBOL=__ZNK15OSMetaClassBase9isEqualToEPKS_
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=11 TARGET=0xffffff8000a4b760 SYMBOL=__ZNK8OSObject12taggedRetainEPKv
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=12 TARGET=0xffffff8000a4b7c0 SYMBOL=__ZNK8OSObject13taggedReleaseEPKv
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=13 TARGET=0xffffff8000a4b7e0 SYMBOL=__ZNK8OSObject13taggedReleaseEPKvi
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=14 TARGET=0xffffff8000a97080 SYMBOL=__ZN8OSObject8DispatchE5IORPC
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=15 TARGET=0xffffff8000a494f0 SYMBOL=__ZN15OSMetaClassBase25_RESERVEDOSMetaClassBase4Ev
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=16 TARGET=0xffffff8000a49520 SYMBOL=__ZN15OSMetaClassBase25_RESERVEDOSMetaClassBase5Ev
+POSTOFFICE_VTABLE_PREFIX CLASS=IO80211PostOffice WORD=17 TARGET=0xffffff8000a49550 SYMBOL=__ZN15OSMetaClassBase25_RESERVEDOSMetaClassBase6Ev
+REFERENCE_VTABLE CLASS=CommonGlue STATUS=FOUND
+REFERENCE_VTABLE_SLOT CLASS=CommonGlue OFFSET=0x120 TARGET=0xffffff800211e840 OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZN10CommonGlue11sendMessageER17CommonGlueMessage
+REFERENCE_VTABLE_SLOT CLASS=CommonGlue OFFSET=0x128 TARGET=0xffffff8000a75800 OWNER=com.apple.kernel SYMBOL=___cxa_pure_virtual
+REFERENCE_VTABLE CLASS=IO80211Glue STATUS=FOUND
+REFERENCE_VTABLE_SLOT CLASS=IO80211Glue OFFSET=0x120 TARGET=0xffffff800211e840 OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZN10CommonGlue11sendMessageER17CommonGlueMessage
+REFERENCE_VTABLE_SLOT CLASS=IO80211Glue OFFSET=0x128 TARGET=0xffffff800212ac9e OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZN11IO80211Glue22receiveMessageInternalER17CommonGlueMessage
+POSTOFFICE_SYMBOL_COUNT=34
+POSTOFFICE_SYMBOL ADDRESS=0xffffff800222b53e NAME=__ZN17IO80211Controller16CreatePostOfficeEv
+POSTOFFICE_SYMBOL ADDRESS=0xffffff800222b554 NAME=__ZN17IO80211Controller13getPostOfficeEv
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2546 NAME=__ZN17IO80211PostOffice9MetaClassC1Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2578 NAME=__ZN17IO80211PostOffice9MetaClassD1Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2582 NAME=__ZN17IO80211PostOfficeC2EPK11OSMetaClass
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b25a2 NAME=__ZN17IO80211PostOfficeC1EPK11OSMetaClass
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b25c2 NAME=__ZN17IO80211PostOfficeD2Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b25cc NAME=__ZN17IO80211PostOfficeD1Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b25d6 NAME=__ZN17IO80211PostOfficeD0Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b25fe NAME=__ZN17IO80211PostOfficedlEPvm
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2616 NAME=__ZNK17IO80211PostOffice12getMetaClassEv
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2624 NAME=__ZN17IO80211PostOffice9MetaClassC2Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2656 NAME=__ZNK17IO80211PostOffice9MetaClass5allocEv
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b269e NAME=__ZN17IO80211PostOfficenwEm
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b26b2 NAME=__ZN17IO80211PostOfficeC1Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b26e2 NAME=__ZN17IO80211PostOfficeC2Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2712 NAME=__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2784 NAME=__ZN17IO80211PostOffice14initWithParamsEP16IO80211WorkQueue
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b27fa NAME=__ZN17IO80211PostOffice19outForDeliveryTimerEP18IO80211TimerSource
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2808 NAME=__ZN17IO80211PostOffice12sendMailSyncEP23IO80211SkywalkInterfacejPvmb
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b286e NAME=__ZN17IO80211PostOffice8sendMailEP23IO80211SkywalkInterfacejPvmb
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2996 NAME=__ZN17IO80211PostOffice14deliverMessageEP23IO80211SkywalkInterfacejPvmb
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b29b6 NAME=__ZN17IO80211PostOffice14outForDeliveryEv
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2a56 NAME=__ZN17IO80211PostOffice4freeEv
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2b04 NAME=__ZN17IO80211PostOffice9MetaClassD0Ev
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80022b2b0e NAME=__GLOBAL__sub_I_IO80211PostOffice.cpp
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80023deed0 NAME=__ZN17IO80211PostOffice9metaClassE
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80023deed8 NAME=__ZN17IO80211PostOffice10superClassE
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80023deee0 NAME=__ZTV17IO80211PostOffice
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80023df038 NAME=__ZTVN17IO80211PostOffice9MetaClassE
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80023f8918 NAME=__ZN17IO80211PostOffice10gMetaClassE
+POSTOFFICE_SYMBOL ADDRESS=0xffffff80024039c0 NAME=__ZL21IO80211PostOffice_ktv
+POSTOFFICE_SYMBOL ADDRESS=0xffffff8002403a00 NAME=__ZZN17IO80211PostOffice14initWithParamsEP16IO80211WorkQueueE19kalloc_type_view_78
+POSTOFFICE_SYMBOL ADDRESS=0xffffff8002403a40 NAME=__ZZN17IO80211PostOffice4freeEvE20kalloc_type_view_201
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOffice9MetaClassC1Ev ADDRESS=0xffffff80022b2546 END=0xffffff80022b2578 INSTRUCTIONS=15
+ffffff80022b2546	pushq	%rbp
+ffffff80022b2547	movq	%rsp, %rbp
+ffffff80022b254a	pushq	%rbx
+ffffff80022b254b	pushq	%rax
+ffffff80022b254c	movq	%rdi, %rbx
+ffffff80022b254f	leaq	0xe1f76(%rip), %rsi             ## literal pool for: "IO80211PostOffice"
+ffffff80022b2556	movq	0x109b33(%rip), %rdx
+ffffff80022b255d	movl	$0x18, %ecx
+ffffff80022b2562	callq	0xffffff8000a49940
+CONTROL_FLOW=0xffffff80022b2562 callq	0xffffff8000a49940
+ffffff80022b2567	leaq	0x12cada(%rip), %rax
+ffffff80022b256e	movq	%rax, (%rbx)
+ffffff80022b2571	addq	$0x8, %rsp
+ffffff80022b2575	popq	%rbx
+ffffff80022b2576	popq	%rbp
+ffffff80022b2577	retq
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOffice9MetaClassD1Ev ADDRESS=0xffffff80022b2578 END=0xffffff80022b2582 INSTRUCTIONS=4
+ffffff80022b2578	pushq	%rbp
+ffffff80022b2579	movq	%rsp, %rbp
+ffffff80022b257c	popq	%rbp
+ffffff80022b257d	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff80022b257d jmp	0xffffff8000a4a040
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOfficeC2EPK11OSMetaClass ADDRESS=0xffffff80022b2582 END=0xffffff80022b25a2 INSTRUCTIONS=13
+ffffff80022b2582	pushq	%rbp
+ffffff80022b2583	movq	%rsp, %rbp
+ffffff80022b2586	pushq	%rbx
+ffffff80022b2587	pushq	%rax
+ffffff80022b2588	movq	%rdi, %rbx
+ffffff80022b258b	callq	0xffffff8000a4c000
+CONTROL_FLOW=0xffffff80022b258b callq	0xffffff8000a4c000
+ffffff80022b2590	leaq	0x12c959(%rip), %rax
+ffffff80022b2597	movq	%rax, (%rbx)
+ffffff80022b259a	addq	$0x8, %rsp
+ffffff80022b259e	popq	%rbx
+ffffff80022b259f	popq	%rbp
+ffffff80022b25a0	retq
+ffffff80022b25a1	nop
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOfficeC1EPK11OSMetaClass ADDRESS=0xffffff80022b25a2 END=0xffffff80022b25c2 INSTRUCTIONS=13
+ffffff80022b25a2	pushq	%rbp
+ffffff80022b25a3	movq	%rsp, %rbp
+ffffff80022b25a6	pushq	%rbx
+ffffff80022b25a7	pushq	%rax
+ffffff80022b25a8	movq	%rdi, %rbx
+ffffff80022b25ab	callq	0xffffff8000a4c000
+CONTROL_FLOW=0xffffff80022b25ab callq	0xffffff8000a4c000
+ffffff80022b25b0	leaq	0x12c939(%rip), %rax
+ffffff80022b25b7	movq	%rax, (%rbx)
+ffffff80022b25ba	addq	$0x8, %rsp
+ffffff80022b25be	popq	%rbx
+ffffff80022b25bf	popq	%rbp
+ffffff80022b25c0	retq
+ffffff80022b25c1	nop
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOfficeD2Ev ADDRESS=0xffffff80022b25c2 END=0xffffff80022b25cc INSTRUCTIONS=4
+ffffff80022b25c2	pushq	%rbp
+ffffff80022b25c3	movq	%rsp, %rbp
+ffffff80022b25c6	popq	%rbp
+ffffff80022b25c7	jmp	0xffffff8000a4bd70
+CONTROL_FLOW=0xffffff80022b25c7 jmp	0xffffff8000a4bd70
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOfficeD1Ev ADDRESS=0xffffff80022b25cc END=0xffffff80022b25d6 INSTRUCTIONS=4
+ffffff80022b25cc	pushq	%rbp
+ffffff80022b25cd	movq	%rsp, %rbp
+ffffff80022b25d0	popq	%rbp
+ffffff80022b25d1	jmp	0xffffff8000a4bd70
+CONTROL_FLOW=0xffffff80022b25d1 jmp	0xffffff8000a4bd70
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOffice9MetaClassC2Ev ADDRESS=0xffffff80022b2624 END=0xffffff80022b2656 INSTRUCTIONS=15
+ffffff80022b2624	pushq	%rbp
+ffffff80022b2625	movq	%rsp, %rbp
+ffffff80022b2628	pushq	%rbx
+ffffff80022b2629	pushq	%rax
+ffffff80022b262a	movq	%rdi, %rbx
+ffffff80022b262d	leaq	0xe1e98(%rip), %rsi             ## literal pool for: "IO80211PostOffice"
+ffffff80022b2634	movq	0x109a55(%rip), %rdx
+ffffff80022b263b	movl	$0x18, %ecx
+ffffff80022b2640	callq	0xffffff8000a49940
+CONTROL_FLOW=0xffffff80022b2640 callq	0xffffff8000a49940
+ffffff80022b2645	leaq	0x12c9fc(%rip), %rax
+ffffff80022b264c	movq	%rax, (%rbx)
+ffffff80022b264f	addq	$0x8, %rsp
+ffffff80022b2653	popq	%rbx
+ffffff80022b2654	popq	%rbp
+ffffff80022b2655	retq
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOfficeC1Ev ADDRESS=0xffffff80022b26b2 END=0xffffff80022b26e2 INSTRUCTIONS=16
+ffffff80022b26b2	pushq	%rbp
+ffffff80022b26b3	movq	%rsp, %rbp
+ffffff80022b26b6	pushq	%r14
+ffffff80022b26b8	pushq	%rbx
+ffffff80022b26b9	movq	%rdi, %rbx
+ffffff80022b26bc	leaq	__ZN17IO80211PostOffice10gMetaClassE(%rip), %r14 ## IO80211PostOffice::gMetaClass
+ffffff80022b26c3	movq	%r14, %rsi
+ffffff80022b26c6	callq	0xffffff8000a4c000
+CONTROL_FLOW=0xffffff80022b26c6 callq	0xffffff8000a4c000
+ffffff80022b26cb	leaq	0x12c81e(%rip), %rax
+ffffff80022b26d2	movq	%rax, (%rbx)
+ffffff80022b26d5	movq	%r14, %rdi
+ffffff80022b26d8	popq	%rbx
+ffffff80022b26d9	popq	%r14
+ffffff80022b26db	popq	%rbp
+ffffff80022b26dc	jmp	0xffffff8000a4a700
+CONTROL_FLOW=0xffffff80022b26dc jmp	0xffffff8000a4a700
+ffffff80022b26e1	nop
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOfficeC2Ev ADDRESS=0xffffff80022b26e2 END=0xffffff80022b2712 INSTRUCTIONS=16
+ffffff80022b26e2	pushq	%rbp
+ffffff80022b26e3	movq	%rsp, %rbp
+ffffff80022b26e6	pushq	%r14
+ffffff80022b26e8	pushq	%rbx
+ffffff80022b26e9	movq	%rdi, %rbx
+ffffff80022b26ec	leaq	__ZN17IO80211PostOffice10gMetaClassE(%rip), %r14 ## IO80211PostOffice::gMetaClass
+ffffff80022b26f3	movq	%r14, %rsi
+ffffff80022b26f6	callq	0xffffff8000a4c000
+CONTROL_FLOW=0xffffff80022b26f6 callq	0xffffff8000a4c000
+ffffff80022b26fb	leaq	0x12c7ee(%rip), %rax
+ffffff80022b2702	movq	%rax, (%rbx)
+ffffff80022b2705	movq	%r14, %rdi
+ffffff80022b2708	popq	%rbx
+ffffff80022b2709	popq	%r14
+ffffff80022b270b	popq	%rbp
+ffffff80022b270c	jmp	0xffffff8000a4a700
+CONTROL_FLOW=0xffffff80022b270c jmp	0xffffff8000a4a700
+ffffff80022b2711	nop
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue ADDRESS=0xffffff80022b2712 END=0xffffff80022b2784 INSTRUCTIONS=37
+ffffff80022b2712	pushq	%rbp
+ffffff80022b2713	movq	%rsp, %rbp
+ffffff80022b2716	pushq	%r15
+ffffff80022b2718	pushq	%r14
+ffffff80022b271a	pushq	%rbx
+ffffff80022b271b	pushq	%rax
+ffffff80022b271c	movq	%rdi, %r14
+ffffff80022b271f	leaq	__ZL21IO80211PostOffice_ktv(%rip), %rdi ## IO80211PostOffice_ktv
+ffffff80022b2726	movl	$0x18, %esi
+ffffff80022b272b	callq	0xffffff8000a4be90
+CONTROL_FLOW=0xffffff80022b272b callq	0xffffff8000a4be90
+ffffff80022b2730	movq	%rax, %rbx
+ffffff80022b2733	leaq	__ZN17IO80211PostOffice10gMetaClassE(%rip), %r15 ## IO80211PostOffice::gMetaClass
+ffffff80022b273a	movq	%rax, %rdi
+ffffff80022b273d	movq	%r15, %rsi
+ffffff80022b2740	callq	0xffffff8000a4c000
+CONTROL_FLOW=0xffffff80022b2740 callq	0xffffff8000a4c000
+ffffff80022b2745	leaq	0x12c7a4(%rip), %rax
+ffffff80022b274c	movq	%rax, (%rbx)
+ffffff80022b274f	movq	%r15, %rdi
+
+METHOD_TAG=POSTOFFICE_METHOD SYMBOL=__ZN17IO80211PostOffice4freeEv ADDRESS=0xffffff80022b2a56 END=0xffffff80022b2b04 INSTRUCTIONS=54
+ffffff80022b2a56	pushq	%rbp
+ffffff80022b2a57	movq	%rsp, %rbp
+ffffff80022b2a5a	pushq	%r15
+ffffff80022b2a5c	pushq	%r14
+ffffff80022b2a5e	pushq	%rbx
+ffffff80022b2a5f	pushq	%rax
+ffffff80022b2a60	movq	%rdi, %rbx
+ffffff80022b2a63	movq	0x10(%rdi), %r14
+ffffff80022b2a67	testq	%r14, %r14
+ffffff80022b2a6a	je	0xffffff80022b2add
+ffffff80022b2a6c	movq	(%r14), %rdi
+ffffff80022b2a6f	cmpq	%rdi, %r14
+ffffff80022b2a72	je	0xffffff80022b2ab0
+ffffff80022b2a74	xorl	%r15d, %r15d
+ffffff80022b2a77	movq	0x8(%rdi), %rax
+ffffff80022b2a7b	cmpq	%rdi, (%rax)
+ffffff80022b2a7e	jne	0xffffff80022b2af7
+ffffff80022b2a80	movq	(%rdi), %rax
+ffffff80022b2ad1	leaq	__ZZN17IO80211PostOffice4freeEvE20kalloc_type_view_201(%rip), %rdi ## IO80211PostOffice::free()::kalloc_type_view_201
+METHOD_NOT_VERIFIED TAG=POSTOFFICE_METHOD SYMBOL=__ZZN17IO80211PostOffice4freeEvE20kalloc_type_view_201
+
+METHOD_TAG=REFERENCE_CommonGlue SYMBOL=__ZN10CommonGlue4freeEv ADDRESS=0xffffff800211e772 END=0xffffff800211e7ae INSTRUCTIONS=17
+ffffff800211e772	pushq	%rbp
+ffffff800211e773	movq	%rsp, %rbp
+ffffff800211e776	pushq	%rbx
+ffffff800211e777	pushq	%rax
+ffffff800211e778	movq	%rdi, %rbx
+ffffff800211e77b	movq	0x10(%rdi), %rsi
+ffffff800211e77f	testq	%rsi, %rsi
+ffffff800211e782	je	0xffffff800211e798
+ffffff800211e784	movq	$0x0, 0x10(%rbx)
+ffffff800211e78c	leaq	__ZZN10CommonGlue4freeEvE19kalloc_type_view_40(%rip), %rdi ## CommonGlue::free()::kalloc_type_view_40
+ffffff800211e793	callq	0xffffff8000ab5a60
+CONTROL_FLOW=0xffffff800211e793 callq	0xffffff8000ab5a60
+ffffff800211e798	movq	0x29d971(%rip), %rax
+ffffff800211e79f	movq	%rbx, %rdi
+ffffff800211e7a2	addq	$0x8, %rsp
+ffffff800211e7a6	popq	%rbx
+ffffff800211e7a7	popq	%rbp
+ffffff800211e7a8	jmpq	*0xa0(%rax)
+CONTROL_FLOW=0xffffff800211e7a8 jmpq	*0xa0(%rax)
+
+METHOD_TAG=REFERENCE_CommonGlue SYMBOL=__ZN10CommonGlue15initWithOptionsER17CommonGlueOptions ADDRESS=0xffffff800211e7ae END=0xffffff800211e840 INSTRUCTIONS=44
+ffffff800211e7ae	pushq	%rbp
+ffffff800211e7af	movq	%rsp, %rbp
+ffffff800211e7b2	pushq	%r14
+ffffff800211e7b4	pushq	%rbx
+ffffff800211e7b5	movq	%rsi, %rbx
+ffffff800211e7b8	movq	%rdi, %r14
+ffffff800211e7bb	movq	0x29d94e(%rip), %rax
+ffffff800211e7c2	callq	*0x98(%rax)
+CONTROL_FLOW=0xffffff800211e7c2 callq	*0x98(%rax)
+ffffff800211e7c8	testb	%al, %al
+ffffff800211e7ca	je	0xffffff800211e80a
+ffffff800211e7cc	leaq	__ZZN10CommonGlue15initWithOptionsER17CommonGlueOptionsE19kalloc_type_view_52(%rip), %rdi ## CommonGlue::initWithOptions(CommonGlueOptions&)::kalloc_type_view_52
+ffffff800211e7d3	callq	0xffffff8000ab5930
+CONTROL_FLOW=0xffffff800211e7d3 callq	0xffffff8000ab5930
+ffffff800211e7d8	movq	%rax, 0x10(%r14)
+ffffff800211e7dc	testq	%rax, %rax
+ffffff800211e7df	je	0xffffff800211e813
+ffffff800211e7e1	cmpq	$0x0, (%rbx)
+ffffff800211e7e5	je	0xffffff800211e81c
+ffffff800211e7e7	movq	0x8(%rbx), %rcx
+ffffff800211e80a	leaq	0x20b66e(%rip), %rdi            ## literal pool for: "CommonGlue super init failied\n"
+ffffff800211e813	leaq	0x20b684(%rip), %rdi            ## literal pool for: "Failed to allocate CommonGlue_IVars\n"
+ffffff800211e81c	leaq	0x20b6a0(%rip), %rdi            ## literal pool for: "CommonGlue pWorkQueue is null\n"
+ffffff800211e825	leaq	0x20b6b6(%rip), %rdi            ## literal pool for: "CommonGlue pBufferPool is null \n"
+ffffff800211e82e	leaq	0x20b6ce(%rip), %rdi            ## literal pool for: "CommonGlue pOutGlue is null \n"
+
+METHOD_TAG=REFERENCE_CommonGlue SYMBOL=__ZN10CommonGlue11sendMessageER17CommonGlueMessage ADDRESS=0xffffff800211e840 END=0xffffff800211e872 INSTRUCTIONS=15
+ffffff800211e840	movq	0x10(%rdi), %rax
+ffffff800211e844	movq	0x10(%rax), %rdi
+ffffff800211e848	testq	%rdi, %rdi
+ffffff800211e84b	je	0xffffff800211e859
+ffffff800211e84d	movq	(%rdi), %rax
+ffffff800211e850	movq	0x118(%rax), %rax
+ffffff800211e857	jmpq	*%rax
+CONTROL_FLOW=0xffffff800211e857 jmpq	*%rax
+ffffff800211e859	pushq	%rbp
+ffffff800211e85a	movq	%rsp, %rbp
+ffffff800211e85d	leaq	0x20b6bd(%rip), %rdi            ## literal pool for: "CommonGlue::sendMessage out glue is null\n"
+ffffff800211e864	xorl	%eax, %eax
+ffffff800211e866	callq	0xffffff8000ab6560
+CONTROL_FLOW=0xffffff800211e866 callq	0xffffff8000ab6560
+ffffff800211e86b	movl	$0xe00002bc, %eax               ## imm = 0xE00002BC
+ffffff800211e870	popq	%rbp
+ffffff800211e871	retq
+
+METHOD_TAG=REFERENCE_IO80211Glue SYMBOL=__ZN11IO80211Glue15initWithOptionsEP23IO80211SkywalkInterface ADDRESS=0xffffff8002129c32 END=0xffffff800212a274 INSTRUCTIONS=368
+ffffff8002129c32	pushq	%rbp
+ffffff8002129c33	movq	%rsp, %rbp
+ffffff8002129c36	pushq	%r15
+ffffff8002129c38	pushq	%r14
+ffffff8002129c3a	pushq	%r13
+ffffff8002129c3c	pushq	%r12
+ffffff8002129c3e	pushq	%rbx
+ffffff8002129c3f	subq	$0x78, %rsp
+ffffff8002129c43	movq	%rsi, %r14
+ffffff8002129c46	movq	%rdi, %rbx
+ffffff8002129c49	movq	0x2924c8(%rip), %rax
+ffffff8002129c50	movq	(%rax), %rax
+ffffff8002129c53	movq	%rax, -0x30(%rbp)
+ffffff8002129c57	movq	$0x8, -0xa0(%rbp)
+ffffff8002129c62	movq	$0x4000, -0x98(%rbp)            ## imm = 0x4000
+ffffff8002129c6d	xorl	%eax, %eax
+ffffff8002129c6f	movb	%al, -0x90(%rbp)
+ffffff8002129c75	movl	%eax, -0x8f(%rbp)
+ffffff8002129cb4	leaq	__ZZN11IO80211Glue15initWithOptionsEP23IO80211SkywalkInterfaceE20kalloc_type_view_201(%rip), %rdi ## IO80211Glue::initWithOptions(IO80211SkywalkInterface*)::kalloc_type_view_201
+ffffff8002129db2	callq	__ZN16IO80211WorkQueue9workQueueEv ## IO80211WorkQueue::workQueue()
+CONTROL_FLOW=0xffffff8002129db2 callq	__ZN16IO80211WorkQueue9workQueueEv ## IO80211WorkQueue::workQueue()
+ffffff8002129deb	leaq	0x203321(%rip), %rsi            ## literal pool for: "[wcl] %s@%d:IO80211Glue WCLWorkQueue is null\n"
+ffffff8002129df2	leaq	0x1feea9(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff8002129e37	callq	__ZN15WCLTimerFactory15allocWithParamsEP16IO80211WorkQueueS1_P11CCLogStream ## WCLTimerFactory::allocWithParams(IO80211WorkQueue*, IO80211WorkQueue*, CCLogStream*)
+CONTROL_FLOW=0xffffff8002129e37 callq	__ZN15WCLTimerFactory15allocWithParamsEP16IO80211WorkQueueS1_P11CCLogStream ## WCLTimerFactory::allocWithParams(IO80211WorkQueue*, IO80211WorkQueue*, CCLogStream*)
+ffffff8002129e4d	leaq	__ZN11IO80211Glue30processPendingEventQueueSourceEP16IO80211WorkQueue(%rip), %rsi ## IO80211Glue::processPendingEventQueueSource(IO80211WorkQueue*)
+ffffff8002129e9d	leaq	__ZN11IO80211Glue23processPendingIoucQueueEP16IO80211WorkQueue(%rip), %rsi ## IO80211Glue::processPendingIoucQueue(IO80211WorkQueue*)
+ffffff8002129f3c	movq	0x120(%rax), %rax
+ffffff8002129f62	callq	__ZN7WCLGlue11withOptionsER14WCLGlueOptions ## WCLGlue::withOptions(WCLGlueOptions&)
+CONTROL_FLOW=0xffffff8002129f62 callq	__ZN7WCLGlue11withOptionsER14WCLGlueOptions ## WCLGlue::withOptions(WCLGlueOptions&)
+ffffff8002129f83	callq	__ZN10CommonGlue15initWithOptionsER17CommonGlueOptions ## CommonGlue::initWithOptions(CommonGlueOptions&)
+CONTROL_FLOW=0xffffff8002129f83 callq	__ZN10CommonGlue15initWithOptionsER17CommonGlueOptions ## CommonGlue::initWithOptions(CommonGlueOptions&)
+ffffff8002129f9c	callq	__ZN7WCLGlue7initWclER14WCLGlueOptions ## WCLGlue::initWcl(WCLGlueOptions&)
+CONTROL_FLOW=0xffffff8002129f9c callq	__ZN7WCLGlue7initWclER14WCLGlueOptions ## WCLGlue::initWcl(WCLGlueOptions&)
+ffffff800212a01d	leaq	0x203086(%rip), %rsi            ## literal pool for: "[wcl] %s@%d:IO80211Glue ivars->fMainWorkQueue is null\n"
+ffffff800212a024	leaq	0x1fec77(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a066	leaq	0x1fec35(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a0a8	leaq	0x1febf3(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a0ea	leaq	0x1febb1(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a12c	leaq	0x1feb6f(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a16e	leaq	0x1feb2d(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a1ac	leaq	0x1feaef(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a1df	leaq	0x20308f(%rip), %rsi            ## literal pool for: "[wcl] %s@%d:IO80211Glue super::initWithOptions failed\n"
+ffffff800212a1e6	leaq	0x1feab5(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a1f0	movl	$0x120, %ecx                    ## imm = 0x120
+ffffff800212a229	leaq	0x1fea72(%rip), %rdx            ## literal pool for: "initWithOptions"
+ffffff800212a252	leaq	0x203053(%rip), %rsi            ## literal pool for: "[wcl] %s@%d:IO80211Glue fail to init wcl\n"
+ffffff800212a259	leaq	0x1fea42(%rip), %rdx            ## literal pool for: "initWithOptions"
+
+METHOD_TAG=REFERENCE_IO80211Glue SYMBOL=__ZN11IO80211Glue13freeResourcesEv ADDRESS=0xffffff800212a274 END=0xffffff800212a454 INSTRUCTIONS=132
+ffffff800212a274	pushq	%rbp
+ffffff800212a275	movq	%rsp, %rbp
+ffffff800212a278	pushq	%r15
+ffffff800212a27a	pushq	%r14
+ffffff800212a27c	pushq	%rbx
+ffffff800212a27d	pushq	%rax
+ffffff800212a27e	movq	%rdi, %rbx
+ffffff800212a281	leaq	0x202cc8(%rip), %rdi            ## literal pool for: "[wcl] IO80211Glue::freeResources start \n"
+ffffff800212a288	xorl	%eax, %eax
+ffffff800212a28a	callq	0xffffff8000ab6560
+CONTROL_FLOW=0xffffff800212a28a callq	0xffffff8000ab6560
+ffffff800212a28f	movq	0x18(%rbx), %rcx
+ffffff800212a293	testq	%rcx, %rcx
+ffffff800212a296	je	0xffffff800212a427
+ffffff800212a29c	movq	0x18(%rcx), %rdi
+ffffff800212a2a0	testq	%rdi, %rdi
+ffffff800212a2a3	je	0xffffff800212a2af
+ffffff800212a2a5	movq	(%rdi), %rax
+ffffff800212a2a8	callq	*0x28(%rax)
+CONTROL_FLOW=0xffffff800212a2a8 callq	*0x28(%rax)
+ffffff800212a41b	leaq	__ZZN11IO80211Glue13freeResourcesEvE20kalloc_type_view_161(%rip), %rdi ## IO80211Glue::freeResources()::kalloc_type_view_161
+ffffff800212a427	leaq	0x202b74(%rip), %rdi            ## literal pool for: "[wcl] IO80211Glue::freeResources end \n"
+
+METHOD_TAG=REFERENCE_IO80211Glue SYMBOL=__ZN11IO80211Glue4freeEv ADDRESS=0xffffff800212a454 END=0xffffff800212a470 INSTRUCTIONS=11
+ffffff800212a454	pushq	%rbp
+ffffff800212a455	movq	%rsp, %rbp
+ffffff800212a458	pushq	%rbx
+ffffff800212a459	pushq	%rax
+ffffff800212a45a	movq	%rdi, %rbx
+ffffff800212a45d	callq	__ZN11IO80211Glue13freeResourcesEv ## IO80211Glue::freeResources()
+CONTROL_FLOW=0xffffff800212a45d callq	__ZN11IO80211Glue13freeResourcesEv ## IO80211Glue::freeResources()
+ffffff800212a462	movq	%rbx, %rdi
+ffffff800212a465	addq	$0x8, %rsp
+ffffff800212a469	popq	%rbx
+ffffff800212a46a	popq	%rbp
+ffffff800212a46b	jmp	__ZN10CommonGlue4freeEv         ## CommonGlue::free()
+CONTROL_FLOW=0xffffff800212a46b jmp	__ZN10CommonGlue4freeEv         ## CommonGlue::free()
+
+METHOD_TAG=REFERENCE_IO80211Glue SYMBOL=__ZN11IO80211Glue4stopEv ADDRESS=0xffffff800212a470 END=0xffffff800212a51c INSTRUCTIONS=44
+ffffff800212a470	pushq	%rbp
+ffffff800212a471	movq	%rsp, %rbp
+ffffff800212a474	pushq	%rbx
+ffffff800212a475	subq	$0x38, %rsp
+ffffff800212a479	movq	%rdi, %rbx
+ffffff800212a47c	movq	0x291c95(%rip), %rax
+ffffff800212a483	movq	(%rax), %rax
+ffffff800212a486	movq	%rax, -0x10(%rbp)
+ffffff800212a48a	movq	0x291b6f(%rip), %rax
+ffffff800212a491	leaq	-0x38(%rbp), %rdx
+ffffff800212a495	movq	%rax, (%rdx)
+ffffff800212a498	movq	$0x40000000, 0x8(%rdx)          ## imm = 0x40000000
+ffffff800212a4a0	leaq	____ZN11IO80211Glue4stopEv_block_invoke(%rip), %rax
+ffffff800212a4a7	movq	%rax, 0x10(%rdx)
+ffffff800212a4ab	leaq	___block_descriptor_tmp(%rip), %rax
+ffffff800212a4b2	movq	%rax, 0x18(%rdx)
+ffffff800212a4b6	movq	%rdi, 0x20(%rdx)
+ffffff800212a4ba	xorl	%esi, %esi
+ffffff800212a4fb	leaq	_.str.8(%rip), %rsi             ## literal pool for: "[wcl] %s@%d:Stop compleated"
+ffffff800212a502	leaq	___FUNCTION__._ZN11IO80211Glue4stopEv(%rip), %rdx ## literal pool for: "stop"
+
+METHOD_TAG=REFERENCE_IO80211Glue SYMBOL=__ZN11IO80211Glue22receiveMessageInternalER17CommonGlueMessage ADDRESS=0xffffff800212ac9e END=0xffffff800212ad12 INSTRUCTIONS=35
+ffffff800212ac9e	cmpb	$0x1, 0x4(%rsi)
+ffffff800212aca2	jne	0xffffff800212acbe
+ffffff800212aca4	movl	(%rsi), %eax
+ffffff800212aca6	movq	0x18(%rdi), %rcx
+ffffff800212acaa	movq	(%rcx), %rdx
+ffffff800212acad	cmpb	$0x1, 0x5(%rsi)
+ffffff800212acb1	jne	0xffffff800212ad01
+ffffff800212acb3	movq	0x20(%rsi), %rcx
+ffffff800212acb7	movl	$0xc02869c9, %edi               ## imm = 0xC02869C9
+ffffff800212acbc	jmp	0xffffff800212ad0a
+CONTROL_FLOW=0xffffff800212acbc jmp	0xffffff800212ad0a
+ffffff800212acbe	movq	0x8(%rsi), %r8
+ffffff800212acc2	movq	%r8, %rcx
+ffffff800212acc5	testq	%r8, %r8
+ffffff800212acc8	je	0xffffff800212acce
+ffffff800212acca	movq	0x10(%rsi), %rcx
+ffffff800212acce	pushq	%rbp
+ffffff800212accf	movq	%rsp, %rbp
+ffffff800212acd2	movq	0x18(%rdi), %rdx
+ffffff800212acdf	movq	0x120(%rdi), %rsi
+ffffff800212ace6	movq	0xb08(%rsi), %rdi
+ffffff800212acf6	callq	*0x120(%r10)
+CONTROL_FLOW=0xffffff800212acf6 callq	*0x120(%r10)
+CONTROLLER_FACTORY_SYMBOL=0xffffff800222b53e
+
+METHOD_TAG=CONTROLLER_FACTORY SYMBOL=__ZN17IO80211Controller16CreatePostOfficeEv ADDRESS=0xffffff800222b53e END=0xffffff800222b554 INSTRUCTIONS=7
+ffffff800222b53e	pushq	%rbp
+ffffff800222b53f	movq	%rsp, %rbp
+ffffff800222b542	movq	(%rdi), %rax
+ffffff800222b545	callq	*0xc68(%rax)
+CONTROL_FLOW=0xffffff800222b545 callq	*0xc68(%rax)
+ffffff800222b54b	movq	%rax, %rdi
+ffffff800222b54e	popq	%rbp
+ffffff800222b54f	jmp	__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue ## IO80211PostOffice::allocWithParams(IO80211WorkQueue*)
+CONTROL_FLOW=0xffffff800222b54f jmp	__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue ## IO80211PostOffice::allocWithParams(IO80211WorkQueue*)
+CONTROLLER_RELAY_SYMBOL=0xffffff800222b340
+
+METHOD_TAG=CONTROLLER_RELAY SYMBOL=__ZN17IO80211Controller11postMessageEP23IO80211SkywalkInterfacejPvmb ADDRESS=0xffffff800222b340 END=0xffffff800222b360 INSTRUCTIONS=9
+ffffff800222b340	pushq	%rbp
+ffffff800222b341	movq	%rsp, %rbp
+ffffff800222b344	movq	0x120(%rdi), %rax
+ffffff800222b34b	movq	0xb08(%rax), %rdi
+ffffff800222b352	movq	(%rdi), %rax
+ffffff800222b355	movq	0x120(%rax), %rax
+ffffff800222b35c	popq	%rbp
+ffffff800222b35d	jmpq	*%rax
+CONTROL_FLOW=0xffffff800222b35d jmpq	*%rax
+ffffff800222b35f	nop
+
+STAGE152_INTERPRETATION=STATIC_ABI_ONLY; CLASS_RELATIONSHIP_REQUIRES_MATCHING_VTABLE_AND_METHOD_EVIDENCE; NO_RUNTIME_OBJECT_IDENTITY
+STAGE152_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE152_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE152 ==========
