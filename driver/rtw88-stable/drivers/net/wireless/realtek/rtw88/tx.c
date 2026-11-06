@@ -697,6 +697,11 @@ void __rtw_tx_work(struct rtw_dev *rtwdev)
 	struct rtw_txq *rtwtxq, *tmp;
 
 	spin_lock_bh(&rtwdev->txq_lock);
+	/* Covers queued work and synchronous VO wake_tx_queue execution. */
+	if (rtwdev->txq_quiescing) {
+		spin_unlock_bh(&rtwdev->txq_lock);
+		return;
+	}
 
 	list_for_each_entry_safe(rtwtxq, tmp, &rtwdev->txqs, list) {
 		struct ieee80211_txq *txq = rtwtxq_to_txq(rtwtxq);
@@ -718,6 +723,31 @@ void rtw_tx_work(struct work_struct *w)
 	struct rtw_dev *rtwdev = container_of(w, struct rtw_dev, tx_work);
 
 	__rtw_tx_work(rtwdev);
+}
+
+/*
+ * Close TXQ admission under the lock that covers dequeue and descriptor
+ * submission. Taking this lock waits for an already-running inline VO worker;
+ * later queued or inline workers observe txq_quiescing and cannot submit.
+ */
+void rtw_txq_quiesce(struct rtw_dev *rtwdev)
+{
+	spin_lock_bh(&rtwdev->txq_lock);
+	rtwdev->txq_quiescing = true;
+	spin_unlock_bh(&rtwdev->txq_lock);
+
+	/* Drain a queued worker; synchronous VO execution was serialized above. */
+	flush_work(&rtwdev->tx_work);
+}
+
+/* Reopen admission and schedule TXQs retained while key retirement ran. */
+void rtw_txq_resume(struct rtw_dev *rtwdev)
+{
+	spin_lock_bh(&rtwdev->txq_lock);
+	rtwdev->txq_quiescing = false;
+	spin_unlock_bh(&rtwdev->txq_lock);
+
+	queue_work(rtwdev->tx_wq, &rtwdev->tx_work);
 }
 
 void rtw_txq_init(struct rtw_dev *rtwdev, struct ieee80211_txq *txq)
