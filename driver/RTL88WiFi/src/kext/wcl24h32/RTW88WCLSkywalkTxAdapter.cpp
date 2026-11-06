@@ -206,12 +206,15 @@ void RTW88WCLSkywalkTxAdapter::backendCompletion(
     /* No Skywalk API, OSObject release, allocation, or blocking operation is
      * allowed here. Publish the ticket, then signal the already-attached
      * workloop event source through its IRQ-safe notifier. */
-    if (TicketPool::complete(ticket, transmitted)) {
-        CompletionNotify notify = self->_completionNotifier;
-        void *notifyContext = self->_completionNotifierContext;
-        if (notify)
-            notify(notifyContext);
-    }
+    /* Always wake the reaper after token publication, even if the ticket
+     * state transition fails. A bad ticket remains outstanding/fail-closed,
+     * but must not strand a separately retired token on an unsignaled list. */
+    const bool ticketCompleted = TicketPool::complete(ticket, transmitted);
+    (void)ticketCompleted;
+    CompletionNotify notify = self->_completionNotifier;
+    void *notifyContext = self->_completionNotifierContext;
+    if (notify)
+        notify(notifyContext);
 
     __atomic_sub_fetch(&self->_backendCompletionCallbacksInFlight, 1U,
                        __ATOMIC_ACQ_REL);
