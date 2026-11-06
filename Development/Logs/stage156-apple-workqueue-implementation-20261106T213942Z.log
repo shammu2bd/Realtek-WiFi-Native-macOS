@@ -1,0 +1,2178 @@
+========== STAGE156 APPLE BCMWLAN WORKQUEUE IMPLEMENTATION AUDIT ==========
+STAGE156_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE156_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE156_WORKTREE_STATUS_ENTRIES=198
+STAGE156_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE156_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE156_STAGE155_REPORT_SHA=558c1444ddc90924ef06dcf134fa48eaeb79b20e
+STAGE156_SCOPE=READ_ONLY_DISASSEMBLE_APPLEBCMWLANCORE_WORKQUEUE_OVERRIDES_AND_LIFETIME
+STAGE156_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE156_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+APPLE_CORE_VTABLE=0xffffff80017766c8
+APPLE_CORE_INSTANCE_SIZE=304
+APPLE_CORE_OWNER_SYMBOL=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_VTABLE_WORDS=636
+APPLE_CORE_VTABLE_SLOT OFFSET=0xc58 WORD=397 RAW=0x40000001491f70 TARGET=0xffffff8001591f70 OWNER=com.apple.driver.AppleBCMWLANCoreMac SYMBOL=__ZN16AppleBCMWLANCore15createWorkQueueEv
+APPLE_CORE_VTABLE_SLOT OFFSET=0xc68 WORD=399 RAW=0x4000000149203c TARGET=0xffffff800159203c OWNER=com.apple.driver.AppleBCMWLANCoreMac SYMBOL=__ZNK16AppleBCMWLANCore12getWorkQueueEv
+APPLE_CORE_VTABLE_SLOT OFFSET=0xdc0 WORD=442 RAW=0x4000000212b53e TARGET=0xffffff800222b53e OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZN17IO80211Controller16CreatePostOfficeEv
+APPLE_CORE_METHOD_COUNT=1397
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f01a NAME=__ZN16AppleBCMWLANCore9MetaClassC1Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f04c NAME=__ZN16AppleBCMWLANCore9MetaClassD1Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f056 NAME=__ZN16AppleBCMWLANCoreC2EPK11OSMetaClass OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f076 NAME=__ZN16AppleBCMWLANCoreC1EPK11OSMetaClass OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f096 NAME=__ZN16AppleBCMWLANCoreD2Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f0a0 NAME=__ZN16AppleBCMWLANCoreD1Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f0ea NAME=__ZNK16AppleBCMWLANCore12getMetaClassEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f0f8 NAME=__ZN16AppleBCMWLANCore9MetaClassC2Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f12a NAME=__ZNK16AppleBCMWLANCore9MetaClass5allocEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f186 NAME=__ZN16AppleBCMWLANCoreC1Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f1b6 NAME=__ZN16AppleBCMWLANCoreC2Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f5ac NAME=__ZN16AppleBCMWLANCore8is4387C2Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800158f708 NAME=__ZN16AppleBCMWLANCore8is4388C2Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001590526 NAME=__ZN16AppleBCMWLANCore23initSCTxBlankingSummaryEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff80015907ca NAME=__ZN16AppleBCMWLANCore4initEP12OSDictionary OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001591664 NAME=__ZN16AppleBCMWLANCore4freeEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff80015916c2 NAME=__ZN16AppleBCMWLANCore13freeResourcesEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001591f70 NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800159203c NAME=__ZNK16AppleBCMWLANCore12getWorkQueueEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001592576 NAME=__ZN16AppleBCMWLANCore21initAfterIORegUpdatedEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001593502 NAME=__ZN16AppleBCMWLANCore20stopAndFreeResourcesEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff80015937de NAME=__ZN16AppleBCMWLANCore5startEP9IOService OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800159af70 NAME=__ZN16AppleBCMWLANCore13initDebugInfoEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800159c99c NAME=__ZN16AppleBCMWLANCore4stopEP9IOService OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800159ca84 NAME=__ZN16AppleBCMWLANCore13stopResourcesEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800159fb18 NAME=__ZN16AppleBCMWLANCore22enableWorkQueueSourcesEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800159fc80 NAME=__ZN16AppleBCMWLANCore23disableWorkQueueSourcesEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff80015b6dba NAME=__ZN16AppleBCMWLANCore22initTrafficEngineeringEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff80015b8d96 NAME=__ZN16AppleBCMWLANCore16stopARPKeepAliveEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff80015bed9e NAME=__ZN16AppleBCMWLANCore26startRoamScanAsyncCallbackER9CommandIDiR16CommandRxPayloadPv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800160e1be NAME=__ZN16AppleBCMWLANCore17initEventBitFieldEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001616a7e NAME=__ZN16AppleBCMWLANCore19setRANGING_START_V3EP34apple80211_ranging_start_request_t OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff80016172fa NAME=__ZN16AppleBCMWLANCore19setRANGING_START_V4EP34apple80211_ranging_start_request_t OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001617a6e NAME=__ZN16AppleBCMWLANCore16setRANGING_STARTEP34apple80211_ranging_start_request_t OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001618c26 NAME=__ZN16AppleBCMWLANCore31initialPowerStateForDomainStateEm OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff80016279de NAME=__ZN16AppleBCMWLANCore24initialize6GCapabilitiesEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff800163ef3e NAME=__ZN16AppleBCMWLANCore15initQoSMgmtMSCSEv OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001645728 NAME=__ZN16AppleBCMWLANCore9MetaClassD0Ev OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_RELEVANT_SYMBOL ADDRESS=0xffffff8001788fd8 NAME=__ZN16AppleBCMWLANCore10gMetaClassE OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_OVERRIDE_SYMBOL NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv ADDRESS=0xffffff8001591f70 OWNER=com.apple.driver.AppleBCMWLANCoreMac
+APPLE_CORE_OVERRIDE_SYMBOL NAME=__ZNK16AppleBCMWLANCore12getWorkQueueEv ADDRESS=0xffffff800159203c OWNER=com.apple.driver.AppleBCMWLANCoreMac
+
+METHOD_TAG=APPLE_CORE_WORKQUEUE_OVERRIDE SYMBOL=__ZN16AppleBCMWLANCore15createWorkQueueEv ADDRESS=0xffffff8001591f70 END=0xffffff800159203c INSTRUCTIONS=49
+ffffff8001591f70	pushq	%rbp
+ffffff8001591f71	movq	%rsp, %rbp
+ffffff8001591f74	pushq	%r14
+ffffff8001591f76	pushq	%rbx
+ffffff8001591f77	subq	$0x10, %rsp
+ffffff8001591f7b	movq	%rdi, %rbx
+ffffff8001591f7e	movq	0x1d92a3(%rip), %rax
+ffffff8001591f85	movq	(%rax), %rax
+ffffff8001591f88	movq	%rax, -0x18(%rbp)
+ffffff8001591f8c	movq	0x128(%rdi), %rax
+ffffff8001591f93	movq	0x1510(%rax), %rdi
+ffffff8001591f9a	movq	(%rdi), %rax
+ffffff8001591f9d	callq	*0x860(%rax)
+ffffff8001591fa3	movzbl	%al, %eax
+ffffff8001591fa6	leaq	-0x1c(%rbp), %r14
+ffffff8001591faa	movl	%eax, (%r14)
+ffffff8001591fad	leaq	0x179d11(%rip), %rdi            ## literal pool for: "wlan.workQueue.create"
+ffffff8001591fb4	movq	%r14, %rsi
+ffffff8001591fb7	movl	$0x4, %edx
+ffffff8001591fbc	callq	0xffffff8000b92970
+ffffff8001591fc1	cmpl	$0x0, (%r14)
+ffffff8001591fc5	je	0xffffff8001591fdc
+CONTROL_FLOW=0xffffff8001591fc5 je	0xffffff8001591fdc
+ffffff8001591fc7	callq	0xffffff8002258fcc
+ffffff8001591fcc	movq	0x128(%rbx), %rcx
+ffffff8001591fd3	movq	%rax, 0x7898(%rcx)
+ffffff8001591fda	jmp	0xffffff8001592018
+CONTROL_FLOW=0xffffff8001591fda jmp	0xffffff8001592018
+ffffff8001591fdc	movq	0x128(%rbx), %rax
+ffffff8001591fe3	movq	0x1510(%rax), %rdi
+ffffff8001591fea	movq	(%rdi), %rax
+ffffff8001591fed	callq	*0x868(%rax)
+ffffff8001591ff3	movq	0x128(%rbx), %rcx
+ffffff8001591ffa	movq	%rax, 0x7898(%rcx)
+ffffff8001592001	movq	(%rax), %rcx
+ffffff8001592004	movq	%rax, %rdi
+ffffff8001592007	callq	*0x20(%rcx)
+ffffff800159200a	movq	0x128(%rbx), %rax
+ffffff8001592011	movq	0x7898(%rax), %rax
+ffffff8001592018	testq	%rax, %rax
+ffffff800159201b	setne	%al
+ffffff800159201e	movq	0x1d9203(%rip), %rcx
+ffffff8001592025	movq	(%rcx), %rcx
+ffffff8001592028	cmpq	-0x18(%rbp), %rcx
+ffffff800159202c	jne	0xffffff8001592037
+CONTROL_FLOW=0xffffff800159202c jne	0xffffff8001592037
+ffffff800159202e	addq	$0x10, %rsp
+ffffff8001592032	popq	%rbx
+ffffff8001592033	popq	%r14
+ffffff8001592035	popq	%rbp
+ffffff8001592036	retq
+ffffff8001592037	callq	0xffffff8000383150
+
+METHOD_TAG=APPLE_CORE_WORKQUEUE_OVERRIDE SYMBOL=__ZNK16AppleBCMWLANCore12getWorkQueueEv ADDRESS=0xffffff800159203c END=0xffffff8001592050 INSTRUCTIONS=6
+ffffff800159203c	pushq	%rbp
+ffffff800159203d	movq	%rsp, %rbp
+ffffff8001592040	movq	0x128(%rdi), %rax
+ffffff8001592047	movq	0x7898(%rax), %rax
+ffffff800159204e	popq	%rbp
+ffffff800159204f	retq
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore9MetaClassC1Ev ADDRESS=0xffffff800158f01a END=0xffffff800158f04c INSTRUCTIONS=15
+ffffff800158f01a	pushq	%rbp
+ffffff800158f01b	movq	%rsp, %rbp
+ffffff800158f01e	pushq	%rbx
+ffffff800158f01f	pushq	%rax
+ffffff800158f020	movq	%rdi, %rbx
+ffffff800158f023	leaq	0x17c31e(%rip), %rsi            ## literal pool for: "AppleBCMWLANCore"
+ffffff800158f02a	movq	0x1dc03f(%rip), %rdx
+ffffff800158f031	movl	$0x130, %ecx                    ## imm = 0x130
+ffffff800158f036	callq	0xffffff8000a49940
+ffffff800158f03b	leaq	0x1e8a76(%rip), %rax
+ffffff800158f042	movq	%rax, (%rbx)
+ffffff800158f045	addq	$0x8, %rsp
+ffffff800158f049	popq	%rbx
+ffffff800158f04a	popq	%rbp
+ffffff800158f04b	retq
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore9MetaClassD1Ev ADDRESS=0xffffff800158f04c END=0xffffff800158f056 INSTRUCTIONS=4
+ffffff800158f04c	pushq	%rbp
+ffffff800158f04d	movq	%rsp, %rbp
+ffffff800158f050	popq	%rbp
+ffffff800158f051	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff800158f051 jmp	0xffffff8000a4a040
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCoreC2EPK11OSMetaClass ADDRESS=0xffffff800158f056 END=0xffffff800158f076 INSTRUCTIONS=13
+ffffff800158f056	pushq	%rbp
+ffffff800158f057	movq	%rsp, %rbp
+ffffff800158f05a	pushq	%rbx
+ffffff800158f05b	pushq	%rax
+ffffff800158f05c	movq	%rdi, %rbx
+ffffff800158f05f	callq	0xffffff8002222634
+ffffff800158f064	leaq	0x1e766d(%rip), %rax
+ffffff800158f06b	movq	%rax, (%rbx)
+ffffff800158f06e	addq	$0x8, %rsp
+ffffff800158f072	popq	%rbx
+ffffff800158f073	popq	%rbp
+ffffff800158f074	retq
+ffffff800158f075	nop
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCoreC1EPK11OSMetaClass ADDRESS=0xffffff800158f076 END=0xffffff800158f096 INSTRUCTIONS=13
+ffffff800158f076	pushq	%rbp
+ffffff800158f077	movq	%rsp, %rbp
+ffffff800158f07a	pushq	%rbx
+ffffff800158f07b	pushq	%rax
+ffffff800158f07c	movq	%rdi, %rbx
+ffffff800158f07f	callq	0xffffff8002222634
+ffffff800158f084	leaq	0x1e764d(%rip), %rax
+ffffff800158f08b	movq	%rax, (%rbx)
+ffffff800158f08e	addq	$0x8, %rsp
+ffffff800158f092	popq	%rbx
+ffffff800158f093	popq	%rbp
+ffffff800158f094	retq
+ffffff800158f095	nop
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCoreD2Ev ADDRESS=0xffffff800158f096 END=0xffffff800158f0a0 INSTRUCTIONS=4
+ffffff800158f096	pushq	%rbp
+ffffff800158f097	movq	%rsp, %rbp
+ffffff800158f09a	popq	%rbp
+ffffff800158f09b	jmp	0xffffff8002222654
+CONTROL_FLOW=0xffffff800158f09b jmp	0xffffff8002222654
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCoreD1Ev ADDRESS=0xffffff800158f0a0 END=0xffffff800158f0aa INSTRUCTIONS=4
+ffffff800158f0a0	pushq	%rbp
+ffffff800158f0a1	movq	%rsp, %rbp
+ffffff800158f0a4	popq	%rbp
+ffffff800158f0a5	jmp	0xffffff8002222654
+CONTROL_FLOW=0xffffff800158f0a5 jmp	0xffffff8002222654
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCoreD0Ev ADDRESS=0xffffff800158f0aa END=0xffffff800158f0d2 INSTRUCTIONS=13
+ffffff800158f0aa	pushq	%rbp
+ffffff800158f0ab	movq	%rsp, %rbp
+ffffff800158f0ae	pushq	%rbx
+ffffff800158f0af	pushq	%rax
+ffffff800158f0b0	movq	%rdi, %rbx
+ffffff800158f0b3	callq	0xffffff8002222654
+ffffff800158f0b8	leaq	__ZL20AppleBCMWLANCore_ktv(%rip), %rdi ## AppleBCMWLANCore_ktv
+ffffff800158f0bf	movl	$0x130, %edx                    ## imm = 0x130
+ffffff800158f0c4	movq	%rbx, %rsi
+ffffff800158f0c7	addq	$0x8, %rsp
+ffffff800158f0cb	popq	%rbx
+ffffff800158f0cc	popq	%rbp
+ffffff800158f0cd	jmp	0xffffff8000a4bee0
+CONTROL_FLOW=0xffffff800158f0cd jmp	0xffffff8000a4bee0
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore9MetaClassC2Ev ADDRESS=0xffffff800158f0f8 END=0xffffff800158f12a INSTRUCTIONS=15
+ffffff800158f0f8	pushq	%rbp
+ffffff800158f0f9	movq	%rsp, %rbp
+ffffff800158f0fc	pushq	%rbx
+ffffff800158f0fd	pushq	%rax
+ffffff800158f0fe	movq	%rdi, %rbx
+ffffff800158f101	leaq	0x17c240(%rip), %rsi            ## literal pool for: "AppleBCMWLANCore"
+ffffff800158f108	movq	0x1dbf61(%rip), %rdx
+ffffff800158f10f	movl	$0x130, %ecx                    ## imm = 0x130
+ffffff800158f114	callq	0xffffff8000a49940
+ffffff800158f119	leaq	0x1e8998(%rip), %rax
+ffffff800158f120	movq	%rax, (%rbx)
+ffffff800158f123	addq	$0x8, %rsp
+ffffff800158f127	popq	%rbx
+ffffff800158f128	popq	%rbp
+ffffff800158f129	retq
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCoreC1Ev ADDRESS=0xffffff800158f186 END=0xffffff800158f1b6 INSTRUCTIONS=16
+ffffff800158f186	pushq	%rbp
+ffffff800158f187	movq	%rsp, %rbp
+ffffff800158f18a	pushq	%r14
+ffffff800158f18c	pushq	%rbx
+ffffff800158f18d	movq	%rdi, %rbx
+ffffff800158f190	leaq	__ZN16AppleBCMWLANCore10gMetaClassE(%rip), %r14 ## AppleBCMWLANCore::gMetaClass
+ffffff800158f197	movq	%r14, %rsi
+ffffff800158f19a	callq	0xffffff8002222634
+ffffff800158f19f	leaq	0x1e7532(%rip), %rax
+ffffff800158f1a6	movq	%rax, (%rbx)
+ffffff800158f1a9	movq	%r14, %rdi
+ffffff800158f1ac	popq	%rbx
+ffffff800158f1ad	popq	%r14
+ffffff800158f1af	popq	%rbp
+ffffff800158f1b0	jmp	0xffffff8000a4a700
+CONTROL_FLOW=0xffffff800158f1b0 jmp	0xffffff8000a4a700
+ffffff800158f1b5	nop
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCoreC2Ev ADDRESS=0xffffff800158f1b6 END=0xffffff800158f1e6 INSTRUCTIONS=16
+ffffff800158f1b6	pushq	%rbp
+ffffff800158f1b7	movq	%rsp, %rbp
+ffffff800158f1ba	pushq	%r14
+ffffff800158f1bc	pushq	%rbx
+ffffff800158f1bd	movq	%rdi, %rbx
+ffffff800158f1c0	leaq	__ZN16AppleBCMWLANCore10gMetaClassE(%rip), %r14 ## AppleBCMWLANCore::gMetaClass
+ffffff800158f1c7	movq	%r14, %rsi
+ffffff800158f1ca	callq	0xffffff8002222634
+ffffff800158f1cf	leaq	0x1e7502(%rip), %rax
+ffffff800158f1d6	movq	%rax, (%rbx)
+ffffff800158f1d9	movq	%r14, %rdi
+ffffff800158f1dc	popq	%rbx
+ffffff800158f1dd	popq	%r14
+ffffff800158f1df	popq	%rbp
+ffffff800158f1e0	jmp	0xffffff8000a4a700
+CONTROL_FLOW=0xffffff800158f1e0 jmp	0xffffff8000a4a700
+ffffff800158f1e5	nop
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore8is4387C2Ev ADDRESS=0xffffff800158f5ac END=0xffffff800158f642 INSTRUCTIONS=42
+ffffff800158f5ac	pushq	%rbp
+ffffff800158f5ad	movq	%rsp, %rbp
+ffffff800158f5b0	pushq	%r14
+ffffff800158f5b2	pushq	%rbx
+ffffff800158f5b3	subq	$0x10, %rsp
+ffffff800158f5b7	movq	%rdi, %rbx
+ffffff800158f5ba	movq	0x1dbc67(%rip), %rax
+ffffff800158f5c1	movq	(%rax), %rax
+ffffff800158f5c4	movq	%rax, -0x18(%rbp)
+ffffff800158f5c8	movq	0x128(%rdi), %rax
+ffffff800158f5cf	movq	0x1510(%rax), %rdi
+ffffff800158f5d6	movq	(%rdi), %rax
+ffffff800158f5d9	callq	*0xa30(%rax)
+ffffff800158f5df	cmpl	$0x1123, %eax                   ## imm = 0x1123
+ffffff800158f5e4	jne	0xffffff800158f61d
+CONTROL_FLOW=0xffffff800158f5e4 jne	0xffffff800158f61d
+ffffff800158f5e6	leaq	-0x1c(%rbp), %r14
+ffffff800158f61b	je	0xffffff800158f638
+CONTROL_FLOW=0xffffff800158f61b je	0xffffff800158f638
+ffffff800158f62d	jne	0xffffff800158f63c
+CONTROL_FLOW=0xffffff800158f62d jne	0xffffff800158f63c
+ffffff800158f63a	jmp	0xffffff800158f61f
+CONTROL_FLOW=0xffffff800158f63a jmp	0xffffff800158f61f
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore8is4388C2Ev ADDRESS=0xffffff800158f708 END=0xffffff800158f79e INSTRUCTIONS=42
+ffffff800158f708	pushq	%rbp
+ffffff800158f709	movq	%rsp, %rbp
+ffffff800158f70c	pushq	%r14
+ffffff800158f70e	pushq	%rbx
+ffffff800158f70f	subq	$0x10, %rsp
+ffffff800158f713	movq	%rdi, %rbx
+ffffff800158f716	movq	0x1dbb0b(%rip), %rax
+ffffff800158f71d	movq	(%rax), %rax
+ffffff800158f720	movq	%rax, -0x18(%rbp)
+ffffff800158f724	movq	0x128(%rdi), %rax
+ffffff800158f72b	movq	0x1510(%rax), %rdi
+ffffff800158f732	movq	(%rdi), %rax
+ffffff800158f735	callq	*0xa30(%rax)
+ffffff800158f73b	cmpl	$0x1124, %eax                   ## imm = 0x1124
+ffffff800158f740	jne	0xffffff800158f779
+CONTROL_FLOW=0xffffff800158f740 jne	0xffffff800158f779
+ffffff800158f742	leaq	-0x1c(%rbp), %r14
+ffffff800158f777	je	0xffffff800158f794
+CONTROL_FLOW=0xffffff800158f777 je	0xffffff800158f794
+ffffff800158f789	jne	0xffffff800158f798
+CONTROL_FLOW=0xffffff800158f789 jne	0xffffff800158f798
+ffffff800158f796	jmp	0xffffff800158f77b
+CONTROL_FLOW=0xffffff800158f796 jmp	0xffffff800158f77b
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore23initSCTxBlankingSummaryEv ADDRESS=0xffffff8001590526 END=0xffffff800159057c INSTRUCTIONS=19
+ffffff8001590526	pushq	%rbp
+ffffff8001590527	movq	%rsp, %rbp
+ffffff800159052a	pushq	%rbx
+ffffff800159052b	pushq	%rax
+ffffff800159052c	movq	%rdi, %rbx
+ffffff800159052f	movl	$0x4570, %edi                   ## imm = 0x4570
+ffffff8001590534	addq	0x128(%rbx), %rdi
+ffffff800159053b	movl	$0x88, %esi
+ffffff8001590540	callq	0xffffff8000101100
+ffffff8001590545	movq	0x128(%rbx), %rax
+ffffff800159054c	movl	$0x19, 0x4570(%rax)
+ffffff8001590556	movl	$0x28, 0x4590(%rax)
+ffffff8001590560	movl	$0x46, 0x45b0(%rax)
+ffffff800159056a	movl	$0x64, 0x45d0(%rax)
+ffffff8001590574	addq	$0x8, %rsp
+ffffff8001590578	popq	%rbx
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore4initEP12OSDictionary ADDRESS=0xffffff80015907ca END=0xffffff8001591610 INSTRUCTIONS=648
+ffffff80015907ca	pushq	%rbp
+ffffff80015907cb	movq	%rsp, %rbp
+ffffff80015907ce	pushq	%r15
+ffffff80015907d0	pushq	%r14
+ffffff80015907d2	pushq	%r12
+ffffff80015907d4	pushq	%rbx
+ffffff80015907d5	subq	$0x20, %rsp
+ffffff80015907d9	movq	%rsi, %r14
+ffffff80015907dc	movq	%rdi, %rbx
+ffffff80015907df	movq	0x1daa42(%rip), %rax
+ffffff80015907e6	movq	(%rax), %rax
+ffffff80015907e9	movq	%rax, -0x28(%rbp)
+ffffff80015907ed	leaq	__ZZN16AppleBCMWLANCore4initEP12OSDictionaryE21kalloc_type_view_1338(%rip), %rdi ## AppleBCMWLANCore::init(OSDictionary*)::kalloc_type_view_1338
+ffffff80015907f4	movl	$0x7c40, %esi                   ## imm = 0x7C40
+ffffff80015907f9	callq	0xffffff8000ab6300
+ffffff80015907fe	movq	%rax, 0x128(%rbx)
+ffffff8001590808	je	0xffffff8001590965
+CONTROL_FLOW=0xffffff8001590808 je	0xffffff8001590965
+ffffff800159083c	je	0xffffff800159096a
+CONTROL_FLOW=0xffffff800159083c je	0xffffff800159096a
+ffffff800159089b	leaq	0x1a4699(%rip), %r8             ## literal pool for: "release"
+ffffff80015908ca	je	0xffffff800159097b
+CONTROL_FLOW=0xffffff80015908ca je	0xffffff800159097b
+ffffff80015908e6	je	0xffffff800159098c
+CONTROL_FLOW=0xffffff80015908e6 je	0xffffff800159098c
+ffffff8001590906	je	0xffffff8001590923
+CONTROL_FLOW=0xffffff8001590906 je	0xffffff8001590923
+ffffff8001590949	je	0xffffff80015909d3
+CONTROL_FLOW=0xffffff8001590949 je	0xffffff80015909d3
+ffffff8001590963	jmp	0xffffff80015909dd
+CONTROL_FLOW=0xffffff8001590963 jmp	0xffffff80015909dd
+ffffff8001590968	jmp	0xffffff80015909af
+CONTROL_FLOW=0xffffff8001590968 jmp	0xffffff80015909af
+ffffff8001590979	jmp	0xffffff800159099b
+CONTROL_FLOW=0xffffff8001590979 jmp	0xffffff800159099b
+ffffff800159098a	jmp	0xffffff800159099b
+CONTROL_FLOW=0xffffff800159098a jmp	0xffffff800159099b
+ffffff80015909bd	jne	0xffffff800159160a
+CONTROL_FLOW=0xffffff80015909bd jne	0xffffff800159160a
+ffffff80015909fa	je	0xffffff8001590a0a
+CONTROL_FLOW=0xffffff80015909fa je	0xffffff8001590a0a
+ffffff8001590a21	je	0xffffff8001590a31
+CONTROL_FLOW=0xffffff8001590a21 je	0xffffff8001590a31
+ffffff8001590a48	je	0xffffff8001590a58
+CONTROL_FLOW=0xffffff8001590a48 je	0xffffff8001590a58
+ffffff8001590a6f	je	0xffffff8001590a7f
+CONTROL_FLOW=0xffffff8001590a6f je	0xffffff8001590a7f
+ffffff8001590a9d	je	0xffffff8001590aa6
+CONTROL_FLOW=0xffffff8001590a9d je	0xffffff8001590aa6
+ffffff8001590ac4	je	0xffffff8001590ae0
+CONTROL_FLOW=0xffffff8001590ac4 je	0xffffff8001590ae0
+ffffff8001590ad2	je	0xffffff8001590ad9
+CONTROL_FLOW=0xffffff8001590ad2 je	0xffffff8001590ad9
+ffffff8001590ad7	jmp	0xffffff8001590ae0
+CONTROL_FLOW=0xffffff8001590ad7 jmp	0xffffff8001590ae0
+ffffff8001590af7	je	0xffffff800159147c
+CONTROL_FLOW=0xffffff8001590af7 je	0xffffff800159147c
+ffffff8001590b39	je	0xffffff8001590b5f
+CONTROL_FLOW=0xffffff8001590b39 je	0xffffff8001590b5f
+ffffff8001590b3f	je	0xffffff8001590b5f
+CONTROL_FLOW=0xffffff8001590b3f je	0xffffff8001590b5f
+ffffff8001590b5d	jmp	0xffffff8001590b66
+CONTROL_FLOW=0xffffff8001590b5d jmp	0xffffff8001590b66
+ffffff8001590b84	je	0xffffff8001590b94
+CONTROL_FLOW=0xffffff8001590b84 je	0xffffff8001590b94
+ffffff8001590bb2	je	0xffffff8001590bbb
+CONTROL_FLOW=0xffffff8001590bb2 je	0xffffff8001590bbb
+ffffff8001590be3	je	0xffffff8001590bee
+CONTROL_FLOW=0xffffff8001590be3 je	0xffffff8001590bee
+ffffff8001590dbd	je	0xffffff8001590dd9
+CONTROL_FLOW=0xffffff8001590dbd je	0xffffff8001590dd9
+ffffff8001590dc6	jne	0xffffff8001590dd9
+CONTROL_FLOW=0xffffff8001590dc6 jne	0xffffff8001590dd9
+ffffff800159120f	je	0xffffff80015914a8
+CONTROL_FLOW=0xffffff800159120f je	0xffffff80015914a8
+ffffff8001591275	je	0xffffff800159129a
+CONTROL_FLOW=0xffffff8001591275 je	0xffffff800159129a
+ffffff800159131c	je	0xffffff8001591340
+CONTROL_FLOW=0xffffff800159131c je	0xffffff8001591340
+ffffff8001591322	jne	0xffffff8001591340
+CONTROL_FLOW=0xffffff8001591322 jne	0xffffff8001591340
+ffffff8001591365	je	0xffffff8001591389
+CONTROL_FLOW=0xffffff8001591365 je	0xffffff8001591389
+ffffff800159136b	jne	0xffffff8001591389
+CONTROL_FLOW=0xffffff800159136b jne	0xffffff8001591389
+ffffff80015913ae	je	0xffffff80015913d2
+CONTROL_FLOW=0xffffff80015913ae je	0xffffff80015913d2
+ffffff80015913b4	jne	0xffffff80015913d2
+CONTROL_FLOW=0xffffff80015913b4 jne	0xffffff80015913d2
+ffffff8001591404	je	0xffffff8001591426
+CONTROL_FLOW=0xffffff8001591404 je	0xffffff8001591426
+ffffff800159140d	jne	0xffffff8001591426
+CONTROL_FLOW=0xffffff800159140d jne	0xffffff8001591426
+ffffff800159144a	je	0xffffff8001591502
+CONTROL_FLOW=0xffffff800159144a je	0xffffff8001591502
+ffffff800159145f	je	0xffffff80015914bb
+CONTROL_FLOW=0xffffff800159145f je	0xffffff80015914bb
+ffffff8001591467	jae	0xffffff80015914de
+CONTROL_FLOW=0xffffff8001591467 jae	0xffffff80015914de
+ffffff8001591477	jmp	0xffffff8001591502
+CONTROL_FLOW=0xffffff8001591477 jmp	0xffffff8001591502
+ffffff8001591493	je	0xffffff8001590b1c
+CONTROL_FLOW=0xffffff8001591493 je	0xffffff8001590b1c
+ffffff800159149d	jne	0xffffff8001590afd
+CONTROL_FLOW=0xffffff800159149d jne	0xffffff8001590afd
+ffffff80015914a3	jmp	0xffffff8001590b1c
+CONTROL_FLOW=0xffffff80015914a3 jmp	0xffffff8001590b1c
+ffffff80015914b6	jmp	0xffffff80015909af
+CONTROL_FLOW=0xffffff80015914b6 jmp	0xffffff80015909af
+ffffff80015914dc	jmp	0xffffff8001591502
+CONTROL_FLOW=0xffffff80015914dc jmp	0xffffff8001591502
+ffffff8001591519	je	0xffffff800159154e
+CONTROL_FLOW=0xffffff8001591519 je	0xffffff800159154e
+ffffff8001591579	je	0xffffff80015909af
+CONTROL_FLOW=0xffffff8001591579 je	0xffffff80015909af
+ffffff8001591583	je	0xffffff80015909af
+CONTROL_FLOW=0xffffff8001591583 je	0xffffff80015909af
+ffffff80015915a6	je	0xffffff80015909af
+CONTROL_FLOW=0xffffff80015915a6 je	0xffffff80015909af
+ffffff80015915c7	je	0xffffff80015909af
+CONTROL_FLOW=0xffffff80015915c7 je	0xffffff80015909af
+ffffff8001591605	jmp	0xffffff80015909af
+CONTROL_FLOW=0xffffff8001591605 jmp	0xffffff80015909af
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore4freeEv ADDRESS=0xffffff8001591664 END=0xffffff80015916c2 INSTRUCTIONS=23
+ffffff8001591664	pushq	%rbp
+ffffff8001591665	movq	%rsp, %rbp
+ffffff8001591668	pushq	%rbx
+ffffff8001591669	pushq	%rax
+ffffff800159166a	movq	%rdi, %rbx
+ffffff800159166d	callq	__ZN16AppleBCMWLANCore13freeResourcesEv ## AppleBCMWLANCore::freeResources()
+ffffff8001591672	movq	0x128(%rbx), %rdi
+ffffff8001591679	testq	%rdi, %rdi
+ffffff800159167c	je	0xffffff80015916ab
+CONTROL_FLOW=0xffffff800159167c je	0xffffff80015916ab
+ffffff800159167e	movl	$0x7c40, %esi                   ## imm = 0x7C40
+ffffff8001591683	callq	0xffffff8000101100
+ffffff8001591688	movq	0x128(%rbx), %rsi
+ffffff800159168f	movq	$0x0, 0x128(%rbx)
+ffffff800159169a	leaq	__ZZN16AppleBCMWLANCore4freeEvE21kalloc_type_view_1712(%rip), %rdi ## AppleBCMWLANCore::free()::kalloc_type_view_1712
+ffffff80015916a1	movl	$0x7c40, %edx                   ## imm = 0x7C40
+ffffff80015916a6	callq	0xffffff8000ab6320
+ffffff80015916bb	jmpq	*0xa0(%rax)
+CONTROL_FLOW=0xffffff80015916bb jmpq	*0xa0(%rax)
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore13freeResourcesEv ADDRESS=0xffffff80015916c2 END=0xffffff8001591f70 INSTRUCTIONS=451
+ffffff80015916c2	pushq	%rbp
+ffffff80015916c3	movq	%rsp, %rbp
+ffffff80015916c6	pushq	%r14
+ffffff80015916c8	pushq	%rbx
+ffffff80015916c9	movq	%rdi, %rbx
+ffffff80015916cc	callq	0xffffff800048cb00
+ffffff80015916d1	leaq	0x17ba6c(%rip), %rdi            ## literal pool for: "AppleBCMWLANCore::freeResources[%u] this[%p]\n"
+ffffff80015916d8	movl	$0xe3c, %esi                    ## imm = 0xE3C
+ffffff80015916dd	movq	%rax, %rdx
+ffffff80015916e0	xorl	%eax, %eax
+ffffff80015916e2	callq	0xffffff8000ab6560
+ffffff80015916e7	movq	0x128(%rbx), %rax
+ffffff80015916ee	movq	0x1580(%rax), %rdi
+ffffff80015916f5	testq	%rdi, %rdi
+ffffff80015916f8	je	0xffffff8001591707
+CONTROL_FLOW=0xffffff80015916f8 je	0xffffff8001591707
+ffffff80015916fa	movq	(%rdi), %rax
+ffffff800159171c	je	0xffffff8001591753
+CONTROL_FLOW=0xffffff800159171c je	0xffffff8001591753
+ffffff8001591729	je	0xffffff8001591743
+CONTROL_FLOW=0xffffff8001591729 je	0xffffff8001591743
+ffffff8001591741	je	0xffffff8001591753
+CONTROL_FLOW=0xffffff8001591741 je	0xffffff8001591753
+ffffff8001591768	je	0xffffff8001591777
+CONTROL_FLOW=0xffffff8001591768 je	0xffffff8001591777
+ffffff800159178c	je	0xffffff80015917ab
+CONTROL_FLOW=0xffffff800159178c je	0xffffff80015917ab
+ffffff80015917b5	je	0xffffff80015917c4
+CONTROL_FLOW=0xffffff80015917b5 je	0xffffff80015917c4
+ffffff80015917d9	je	0xffffff80015917f2
+CONTROL_FLOW=0xffffff80015917d9 je	0xffffff80015917f2
+ffffff80015917fc	je	0xffffff800159180b
+CONTROL_FLOW=0xffffff80015917fc je	0xffffff800159180b
+ffffff8001591820	je	0xffffff800159182f
+CONTROL_FLOW=0xffffff8001591820 je	0xffffff800159182f
+ffffff8001591844	je	0xffffff8001591853
+CONTROL_FLOW=0xffffff8001591844 je	0xffffff8001591853
+ffffff8001591868	je	0xffffff8001591877
+CONTROL_FLOW=0xffffff8001591868 je	0xffffff8001591877
+ffffff800159188c	je	0xffffff800159189b
+CONTROL_FLOW=0xffffff800159188c je	0xffffff800159189b
+ffffff80015918b0	je	0xffffff80015918bf
+CONTROL_FLOW=0xffffff80015918b0 je	0xffffff80015918bf
+ffffff80015918d4	je	0xffffff80015918e3
+CONTROL_FLOW=0xffffff80015918d4 je	0xffffff80015918e3
+ffffff80015918f8	je	0xffffff8001591907
+CONTROL_FLOW=0xffffff80015918f8 je	0xffffff8001591907
+ffffff800159191c	je	0xffffff800159192b
+CONTROL_FLOW=0xffffff800159191c je	0xffffff800159192b
+ffffff8001591940	je	0xffffff800159194f
+CONTROL_FLOW=0xffffff8001591940 je	0xffffff800159194f
+ffffff8001591964	je	0xffffff8001591973
+CONTROL_FLOW=0xffffff8001591964 je	0xffffff8001591973
+ffffff8001591988	je	0xffffff8001591997
+CONTROL_FLOW=0xffffff8001591988 je	0xffffff8001591997
+ffffff80015919ac	je	0xffffff80015919e3
+CONTROL_FLOW=0xffffff80015919ac je	0xffffff80015919e3
+ffffff80015919b9	je	0xffffff80015919d3
+CONTROL_FLOW=0xffffff80015919b9 je	0xffffff80015919d3
+ffffff80015919d1	je	0xffffff80015919e3
+CONTROL_FLOW=0xffffff80015919d1 je	0xffffff80015919e3
+ffffff80015919f8	je	0xffffff8001591a07
+CONTROL_FLOW=0xffffff80015919f8 je	0xffffff8001591a07
+ffffff8001591a32	je	0xffffff8001591a41
+CONTROL_FLOW=0xffffff8001591a32 je	0xffffff8001591a41
+ffffff8001591a56	je	0xffffff8001591a8d
+CONTROL_FLOW=0xffffff8001591a56 je	0xffffff8001591a8d
+ffffff8001591a63	je	0xffffff8001591a7d
+CONTROL_FLOW=0xffffff8001591a63 je	0xffffff8001591a7d
+ffffff8001591a7b	je	0xffffff8001591a8d
+CONTROL_FLOW=0xffffff8001591a7b je	0xffffff8001591a8d
+ffffff8001591aa2	je	0xffffff8001591adc
+CONTROL_FLOW=0xffffff8001591aa2 je	0xffffff8001591adc
+ffffff8001591ab2	je	0xffffff8001591acc
+CONTROL_FLOW=0xffffff8001591ab2 je	0xffffff8001591acc
+ffffff8001591aca	je	0xffffff8001591adc
+CONTROL_FLOW=0xffffff8001591aca je	0xffffff8001591adc
+ffffff8001591af1	je	0xffffff8001591b00
+CONTROL_FLOW=0xffffff8001591af1 je	0xffffff8001591b00
+ffffff8001591b15	je	0xffffff8001591b24
+CONTROL_FLOW=0xffffff8001591b15 je	0xffffff8001591b24
+ffffff8001591b39	je	0xffffff8001591b48
+CONTROL_FLOW=0xffffff8001591b39 je	0xffffff8001591b48
+ffffff8001591b5d	je	0xffffff8001591b6c
+CONTROL_FLOW=0xffffff8001591b5d je	0xffffff8001591b6c
+ffffff8001591b81	je	0xffffff8001591b90
+CONTROL_FLOW=0xffffff8001591b81 je	0xffffff8001591b90
+ffffff8001591ba5	je	0xffffff8001591bb4
+CONTROL_FLOW=0xffffff8001591ba5 je	0xffffff8001591bb4
+ffffff8001591bc9	je	0xffffff8001591bd8
+CONTROL_FLOW=0xffffff8001591bc9 je	0xffffff8001591bd8
+ffffff8001591bed	je	0xffffff8001591c24
+CONTROL_FLOW=0xffffff8001591bed je	0xffffff8001591c24
+ffffff8001591bfa	je	0xffffff8001591c14
+CONTROL_FLOW=0xffffff8001591bfa je	0xffffff8001591c14
+ffffff8001591c12	je	0xffffff8001591c24
+CONTROL_FLOW=0xffffff8001591c12 je	0xffffff8001591c24
+ffffff8001591c39	je	0xffffff8001591c48
+CONTROL_FLOW=0xffffff8001591c39 je	0xffffff8001591c48
+ffffff8001591c5d	je	0xffffff8001591c6c
+CONTROL_FLOW=0xffffff8001591c5d je	0xffffff8001591c6c
+ffffff8001591c81	je	0xffffff8001591cbb
+CONTROL_FLOW=0xffffff8001591c81 je	0xffffff8001591cbb
+ffffff8001591c91	je	0xffffff8001591cab
+CONTROL_FLOW=0xffffff8001591c91 je	0xffffff8001591cab
+ffffff8001591ca9	je	0xffffff8001591cbb
+CONTROL_FLOW=0xffffff8001591ca9 je	0xffffff8001591cbb
+ffffff8001591cd0	je	0xffffff8001591cf6
+CONTROL_FLOW=0xffffff8001591cd0 je	0xffffff8001591cf6
+ffffff8001591d00	je	0xffffff8001591d0f
+CONTROL_FLOW=0xffffff8001591d00 je	0xffffff8001591d0f
+ffffff8001591d24	je	0xffffff8001591d33
+CONTROL_FLOW=0xffffff8001591d24 je	0xffffff8001591d33
+ffffff8001591d48	je	0xffffff8001591d57
+CONTROL_FLOW=0xffffff8001591d48 je	0xffffff8001591d57
+ffffff8001591d6c	je	0xffffff8001591d7b
+CONTROL_FLOW=0xffffff8001591d6c je	0xffffff8001591d7b
+ffffff8001591d90	je	0xffffff8001591d9f
+CONTROL_FLOW=0xffffff8001591d90 je	0xffffff8001591d9f
+ffffff8001591db4	je	0xffffff8001591dc3
+CONTROL_FLOW=0xffffff8001591db4 je	0xffffff8001591dc3
+ffffff8001591dd8	je	0xffffff8001591de7
+CONTROL_FLOW=0xffffff8001591dd8 je	0xffffff8001591de7
+ffffff8001591df9	jne	0xffffff8001591e43
+CONTROL_FLOW=0xffffff8001591df9 jne	0xffffff8001591e43
+ffffff8001591e05	je	0xffffff8001591e14
+CONTROL_FLOW=0xffffff8001591e05 je	0xffffff8001591e14
+ffffff8001591e29	je	0xffffff8001591e38
+CONTROL_FLOW=0xffffff8001591e29 je	0xffffff8001591e38
+ffffff8001591e5c	je	0xffffff8001591e6b
+CONTROL_FLOW=0xffffff8001591e5c je	0xffffff8001591e6b
+ffffff8001591e80	je	0xffffff8001591e8f
+CONTROL_FLOW=0xffffff8001591e80 je	0xffffff8001591e8f
+ffffff8001591ea4	je	0xffffff8001591eb3
+CONTROL_FLOW=0xffffff8001591ea4 je	0xffffff8001591eb3
+ffffff8001591ec8	je	0xffffff8001591ed7
+CONTROL_FLOW=0xffffff8001591ec8 je	0xffffff8001591ed7
+ffffff8001591eec	je	0xffffff8001591efb
+CONTROL_FLOW=0xffffff8001591eec je	0xffffff8001591efb
+ffffff8001591f10	je	0xffffff8001591f1f
+CONTROL_FLOW=0xffffff8001591f10 je	0xffffff8001591f1f
+ffffff8001591f34	je	0xffffff8001591f43
+CONTROL_FLOW=0xffffff8001591f34 je	0xffffff8001591f43
+ffffff8001591f6b	jmp	0xffffff8000ab6560
+CONTROL_FLOW=0xffffff8001591f6b jmp	0xffffff8000ab6560
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore21initAfterIORegUpdatedEv ADDRESS=0xffffff8001592576 END=0xffffff8001593502 INSTRUCTIONS=903
+ffffff8001592576	pushq	%rbp
+ffffff8001592577	movq	%rsp, %rbp
+ffffff800159257a	pushq	%r15
+ffffff800159257c	pushq	%r14
+ffffff800159257e	pushq	%r13
+ffffff8001592580	pushq	%r12
+ffffff8001592582	pushq	%rbx
+ffffff8001592583	subq	$0x48, %rsp
+ffffff8001592587	movq	%rdi, %rbx
+ffffff800159258a	movq	0x1d8c97(%rip), %rax
+ffffff8001592591	movq	(%rax), %rax
+ffffff8001592594	movq	%rax, -0x30(%rbp)
+ffffff8001592598	movq	0x128(%rdi), %rcx
+ffffff800159259f	cmpq	$0x0, 0x1558(%rcx)
+ffffff80015925a7	je	0xffffff8001592a5e
+CONTROL_FLOW=0xffffff80015925a7 je	0xffffff8001592a5e
+ffffff80015925ad	cmpq	$0x0, 0x1590(%rcx)
+ffffff80015925b5	jne	0xffffff80015925d6
+CONTROL_FLOW=0xffffff80015925b5 jne	0xffffff80015925d6
+ffffff80015925d0	je	0xffffff8001592c13
+CONTROL_FLOW=0xffffff80015925d0 je	0xffffff8001592c13
+ffffff80015925de	jne	0xffffff80015925ff
+CONTROL_FLOW=0xffffff80015925de jne	0xffffff80015925ff
+ffffff80015925f9	je	0xffffff8001592c5f
+CONTROL_FLOW=0xffffff80015925f9 je	0xffffff8001592c5f
+ffffff8001592607	jne	0xffffff800159262c
+CONTROL_FLOW=0xffffff8001592607 jne	0xffffff800159262c
+ffffff8001592610	callq	__ZN23AppleBCMWLANJoinAdapter10withDriverEP16AppleBCMWLANCorePFiP8OSObject17JoinFirmwareEventPvES3_ ## AppleBCMWLANJoinAdapter::withDriver(AppleBCMWLANCore*, int (*)(OSObject*, JoinFirmwareEvent, void*), OSObject*)
+ffffff8001592626	je	0xffffff8001592cab
+CONTROL_FLOW=0xffffff8001592626 je	0xffffff8001592cab
+ffffff8001592634	jne	0xffffff8001592655
+CONTROL_FLOW=0xffffff8001592634 jne	0xffffff8001592655
+ffffff800159264f	je	0xffffff8001592cea
+CONTROL_FLOW=0xffffff800159264f je	0xffffff8001592cea
+ffffff800159265d	jne	0xffffff800159267e
+CONTROL_FLOW=0xffffff800159265d jne	0xffffff800159267e
+ffffff8001592678	je	0xffffff8001592d36
+CONTROL_FLOW=0xffffff8001592678 je	0xffffff8001592d36
+ffffff8001592686	jne	0xffffff80015926a7
+CONTROL_FLOW=0xffffff8001592686 jne	0xffffff80015926a7
+ffffff80015926a1	je	0xffffff8001592d82
+CONTROL_FLOW=0xffffff80015926a1 je	0xffffff8001592d82
+ffffff80015926af	jne	0xffffff80015926d0
+CONTROL_FLOW=0xffffff80015926af jne	0xffffff80015926d0
+ffffff80015926ca	je	0xffffff8001592dce
+CONTROL_FLOW=0xffffff80015926ca je	0xffffff8001592dce
+ffffff80015926d8	jne	0xffffff80015926f9
+CONTROL_FLOW=0xffffff80015926d8 jne	0xffffff80015926f9
+ffffff80015926f3	je	0xffffff8001592e30
+CONTROL_FLOW=0xffffff80015926f3 je	0xffffff8001592e30
+ffffff8001592701	jne	0xffffff8001592722
+CONTROL_FLOW=0xffffff8001592701 jne	0xffffff8001592722
+ffffff800159271c	je	0xffffff8001592e7c
+CONTROL_FLOW=0xffffff800159271c je	0xffffff8001592e7c
+ffffff800159272a	jne	0xffffff800159274b
+CONTROL_FLOW=0xffffff800159272a jne	0xffffff800159274b
+ffffff8001592745	je	0xffffff8001592ec8
+CONTROL_FLOW=0xffffff8001592745 je	0xffffff8001592ec8
+ffffff8001592753	jne	0xffffff8001592774
+CONTROL_FLOW=0xffffff8001592753 jne	0xffffff8001592774
+ffffff800159276e	je	0xffffff8001592f14
+CONTROL_FLOW=0xffffff800159276e je	0xffffff8001592f14
+ffffff800159277c	jne	0xffffff800159279d
+CONTROL_FLOW=0xffffff800159277c jne	0xffffff800159279d
+ffffff8001592797	je	0xffffff8001592f60
+CONTROL_FLOW=0xffffff8001592797 je	0xffffff8001592f60
+ffffff80015927a5	jne	0xffffff80015927c6
+CONTROL_FLOW=0xffffff80015927a5 jne	0xffffff80015927c6
+ffffff80015927c0	je	0xffffff8001592fac
+CONTROL_FLOW=0xffffff80015927c0 je	0xffffff8001592fac
+ffffff80015927ce	jne	0xffffff80015927ef
+CONTROL_FLOW=0xffffff80015927ce jne	0xffffff80015927ef
+ffffff80015927e9	je	0xffffff8001592ff8
+CONTROL_FLOW=0xffffff80015927e9 je	0xffffff8001592ff8
+ffffff80015927f7	jne	0xffffff8001592818
+CONTROL_FLOW=0xffffff80015927f7 jne	0xffffff8001592818
+ffffff8001592812	je	0xffffff8001593041
+CONTROL_FLOW=0xffffff8001592812 je	0xffffff8001593041
+ffffff8001592820	jne	0xffffff8001592838
+CONTROL_FLOW=0xffffff8001592820 jne	0xffffff8001592838
+ffffff800159284a	je	0xffffff8001592e1a
+CONTROL_FLOW=0xffffff800159284a je	0xffffff8001592e1a
+ffffff800159285f	jne	0xffffff8001592878
+CONTROL_FLOW=0xffffff800159285f jne	0xffffff8001592878
+ffffff800159286b	je	0xffffff800159308d
+CONTROL_FLOW=0xffffff800159286b je	0xffffff800159308d
+ffffff800159288d	je	0xffffff8001592928
+CONTROL_FLOW=0xffffff800159288d je	0xffffff8001592928
+ffffff80015928c5	je	0xffffff80015928e8
+CONTROL_FLOW=0xffffff80015928c5 je	0xffffff80015928e8
+ffffff80015928e2	jne	0xffffff8001593461
+CONTROL_FLOW=0xffffff80015928e2 jne	0xffffff8001593461
+ffffff800159293c	je	0xffffff8001593090
+CONTROL_FLOW=0xffffff800159293c je	0xffffff8001593090
+ffffff8001592977	je	0xffffff800159299a
+CONTROL_FLOW=0xffffff8001592977 je	0xffffff800159299a
+ffffff8001592994	jne	0xffffff8001593347
+CONTROL_FLOW=0xffffff8001592994 jne	0xffffff8001593347
+ffffff80015929cb	je	0xffffff8001593090
+CONTROL_FLOW=0xffffff80015929cb je	0xffffff8001593090
+ffffff80015929ec	je	0xffffff8001593090
+CONTROL_FLOW=0xffffff80015929ec je	0xffffff8001593090
+ffffff8001592a59	jmp	0xffffff8001593090
+CONTROL_FLOW=0xffffff8001592a59 jmp	0xffffff8001593090
+ffffff8001592a7a	je	0xffffff8001592bcf
+CONTROL_FLOW=0xffffff8001592a7a je	0xffffff8001592bcf
+ffffff8001592a9d	jne	0xffffff800159308d
+CONTROL_FLOW=0xffffff8001592a9d jne	0xffffff800159308d
+ffffff8001592acf	je	0xffffff8001592afb
+CONTROL_FLOW=0xffffff8001592acf je	0xffffff8001592afb
+ffffff8001592b38	jne	0xffffff8001592bc3
+CONTROL_FLOW=0xffffff8001592b38 jne	0xffffff8001592bc3
+ffffff8001592b41	jne	0xffffff8001592b49
+CONTROL_FLOW=0xffffff8001592b41 jne	0xffffff8001592b49
+ffffff8001592b47	jne	0xffffff8001592bc3
+CONTROL_FLOW=0xffffff8001592b47 jne	0xffffff8001592bc3
+ffffff8001592b57	jne	0xffffff8001592b78
+CONTROL_FLOW=0xffffff8001592b57 jne	0xffffff8001592b78
+ffffff8001592ba0	je	0xffffff8001592bc3
+CONTROL_FLOW=0xffffff8001592ba0 je	0xffffff8001592bc3
+ffffff8001592bbd	jne	0xffffff8001593254
+CONTROL_FLOW=0xffffff8001592bbd jne	0xffffff8001593254
+ffffff8001592bca	jmp	0xffffff80015925ad
+CONTROL_FLOW=0xffffff8001592bca jmp	0xffffff80015925ad
+ffffff8001592bde	je	0xffffff8001592c01
+CONTROL_FLOW=0xffffff8001592bde je	0xffffff8001592c01
+ffffff8001592bfb	jne	0xffffff80015930b6
+CONTROL_FLOW=0xffffff8001592bfb jne	0xffffff80015930b6
+ffffff8001592c0e	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592c0e jmp	0xffffff8001593088
+ffffff8001592c22	je	0xffffff8001592c45
+CONTROL_FLOW=0xffffff8001592c22 je	0xffffff8001592c45
+ffffff8001592c3f	jne	0xffffff80015930e4
+CONTROL_FLOW=0xffffff8001592c3f jne	0xffffff80015930e4
+ffffff8001592c5a	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592c5a jmp	0xffffff8001593088
+ffffff8001592c6e	je	0xffffff8001592c91
+CONTROL_FLOW=0xffffff8001592c6e je	0xffffff8001592c91
+ffffff8001592c8b	jne	0xffffff8001593112
+CONTROL_FLOW=0xffffff8001592c8b jne	0xffffff8001593112
+ffffff8001592ca6	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592ca6 jmp	0xffffff8001593088
+ffffff8001592cba	je	0xffffff8001592cdd
+CONTROL_FLOW=0xffffff8001592cba je	0xffffff8001592cdd
+ffffff8001592cd7	jne	0xffffff8001593140
+CONTROL_FLOW=0xffffff8001592cd7 jne	0xffffff8001593140
+ffffff8001592ce5	jmp	0xffffff800159308d
+CONTROL_FLOW=0xffffff8001592ce5 jmp	0xffffff800159308d
+ffffff8001592cf9	je	0xffffff8001592d1c
+CONTROL_FLOW=0xffffff8001592cf9 je	0xffffff8001592d1c
+ffffff8001592d16	jne	0xffffff800159316e
+CONTROL_FLOW=0xffffff8001592d16 jne	0xffffff800159316e
+ffffff8001592d31	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592d31 jmp	0xffffff8001593088
+ffffff8001592d45	je	0xffffff8001592d68
+CONTROL_FLOW=0xffffff8001592d45 je	0xffffff8001592d68
+ffffff8001592d62	jne	0xffffff800159319c
+CONTROL_FLOW=0xffffff8001592d62 jne	0xffffff800159319c
+ffffff8001592d7d	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592d7d jmp	0xffffff8001593088
+ffffff8001592d91	je	0xffffff8001592db4
+CONTROL_FLOW=0xffffff8001592d91 je	0xffffff8001592db4
+ffffff8001592dae	jne	0xffffff80015931ca
+CONTROL_FLOW=0xffffff8001592dae jne	0xffffff80015931ca
+ffffff8001592dc9	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592dc9 jmp	0xffffff8001593088
+ffffff8001592ddd	je	0xffffff8001592e00
+CONTROL_FLOW=0xffffff8001592ddd je	0xffffff8001592e00
+ffffff8001592dfa	jne	0xffffff80015931f8
+CONTROL_FLOW=0xffffff8001592dfa jne	0xffffff80015931f8
+ffffff8001592e15	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592e15 jmp	0xffffff8001593088
+ffffff8001592e2b	jmp	0xffffff8001593090
+CONTROL_FLOW=0xffffff8001592e2b jmp	0xffffff8001593090
+ffffff8001592e3f	je	0xffffff8001592e62
+CONTROL_FLOW=0xffffff8001592e3f je	0xffffff8001592e62
+ffffff8001592e5c	jne	0xffffff8001593226
+CONTROL_FLOW=0xffffff8001592e5c jne	0xffffff8001593226
+ffffff8001592e77	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592e77 jmp	0xffffff8001593088
+ffffff8001592e8b	je	0xffffff8001592eae
+CONTROL_FLOW=0xffffff8001592e8b je	0xffffff8001592eae
+ffffff8001592ea8	jne	0xffffff800159328f
+CONTROL_FLOW=0xffffff8001592ea8 jne	0xffffff800159328f
+ffffff8001592ec3	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592ec3 jmp	0xffffff8001593088
+ffffff8001592ed7	je	0xffffff8001592efa
+CONTROL_FLOW=0xffffff8001592ed7 je	0xffffff8001592efa
+ffffff8001592ef4	jne	0xffffff80015932bd
+CONTROL_FLOW=0xffffff8001592ef4 jne	0xffffff80015932bd
+ffffff8001592f0f	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592f0f jmp	0xffffff8001593088
+ffffff8001592f23	je	0xffffff8001592f46
+CONTROL_FLOW=0xffffff8001592f23 je	0xffffff8001592f46
+ffffff8001592f40	jne	0xffffff80015932eb
+CONTROL_FLOW=0xffffff8001592f40 jne	0xffffff80015932eb
+ffffff8001592f5b	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592f5b jmp	0xffffff8001593088
+ffffff8001592f6f	je	0xffffff8001592f92
+CONTROL_FLOW=0xffffff8001592f6f je	0xffffff8001592f92
+ffffff8001592f8c	jne	0xffffff8001593319
+CONTROL_FLOW=0xffffff8001592f8c jne	0xffffff8001593319
+ffffff8001592fa7	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592fa7 jmp	0xffffff8001593088
+ffffff8001592fbb	je	0xffffff8001592fde
+CONTROL_FLOW=0xffffff8001592fbb je	0xffffff8001592fde
+ffffff8001592fd8	jne	0xffffff8001593433
+CONTROL_FLOW=0xffffff8001592fd8 jne	0xffffff8001593433
+ffffff8001592ff3	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff8001592ff3 jmp	0xffffff8001593088
+ffffff8001593007	je	0xffffff800159302a
+CONTROL_FLOW=0xffffff8001593007 je	0xffffff800159302a
+ffffff8001593024	jne	0xffffff80015934a1
+CONTROL_FLOW=0xffffff8001593024 jne	0xffffff80015934a1
+ffffff800159303f	jmp	0xffffff8001593088
+CONTROL_FLOW=0xffffff800159303f jmp	0xffffff8001593088
+ffffff8001593050	je	0xffffff8001593073
+CONTROL_FLOW=0xffffff8001593050 je	0xffffff8001593073
+ffffff800159306d	jne	0xffffff80015934cf
+CONTROL_FLOW=0xffffff800159306d jne	0xffffff80015934cf
+ffffff800159309e	jne	0xffffff80015934fd
+CONTROL_FLOW=0xffffff800159309e jne	0xffffff80015934fd
+ffffff80015930df	jmp	0xffffff8001592c01
+CONTROL_FLOW=0xffffff80015930df jmp	0xffffff8001592c01
+ffffff800159310d	jmp	0xffffff8001592c45
+CONTROL_FLOW=0xffffff800159310d jmp	0xffffff8001592c45
+ffffff800159313b	jmp	0xffffff8001592c91
+CONTROL_FLOW=0xffffff800159313b jmp	0xffffff8001592c91
+ffffff800159314c	leaq	0x178e23(%rip), %rsi            ## literal pool for: "[ik] %s@%d: Unable to create join adapter\n"
+CONTROL_FLOW=0xffffff800159314c leaq	0x178e23(%rip), %rsi            ## literal pool for: "[ik] %s@%d: Unable to create join adapter\n"
+ffffff8001593169	jmp	0xffffff8001592cdd
+CONTROL_FLOW=0xffffff8001593169 jmp	0xffffff8001592cdd
+ffffff8001593197	jmp	0xffffff8001592d1c
+CONTROL_FLOW=0xffffff8001593197 jmp	0xffffff8001592d1c
+ffffff80015931c5	jmp	0xffffff8001592d68
+CONTROL_FLOW=0xffffff80015931c5 jmp	0xffffff8001592d68
+ffffff80015931f3	jmp	0xffffff8001592db4
+CONTROL_FLOW=0xffffff80015931f3 jmp	0xffffff8001592db4
+ffffff8001593221	jmp	0xffffff8001592e00
+CONTROL_FLOW=0xffffff8001593221 jmp	0xffffff8001592e00
+ffffff800159324f	jmp	0xffffff8001592e62
+CONTROL_FLOW=0xffffff800159324f jmp	0xffffff8001592e62
+ffffff800159328a	jmp	0xffffff8001592bc3
+CONTROL_FLOW=0xffffff800159328a jmp	0xffffff8001592bc3
+ffffff80015932b8	jmp	0xffffff8001592eae
+CONTROL_FLOW=0xffffff80015932b8 jmp	0xffffff8001592eae
+ffffff80015932e6	jmp	0xffffff8001592efa
+CONTROL_FLOW=0xffffff80015932e6 jmp	0xffffff8001592efa
+ffffff8001593314	jmp	0xffffff8001592f46
+CONTROL_FLOW=0xffffff8001593314 jmp	0xffffff8001592f46
+ffffff8001593342	jmp	0xffffff8001592f92
+CONTROL_FLOW=0xffffff8001593342 jmp	0xffffff8001592f92
+ffffff800159342e	jmp	0xffffff800159299a
+CONTROL_FLOW=0xffffff800159342e jmp	0xffffff800159299a
+ffffff800159345c	jmp	0xffffff8001592fde
+CONTROL_FLOW=0xffffff800159345c jmp	0xffffff8001592fde
+ffffff800159349c	jmp	0xffffff80015928e8
+CONTROL_FLOW=0xffffff800159349c jmp	0xffffff80015928e8
+ffffff80015934ca	jmp	0xffffff800159302a
+CONTROL_FLOW=0xffffff80015934ca jmp	0xffffff800159302a
+ffffff80015934f8	jmp	0xffffff8001593073
+CONTROL_FLOW=0xffffff80015934f8 jmp	0xffffff8001593073
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore20stopAndFreeResourcesEv ADDRESS=0xffffff8001593502 END=0xffffff800159353c INSTRUCTIONS=18
+ffffff8001593502	pushq	%rbp
+ffffff8001593503	movq	%rsp, %rbp
+ffffff8001593506	pushq	%rbx
+ffffff8001593507	pushq	%rax
+ffffff8001593508	movq	%rdi, %rbx
+ffffff800159350b	callq	0xffffff800048cb00
+ffffff8001593510	leaq	0x179bf8(%rip), %rdi            ## literal pool for: "AppleBCMWLANCore::stopAndFreeResources[%u] this[%p]\n"
+ffffff8001593517	movl	$0xe30, %esi                    ## imm = 0xE30
+ffffff800159351c	movq	%rax, %rdx
+ffffff800159351f	xorl	%eax, %eax
+ffffff8001593521	callq	0xffffff8000ab6560
+ffffff8001593526	movq	%rbx, %rdi
+ffffff8001593529	callq	__ZN16AppleBCMWLANCore13stopResourcesEv ## AppleBCMWLANCore::stopResources()
+ffffff800159352e	movq	%rbx, %rdi
+ffffff8001593531	addq	$0x8, %rsp
+ffffff8001593535	popq	%rbx
+ffffff8001593537	jmp	__ZN16AppleBCMWLANCore13freeResourcesEv ## AppleBCMWLANCore::freeResources()
+CONTROL_FLOW=0xffffff8001593537 jmp	__ZN16AppleBCMWLANCore13freeResourcesEv ## AppleBCMWLANCore::freeResources()
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore5startEP9IOService ADDRESS=0xffffff80015937de END=0xffffff8001594fde INSTRUCTIONS=1373
+ffffff80015937de	pushq	%rbp
+ffffff80015937df	movq	%rsp, %rbp
+ffffff80015937e2	pushq	%r15
+ffffff80015937e4	pushq	%r14
+ffffff80015937e6	pushq	%r13
+ffffff80015937e8	pushq	%r12
+ffffff80015937ea	pushq	%rbx
+ffffff80015937eb	subq	$0x48, %rsp
+ffffff80015937ef	movq	%rsi, %r14
+ffffff80015937f2	movq	%rdi, %rbx
+ffffff80015937f5	movq	0x1d7a2c(%rip), %rax
+ffffff80015937fc	movq	(%rax), %rax
+ffffff80015937ff	movq	%rax, -0x30(%rbp)
+ffffff8001593803	movq	(%rdi), %rax
+ffffff8001593806	callq	*0xd40(%rax)
+ffffff800159380c	testq	%rax, %rax
+ffffff800159380f	je	0xffffff8001593832
+CONTROL_FLOW=0xffffff800159380f je	0xffffff8001593832
+ffffff800159382c	jne	0xffffff8001594ae3
+CONTROL_FLOW=0xffffff800159382c jne	0xffffff8001594ae3
+ffffff8001593907	je	0xffffff8001593965
+CONTROL_FLOW=0xffffff8001593907 je	0xffffff8001593965
+ffffff8001593942	je	0xffffff8001593965
+CONTROL_FLOW=0xffffff8001593942 je	0xffffff8001593965
+ffffff800159395f	jne	0xffffff8001594b11
+CONTROL_FLOW=0xffffff800159395f jne	0xffffff8001594b11
+ffffff8001593988	je	0xffffff8001593a07
+CONTROL_FLOW=0xffffff8001593988 je	0xffffff8001593a07
+ffffff80015939a5	je	0xffffff8001593a41
+CONTROL_FLOW=0xffffff80015939a5 je	0xffffff8001593a41
+ffffff80015939e5	je	0xffffff8001593a9d
+CONTROL_FLOW=0xffffff80015939e5 je	0xffffff8001593a9d
+ffffff80015939ef	je	0xffffff8001593a9d
+CONTROL_FLOW=0xffffff80015939ef je	0xffffff8001593a9d
+ffffff8001593a02	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001593a02 jmp	0xffffff8001594174
+ffffff8001593a3c	jmp	0xffffff800159417c
+CONTROL_FLOW=0xffffff8001593a3c jmp	0xffffff800159417c
+ffffff8001593a50	je	0xffffff8001593a84
+CONTROL_FLOW=0xffffff8001593a50 je	0xffffff8001593a84
+ffffff8001593a61	je	0xffffff8001593a84
+CONTROL_FLOW=0xffffff8001593a61 je	0xffffff8001593a84
+ffffff8001593a7e	jne	0xffffff8001594c81
+CONTROL_FLOW=0xffffff8001593a7e jne	0xffffff8001594c81
+ffffff8001593a98	jmp	0xffffff8001594179
+CONTROL_FLOW=0xffffff8001593a98 jmp	0xffffff8001594179
+ffffff8001593abc	je	0xffffff8001593c12
+CONTROL_FLOW=0xffffff8001593abc je	0xffffff8001593c12
+ffffff8001593aee	je	0xffffff8001593afb
+CONTROL_FLOW=0xffffff8001593aee je	0xffffff8001593afb
+ffffff8001593b20	je	0xffffff8001593b2d
+CONTROL_FLOW=0xffffff8001593b20 je	0xffffff8001593b2d
+ffffff8001593b4e	je	0xffffff8001593b82
+CONTROL_FLOW=0xffffff8001593b4e je	0xffffff8001593b82
+ffffff8001593b5f	je	0xffffff8001593b82
+CONTROL_FLOW=0xffffff8001593b5f je	0xffffff8001593b82
+ffffff8001593b7c	jne	0xffffff8001594dae
+CONTROL_FLOW=0xffffff8001593b7c jne	0xffffff8001594dae
+ffffff8001593b99	je	0xffffff8001593bdf
+CONTROL_FLOW=0xffffff8001593b99 je	0xffffff8001593bdf
+ffffff8001593baa	je	0xffffff8001593bcd
+CONTROL_FLOW=0xffffff8001593baa je	0xffffff8001593bcd
+ffffff8001593bc7	jne	0xffffff8001594dfd
+CONTROL_FLOW=0xffffff8001593bc7 jne	0xffffff8001594dfd
+ffffff8001593bfc	je	0xffffff8001593c97
+CONTROL_FLOW=0xffffff8001593bfc je	0xffffff8001593c97
+ffffff8001593c07	je	0xffffff8001593c56
+CONTROL_FLOW=0xffffff8001593c07 je	0xffffff8001593c56
+ffffff8001593c0c	jne	0xffffff8001593c65
+CONTROL_FLOW=0xffffff8001593c0c jne	0xffffff8001593c65
+ffffff8001593c10	jmp	0xffffff8001593c58
+CONTROL_FLOW=0xffffff8001593c10 jmp	0xffffff8001593c58
+ffffff8001593c21	je	0xffffff8001593c44
+CONTROL_FLOW=0xffffff8001593c21 je	0xffffff8001593c44
+ffffff8001593c3e	jne	0xffffff8001594ede
+CONTROL_FLOW=0xffffff8001593c3e jne	0xffffff8001594ede
+ffffff8001593c51	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001593c51 jmp	0xffffff8001594174
+ffffff8001593c74	je	0xffffff8001593c97
+CONTROL_FLOW=0xffffff8001593c74 je	0xffffff8001593c97
+ffffff8001593c91	jne	0xffffff8001594e42
+CONTROL_FLOW=0xffffff8001593c91 jne	0xffffff8001594e42
+ffffff8001593cb4	je	0xffffff8001593d07
+CONTROL_FLOW=0xffffff8001593cb4 je	0xffffff8001593d07
+ffffff8001593cbb	je	0xffffff8001593cc6
+CONTROL_FLOW=0xffffff8001593cbb je	0xffffff8001593cc6
+ffffff8001593cc0	jne	0xffffff8001593cd5
+CONTROL_FLOW=0xffffff8001593cc0 jne	0xffffff8001593cd5
+ffffff8001593cc4	jmp	0xffffff8001593cc8
+CONTROL_FLOW=0xffffff8001593cc4 jmp	0xffffff8001593cc8
+ffffff8001593ce4	je	0xffffff8001593d07
+CONTROL_FLOW=0xffffff8001593ce4 je	0xffffff8001593d07
+ffffff8001593d01	jne	0xffffff8001594e90
+CONTROL_FLOW=0xffffff8001593d01 jne	0xffffff8001594e90
+ffffff8001593d26	je	0xffffff8001593d54
+CONTROL_FLOW=0xffffff8001593d26 je	0xffffff8001593d54
+ffffff8001593d94	je	0xffffff8001593d9f
+CONTROL_FLOW=0xffffff8001593d94 je	0xffffff8001593d9f
+ffffff8001593dbe	je	0xffffff8001593e9a
+CONTROL_FLOW=0xffffff8001593dbe je	0xffffff8001593e9a
+ffffff8001593de3	je	0xffffff8001593dea
+CONTROL_FLOW=0xffffff8001593de3 je	0xffffff8001593dea
+ffffff8001593de8	jne	0xffffff8001593df3
+CONTROL_FLOW=0xffffff8001593de8 jne	0xffffff8001593df3
+ffffff8001593df1	je	0xffffff8001593e68
+CONTROL_FLOW=0xffffff8001593df1 je	0xffffff8001593e68
+ffffff8001593e11	je	0xffffff8001593e9a
+CONTROL_FLOW=0xffffff8001593e11 je	0xffffff8001593e9a
+ffffff8001593e32	je	0xffffff8001593e9a
+CONTROL_FLOW=0xffffff8001593e32 je	0xffffff8001593e9a
+ffffff8001593e63	jmp	0xffffff80015950b3
+CONTROL_FLOW=0xffffff8001593e63 jmp	0xffffff80015950b3
+ffffff8001593e77	je	0xffffff8001593e9a
+CONTROL_FLOW=0xffffff8001593e77 je	0xffffff8001593e9a
+ffffff8001593e94	jne	0xffffff8001595084
+CONTROL_FLOW=0xffffff8001593e94 jne	0xffffff8001595084
+ffffff8001593f3e	je	0xffffff80015940f4
+CONTROL_FLOW=0xffffff8001593f3e je	0xffffff80015940f4
+ffffff8001594015	je	0xffffff800159402f
+CONTROL_FLOW=0xffffff8001594015 je	0xffffff800159402f
+ffffff8001594034	je	0xffffff8001594049
+CONTROL_FLOW=0xffffff8001594034 je	0xffffff8001594049
+ffffff8001594080	je	0xffffff8001594135
+CONTROL_FLOW=0xffffff8001594080 je	0xffffff8001594135
+ffffff8001594097	je	0xffffff80015941a2
+CONTROL_FLOW=0xffffff8001594097 je	0xffffff80015941a2
+ffffff80015940bf	je	0xffffff80015940e2
+CONTROL_FLOW=0xffffff80015940bf je	0xffffff80015940e2
+ffffff80015940dc	jne	0xffffff8001594f97
+CONTROL_FLOW=0xffffff80015940dc jne	0xffffff8001594f97
+ffffff80015940ef	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff80015940ef jmp	0xffffff8001594174
+ffffff8001594103	je	0xffffff8001594126
+CONTROL_FLOW=0xffffff8001594103 je	0xffffff8001594126
+ffffff8001594120	jne	0xffffff8001594f58
+CONTROL_FLOW=0xffffff8001594120 jne	0xffffff8001594f58
+ffffff8001594133	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594133 jmp	0xffffff8001594174
+ffffff8001594144	je	0xffffff8001594167
+CONTROL_FLOW=0xffffff8001594144 je	0xffffff8001594167
+ffffff8001594161	jne	0xffffff8001595056
+CONTROL_FLOW=0xffffff8001594161 jne	0xffffff8001595056
+ffffff800159418a	jne	0xffffff80015951cf
+CONTROL_FLOW=0xffffff800159418a jne	0xffffff80015951cf
+ffffff80015941d2	je	0xffffff800159491f
+CONTROL_FLOW=0xffffff80015941d2 je	0xffffff800159491f
+ffffff800159420d	callq	*0xc68(%rax)
+ffffff800159423c	je	0xffffff8001594963
+CONTROL_FLOW=0xffffff800159423c je	0xffffff8001594963
+ffffff8001594242	callq	*0xc68(%rcx)
+ffffff8001594271	je	0xffffff80015949a1
+CONTROL_FLOW=0xffffff8001594271 je	0xffffff80015949a1
+ffffff8001594277	callq	*0xc68(%rcx)
+ffffff80015942a0	je	0xffffff80015949df
+CONTROL_FLOW=0xffffff80015942a0 je	0xffffff80015949df
+ffffff80015942d1	je	0xffffff8001594a23
+CONTROL_FLOW=0xffffff80015942d1 je	0xffffff8001594a23
+ffffff80015942d7	callq	*0xc68(%rcx)
+ffffff8001594311	callq	*0xc68(%rax)
+ffffff8001594340	je	0xffffff8001594a61
+CONTROL_FLOW=0xffffff8001594340 je	0xffffff8001594a61
+ffffff8001594346	callq	*0xc68(%rcx)
+ffffff800159436f	je	0xffffff8001594a9f
+CONTROL_FLOW=0xffffff800159436f je	0xffffff8001594a9f
+ffffff800159437c	jne	0xffffff80015943e8
+CONTROL_FLOW=0xffffff800159437c jne	0xffffff80015943e8
+ffffff8001594384	callq	*0xc68(%rax)
+ffffff80015943b3	je	0xffffff8001594b9f
+CONTROL_FLOW=0xffffff80015943b3 je	0xffffff8001594b9f
+ffffff80015943b9	callq	*0xc68(%rcx)
+ffffff80015943e2	je	0xffffff8001594c3d
+CONTROL_FLOW=0xffffff80015943e2 je	0xffffff8001594c3d
+ffffff8001594405	je	0xffffff8001594b3f
+CONTROL_FLOW=0xffffff8001594405 je	0xffffff8001594b3f
+ffffff8001594424	je	0xffffff8001594bdd
+CONTROL_FLOW=0xffffff8001594424 je	0xffffff8001594bdd
+ffffff8001594443	je	0xffffff8001594caf
+CONTROL_FLOW=0xffffff8001594443 je	0xffffff8001594caf
+ffffff8001594466	je	0xffffff8001594d16
+CONTROL_FLOW=0xffffff8001594466 je	0xffffff8001594d16
+ffffff8001594485	je	0xffffff8001594d62
+CONTROL_FLOW=0xffffff8001594485 je	0xffffff8001594d62
+ffffff80015944ab	je	0xffffff8001594f0c
+CONTROL_FLOW=0xffffff80015944ab je	0xffffff8001594f0c
+ffffff80015944ed	je	0xffffff800159452a
+CONTROL_FLOW=0xffffff80015944ed je	0xffffff800159452a
+ffffff800159451a	je	0xffffff8001594522
+CONTROL_FLOW=0xffffff800159451a je	0xffffff8001594522
+ffffff8001594590	je	0xffffff80015945b3
+CONTROL_FLOW=0xffffff8001594590 je	0xffffff80015945b3
+ffffff80015945ad	jne	0xffffff8001595390
+CONTROL_FLOW=0xffffff80015945ad jne	0xffffff8001595390
+ffffff80015945cc	je	0xffffff8001594614
+CONTROL_FLOW=0xffffff80015945cc je	0xffffff8001594614
+ffffff8001594609	je	0xffffff8001594614
+CONTROL_FLOW=0xffffff8001594609 je	0xffffff8001594614
+ffffff800159465d	leaq	0x1a08d7(%rip), %rdx            ## literal pool for: "release"
+ffffff80015946c4	je	0xffffff8001594fda
+CONTROL_FLOW=0xffffff80015946c4 je	0xffffff8001594fda
+ffffff80015946cc	jne	0xffffff8001595018
+CONTROL_FLOW=0xffffff80015946cc jne	0xffffff8001595018
+ffffff80015946d2	callq	*0xc68(%rcx)
+ffffff80015946fb	je	0xffffff80015950bf
+CONTROL_FLOW=0xffffff80015946fb je	0xffffff80015950bf
+ffffff8001594755	je	0xffffff8001594778
+CONTROL_FLOW=0xffffff8001594755 je	0xffffff8001594778
+ffffff8001594772	jne	0xffffff8001595484
+CONTROL_FLOW=0xffffff8001594772 jne	0xffffff8001595484
+ffffff80015947f5	je	0xffffff8001594818
+CONTROL_FLOW=0xffffff80015947f5 je	0xffffff8001594818
+ffffff8001594812	jne	0xffffff80015954c4
+CONTROL_FLOW=0xffffff8001594812 jne	0xffffff80015954c4
+ffffff8001594832	jne	0xffffff800159489f
+CONTROL_FLOW=0xffffff8001594832 jne	0xffffff800159489f
+ffffff800159484d	je	0xffffff80015951d4
+CONTROL_FLOW=0xffffff800159484d je	0xffffff80015951d4
+ffffff8001594864	je	0xffffff800159486d
+CONTROL_FLOW=0xffffff8001594864 je	0xffffff800159486d
+ffffff800159487c	je	0xffffff800159489f
+CONTROL_FLOW=0xffffff800159487c je	0xffffff800159489f
+ffffff8001594899	jne	0xffffff8001595587
+CONTROL_FLOW=0xffffff8001594899 jne	0xffffff8001595587
+ffffff80015948d9	je	0xffffff800159514d
+CONTROL_FLOW=0xffffff80015948d9 je	0xffffff800159514d
+ffffff80015948e2	je	0xffffff8001594905
+CONTROL_FLOW=0xffffff80015948e2 je	0xffffff8001594905
+ffffff80015948ff	jne	0xffffff8001595511
+CONTROL_FLOW=0xffffff80015948ff jne	0xffffff8001595511
+ffffff800159491a	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff800159491a jmp	0xffffff8001594174
+ffffff800159492e	je	0xffffff8001594951
+CONTROL_FLOW=0xffffff800159492e je	0xffffff8001594951
+ffffff800159494b	jne	0xffffff800159511f
+CONTROL_FLOW=0xffffff800159494b jne	0xffffff800159511f
+ffffff800159495e	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff800159495e jmp	0xffffff8001594174
+ffffff800159496c	je	0xffffff800159498f
+CONTROL_FLOW=0xffffff800159496c je	0xffffff800159498f
+ffffff8001594989	jne	0xffffff80015951a1
+CONTROL_FLOW=0xffffff8001594989 jne	0xffffff80015951a1
+ffffff800159499c	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff800159499c jmp	0xffffff8001594174
+ffffff80015949aa	je	0xffffff80015949cd
+CONTROL_FLOW=0xffffff80015949aa je	0xffffff80015949cd
+ffffff80015949c7	jne	0xffffff8001595220
+CONTROL_FLOW=0xffffff80015949c7 jne	0xffffff8001595220
+ffffff80015949da	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff80015949da jmp	0xffffff8001594174
+ffffff80015949ee	je	0xffffff8001594a11
+CONTROL_FLOW=0xffffff80015949ee je	0xffffff8001594a11
+ffffff8001594a0b	jne	0xffffff800159524e
+CONTROL_FLOW=0xffffff8001594a0b jne	0xffffff800159524e
+ffffff8001594a1e	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594a1e jmp	0xffffff8001594174
+ffffff8001594a2c	je	0xffffff8001594a4f
+CONTROL_FLOW=0xffffff8001594a2c je	0xffffff8001594a4f
+ffffff8001594a49	jne	0xffffff800159527c
+CONTROL_FLOW=0xffffff8001594a49 jne	0xffffff800159527c
+ffffff8001594a5c	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594a5c jmp	0xffffff8001594174
+ffffff8001594a6a	je	0xffffff8001594a8d
+CONTROL_FLOW=0xffffff8001594a6a je	0xffffff8001594a8d
+ffffff8001594a87	jne	0xffffff80015952aa
+CONTROL_FLOW=0xffffff8001594a87 jne	0xffffff80015952aa
+ffffff8001594a9a	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594a9a jmp	0xffffff8001594174
+ffffff8001594aae	je	0xffffff8001594ad1
+CONTROL_FLOW=0xffffff8001594aae je	0xffffff8001594ad1
+ffffff8001594acb	jne	0xffffff80015952d8
+CONTROL_FLOW=0xffffff8001594acb jne	0xffffff80015952d8
+ffffff8001594ade	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594ade jmp	0xffffff8001594174
+ffffff8001594b0c	jmp	0xffffff8001593832
+CONTROL_FLOW=0xffffff8001594b0c jmp	0xffffff8001593832
+ffffff8001594b3a	jmp	0xffffff8001593965
+CONTROL_FLOW=0xffffff8001594b3a jmp	0xffffff8001593965
+ffffff8001594b4e	je	0xffffff8001594179
+CONTROL_FLOW=0xffffff8001594b4e je	0xffffff8001594179
+ffffff8001594b6f	je	0xffffff8001594179
+CONTROL_FLOW=0xffffff8001594b6f je	0xffffff8001594179
+ffffff8001594b9a	jmp	0xffffff8001594d0a
+CONTROL_FLOW=0xffffff8001594b9a jmp	0xffffff8001594d0a
+ffffff8001594ba8	je	0xffffff8001594bcb
+CONTROL_FLOW=0xffffff8001594ba8 je	0xffffff8001594bcb
+ffffff8001594bc5	jne	0xffffff8001595306
+CONTROL_FLOW=0xffffff8001594bc5 jne	0xffffff8001595306
+ffffff8001594bd8	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594bd8 jmp	0xffffff8001594174
+ffffff8001594bec	je	0xffffff8001594179
+CONTROL_FLOW=0xffffff8001594bec je	0xffffff8001594179
+ffffff8001594c0d	je	0xffffff8001594179
+CONTROL_FLOW=0xffffff8001594c0d je	0xffffff8001594179
+ffffff8001594c38	jmp	0xffffff8001594d0a
+CONTROL_FLOW=0xffffff8001594c38 jmp	0xffffff8001594d0a
+ffffff8001594c4c	je	0xffffff8001594c6f
+CONTROL_FLOW=0xffffff8001594c4c je	0xffffff8001594c6f
+ffffff8001594c69	jne	0xffffff8001595334
+CONTROL_FLOW=0xffffff8001594c69 jne	0xffffff8001595334
+ffffff8001594c7c	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594c7c jmp	0xffffff8001594174
+ffffff8001594caa	jmp	0xffffff8001593a84
+CONTROL_FLOW=0xffffff8001594caa jmp	0xffffff8001593a84
+ffffff8001594cbe	je	0xffffff8001594179
+CONTROL_FLOW=0xffffff8001594cbe je	0xffffff8001594179
+ffffff8001594cdf	je	0xffffff8001594179
+CONTROL_FLOW=0xffffff8001594cdf je	0xffffff8001594179
+ffffff8001594d11	jmp	0xffffff800159417c
+CONTROL_FLOW=0xffffff8001594d11 jmp	0xffffff800159417c
+ffffff8001594d25	je	0xffffff8001594d48
+CONTROL_FLOW=0xffffff8001594d25 je	0xffffff8001594d48
+ffffff8001594d42	jne	0xffffff8001595362
+CONTROL_FLOW=0xffffff8001594d42 jne	0xffffff8001595362
+ffffff8001594d5d	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594d5d jmp	0xffffff8001594174
+ffffff8001594d71	je	0xffffff8001594d94
+CONTROL_FLOW=0xffffff8001594d71 je	0xffffff8001594d94
+ffffff8001594d8e	jne	0xffffff80015953cc
+CONTROL_FLOW=0xffffff8001594d8e jne	0xffffff80015953cc
+ffffff8001594da9	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594da9 jmp	0xffffff8001594174
+ffffff8001594df8	jmp	0xffffff8001593b82
+CONTROL_FLOW=0xffffff8001594df8 jmp	0xffffff8001593b82
+ffffff8001594e3d	jmp	0xffffff8001593bcd
+CONTROL_FLOW=0xffffff8001594e3d jmp	0xffffff8001593bcd
+ffffff8001594e8b	jmp	0xffffff8001593c97
+CONTROL_FLOW=0xffffff8001594e8b jmp	0xffffff8001593c97
+ffffff8001594ed9	jmp	0xffffff8001593d07
+CONTROL_FLOW=0xffffff8001594ed9 jmp	0xffffff8001593d07
+ffffff8001594f07	jmp	0xffffff8001593c44
+CONTROL_FLOW=0xffffff8001594f07 jmp	0xffffff8001593c44
+ffffff8001594f1b	je	0xffffff8001594f3e
+CONTROL_FLOW=0xffffff8001594f1b je	0xffffff8001594f3e
+ffffff8001594f38	jne	0xffffff80015953fa
+CONTROL_FLOW=0xffffff8001594f38 jne	0xffffff80015953fa
+ffffff8001594f53	jmp	0xffffff8001594174
+CONTROL_FLOW=0xffffff8001594f53 jmp	0xffffff8001594174
+ffffff8001594f92	jmp	0xffffff8001594126
+CONTROL_FLOW=0xffffff8001594f92 jmp	0xffffff8001594126
+ffffff8001594fd5	jmp	0xffffff80015940e2
+CONTROL_FLOW=0xffffff8001594fd5 jmp	0xffffff80015940e2
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore13initDebugInfoEv ADDRESS=0xffffff800159af70 END=0xffffff800159b1ca INSTRUCTIONS=120
+ffffff800159af70	pushq	%rbp
+ffffff800159af71	movq	%rsp, %rbp
+ffffff800159af74	pushq	%r14
+ffffff800159af76	pushq	%rbx
+ffffff800159af77	subq	$0x370, %rsp                    ## imm = 0x370
+ffffff800159af7e	movq	%rdi, %rbx
+ffffff800159af81	movq	0x1d02a0(%rip), %rax
+ffffff800159af88	movq	(%rax), %rax
+ffffff800159af8b	movq	%rax, -0x18(%rbp)
+ffffff800159af8f	movq	0x128(%rdi), %rax
+ffffff800159af96	movq	0x1510(%rax), %rcx
+ffffff800159af9d	movq	0x88(%rcx), %rdx
+ffffff800159afa4	movq	0x220(%rdx), %rdx
+ffffff800159afab	movq	%rdx, 0x3738(%rax)
+ffffff800159afb2	movq	0x88(%rcx), %rdx
+ffffff800159afb9	movq	0x228(%rdx), %rdx
+ffffff800159b017	je	0xffffff800159b026
+CONTROL_FLOW=0xffffff800159b017 je	0xffffff800159b026
+ffffff800159b030	je	0xffffff800159b03f
+CONTROL_FLOW=0xffffff800159b030 je	0xffffff800159b03f
+ffffff800159b049	je	0xffffff800159b058
+CONTROL_FLOW=0xffffff800159b049 je	0xffffff800159b058
+ffffff800159b062	je	0xffffff800159b071
+CONTROL_FLOW=0xffffff800159b062 je	0xffffff800159b071
+ffffff800159b07b	je	0xffffff800159b08a
+CONTROL_FLOW=0xffffff800159b07b je	0xffffff800159b08a
+ffffff800159b094	je	0xffffff800159b0a6
+CONTROL_FLOW=0xffffff800159b094 je	0xffffff800159b0a6
+ffffff800159b0b0	je	0xffffff800159b0c2
+CONTROL_FLOW=0xffffff800159b0b0 je	0xffffff800159b0c2
+ffffff800159b0cc	je	0xffffff800159b0de
+CONTROL_FLOW=0xffffff800159b0cc je	0xffffff800159b0de
+ffffff800159b0e6	je	0xffffff800159b1a7
+CONTROL_FLOW=0xffffff800159b0e6 je	0xffffff800159b1a7
+ffffff800159b146	je	0xffffff800159b15d
+CONTROL_FLOW=0xffffff800159b146 je	0xffffff800159b15d
+ffffff800159b1b5	jne	0xffffff800159b1c5
+CONTROL_FLOW=0xffffff800159b1b5 jne	0xffffff800159b1c5
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore4stopEP9IOService ADDRESS=0xffffff800159c99c END=0xffffff800159ca84 INSTRUCTIONS=62
+ffffff800159c99c	pushq	%rbp
+ffffff800159c99d	movq	%rsp, %rbp
+ffffff800159c9a0	pushq	%r15
+ffffff800159c9a2	pushq	%r14
+ffffff800159c9a4	pushq	%rbx
+ffffff800159c9a5	pushq	%rax
+ffffff800159c9a6	movq	%rsi, %rbx
+ffffff800159c9a9	movq	%rdi, %r14
+ffffff800159c9ac	movq	%rsi, %rdi
+ffffff800159c9af	callq	0xffffff800048cb00
+ffffff800159c9b4	movq	%rax, %r15
+ffffff800159c9b7	movq	%r14, %rdi
+ffffff800159c9ba	callq	0xffffff800048cb00
+ffffff800159c9bf	leaq	0x1706e0(%rip), %rdi            ## literal pool for: "AppleBCMWLANCore::stop[%u] ::stop( %p ) this[%p]\n"
+ffffff800159c9c6	movl	$0xe10, %esi                    ## imm = 0xE10
+ffffff800159c9cb	movq	%r15, %rdx
+ffffff800159c9e9	je	0xffffff800159ca79
+CONTROL_FLOW=0xffffff800159c9e9 je	0xffffff800159ca79
+ffffff800159ca13	jne	0xffffff800159ca28
+CONTROL_FLOW=0xffffff800159ca13 jne	0xffffff800159ca28
+ffffff800159ca73	jmpq	*0x5d8(%rax)
+CONTROL_FLOW=0xffffff800159ca73 jmpq	*0x5d8(%rax)
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore13stopResourcesEv ADDRESS=0xffffff800159ca84 END=0xffffff800159cd58 INSTRUCTIONS=164
+ffffff800159ca84	pushq	%rbp
+ffffff800159ca85	movq	%rsp, %rbp
+ffffff800159ca88	pushq	%rbx
+ffffff800159ca89	subq	$0x18, %rsp
+ffffff800159ca8d	movq	%rdi, %rbx
+ffffff800159ca90	movq	0x1ce791(%rip), %rax
+ffffff800159ca97	movq	(%rax), %rax
+ffffff800159ca9a	movq	%rax, -0x10(%rbp)
+ffffff800159ca9e	callq	0xffffff800048cb00
+ffffff800159caa3	leaq	0x1706c8(%rip), %rdi            ## literal pool for: "AppleBCMWLANCore::stopResources[%u] this[%p]\n"
+ffffff800159caaa	movl	$0xef0, %esi                    ## imm = 0xEF0
+ffffff800159caaf	movq	%rax, %rdx
+ffffff800159cab2	xorl	%eax, %eax
+ffffff800159cab4	callq	0xffffff8000ab6560
+ffffff800159cab9	movq	0x128(%rbx), %rdx
+ffffff800159cac0	movb	$0x1, 0x4735(%rdx)
+ffffff800159cad1	je	0xffffff800159cb05
+CONTROL_FLOW=0xffffff800159cad1 je	0xffffff800159cb05
+ffffff800159cae2	callq	*0xc68(%rax)
+ffffff800159cb1a	je	0xffffff800159cbad
+CONTROL_FLOW=0xffffff800159cb1a je	0xffffff800159cbad
+ffffff800159cb52	je	0xffffff800159cb75
+CONTROL_FLOW=0xffffff800159cb52 je	0xffffff800159cb75
+ffffff800159cb6f	jne	0xffffff800159cd12
+CONTROL_FLOW=0xffffff800159cb6f jne	0xffffff800159cd12
+ffffff800159cbbe	je	0xffffff800159cbd0
+CONTROL_FLOW=0xffffff800159cbbe je	0xffffff800159cbd0
+ffffff800159cbda	je	0xffffff800159cbec
+CONTROL_FLOW=0xffffff800159cbda je	0xffffff800159cbec
+ffffff800159cbf6	je	0xffffff800159cc08
+CONTROL_FLOW=0xffffff800159cbf6 je	0xffffff800159cc08
+ffffff800159cc12	je	0xffffff800159cc24
+CONTROL_FLOW=0xffffff800159cc12 je	0xffffff800159cc24
+ffffff800159cc2e	je	0xffffff800159cc40
+CONTROL_FLOW=0xffffff800159cc2e je	0xffffff800159cc40
+ffffff800159cc4a	je	0xffffff800159cc5c
+CONTROL_FLOW=0xffffff800159cc4a je	0xffffff800159cc5c
+ffffff800159cc63	jne	0xffffff800159cc9d
+CONTROL_FLOW=0xffffff800159cc63 jne	0xffffff800159cc9d
+ffffff800159cc6f	je	0xffffff800159cc81
+CONTROL_FLOW=0xffffff800159cc6f je	0xffffff800159cc81
+ffffff800159cc8b	je	0xffffff800159cc9d
+CONTROL_FLOW=0xffffff800159cc8b je	0xffffff800159cc9d
+ffffff800159cca7	je	0xffffff800159ccc9
+CONTROL_FLOW=0xffffff800159cca7 je	0xffffff800159ccc9
+ffffff800159ccb7	je	0xffffff800159ccc9
+CONTROL_FLOW=0xffffff800159ccb7 je	0xffffff800159ccc9
+ffffff800159ccd3	je	0xffffff800159ccdd
+CONTROL_FLOW=0xffffff800159ccd3 je	0xffffff800159ccdd
+ffffff800159cd09	jne	0xffffff800159cd52
+CONTROL_FLOW=0xffffff800159cd09 jne	0xffffff800159cd52
+ffffff800159cd4d	jmp	0xffffff800159cb75
+CONTROL_FLOW=0xffffff800159cd4d jmp	0xffffff800159cb75
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore22enableWorkQueueSourcesEv ADDRESS=0xffffff800159fb18 END=0xffffff800159fc40 INSTRUCTIONS=76
+ffffff800159fb18	pushq	%rbp
+ffffff800159fb19	movq	%rsp, %rbp
+ffffff800159fb1c	pushq	%rbx
+ffffff800159fb1d	pushq	%rax
+ffffff800159fb1e	movq	%rdi, %rbx
+ffffff800159fb21	movq	0x128(%rdi), %rax
+ffffff800159fb28	movq	0x1860(%rax), %rdi
+ffffff800159fb2f	testq	%rdi, %rdi
+ffffff800159fb32	je	0xffffff800159fb3d
+CONTROL_FLOW=0xffffff800159fb32 je	0xffffff800159fb3d
+ffffff800159fb34	movq	(%rdi), %rax
+ffffff800159fb37	callq	*0x150(%rax)
+ffffff800159fb3d	movq	%rbx, %rdi
+ffffff800159fb40	movl	$0x54, %esi
+ffffff800159fb45	callq	__ZNK16AppleBCMWLANCore19featureFlagIsBitSetEi ## AppleBCMWLANCore::featureFlagIsBitSet(int) const
+ffffff800159fb4a	testb	%al, %al
+ffffff800159fb4c	jne	0xffffff800159fb70
+CONTROL_FLOW=0xffffff800159fb4c jne	0xffffff800159fb70
+ffffff800159fb5d	jne	0xffffff800159fb70
+CONTROL_FLOW=0xffffff800159fb5d jne	0xffffff800159fb70
+ffffff800159fb6e	je	0xffffff800159fba8
+CONTROL_FLOW=0xffffff800159fb6e je	0xffffff800159fba8
+ffffff800159fb81	je	0xffffff800159fba8
+CONTROL_FLOW=0xffffff800159fb81 je	0xffffff800159fba8
+ffffff800159fbbe	je	0xffffff800159fc1d
+CONTROL_FLOW=0xffffff800159fbbe je	0xffffff800159fc1d
+ffffff800159fbca	je	0xffffff800159fbdc
+CONTROL_FLOW=0xffffff800159fbca je	0xffffff800159fbdc
+ffffff800159fbe3	jne	0xffffff800159fc1d
+CONTROL_FLOW=0xffffff800159fbe3 jne	0xffffff800159fc1d
+ffffff800159fbef	je	0xffffff800159fc01
+CONTROL_FLOW=0xffffff800159fbef je	0xffffff800159fc01
+ffffff800159fc0b	je	0xffffff800159fc1d
+CONTROL_FLOW=0xffffff800159fc0b je	0xffffff800159fc1d
+ffffff800159fc27	je	0xffffff800159fc38
+CONTROL_FLOW=0xffffff800159fc27 je	0xffffff800159fc38
+ffffff800159fc32	jmpq	*0x150(%rax)
+CONTROL_FLOW=0xffffff800159fc32 jmpq	*0x150(%rax)
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore23disableWorkQueueSourcesEv ADDRESS=0xffffff800159fc80 END=0xffffff800159fd48 INSTRUCTIONS=51
+ffffff800159fc80	pushq	%rbp
+ffffff800159fc81	movq	%rsp, %rbp
+ffffff800159fc84	pushq	%rbx
+ffffff800159fc85	pushq	%rax
+ffffff800159fc86	movq	%rdi, %rbx
+ffffff800159fc89	movq	0x128(%rdi), %rax
+ffffff800159fc90	movq	0x1860(%rax), %rdi
+ffffff800159fc97	testq	%rdi, %rdi
+ffffff800159fc9a	je	0xffffff800159fcac
+CONTROL_FLOW=0xffffff800159fc9a je	0xffffff800159fcac
+ffffff800159fc9c	movq	(%rdi), %rax
+ffffff800159fc9f	callq	*0x158(%rax)
+ffffff800159fca5	movq	0x128(%rbx), %rax
+ffffff800159fcac	movq	0x1870(%rax), %rdi
+ffffff800159fcb3	testq	%rdi, %rdi
+ffffff800159fcb6	je	0xffffff800159fcc8
+CONTROL_FLOW=0xffffff800159fcb6 je	0xffffff800159fcc8
+ffffff800159fcb8	movq	(%rdi), %rax
+ffffff800159fcd2	je	0xffffff800159fce4
+CONTROL_FLOW=0xffffff800159fcd2 je	0xffffff800159fce4
+ffffff800159fceb	jne	0xffffff800159fd25
+CONTROL_FLOW=0xffffff800159fceb jne	0xffffff800159fd25
+ffffff800159fcf7	je	0xffffff800159fd09
+CONTROL_FLOW=0xffffff800159fcf7 je	0xffffff800159fd09
+ffffff800159fd13	je	0xffffff800159fd25
+CONTROL_FLOW=0xffffff800159fd13 je	0xffffff800159fd25
+ffffff800159fd2f	je	0xffffff800159fd40
+CONTROL_FLOW=0xffffff800159fd2f je	0xffffff800159fd40
+ffffff800159fd3a	jmpq	*0x158(%rax)
+CONTROL_FLOW=0xffffff800159fd3a jmpq	*0x158(%rax)
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore22initTrafficEngineeringEv ADDRESS=0xffffff80015b6dba END=0xffffff80015b6f3e INSTRUCTIONS=85
+ffffff80015b6dba	pushq	%rbp
+ffffff80015b6dbb	movq	%rsp, %rbp
+ffffff80015b6dbe	pushq	%rbx
+ffffff80015b6dbf	pushq	%rax
+ffffff80015b6dc0	movq	%rdi, %rbx
+ffffff80015b6dc3	movq	0x128(%rdi), %rax
+ffffff80015b6dca	leaq	0x74cc(%rax), %rsi
+ffffff80015b6dd1	xorl	%ecx, %ecx
+ffffff80015b6dd3	movw	%cx, 0x74cc(%rax)
+ffffff80015b6dda	movq	$0x0, 0x7910(%rax)
+ffffff80015b6de5	movw	%cx, 0x7918(%rax)
+ffffff80015b6dec	movb	$0x0, 0x791a(%rax)
+ffffff80015b6df3	movabsq	$0xa000000050, %rcx             ## imm = 0xA000000050
+ffffff80015b6dfd	movq	%rcx, 0x791c(%rax)
+ffffff80015b6e04	movl	$0x2, 0x7924(%rax)
+ffffff80015b6e0e	leaq	0x17b941(%rip), %rdi            ## literal pool for: "wlan.trafficengineering.enabled"
+ffffff80015b6e4b	je	0xffffff80015b6e6a
+CONTROL_FLOW=0xffffff80015b6e4b je	0xffffff80015b6e6a
+ffffff80015b6e68	jne	0xffffff80015b6ea1
+CONTROL_FLOW=0xffffff80015b6e68 jne	0xffffff80015b6ea1
+ffffff80015b6e79	je	0xffffff80015b6e98
+CONTROL_FLOW=0xffffff80015b6e79 je	0xffffff80015b6e98
+ffffff80015b6e96	jne	0xffffff80015b6eef
+CONTROL_FLOW=0xffffff80015b6e96 jne	0xffffff80015b6eef
+ffffff80015b6eea	jmp	0xffffff80015b6e6a
+CONTROL_FLOW=0xffffff80015b6eea jmp	0xffffff80015b6e6a
+ffffff80015b6f38	jmp	0xffffff80015b6e98
+CONTROL_FLOW=0xffffff80015b6f38 jmp	0xffffff80015b6e98
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore16stopARPKeepAliveEv ADDRESS=0xffffff80015b8d96 END=0xffffff80015b8e80 INSTRUCTIONS=65
+ffffff80015b8d96	pushq	%rbp
+ffffff80015b8d97	movq	%rsp, %rbp
+ffffff80015b8d9a	pushq	%r15
+ffffff80015b8d9c	pushq	%r14
+ffffff80015b8d9e	pushq	%rbx
+ffffff80015b8d9f	subq	$0x28, %rsp
+ffffff80015b8da3	movq	%rdi, %r14
+ffffff80015b8da6	movq	0x1b247b(%rip), %rax
+ffffff80015b8dad	movq	(%rax), %rax
+ffffff80015b8db0	movq	%rax, -0x20(%rbp)
+ffffff80015b8db4	leaq	-0x28(%rbp), %rax
+ffffff80015b8db8	movq	$0x0, (%rax)
+ffffff80015b8dbf	movq	0x128(%rdi), %rcx
+ffffff80015b8dc6	movq	0x1520(%rcx), %rdi
+ffffff80015b8dcd	leaq	-0x38(%rbp), %rdx
+ffffff80015b8dd1	movq	%rax, (%rdx)
+ffffff80015b8def	je	0xffffff80015b8e1f
+CONTROL_FLOW=0xffffff80015b8def je	0xffffff80015b8e1f
+ffffff80015b8e00	je	0xffffff80015b8e1f
+CONTROL_FLOW=0xffffff80015b8e00 je	0xffffff80015b8e1f
+ffffff80015b8e1d	jne	0xffffff80015b8e3c
+CONTROL_FLOW=0xffffff80015b8e1d jne	0xffffff80015b8e3c
+ffffff80015b8e2d	jne	0xffffff80015b8e7b
+CONTROL_FLOW=0xffffff80015b8e2d jne	0xffffff80015b8e7b
+ffffff80015b8e59	leaq	_.str.735(%rip), %rsi           ## literal pool for: "[ik] %s@%d: Error: Unable to set keep alive packet ret %s\n"
+CONTROL_FLOW=0xffffff80015b8e59 leaq	_.str.735(%rip), %rsi           ## literal pool for: "[ik] %s@%d: Error: Unable to set keep alive packet ret %s\n"
+ffffff80015b8e79	jmp	0xffffff80015b8e1f
+CONTROL_FLOW=0xffffff80015b8e79 jmp	0xffffff80015b8e1f
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore26startRoamScanAsyncCallbackER9CommandIDiR16CommandRxPayloadPv ADDRESS=0xffffff80015bed9e END=0xffffff80015bee76 INSTRUCTIONS=59
+ffffff80015bed9e	pushq	%rbp
+ffffff80015bed9f	movq	%rsp, %rbp
+ffffff80015beda2	pushq	%r14
+ffffff80015beda4	pushq	%rbx
+ffffff80015beda5	subq	$0x10, %rsp
+ffffff80015beda9	movq	0x1ac478(%rip), %rax
+ffffff80015bedb0	movq	(%rax), %rax
+ffffff80015bedb3	movq	%rax, -0x18(%rbp)
+ffffff80015bedb7	movl	%edx, -0x1c(%rbp)
+ffffff80015bedba	testl	%edx, %edx
+ffffff80015bedbc	je	0xffffff80015bee17
+CONTROL_FLOW=0xffffff80015bedbc je	0xffffff80015bee17
+ffffff80015bedbe	movq	%rdi, %rbx
+ffffff80015bedc1	movq	0x128(%rdi), %rax
+ffffff80015bedc8	movq	0x2c20(%rax), %rsi
+ffffff80015bedcf	leaq	-0x1c(%rbp), %rcx
+ffffff80015bedd3	movl	$0x4, %r8d
+ffffff80015bedf8	je	0xffffff80015bee17
+CONTROL_FLOW=0xffffff80015bedf8 je	0xffffff80015bee17
+ffffff80015bee15	jne	0xffffff80015bee30
+CONTROL_FLOW=0xffffff80015bee15 jne	0xffffff80015bee30
+ffffff80015bee25	jne	0xffffff80015bee70
+CONTROL_FLOW=0xffffff80015bee25 jne	0xffffff80015bee70
+ffffff80015bee6e	jmp	0xffffff80015bee17
+CONTROL_FLOW=0xffffff80015bee6e jmp	0xffffff80015bee17
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore17initEventBitFieldEv ADDRESS=0xffffff800160e1be END=0xffffff800160e1ec INSTRUCTIONS=10
+ffffff800160e1be	pushq	%rbp
+ffffff800160e1bf	movq	%rsp, %rbp
+ffffff800160e1c2	movq	0x128(%rdi), %rax
+ffffff800160e1c9	xorl	%ecx, %ecx
+ffffff800160e1cb	movq	%rcx, 0x458(%rax)
+ffffff800160e1d2	movq	%rcx, 0x450(%rax)
+ffffff800160e1d9	movq	%rcx, 0x448(%rax)
+ffffff800160e1e0	movl	$0x0, 0x460(%rax)
+ffffff800160e1ea	popq	%rbp
+ffffff800160e1eb	retq
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore19setRANGING_START_V3EP34apple80211_ranging_start_request_t ADDRESS=0xffffff8001616a7e END=0xffffff80016172cc INSTRUCTIONS=474
+ffffff8001616a7e	pushq	%rbp
+ffffff8001616a7f	movq	%rsp, %rbp
+ffffff8001616a82	pushq	%r15
+ffffff8001616a84	pushq	%r14
+ffffff8001616a86	pushq	%r13
+ffffff8001616a88	pushq	%r12
+ffffff8001616a8a	pushq	%rbx
+ffffff8001616a8b	subq	$0x68, %rsp
+ffffff8001616a8f	movq	0x154792(%rip), %rax
+ffffff8001616a96	movq	(%rax), %rax
+ffffff8001616a99	movq	%rax, -0x30(%rbp)
+ffffff8001616a9d	movq	%rdi, -0x60(%rbp)
+ffffff8001616aa1	leaq	__ZN16AppleBCMWLANCore23setRangingAsyncCallBackER9CommandIDiR16CommandRxPayloadPv(%rip), %rax ## AppleBCMWLANCore::setRangingAsyncCallBack(CommandID&, int, CommandRxPayload&, void*)
+ffffff8001616aa8	movq	%rax, -0x58(%rbp)
+ffffff8001616aac	movq	$0x0, -0x50(%rbp)
+ffffff8001616ab4	movl	$0xe0000001, %r15d              ## imm = 0xE0000001
+ffffff8001616abd	je	0xffffff800161719f
+CONTROL_FLOW=0xffffff8001616abd je	0xffffff800161719f
+ffffff8001616adf	je	0xffffff8001616afb
+CONTROL_FLOW=0xffffff8001616adf je	0xffffff8001616afb
+ffffff8001616af9	jne	0xffffff8001616b68
+CONTROL_FLOW=0xffffff8001616af9 jne	0xffffff8001616b68
+ffffff8001616b0a	je	0xffffff800161719f
+CONTROL_FLOW=0xffffff8001616b0a je	0xffffff800161719f
+ffffff8001616b2b	je	0xffffff800161719f
+CONTROL_FLOW=0xffffff8001616b2b je	0xffffff800161719f
+ffffff8001616b63	jmp	0xffffff800161719f
+CONTROL_FLOW=0xffffff8001616b63 jmp	0xffffff800161719f
+ffffff8001616b77	je	0xffffff8001616b9a
+CONTROL_FLOW=0xffffff8001616b77 je	0xffffff8001616b9a
+ffffff8001616b94	jne	0xffffff80016171c5
+CONTROL_FLOW=0xffffff8001616b94 jne	0xffffff80016171c5
+ffffff8001616bb6	je	0xffffff8001616e2e
+CONTROL_FLOW=0xffffff8001616bb6 je	0xffffff8001616e2e
+ffffff8001616bc2	je	0xffffff800161719f
+CONTROL_FLOW=0xffffff8001616bc2 je	0xffffff800161719f
+ffffff8001616bfd	je	0xffffff8001616c0c
+CONTROL_FLOW=0xffffff8001616bfd je	0xffffff8001616c0c
+ffffff8001616d39	je	0xffffff8001616d5c
+CONTROL_FLOW=0xffffff8001616d39 je	0xffffff8001616d5c
+ffffff8001616d56	jne	0xffffff80016171fb
+CONTROL_FLOW=0xffffff8001616d56 jne	0xffffff80016171fb
+ffffff8001616dac	je	0xffffff8001616f2b
+CONTROL_FLOW=0xffffff8001616dac je	0xffffff8001616f2b
+ffffff8001616dc4	je	0xffffff8001617192
+CONTROL_FLOW=0xffffff8001616dc4 je	0xffffff8001617192
+ffffff8001616de5	je	0xffffff8001617192
+CONTROL_FLOW=0xffffff8001616de5 je	0xffffff8001617192
+ffffff8001616e29	jmp	0xffffff8001617192
+CONTROL_FLOW=0xffffff8001616e29 jmp	0xffffff8001617192
+ffffff8001616f26	jmp	0xffffff800161719f
+CONTROL_FLOW=0xffffff8001616f26 jmp	0xffffff800161719f
+ffffff8001616fd7	je	0xffffff800161704b
+CONTROL_FLOW=0xffffff8001616fd7 je	0xffffff800161704b
+ffffff8001616feb	je	0xffffff8001617185
+CONTROL_FLOW=0xffffff8001616feb je	0xffffff8001617185
+ffffff800161700c	je	0xffffff8001617185
+CONTROL_FLOW=0xffffff800161700c je	0xffffff8001617185
+ffffff8001617046	jmp	0xffffff800161710a
+CONTROL_FLOW=0xffffff8001617046 jmp	0xffffff800161710a
+ffffff800161709b	je	0xffffff8001617116
+CONTROL_FLOW=0xffffff800161709b je	0xffffff8001617116
+ffffff80016170af	je	0xffffff8001617185
+CONTROL_FLOW=0xffffff80016170af je	0xffffff8001617185
+ffffff80016170d0	je	0xffffff8001617185
+CONTROL_FLOW=0xffffff80016170d0 je	0xffffff8001617185
+ffffff8001617114	jmp	0xffffff8001617185
+CONTROL_FLOW=0xffffff8001617114 jmp	0xffffff8001617185
+ffffff8001617162	je	0xffffff8001617185
+CONTROL_FLOW=0xffffff8001617162 je	0xffffff8001617185
+ffffff800161717f	jne	0xffffff800161727f
+CONTROL_FLOW=0xffffff800161717f jne	0xffffff800161727f
+ffffff80016171ad	jne	0xffffff80016172c7
+CONTROL_FLOW=0xffffff80016171ad jne	0xffffff80016172c7
+ffffff80016171f6	jmp	0xffffff8001616b9a
+CONTROL_FLOW=0xffffff80016171f6 jmp	0xffffff8001616b9a
+ffffff800161727a	jmp	0xffffff8001616d5c
+CONTROL_FLOW=0xffffff800161727a jmp	0xffffff8001616d5c
+ffffff80016172c2	jmp	0xffffff8001617185
+CONTROL_FLOW=0xffffff80016172c2 jmp	0xffffff8001617185
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore19setRANGING_START_V4EP34apple80211_ranging_start_request_t ADDRESS=0xffffff80016172fa END=0xffffff8001617a6e INSTRUCTIONS=425
+ffffff80016172fa	pushq	%rbp
+ffffff80016172fb	movq	%rsp, %rbp
+ffffff80016172fe	pushq	%r15
+ffffff8001617300	pushq	%r14
+ffffff8001617302	pushq	%r13
+ffffff8001617304	pushq	%r12
+ffffff8001617306	pushq	%rbx
+ffffff8001617307	subq	$0x58, %rsp
+ffffff800161730b	movq	0x153f16(%rip), %rax
+ffffff8001617312	movq	(%rax), %rax
+ffffff8001617315	movq	%rax, -0x30(%rbp)
+ffffff8001617319	movq	%rdi, -0x60(%rbp)
+ffffff800161731d	leaq	__ZN16AppleBCMWLANCore23setRangingAsyncCallBackER9CommandIDiR16CommandRxPayloadPv(%rip), %rax ## AppleBCMWLANCore::setRangingAsyncCallBack(CommandID&, int, CommandRxPayload&, void*)
+ffffff8001617324	movq	%rax, -0x58(%rbp)
+ffffff8001617328	movq	$0x0, -0x50(%rbp)
+ffffff8001617330	movl	$0xe0000001, %r15d              ## imm = 0xE0000001
+ffffff8001617339	je	0xffffff8001617949
+CONTROL_FLOW=0xffffff8001617339 je	0xffffff8001617949
+ffffff800161735b	je	0xffffff8001617377
+CONTROL_FLOW=0xffffff800161735b je	0xffffff8001617377
+ffffff8001617375	jne	0xffffff80016173e4
+CONTROL_FLOW=0xffffff8001617375 jne	0xffffff80016173e4
+ffffff8001617386	je	0xffffff8001617949
+CONTROL_FLOW=0xffffff8001617386 je	0xffffff8001617949
+ffffff80016173a7	je	0xffffff8001617949
+CONTROL_FLOW=0xffffff80016173a7 je	0xffffff8001617949
+ffffff80016173df	jmp	0xffffff8001617949
+CONTROL_FLOW=0xffffff80016173df jmp	0xffffff8001617949
+ffffff80016173f3	je	0xffffff8001617416
+CONTROL_FLOW=0xffffff80016173f3 je	0xffffff8001617416
+ffffff8001617410	jne	0xffffff800161796f
+CONTROL_FLOW=0xffffff8001617410 jne	0xffffff800161796f
+ffffff8001617432	je	0xffffff80016176ad
+CONTROL_FLOW=0xffffff8001617432 je	0xffffff80016176ad
+ffffff800161743e	je	0xffffff8001617949
+CONTROL_FLOW=0xffffff800161743e je	0xffffff8001617949
+ffffff8001617479	je	0xffffff8001617488
+CONTROL_FLOW=0xffffff8001617479 je	0xffffff8001617488
+ffffff80016175b8	je	0xffffff80016175db
+CONTROL_FLOW=0xffffff80016175b8 je	0xffffff80016175db
+ffffff80016175d5	jne	0xffffff80016179a5
+CONTROL_FLOW=0xffffff80016175d5 jne	0xffffff80016179a5
+ffffff800161762b	je	0xffffff80016177aa
+CONTROL_FLOW=0xffffff800161762b je	0xffffff80016177aa
+ffffff8001617643	je	0xffffff800161793c
+CONTROL_FLOW=0xffffff8001617643 je	0xffffff800161793c
+ffffff8001617664	je	0xffffff800161793c
+CONTROL_FLOW=0xffffff8001617664 je	0xffffff800161793c
+ffffff80016176a8	jmp	0xffffff800161793c
+CONTROL_FLOW=0xffffff80016176a8 jmp	0xffffff800161793c
+ffffff80016177a5	jmp	0xffffff8001617949
+CONTROL_FLOW=0xffffff80016177a5 jmp	0xffffff8001617949
+ffffff800161784b	je	0xffffff80016178c3
+CONTROL_FLOW=0xffffff800161784b je	0xffffff80016178c3
+ffffff800161785c	je	0xffffff800161792f
+CONTROL_FLOW=0xffffff800161785c je	0xffffff800161792f
+ffffff800161787d	je	0xffffff800161792f
+CONTROL_FLOW=0xffffff800161787d je	0xffffff800161792f
+ffffff80016178c1	jmp	0xffffff800161792f
+CONTROL_FLOW=0xffffff80016178c1 jmp	0xffffff800161792f
+ffffff800161790c	je	0xffffff800161792f
+CONTROL_FLOW=0xffffff800161790c je	0xffffff800161792f
+ffffff8001617929	jne	0xffffff8001617a23
+CONTROL_FLOW=0xffffff8001617929 jne	0xffffff8001617a23
+ffffff8001617957	jne	0xffffff8001617a68
+CONTROL_FLOW=0xffffff8001617957 jne	0xffffff8001617a68
+ffffff80016179a0	jmp	0xffffff8001617416
+CONTROL_FLOW=0xffffff80016179a0 jmp	0xffffff8001617416
+ffffff8001617a1e	jmp	0xffffff80016175db
+CONTROL_FLOW=0xffffff8001617a1e jmp	0xffffff80016175db
+ffffff8001617a63	jmp	0xffffff800161792f
+CONTROL_FLOW=0xffffff8001617a63 jmp	0xffffff800161792f
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore16setRANGING_STARTEP34apple80211_ranging_start_request_t ADDRESS=0xffffff8001617a6e END=0xffffff8001617b58 INSTRUCTIONS=64
+ffffff8001617a6e	pushq	%rbp
+ffffff8001617a6f	movq	%rsp, %rbp
+ffffff8001617a72	pushq	%r15
+ffffff8001617a74	pushq	%r14
+ffffff8001617a76	pushq	%rbx
+ffffff8001617a77	pushq	%rax
+ffffff8001617a78	movq	%rsi, %rbx
+ffffff8001617a7b	movq	%rdi, %r15
+ffffff8001617a7e	cmpl	$0x0, 0x4(%rsi)
+ffffff8001617a82	setne	%cl
+ffffff8001617a85	movq	0x128(%rdi), %rax
+ffffff8001617a8c	cmpb	%cl, 0x4736(%rax)
+ffffff8001617a92	jne	0xffffff8001617b0d
+CONTROL_FLOW=0xffffff8001617a92 jne	0xffffff8001617b0d
+ffffff8001617a94	movq	(%r15), %rax
+ffffff8001617a97	movq	%r15, %rdi
+ffffff8001617a9a	callq	*0xd40(%rax)
+ffffff8001617aa9	je	0xffffff8001617b4a
+CONTROL_FLOW=0xffffff8001617aa9 je	0xffffff8001617b4a
+ffffff8001617aca	je	0xffffff8001617b4a
+CONTROL_FLOW=0xffffff8001617aca je	0xffffff8001617b4a
+ffffff8001617b0b	jmp	0xffffff8001617b4a
+CONTROL_FLOW=0xffffff8001617b0b jmp	0xffffff8001617b4a
+ffffff8001617b14	ja	0xffffff8001617b23
+CONTROL_FLOW=0xffffff8001617b14 ja	0xffffff8001617b23
+ffffff8001617b21	jmp	0xffffff8001617b2e
+CONTROL_FLOW=0xffffff8001617b21 jmp	0xffffff8001617b2e
+ffffff8001617b33	jne	0xffffff8001617b4a
+CONTROL_FLOW=0xffffff8001617b33 jne	0xffffff8001617b4a
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore31initialPowerStateForDomainStateEm ADDRESS=0xffffff8001618c26 END=0xffffff8001618cce INSTRUCTIONS=52
+ffffff8001618c26	pushq	%rbp
+ffffff8001618c27	movq	%rsp, %rbp
+ffffff8001618c2a	pushq	%r14
+ffffff8001618c2c	pushq	%rbx
+ffffff8001618c2d	movq	%rsi, %rbx
+ffffff8001618c30	movq	%rdi, %r14
+ffffff8001618c33	movq	0x128(%rdi), %rax
+ffffff8001618c3a	cmpb	$0x1, 0x2a00(%rax)
+ffffff8001618c41	jne	0xffffff8001618c7e
+CONTROL_FLOW=0xffffff8001618c41 jne	0xffffff8001618c7e
+ffffff8001618c43	movq	(%r14), %rax
+ffffff8001618c46	movq	%r14, %rdi
+ffffff8001618c49	callq	*0xd40(%rax)
+ffffff8001618c4f	testq	%rax, %rax
+ffffff8001618c52	je	0xffffff8001618c71
+CONTROL_FLOW=0xffffff8001618c52 je	0xffffff8001618c71
+ffffff8001618c54	movq	(%r14), %rax
+ffffff8001618c57	movq	%r14, %rdi
+ffffff8001618c6f	jne	0xffffff8001618c9f
+CONTROL_FLOW=0xffffff8001618c6f jne	0xffffff8001618c9f
+ffffff8001618c75	jb	0xffffff8001618c95
+CONTROL_FLOW=0xffffff8001618c75 jb	0xffffff8001618c95
+ffffff8001618c7c	jmp	0xffffff8001618c97
+CONTROL_FLOW=0xffffff8001618c7c jmp	0xffffff8001618c97
+ffffff8001618c8f	jmpq	*0x808(%rax)
+CONTROL_FLOW=0xffffff8001618c8f jmpq	*0x808(%rax)
+ffffff8001618ccb	jmp	0xffffff8001618c71
+CONTROL_FLOW=0xffffff8001618ccb jmp	0xffffff8001618c71
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore24initialize6GCapabilitiesEv ADDRESS=0xffffff80016279de END=0xffffff8001627acc INSTRUCTIONS=66
+ffffff80016279de	pushq	%rbp
+ffffff80016279df	movq	%rsp, %rbp
+ffffff80016279e2	pushq	%r14
+ffffff80016279e4	pushq	%rbx
+ffffff80016279e5	movq	%rdi, %rbx
+ffffff80016279e8	movq	0x128(%rdi), %rax
+ffffff80016279ef	movq	0x1558(%rax), %rdi
+ffffff80016279f6	testq	%rdi, %rdi
+ffffff80016279f9	je	0xffffff8001627a90
+CONTROL_FLOW=0xffffff80016279f9 je	0xffffff8001627a90
+ffffff80016279ff	callq	__ZN25AppleBCMWLANConfigManager24determine6GConfigurationEv ## AppleBCMWLANConfigManager::determine6GConfiguration()
+ffffff8001627a04	movl	%eax, %r14d
+ffffff8001627a07	movq	(%rbx), %rax
+ffffff8001627a0a	movq	%rbx, %rdi
+ffffff8001627a0d	callq	*0xd40(%rax)
+ffffff8001627a13	testb	%r14b, %r14b
+ffffff8001627a16	je	0xffffff8001627a69
+CONTROL_FLOW=0xffffff8001627a16 je	0xffffff8001627a69
+ffffff8001627a1b	je	0xffffff8001627a90
+CONTROL_FLOW=0xffffff8001627a1b je	0xffffff8001627a90
+ffffff8001627a3d	je	0xffffff8001627a90
+CONTROL_FLOW=0xffffff8001627a3d je	0xffffff8001627a90
+ffffff8001627a67	jmp	0xffffff8001627abd
+CONTROL_FLOW=0xffffff8001627a67 jmp	0xffffff8001627abd
+ffffff8001627a6c	je	0xffffff8001627a90
+CONTROL_FLOW=0xffffff8001627a6c je	0xffffff8001627a90
+ffffff8001627a8e	jne	0xffffff8001627a95
+CONTROL_FLOW=0xffffff8001627a8e jne	0xffffff8001627a95
+ffffff8001627ac6	jmp	0xffffff80031d25da
+CONTROL_FLOW=0xffffff8001627ac6 jmp	0xffffff80031d25da
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore15initQoSMgmtMSCSEv ADDRESS=0xffffff800163ef3e END=0xffffff800163f1d0 INSTRUCTIONS=163
+ffffff800163ef3e	pushq	%rbp
+ffffff800163ef3f	movq	%rsp, %rbp
+ffffff800163ef42	pushq	%r15
+ffffff800163ef44	pushq	%r14
+ffffff800163ef46	pushq	%rbx
+ffffff800163ef47	subq	$0x18, %rsp
+ffffff800163ef4b	movq	%rdi, %rbx
+ffffff800163ef4e	movq	0x12c2d3(%rip), %rax
+ffffff800163ef55	movq	(%rax), %rax
+ffffff800163ef58	movq	%rax, -0x20(%rbp)
+ffffff800163ef5c	movl	$0x5f, %esi
+ffffff800163ef61	callq	__ZNK16AppleBCMWLANCore19featureFlagIsBitSetEi ## AppleBCMWLANCore::featureFlagIsBitSet(int) const
+ffffff800163ef66	testb	%al, %al
+ffffff800163ef68	je	0xffffff800163f1af
+CONTROL_FLOW=0xffffff800163ef68 je	0xffffff800163f1af
+ffffff800163ef6e	movq	0x128(%rbx), %rax
+ffffff800163ef75	cmpb	$0x0, 0x74c1(%rax)
+ffffff800163ef7c	je	0xffffff800163f06d
+CONTROL_FLOW=0xffffff800163ef7c je	0xffffff800163f06d
+ffffff800163ef9f	je	0xffffff800163f07c
+CONTROL_FLOW=0xffffff800163ef9f je	0xffffff800163f07c
+ffffff800163efbc	je	0xffffff800163efdb
+CONTROL_FLOW=0xffffff800163efbc je	0xffffff800163efdb
+ffffff800163efd9	jne	0xffffff800163f011
+CONTROL_FLOW=0xffffff800163efd9 jne	0xffffff800163f011
+ffffff800163f020	je	0xffffff800163f081
+CONTROL_FLOW=0xffffff800163f020 je	0xffffff800163f081
+ffffff800163f03d	je	0xffffff800163f081
+CONTROL_FLOW=0xffffff800163f03d je	0xffffff800163f081
+ffffff800163f06b	jmp	0xffffff800163f081
+CONTROL_FLOW=0xffffff800163f06b jmp	0xffffff800163f081
+ffffff800163f077	jmp	0xffffff800163f1a1
+CONTROL_FLOW=0xffffff800163f077 jmp	0xffffff800163f1a1
+ffffff800163f0a4	je	0xffffff800163f172
+CONTROL_FLOW=0xffffff800163f0a4 je	0xffffff800163f172
+ffffff800163f0c1	je	0xffffff800163f0e0
+CONTROL_FLOW=0xffffff800163f0c1 je	0xffffff800163f0e0
+ffffff800163f0de	jne	0xffffff800163f116
+CONTROL_FLOW=0xffffff800163f0de jne	0xffffff800163f116
+ffffff800163f125	je	0xffffff800163f175
+CONTROL_FLOW=0xffffff800163f125 je	0xffffff800163f175
+ffffff800163f142	je	0xffffff800163f175
+CONTROL_FLOW=0xffffff800163f142 je	0xffffff800163f175
+ffffff800163f170	jmp	0xffffff800163f175
+CONTROL_FLOW=0xffffff800163f170 jmp	0xffffff800163f175
+ffffff800163f191	jne	0xffffff800163f1a1
+CONTROL_FLOW=0xffffff800163f191 jne	0xffffff800163f1a1
+ffffff800163f1bd	jne	0xffffff800163f1ca
+CONTROL_FLOW=0xffffff800163f1bd jne	0xffffff800163f1ca
+
+METHOD_TAG=APPLE_CORE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore9MetaClassD0Ev ADDRESS=0xffffff8001645728 END=0xffffff8001645732 INSTRUCTIONS=4
+ffffff8001645728	pushq	%rbp
+ffffff8001645729	movq	%rsp, %rbp
+ffffff800164572c	popq	%rbp
+ffffff800164572d	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff800164572d jmp	0xffffff8000a4a040
+
+APPLE_CORE_BUNDLE_SYMBOL_COUNT=7183
+APPLE_CORE_WORKQUEUE_SYMBOL_COUNT=20
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800156873e NAME=__ZN36AppleBCMWLANSkywalkTxSubmissionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltj17apple80211_wme_acjP11CCLogStreamP15CCFaultReporterP16IO80211WorkQueue
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001568dc4 NAME=__ZN36AppleBCMWLANSkywalkTxCompletionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueue
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001569196 NAME=__ZN36AppleBCMWLANSkywalkRxSubmissionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueue
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff80015695ae NAME=__ZN36AppleBCMWLANSkywalkRxCompletionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueue
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff80015748ba NAME=__ZNK26AppleBCMWLANTimeSyncEngine12getWorkQueueEv
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800158e5c4 NAME=__ZN24AppleBCMWLANBusInterface13needWorkQueueEv
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800158e5ec NAME=__ZNK24AppleBCMWLANBusInterface12getWorkQueueEv
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001591f70 NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800159203c NAME=__ZNK16AppleBCMWLANCore12getWorkQueueEv
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800159fb18 NAME=__ZN16AppleBCMWLANCore22enableWorkQueueSourcesEv
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800159fc80 NAME=__ZN16AppleBCMWLANCore23disableWorkQueueSourcesEv
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001684216 NAME=__ZN19AppleBCMWLANCoreDbg17cmdWorkQueueDelayEP24apple80211_debug_commandP16AppleBCMWLANCore
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001684399 NAME=____ZN19AppleBCMWLANCoreDbg17cmdWorkQueueDelayEP24apple80211_debug_commandP16AppleBCMWLANCore_block_invoke
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff80016a5c50 NAME=__ZN22AppleBCMWLANTaskmaster13withWorkQueueEP16IO80211WorkQueuej
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff80016a5cc6 NAME=__ZN22AppleBCMWLANTaskmaster17initWithWorkQueueEP16IO80211WorkQueuej
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178a980 NAME=__ZZN36AppleBCMWLANSkywalkTxSubmissionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltj17apple80211_wme_acjP11CCLogStreamP15CCFaultReporterP16IO80211WorkQueueE19kalloc_type_view_58
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178aa40 NAME=__ZZN36AppleBCMWLANSkywalkTxCompletionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueueE20kalloc_type_view_310
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178ab00 NAME=__ZZN36AppleBCMWLANSkywalkRxSubmissionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueueE20kalloc_type_view_468
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178abc0 NAME=__ZZN36AppleBCMWLANSkywalkRxCompletionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueueE20kalloc_type_view_629
+APPLE_CORE_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178da00 NAME=__ZZN22AppleBCMWLANTaskmaster17initWithWorkQueueEP16IO80211WorkQueuejE19kalloc_type_view_93
+APPLE_BASE_OR_FACTORY_SYMBOL NAME=__ZN17IO80211Controller15createWorkQueueEv ADDRESS=0xffffff8002226d0e OWNER=com.apple.iokit.IO80211Family
+APPLE_BASE_OR_FACTORY_DISASSEMBLY NAME=__ZN17IO80211Controller15createWorkQueueEv
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T//stage156-work.TkJByW/IO80211Family.macho:
+(__TEXT,__text) section
+__ZN17IO80211Controller15createWorkQueueEv:
+ffffff8002226d0e	pushq	%rbp
+ffffff8002226d0f	movq	%rsp, %rbp
+ffffff8002226d12	xorl	%eax, %eax
+ffffff8002226d14	popq	%rbp
+ffffff8002226d15	retq
+__ZNK17IO80211Controller12getWorkQueueEv:
+ffffff8002226d16	pushq	%rbp
+ffffff8002226d17	movq	%rsp, %rbp
+ffffff8002226d1a	xorl	%eax, %eax
+ffffff8002226d1c	popq	%rbp
+ffffff8002226d1d	retq
+__ZNK17IO80211Controller21getIO80211CommandGateEv:
+ffffff8002226d1e	pushq	%rbp
+ffffff8002226d1f	movq	%rsp, %rbp
+ffffff8002226d22	movq	0x120(%rdi), %rax
+ffffff8002226d29	movq	0x3b8(%rax), %rax
+ffffff8002226d30	popq	%rbp
+ffffff8002226d31	retq
+__ZN17IO80211Controller26getPrimarySkywalkInterfaceEv:
+ffffff8002226d32	pushq	%rbp
+ffffff8002226d33	movq	%rsp, %rbp
+ffffff8002226d36	movq	0x120(%rdi), %rax
+ffffff8002226d3d	movq	0x180(%rax), %rdi
+ffffff8002226d44	leaq	__ZN23IO80211SkywalkInterface10gMetaClassE(%rip), %rsi ## IO80211SkywalkInterface::gMetaClass
+ffffff8002226d4b	popq	%rbp
+ffffff8002226d4c	jmp	0xffffff8000a49ab0
+ffffff8002226d51	nop
+__ZN17IO80211Controller18getHardwareAddressEP17IOEthernetAddress:
+ffffff8002226d52	pushq	%rbp
+ffffff8002226d53	movq	%rsp, %rbp
+ffffff8002226d56	pushq	%r14
+ffffff8002226d58	pushq	%rbx
+ffffff8002226d59	movq	%rsi, %rbx
+ffffff8002226d5c	movq	%rdi, %r14
+ffffff8002226d5f	movq	(%rdi), %rax
+ffffff8002226d62	callq	*0xc80(%rax)
+ffffff8002226d68	testq	%rbx, %rbx
+ffffff8002226d6b	je	0xffffff8002226db1
+ffffff8002226d6d	testq	%rax, %rax
+ffffff8002226d70	je	0xffffff8002226db1
+ffffff8002226d72	movq	(%r14), %rax
+ffffff8002226d75	movq	%r14, %rdi
+ffffff8002226d78	callq	*0xc80(%rax)
+ffffff8002226d7e	movq	(%rax), %rcx
+ffffff8002226d81	movq	%rax, %rdi
+ffffff8002226d84	callq	*0xcf0(%rcx)
+ffffff8002226d8a	movq	%rax, %rcx
+ffffff8002226d8d	movl	%eax, %edx
+ffffff8002226d8f	movl	%eax, %esi
+ffffff8002226d91	movb	%al, (%rbx)
+ffffff8002226d93	movb	%ah, 0x1(%rbx)
+ffffff8002226d96	shrq	$0x28, %rax
+ffffff8002226d9a	shrq	$0x20, %rcx
+ffffff8002226d9e	shrl	$0x18, %edx
+ffffff8002226da1	shrl	$0x10, %esi
+ffffff8002226da4	movb	%sil, 0x2(%rbx)
+ffffff8002226da8	movb	%dl, 0x3(%rbx)
+ffffff8002226dab	movb	%cl, 0x4(%rbx)
+ffffff8002226dae	movb	%al, 0x5(%rbx)
+ffffff8002226db1	xorl	%eax, %eax
+ffffff8002226db3	popq	%rbx
+ffffff8002226db4	popq	%r14
+ffffff8002226db6	popq	%rbp
+ffffff8002226db7	retq
+__ZN17IO80211Controller16acquireMaxBufferEv:
+ffffff8002226db8	pushq	%rbp
+ffffff8002226db9	movq	%rsp, %rbp
+ffffff8002226dbc	movq	0x120(%rdi), %rax
+ffffff8002226dc3	cmpb	$0x0, 0x398(%rax)
+ffffff8002226dca	je	0xffffff8002226dd0
+ffffff8002226dcc	xorl	%eax, %eax
+ffffff8002226dce	jmp	0xffffff8002226dde
+ffffff8002226dd0	movb	$0x1, 0x398(%rax)
+ffffff8002226dd7	movq	0x390(%rax), %rax
+ffffff8002226dde	popq	%rbp
+ffffff8002226ddf	retq
+__ZN17IO80211Controller16releaseMaxBufferEP18IO80211CagedBuffer:
+ffffff8002226de0	movq	0x120(%rdi), %rax
+ffffff8002226de7	cmpb	$0x1, 0x398(%rax)
+ffffff8002226dee	jne	0xffffff8002226e01
+ffffff8002226df0	cmpq	%rsi, 0x390(%rax)
+ffffff8002226df7	jne	0xffffff8002226e01
+ffffff8002226df9	movb	$0x0, 0x398(%rax)
+ffffff8002226e00	retq
+ffffff8002226e01	pushq	%rbp
+ffffff8002226e02	movq	%rsp, %rbp
+ffffff8002226e05	leaq	0x144b1b(%rip), %rdi            ## literal pool for: "\"buffer return is not valid\" @%s:%d"
+ffffff8002226e0c	leaq	0x144b38(%rip), %rsi            ## literal pool for: "IO80211Controller.cpp"
+ffffff8002226e13	movl	$0x97f, %edx                    ## imm = 0x97F
+ffffff8002226e18	xorl	%eax, %eax
+ffffff8002226e1a	callq	0xffffff8000bd073c
+ffffff8002226e1f	nop
+__ZN17IO80211Controller16getMaxBufferLockEv:
+ffffff8002226e20	pushq	%rbp
+ffffff8002226e21	movq	%rsp, %rbp
+ffffff8002226e24	movq	0x120(%rdi), %rax
+ffffff8002226e2b	movq	0x9f8(%rax), %rax
+APPLE_BASE_OR_FACTORY_SYMBOL NAME=__ZNK17IO80211Controller12getWorkQueueEv ADDRESS=0xffffff8002226d16 OWNER=com.apple.iokit.IO80211Family
+APPLE_BASE_OR_FACTORY_DISASSEMBLY NAME=__ZNK17IO80211Controller12getWorkQueueEv
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T//stage156-work.TkJByW/IO80211Family.macho:
+(__TEXT,__text) section
+__ZNK17IO80211Controller12getWorkQueueEv:
+ffffff8002226d16	pushq	%rbp
+ffffff8002226d17	movq	%rsp, %rbp
+ffffff8002226d1a	xorl	%eax, %eax
+ffffff8002226d1c	popq	%rbp
+ffffff8002226d1d	retq
+__ZNK17IO80211Controller21getIO80211CommandGateEv:
+ffffff8002226d1e	pushq	%rbp
+ffffff8002226d1f	movq	%rsp, %rbp
+ffffff8002226d22	movq	0x120(%rdi), %rax
+ffffff8002226d29	movq	0x3b8(%rax), %rax
+ffffff8002226d30	popq	%rbp
+ffffff8002226d31	retq
+__ZN17IO80211Controller26getPrimarySkywalkInterfaceEv:
+ffffff8002226d32	pushq	%rbp
+ffffff8002226d33	movq	%rsp, %rbp
+ffffff8002226d36	movq	0x120(%rdi), %rax
+ffffff8002226d3d	movq	0x180(%rax), %rdi
+ffffff8002226d44	leaq	__ZN23IO80211SkywalkInterface10gMetaClassE(%rip), %rsi ## IO80211SkywalkInterface::gMetaClass
+ffffff8002226d4b	popq	%rbp
+ffffff8002226d4c	jmp	0xffffff8000a49ab0
+ffffff8002226d51	nop
+__ZN17IO80211Controller18getHardwareAddressEP17IOEthernetAddress:
+ffffff8002226d52	pushq	%rbp
+ffffff8002226d53	movq	%rsp, %rbp
+ffffff8002226d56	pushq	%r14
+ffffff8002226d58	pushq	%rbx
+ffffff8002226d59	movq	%rsi, %rbx
+ffffff8002226d5c	movq	%rdi, %r14
+ffffff8002226d5f	movq	(%rdi), %rax
+ffffff8002226d62	callq	*0xc80(%rax)
+ffffff8002226d68	testq	%rbx, %rbx
+ffffff8002226d6b	je	0xffffff8002226db1
+ffffff8002226d6d	testq	%rax, %rax
+ffffff8002226d70	je	0xffffff8002226db1
+ffffff8002226d72	movq	(%r14), %rax
+ffffff8002226d75	movq	%r14, %rdi
+ffffff8002226d78	callq	*0xc80(%rax)
+ffffff8002226d7e	movq	(%rax), %rcx
+ffffff8002226d81	movq	%rax, %rdi
+ffffff8002226d84	callq	*0xcf0(%rcx)
+ffffff8002226d8a	movq	%rax, %rcx
+ffffff8002226d8d	movl	%eax, %edx
+ffffff8002226d8f	movl	%eax, %esi
+ffffff8002226d91	movb	%al, (%rbx)
+ffffff8002226d93	movb	%ah, 0x1(%rbx)
+ffffff8002226d96	shrq	$0x28, %rax
+ffffff8002226d9a	shrq	$0x20, %rcx
+ffffff8002226d9e	shrl	$0x18, %edx
+ffffff8002226da1	shrl	$0x10, %esi
+ffffff8002226da4	movb	%sil, 0x2(%rbx)
+ffffff8002226da8	movb	%dl, 0x3(%rbx)
+ffffff8002226dab	movb	%cl, 0x4(%rbx)
+ffffff8002226dae	movb	%al, 0x5(%rbx)
+ffffff8002226db1	xorl	%eax, %eax
+ffffff8002226db3	popq	%rbx
+ffffff8002226db4	popq	%r14
+ffffff8002226db6	popq	%rbp
+ffffff8002226db7	retq
+__ZN17IO80211Controller16acquireMaxBufferEv:
+ffffff8002226db8	pushq	%rbp
+ffffff8002226db9	movq	%rsp, %rbp
+ffffff8002226dbc	movq	0x120(%rdi), %rax
+ffffff8002226dc3	cmpb	$0x0, 0x398(%rax)
+ffffff8002226dca	je	0xffffff8002226dd0
+ffffff8002226dcc	xorl	%eax, %eax
+ffffff8002226dce	jmp	0xffffff8002226dde
+ffffff8002226dd0	movb	$0x1, 0x398(%rax)
+ffffff8002226dd7	movq	0x390(%rax), %rax
+ffffff8002226dde	popq	%rbp
+ffffff8002226ddf	retq
+__ZN17IO80211Controller16releaseMaxBufferEP18IO80211CagedBuffer:
+ffffff8002226de0	movq	0x120(%rdi), %rax
+ffffff8002226de7	cmpb	$0x1, 0x398(%rax)
+ffffff8002226dee	jne	0xffffff8002226e01
+ffffff8002226df0	cmpq	%rsi, 0x390(%rax)
+ffffff8002226df7	jne	0xffffff8002226e01
+ffffff8002226df9	movb	$0x0, 0x398(%rax)
+ffffff8002226e00	retq
+ffffff8002226e01	pushq	%rbp
+ffffff8002226e02	movq	%rsp, %rbp
+ffffff8002226e05	leaq	0x144b1b(%rip), %rdi            ## literal pool for: "\"buffer return is not valid\" @%s:%d"
+ffffff8002226e0c	leaq	0x144b38(%rip), %rsi            ## literal pool for: "IO80211Controller.cpp"
+ffffff8002226e13	movl	$0x97f, %edx                    ## imm = 0x97F
+ffffff8002226e18	xorl	%eax, %eax
+ffffff8002226e1a	callq	0xffffff8000bd073c
+ffffff8002226e1f	nop
+__ZN17IO80211Controller16getMaxBufferLockEv:
+ffffff8002226e20	pushq	%rbp
+ffffff8002226e21	movq	%rsp, %rbp
+ffffff8002226e24	movq	0x120(%rdi), %rax
+ffffff8002226e2b	movq	0x9f8(%rax), %rax
+ffffff8002226e32	popq	%rbp
+ffffff8002226e33	retq
+__ZN17IO80211Controller16stringFromReturnEi:
+ffffff8002226e34	pushq	%rbp
+ffffff8002226e35	movq	%rsp, %rbp
+ffffff8002226e38	movl	%esi, %eax
+APPLE_BASE_OR_FACTORY_SYMBOL NAME=__ZN16IO80211WorkQueue9workQueueEv ADDRESS=0xffffff8002258fcc OWNER=com.apple.iokit.IO80211Family
+APPLE_BASE_OR_FACTORY_DISASSEMBLY NAME=__ZN16IO80211WorkQueue9workQueueEv
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T//stage156-work.TkJByW/IO80211Family.macho:
+(__TEXT,__text) section
+__ZN16IO80211WorkQueue9workQueueEv:
+ffffff8002258fcc	pushq	%rbp
+ffffff8002258fcd	movq	%rsp, %rbp
+ffffff8002258fd0	pushq	%r14
+ffffff8002258fd2	pushq	%rbx
+ffffff8002258fd3	leaq	__ZL20IO80211WorkQueue_ktv(%rip), %rdi ## IO80211WorkQueue_ktv
+ffffff8002258fda	movl	$0x50, %esi
+ffffff8002258fdf	callq	0xffffff8000a4be90
+ffffff8002258fe4	movq	%rax, %rbx
+ffffff8002258fe7	leaq	__ZN16IO80211WorkQueue10gMetaClassE(%rip), %r14 ## IO80211WorkQueue::gMetaClass
+ffffff8002258fee	movq	%rax, %rdi
+ffffff8002258ff1	movq	%r14, %rsi
+ffffff8002258ff4	callq	0xffffff8000afa3e0
+ffffff8002258ff9	leaq	0x17acc0(%rip), %rax
+ffffff8002259000	movq	%rax, (%rbx)
+ffffff8002259003	movq	%r14, %rdi
+ffffff8002259006	callq	0xffffff8000a4a700
+ffffff800225900b	movq	(%rbx), %rax
+ffffff800225900e	movq	%rbx, %rdi
+ffffff8002259011	callq	*0x88(%rax)
+ffffff8002259017	testb	%al, %al
+ffffff8002259019	je	0xffffff800225902e
+ffffff800225901b	cmpq	$0x0, __ZL23IO80211DefaultWorkQueue(%rip) ## IO80211DefaultWorkQueue
+ffffff8002259023	jne	0xffffff8002259039
+ffffff8002259025	movq	%rbx, __ZL23IO80211DefaultWorkQueue(%rip) ## IO80211DefaultWorkQueue
+ffffff800225902c	jmp	0xffffff8002259039
+ffffff800225902e	movq	(%rbx), %rax
+ffffff8002259031	movq	%rbx, %rdi
+ffffff8002259034	callq	*0x28(%rax)
+ffffff8002259037	xorl	%ebx, %ebx
+ffffff8002259039	movq	%rbx, %rax
+ffffff800225903c	popq	%rbx
+ffffff800225903d	popq	%r14
+ffffff800225903f	popq	%rbp
+ffffff8002259040	retq
+ffffff8002259041	nop
+__ZN16IO80211WorkQueue19getDefaultWorkQueueEv:
+ffffff8002259042	pushq	%rbp
+ffffff8002259043	movq	%rsp, %rbp
+ffffff8002259046	movq	__ZL23IO80211DefaultWorkQueue(%rip), %rax ## IO80211DefaultWorkQueue
+ffffff800225904d	popq	%rbp
+ffffff800225904e	retq
+ffffff800225904f	nop
+__ZN16IO80211WorkQueue19setDefaultWorkQueueEPS_:
+ffffff8002259050	pushq	%rbp
+ffffff8002259051	movq	%rsp, %rbp
+ffffff8002259054	movq	%rdi, __ZL23IO80211DefaultWorkQueue(%rip) ## IO80211DefaultWorkQueue
+ffffff800225905b	popq	%rbp
+ffffff800225905c	retq
+ffffff800225905d	nop
+__ZN16IO80211WorkQueue13addWorkSourceEP17IO80211WorkSource:
+ffffff800225905e	pushq	%rbp
+ffffff800225905f	movq	%rsp, %rbp
+ffffff8002259062	pushq	%r14
+ffffff8002259064	pushq	%rbx
+ffffff8002259065	movq	%rsi, %rax
+ffffff8002259068	movq	%rdi, %rbx
+ffffff800225906b	movq	0x16304e(%rip), %r14
+ffffff8002259072	movq	0x162fbf(%rip), %rcx
+ffffff8002259079	movq	(%rcx), %rsi
+ffffff800225907c	movq	%rax, %rdi
+ffffff800225907f	callq	0xffffff8000a49ab0
+ffffff8002259084	movq	%rbx, %rdi
+ffffff8002259087	movq	%rax, %rsi
+ffffff800225908a	movq	%r14, %rax
+ffffff800225908d	popq	%rbx
+ffffff800225908e	popq	%r14
+ffffff8002259090	popq	%rbp
+ffffff8002259091	jmpq	*0x150(%rax)
+ffffff8002259097	nop
+__ZN16IO80211WorkQueue16removeWorkSourceEP17IO80211WorkSource:
+ffffff8002259098	pushq	%rbp
+ffffff8002259099	movq	%rsp, %rbp
+ffffff800225909c	pushq	%r14
+ffffff800225909e	pushq	%rbx
+ffffff800225909f	movq	%rsi, %rax
+ffffff80022590a2	movq	%rdi, %rbx
+ffffff80022590a5	movq	0x163014(%rip), %r14
+ffffff80022590ac	movq	0x162f85(%rip), %rcx
+ffffff80022590b3	movq	(%rcx), %rsi
+ffffff80022590b6	movq	%rax, %rdi
+ffffff80022590b9	callq	0xffffff8000a49ab0
+ffffff80022590be	movq	%rbx, %rdi
+ffffff80022590c1	movq	%rax, %rsi
+ffffff80022590c4	movq	%r14, %rax
+ffffff80022590c7	popq	%rbx
+ffffff80022590c8	popq	%r14
+ffffff80022590ca	popq	%rbp
+ffffff80022590cb	jmpq	*0x158(%rax)
+ffffff80022590d1	nop
+__ZNK16IO80211WorkQueue20enableAllWorkSourcesEv:
+ffffff80022590d2	pushq	%rbp
+ffffff80022590d3	movq	%rsp, %rbp
+ffffff80022590d6	movq	0x162fe3(%rip), %rax
+ffffff80022590dd	popq	%rbp
+ffffff80022590de	jmpq	*0x160(%rax)
+__ZNK16IO80211WorkQueue21disableAllWorkSourcesEv:
+ffffff80022590e4	pushq	%rbp
+
+STAGE156_INTERPRETATION=APPLE_DRIVER_STATIC_IMPLEMENTATION_ONLY; DO_NOT_COPY_PRIVATE_DRIVER_OWNERSHIP_PATTERN_WITHOUT_FULL_RUNTIME_AND_API_VALIDATION
+STAGE156_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE156_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE156 ==========
