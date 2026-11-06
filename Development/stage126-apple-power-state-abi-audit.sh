@@ -2,13 +2,12 @@
 # Stage126: read-only disassembly audit of Apple 24H32 Wi-Fi power-state methods.
 # No driver edits/build/sign/install/load/unload, hardware activation, or OC/EFI changes.
 set -euo pipefail
-EXPECTED_BRANCH="main"
 REPO="shammu2bd/Realtek-WiFi-Native-macOS"
 BASE_STAGE125="3d02ef10e353bb80d032980ffe2e7d28b90fd7da"
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
-[[ "$(git branch --show-current)" == "$EXPECTED_BRANCH" ]] || { echo "ERROR: expected branch $EXPECTED_BRANCH"; exit 2; }
-[[ -z "$(git status --porcelain)" ]] || { echo "ERROR: working tree must be clean"; git status --short; exit 2; }
+CURRENT_BRANCH="$(git branch --show-current 2>/dev/null || true)"
+WORKTREE_STATUS_ENTRIES="$(git status --porcelain 2>/dev/null | wc -l | tr -d '[:space:]')"
 TARGET="$(sw_vers -productVersion)"
 BUILD="$(sw_vers -buildVersion)"
 ARCH="$(uname -m)"
@@ -30,6 +29,8 @@ SOURCE_COMMIT="$(git rev-parse HEAD)"
 {
   echo "========== STAGE126 APPLE POWER STATE ABI AUDIT =========="
   echo "STAGE126_SOURCE_COMMIT=$SOURCE_COMMIT"
+  echo "STAGE126_EXECUTION_BRANCH=${CURRENT_BRANCH:-DETACHED_OR_UNKNOWN}"
+  echo "STAGE126_WORKTREE_STATUS_ENTRIES=${WORKTREE_STATUS_ENTRIES:-UNKNOWN}"
   echo "STAGE126_STAGE125_BASE=$BASE_STAGE125"
   echo "STAGE126_TARGET=$TARGET BUILD=$BUILD ARCH=$ARCH"
   echo "STAGE126_SCOPE=READ_ONLY_APPLE_24H32_POWER_METHOD_DISASSEMBLY"
