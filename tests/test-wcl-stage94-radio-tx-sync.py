@@ -9,6 +9,10 @@ CPP = ROOT / "driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp"
 HPP = ROOT / "driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp"
 GATE = ROOT / "driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp"
 BA = ROOT / "driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp"
+PCI = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c"
+MAC = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c"
+MAC80211 = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c"
+HCI = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h"
 
 def read(path):
     if not path.is_file():
@@ -66,6 +70,10 @@ cpp = read(CPP)
 hpp = read(HPP)
 gate = read(GATE)
 ba = read(BA)
+pci = read(PCI)
+mac = read(MAC)
+mac80211 = read(MAC80211)
+hci = read(HCI)
 passed = []
 failed = []
 
@@ -148,6 +156,31 @@ check("M3_KEY_READY_ATOMIC",
 check("NO_LEGACY_EAPOL_OR_BA_FLAGS",
       "_eapolTxProtect" not in cpp + hpp and "_txBaActive" not in cpp + hpp,
       "shared EAPOL protection and split BA active/TID fields are removed")
+check("PCI_SYNC_DRAIN_RETURNS_FAILURE",
+      "static bool __pci_flush_queue_sync" in pci and
+      "cur_rp == ring->r.wp" in pci and
+      "return false;" in function(pci, "static bool __pci_flush_queue_sync(") and
+      "flush_queues_sync = rtw_pci_flush_queues_sync" in pci,
+      "PCI hardware read pointer must reach software write pointer; timeout returns false")
+check("MAC_SYNC_DRAIN_RETURNS_FAILURE",
+      "bool rtw_mac_flush_queues_sync" in mac and
+      "rsvd_page == avail_page" in mac and
+      "return false;" in function(mac, "bool rtw_mac_flush_queues_sync("),
+      "firmware priority-page drain explicitly reports timeout")
+check("HCI_SYNC_DRAIN_IS_MANDATORY",
+      "bool (*flush_queues_sync)" in hci and
+      "if (!rtwdev->hci.ops->flush_queues_sync)" in hci and
+      "return false;" in function(hci, "static inline bool rtw_hci_flush_all_queues_sync("),
+      "missing synchronous HCI drain callback fails closed")
+set_key = function(mac80211, "static int rtw_ops_set_key(")
+check("CAM_CLEAR_REQUIRES_BOTH_DRAINS",
+      "flush_work(&rtwdev->tx_work)" in set_key and
+      "rtw_hci_flush_all_queues_sync(rtwdev, false)" in set_key and
+      "rtw_mac_flush_all_queues_sync(rtwdev, false)" in set_key and
+      set_key.find("if (!hci_drained || !mac_drained)") <
+      set_key.find("rtw_sec_clear_cam(rtwdev, sec, key->hw_key_idx)") and
+      "ret = -ETIMEDOUT" in set_key,
+      "CAM slot is cleared only after queued work, PCI DMA and MAC FIFO drains all confirm success")
 
 # PTK/GTK and station pointer replacement/retirement are writer-controlled.
 clear_keys = function(cpp, "void RTW88IEEE80211::clearKeys()")
@@ -159,11 +192,21 @@ check("KEY_AND_STATION_WRITER_BARRIERS",
       "mutation->ready()" in install_under and
       "installKeyUnderMutation" in cpp,
       "key clearing/replacement and station retirement wait for TX readers to drain")
-check("REPLACEMENT_KEY_FAILURE_PRESERVES_OLD",
-      install_under.find("_hw->ops->set_key(_hw, SET_KEY") <
-      install_under.find("IOFree(oldKey") and
-      "previous key retained" in install_under,
-      "candidate SET_KEY succeeds before the old software key object is freed")
+check("REPLACEMENT_KEY_DRAIN_BEFORE_REUSE",
+      install_under.find("_hw->ops->set_key(") <
+      install_under.find("_hw->ops->set_key(",
+                         install_under.find("_hw->ops->set_key(") + 1) and
+      install_under.find("DISABLE_KEY") < install_under.find("SET_KEY") and
+      install_under.find("oldKey") < install_under.find("IOFree(oldKey") and
+      "attempting old-key restore" in install_under,
+      "old CAM slot is synchronously retired before reuse; failed replacement attempts restore the previous key")
+clear_keys = function(cpp, "void RTW88IEEE80211::clearKeys()")
+check("CLEAR_KEYS_RETAINS_UNRETIRED_OBJECTS",
+      "if (ret == 0)" in clear_keys and
+      "retaining PTK object" in clear_keys and
+      "retaining GTK object" in clear_keys,
+      "key objects are not freed when CAM retirement fails")
+
 
 # BA active+TID is a single atomic word; BA mutation paths drain WMM readers.
 check("PACKED_BA_SNAPSHOT",
