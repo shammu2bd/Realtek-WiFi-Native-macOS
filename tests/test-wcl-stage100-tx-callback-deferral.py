@@ -170,6 +170,44 @@ check("CONTROLLER_FREE_ALREADY_QUARANTINES",
       "return;" in controller_free and "super::free()" in controller_free,
       "controller free path preserves parent lifetime on child failure")
 
+
+callback_enter = body(COMPAT_C, "static bool rtw88_tx_status_callback_enter(")
+callback_quiesce = body(COMPAT_C, "void rtw88_compat_quiesce_tx_status(")
+status_dispatch = body(COMPAT_C, "void ieee80211_tx_status_irqsafe(")
+
+check("FULL_TX_STATUS_CALLBACK_HAS_ADMISSION_GATE",
+      "g_tx_status_callback_gate" in callback_enter and
+      "RTW88_TX_STATUS_GATE_CLOSED" in callback_enter and
+      "__atomic_compare_exchange_n" in callback_enter,
+      "callback lifetime is counted before entering radio completion code")
+check("QUIESCE_CLOSES_GATE_AND_JOINS_ACTIVE_CALLBACKS",
+      "__atomic_fetch_or(&g_tx_status_callback_gate" in callback_quiesce and
+      "RTW88_TX_STATUS_GATE_CLOSED" in callback_quiesce and
+      "RTW88_TX_STATUS_GATE_ACTIVE" in callback_quiesce and
+      "IOSleep(1)" in callback_quiesce,
+      "teardown waits until the entire synchronous status callback has returned")
+check("STATUS_DISPATCH_GATE_COVERS_COMPLETION_AND_SKB_ENQUEUE",
+      "rtw88_tx_status_callback_enter()" in status_dispatch and
+      status_dispatch.find("rtw88_tx_status_callback_enter()") <
+      status_dispatch.find("g_hw_cbs->tx_status") <
+      status_dispatch.find("rtw88_tx_status_callback_leave()"),
+      "the lease spans completion publication and final skb enqueue")
+check("COMPAT_EXIT_QUIESCES_CALLBACK_BEFORE_REAPER_DRAIN",
+      "rtw88_compat_quiesce_tx_status();" in exit_ and
+      exit_.find("rtw88_compat_quiesce_tx_status();") <
+      exit_.find("thread_call_cancel_wait"),
+      "no in-flight callback can enqueue after final thread-call join")
+check("LEGACY_RADIO_RELEASE_FOLLOWS_CALLBACK_QUIESCE",
+      "rtw88_compat_quiesce_tx_status();" in legacy_teardown and
+      legacy_teardown.find("rtw88_compat_quiesce_tx_status();") <
+      legacy_teardown.find("_ieee80211->release()"),
+      "legacy radio object stays alive until all status callbacks return")
+check("WCL_COMPLETION_WORKER_RELEASE_FOLLOWS_CALLBACK_QUIESCE",
+      "rtw88_compat_quiesce_tx_status();" in controller_release and
+      controller_release.find("rtw88_compat_quiesce_tx_status();") <
+      controller_release.find("_txCompletionWorker->stop()"),
+      "WCL token reaper/worker remains alive until the enclosing callback exits")
+
 failed = [c for c in checks if not c[1]]
 for name, ok, detail in checks:
     print(("PASS" if ok else "FAIL") + f": {name}: {detail}")
