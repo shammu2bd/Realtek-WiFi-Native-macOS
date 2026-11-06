@@ -22,6 +22,11 @@ STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 LOG="Development/Logs/stage108-registration-transaction-${STAMP}.log"
 SOURCE_COMMIT="$(git rev-parse HEAD)"
 CXX_BIN="${CXX:-$(xcrun --find clang++ 2>/dev/null || command -v clang++)}"
+SDK_PATH="${SDKROOT:-$(xcrun --show-sdk-path 2>/dev/null)}"
+if [[ -z "$SDK_PATH" || ! -d "$SDK_PATH" ]]; then
+  echo "ERROR: macOS SDK not found"
+  exit 2
+fi
 TMP_BASE="${TMPDIR:-/tmp}"
 [[ -d "$TMP_BASE" && -w "$TMP_BASE" ]] || TMP_BASE="/tmp"
 TMP_DIR="$(mktemp -d "$TMP_BASE/rtl88wcl-stage108.XXXXXX")"
@@ -38,7 +43,8 @@ if (
   echo
 
   echo "----- C++ transaction state-machine test -----"
-  "$CXX_BIN" -std=c++17 -Wall -Wextra -Werror -O2 \
+  "$CXX_BIN" -std=c++17 -stdlib=libc++ -isysroot "$SDK_PATH" \
+    -Wall -Wextra -Werror -O2 \
     tests/wcl_registration_transaction_stage108_test.cpp \
     -o "$TMP_DIR/registration-transaction-test" || exit $?
   "$TMP_DIR/registration-transaction-test" || exit $?
