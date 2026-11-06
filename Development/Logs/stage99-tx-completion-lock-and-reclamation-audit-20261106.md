@@ -38,3 +38,22 @@ These are Linux-hosted source/model tests only. The Stage99 target-Mac compile h
 4. No full kext link, signing, install/load, RTL8821CE hardware TX/RX, throughput test, native queue activation, interface publication or radio start has been performed.
 
 PR #4 remains draft, open and unmerged. Native activation and PR merge remain blocked.
+## Dual-frontend object compilation gate and final static audit
+
+The Makefile now provides `all-object-compile-only`, depending on both `airport-compile-only` and `native-compile-only`. Each target builds its own object graph only; none invokes the Airport or native linker, bundle assembly, signing, installation or loading. The Stage99 source test checks the three compile-only recipes themselves, rather than looking for linker labels elsewhere in the Makefile.
+
+The shared `RTW88IEEE80211.cpp` is included in the legacy Airport graph as well as the native graph. To preserve the legacy link boundary, the WCL adapter is no longer referenced directly from the shared radio source. A C ABI release-hook pointer is registered by the native WCL completion worker after it is initialized and before native queues can accept submissions. The release path makes an atomic hook lookup and invokes the registered retire callback; the no-hook fallback does not free synchronously, so it cannot reintroduce `IOFree()` into the completion callback.
+
+Latest Stage99 Actions run [42161038505](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42161038505): **success, 25 checks passed, 0 failed**. The portable lock-free MPSC retire-list stress uses 12 concurrent producers and 36,000 distinct nodes, with one consumer verifying exactly-once consumption.
+
+Stage94 integration run [42161038455](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42161038455): **success**. Stage98 static object-graph audit passed on the Makefile dual-target change [42160792959](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42160792959): **13 checks passed, 0 failed**.
+
+## Target-Mac gate still required
+
+Run `make clean` followed by `make all-object-compile-only` on the Sequoia 15.8.1 / 24H32 Intel Mac. Also inspect the legacy Airport `RTW88IEEE80211.o` undefined symbols to ensure it has no direct reference to the WCL-only `rtw88_wcl_defer_skb_tx_completion_token` function. This is object compilation and symbol inspection only.
+
+Remaining technical limits:
+- The target XNU thread-call scheduling, workloop signal behavior and lock ordering still need target-runtime review; the Linux source audit/model does not prove deadlock freedom.
+- `compat_tx_status()` still frees the skb synchronously after `txStatus()`, and `txStatus()` may log before returning. That skb reclamation/logging remains a separate callback-lock duration concern.
+- No full kext link, signing, installation, loading, RTL8821CE hardware TX/RX, throughput testing, native queue activation, interface publication or radio start has been performed.
+- PR #4 remains open, draft and unmerged. Native activation and merge remain blocked.
