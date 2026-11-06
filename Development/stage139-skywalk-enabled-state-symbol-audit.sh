@@ -7,7 +7,7 @@ BOOTKC="/System/Library/KernelCollections/BootKernelExtensions.kc"
 EXPECTED_BOOTKC="cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3"
 READER_COMMIT="cea28a5297633118177cee6a75e86d8bc57f1960"
 READER_SHA="5d31e8a73e5cb175851e7407529456f223683589"
-TMPROOT="$TMPDIR"; [[ -n "$TMPROOT" ]] || TMPROOT="/tmp"
+TMPROOT="$(printenv TMPDIR 2>/dev/null || true)"; [[ -n "$TMPROOT" ]] || TMPROOT="/tmp"
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || { echo "ERROR: run inside existing project checkout"; exit 2; }
 cd "$ROOT"
 OS="$(sw_vers -productVersion)"; BUILD="$(sw_vers -buildVersion)"; ARCH="$(uname -m)"
