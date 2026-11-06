@@ -1,19 +1,29 @@
 # Stage126 — Apple 24H32 power-state ABI audit
 
-**Run location:** the authoritative runner is published on `main` at `Development/stage126-apple-power-state-abi-audit.sh`. It may be executed from the existing project checkout without switching branches. It does not require a clean worktree because it only inspects the extracted Apple IO80211Family Mach-O; the report records the current branch and count of local status entries. Run the verified copy fetched from `main` when the local checkout contains staged work.
+**Runner:** `Development/stage126-apple-power-state-abi-audit.sh` on `main`. Run the SHA-verified copy fetched from GitHub `main`; it does not switch branches or require a clean worktree.
 
-**Scope:** read-only disassembly of Apple IO80211Family power-state methods on macOS 15.8.1 build 24H32 x86_64.
+**Scope:** read-only disassembly of exact Apple IO80211Family power-state methods on macOS 15.8.1 build 24H32 x86_64.
 
-Stage125 found that the native controller reports power through `isInterfaceEnabled()`, while the custom interface's `enable()` / `disable()` methods manipulate RTW88 radio and packet-path state. The ABI shim declares `setInterfaceEnable(bool)`. This stage collects target-kernel disassembly so the call/state semantics can be reviewed before any source change.
+Stage125 found a potential mismatch: the native interface's `getPOWER` reads Apple's `isInterfaceEnabled()`, while the custom `enable()` / `disable()` path controls RTW88 radio and packet-path state. This stage gathers Apple method bodies before any source-level power-state decision.
 
-The Stage120 extracted Apple IO80211Family Mach-O is reused if present. Otherwise set `STAGE126_KC_MACHO` to its exact path. The report records its SHA-256.
+## Why the previous disassembly attempt was rejected
 
-**Strict exclusions:** no driver source changes, build, signing, install, load/unload, hardware activation, OpenCore/EFI/SIP/NVRAM changes, security bypass, or reboot.
+The previous logs falsely marked output as verified even though Xcode 16.4's `llvm-objdump` rejected the Mach-O-only `--dis-symname` option. Replacing it with `--disassemble-symbols` did not establish isolated method bodies in the user's run. The resulting oversized disassembly pipeline also terminated with exit code 141 because `head` closed a pipe early under `pipefail`.
 
-**Decision rule:** a missing symbol or incomplete disassembly is `NOT_PROVEN`; no guessed power-state patch is permitted. Stage126 does not itself change readiness status or authorize runtime activation.
+## Current method-isolation strategy
 
+The runner now uses the exact symbol addresses from a numerically sorted `llvm-nm` listing. For each method it calculates a bounded address interval from the symbol's start up to the next global text symbol, capped at 0x600 bytes, and calls:
 
-**Stage126 narrowed rerun:** The first nm expression matched unrelated Wi-Fi feature selectors, producing an oversized report (GitHub HTTP 413). The `main` runner now selects only eight exact mangled power-state methods spanning `IO80211InfraInterface`, `IO80211MacAddressAgent`, and `IO80211SkywalkInterface`. The complete report remains local; a bounded, explicitly marked compact upload is used only if the report exceeds 700 KB.
+```sh
+llvm-objdump --macho --disassemble --start-address=0xSTART --stop-address=0xEND <IO80211Family.macho>
+```
 
+The report marks a method verified only when the disassembler returns instruction addresses and every parsed instruction address lies inside that exact interval. An unsupported option, empty output, out-of-range address, missing symbol, or nonzero command exit is recorded as a failure, not as a pass. Output previews use `sed`, avoiding the SIGPIPE failure caused by `head` and `set -o pipefail`.
 
-**Disassembly validity correction:** The first uploaded output repeated the beginning of the Mach-O `__text` section for each requested symbol and is not usable as method-body evidence. The runner now uses LLVM's Mach-O-specific `--dis-symname` selector and records a method as verified only when its exact mangled symbol label is present and the output does not look like the generic section prelude. The power-state call graph remains unproven until the corrected target run produces isolated bodies.
+The uploader verifies the resulting Git blob SHA and retries transient GitHub API failures up to three times.
+
+## Strict exclusions
+
+No driver source changes, build, signing, install, load/unload, hardware activation, OpenCore/EFI/SIP/NVRAM changes, security bypass, or reboot.
+
+**Decision rule:** even a successful static disassembly does not itself authorize a power-state patch. The call graph and Apple's expected lifecycle order must be reviewed before proposing implementation changes.
