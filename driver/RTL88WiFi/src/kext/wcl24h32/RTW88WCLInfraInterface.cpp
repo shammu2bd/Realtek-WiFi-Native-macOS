@@ -1,9 +1,9 @@
 /* SPDX-License-Identifier: GPL-2.0-only
  * RTL88WiFi native Sequoia 24H32 IO80211InfraProtocol implementation slice.
  *
- * This translation unit is compile-only for now. It must remain separate from
- * the legacy Airport/IO80211FamilyLegacy translation units until the native
- * controller owns PCI/MMIO/DMA and the Skywalk datapath is integrated.
+ * This translation unit is the isolated native Sequoia 24H32 infrastructure
+ * protocol. It remains separate from the legacy Airport frontend and uses
+ * the target IO80211InfraInterface / Skywalk ABI.
  */
 #include "RTW88WCLController.hpp"
 #include "RTW88WCLInfraInterface.hpp"
@@ -226,7 +226,7 @@ void RTW88WCLInfraInterface::free()
 {
     const IOReturn stopStatus = shutdownForController();
     if (stopStatus != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: interface deregistration incomplete; quarantining interface\\n");
+        IOLog("rtl88wifi-wcl: interface deregistration incomplete; quarantining interface\n");
         return;
     }
     _controller = nullptr;
@@ -282,7 +282,7 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
      * creates the scan/infra-protocol support objects. The native registration
      * helper refuses to run before this base initializer succeeds. */
     if (!super::start(provider)) {
-        IOLog("rtl88wifi-wcl: Apple 24H32 infra-interface base start failed\\n");
+        IOLog("rtl88wifi-wcl: Apple 24H32 infra-interface base start failed\n");
         return false;
     }
     _baseStarted = true;
@@ -290,7 +290,7 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
 
     IOReturn status = attachRadio(_controller->radioBackend());
     if (status != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: radio bridge attach failed: 0x%08x\\n", status);
+        IOLog("rtl88wifi-wcl: radio bridge attach failed: 0x%08x\n", status);
         (void)shutdownForController();
         return false;
     }
@@ -301,13 +301,13 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
     for (unsigned i = 0; i < sizeof(address.octet); ++i)
         addressBits |= address.octet[i];
     if (addressBits == 0 || (address.octet[0] & 0x01)) {
-        IOLog("rtl88wifi-wcl: RTW88 probe did not provide a valid unicast MAC address\\n");
+        IOLog("rtl88wifi-wcl: RTW88 probe did not provide a valid unicast MAC address\n");
         (void)shutdownForController();
         return false;
     }
 
     if (!prepareRegistrationInfo(address)) {
-        IOLog("rtl88wifi-wcl: 24H32 RegistrationInfo initialization failed\\n");
+        IOLog("rtl88wifi-wcl: 24H32 RegistrationInfo initialization failed\n");
         (void)shutdownForController();
         return false;
     }
@@ -319,7 +319,7 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
      * LogicalLink using Apple's own implementation. */
     status = queues->setRegistered(true);
     if (status != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: queue registration gate failed: 0x%08x\\n", status);
+        IOLog("rtl88wifi-wcl: queue registration gate failed: 0x%08x\n", status);
         (void)shutdownForController();
         return false;
     }
@@ -333,7 +333,7 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
         queues->txPacketPool(), queues->rxPacketPool());
     if (status != kIOReturnSuccess) {
         (void)queues->setRegistered(false);
-        IOLog("rtl88wifi-wcl: 24H32 registerInfraEthernetInterface failed: 0x%08x\\n",
+        IOLog("rtl88wifi-wcl: 24H32 registerInfraEthernetInterface failed: 0x%08x\n",
               status);
         (void)shutdownForController();
         return false;
@@ -342,7 +342,7 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
     _registered = true;
     provider->setProperty("RTW88WCLInfraInterfaceStage",
                           "24H32 IO80211InfraInterface registered with seven Skywalk queues");
-    IOLog("rtl88wifi-wcl: native 24H32 infrastructure interface registered\\n");
+    IOLog("rtl88wifi-wcl: native 24H32 infrastructure interface registered\n");
     return true;
 }
 
@@ -367,7 +367,7 @@ IOReturn RTW88WCLInfraInterface::shutdownForController()
     if (_registered) {
         const IOReturn status = deregisterEthernetInterface(0);
         if (status != kIOReturnSuccess) {
-            IOLog("rtl88wifi-wcl: Skywalk Ethernet deregistration failed: 0x%08x; retaining queues\\n",
+            IOLog("rtl88wifi-wcl: Skywalk Ethernet deregistration failed: 0x%08x; retaining queues\n",
                   status);
             return status;
         }
@@ -403,7 +403,7 @@ void RTW88WCLInfraInterface::stop(IOService *provider)
     (void)provider;
     const IOReturn status = shutdownForController();
     if (status != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: interface stop deferred; registration remains owned: 0x%08x\\n",
+        IOLog("rtl88wifi-wcl: interface stop deferred; registration remains owned: 0x%08x\n",
               status);
         return;
     }
