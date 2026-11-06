@@ -615,20 +615,24 @@ static int rtw_ops_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 				  hw_key_type, hw_key_idx);
 		break;
 	case DISABLE_KEY: {
-		/* Drain any queued mac80211 TXQ worker before observing the PCI rings.
-		 * The native WCL path submits directly through ops->tx, but this also
-		 * protects any internal wake_tx_queue work already admitted. */
-		flush_work(&rtwdev->tx_work);
-		bool hci_drained = rtw_hci_flush_all_queues_sync(rtwdev, false);
-		bool mac_drained = rtw_mac_flush_all_queues_sync(rtwdev, false);
+		bool hci_drained;
+		bool mac_drained;
+
+		/* Close queued and synchronous VO TXQ producers before polling the
+		 * hardware. The shared txq_lock barrier waits for an active worker. */
+		rtw_txq_quiesce(rtwdev);
+		hci_drained = rtw_hci_flush_all_queues_sync(rtwdev, false);
+		mac_drained = rtw_mac_flush_all_queues_sync(rtwdev, false);
 		if (!hci_drained || !mac_drained) {
 			ret = -ETIMEDOUT;
 			rtw_warn(rtwdev,
 				 "refusing to clear CAM key slot %u: TX queues not drained (hci=%d mac=%d)\n",
 				 key->hw_key_idx, hci_drained, mac_drained);
-			break;
+		} else {
+			rtw_sec_clear_cam(rtwdev, sec, key->hw_key_idx);
 		}
-		rtw_sec_clear_cam(rtwdev, sec, key->hw_key_idx);
+		/* A timeout leaves CAM intact, but must not strand the TXQ list. */
+		rtw_txq_resume(rtwdev);
 		break;
 	}
 	}
