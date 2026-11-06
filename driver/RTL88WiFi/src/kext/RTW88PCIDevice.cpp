@@ -414,25 +414,28 @@ void RTW88PCIDevice::debugTimerFired(IOTimerEventSource *src)
 
 void RTW88PCIDevice::stop(IOService *provider)
 {
-    IOLog("rtw88: RTW88PCIDevice::stop\n");
-    teardown();
+    IOLog("rtw88: RTW88PCIDevice::stop\\n");
+    if (!teardown())
+        return; /* retain service/resources if the compat reaper cannot drain */
     super::stop(provider);
 }
 
 void RTW88PCIDevice::free()
 {
+    if (_compatInitialized || _teardownQuarantined) {
+        IOLog("rtw88: quarantining PCI service; compat runtime still owns deferred TX state\\n");
+        return;
+    }
     if (_compatPciDev) { IOFree(_compatPciDev, sizeof(*_compatPciDev)); _compatPciDev = nullptr; }
     if (_pendingFreeLock) { drainPendingFree(); IOSimpleLockFree(_pendingFreeLock); _pendingFreeLock = nullptr; }
-    if (_dmaLock)         { IOSimpleLockFree(_dmaLock);        _dmaLock        = nullptr; }
+    if (_dmaLock) { IOSimpleLockFree(_dmaLock); _dmaLock = nullptr; }
     super::free();
 }
 
-void RTW88PCIDevice::teardown()
+bool RTW88PCIDevice::teardown()
 {
-    /* Stop the IRQ bottom-half from calling back into us before we tear down
-     * the output queue it services. */
+    /* Stop the IRQ bottom-half from calling back into us before teardown. */
     rtw88_set_tx_resume_cb(nullptr);
-
     if (_debugTimer)
         _debugTimer->cancelTimeout();
     if (_intrSrc)
@@ -441,29 +444,38 @@ void RTW88PCIDevice::teardown()
         _txQueue->stop();
         _txQueue->flush();
     }
+    if (_enabled)
+        disable(_iface);
+    drainPendingFree();
 
-    if (_enabled) disable(_iface);
-    drainPendingFree();   /* release any bounce bufs deferred during TX ISR */
-
-    if (_ieee80211)  { _ieee80211->stop(); _ieee80211->release(); _ieee80211 = nullptr; }
+    if (_ieee80211) {
+        _ieee80211->stop();
+        _ieee80211->release();
+        _ieee80211 = nullptr;
+    }
 
     if (_compatInitialized) {
-        rtw88_compat_exit();
+        if (!rtw88_compat_exit()) {
+            _teardownQuarantined = true;
+            IOLog("rtw88: compat deferred TX reaper failed to drain; retaining PCI/DMA resources\\n");
+            return false;
+        }
         _compatInitialized = false;
     }
 
     if (_debugTimer) { _debugTimer->cancelTimeout(); _workLoop->removeEventSource(_debugTimer); _debugTimer->release(); _debugTimer = nullptr; }
-    if (_intrSrc)  { _workLoop->removeEventSource(_intrSrc); _intrSrc->release();  _intrSrc = nullptr; }
-    if (_cmdGate)  { _workLoop->removeEventSource(_cmdGate); _cmdGate->release();  _cmdGate = nullptr; }
-    if (_txQueue)  { _txQueue->release();   _txQueue = nullptr; }
-    if (_iface)    { detachInterface(_iface); _iface->release(); _iface = nullptr; }
-    if (_workLoop) { _workLoop->release();   _workLoop = nullptr; }
-    if (_mmioMap)  { _mmioMap->release();    _mmioMap = nullptr; _mmioBase = nullptr; }
-    if (_pciDev)   { _pciDev->release();     _pciDev = nullptr; }
-
+    if (_intrSrc) { _workLoop->removeEventSource(_intrSrc); _intrSrc->release(); _intrSrc = nullptr; }
+    if (_cmdGate) { _workLoop->removeEventSource(_cmdGate); _cmdGate->release(); _cmdGate = nullptr; }
+    if (_txQueue) { _txQueue->release(); _txQueue = nullptr; }
+    if (_iface) { detachInterface(_iface); _iface->release(); _iface = nullptr; }
+    if (_workLoop) { _workLoop->release(); _workLoop = nullptr; }
+    if (_mmioMap) { _mmioMap->release(); _mmioMap = nullptr; _mmioBase = nullptr; }
+    if (_pciDev) { _pciDev->release(); _pciDev = nullptr; }
     g_pci_dev_instance = nullptr;
-    rtw88_pci_io_ops   = nullptr;
-    rtw88_dma_ops      = nullptr;
+    rtw88_pci_io_ops = nullptr;
+    rtw88_dma_ops = nullptr;
+    _teardownQuarantined = false;
+    return true;
 }
 
 /* ------------------------------------------------------------------ */
