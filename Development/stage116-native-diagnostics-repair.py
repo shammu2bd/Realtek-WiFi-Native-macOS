@@ -312,7 +312,7 @@ def main():
                  'eventMessage CONTAINS[c] "io.github.x1ren41l.rtl88wifi"')
     log_rc, log_output = run(["log", "show", "--last", "6h", "--style", "compact", "--predicate", predicate], 35)
     emit("NATIVE_TARGETED_UNIFIED_LOG_EXIT=" + str(log_rc))
-    explicit_reject = False
+    explicit_reject = None
     selected = []
     if log_rc == 0:
         selected = [line for line in log_output.splitlines()
