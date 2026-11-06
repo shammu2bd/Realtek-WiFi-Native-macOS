@@ -734,20 +734,33 @@ void RTW88IEEE80211::clearKeys()
     __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
     auto mutation = beginTxStateMutation();
 
-    if (_powered && _hw && _hw->ops && _hw->ops->set_key) {
-        if (_ptkConf)
-            _hw->ops->set_key(_hw, DISABLE_KEY, _vif, _sta, _ptkConf);
-        if (_gtkConf)
-            _hw->ops->set_key(_hw, DISABLE_KEY, _vif, nullptr, _gtkConf);
-    }
+    const bool hardwareKeyRemovalRequired =
+        __atomic_load_n(&_powered, __ATOMIC_ACQUIRE) &&
+        _hw && _hw->ops && _hw->ops->set_key;
 
     if (_ptkConf) {
-        IOFree(_ptkConf, sizeof(*_ptkConf));
-        _ptkConf = nullptr;
+        int ret = hardwareKeyRemovalRequired ?
+            _hw->ops->set_key(_hw, DISABLE_KEY, _vif, _sta, _ptkConf) : 0;
+        if (ret == 0) {
+            IOFree(_ptkConf, sizeof(*_ptkConf));
+            _ptkConf = nullptr;
+        } else {
+            /* Keep the key object so a later cleanup/rekey can retry the CAM
+             * retirement. The controlled port remains closed. */
+            IOLog("rtw88: retaining PTK object after CAM drain timeout ret=%d hw_idx=%u\\n",
+                  ret, _ptkConf->hw_key_idx);
+        }
     }
     if (_gtkConf) {
-        IOFree(_gtkConf, sizeof(*_gtkConf));
-        _gtkConf = nullptr;
+        int ret = hardwareKeyRemovalRequired ?
+            _hw->ops->set_key(_hw, DISABLE_KEY, _vif, nullptr, _gtkConf) : 0;
+        if (ret == 0) {
+            IOFree(_gtkConf, sizeof(*_gtkConf));
+            _gtkConf = nullptr;
+        } else {
+            IOLog("rtw88: retaining GTK object after CAM drain timeout ret=%d hw_idx=%u\\n",
+                  ret, _gtkConf->hw_key_idx);
+        }
     }
     memset(_pmk, 0, sizeof(_pmk));
     memset(_password, 0, sizeof(_password));
