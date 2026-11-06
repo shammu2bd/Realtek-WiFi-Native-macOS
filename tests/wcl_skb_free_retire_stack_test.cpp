@@ -1,53 +1,64 @@
-#include "../driver/RTL88WiFi/src/compat/linux/mpsc_retire_stack.h"
+#include "../driver/RTL88WiFi/src/compat/linux/mpsc_bounded_queue.h"
 #include <atomic>
 #include <cassert>
-#include <cstddef>
 #include <cstdint>
+#include <memory>
 #include <thread>
 #include <vector>
 #include <sched.h>
-struct TestNode {
-    rtw88_mpsc_retire_node retire;
-    uint32_t id;
-    std::atomic<uint32_t> reclaimed;
+
+struct ReusedNode {
+    std::atomic<uint32_t> queued{0};
+    uint32_t ticket = 0;
 };
-static TestNode *fromRetire(rtw88_mpsc_retire_node *node) {
-    return reinterpret_cast<TestNode *>(reinterpret_cast<char *>(node) -
-                                        offsetof(TestNode, retire));
-}
 int main() {
-    constexpr uint32_t producerCount = 12, perProducer = 3000;
-    constexpr uint32_t total = producerCount * perProducer;
-    rtw88_mpsc_retire_stack stack;
-    rtw88_mpsc_retire_stack_init(&stack);
-    std::vector<TestNode> nodes(total);
-    for (uint32_t i=0;i<total;++i) {
-        nodes[i].retire.next=nullptr; nodes[i].id=i;
-        nodes[i].reclaimed.store(0,std::memory_order_relaxed);
-    }
-    std::atomic<uint32_t> produced{0}, consumed{0};
-    std::vector<std::thread> producers;
-    for (uint32_t p=0;p<producerCount;++p) producers.emplace_back([&,p] {
-        const uint32_t begin=p*perProducer;
-        for(uint32_t n=0;n<perProducer;++n) {
-            rtw88_mpsc_retire_stack_push(&stack,&nodes[begin+n].retire);
-            produced.fetch_add(1,std::memory_order_release);
+    constexpr uint32_t producers = 12, perProducer = 3000;
+    constexpr uint32_t total = producers * perProducer;
+    constexpr uint32_t poolSize = 256;
+    rtw88_mpsc_bounded_queue queue;
+    rtw88_mpsc_bounded_queue_init(&queue);
+
+    uint32_t markers[RTW88_MPSC_QUEUE_CAPACITY + 1U] = {};
+    for (uint32_t i = 0; i < RTW88_MPSC_QUEUE_CAPACITY; ++i)
+        assert(rtw88_mpsc_bounded_queue_enqueue(&queue, &markers[i]));
+    assert(!rtw88_mpsc_bounded_queue_enqueue(&queue, &markers[RTW88_MPSC_QUEUE_CAPACITY]));
+    for (uint32_t i = 0; i < RTW88_MPSC_QUEUE_CAPACITY; ++i)
+        assert(rtw88_mpsc_bounded_queue_dequeue(&queue) == &markers[i]);
+    assert(rtw88_mpsc_bounded_queue_empty(&queue));
+
+    rtw88_mpsc_bounded_queue_init(&queue);
+    ReusedNode pool[poolSize];
+    std::unique_ptr<std::atomic<uint32_t>[]> seen(new std::atomic<uint32_t>[total]);
+    for (uint32_t i=0; i<total; ++i) seen[i].store(0, std::memory_order_relaxed);
+
+    std::atomic<uint32_t> nextTicket{0}, consumed{0};
+    std::vector<std::thread> workers;
+    for (uint32_t p=0; p<producers; ++p) workers.emplace_back([&, p] {
+        for (uint32_t n=0; n<perProducer; ++n) {
+            ReusedNode *node = &pool[(p * 17U + n) % poolSize];
+            uint32_t expected = 0;
+            while (!node->queued.compare_exchange_weak(expected, 1U,
+                       std::memory_order_acq_rel)) { expected = 0; sched_yield(); }
+            node->ticket = nextTicket.fetch_add(1, std::memory_order_relaxed);
+            while (!rtw88_mpsc_bounded_queue_enqueue(&queue, node)) sched_yield();
         }
     });
-    while(consumed.load(std::memory_order_acquire)<total) {
-        auto *node=rtw88_mpsc_retire_stack_take_all(&stack);
-        if(!node){sched_yield();continue;}
-        while(node) {
-            auto *next=node->next; TestNode *entry=fromRetire(node);
-            node->next=nullptr; uint32_t expected=0;
-            assert(entry->reclaimed.compare_exchange_strong(expected,1,
-                    std::memory_order_acq_rel));
-            consumed.fetch_add(1,std::memory_order_release); node=next;
-        }
+    while (consumed.load(std::memory_order_acquire) < total) {
+        auto *node = static_cast<ReusedNode *>(rtw88_mpsc_bounded_queue_dequeue(&queue));
+        if (!node) { sched_yield(); continue; }
+        assert(node->ticket < total);
+        seen[node->ticket].fetch_add(1, std::memory_order_relaxed);
+        uint32_t expected = 1U;
+        assert(node->queued.compare_exchange_strong(expected, 0U,
+               std::memory_order_release, std::memory_order_relaxed));
+        consumed.fetch_add(1, std::memory_order_release);
     }
-    for(auto &t:producers)t.join();
-    assert(produced.load(std::memory_order_acquire)==total);
-    assert(consumed.load(std::memory_order_acquire)==total);
-    assert(rtw88_mpsc_retire_stack_empty(&stack));
-    for(const auto &n:nodes) assert(n.reclaimed.load(std::memory_order_acquire)==1);
+    for (auto &worker : workers) worker.join();
+    assert(nextTicket.load(std::memory_order_acquire) == total);
+    assert(consumed.load(std::memory_order_acquire) == total);
+    assert(rtw88_mpsc_bounded_queue_empty(&queue));
+    for (uint32_t i=0; i<total; ++i)
+        assert(seen[i].load(std::memory_order_relaxed) == 1U);
+    for (const auto &node : pool)
+        assert(node.queued.load(std::memory_order_relaxed) == 0U);
 }
