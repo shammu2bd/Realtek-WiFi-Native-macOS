@@ -29,3 +29,10 @@ The source audit checks producer no-free/no-lock boundaries, callback ownership 
 The portable MPSC stress uses 12 producers and one consumer across 36,000 unique nodes, requiring exactly-once consumption.
 
 These are source and host-model checks only. A clean target-Mac 24H32 dual-object compile remains required. No kext link, signing, installation, loading, native activation, hardware TX/RX, throughput, or runtime XNU lock-order proof is included. PR #4 remains open, draft, and unmerged.
+
+## Actions verification (2026-11-06)
+
+- Stage100 Actions run [42162937670](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42162937670): success; **17 source assertions passed, 0 failed**.
+- Portable MPSC stress: **12 producers, 36,000 unique nodes, exactly-once consumption passed**.
+- Stage94 compatibility run [42162937646](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42162937646): success; **39 checks passed, 0 blockers**.
+- Target-Mac clean dual-object compile remains pending. XNU runtime thread-call and lock-order behavior remains unproven.
