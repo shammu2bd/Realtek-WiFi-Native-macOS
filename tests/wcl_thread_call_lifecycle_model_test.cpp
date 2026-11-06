@@ -60,7 +60,7 @@ public:
             return true;
         }
         while (active)
-            changed.wait(lock);
+            changed.wait(guard);
         return false;
     }
     bool isActive() {
