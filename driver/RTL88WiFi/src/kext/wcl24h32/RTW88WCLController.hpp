@@ -71,7 +71,6 @@ public:
     RTW88IEEE80211 *radioBackend() const { return _radio; }
     RTW88WCLPCIBackend *pciBackend() const { return _pciBackend; }
     RTW88WCLSkywalkQueues *skywalkQueues() const { return _skywalkQueues; }
-    IOReturn markSkywalkQueuesRegistered(bool registered);
 
     /* RTW88WCLPCIBackendClient: no native TX queue is registered yet. */
     void rtw88WCLResumeTransmit() override;
