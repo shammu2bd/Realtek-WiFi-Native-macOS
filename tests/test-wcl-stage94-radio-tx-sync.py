@@ -322,6 +322,9 @@ check("NO_MECHANICAL_ATOMIC_CORRUPTION",
       "setRadioState(=" not in cpp and
       not re.search(r"^\s*_(?:state|scanReturnState|associatedVisible|powered|manualScanChannelCount|manualScanOnHomeChannel)\s*=", cpp, re.M),
       "no malformed atomic predicates or plain writes to published radio/scan/power state")
+check("POWER_STATE_READS_ARE_ATOMIC",
+      not re.search(r"(?<![&\w])_powered\b", cpp),
+      "all power-state reads use atomic acquire loads; stores use release publication")
 check("STOPPING_BLOCKS_HANDSHAKE_RX",
       "__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE)" in
       function(cpp, "void RTW88IEEE80211::handleEAPOL(") and
