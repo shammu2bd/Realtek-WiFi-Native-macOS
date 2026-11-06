@@ -483,11 +483,17 @@ NATIVE_CORE_OBJ_DIR := $(BUILD_DIR)/native
 NATIVE_PLIST_GENERATOR := $(PROJ_ROOT)/../../tools/generate-sequoia-native-plist.py
 NATIVE_CORE_HEADERS := $(wildcard $(KEXT_SRC)/*.hpp) $(wildcard $(KEXT_SRC)/wcl24h32/*.hpp)
 NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88HwOps.o RTW88WCLRadioBridge.o RTW88WCLWorkQueue.o)
-NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
+NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_TX_COMPLETION_WORK_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
 NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
 
-.PHONY: rtl88wifi-native native-plist
+.PHONY: rtl88wifi-native native-plist native-compile-only
 rtl88wifi-native: $(NATIVE_OUT_BIN)
+
+# Compile every object required by the isolated native target without invoking
+# the linker, assembling a kext bundle, signing, installing or loading it.
+# This is the supported target-Mac validation gate while activation is blocked.
+native-compile-only: $(NATIVE_ALL_OBJS)
+	@echo "NATIVE_COMPILE_ONLY=PASS (objects only; no link/sign/install/load)"
 
 # Resolve exact native Apple framework versions on the target 24H32 Mac. This
 # generated skeleton is kept under build/ and does not alter the legacy plist.
@@ -547,6 +553,7 @@ $(AIRPORT_OUT_KEXT)/Contents/MacOS:
 
 # Rebuild objects when one of their headers changes.
 DEPFILES = $(ALL_OBJS:.o=.d) $(AIRPORT_KEXT_OBJS:.o=.d) $(AIRPORT_KMOD_OBJ:.o=.d) \
+           $(NATIVE_CORE_OBJS:.o=.d) \
            $(WCL24H32_CONTROLLER_OBJ:.o=.d) $(WCL24H32_INFRA_OBJ:.o=.d) \
            $(WCL24H32_PCI_BACKEND_OBJ:.o=.d) $(WCL24H32_SKYWALK_QUEUES_OBJ:.o=.d) \
            $(WCL24H32_TX_ADAPTER_OBJ:.o=.d) $(WCL24H32_TX_COMPLETION_WORK_OBJ:.o=.d) \
