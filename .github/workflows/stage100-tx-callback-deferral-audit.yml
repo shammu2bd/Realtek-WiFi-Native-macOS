@@ -1,0 +1,46 @@
+name: Stage100 TX-status skb deferred-free audit
+
+on:
+  push:
+    branches:
+      - work/stage91-tx-submission-callback-v1
+    paths:
+      - 'driver/RTL88WiFi/src/compat/linux/mpsc_retire_stack.h'
+      - 'driver/RTL88WiFi/src/compat/linux/skbuff.h'
+      - 'driver/RTL88WiFi/src/compat/rtw88_compat.h'
+      - 'driver/RTL88WiFi/src/compat/rtw88_compat.c'
+      - 'driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp'
+      - 'driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp'
+      - 'driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp'
+      - 'tests/test-wcl-stage100-tx-callback-deferral.py'
+      - 'tests/wcl_skb_free_retire_stack_test.cpp'
+      - 'tools/run-stage100-tx-callback-deferral-audit.sh'
+      - '.github/workflows/stage100-tx-callback-deferral-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tx-status-skb-deferral:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout target branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/stage91-tx-submission-callback-v1
+      - name: Show toolchain
+        run: |
+          c++ --version
+          python3 --version
+      - name: Run source and MPSC tests
+        run: |
+          set -o pipefail
+          bash tools/run-stage100-tx-callback-deferral-audit.sh | tee stage100-result.txt
+      - name: Upload Stage100 result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage100-tx-callback-deferral-audit
+          path: stage100-result.txt
