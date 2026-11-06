@@ -85,6 +85,7 @@ IOReturn RTW88WCLTxCompletionWorkQueue::stop()
      */
     if (_adapter &&
         (_adapter->hasOutstandingCompletions() ||
+         _adapter->hasBackendCompletionCallbacksInFlight() ||
          _adapter->hasRetiredCompletionTokens()))
         return kIOReturnBusy;
 
