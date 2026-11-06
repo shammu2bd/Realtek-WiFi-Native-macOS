@@ -31,7 +31,7 @@ def block(src, marker):
             if ch == "*" and nx == "/": comment = False
         elif quote:
             if esc: esc = False
-            elif ch == "\\\\": esc = True
+            elif ch == chr(92): esc = True
             elif ch == quote: quote = None
         elif ch == "/" and nx == "/": line = True
         elif ch == "/" and nx == "*": comment = True
