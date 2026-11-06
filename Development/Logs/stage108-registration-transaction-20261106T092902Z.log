@@ -1,0 +1,50 @@
+========== STAGE108 REGISTRATION TRANSACTION ==========
+STAGE108_SOURCE_COMMIT=cb0ae4aea58bf98244824394db839e7f1fd8f105
+STAGE108_TARGET=macOS_15.8.1_24H32_x86_64
+STAGE108_SCOPE=ATOMIC_REGISTRATION_DEREGISTRATION_QUEUE_OWNER_ROLLBACK
+STAGE108_SIGNING=DISABLED
+STAGE108_SIP_OR_OPENCORE_CHANGE=NONE
+
+----- C++ transaction state-machine test -----
+PASS: Stage108 C++ transaction state machine
+
+----- Python source-contract suite -----
+PASS: 24H32 registration uses Apple's audited infra wrapper and stable seven-queue vector
+PASS: atomic begin/commit/abort and deregistration retry/quarantine states guard queue ownership
+PASS: opaque descriptor tail and private QueueSet/LogicalLink layouts are not guessed
+PASS: controller publishes only after registration and opens PCI interrupt gate afterward
+PASS: RX sink transfers only accepted packets after both interface and queue registration
+PASS: failed local registration rollback quarantines all queue owners
+PASS: radio events and power controls flow through the registered infra interface
+PASS: obsolete bool registration shortcuts are absent
+PASS: RTW88 TX-resume callback wakes all four registered WMM queues
+PASS: registration payloads/expansion blocks remain opaque and target ABI declarations are pinned
+PASS: native interface uses Apple's 24H32 registration/deregistration wrapper transactionally
+PASS: QueueSet/LogicalLink private layouts are not constructed by driver code
+PASS: controller commits infra registration before publication and PCI interrupt activation
+PASS: 0x130-byte aligned opaque RegistrationInfo storage
+PASS: exact 24H32 Apple producer overrides and six-byte address copy
+PASS: all unlisted initializer-owned bytes remain untouched
+PASS: version/size header validation and clear
+PASS: RegistrationInfo buffer is 0x130 bytes and 8-byte aligned
+PASS: builder follows initRegistrationInfo(option=1, size=0x130)
+PASS: Stage108 registration/deregistration uses explicit queue-owner state
+PASS: controller registers and publishes the interface before PCI interrupt activation
+PASS: four-entry target WMM queue array is fixed, ordered, validated, and journal-rollback compatible
+PASS: target TX action reports accepted prefix; native registration remains fenced
+Traceback (most recent call last):
+  File "/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/tests/test-wcl-resource-transaction.py", line 30, in <module>
+    assert "if (!txSubmissionQueuesValid() || !_acquisitionJournal.commit())" in cpp
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+STAGE108_RESULT=FAIL
+STAGE108_SOURCE_COMMIT=cb0ae4aea58bf98244824394db839e7f1fd8f105
+STAGE108_DETAIL_LOG=Development/Logs/stage108-registration-transaction-20261106T092902Z.log
+STAGE108_REGISTRATION_RUNTIME=NOT_RUN
+STAGE108_RADIO_START=SOURCE_PATH_IMPLEMENTED_RUNTIME_NOT_RUN
+STAGE108_TX_RX_RUNTIME=NOT_RUN
+STAGE108_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN HARDWARE_TEST=NOT_RUN
+STAGE108_SIP_CHANGE=NONE NVRAM_CHANGE=NONE EFI_WRITE=NONE
+STAGE108_PR4_MERGE=BLOCKED
+=======================================================
