@@ -55,7 +55,7 @@ import re,subprocess,sys
 from pathlib import Path
 ids={}
 for line in Path(sys.argv[1]).read_text(errors="replace").splitlines():
- m=re.match(r'^\s*\d+\)\s+([0-9a-fA-F]{40})\s+"([^"]+)"\s*line)
+ m=re.match(r'^\s*\d+\)\s+([0-9a-fA-F]{40})\s+"([^"]+)"\s*$',line)
  if m and "Developer ID" in m.group(2): ids[m.group(1).upper()]=m.group(2)
 certs=re.findall(r'-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----',Path(sys.argv[2]).read_text(errors="replace"),re.S)
 rows=[]
