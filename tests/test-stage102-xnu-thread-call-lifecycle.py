@@ -125,6 +125,10 @@ check("COMPAT_EXIT_USES_REAPER_JOIN",
       compat_exit.find("rtw88_compat_quiesce_skb_free_reaper") <
       compat_exit.find("IOLockFree(work_state_lock)"),
       "global locks/callbacks are not released before the reaper join")
+check("COMPAT_EXIT_QUARANTINE_LOG_ESCAPES_NEWLINE",
+      'rtw88_candidate_log("rtw88: %u TX skb frees quarantined after callback/reaper closure\n",' in compat_exit,
+      "quarantine diagnostic uses an escaped newline and remains valid C syntax")
+
 check("COMPAT_HEADER_EXPOSES_REAPER_QUIESCE",
       "bool rtw88_compat_quiesce_skb_free_reaper(void);" in FILES["compat_h"],
       "WCL teardown can explicitly drain generic skb ownership before token worker shutdown")
