@@ -300,7 +300,7 @@ IOReturn RTW88WCLController::releaseNativeResources()
     if (_pciBackend) {
         rtw88_compat_quiesce_tx_status();
         if (!rtw88_compat_quiesce_skb_free_reaper()) {
-            IOLog("rtl88wifi-wcl: generic deferred skb reaper did not drain; retaining owners\\n");
+            IOLog("rtl88wifi-wcl: generic deferred skb reaper did not drain; retaining owners\n");
             return kIOReturnBusy;
         }
     }
@@ -311,7 +311,7 @@ IOReturn RTW88WCLController::releaseNativeResources()
     if (_txAdapter) {
         const IOReturn txUnbindStatus = _txAdapter->unbind();
         if (txUnbindStatus != kIOReturnSuccess) {
-            IOLog("rtl88wifi-wcl: TX adapter completion drain deferred: 0x%08x\\n",
+            IOLog("rtl88wifi-wcl: TX adapter completion drain deferred: 0x%08x\n",
                   txUnbindStatus);
             return txUnbindStatus;
         }
