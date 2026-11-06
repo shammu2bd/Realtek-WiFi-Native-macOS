@@ -26,6 +26,7 @@ mkdir -p Development/Logs || exit 2
 LOG="$ROOT/$LOG_REL"
 TMP="$(mktemp -d "${TMPDIR:-/tmp}/stage106.XXXXXX")" || exit 2
 trap 'rm -rf "$TMP"' EXIT
+exec 3>&1 4>&2
 exec > >(tee "$LOG") 2>&1
 
 PASS=0; FAIL=0; WARN=0
@@ -150,9 +151,12 @@ echo "======================================"
  echo "==============================================================="
 } >> Development/output.log
 
+# The audit log is complete before committing. Restore terminal output so
+# git commit/push diagnostics cannot append to the already-committed log.
+exec 1>&3 2>&4
 git add Development/output.log
 git add -f "$LOG_REL"
 git commit -m "Stage106: record SIP-preserving signing feasibility audit" || exit 3
-git push origin "$EXPECTED_BRANCH" || { echo "STAGE106_LOG_UPLOAD=PUSH_FAILED"; exit 3; }
-echo "STAGE106_LOG_UPLOAD=PUSHED"
+git push origin "$EXPECTED_BRANCH" || { printf '%s\\n' "STAGE106_LOG_UPLOAD=PUSH_FAILED" >&3; exit 3; }
+# Successful push is signaled by exit status 0; do not mutate the committed log.
 [ "$FAIL" -eq 0 ]
