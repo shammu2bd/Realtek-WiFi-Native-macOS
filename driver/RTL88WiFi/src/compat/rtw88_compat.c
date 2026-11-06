@@ -26,12 +26,51 @@ static uint32_t rtw88_log_tail = 0;
 #define RTW88_SKB_FREE_GATE_PRODUCERS 0x7FFFFFFFU
 #define RTW88_SKB_FREE_REAPER_SCHEDULED 0x1U
 #define RTW88_SKB_FREE_REAPER_RESIGNAL 0x2U
+#define RTW88_TX_STATUS_GATE_CLOSED 0x80000000U
+#define RTW88_TX_STATUS_GATE_ACTIVE 0x7FFFFFFFU
+static volatile uint32_t g_tx_status_callback_gate = RTW88_TX_STATUS_GATE_CLOSED;
 static thread_call_t g_tx_skb_free_reaper_call = NULL;
 static struct rtw88_mpsc_bounded_queue g_tx_skb_free_queue;
 static volatile uint32_t g_tx_skb_free_reaper_state = 0;
 static volatile uint32_t g_tx_skb_free_producer_gate = RTW88_SKB_FREE_GATE_CLOSED;
 static volatile uint32_t g_tx_skb_free_outstanding = 0;
 static volatile uint32_t g_tx_skb_free_rejected = 0;
+
+/* Protect the entire synchronous TX-status dispatch, not only its final skb
+ * enqueue. Completion publication can wake radio teardown before the callback
+ * reaches rtw88_defer_skb_free(); teardown must not release the radio/worker in
+ * that gap.
+ */
+static bool rtw88_tx_status_callback_enter(void)
+{
+    uint32_t gate =
+        __atomic_load_n(&g_tx_status_callback_gate, __ATOMIC_ACQUIRE);
+    for (;;) {
+        if ((gate & RTW88_TX_STATUS_GATE_CLOSED) ||
+            ((gate & RTW88_TX_STATUS_GATE_ACTIVE) == RTW88_TX_STATUS_GATE_ACTIVE)) {
+            __atomic_add_fetch(&g_tx_skb_free_rejected, 1U, __ATOMIC_RELAXED);
+            return false;
+        }
+        if (__atomic_compare_exchange_n(&g_tx_status_callback_gate, &gate,
+                                        gate + 1U, false,
+                                        __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+            return true;
+    }
+}
+
+static void rtw88_tx_status_callback_leave(void)
+{
+    __atomic_sub_fetch(&g_tx_status_callback_gate, 1U, __ATOMIC_RELEASE);
+}
+
+void rtw88_compat_quiesce_tx_status(void)
+{
+    __atomic_fetch_or(&g_tx_status_callback_gate,
+                      RTW88_TX_STATUS_GATE_CLOSED, __ATOMIC_ACQ_REL);
+    while ((__atomic_load_n(&g_tx_status_callback_gate, __ATOMIC_ACQUIRE) &
+            RTW88_TX_STATUS_GATE_ACTIVE) != 0)
+        IOSleep(1);
+}
 
 static void rtw88_log_append(const char *msg)
 {
@@ -781,12 +820,22 @@ void ieee80211_rx_napi(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
 
 void ieee80211_tx_status_irqsafe(struct ieee80211_hw *hw, struct sk_buff *skb)
 {
+    if (!skb)
+        return;
+    /* Hold this lease until both the completion callback and skb ownership
+     * transfer have returned. Compat teardown closes admission and waits it.
+     */
+    if (!rtw88_tx_status_callback_enter())
+        return; /* retain skb instead of freeing in a closed callback context */
+
     void *ctx = hw ? hw->kext_hw : NULL;
     if (!ctx) ctx = g_kext_hw;
     if (g_hw_cbs && g_hw_cbs->tx_status)
         g_hw_cbs->tx_status(ctx, skb);
     else
         (void)rtw88_defer_skb_free(skb);
+
+    rtw88_tx_status_callback_leave();
 }
 
 void ieee80211_tx_status(struct ieee80211_hw *hw, struct sk_buff *skb)
@@ -1195,6 +1244,8 @@ int rtw88_compat_init(void)
     __atomic_store_n(&g_tx_skb_free_producer_gate, RTW88_SKB_FREE_GATE_CLOSED, __ATOMIC_RELAXED);
     __atomic_store_n(&g_tx_skb_free_outstanding, 0U, __ATOMIC_RELAXED);
     __atomic_store_n(&g_tx_skb_free_rejected, 0U, __ATOMIC_RELAXED);
+    __atomic_store_n(&g_tx_status_callback_gate,
+                     RTW88_TX_STATUS_GATE_CLOSED, __ATOMIC_RELAXED);
 
     work_state_lock = IOLockAlloc();
     if (!work_state_lock) return -ENOMEM;
@@ -1221,6 +1272,7 @@ int rtw88_compat_init(void)
         return -ENOMEM;
     }
     __atomic_store_n(&g_tx_skb_free_producer_gate, 0U, __ATOMIC_RELEASE);
+    __atomic_store_n(&g_tx_status_callback_gate, 0U, __ATOMIC_RELEASE);
     return 0;
 }
 
@@ -1234,6 +1286,11 @@ bool rtw88_compat_exit(void)
     destroy_workqueue(system_long_wq);
     system_wq = system_long_wq = NULL;
 
+    /* Join the entire status dispatch, including completion reporting before
+     * the deferred-free enqueue. No radio/worker owner may be dropped sooner.
+     */
+    rtw88_compat_quiesce_tx_status();
+
     __atomic_fetch_or(&g_tx_skb_free_producer_gate,
                       RTW88_SKB_FREE_GATE_CLOSED, __ATOMIC_ACQ_REL);
     while ((__atomic_load_n(&g_tx_skb_free_producer_gate, __ATOMIC_ACQUIRE) &
@@ -1243,8 +1300,6 @@ bool rtw88_compat_exit(void)
     if (g_tx_skb_free_reaper_call) {
         (void)thread_call_cancel_wait(g_tx_skb_free_reaper_call);
         __atomic_store_n(&g_tx_skb_free_reaper_state, 0U, __ATOMIC_RELEASE);
-        /* Producers and the thread-call consumer are joined; this passive
-         * teardown thread is now the queue's sole consumer. */
         rtw88_skb_free_drain_batch();
         if (!rtw88_mpsc_bounded_queue_empty(&g_tx_skb_free_queue) ||
             __atomic_load_n(&g_tx_skb_free_outstanding, __ATOMIC_ACQUIRE) != 0) {
@@ -1261,7 +1316,7 @@ bool rtw88_compat_exit(void)
     const uint32_t rejected =
         __atomic_exchange_n(&g_tx_skb_free_rejected, 0U, __ATOMIC_ACQ_REL);
     if (rejected)
-        rtw88_candidate_log("rtw88: %u TX skb frees quarantined after reaper closure\\n",
+        rtw88_candidate_log("rtw88: %u TX skb frees quarantined after callback/reaper closure\\n",
                             rejected);
     if (work_state_lock) {
         IOLockFree(work_state_lock);
