@@ -152,11 +152,24 @@ check("LEGACY_AIRPORT_OBJECT_GRAPH_HAS_COMPILE_ONLY_GATE",
       "AIRPORT_ALL_OBJS := " in MAKE and "$(AIRPORT_KEXT_OBJS)" in MAKE and
       "airport-compile-only: $(AIRPORT_ALL_OBJS)" in MAKE,
       "shared radio object can be compiled in legacy Airport configuration without invoking the legacy linker")
+def target_recipe(name):
+    match = re.search(r"^" + re.escape(name) + r":[^\\n]*\\n((?:\\t[^\\n]*\\n)*)",
+                      MAKE, re.M)
+    return match.group(1) if match else None
+
+airport_compile_recipe = target_recipe("airport-compile-only")
+native_compile_recipe = target_recipe("native-compile-only")
+dual_compile_recipe = target_recipe("all-object-compile-only")
+compile_only_recipes = (airport_compile_recipe or "") + (native_compile_recipe or "") + (dual_compile_recipe or "")
+
 check("DUAL_FRONTEND_OBJECT_GATE_DOES_NOT_LINK",
+      airport_compile_recipe is not None and native_compile_recipe is not None and
+      dual_compile_recipe is not None and
       "all-object-compile-only: airport-compile-only native-compile-only" in MAKE and
-      "ALL_OBJECT_COMPILE_ONLY=PASS" in MAKE and
-      "AIRPORT LD" not in MAKE and "NATIVE LD" not in MAKE,
-      "one clean target-Mac gate compiles both object graphs but has no linker/bundle recipe")
+      "ALL_OBJECT_COMPILE_ONLY=PASS" in dual_compile_recipe and
+      "$(LD)" not in compile_only_recipes and "rsync " not in compile_only_recipes and
+      "codesign" not in compile_only_recipes and "kextutil" not in compile_only_recipes,
+      "the three compile-only recipes only echo success and contain no link/bundle/sign/load commands")
 check("LEGACY_OBJECT_GRAPH_EXCLUDES_WCL_ADAPTER_IMPLEMENTATION",
       "AIRPORT_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(AIRPORT_KEXT_OBJS)" in MAKE and
       "NATIVE_ALL_OBJS :=" in MAKE and "$(WCL24H32_TX_ADAPTER_OBJ)" in MAKE,
