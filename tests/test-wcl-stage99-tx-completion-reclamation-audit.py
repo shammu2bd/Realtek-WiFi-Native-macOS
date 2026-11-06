@@ -146,6 +146,22 @@ check("LEGACY_AIRPORT_RADIO_OBJECT_HAS_NO_WCL_LINK_DEPENDENCY",
       "rtw88_set_skb_tx_completion_token_releaser" in RADIO_CPP,
       "shared radio TU uses a registered hook, so the legacy Airport link needs no WCL adapter symbol")
 
+check("LEGACY_AIRPORT_OBJECT_GRAPH_HAS_COMPILE_ONLY_GATE",
+      "AIRPORT_KEXT_SRCS :=" in MAKE and
+      "$(KEXT_SRC)/RTW88IEEE80211.cpp" in MAKE and
+      "AIRPORT_ALL_OBJS := " in MAKE and "$(AIRPORT_KEXT_OBJS)" in MAKE and
+      "airport-compile-only: $(AIRPORT_ALL_OBJS)" in MAKE,
+      "shared radio object can be compiled in legacy Airport configuration without invoking the legacy linker")
+check("DUAL_FRONTEND_OBJECT_GATE_DOES_NOT_LINK",
+      "all-object-compile-only: airport-compile-only native-compile-only" in MAKE and
+      "ALL_OBJECT_COMPILE_ONLY=PASS" in MAKE and
+      "AIRPORT LD" not in MAKE and "NATIVE LD" not in MAKE,
+      "one clean target-Mac gate compiles both object graphs but has no linker/bundle recipe")
+check("LEGACY_OBJECT_GRAPH_EXCLUDES_WCL_ADAPTER_IMPLEMENTATION",
+      "AIRPORT_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(AIRPORT_KEXT_OBJS)" in MAKE and
+      "NATIVE_ALL_OBJS :=" in MAKE and "$(WCL24H32_TX_ADAPTER_OBJ)" in MAKE,
+      "legacy objects stay independent; only the native graph adds the WCL callback adapter")
+
 check("NATIVE_WORKER_REGISTERS_RELEASER_AFTER_SETUP",
       worker_init.find("setCompletionNotifier(") <
       worker_init.find("rtw88_set_skb_tx_completion_token_releaser(") and
