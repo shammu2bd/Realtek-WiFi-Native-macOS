@@ -4390,8 +4390,6 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
     }
     bool is_m1 = (key_info & 0x0088) == 0x0088 && !(key_info & 0x0100);
     bool is_m3 = (key_info & 0x01c8) == 0x01c8;
-    /* Group Key Handshake message 1: group key type, Encrypted Key Data,
-     * Secure, MIC and ACK set, Install clear (IEEE 802.11-2020 12.7.7.2). */
     bool is_g1 = !(key_info & 0x0008) && (key_info & 0x13c0) == 0x1380;
     uint16_t key_data_len = (uint16_t)((data[97] << 8) | data[98]);
 
@@ -4399,153 +4397,189 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
           key_info, key_data_len, is_m1, is_m3, is_g1);
 
     if (is_g1) {
-        /* Only on an established pairwise association: the MIC and key-data
-         * wrapping use the installed PTK, and message 2 is sent under it. */
-        if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED || !_m3KeysInstalled ||
-            _handshakePending || !_ptkConf) {
-            IOLog("rtw88: group M1 dropped: no established PTK state=%d\n", (int)__atomic_load_n(&_state, __ATOMIC_ACQUIRE));
-            return;
-        }
-        int ctr = memcmp(data + 9, _replayCtr, 8);
-        if (ctr < 0) {
-            IOLog("rtw88: stale group M1 dropped\n");
-            return;
-        }
-        if (!eapol_mic_ok(_ptk, data, eapol_len)) {
-            IOLog("rtw88: EAPOL group M1 MIC check failed\n");
-            return;
-        }
-        if (!key_data_len || 99 + key_data_len > eapol_len) {
-            IOLog("rtw88: EAPOL group M1 key data missing/truncated\n");
-            return;
+        uint8_t replayCopy[8] = {};
+        RTW88TxStateGate::TransmitLease txLease;
+        {
+            /* PTK, GTK, replay and handshake flags share one snapshot. Keep
+             * WMM submissions out until G1 has been authenticated and GTK
+             * installation is complete. */
+            auto mutation = beginTxStateMutation();
+            if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED ||
+                !_m3KeysInstalled || _handshakePending || !_ptkConf) {
+                IOLog("rtw88: group M1 dropped: no established PTK state=%d\n",
+                      (int)__atomic_load_n(&_state, __ATOMIC_ACQUIRE));
+                return;
+            }
+
+            int ctr = memcmp(data + 9, _replayCtr, 8);
+            if (ctr < 0) {
+                IOLog("rtw88: stale group M1 dropped\n");
+                return;
+            }
+            if (!eapol_mic_ok(_ptk, data, eapol_len)) {
+                IOLog("rtw88: EAPOL group M1 MIC check failed\n");
+                return;
+            }
+            if (!key_data_len || 99 + key_data_len > eapol_len) {
+                IOLog("rtw88: EAPOL group M1 key data missing/truncated\n");
+                return;
+            }
+
+            uint8_t unwrapped[256] = {};
+            uint16_t unwrapped_len = 0;
+            if (key_data_len > sizeof(unwrapped) + 8 ||
+                !aes_unwrap_128(_ptk + 16, data + 99, key_data_len,
+                                unwrapped, &unwrapped_len)) {
+                IOLog("rtw88: failed to unwrap group M1 key data\n");
+                return;
+            }
+            uint8_t gtk[32] = {};
+            uint8_t gtk_len = 0;
+            uint8_t gtk_idx = 0;
+            if (!extract_gtk_from_kde(unwrapped, unwrapped_len,
+                                      gtk, &gtk_len, &gtk_idx) || !gtk_len) {
+                IOLog("rtw88: no GTK KDE found in group M1 key data\n");
+                return;
+            }
+
+            if (ctr == 0 && (!_gtkConf || _gtkConf->keyidx != gtk_idx ||
+                _gtkConf->keylen != gtk_len ||
+                memcmp(_gtkConf->key, gtk, gtk_len) != 0)) {
+                IOLog("rtw88: group M1 duplicate counter with different GTK; rejected\n");
+                return;
+            }
+
+            uint32_t groupCipher =
+                (_targetBSS.group_cipher == WLAN_CIPHER_SUITE_TKIP) ?
+                WLAN_CIPHER_SUITE_TKIP : WLAN_CIPHER_SUITE_CCMP;
+            if (!installKeyUnderMutation(&_gtkConf, false, gtk_idx,
+                                         groupCipher, gtk, gtk_len, &mutation)) {
+                IOLog("rtw88: group key install failed idx=%u len=%u\n",
+                      gtk_idx, gtk_len);
+                return;
+            }
+
+            memcpy(_replayCtr, data + 9, 8);
+            memcpy(replayCopy, _replayCtr, sizeof(replayCopy));
+            txLease = mutation.downgrade();
         }
 
-        uint8_t unwrapped[256] = {};
-        uint16_t unwrapped_len = 0;
-        if (key_data_len > sizeof(unwrapped) + 8 ||
-            !aes_unwrap_128(_ptk + 16, data + 99, key_data_len,
-                            unwrapped, &unwrapped_len)) {
-            IOLog("rtw88: failed to unwrap group M1 key data\n");
+        if (!txLease)
             return;
-        }
-        uint8_t gtk[32] = {};
-        uint8_t gtk_len = 0;
-        uint8_t gtk_idx = 0;
-        if (!extract_gtk_from_kde(unwrapped, unwrapped_len, gtk, &gtk_len, &gtk_idx) ||
-            !gtk_len) {
-            IOLog("rtw88: no GTK KDE found in group M1 key data\n");
-            return;
-        }
-        /* An identical replay counter is a duplicate delivery. Answer it
-         * again, but never let it change key material. */
-        if (ctr == 0 && (!_gtkConf || _gtkConf->keyidx != gtk_idx ||
-            _gtkConf->keylen != gtk_len || memcmp(_gtkConf->key, gtk, gtk_len) != 0)) {
-            IOLog("rtw88: group M1 duplicate counter with different GTK; rejected\n");
-            return;
-        }
-        memcpy(_replayCtr, data + 9, 8);
-
-        uint32_t groupCipher = (_targetBSS.group_cipher == WLAN_CIPHER_SUITE_TKIP) ?
-            WLAN_CIPHER_SUITE_TKIP : WLAN_CIPHER_SUITE_CCMP;
-        /* installKey is a no-op for identical material, so AP retries keep
-         * the hardware key and its receive replay state. */
-        if (!installKey(&_gtkConf, false, gtk_idx, groupCipher, gtk, gtk_len)) {
-            IOLog("rtw88: group key install failed idx=%u len=%u\n", gtk_idx, gtk_len);
-            return;
-        }
-        bool sent = sendEAPOLKey(5, _replayCtr, false, false, true);
-        IOLog("rtw88: group key handshake gtk_idx=%u gtk_len=%u duplicate=%d G2 submission=%d\n",
-              gtk_idx, gtk_len, ctr == 0, sent);
+        bool sent = sendEAPOLKey(5, replayCopy, false, false, true, &txLease);
+        IOLog("rtw88: group key handshake gtk response submission=%d\n", sent);
         return;
     }
+
     if (!is_m1 && !is_m3) {
         IOLog("rtw88: unsupported EAPOL key exchange ki=0x%04x\n", key_info);
         return;
     }
+
     if (is_m1) {
-        if ((_snonceValid && memcmp(data + 9, _replayCtr, 8) < 0) ||
-            (_m3KeysInstalled && memcmp(data + 9, _installedM3ReplayCtr, 8) <= 0)) {
-            IOLog("rtw88: stale M1 dropped\n");
+        uint8_t replayCopy[8] = {};
+        RTW88TxStateGate::TransmitLease txLease;
+        {
+            /* Derive and publish the next PTK generation while all four WMM
+             * submitters are excluded. The downgraded lease below keeps M2
+             * tied to this exact SNonce/PTK/replay snapshot. */
+            auto mutation = beginTxStateMutation();
+            if ((_snonceValid && memcmp(data + 9, _replayCtr, 8) < 0) ||
+                (_m3KeysInstalled &&
+                 memcmp(data + 9, _installedM3ReplayCtr, 8) <= 0)) {
+                IOLog("rtw88: stale M1 dropped\n");
+                return;
+            }
+
+            bool fresh = !_snonceValid || memcmp(_anonce, data + 17, 32) != 0;
+            if (fresh)
+                read_random(_snonce, 32);
+            memcpy(_anonce, data + 17, 32);
+            _snonceValid = true;
+            _handshakePending = true;
+            derivePTK(_pmk, _anonce, _snonce, _macAddr, _targetBSS.bssid, _ptk);
+            memcpy(_replayCtr, data + 9, 8);
+            memcpy(replayCopy, _replayCtr, sizeof(replayCopy));
+            __atomic_store_n(&_state, RTW88_STATE_HANDSHAKING, __ATOMIC_RELEASE);
+            IOLog("rtw88: M1 fresh=%d rekey=%d\n", fresh, _m3KeysInstalled);
+            txLease = mutation.downgrade();
+        }
+
+        if (!txLease)
             return;
-        }
-        bool fresh = !_snonceValid || memcmp(_anonce, data + 17, 32) != 0;
-        if (fresh) read_random(_snonce, 32);
-        memcpy(_anonce, data + 17, 32);
-        _snonceValid = true;
-        _handshakePending = true;
-        IOLog("rtw88: M1 fresh=%d rekey=%d\n", fresh, _m3KeysInstalled);
-        derivePTK(_pmk, _anonce, _snonce, _macAddr, _targetBSS.bssid, _ptk);
-        memcpy(_replayCtr, data + 9, 8);
-        if (!sendEAPOLKey(2, _replayCtr, false, false, true)) {
+        if (!sendEAPOLKey(2, replayCopy, false, false, true, &txLease))
             IOLog("rtw88: M2 submission failed; waiting for AP retry\n");
-        }
-        // Rekey also needs a bounded timeout; retain existing data keys until
-        // authenticated M3 installs new material.
-        setRadioState(RTW88_STATE_HANDSHAKING);
         uint64_t d;
         clock_interval_to_deadline(5000, kMillisecondScale, &d);
         _timer->wakeAtTime(d);
-    } else if (is_m3) {
-        if (!_snonceValid || memcmp(data + 17, _anonce, 32) != 0 ||
-            memcmp(data + 9, _replayCtr, 8) < 0 ||
-            (!_handshakePending && !_m3KeysInstalled)) {
-            IOLog("rtw88: M3 dropped: nonce/replay/handshake mismatch\n");
-            return;
-        }
-        if (!eapol_mic_ok(_ptk, data, eapol_len)) {
-            IOLog("rtw88: EAPOL M3 MIC check failed\n");
-            return;
-        }
+        return;
+    }
 
-        if (99 + key_data_len > eapol_len) {
-            IOLog("rtw88: EAPOL M3 key data truncated\n");
-            return;
-        }
-
-        uint8_t gtk[32] = {};
-        uint8_t gtk_len = 0;
-        uint8_t gtk_idx = 0;
-        const uint8_t *key_data = data + 99;
-        uint8_t unwrapped[256] = {};
-        uint16_t unwrapped_len = 0;
-
-        if (key_data_len) {
-            if (key_info & 0x1000) {
-                if (key_data_len > sizeof(unwrapped) + 8) {
-                    IOLog("rtw88: M3 wrapped data exceeds buffer\n");
-                    return;
-                }
-                if (!aes_unwrap_128(_ptk + 16, key_data, key_data_len,
-                                    unwrapped, &unwrapped_len)) {
-                    IOLog("rtw88: failed to unwrap GTK key data\n");
-                    return;
-                }
-                key_data = unwrapped;
-                key_data_len = unwrapped_len;
-            }
-
-            if (!extract_gtk_from_kde(key_data, key_data_len,
-                                      gtk, &gtk_len, &gtk_idx)) {
-                IOLog("rtw88: no GTK KDE found in M3 key data\n");
-            }
-        }
-
-        bool duplicate = _m3KeysInstalled && !_handshakePending;
-        if (duplicate && (!_ptkConf || memcmp(_ptkConf->key, _ptk + 32, 16) != 0 ||
-            (gtk_len && (!_gtkConf || _gtkConf->keyidx != gtk_idx ||
-             _gtkConf->keylen != gtk_len || memcmp(_gtkConf->key, gtk, gtk_len) != 0)))) {
-            IOLog("rtw88: M3 retry changed key material without M1; rejected\n");
-            return;
-        }
-        memcpy(_replayCtr, data + 9, 8);
-
-        /* Replace both keys as one writer transaction. */
+    if (is_m3) {
+        uint8_t replayCopy[8] = {};
+        bool duplicate = false;
+        RTW88TxStateGate::TransmitLease txLease;
         {
+            /* Validate M3, verify its MIC, unwrap the GTK and install both
+             * hardware keys while the writer side owns the entire key state.
+             * No TX caller can see a mixed PTK/GTK generation. */
             auto mutation = beginTxStateMutation();
+            if (!_snonceValid || memcmp(data + 17, _anonce, 32) != 0 ||
+                memcmp(data + 9, _replayCtr, 8) < 0 ||
+                (!_handshakePending && !_m3KeysInstalled)) {
+                IOLog("rtw88: M3 dropped: nonce/replay/handshake mismatch\n");
+                return;
+            }
+            if (!eapol_mic_ok(_ptk, data, eapol_len)) {
+                IOLog("rtw88: EAPOL M3 MIC check failed\n");
+                return;
+            }
+            if (99 + key_data_len > eapol_len) {
+                IOLog("rtw88: EAPOL M3 key data truncated\n");
+                return;
+            }
+
+            uint8_t gtk[32] = {};
+            uint8_t gtk_len = 0;
+            uint8_t gtk_idx = 0;
+            const uint8_t *key_data = data + 99;
+            uint8_t unwrapped[256] = {};
+            uint16_t unwrapped_len = 0;
+
+            if (key_data_len) {
+                if (key_info & 0x1000) {
+                    if (key_data_len > sizeof(unwrapped) + 8) {
+                        IOLog("rtw88: M3 wrapped data exceeds buffer\n");
+                        return;
+                    }
+                    if (!aes_unwrap_128(_ptk + 16, key_data, key_data_len,
+                                        unwrapped, &unwrapped_len)) {
+                        IOLog("rtw88: failed to unwrap GTK key data\n");
+                        return;
+                    }
+                    key_data = unwrapped;
+                    key_data_len = unwrapped_len;
+                }
+
+                if (!extract_gtk_from_kde(key_data, key_data_len,
+                                          gtk, &gtk_len, &gtk_idx))
+                    IOLog("rtw88: no GTK KDE found in M3 key data\n");
+            }
+
+            duplicate = _m3KeysInstalled && !_handshakePending;
+            if (duplicate &&
+                (!_ptkConf || memcmp(_ptkConf->key, _ptk + 32, 16) != 0 ||
+                 (gtk_len && (!_gtkConf || _gtkConf->keyidx != gtk_idx ||
+                  _gtkConf->keylen != gtk_len ||
+                  memcmp(_gtkConf->key, gtk, gtk_len) != 0)))) {
+                IOLog("rtw88: M3 retry changed key material without M1; rejected\n");
+                return;
+            }
+
             if (!installKeyUnderMutation(&_ptkConf, true, 0,
                                          WLAN_CIPHER_SUITE_CCMP,
                                          _ptk + 32, 16, &mutation)) {
-                mutation.finish();
+                IOLog("rtw88: pairwise key install failed\n");
                 return;
             }
             uint32_t groupCipher =
@@ -4555,20 +4589,26 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
                 !installKeyUnderMutation(&_gtkConf, false, gtk_idx,
                                          groupCipher, gtk, gtk_len,
                                          &mutation)) {
-                mutation.finish();
+                IOLog("rtw88: group key install failed during M3\n");
                 return;
             }
-            mutation.finish();
+
+            memcpy(_replayCtr, data + 9, 8);
+            memcpy(_installedM3ReplayCtr, _replayCtr, 8);
+            _m3KeysInstalled = true;
+            _handshakePending = false;
+            memcpy(replayCopy, _replayCtr, sizeof(replayCopy));
+            txLease = mutation.downgrade();
         }
 
-        memcpy(_installedM3ReplayCtr, _replayCtr, 8);
-        _m3KeysInstalled = true;
-        _handshakePending = false;
-        if (!sendEAPOLKey(4, _replayCtr, false, false, true)) {
+        if (!txLease)
+            return;
+        if (!sendEAPOLKey(4, replayCopy, false, false, true, &txLease)) {
             IOLog("rtw88: M4 submission failed; awaiting M3 retry\n");
             return;
         }
-        IOLog("rtw88: M4 submitted duplicate=%d; AP acceptance unverified\n", duplicate);
+        txLease.reset();
+
         {
             auto mutation = beginTxStateMutation();
             __atomic_store_n(&_associatedVisible, true, __ATOMIC_RELEASE);
@@ -4579,21 +4619,30 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
         _timer->cancelTimeout();
         if (_parent)
             _parent->setLinkStatus(kIONetworkLinkActive | kIONetworkLinkValid);
-        if (!duplicate) startTxAggregation();   /* keys are installed — negotiate uplink A-MPDU */
+        if (!duplicate)
+            startTxAggregation();
         IOLog("rtw88: WPA2 connected! gtk_len=%u gtk_idx=%u\n", gtk_len, gtk_idx);
         if (!_externalSupplicant && _delegate)
             _delegate->rtw88Event(kRTW88EventConnected, nullptr);
     }
 }
 
-bool RTW88IEEE80211::sendEAPOLKey(int step, const uint8_t *replay_counter,
-                                    bool install, bool ack, bool mic)
+bool RTW88IEEE80211::sendEAPOLKey(
+    int step, const uint8_t *replay_counter, bool install, bool ack, bool mic,
+    RTW88TxStateGate::TransmitLease *existingLease)
 {
-    /* Hold a read lease while copying the current BSSID/MAC/PTK-derived state
-     * into the handshake frame and through the synchronous RTW88 submit. */
-    auto txLease = _txStateGate.tryEnterTransmit();
-    if (!txLease)
+    /* Hold a reader from key/nonce snapshot through the synchronous RTW88
+     * submission. A caller may pass the reader produced by writer downgrade
+     * to preserve one exact handshake generation without an admission gap. */
+    RTW88TxStateGate::TransmitLease localLease;
+    if (!existingLease) {
+        localLease = _txStateGate.tryEnterTransmit();
+        if (!localLease)
+            return false;
+        existingLease = &localLease;
+    } else if (!*existingLease) {
         return false;
+    }
 
     uint8_t frame[512] = {};
     uint8_t *eth = frame;
@@ -4647,7 +4696,7 @@ bool RTW88IEEE80211::sendEAPOLKey(int step, const uint8_t *replay_counter,
      * other handshake steps keep the established path. */
     const bool protectEapol = (step == 5);
     bool submitted = txDataFrame(m, nullptr, nullptr, nullptr, 2, 0,
-                                 protectEapol, true, &txLease);
+                                 protectEapol, true, existingLease);
     IOLog("rtw88: EAPOL %s%d submission=%d len=%u\n", step == 5 ? "G" : "M",
           step == 5 ? 2 : step, submitted, ethlen);
     return submitted;
