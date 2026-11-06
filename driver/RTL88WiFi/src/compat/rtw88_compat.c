@@ -6,6 +6,7 @@
 #include "rtw88_compat.h"
 #include <stdarg.h>
 #include <kern/thread_call.h>
+#include "linux/mpsc_bounded_queue.h"
 
 /* ------------------------------------------------------------------ */
 /*  Logging                                                             */
@@ -26,7 +27,7 @@ static uint32_t rtw88_log_tail = 0;
 #define RTW88_SKB_FREE_REAPER_SCHEDULED 0x1U
 #define RTW88_SKB_FREE_REAPER_RESIGNAL 0x2U
 static thread_call_t g_tx_skb_free_reaper_call = NULL;
-static struct rtw88_mpsc_retire_stack g_tx_skb_free_retire_stack;
+static struct rtw88_mpsc_bounded_queue g_tx_skb_free_queue;
 static volatile uint32_t g_tx_skb_free_reaper_state = 0;
 static volatile uint32_t g_tx_skb_free_producer_gate = RTW88_SKB_FREE_GATE_CLOSED;
 static volatile uint32_t g_tx_skb_free_outstanding = 0;
@@ -165,16 +166,12 @@ bool rtw88_disable_watchdog_work = true;
 /* ------------------------------------------------------------------ */
 static void rtw88_skb_free_drain_batch(void)
 {
-    struct rtw88_mpsc_retire_node *node =
-        rtw88_mpsc_retire_stack_take_all(&g_tx_skb_free_retire_stack);
-    while (node) {
-        struct rtw88_mpsc_retire_node *next = node->next;
-        struct sk_buff *skb = container_of(node, struct sk_buff, deferred_free_node);
-        node->next = NULL;
+    struct sk_buff *skb;
+    while ((skb = (struct sk_buff *)
+            rtw88_mpsc_bounded_queue_dequeue(&g_tx_skb_free_queue)) != NULL) {
         /* Only the deferred consumer/passive teardown calls kfree_skb here. */
         kfree_skb(skb);
         __atomic_sub_fetch(&g_tx_skb_free_outstanding, 1U, __ATOMIC_RELEASE);
-        node = next;
     }
 }
 static void rtw88_skb_free_reaper_fn(thread_call_param_t context,
@@ -201,36 +198,57 @@ static void rtw88_skb_free_reaper_fn(thread_call_param_t context,
 }
 bool rtw88_defer_skb_free(struct sk_buff *skb)
 {
-    if (!skb) return true;
-    uint32_t gate = __atomic_load_n(&g_tx_skb_free_producer_gate, __ATOMIC_ACQUIRE);
+    if (!skb)
+        return true;
+
+    uint32_t gate =
+        __atomic_load_n(&g_tx_skb_free_producer_gate, __ATOMIC_ACQUIRE);
     for (;;) {
         if ((gate & RTW88_SKB_FREE_GATE_CLOSED) ||
-            ((gate & RTW88_SKB_FREE_GATE_PRODUCERS) == RTW88_SKB_FREE_GATE_PRODUCERS)) {
+            ((gate & RTW88_SKB_FREE_GATE_PRODUCERS) ==
+             RTW88_SKB_FREE_GATE_PRODUCERS)) {
             __atomic_add_fetch(&g_tx_skb_free_rejected, 1U, __ATOMIC_RELAXED);
-            return false; /* fail closed: leak rather than free under caller lock */
+            return false; /* quarantine rather than free under callback lock */
         }
-        if (__atomic_compare_exchange_n(&g_tx_skb_free_producer_gate, &gate, gate + 1U,
-                                        false, __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+        if (__atomic_compare_exchange_n(&g_tx_skb_free_producer_gate, &gate,
+                                        gate + 1U, false,
+                                        __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
             break;
     }
+
+    /* Count before publication so a concurrently running consumer cannot
+     * retire the skb before outstanding ownership is visible. */
     __atomic_add_fetch(&g_tx_skb_free_outstanding, 1U, __ATOMIC_ACQ_REL);
-    rtw88_mpsc_retire_stack_push(&g_tx_skb_free_retire_stack, &skb->deferred_free_node);
-    uint32_t state = __atomic_load_n(&g_tx_skb_free_reaper_state, __ATOMIC_ACQUIRE);
+    if (!rtw88_mpsc_bounded_queue_enqueue(&g_tx_skb_free_queue, skb)) {
+        __atomic_sub_fetch(&g_tx_skb_free_outstanding, 1U, __ATOMIC_RELEASE);
+        __atomic_add_fetch(&g_tx_skb_free_rejected, 1U, __ATOMIC_RELAXED);
+        __atomic_sub_fetch(&g_tx_skb_free_producer_gate, 1U, __ATOMIC_RELEASE);
+        return false; /* bounded queue full: leak safely, never synchronous IOFree */
+    }
+
+    uint32_t state =
+        __atomic_load_n(&g_tx_skb_free_reaper_state, __ATOMIC_ACQUIRE);
     for (;;) {
         if (state & RTW88_SKB_FREE_REAPER_SCHEDULED) {
-            if (state & RTW88_SKB_FREE_REAPER_RESIGNAL) break;
-            const uint32_t desired = state | RTW88_SKB_FREE_REAPER_RESIGNAL;
-            if (__atomic_compare_exchange_n(&g_tx_skb_free_reaper_state, &state, desired,
-                                            false, __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+            if (state & RTW88_SKB_FREE_REAPER_RESIGNAL)
                 break;
-        } else if (__atomic_compare_exchange_n(&g_tx_skb_free_reaper_state, &state,
-                                               RTW88_SKB_FREE_REAPER_SCHEDULED, false,
-                                               __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE)) {
+            const uint32_t desired =
+                state | RTW88_SKB_FREE_REAPER_RESIGNAL;
+            if (__atomic_compare_exchange_n(&g_tx_skb_free_reaper_state,
+                                            &state, desired, false,
+                                            __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+                break;
+        } else if (__atomic_compare_exchange_n(&g_tx_skb_free_reaper_state,
+                                               &state,
+                                               RTW88_SKB_FREE_REAPER_SCHEDULED,
+                                               false, __ATOMIC_ACQ_REL,
+                                               __ATOMIC_ACQUIRE)) {
             (void)thread_call_enter(g_tx_skb_free_reaper_call);
             break;
         }
         state = __atomic_load_n(&g_tx_skb_free_reaper_state, __ATOMIC_ACQUIRE);
     }
+
     __atomic_sub_fetch(&g_tx_skb_free_producer_gate, 1U, __ATOMIC_RELEASE);
     return true;
 }
@@ -1172,7 +1190,7 @@ int rtw88_compat_init(void)
     if (system_wq || system_long_wq || g_datapath_wq || rtw88_log_lock ||
         g_tx_skb_free_reaper_call)
         return -EBUSY;
-    rtw88_mpsc_retire_stack_init(&g_tx_skb_free_retire_stack);
+    rtw88_mpsc_bounded_queue_init(&g_tx_skb_free_queue);
     __atomic_store_n(&g_tx_skb_free_reaper_state, 0U, __ATOMIC_RELAXED);
     __atomic_store_n(&g_tx_skb_free_producer_gate, RTW88_SKB_FREE_GATE_CLOSED, __ATOMIC_RELAXED);
     __atomic_store_n(&g_tx_skb_free_outstanding, 0U, __ATOMIC_RELAXED);
@@ -1206,7 +1224,7 @@ int rtw88_compat_init(void)
     return 0;
 }
 
-void rtw88_compat_exit(void)
+bool rtw88_compat_exit(void)
 {
     if (g_irq_work_initialized)
         cancel_work_sync(&g_irq_work);
@@ -1225,28 +1243,45 @@ void rtw88_compat_exit(void)
     if (g_tx_skb_free_reaper_call) {
         (void)thread_call_cancel_wait(g_tx_skb_free_reaper_call);
         __atomic_store_n(&g_tx_skb_free_reaper_state, 0U, __ATOMIC_RELEASE);
+        /* Producers and the thread-call consumer are joined; this passive
+         * teardown thread is now the queue's sole consumer. */
         rtw88_skb_free_drain_batch();
-        if (!rtw88_mpsc_retire_stack_empty(&g_tx_skb_free_retire_stack) ||
+        if (!rtw88_mpsc_bounded_queue_empty(&g_tx_skb_free_queue) ||
             __atomic_load_n(&g_tx_skb_free_outstanding, __ATOMIC_ACQUIRE) != 0) {
-            rtw88_candidate_log("rtw88: deferred TX skb reaper did not drain; retaining compat runtime\n");
-            return;
+            rtw88_candidate_log("rtw88: deferred TX skb queue did not drain; retaining compat runtime\\n");
+            return false;
         }
         if (!thread_call_free(g_tx_skb_free_reaper_call)) {
-            rtw88_candidate_log("rtw88: deferred TX skb thread-call still active; retaining compat runtime\n");
-            return;
+            rtw88_candidate_log("rtw88: deferred TX skb thread-call still active; retaining compat runtime\\n");
+            return false;
         }
         g_tx_skb_free_reaper_call = NULL;
     }
 
-    const uint32_t rejected = __atomic_exchange_n(&g_tx_skb_free_rejected, 0U, __ATOMIC_ACQ_REL);
+    const uint32_t rejected =
+        __atomic_exchange_n(&g_tx_skb_free_rejected, 0U, __ATOMIC_ACQ_REL);
     if (rejected)
-        rtw88_candidate_log("rtw88: %u TX skb frees quarantined after reaper closure\n", rejected);
-    if (work_state_lock) { IOLockFree(work_state_lock); work_state_lock = NULL; }
-    g_irq_handler = NULL; g_irq_thread_fn = NULL; g_irq_dev_id = NULL;
-    g_irq_work_initialized = false; g_tx_resume_cb = NULL;
-    g_hw_cbs = NULL; g_kext_hw = NULL; g_rtw88_vif = NULL;
-    g_rtw88_sta = NULL; g_rtw88_sta_vif = NULL;
-    if (rtw88_log_lock) { IOSimpleLockFree(rtw88_log_lock); rtw88_log_lock = NULL; }
+        rtw88_candidate_log("rtw88: %u TX skb frees quarantined after reaper closure\\n",
+                            rejected);
+    if (work_state_lock) {
+        IOLockFree(work_state_lock);
+        work_state_lock = NULL;
+    }
+    g_irq_handler = NULL;
+    g_irq_thread_fn = NULL;
+    g_irq_dev_id = NULL;
+    g_irq_work_initialized = false;
+    g_tx_resume_cb = NULL;
+    g_hw_cbs = NULL;
+    g_kext_hw = NULL;
+    g_rtw88_vif = NULL;
+    g_rtw88_sta = NULL;
+    g_rtw88_sta_vif = NULL;
+    if (rtw88_log_lock) {
+        IOSimpleLockFree(rtw88_log_lock);
+        rtw88_log_lock = NULL;
+    }
+    return true;
 }
 
 /* ------------------------------------------------------------------ */
