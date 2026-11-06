@@ -1,0 +1,89 @@
+===== STAGE104 NATIVE BINARY / DEPENDENCY AUDIT =====
+UTC_STAMP=20261106T053603Z
+REPOSITORY=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review
+CURRENT_HEAD=c679c1201494f5062a621b0113e2f45306c71122
+STAGE103_BUILD_SOURCE_COMMIT=fcc0da3577e64d8b6b40ec10ea68e289a742efd9
+SCOPE=READ_ONLY_BINARY_AND_ARCHIVE_AUDIT
+INSTALL=NOT_RUN LOAD=NOT_RUN SIGNING=NOT_RUN OPENCORE_CHANGE=NONE
+PASS: present: driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+PASS: present: driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+PASS: present: driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/Info.plist
+PASS: present: driver/RTL88WiFi/build/out/RTL88WiFiNative-24H32-unsigned.zip
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/Info.plist: OK
+PASS: Info.plist syntax
+PLIST_BUNDLE_ID=io.github.x1ren41l.RTL88WiFi
+PLIST_EXECUTABLE=RTL88WiFiNative
+PLIST_MINIMUM_MACOS=15.0
+PLIST_NATIVE_PCI_MATCH=0xC82110EC 0xB82110EC
+PLIST_REQUIRED_DEPENDENCIES=PASS
+PLIST_IO80211FAMILYLEGACY=ABSENT
+PLIST_IOSKYWALKFAMILY=DECLARED
+PASS: native bundle metadata, dependencies and RTL8821CE personality
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative: Mach-O 64-bit kext bundle x86_64
+PASS: x86_64 architecture
+BINARY_ARCHS=x86_64
+PASS: single-architecture native binary
+UUID: 5EC101DF-D6D2-3468-AE5C-DEF1FE774165 (x86_64) driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+5d63db951e4a5c0228d4d73e664ab8e9457fc1fe805cce23444fe022f04f2513  driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative:
+Mach header
+      magic  cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
+MH_MAGIC_64   X86_64        ALL  0x00  KEXTBUNDLE     7       1160   NOUNDEFS DYLDLINK TWOLEVEL
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative:
+UNDEFINED_SYMBOL_RECORD_COUNT=808
+UNDEFINED_SYMBOL_SAMPLE_BEGIN
+_IODelay
+_IOFree
+_IOLockAlloc
+_IOLockFree
+_IOLockLock
+_IOLockSleep
+_IOLockUnlock
+_IOLockWakeup
+_IOLog
+_IOMalloc
+_IOMallocZero
+_IORecursiveLockAlloc
+_IORecursiveLockLock
+_IORecursiveLockUnlock
+_IOSimpleLockAlloc
+_IOSimpleLockFree
+_IOSimpleLockLock
+_IOSimpleLockUnlock
+_IOSleep
+__ZN10IOWorkLoop8workLoopEv
+__ZN11IOPCIDevice19extendedConfigRead8Ey
+__ZN11IOPCIDevice20extendedConfigRead16Ey
+__ZN11IOPCIDevice20extendedConfigRead32Ey
+__ZN11IOPCIDevice20extendedConfigWrite8Eyh
+__ZN11IOPCIDevice21extendedConfigWrite16Eyt
+__ZN11IOPCIDevice21extendedConfigWrite32Eyj
+__ZN11IOPCIDevice9metaClassE
+__ZN11OSMetaClass21_RESERVEDOSMetaClass0Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass1Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass2Ev
+UNDEFINED_SYMBOL_SAMPLE_END
+PASS: Mach-O metadata and undefined-symbol inventory captured (not treated as runtime proof)
+STAGE104_ARCHIVE_SHA256=e4338c6721534dbe73546d8e61030f7efd21b2638fb31151426181535ca24f4f
+PASS: archive SHA matches Stage103 validated archive
+PASS: ZIP contents exactly match local kext bundle
+PASS: ZIP contains expected kext structure
+PASS: Stage103 source commit exists in local Git history
+PASS: Stage103 source commit is an ancestor of current HEAD
+PASS: driver source/build tree unchanged since Stage103 source commit
+STAGE104_PASS_COUNT=15
+STAGE104_FAIL_COUNT=0
+STAGE104_RESULT=PASS
+STAGE104_DETAIL_LOG=Development/Logs/stage104-native-binary-audit-20261106T053603Z.log
+STAGE104_BUILD_SOURCE_COMMIT=fcc0da3577e64d8b6b40ec10ea68e289a742efd9
+STAGE104_INSTALL=NOT_RUN LOAD=NOT_RUN SIGNING=NOT_RUN HARDWARE_TEST=NOT_RUN OPENCORE_CHANGE=NONE
+The following paths are ignored by one of your .gitignore files:
+Development/Logs/stage104-native-binary-audit-20261106T053603Z.log
+hint: Use -f if you really want to add them.
+hint: Turn this message off by running
+hint: "git config advice.addIgnoredFile false"
+[work/stage91-tx-submission-callback-v1 e88aae2] Stage104: record native binary and dependency audit
+ 1 file changed, 12 insertions(+)
+To https://github.com/shammu2bd/Realtek-WiFi-Native-macOS.git
+   c679c12..e88aae2  work/stage91-tx-submission-callback-v1 -> work/stage91-tx-submission-callback-v1
+STAGE104_LOG_UPLOAD=PUSHED
