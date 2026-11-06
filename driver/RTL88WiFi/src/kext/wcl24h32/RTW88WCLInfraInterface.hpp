@@ -29,6 +29,12 @@ public:
     bool start(IOService *provider) override;
     void stop(IOService *provider) override;
 
+    /* Controller-owned stop transaction. Returns an error rather than
+     * releasing queue/pool owners if Skywalk deregistration cannot complete. */
+    IOReturn shutdownForController();
+    bool isRegistered() const { return _registered; }
+    bool isBaseStarted() const { return _baseStarted; }
+
     IOReturn enable(unsigned int options) override;
     IOReturn disable(unsigned int options) override;
     SInt32 initBSDInterfaceParameters(ifnet_init_eparams *params,
@@ -276,11 +282,11 @@ private:
     bool _assocNotified = false;
     bool _connectNotified = false;
     bool _stopping = false;
+    bool _baseStarted = false;
+    bool _registered = false;
 
-    /* Opaque 24H32 payload storage must outlive any future registration. The
-     * builder is staged but not called from start() until queue/pool ownership
-     * and registration rollback have been verified.
-     */
+    /* Opaque 24H32 payload storage remains resident until the interface has
+     * successfully deregistered from the Skywalk QueueSet. */
     RTW88WCLRegistrationInfo24H32::Storage _registrationInfo = {};
     bool _registrationInfoPrepared = false;
 };
