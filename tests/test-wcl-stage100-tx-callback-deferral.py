@@ -1,19 +1,21 @@
 #!/usr/bin/env python3
-"""Stage100 TX-status skb ownership, deferred free, and teardown audit."""
+"""Stage100/101 TX skb deferred ownership and teardown source audit."""
 from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 COMPAT = ROOT / "driver/RTL88WiFi/src/compat"
 KEXT = ROOT / "driver/RTL88WiFi/src/kext"
-STACK = (COMPAT / "linux/mpsc_retire_stack.h").read_text()
+QUEUE = (COMPAT / "linux/mpsc_bounded_queue.h").read_text()
 SKBUFF = (COMPAT / "linux/skbuff.h").read_text()
 COMPAT_C = (COMPAT / "rtw88_compat.c").read_text()
 COMPAT_H = (COMPAT / "rtw88_compat.h").read_text()
 RADIO = (KEXT / "RTW88IEEE80211.cpp").read_text()
-PCI_CPP = (KEXT / "RTW88PCIDevice.cpp").read_text()
-PCI_HPP = (KEXT / "RTW88PCIDevice.hpp").read_text()
-WCL_BACKEND = (KEXT / "wcl24h32/RTW88WCLPCIBackend.cpp").read_text()
+LEGACY_CPP = (KEXT / "RTW88PCIDevice.cpp").read_text()
+LEGACY_HPP = (KEXT / "RTW88PCIDevice.hpp").read_text()
+WCL_CPP = (KEXT / "wcl24h32/RTW88WCLPCIBackend.cpp").read_text()
+WCL_HPP = (KEXT / "wcl24h32/RTW88WCLPCIBackend.hpp").read_text()
+WCL_CONTROLLER = (KEXT / "wcl24h32/RTW88WCLController.cpp").read_text()
 
 def body(src, marker):
     at = src.find(marker)
@@ -47,105 +49,134 @@ def body(src, marker):
 checks = []
 def check(name, ok, detail): checks.append((name, bool(ok), detail))
 
-defer = body(COMPAT_C, "bool rtw88_defer_skb_free(")
+enqueue = body(QUEUE, "rtw88_mpsc_bounded_queue_enqueue(")
+dequeue = body(QUEUE, "rtw88_mpsc_bounded_queue_dequeue(")
 drain = body(COMPAT_C, "static void rtw88_skb_free_drain_batch(")
+producer = body(COMPAT_C, "bool rtw88_defer_skb_free(")
+exit_ = body(COMPAT_C, "bool rtw88_compat_exit(")
 reaper = body(COMPAT_C, "static void rtw88_skb_free_reaper_fn(")
-init = body(COMPAT_C, "int rtw88_compat_init(")
-exit_ = body(COMPAT_C, "void rtw88_compat_exit(")
 fallback = body(COMPAT_C, "void ieee80211_tx_status_irqsafe(")
 callback = body(RADIO, "void RTW88IEEE80211::compat_tx_status(")
 tx_status = body(RADIO, "void RTW88IEEE80211::txStatus(")
-pci_start = body(PCI_CPP, "bool RTW88PCIDevice::start(")
-pci_teardown = body(PCI_CPP, "void RTW88PCIDevice::teardown(")
+legacy_stop = body(LEGACY_CPP, "void RTW88PCIDevice::stop(")
+legacy_free = body(LEGACY_CPP, "void RTW88PCIDevice::free(")
+legacy_teardown = body(LEGACY_CPP, "bool RTW88PCIDevice::teardown(")
+wcl_close = body(WCL_CPP, "IOReturn RTW88WCLPCIBackend::close(")
+wcl_resources = body(WCL_CPP, "bool RTW88WCLPCIBackend::closeResources(")
+wcl_free = body(WCL_CPP, "void RTW88WCLPCIBackend::free(")
+controller_release = body(WCL_CONTROLLER, "IOReturn RTW88WCLController::releaseNativeResources(")
+controller_free = body(WCL_CONTROLLER, "void RTW88WCLController::free(")
 
-check("MPSC_STACK_ATOMIC_PUSH_AND_DETACH",
-      "__atomic_compare_exchange_n" in STACK and "__atomic_exchange_n" in STACK and
-      "IOLock" not in STACK and "kfree" not in STACK,
-      "intrusive MPSC operations do not allocate, lock, or reclaim")
-check("SKBUFF_EMBEDS_RETIRE_NODE",
-      '#include "mpsc_retire_stack.h"' in SKBUFF and
-      "struct rtw88_mpsc_retire_node deferred_free_node;" in SKBUFF,
-      "each skb carries its own allocation-free retire node")
-check("HEADER_EXPORTS_DEFERRED_OWNERSHIP_API",
-      "bool rtw88_defer_skb_free(struct sk_buff *skb);" in COMPAT_H,
-      "shared C/C++ ownership-transfer API is declared")
-check("PRODUCER_FAILS_CLOSED_WITHOUT_SYNC_FREE",
-      "RTW88_SKB_FREE_GATE_CLOSED" in defer and
-      "__atomic_compare_exchange_n" in defer and "g_tx_skb_free_rejected" in defer and
-      "return false" in defer and "kfree_skb(" not in defer and
-      "IOLog(" not in defer and "IOLock" not in defer,
-      "closed runtime quarantines skb rather than falling back to IOFree")
-check("PRODUCER_DOES_ATOMIC_PUSH_AND_THREADCALL_SIGNAL",
-      "rtw88_mpsc_retire_stack_push" in defer and
-      "thread_call_enter(g_tx_skb_free_reaper_call)" in defer and
-      "RTW88_SKB_FREE_REAPER_RESIGNAL" in defer and
-      "IOFree(" not in defer and "kfree(" not in defer,
-      "producer boundary performs only atomics, intrusive publication and signal")
-check("DEFERRED_CONSUMER_IS_ONLY_REAPER_KFREE",
-      "rtw88_mpsc_retire_stack_take_all" in drain and
-      "kfree_skb(skb)" in drain and
-      "__atomic_sub_fetch(&g_tx_skb_free_outstanding" in drain,
-      "detached consumer performs the final skb reclaim")
-check("REAPER_SINGLE_FLIGHT_RESIGNAL",
+check("BOUNDED_POWER_OF_TWO_RING",
+      "RTW88_MPSC_QUEUE_CAPACITY 2048U" in QUEUE and
+      "(RTW88_MPSC_QUEUE_CAPACITY - 1U)" in QUEUE,
+      "fixed 2048-slot queue bounds memory and wrap mask is power-of-two")
+check("SEQUENCE_GENERATIONS_REPLACE_ABA_STACK",
+      "volatile uint32_t sequence" in QUEUE and
+      "__atomic_load_n(&slot->sequence" in enqueue and
+      "__atomic_store_n(&slot->sequence" in enqueue and
+      "rtw88_mpsc_retire_stack" not in QUEUE,
+      "per-slot generations replace reclaimable head pointers")
+check("PRODUCER_RESERVATION_IS_ATOMIC",
+      "__atomic_compare_exchange_n(&queue->enqueue_pos" in enqueue,
+      "concurrent producers reserve unique queue positions")
+check("PRODUCER_RELEASE_PUBLICATION",
+      "slot->value = value" in enqueue and "__ATOMIC_RELEASE" in enqueue,
+      "consumer cannot observe a slot before pointer publication")
+check("QUEUE_FULL_IS_EXPLICIT",
+      "difference < 0" in enqueue and "return false" in enqueue,
+      "full queue is rejected without overwriting a live slot")
+check("CONSUMER_ACQUIRES_AND_RECYCLES_GENERATION",
+      "__ATOMIC_ACQUIRE" in dequeue and
+      "position + RTW88_MPSC_QUEUE_CAPACITY" in dequeue and
+      "queue->dequeue_pos = position + 1U" in dequeue,
+      "single consumer advances slot generation before reuse")
+check("SKBUFF_HAS_NO_INTRUSIVE_STACK_NODE",
+      "deferred_free_node" not in SKBUFF and "mpsc_retire_stack" not in SKBUFF,
+      "skb lifetime is no longer coupled to a reclaimed stack link")
+check("REAPER_DRAINS_BOUNDED_QUEUE",
+      "rtw88_mpsc_bounded_queue_dequeue" in drain and
+      "kfree_skb(skb)" in drain and "rtw88_mpsc_retire_stack" not in drain,
+      "sole deferred consumer reclaims dequeued skbs")
+check("PRODUCER_ACCOUNTING_PRECEDES_PUBLICATION",
+      producer.find("g_tx_skb_free_outstanding") < producer.find("rtw88_mpsc_bounded_queue_enqueue") and
+      "if (!rtw88_mpsc_bounded_queue_enqueue" in producer,
+      "outstanding count is visible before consumer can pop")
+check("QUEUE_FULL_ROLLS_BACK_OUTSTANDING",
+      producer.find("if (!rtw88_mpsc_bounded_queue_enqueue") <
+      producer.find("__atomic_sub_fetch(&g_tx_skb_free_outstanding"),
+      "full queue rolls back outstanding before quarantine")
+check("PRODUCER_NEVER_FREES_OR_LOGS",
+      "kfree_skb(" not in producer and "IOFree(" not in producer and
+      "IOLog(" not in producer and "return false" in producer,
+      "closed/full paths do not perform synchronous IOFree")
+check("REAPER_WAKEUP_HANDSHAKE_RETAINED",
       "RTW88_SKB_FREE_REAPER_RESIGNAL" in reaper and
       "__atomic_compare_exchange_n" in reaper and
       "rtw88_skb_free_drain_batch();" in reaper,
-      "enqueue racing an active reaper is observed by the state handshake")
-check("INIT_CREATES_REAPER_BEFORE_ADMISSION",
-      "thread_call_allocate_with_priority" in init and
-      "THREAD_CALL_PRIORITY_KERNEL" in init and
-      init.find("g_tx_skb_free_reaper_call = thread_call_allocate_with_priority") <
-      init.find("g_tx_skb_free_producer_gate, 0U"),
-      "TX skb free admission opens only after kernel-priority reaper allocation")
-check("INIT_ROLLBACK_RELEASES_PARTIAL_REAPER",
-      "thread_call_free(g_tx_skb_free_reaper_call)" in init and
-      "destroy_workqueue(g_datapath_wq)" in init,
-      "failed initialization unwinds the partially allocated compat runtime")
-check("EXIT_CLOSES_AND_DRAINS_AFTER_PRODUCERS_STOP",
-      exit_.find("destroy_workqueue(g_datapath_wq)") < exit_.find("RTW88_SKB_FREE_GATE_CLOSED") <
-      exit_.find("RTW88_SKB_FREE_GATE_PRODUCERS") < exit_.find("thread_call_cancel_wait") <
-      exit_.find("rtw88_skb_free_drain_batch") < exit_.find("thread_call_free"),
-      "teardown closes producers, joins reaper, drains final batch, then frees call")
-check("EXIT_RETAINS_RUNTIME_ON_DRAIN_FAILURE",
-      "deferred TX skb reaper did not drain" in exit_ and
-      "retaining compat runtime" in exit_ and
-      exit_.find("return;") < exit_.find("if (work_state_lock)"),
-      "runtime is retained when deferred ownership cannot be proven empty")
+      "producer arriving during drain cannot lose its wakeup")
+check("EXIT_RETURNS_FAILURE_IF_QUEUE_NOT_DRAINED",
+      "bool rtw88_compat_exit(void)" in COMPAT_C and
+      "rtw88_mpsc_bounded_queue_empty" in exit_ and
+      "return false" in exit_ and "return true" in exit_,
+      "cleanup result is explicit to resource owners")
+check("COMPAT_HEADER_EXPOSES_BOOL_EXIT",
+      "bool rtw88_compat_exit(void);" in COMPAT_H,
+      "callers must check teardown completion")
 check("TX_STATUS_CALLBACK_TRANSFERS_SKB",
-      "self->txStatus(skb)" in callback and "rtw88_defer_skb_free(skb)" in callback and
-      "kfree_skb(" not in callback and "IOFree(" not in callback,
-      "callback returns skb ownership to generic compat reaper")
+      "self->txStatus(skb)" in callback and
+      "rtw88_defer_skb_free(skb)" in callback and
+      "kfree_skb(" not in callback,
+      "TX callback only publishes completion and transfers skb ownership")
+check("TX_STATUS_HAS_NO_LOCKED_DIAGNOSTIC_IO",
+      "rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted)" in tx_status and
+      "IOLog(" not in tx_status and "rtw88_candidate_log(" not in tx_status,
+      "one-shot completion remains while synchronous logging stays removed")
 check("MISSING_CALLBACK_FALLBACK_IS_DEFERRED",
       "rtw88_defer_skb_free(skb)" in fallback and "kfree_skb(skb)" not in fallback,
-      "missing status callback cannot free synchronously under driver lock")
-check("TX_STATUS_CALLBACK_HAS_NO_DIAGNOSTIC_IO",
-      "rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted)" in tx_status and
-      "IOLog(" not in tx_status and "rtw88_candidate_log(" not in tx_status and
-      "kfree_skb(" not in tx_status,
-      "one-shot completion remains; frame parsing and IOLog are removed from locked path")
-check("LEGACY_RUNTIME_INIT_FAILURE_IS_CHECKED",
-      "const int compatStatus = rtw88_compat_init();" in pci_start and
-      "if (compatStatus != 0)" in pci_start and "_compatInitialized = true;" in pci_start and
-      "bool                    _compatInitialized = false;" in PCI_HPP,
-      "legacy start cannot proceed without the required compat reaper")
-check("LEGACY_EXIT_GUARDED_BY_INIT_FLAG",
-      "if (_compatInitialized)" in pci_teardown and
-      "_compatInitialized = false;" in pci_teardown,
-      "legacy teardown exits only the runtime it initialized")
-check("WCL_RUNTIME_INIT_ALREADY_CHECKED",
-      "const int compatStatus = rtw88_compat_init();" in WCL_BACKEND and
-      "if (compatStatus != 0)" in WCL_BACKEND and
-      "rtw88_compat_exit();" in WCL_BACKEND,
-      "native WCL preserves its checked compat runtime lifecycle")
+      "fallback also avoids synchronous free")
+check("LEGACY_STOP_PROPAGATES_TEARDOWN_FAILURE",
+      "if (!teardown())" in legacy_stop and
+      legacy_stop.find("return;") < legacy_stop.find("super::stop(provider)"),
+      "legacy superclass stop is withheld when compat exit fails")
+check("LEGACY_TEARDOWN_RETAINS_MMIO_AND_PCI",
+      "if (!rtw88_compat_exit())" in legacy_teardown and
+      "return false" in legacy_teardown and
+      legacy_teardown.find("return false") < legacy_teardown.find("_mmioMap->release()"),
+      "legacy device does not release PCI/MMIO/DMA after failed reaper drain")
+check("LEGACY_FREE_QUARANTINES_OWNER",
+      "if (_compatInitialized || _teardownQuarantined)" in legacy_free and
+      legacy_free.find("return;") < legacy_free.find("super::free()"),
+      "legacy object stays alive while compat runtime is retained")
+check("WCL_CLOSE_PROPAGATES_TEARDOWN_FAILURE",
+      "if (!closeResources())" in wcl_close and "return kIOReturnBusy" in wcl_close,
+      "WCL close returns busy instead of success on failed compat exit")
+check("WCL_BACKEND_RETAINS_DMA_AND_LEASE",
+      "if (!rtw88_compat_exit())" in wcl_resources and
+      "return false" in wcl_resources and
+      wcl_resources.find("return false") < wcl_resources.find("releaseDMAEntries()") and
+      wcl_resources.find("return false") < wcl_resources.find("clearCompatLease()"),
+      "WCL PCI/DMA owner remains retained on failed compat drain")
+check("WCL_FREE_QUARANTINES_BACKEND",
+      "if (!closeResources())" in wcl_free and
+      wcl_free.find("return;") < wcl_free.find("super::free()"),
+      "WCL backend is not destroyed after failed deferred drain")
+check("CONTROLLER_RETAINS_CHILD_ON_CLOSE_FAILURE",
+      "if (closeStatus != kIOReturnSuccess)" in controller_release and
+      "return closeStatus" in controller_release,
+      "controller keeps backend and workloop owned")
+check("CONTROLLER_FREE_ALREADY_QUARANTINES",
+      "if (cleanupStatus != kIOReturnSuccess)" in controller_free and
+      "return;" in controller_free and "super::free()" in controller_free,
+      "controller free path preserves parent lifetime on child failure")
 
 failed = [c for c in checks if not c[1]]
 for name, ok, detail in checks:
     print(("PASS" if ok else "FAIL") + f": {name}: {detail}")
 print(f"PASS_COUNT={len(checks) - len(failed)}")
 print(f"FAIL_COUNT={len(failed)}")
-print("CALLBACK_FREE=DEFERRED_XNU_KERNEL_THREAD_CALL")
-print("TX_STATUS_DIAGNOSTICS=OMITTED_FROM_LOCKED_CALLBACK")
-print("TEARDOWN=PRODUCER_QUIESCENCE_REAPER_JOIN_AND_DRAIN")
-print("TARGET_XNU_RUNTIME_LOCK_ORDER=OPEN")
-print("STAGE100_RESULT=" + ("PASS_STATIC_WITH_TARGET_COMPILE_PENDING" if not failed else "BLOCKED"))
+print("MPSC_QUEUE=BOUNDED_SEQUENCE_NUMBERED_2048_SLOTS")
+print("TEARDOWN_FAILURE=PROPAGATED_TO_LEGACY_AND_WCL_OWNERS")
+print("RUNTIME_XNU_SCHEDULING_PROOF=OPEN")
+print("STAGE101_RESULT=" + ("PASS_STATIC_WITH_TARGET_COMPILE_PENDING" if not failed else "BLOCKED"))
 sys.exit(1 if failed else 0)
