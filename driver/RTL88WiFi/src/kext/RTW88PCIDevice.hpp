@@ -121,7 +121,7 @@ private:
     bool     attachDevice();
     bool     setupInterrupt();
     bool     setupDMA();
-    void     teardown();
+    bool     teardown();
     const char *chipDisplayName() const;
     void     publishHardwareIdentity();
 
@@ -150,6 +150,7 @@ private:
     bool                    _enabled      = false;
     bool                    _initialized  = false;
     bool                    _compatInitialized = false;
+    bool                    _teardownQuarantined = false;
 
     /* TX flow control: set when outputPacket() stalls the gated queue because
      * the BE ring is nearly full; cleared when the IRQ completion path frees
