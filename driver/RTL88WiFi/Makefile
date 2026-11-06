@@ -392,6 +392,7 @@ rtl88wifi-wcl-controller-abi-check: $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_
 
 $(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLInfraInterface.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCL24H32InterfaceABI.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLPCIBackend.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
@@ -408,7 +409,9 @@ $(WCL24H32_CONTROLLER_OBJ): $(WCL24H32_CONTROLLER_SRC) \
 
 $(WCL24H32_INFRA_OBJ): $(WCL24H32_INFRA_SRC) \
     $(KEXT_SRC)/wcl24h32/RTW88WCLInfraInterface.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLSkywalkQueues.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLRegistrationInfo.hpp \
+    $(KEXT_SRC)/wcl24h32/RTW88WCLRegistrationTransaction.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLRequestDecoder.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCL24H32InterfaceABI.hpp \
     $(KEXT_SRC)/wcl24h32/RTW88WCLController.hpp \
