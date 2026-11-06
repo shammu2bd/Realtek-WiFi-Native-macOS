@@ -28,3 +28,12 @@ Stage96 addresses the two Stage95 source findings:
 ## Explicitly not performed
 
 No macOS kernel/IOKit compile, full kext link, signing, install, load, target 24H32 disassembly, hardware DMA/TX/RX/throughput test, native queue registration/enabling, interface publication, radio start, or OpenCore/SIP/NVRAM/EFI change. The known-good legacy kext and everyday EFI remain unchanged. Native activation and PR merge remain blocked pending independent review and target-Mac compile-only validation.
+
+
+## Final CI results (2026-11-06)
+
+- Stage96 workflow run [42153727689](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42153727689): **success**, 12 checks passed, 0 failed. The initial run exposed one incorrect test predicate (it looked for the hardware RP register lookup inside the poll helper instead of its called accessor); the predicate was corrected to validate the HI0 queue-index mapping and RP accessor. The corrected run passed.
+- Stage94 combined workflow run [42153727696](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42153727696): **success**, 39 checks passed, 0 blockers. Its previous two CAM-drain checks had assumed `flush_work()` lived directly in `rtw_ops_set_key()`; the audit was updated to validate the new shared quiesce/resume helper and worker gate rather than the old implementation shape.
+- Validated source commit: `611bfc65086949cfe934c827fd9a2e2a607ee546`. Subsequent commits at the time of report/log update are documentation and canonical-log updates only.
+
+These are source-structure regression checks on GitHub's Linux runner. They are not a macOS kernel/IOKit compile, target-kernel lock-order proof, full kext link, or hardware test.
