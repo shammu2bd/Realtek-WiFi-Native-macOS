@@ -811,6 +811,10 @@ void RTW88IEEE80211::releaseSta()
      * mutate radio state must not deadlock behind a writer waiting for NAPI. */
     struct ieee80211_sta *registered = _sta;
     const bool quiesced = registered ? rtw88_unregister_sta(registered) : true;
+    if (!quiesced) {
+        IOLog("rtw88: retaining station object until RX poll has fully drained\\n");
+        return;
+    }
 
     auto mutation = beginTxStateMutation();
     if (_lock) IOLockLock(_lock);
@@ -822,8 +826,7 @@ void RTW88IEEE80211::releaseSta()
             _hw && _hw->ops && _hw->ops->sta_remove && _vif)
             _hw->ops->sta_remove(_hw, _vif, _sta);
 
-        if (quiesced)
-            IOFree(_sta, _staAllocSize ? _staAllocSize : sizeof(struct ieee80211_sta));
+        IOFree(_sta, _staAllocSize ? _staAllocSize : sizeof(struct ieee80211_sta));
         _sta = nullptr;
         _staAllocSize = 0;
     }
@@ -1135,6 +1138,13 @@ void RTW88IEEE80211::stop()
      * skips the hardware sta_remove callback once powered=false. */
     clearKeys();
     releaseSta();
+    /* A prior 2-second RX poll drain timeout is a hard lifetime fence. Retry
+     * in sleepable stop context until unregister acknowledges quiescence;
+     * do not remove the VIF/PCI context while an RX poll can still hold it. */
+    while (_sta) {
+        IOSleep(10);
+        releaseSta();
+    }
 
     struct ieee80211_hw *hw = nullptr;
     struct ieee80211_vif *vif = nullptr;
