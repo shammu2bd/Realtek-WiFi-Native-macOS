@@ -747,6 +747,9 @@ void rtw_txq_resume(struct rtw_dev *rtwdev)
 	rtwdev->txq_quiescing = false;
 	spin_unlock_bh(&rtwdev->txq_lock);
 
+	/* A worker queued during quiescence may still be returning after it
+	 * observed the closed gate. Join it before issuing the guaranteed re-kick. */
+	flush_work(&rtwdev->tx_work);
 	queue_work(rtwdev->tx_wq, &rtwdev->tx_work);
 }
 
