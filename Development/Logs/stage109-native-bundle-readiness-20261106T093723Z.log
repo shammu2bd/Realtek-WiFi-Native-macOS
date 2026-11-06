@@ -1,0 +1,705 @@
+========== STAGE109 NATIVE BUNDLE READINESS AUDIT ==========
+UTC_STAMP=20261106T093723Z
+BRANCH=work/stage91-tx-submission-callback-v1
+HEAD=3d2a40aac54ed9c797a8f8cc50e72ec83f7899d7
+STAGE108_BASE_COMMIT=61e755e
+SCOPE=READ_ONLY_BUNDLE_METADATA_MACHO_KMUTIL_SIGNATURE_EFI_PARITY
+BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN
+PASS: tool available: sw_vers
+PASS: tool available: uname
+PASS: tool available: file
+PASS: tool available: lipo
+PASS: tool available: otool
+PASS: tool available: nm
+PASS: tool available: plutil
+PASS: tool available: shasum
+PASS: tool available: python3
+PASS: tool available: kmutil
+PASS: tool available: codesign
+PASS: tool available: csrutil
+PASS: tool available: git
+HOST_PRODUCT_VERSION=15.8.1
+HOST_BUILD_VERSION=24H32
+HOST_ARCH=x86_64
+PASS: host matches macOS 15.8.1 build 24H32 x86_64
+STAGE109_NATIVE_BINARY_SHA256=409137db0772c6f5326af89f9f6dc699f8f18a13eb9025bc194b58e5bb92cd0a
+PASS: binary matches the successful Stage108 native link
+COMMAND_binary-file_EXIT=0
+COMMAND_binary-arch_EXIT=0
+COMMAND_macho-header_EXIT=0
+COMMAND_macho-load-commands_EXIT=0
+COMMAND_linked-images_EXIT=0
+COMMAND_nm-undefined_EXIT=0
+COMMAND_nm-metadata_EXIT=0
+----- binary-file (first 12 lines) -----
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative: Mach-O 64-bit kext bundle x86_64
+----- END binary-file -----
+----- binary-arch (first 12 lines) -----
+x86_64
+----- END binary-arch -----
+----- macho-header (first 24 lines) -----
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative:
+Mach header
+      magic  cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags
+MH_MAGIC_64   X86_64        ALL  0x00  KEXTBUNDLE     7       1160   NOUNDEFS DYLDLINK TWOLEVEL
+----- END macho-header -----
+----- linked-images (first 50 lines) -----
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative:
+----- END linked-images -----
+----- nm-undefined (first 60 lines) -----
+_IODelay
+_IOFree
+_IOLockAlloc
+_IOLockFree
+_IOLockLock
+_IOLockSleep
+_IOLockUnlock
+_IOLockWakeup
+_IOLog
+_IOMalloc
+_IOMallocZero
+_IORecursiveLockAlloc
+_IORecursiveLockLock
+_IORecursiveLockUnlock
+_IOSimpleLockAlloc
+_IOSimpleLockFree
+_IOSimpleLockLock
+_IOSimpleLockUnlock
+_IOSleep
+__ZN10IOWorkLoop8workLoopEv
+__ZN11IOPCIDevice19extendedConfigRead8Ey
+__ZN11IOPCIDevice20extendedConfigRead16Ey
+__ZN11IOPCIDevice20extendedConfigRead32Ey
+__ZN11IOPCIDevice20extendedConfigWrite8Eyh
+__ZN11IOPCIDevice21extendedConfigWrite16Eyt
+__ZN11IOPCIDevice21extendedConfigWrite32Eyj
+__ZN11IOPCIDevice9metaClassE
+__ZN11OSMetaClass21_RESERVEDOSMetaClass0Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass1Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass2Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass3Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass4Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass5Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass6Ev
+__ZN11OSMetaClass21_RESERVEDOSMetaClass7Ev
+__ZN11OSMetaClassC2EPKcPKS_j
+__ZN11OSMetaClassD2Ev
+__ZN13IOCommandGate11commandGateEP8OSObjectPFiS1_PvS2_S2_S2_E
+__ZN13IOEventSource10gMetaClassE
+__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop
+__ZN13IOEventSource19signalWorkAvailableEv
+__ZN13IOEventSource23_RESERVEDIOEventSource0Ev
+__ZN13IOEventSource23_RESERVEDIOEventSource1Ev
+__ZN13IOEventSource23_RESERVEDIOEventSource2Ev
+__ZN13IOEventSource23_RESERVEDIOEventSource3Ev
+__ZN13IOEventSource23_RESERVEDIOEventSource4Ev
+__ZN13IOEventSource23_RESERVEDIOEventSource5Ev
+__ZN13IOEventSource23_RESERVEDIOEventSource6Ev
+__ZN13IOEventSource23_RESERVEDIOEventSource7Ev
+__ZN13IOEventSource4initEP8OSObjectPFvS1_zE
+__ZN13IOEventSource6enableEv
+__ZN13IOEventSource7disableEv
+__ZN13IOEventSource7setNextEPS_
+__ZN13IOEventSource9setActionEPFvP8OSObjectzE
+__ZN13IOEventSourceC2EPK11OSMetaClass
+__ZN13IOEventSourceD2Ev
+__ZN15IORegistryEntry11detachAboveEPK15IORegistryPlane
+__ZN15IORegistryEntry11setLocationEPK8OSSymbolPK15IORegistryPlane
+__ZN15IORegistryEntry11setLocationEPKcPK15IORegistryPlane
+__ZN15IORegistryEntry11setPropertyEPK8OSStringP8OSObject
+----- END nm-undefined -----
+----- nm-metadata (first 60 lines) -----
+000000000001b6f0 (__TEXT,__text) non-external _IEEE80211_SKB_CB
+000000000002eeb0 (__TEXT,__text) non-external _IEEE80211_SKB_CB
+0000000000001830 (__TEXT,__text) non-external _INIT_LIST_HEAD
+0000000000019220 (__TEXT,__text) non-external _INIT_LIST_HEAD
+000000000001cbe0 (__TEXT,__text) non-external _INIT_LIST_HEAD
+000000000002c0d0 (__TEXT,__text) non-external _INIT_LIST_HEAD
+00000000000309e0 (__TEXT,__text) non-external _INIT_LIST_HEAD
+0000000000033df0 (__TEXT,__text) non-external _INIT_LIST_HEAD
+000000000004c350 (__TEXT,__text) non-external _INIT_LIST_HEAD
+                 (undefined) external _IODelay (dynamically looked up)
+                 (undefined) external _IOFree (dynamically looked up)
+                 (undefined) external _IOLockAlloc (dynamically looked up)
+                 (undefined) external _IOLockFree (dynamically looked up)
+                 (undefined) external _IOLockLock (dynamically looked up)
+                 (undefined) external _IOLockSleep (dynamically looked up)
+                 (undefined) external _IOLockUnlock (dynamically looked up)
+                 (undefined) external _IOLockWakeup (dynamically looked up)
+                 (undefined) external _IOLog (dynamically looked up)
+                 (undefined) external _IOMalloc (dynamically looked up)
+                 (undefined) external _IOMallocZero (dynamically looked up)
+                 (undefined) external _IORecursiveLockAlloc (dynamically looked up)
+                 (undefined) external _IORecursiveLockLock (dynamically looked up)
+                 (undefined) external _IORecursiveLockUnlock (dynamically looked up)
+                 (undefined) external _IOSimpleLockAlloc (dynamically looked up)
+                 (undefined) external _IOSimpleLockFree (dynamically looked up)
+                 (undefined) external _IOSimpleLockLock (dynamically looked up)
+                 (undefined) external _IOSimpleLockUnlock (dynamically looked up)
+                 (undefined) external _IOSleep (dynamically looked up)
+000000000000148a (__TEXT,__text) non-external (was a private external) _OSKextGetCurrentIdentifier
+00000000000014ac (__TEXT,__text) non-external (was a private external) _OSKextGetCurrentLoadTag
+000000000000149b (__TEXT,__text) non-external (was a private external) _OSKextGetCurrentVersionString
+000000000006a1d0 (__TEXT,__text) non-external __GLOBAL__D_a
+000000000006cae0 (__TEXT,__text) non-external __GLOBAL__D_a
+000000000006f480 (__TEXT,__text) non-external __GLOBAL__D_a
+00000000000753f0 (__TEXT,__text) non-external __GLOBAL__D_a
+0000000000077260 (__TEXT,__text) non-external __GLOBAL__D_a
+0000000000079ba0 (__TEXT,__text) non-external __GLOBAL__D_a
+000000000007bc10 (__TEXT,__text) non-external __GLOBAL__D_a
+000000000007c9b0 (__TEXT,__text) non-external __GLOBAL__D_a
+000000000007ddb0 (__TEXT,__text) non-external __GLOBAL__D_a
+000000000006a1c0 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88IEEE80211.cpp
+000000000006f470 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88WCLController.cpp
+00000000000753e0 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88WCLInfraInterface.cpp
+0000000000077250 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88WCLPCIBackend.cpp
+0000000000079b90 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88WCLSkywalkQueues.cpp
+000000000007dda0 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88WCLSkywalkRxAdapter.cpp
+000000000007bc00 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88WCLSkywalkTxAdapter.cpp
+000000000007c9a0 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88WCLTxCompletionWorkQueue.cpp
+000000000006cad0 (__TEXT,__text) non-external __GLOBAL__sub_I_RTW88WCLWorkQueue.cpp
+000000000005ac20 (__TEXT,__text) non-external __ZL11rtw88IeFindPKhjh
+0000000000064c60 (__TEXT,__text) non-external __ZL11skb_reserveP7sk_buffi
+0000000000063750 (__TEXT,__text) non-external __ZL12eapol_mic_okPKhS0_j
+0000000000064ca0 (__TEXT,__text) non-external __ZL12skb_put_dataP7sk_buffPKvj
+000000000006a000 (__TEXT,__text) non-external __ZL14INIT_LIST_HEADP9list_head
+0000000000063850 (__TEXT,__text) non-external __ZL14aes_unwrap_128PKhS0_tPhPt
+000000000006a5a0 (__TEXT,__text) non-external __ZL14compat_dma_mapP6devicePvmi
+000000000006a400 (__TEXT,__text) non-external __ZL14compat_ioremapP7pci_devim
+000000000006a450 (__TEXT,__text) non-external __ZL14compat_iounmapP7pci_devPv
+0000000000064710 (__TEXT,__text) non-external __ZL14kern_hmac_sha1PKhmS0_mPh
+0000000000067e90 (__TEXT,__text) non-external __ZL14kern_sha1_initP13KERN_SHA1_CTX
+----- END nm-metadata -----
+PASS: Mach-O executable is x86_64 kext bundle
+PASS: lipo confirms x86_64 architecture
+COMMAND_plist-lint_EXIT=0
+----- plist-lint (first 12 lines) -----
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/Info.plist: OK
+----- END plist-lint -----
+PLIST_IDENTITY=PASS
+PLIST_NATIVE_DEPENDENCIES=PASS
+PLIST_LEGACY_IO80211_ABSENT=PASS
+PLIST_RTL8821CE_PERSONALITY=PASS
+PLIST_BUNDLE_ID=io.github.x1ren41l.RTL88WiFi
+PLIST_DEPENDENCIES=com.apple.iokit.IO80211Family,com.apple.iokit.IONetworkingFamily,com.apple.iokit.IOPCIFamily,com.apple.iokit.IOSkywalkFamily,com.apple.kpi.bsd,com.apple.kpi.iokit,com.apple.kpi.libkern,com.apple.kpi.mach,com.apple.kpi.unsupported
+PASS: native Info.plist identity, dependencies and RTL8821CE personality
+PASS: native link graph excludes legacy Airport frontend objects
+PASS: native link graph includes the 24H32 controller and infra interface
+PASS: native kmod metadata identifier agrees with native bundle identifier
+COMMAND_kmutil-libraries_EXIT=0
+COMMAND_kmutil-undefined_EXIT=0
+COMMAND_kmutil-multiple_EXIT=0
+COMMAND_kmutil-xml_EXIT=0
+COMMAND_kmutil-diagnostics_EXIT=0
+----- kmutil-libraries (first 120 lines) -----
+No variant specified, falling back to release
+For arch x86_64:
+	For extension io.github.x1ren41l.RTL88WiFi:
+		__ZN9IOService16allowPowerChangeEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkNetworkInterface35_RESERVEDIOSkywalkNetworkInterface3Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService24getDeviceMemoryWithIndexEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_current_thread in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.mach (24.6.0)
+		__ZN9IOService6PMinitEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController25Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface16getEventPipeSizeEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN23IO80211SkywalkInterface20powerOffNotificationEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZTV17IO80211Controller in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry16Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN18IOSkywalkInterface28_RESERVEDIOSkywalkInterface7Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN19IONetworkController20detachDebuggerClientEP16IOKernelDebugger in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZNK15IORegistryEntry7getPathEPcPiPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN18IOSkywalkInterface28_RESERVEDIOSkywalkInterface2Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN19IONetworkController14executeCommandEP8OSObjectPFiPvS2_S2_S2_S2_ES2_S2_S2_S2_S2_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN21IO80211InfraInterface16setDataPathStateEb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry27Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController21getDebuggerLinkStatusEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService12didTerminateEPS_jPb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_memset in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN17IO80211Controller27_RESERVEDIO80211Controller2Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK11OSMetaClass13taggedReleaseEPKv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN23IO80211SkywalkInterface18getLastTxTimeStampERy in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService12tellChangeUpEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService31Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkNetworkInterface35_RESERVEDIOSkywalkNetworkInterface5Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		___bzero in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN23IO80211SkywalkInterface21findOrCreateFlowQueueE20IO80211FlowQueueHash in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController27Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN11IOPCIDevice21extendedConfigWrite16Eyt in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOPCIFamily (2.9)
+		__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkPacketBufferPool8withNameEPKcP8OSObjectjPKNS_11PoolOptionsE in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN23IO80211SkywalkInterface15getTxQueueDepthEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN19IONetworkController16setMaxPacketSizeEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService17getAggressivenessEmPm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_kernel_task in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.mach (24.6.0)
+		__ZN23IO80211SkywalkInterface20getNClearTxRxLatencyEP25apple80211_latency_all_acS1_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService17registerInterruptEiP8OSObjectPFvS1_PvPS_iES2_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController18systemWillShutdownEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService8DispatchE5IORPC in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZTV21IO80211InfraInterface in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN8OSObjectnwEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry15Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK15IORegistryEntry14applyToParentsEPFvPS_PvES1_PK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService13Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN21IO80211InfraInterface20setLinkStateInternalE16IO80211LinkStatejbj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_mbuf_copydata in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.bsd (24.6.0)
+		__ZN19IONetworkController20selectMediumWithNameEPK8OSSymbol in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN21IO80211InfraInterface13setDebugFlagsEyj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller12updateReportEP19IOReportChannelListjPvS2_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService31initialPowerStateForDomainStateEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController17setSelectedMediumEPK15IONetworkMedium in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN8OSObject18_RESERVEDOSObject4Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN10IOWorkLoop8workLoopEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_IOSimpleLockFree in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN21IO80211InfraInterface13setWoWEnabledEb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN21IO80211InfraInterface19setCurrentApAddressEP10ether_addr in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK17IO80211Controller14newModelStringEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZTV20IO80211InfraProtocol in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService20_RESERVEDIOService34Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_inflateEnd in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN9IOService16registerInterestEPK8OSSymbolPFiPvS3_jPS_S3_mES3_S3_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_bzero in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN21IO80211InfraInterface23setInterfaceExtendedCCAE18apple80211_channelP21apple80211_cca_report in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService8finalizeEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK20IOEthernetController16getMinPacketSizeEPj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface13getPacketPoolEP8OSString in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController14Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController18Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry22Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface9shouldLogEy in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN13IOEventSource23_RESERVEDIOEventSource1Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface16destroyEventPipeEP20IO80211APIUserClient in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN21IO80211InfraInterface13createLQMDataEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN15IORegistryEntry25_RESERVEDIORegistryEntry5Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_IOLockSleep in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface15disableDatapathEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller27_RESERVEDIO80211Controller1Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN23IO80211SkywalkInterface22getSupportedMediaArrayEPjS0_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService16tellNoChangeDownEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService15registerServiceEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK15IORegistryEntry14copyChildEntryEPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController30_RESERVEDIONetworkController30Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN19IONetworkController12selectMediumEPK15IONetworkMedium in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService17comparePropertiesEP12OSDictionaryP12OSCollection in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN11IOPCIDevice21extendedConfigWrite32Eyj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOPCIFamily (2.9)
+		__ZTV23IO80211SkywalkInterface in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN19IONetworkController14allocatePacketEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		_mbuf_pkthdr_len in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.bsd (24.6.0)
+		__ZN17IO80211Controller28_RESERVEDIO80211Controller10Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK15IORegistryEntry8isParentEPS_PK15IORegistryPlaneb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService21Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkNetworkInterface16getBSDUnitNumberEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		_IOSimpleLockAlloc in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController30_RESERVEDIONetworkController27Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface15createEventPipeEP20IO80211APIUserClient in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller15flowIdSupportedEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN15OSMetaClassBase25_RESERVEDOSMetaClassBase7Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN19IONetworkController15detachInterfaceEP18IONetworkInterfaceb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		_mbuf_len in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.bsd (24.6.0)
+		__ZNK13IOEventSource7getNextEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN13IOEventSource23_RESERVEDIOEventSource3Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN20IOEthernetController18getHardwareAddressEPvPj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN18IOSkywalkInterface28_RESERVEDIOSkywalkInterface0Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService24mapDeviceMemoryWithIndexEjj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK15IORegistryEntry12copyPropertyEPKcPK15IORegistryPlanej in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService12getResourcesEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService13askChangeDownEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller27_RESERVEDIO80211Controller9Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_printf in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN9IOService20_RESERVEDIOService20Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN26IOSkywalkTxSubmissionQueue8withPoolEP25IOSkywalkPacketBufferPooljjP8OSObjectPFjS3_PS_PjEPFjS3_S4_PKP15IOSkywalkPacketjPvESC_jj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService18matchPropertyTableEP12OSDictionaryPi in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK15IORegistryEntry7inPlaneEPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService23acknowledgeNotificationEPvj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN8OSObject19_RESERVEDOSObject14Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN9IOService6PMstopEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+----- END kmutil-libraries -----
+----- kmutil-undefined (first 120 lines) -----
+No variant specified, falling back to release
+For arch x86_64:
+	For extension io.github.x1ren41l.RTL88WiFi:
+		__ZNK15IORegistryEntry7getPathEPcPiPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller27_RESERVEDIO80211Controller4Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller18getHardwareAddressEP17IOEthernetAddress in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_mbuf_pkthdr_setlen in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.bsd (24.6.0)
+		__ZN17IO80211Controller25disablePacketTimestampingEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_IOLog in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK13IOEventSource7getNextEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService21Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkPacketBufferPool8withNameEPKcP8OSObjectjPKNS_11PoolOptionsE in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry16Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService13addPowerChildEPS_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN26IOSkywalkEthernetInterface36_RESERVEDIOSkywalkEthernetInterface7Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZNK11OSMetaClass19instanceConstructedEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN15OSMetaClassBase25_RESERVEDOSMetaClassBase5Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN21IO80211InfraInterface14pendingPacketsEh in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_memchr in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN18IOSkywalkInterface16clientDisconnectEP9IOServicej in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZNK15IORegistryEntry11getPropertyEPK8OSSymbolPK15IORegistryPlanej in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService18systemWillShutdownEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkNetworkInterface35_RESERVEDIOSkywalkNetworkInterface0Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN19IONetworkController30_RESERVEDIONetworkController21Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN8OSObject18_RESERVEDOSObject9Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN20IOEthernetController18enablePacketFilterEPK8OSSymboljjj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService20_RESERVEDIOService14Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController17Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface12logRxLatencyEjy in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN19IONetworkController20attachDebuggerClientEPP16IOKernelDebugger in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface15postMessageIOUCEPKcjPvm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_read_random in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.mach (24.6.0)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController14Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService16registerInterestEPK8OSSymbolPFiPvS3_jPS_S3_mES3_S3_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkNetworkInterface15getTxDataOffsetEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN26IOSkywalkEthernetInterface36_RESERVEDIOSkywalkEthernetInterface3Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN17IO80211Controller26getPrimarySkywalkInterfaceEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN23IO80211SkywalkInterface31initialPowerStateForDomainStateEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN13IOEventSourceC2EPK11OSMetaClass in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface24updateInterfaceDataStatsEP36apple80211_data_path_interface_stats in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN26IOSkywalkEthernetInterface16getPacketTapInfoEPjS0_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService20_RESERVEDIOService33Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN18IOSkywalkInterface21clientConnectWithTaskEP4taskP9IOServicej in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService20_RESERVEDIOService42Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController30_RESERVEDIONetworkController26Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService22copyClientWithCategoryEPK8OSSymbol in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN8OSObject18_RESERVEDOSObject5Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN19IONetworkController18systemWillShutdownEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface10detachPeerEP10ether_addr in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry29Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN13IOEventSource23_RESERVEDIOEventSource5Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService29Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController17setChecksumResultEP6__mbufjjjjj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZNK20IOEthernetController16getMinPacketSizeEPj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		_strlen in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN15IORegistryEntry11setLocationEPKcPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN21IO80211InfraInterface20setInterfaceMIBdot11EP22apple80211_stat_reportP50apple80211_ManagementInformationBasedot11_counters in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK11OSMetaClass14getRetainCountEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN9IOService16applyToProvidersEPFvPS_PvES1_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK15IORegistryEntry12copyPropertyEPKcPK15IORegistryPlanej in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService31Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService44Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController30_RESERVEDIONetworkController23Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN18IOSkywalkInterface28_RESERVEDIOSkywalkInterface3Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN25IOSkywalkNetworkInterface35_RESERVEDIOSkywalkNetworkInterface3Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN17IO80211Controller28_RESERVEDIO80211Controller13Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN18IOSkywalkInterface10handleOpenEP9IOServicejPv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN23IO80211SkywalkInterface24forwardInfraRelayPacketsEP20IO80211NetworkPacketP12ether_header in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_mbuf_next in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.bsd (24.6.0)
+		__ZNK11OSMetaClass9serializeEP11OSSerialize in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN19IONetworkController7messageEjP9IOServicePv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService23requestPowerDomainStateEmP17IOPowerConnectionm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService19registerPowerDriverEPS_P14IOPMPowerStatem in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_IOSimpleLockFree in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface10attachPeerEP10ether_addr in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService6detachEPS_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface21findOrCreateFlowQueueE20IO80211FlowQueueHash in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN21IO80211InfraInterface14setInterfaceNFE18apple80211_channelx in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_kernel_task in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.mach (24.6.0)
+		__ZN11IOPCIDevice21extendedConfigWrite16Eyt in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOPCIFamily (2.9)
+		__ZN18IOSkywalkInterface28_RESERVEDIOSkywalkInterface2Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN8OSObject18_RESERVEDOSObject8Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN8OSObject18_RESERVEDOSObject4Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN17IO80211Controller12updateReportEP19IOReportChannelListjPvS2_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK19IONetworkController20copyMediumDictionaryEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN19IONetworkController30_RESERVEDIONetworkController16Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZNK13IOEventSource8onThreadEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK8OSObject13taggedReleaseEPKv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry19Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller28_RESERVEDIO80211Controller11Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN20IOEthernetController20setWakeOnMagicPacketEb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN19IONetworkController17setSelectedMediumEPK15IONetworkMedium in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN25IOSkywalkNetworkInterface35_RESERVEDIOSkywalkNetworkInterface6Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService14tellChangeDownEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN15OSMetaClassBase25_RESERVEDOSMetaClassBase4Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN15IORegistryEntry13childFromPathEPKcPK15IORegistryPlanePcPi in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK19IONetworkController12handleIsOpenEPK9IOService in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService13messageClientEjP8OSObjectPvm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface14getTxCompQueueEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_IOFree in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService18setIdleTimerPeriodEm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface8findPeerER10ether_addr in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController15Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface14getSelfMacAddrEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK9IOService11getWorkLoopEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController21Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService20_RESERVEDIOService46Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK15IORegistryEntry11compareNameEP8OSStringPS1_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_inflate in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		_kprintf in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZNK20IOEthernetController16getPacketFiltersEPj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService20_RESERVEDIOService27Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry18Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN21IO80211InfraInterface10wowEnabledEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN8OSObject19_RESERVEDOSObject14Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN9IOService20_RESERVEDIOService45Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller16getDriverTextLogEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK15IORegistryEntry14getParentEntryEPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller22createVirtualInterfaceEP10ether_addrj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN21IO80211InfraInterface20setLinkStateInternalE16IO80211LinkStatejbj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+----- END kmutil-undefined -----
+----- kmutil-multiple (first 120 lines) -----
+No variant specified, falling back to release
+For arch x86_64:
+	For extension io.github.x1ren41l.RTL88WiFi:
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry19Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController9doDisableEP9IOService in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN9IOService22copyClientWithCategoryEPK8OSSymbol in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN21IO80211InfraInterface15setInterfaceCCAE18apple80211_channeli in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK19IONetworkController17newRevisionStringEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface21setDebugTrafficReportEb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN23IO80211SkywalkInterface17classNameOverrideEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_vsnprintf in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZNK19IONetworkController12handleIsOpenEPK9IOService in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZNK15IORegistryEntry17getParentIteratorEPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN15IORegistryEntry25_RESERVEDIORegistryEntry8Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService15Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN26IOSkywalkEthernetInterface36_RESERVEDIOSkywalkEthernetInterface1Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService20_RESERVEDIOService40Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller27_RESERVEDIO80211Controller1Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService4openEPS_jPv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK15IORegistryEntry12copyPropertyEPK8OSSymbolPK15IORegistryPlanej in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService17registerInterruptEiP8OSObjectPFvS1_PvPS_iES2_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN26IOSkywalkEthernetInterface36_RESERVEDIOSkywalkEthernetInterface2Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZNK9IOService8getStateEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK9IOService21getOpenClientIteratorEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService10joinPMtreeEPS_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN21IO80211InfraInterface24setInterfaceChipCountersEP22apple80211_stat_reportP27apple80211_chip_counters_txP33apple80211_chip_error_counters_txP27apple80211_chip_counters_rx in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK11OSMetaClass12taggedRetainEPKv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN11IOPCIDevice9metaClassE in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOPCIFamily (2.9)
+		__ZN13IOEventSource23_RESERVEDIOEventSource1Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface15postMessageIOUCEPKcjPvm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService20_RESERVEDIOService32Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller28_RESERVEDIO80211Controller15Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService19_RESERVEDIOService8Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN13IOEventSource23_RESERVEDIOEventSource0Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_IOLockWakeup in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface12logRxLatencyEjy in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN24IOBufferMemoryDescriptor22inTaskWithPhysicalMaskEP4taskjyy in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_IOSimpleLockLock in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController7disableEP18IONetworkInterface in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZNK15IORegistryEntry11getPropertyEPKcPK15IORegistryPlanej in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface14getTxCompQueueEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN21IO80211InfraInterface21updateLinkStatusGatedEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN21IO80211InfraInterface14getScanManagerEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK23IO80211SkywalkInterface9getLoggerEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService20_RESERVEDIOService41Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface13getTxHeadroomEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK15IORegistryEntry7getPathEPcPiPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN26IOSkywalkEthernetInterface36_RESERVEDIOSkywalkEthernetInterface3Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN25IOSkywalkNetworkInterface35_RESERVEDIOSkywalkNetworkInterface9Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService13messageClientEjP8OSObjectPvm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry15Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller15createWorkQueueEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN21IO80211InfraInterface18setInterfaceEnableEb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService4initEP15IORegistryEntryPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		_IORecursiveLockUnlock in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN21IO80211InfraInterface19recordOutputPacketsEP24TxSubmissionDequeueStatsS1_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN23IO80211SkywalkInterface32getLastRxUnicastLinkActivityTimeEP10ether_addr in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN19IONetworkController30_RESERVEDIONetworkController20Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN23IO80211SkywalkInterface21getWorkerMatchingDictEP8OSString in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN23IO80211SkywalkInterface17createPeerManagerEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller14debugStateInitEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK9IOService9getClientEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkNetworkInterface10joinPMtreeEP9IOService in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN9IOService15setDeviceMemoryEP7OSArray in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN18IOSkywalkInterface28_RESERVEDIOSkywalkInterface2Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		_kOSBooleanTrue in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController14Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN17IO80211Controller25disablePacketTimestampingEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService17getAggressivenessEmPm in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK13IOEventSource9getActionEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN19IONetworkController16setMaxPacketSizeEj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN21IO80211InfraInterface21setWCL_ADVISORTY_INFOEP28apple80211_wcl_advisory_info in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN15IORegistryEntry9detachAllEPK15IORegistryPlane in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZNK15IORegistryEntry11getPropertyEPK8OSSymbol in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface10detachPeerEP10ether_addr in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN19IONetworkController15detachInterfaceEP18IONetworkInterfaceb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZNK9IOService17getClientIteratorEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface9vlogDebugEyPKcP13__va_list_tag in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK17IO80211Controller12getWorkQueueEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK13IOEventSource7getNextEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface30findOrCreateFlowQueueWithCacheE20IO80211FlowQueueHashPb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller16requestFlowQueueEPK14FlowIdMetadata in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN15IORegistryEntry25_RESERVEDIORegistryEntry3Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService24mapDeviceMemoryWithIndexEjj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface15disableDatapathEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN9IOService19_RESERVEDIOService7Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller15detachInterfaceEP8OSObjectb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN20IOEthernetController31_RESERVEDIOEthernetController31Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN8OSObject18_RESERVEDOSObject6Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN15IORegistryEntry25_RESERVEDIORegistryEntry2Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN15OSMetaClassBase8DispatchE5IORPC in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN11IOPCIDevice20extendedConfigRead32Ey in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOPCIFamily (2.9)
+		__ZN17IO80211Controller28_RESERVEDIO80211Controller12Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller28_RESERVEDIO80211Controller14Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZNK20IOEthernetController16getMaxPacketSizeEPj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IONetworkingFamily (3.4)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry22Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN25IOSkywalkNetworkInterface35_RESERVEDIOSkywalkNetworkInterface4Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN25IOSkywalkNetworkInterface20finalizeBSDInterfaceEP7__ifnetj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZNK9IOService19serializePropertiesEP11OSSerialize in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN17IO80211Controller16stringFromReturnEi in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN23IO80211SkywalkInterface20reportDataPathEventsEjPvmb in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		_inflateEnd in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN17IO80211Controller15flowIdSupportedEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN8OSObject18_RESERVEDOSObject9Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZNK9IOService11getProviderEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface24forwardInfraRelayPacketsEP20IO80211NetworkPacketP12ether_header in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN8OSObject19_RESERVEDOSObject13Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN25IOSkywalkPacketBufferPool17disposeAllPacketsEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN21IO80211InfraInterface15configureReportEP19IOReportChannelListjPvS2_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller27_RESERVEDIO80211Controller6Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN22IOSkywalkNetworkPacket19setCompletionStatusEi in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOSkywalkFamily (1.0)
+		__ZN15IORegistryEntry11setPropertyEPK8OSSymbolP8OSObject in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry28Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry12Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface24setPromiscuousModeEnableEbj in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN15IORegistryEntry26_RESERVEDIORegistryEntry21Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN9IOService20_RESERVEDIOService28Ev in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.iokit (24.6.0)
+		__ZN23IO80211SkywalkInterface17handleSIOCSIFADDREv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN17IO80211Controller11getLogPipesEPP6CCPipeS2_S2_ in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+		__ZN11IOPCIDevice21extendedConfigWrite16Eyt in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IOPCIFamily (2.9)
+----- END kmutil-multiple -----
+----- kmutil-xml (first 120 lines) -----
+No variant specified, falling back to release
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IO80211Family</key>
+		<string>1200.13.1</string>
+		<key>com.apple.iokit.IONetworkingFamily</key>
+		<string>3.4</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>2.9</string>
+		<key>com.apple.iokit.IOSkywalkFamily</key>
+		<string>1.0</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>24.6.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>24.6.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>24.6.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>24.6.0</string>
+		<key>com.apple.kpi.private</key>
+		<string>24.6.0</string>
+	</dict>
+</dict>
+</plist>
+
+----- END kmutil-xml -----
+----- kmutil-diagnostics (first 120 lines) -----
+No variant specified, falling back to release
+Diagnosing driver/RTL88WiFi/build/out/RTL88WiFiNative.kext...
+Error:
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/Info.plist
+	Authenticating extension failed: Bad code signature
+Resolving dependencies for driver/RTL88WiFi/build/out/RTL88WiFiNative.kext...
+	com.apple.kpi.iokit in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.driver.corecapture in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.iokit.CoreAnalyticsFamily in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.iokit.IONetworkingFamily in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.kpi.dsep in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.kpi.mach in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.driver.AppleMobileFileIntegrity in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.kpi.unsupported in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.kext.CoreTrust in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.driver.mDNSOffloadUserClient in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.kec.corecrypto in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.kpi.bsd in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.iokit.IOSkywalkFamily in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.iokit.IO80211Family in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.security.AppleImage4 in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.kpi.libkern in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.kpi.private in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+	com.apple.iokit.IOPCIFamily in boot kernel collection at /System/Library/KernelCollections/BootKernelExtensions.kc
+	Error:
+	Authenticating extension failed: Bad code signature
+----- END kmutil-diagnostics -----
+PASS: kmutil provider, undefined-symbol and multiple-definition analysis completed successfully
+PASS: kmutil dependency XML generation completed
+PASS: kmutil diagnostics command completed
+COMMAND_codesign-details_EXIT=1
+COMMAND_codesign-verify_EXIT=1
+----- codesign-details (first 60 lines) -----
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext: code object is not signed at all
+----- END codesign-details -----
+----- codesign-verify (first 40 lines) -----
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext: code object is not signed at all
+In architecture: x86_64
+----- END codesign-verify -----
+WARN: bundle is unsigned; load acceptance remains blocked pending a permitted signing path
+STAGE109_SIGNING_STATE=UNSIGNED
+COMMAND_sip-status_EXIT=0
+----- sip-status (first 20 lines) -----
+System Integrity Protection status: enabled.
+----- END sip-status -----
+PASS: SIP remains enabled
+STAGE109_SIP_STATE=ENABLED
+STAGE109_EFI_CONFIG_SOURCE=NOT_FOUND
+WARN: no unique mounted EFI config found; EFI parity not assessed
+COMMAND_loaded-kexts_EXIT=0
+   55    5 0xffffff8004150000 0xce000    0xce000    com.apple.iokit.IOSkywalkFamily (1.0) 035A9AD9-6CDE-362F-8DEC-B664BC6431EC <54 53 9 8 7 6 3 1>
+   90    0 0xffffff800422b000 0x93000    0x93000    com.insanelymac.RealtekRTL8111 (3.0.4) AE536A7A-871B-38D4-9848-979EB40D9C97 <53 18 7 6 3 1>
+   93    1 0xffffff8004645000 0x20a000   0x20a000   com.apple.iokit.IO80211FamilyLegacy (1200.12.2b1) 4C07538B-62EB-3D6D-AEF9-93BCDCF45FAB <92 55 53 27 23 10 9 8 7 6 3 1>
+   94    0 0xffffff800491c000 0x19f000   0x19f000   io.github.x1ren41l.RTL88WiFi (1.0.11) F252BC23-9B05-34D8-A785-6F79B95CBA5F <93 55 53 18 9 7 6 3 1>
+PASS: read-only loaded-kext inventory completed
+
+========== STAGE109 SUMMARY ==========
+STAGE109_PASS_COUNT=26
+STAGE109_FAIL_COUNT=0
+STAGE109_WARN_COUNT=2
+STAGE109_RESULT=AUDIT_COMPLETE
+STAGE109_KMUTIL_LIBRARIES_EXIT=0
+STAGE109_KMUTIL_UNDEFINED_EXIT=0
+STAGE109_KMUTIL_MULTIPLE_DEFINITION_EXIT=0
+STAGE109_SIGNING_STATE=UNSIGNED
+STAGE109_SIP_STATE=ENABLED
+STAGE109_EFI_CONFIG_RESULT=NOT_ASSESSED
+STAGE109_EFI_NATIVE_COUNT=UNKNOWN
+STAGE109_EFI_LEGACY_COLLISION_COUNT=UNKNOWN
+STAGE109_EFI_BINARY_HASH_MATCH=UNKNOWN
+STAGE109_EFI_IOSKYWALK_BLOCK=UNKNOWN
+STAGE109_LOAD_READINESS=BLOCKED_UNSIGNED
+STAGE109_NATIVE_BINARY_SHA256=409137db0772c6f5326af89f9f6dc699f8f18a13eb9025bc194b58e5bb92cd0a
+STAGE109_DETAIL_LOG=Development/Logs/stage109-native-bundle-readiness-20261106T093723Z.log
+BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN
+======================================
