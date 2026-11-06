@@ -1076,7 +1076,7 @@ IOReturn RTW88IEEE80211::start()
     return kIOReturnSuccess;
 
 fail_vif:
-    if (_powered && _hw && _hw->ops && _hw->ops->stop) {
+    if (__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) && _hw && _hw->ops && _hw->ops->stop) {
         _hw->ops->stop(_hw, false);
         __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
     }
@@ -1126,7 +1126,7 @@ void RTW88IEEE80211::stop()
         _hw && _hw->ops && _hw->ops->cancel_hw_scan)
         _hw->ops->cancel_hw_scan(_hw, _vif);
 
-    /* powerOff closes admission and sets _powered=false while holding the
+    /* powerOff closes admission and sets __atomic_load_n(&_powered, __ATOMIC_ACQUIRE)=false while holding the
      * writer, then calls ops->stop outside it. RTW88 may synchronously drain
      * NAPI/RX workers; those callbacks must be free to acquire the radio gate
      * and observe the powered-off state rather than deadlock behind teardown. */
@@ -1160,7 +1160,7 @@ void RTW88IEEE80211::stop()
     }
 
     /* Interface removal and PCI removal can wait for driver work. They run
-     * with TX admission open but _powered=false, so every TX entry point
+     * with TX admission open but __atomic_load_n(&_powered, __ATOMIC_ACQUIRE)=false, so every TX entry point
      * short-circuits before dereferencing these objects. */
     if (hw && vif && hw->ops && hw->ops->remove_interface)
         hw->ops->remove_interface(hw, vif);
@@ -1196,7 +1196,7 @@ IOReturn RTW88IEEE80211::setReceiveMulticast(bool active)
     if (!_hw || !_hw->ops || !_hw->ops->configure_filter)
         return kIOReturnNotReady;
     _receiveMulticast = active;
-    if (_powered) {
+    if (__atomic_load_n(&_powered, __ATOMIC_ACQUIRE)) {
         unsigned int flags = (active || _awdlReceiveMode) ? FIF_ALLMULTI : 0;
         _hw->ops->configure_filter(_hw, FIF_ALLMULTI, &flags, 0);
     }
@@ -1239,7 +1239,7 @@ IOReturn RTW88IEEE80211::setAWDLReceiveMode(bool active)
     unsigned int flags = active ?
         (FIF_OTHER_BSS | FIF_ALLMULTI | FIF_BCN_PRBRESP_PROMISC) :
         (_receiveMulticast ? FIF_ALLMULTI : 0);
-    if (_powered)
+    if (__atomic_load_n(&_powered, __ATOMIC_ACQUIRE))
         _hw->ops->configure_filter(_hw, changed, &flags, 0);
     mutation.finish();
 
@@ -1259,7 +1259,7 @@ void RTW88IEEE80211::setAWDLAddress(const uint8_t *mac)
 
 bool RTW88IEEE80211::canTransmitAWDL() const
 {
-    return _powered && _awdlReceiveMode && _hw && _hw->conf.chandef.chan &&
+    return __atomic_load_n(&_powered, __ATOMIC_ACQUIRE) && _awdlReceiveMode && _hw && _hw->conf.chandef.chan &&
         _awdlChannel && _hw->conf.chandef.chan->hw_value == _awdlChannel &&
         (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_IDLE || __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);
 }
@@ -1276,7 +1276,7 @@ void RTW88IEEE80211::restoreSTAChannelAfterAWDL()
 
         /* Close every submit queue before touching the shared channel
          * definition or the VIF's hardware timeslice state. */
-        if (!_powered || !_hw || !_vif || !associatedVisible() ||
+        if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !_hw || !_vif || !associatedVisible() ||
             __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED ||
             !_targetBSS.channel) {
             _awdlOffChannel = false;
@@ -1341,7 +1341,7 @@ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
         auto txLease = _txStateGate.tryEnterTransmit();
         if (!txLease)
             return kIOReturnBusy;
-        if (!_powered || !_hw || !_hw->wiphy)
+        if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !_hw || !_hw->wiphy)
             return kIOReturnNotReady;
 
         for (int b = 0; b < NL80211_NUM_BANDS && !target; ++b) {
@@ -1392,7 +1392,7 @@ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
         IOSleep(6);
 
     auto mutation = beginTxStateMutation();
-    if (!_powered || !_hw || !_vif || !_hw->wiphy) {
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !_hw || !_vif || !_hw->wiphy) {
         mutation.finish();
         return kIOReturnNotReady;
     }
@@ -1668,7 +1668,7 @@ UInt32 RTW88IEEE80211::outputPacketWithCompletion(
           __atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED &&
           (__atomic_load_n(&_manualScanChannelCount, __ATOMIC_ACQUIRE) == 0 ||
            __atomic_load_n(&_manualScanOnHomeChannel, __ATOMIC_ACQUIRE))));
-    if (!_powered || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !connected || !_rtwdev || !_hw || !_vif || !_sta) {
         mbuf_freem(m);
         if (callback)
             callback(context, cookie, false);
@@ -2910,7 +2910,7 @@ void RTW88IEEE80211::scanDone(bool aborted)
         }
     }
 
-    if (_powered && _awdlReceiveMode)
+    if (__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) && _awdlReceiveMode)
         (void)setAWDLReceiveMode(true); // scan completion reinstates BSSID filtering
 
     IOLockLock(_bssLock);
@@ -2924,7 +2924,7 @@ void RTW88IEEE80211::scanDone(bool aborted)
         _delegate->rtw88Event(kRTW88EventScanDone, &result);
     }
 
-    if (_deferredConnectPending && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_IDLE && _powered) {
+    if (_deferredConnectPending && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_IDLE && __atomic_load_n(&_powered, __ATOMIC_ACQUIRE)) {
         char ssid[sizeof(_deferredSSID)] = {};
         char password[sizeof(_deferredPassword)] = {};
         uint8_t pmk[sizeof(_deferredPMK)] = {};
@@ -2979,7 +2979,7 @@ IOReturn RTW88IEEE80211::cmdScan(const uint16_t *requestedChannels,
         IOLog("rtw88: physical scan busy state=%u\n", (unsigned)__atomic_load_n(&_state, __ATOMIC_ACQUIRE));
         return kIOReturnBusy;
     }
-    if (!_powered || !_hw || !_hw->ops || !_hw->wiphy)
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !_hw || !_hw->ops || !_hw->wiphy)
         return kIOReturnNotReady;
     if (requestedCount > 128)
         requestedCount = 128;
@@ -3209,7 +3209,7 @@ void RTW88IEEE80211::runManualScan()
 
         {
             auto mutation = beginTxStateMutation();
-            if (!_powered || !_hw || !_vif || _manualScanAbort) {
+            if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !_hw || !_vif || _manualScanAbort) {
                 mutation.finish();
                 break;
             }
@@ -3559,7 +3559,7 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
     }
 
     if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_IDLE) return kIOReturnBusy;
-    if (!_powered || !_connectTC) return kIOReturnNotReady;
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !_connectTC) return kIOReturnNotReady;
     clearKeys();
     releaseSta();
     /* A timed-out CAM retirement deliberately retains its key and station
@@ -3708,7 +3708,7 @@ void RTW88IEEE80211::doAuthenticate()
         _awdlPreparedChannel = 0;
         mutation.finish();
     }
-    if (authenticationCancelled() || !_powered || !_hw || !_vif) return;
+    if (authenticationCancelled() || !__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !_hw || !_vif) return;
     /* 1.0.2: with another node of this SSID still untried, give up on this one
      * after two silent attempts instead of three, then move on. */
     IOLockLock(_bssLock);
@@ -5002,7 +5002,7 @@ bool RTW88IEEE80211::txMgmtFrame(
         return false;
     }
 
-    if (!_powered || !frame || len < 24 || len > 4096 ||
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !frame || len < 24 || len > 4096 ||
         !_hw || !_hw->ops || !_hw->ops->tx || !_vif)
         return false;
 
@@ -5293,7 +5293,7 @@ bool RTW88IEEE80211::txNullFunc(
     } else if (!*existingLease) {
         return false;
     }
-    if (!_powered || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta)
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !_hw || !_hw->ops || !_hw->ops->tx || !_vif || !_sta)
         return false;
 
     static const uint16_t IEEE80211_STYPE_NULLFUNC = 0x0040;
@@ -5862,7 +5862,7 @@ IOReturn RTW88IEEE80211::cmdGetState(struct RTW88StateResult *result)
     result->scan_offload_supported =
         (_hw && _hw->ops && _hw->ops->hw_scan &&
          rtw88_hw_scan_supported(_hw)) ? 1 : 0;
-    result->powered = _powered ? 1 : 0;
+    result->powered = __atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ? 1 : 0;
 
     return kIOReturnSuccess;
 }
@@ -5997,7 +5997,7 @@ IOReturn RTW88IEEE80211::copyCurrentBSS(RTW88BSS *out)
      * current infrastructure network from CoreWiFi's point of view.  Returning
      * NotReady here made APPLE80211_IOC_CURRENT_NETWORK fail with -3903 while
      * the menu still showed an associated link (issue #3). */
-    if (!_powered || !associatedVisible())
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) || !associatedVisible())
         return kIOReturnNotReady;
 
     /* CURRENT_NETWORK is queried aggressively by CoreWiFi/locationd.
