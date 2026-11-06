@@ -13,6 +13,7 @@ COMPAT = (ROOT / "driver/RTL88WiFi/src/compat/rtw88_compat.c").read_text()
 NATIVE = (ROOT / "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp").read_text()
 WORKER = (ROOT / "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp").read_text()
 IEEE = (ROOT / "driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp").read_text()
+IEEE_HPP = (ROOT / "driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp").read_text()
 
 def block(src, marker):
     at = src.find(marker)
@@ -99,6 +100,29 @@ check("PCI_COMPLETION_CALLBACK_RUNS_UNDER_IRQ_LOCK",
       "g_hw_cbs->tx_status(ctx, skb)" in compat_status and
       "rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted)" in tx_status,
       "PCI completion reaches native txStatus synchronously under irq_lock; terminal reporter's internal lock behavior remains to be audited")
+
+
+check("TX_BA_MEMBER_NAME_MATCHES_DECLARATION",
+      "_txBAState" not in IEEE and "_txBaState" in IEEE and
+      "_txBaState" in IEEE_HPP,
+      "native implementation consistently uses the declared _txBaState member")
+deauth = block(IEEE, "void RTW88IEEE80211::processRxMgmt(")
+rx_data = block(IEEE, "void RTW88IEEE80211::processRxData(")
+check("DEAUTH_SCAN_PREDICATE_IS_CLOSED",
+      "__atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);\\n            clearKeys();" in deauth,
+      "connected-scan deauth predicate closes before key teardown")
+check("RX_DATA_CONNECTED_PREDICATE_IS_CLOSED",
+      "__atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);\\n    if (!connected)" in rx_data,
+      "RX data state predicate closes before interface/BSSID filtering")
+m3 = block(IEEE, "if (is_m3) {")
+gtk_decls = m3.find("uint8_t gtk_len = 0;")
+gtk_outer = m3.find("/* Validate M3, verify its MIC")
+gtk_log = m3.find("WPA2 connected! gtk_len=%u gtk_idx=%u")
+check("M3_GTK_DIAGNOSTICS_VARIABLES_OUTLIVE_MUTATION_SCOPE",
+      gtk_decls >= 0 and gtk_outer > gtk_decls and gtk_log > gtk_outer and
+      m3.count("uint8_t gtk_len = 0;") == 1 and
+      m3.count("uint8_t gtk_idx = 0;") == 1,
+      "GTK length/index are declared in the M3 branch scope used by the completion log")
 
 failed = [x for x in checks if not x[1]]
 for name, ok, detail in checks:
