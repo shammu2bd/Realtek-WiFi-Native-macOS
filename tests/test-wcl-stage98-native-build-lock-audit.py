@@ -88,7 +88,7 @@ check("PCI_SUBMISSION_ACQUIRES_IRQ_LOCK",
       "spin_lock_bh(&rtwpci->irq_lock)" in pci_write and
       "spin_unlock_bh(&rtwpci->irq_lock)" in pci_write,
       "PCI HCI submission takes irq_lock while TXQ worker is still in its critical section")
-isr = block(PCI, "static void rtw_pci_interrupt_threadfn(")
+isr = block(PCI, "static irqreturn_t rtw_pci_interrupt_threadfn(")
 tx_isr = block(PCI, "static void rtw_pci_tx_isr(")
 compat_status = block(COMPAT, "void ieee80211_tx_status_irqsafe(")
 tx_status = block(IEEE, "void RTW88IEEE80211::txStatus(")
