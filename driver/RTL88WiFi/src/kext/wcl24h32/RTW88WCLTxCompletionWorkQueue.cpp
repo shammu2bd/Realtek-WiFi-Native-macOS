@@ -127,7 +127,7 @@ IOReturn RTW88WCLTxCompletionWorkQueue::stop()
         while (thread_call_isactive(_tokenReapCall))
             IOSleep(1);
         if (!thread_call_free(_tokenReapCall)) {
-            IOLog("rtl88wifi-wcl: token reaper thread-call still active; retaining worker owners\\n");
+            IOLog("rtl88wifi-wcl: token reaper thread-call still active; retaining worker owners\n");
             return kIOReturnBusy;
         }
         _tokenReapCall = nullptr;
@@ -142,7 +142,7 @@ IOReturn RTW88WCLTxCompletionWorkQueue::stop()
     if (_adapter && _adapter->hasRetiredCompletionTokens())
         _adapter->reapDeferredCompletionTokens();
     if (_adapter && _adapter->hasRetiredCompletionTokens()) {
-        IOLog("rtl88wifi-wcl: retired completion tokens remain after final drain; retaining worker\\n");
+        IOLog("rtl88wifi-wcl: retired completion tokens remain after final drain; retaining worker\n");
         return kIOReturnBusy;
     }
 
