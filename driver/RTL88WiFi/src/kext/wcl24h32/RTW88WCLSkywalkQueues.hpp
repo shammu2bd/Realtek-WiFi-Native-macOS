@@ -32,6 +32,23 @@ public:
     bool txSubmissionQueuesValid() const;
     bool resourcesReleased() const;
 
+    /* Stable owner-resident queue vector passed to the 24H32
+     * registerInfraEthernetInterface() ABI. The entries are classified by
+     * each queue's performCommand(0x10000) record, not by array position. */
+    IOSkywalkPacketQueue **registrationQueueArray() {
+        return _registrationQueues;
+    }
+    UInt32 registrationQueueCount() const {
+        return kRegistrationQueueCount;
+    }
+    bool registrationQueuesValid() const;
+    IOReturn setRegistered(bool registered);
+    bool isRegistered() const { return _registered; }
+
+    /* Successful 24H32 enqueuePacketsForNetworking transfers packet ownership
+     * from the driver to the RX networking pipeline. */
+    IOReturn enqueueRXPacketForNetworking(IOSkywalkPacket *packet);
+
     IOReturn bindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
     IOReturn unbindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
 
@@ -45,6 +62,7 @@ public:
 
     static constexpr UInt32 kQueueCapacity = 128;
     static constexpr UInt32 kTXSubmissionQueueCount = 4;
+    static constexpr UInt32 kRegistrationQueueCount = 7;
     static constexpr UInt32 kTxBufferSize = 2048;
     static constexpr UInt32 kRxBufferSize = 4096;
 
@@ -81,6 +99,8 @@ private:
     IOSkywalkTxCompletionQueue *_txCompletion = nullptr;
     IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
     IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
+    IOSkywalkPacketQueue *_registrationQueues[kRegistrationQueueCount] = {};
+    bool _registered = false;
     RTW88WCLSkywalkTxAdapter *_txAdapter = nullptr; // retained; action callback context
     RTW88WCLTxSubmissionGate _txCallbackGate;
     RTW88WCLAcquisitionJournal::Journal _acquisitionJournal;
