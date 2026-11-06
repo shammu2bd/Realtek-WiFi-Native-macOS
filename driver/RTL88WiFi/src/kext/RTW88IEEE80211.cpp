@@ -1428,46 +1428,68 @@ IOReturn RTW88IEEE80211::powerOn()
             mutation.finish();
             return kIOReturnSuccess;
         }
+        if (__atomic_load_n(&_coreStarting, __ATOMIC_ACQUIRE)) {
+            mutation.finish();
+            return kIOReturnBusy;
+        }
         hw = _hw;
         vif = _vif;
         if (!hw || !hw->ops || !hw->ops->start || !vif) {
             mutation.finish();
             return kIOReturnNotReady;
         }
+        __atomic_store_n(&_coreStarting, true, __ATOMIC_RELEASE);
         mutation.finish();
     }
 
-    /* TX remains closed while firmware/core start may schedule or flush RX
-     * work. Do not hold the radio writer across driver lifecycle callbacks. */
+    /* TX remains closed while firmware/core start and interface restore may
+     * schedule work. Never hold the radio writer across these lifecycle calls. */
     int ret = hw->ops->start(hw);
     if (ret) {
         IOLog("rtw88: rtw_core_start failed: %d\n", ret);
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_coreStarting, false, __ATOMIC_RELEASE);
+        mutation.finish();
         return kIOReturnError;
     }
 
-    /* Restore hardware interface state while external TX still sees the
-     * published powered=false admission state. A failed restore is stopped
-     * before the radio can accept a packet. */
     if (rtw88_restore_interface(hw, vif) != 0) {
         if (hw->ops->stop)
             hw->ops->stop(hw, false);
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_coreStarting, false, __ATOMIC_RELEASE);
+        mutation.finish();
         return kIOReturnError;
+    }
+
+    bool abortStart = false;
+    {
+        auto mutation = beginTxStateMutation();
+        abortStart = __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+                     _hw != hw || _vif != vif;
+        if (!abortStart) {
+            _awdlPreparedChannel = 0;
+            _awdlOffChannel = false;
+            __atomic_store_n(&_powered, true, __ATOMIC_RELEASE);
+        }
+        mutation.finish();
+    }
+
+    if (abortStart) {
+        if (hw->ops->stop)
+            hw->ops->stop(hw, false);
+        auto mutation = beginTxStateMutation();
+        __atomic_store_n(&_coreStarting, false, __ATOMIC_RELEASE);
+        mutation.finish();
+        return kIOReturnNotReady;
     }
 
     {
         auto mutation = beginTxStateMutation();
-        if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
-            _hw != hw || _vif != vif) {
-            mutation.finish();
-            if (hw->ops->stop)
-                hw->ops->stop(hw, false);
-            return kIOReturnNotReady;
-        }
-        _awdlPreparedChannel = 0;
-        _awdlOffChannel = false;
-        __atomic_store_n(&_powered, true, __ATOMIC_RELEASE);
+        __atomic_store_n(&_coreStarting, false, __ATOMIC_RELEASE);
         mutation.finish();
     }
+
     IOReturn filterResult = _awdlReceiveMode ?
         setAWDLReceiveMode(true) : setReceiveMulticast(_receiveMulticast);
     if (filterResult != kIOReturnSuccess)
@@ -1479,10 +1501,22 @@ void RTW88IEEE80211::powerOff()
 {
     IOLog("rtw88: IEEE80211 powerOff\n");
     __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
+
+    /* A concurrent powerOn owns lifecycle start until it publishes either
+     * powered=true or a stopped failure result. Wait without holding the TX
+     * writer so core/RX work can complete normally. */
+    while (__atomic_load_n(&_coreStarting, __ATOMIC_ACQUIRE))
+        IOSleep(1);
+
     struct ieee80211_hw *hw = nullptr;
     bool wasPowered = false;
     {
         auto mutation = beginTxStateMutation();
+        while (__atomic_load_n(&_coreStarting, __ATOMIC_ACQUIRE)) {
+            mutation.finish();
+            IOSleep(1);
+            mutation = beginTxStateMutation();
+        }
         wasPowered = __atomic_load_n(&_powered, __ATOMIC_ACQUIRE);
         hw = _hw;
         __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
@@ -1491,9 +1525,9 @@ void RTW88IEEE80211::powerOff()
         mutation.finish();
     }
 
-    /* The reader drain above means no TX callback can still be inside
-     * ops->tx(). The powered=false fast path lets late callers return safely.
-     * Stop may drain the RX workqueue, so it must not run under the writer. */
+    /* The reader drain above means no TX callback remains inside ops->tx().
+     * Late readers observe powered=false and return. ops->stop may drain RX
+     * workers that need the radio gate, so it runs outside the writer. */
     if (wasPowered && hw && hw->ops && hw->ops->stop)
         hw->ops->stop(hw, false);
 }
