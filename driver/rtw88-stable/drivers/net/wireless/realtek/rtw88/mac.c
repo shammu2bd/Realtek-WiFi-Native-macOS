@@ -1125,7 +1125,7 @@ static bool __rtw_mac_flush_prio_queue_sync(struct rtw_dev *rtwdev,
 
 	if (!drop)
 		rtw_dbg(rtwdev, RTW_DBG_UNEXP,
-			"timed out to synchronously flush queue %d\\n", prio_queue);
+			"timed out to synchronously flush queue %d\n", prio_queue);
 	return false;
 }
 
