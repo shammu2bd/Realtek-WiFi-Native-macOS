@@ -281,7 +281,7 @@ IOReturn RTW88WCLInfraInterface::attachControllerInterface()
         return kIOReturnSuccess;
     }
     if (primary) {
-        IOLog("rtl88wifi-wcl: controller already owns a different primary Skywalk interface (%p)\\n",
+        IOLog("rtl88wifi-wcl: controller already owns a different primary Skywalk interface (%p)\n",
               primary);
         return kIOReturnBusy;
     }
@@ -292,19 +292,19 @@ IOReturn RTW88WCLInfraInterface::attachControllerInterface()
      * Its bool return only proves the dynamic cast; the getter must also return
      * this exact object before registration may proceed. */
     if (!_controller->attachInterface(this, _controller)) {
-        IOLog("rtl88wifi-wcl: Apple controller attachInterface rejected native infra interface\\n");
+        IOLog("rtl88wifi-wcl: Apple controller attachInterface rejected native infra interface\n");
         return kIOReturnNotReady;
     }
 
     primary = _controller->getPrimarySkywalkInterface();
     if (primary != this) {
-        IOLog("rtl88wifi-wcl: Apple attachInterface returned without publishing this primary interface (primary=%p self=%p)\\n",
+        IOLog("rtl88wifi-wcl: Apple attachInterface returned without publishing this primary interface (primary=%p self=%p)\n",
               primary, this);
         return kIOReturnNotReady;
     }
 
     _controllerAttached = true;
-    IOLog("rtl88wifi-wcl: Apple primary Skywalk interface attached and getter-verified\\n");
+    IOLog("rtl88wifi-wcl: Apple primary Skywalk interface attached and getter-verified\n");
     return kIOReturnSuccess;
 }
 
@@ -325,12 +325,12 @@ IOReturn RTW88WCLInfraInterface::detachControllerInterface()
      * called only after that stop and successful Skywalk deregistration. */
     _controller->detachInterface(this, false);
     if (_controller->getPrimarySkywalkInterface() == this) {
-        IOLog("rtl88wifi-wcl: Apple detachInterface did not clear the primary pointer; retaining interface owner\\n");
+        IOLog("rtl88wifi-wcl: Apple detachInterface did not clear the primary pointer; retaining interface owner\n");
         return kIOReturnBusy;
     }
 
     _controllerAttached = false;
-    IOLog("rtl88wifi-wcl: Apple primary Skywalk interface detached and getter-verified\\n");
+    IOLog("rtl88wifi-wcl: Apple primary Skywalk interface detached and getter-verified\n");
     return kIOReturnSuccess;
 }
 
@@ -364,7 +364,7 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
      * registration, then verify the stored pointer through Apple's getter. */
     IOReturn status = attachControllerInterface();
     if (status != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: native interface could not become controller primary (0x%08x)\\n",
+        IOLog("rtl88wifi-wcl: native interface could not become controller primary (0x%08x)\n",
               status);
         (void)shutdownForController();
         return false;
