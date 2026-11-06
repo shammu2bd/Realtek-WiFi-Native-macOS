@@ -1,0 +1,164 @@
+========== STAGE116 CORRECTED NATIVE-KEXT DIAGNOSTICS ==========
+UTC_STAMP=20261106T132522Z
+BRANCH=work/stage116-native-diagnostics-repair
+HEAD=ff64c743a8b88a0d2e7746a868d29992cbf83fbb
+BASE_COMMIT=4ae7d887b43ce2f9038820f249decc43b651c678
+RUNNER_GIT_BLOB_SHA=89e56b3ec5a11abffc2ab8a47126f5e42dbe9148
+TARGET=15.8.1 (24H32) x86_64
+TARGET_MATCH_24H32=True
+SCOPE=READ_ONLY_ALREADY_MOUNTED_EFI_CORRECTED_KMUTIL_DIAGNOSTICS_NODE_SCOPED_IOREGISTRY_BOUNDED_LOG
+BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_RUN
+MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN
+NOTE=KMUTIL_PRINT_DIAGNOSTICS_USES_-p_BUNDLE_PATH; NO_STAGING_OR_LOAD_ACTIONS
+SIP_STATUS_EXIT=0
+----- SIP_STATUS -----
+System Integrity Protection status: enabled.
+----- END SIP_STATUS -----
+SIP_STATE=ENABLED
+LIVE_BOOT_ARGS_EXIT=0
+----- LIVE_BOOT_ARGS -----
+keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+----- END LIVE_BOOT_ARGS -----
+LIVE_BOOT_ARGS_VALUE=keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+LIVE_NVRAM_READ_EXIT=0
+----- LIVE_NVRAM_RELEVANT -----
+csr-active-config	%00%00%00%00
+boot-args	keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+----- END LIVE_NVRAM_RELEVANT -----
+OPENCORE_CONFIG_PLUTIL_EXIT=0
+----- OPENCORE_CONFIG_PLUTIL -----
+/Volumes/EFI/EFI/OC/config.plist: OK
+----- END OPENCORE_CONFIG_PLUTIL -----
+OPENCORE_CONFIG_PATH=/Volumes/EFI/EFI/OC/config.plist
+RELEVANT_KERNEL_ADD_ORDER=[{"bundle_path": "Lilu.kext", "enabled": true, "index": 0}, {"bundle_path": "AMFIPass.kext", "enabled": true, "index": 1}, {"bundle_path": "RTL88WiFiNative.kext", "enabled": true, "index": 31}]
+NATIVE_KERNEL_ADD_ROWS=[{"arch": "Any", "bundle_id": "io.github.x1ren41l.RTL88WiFi", "bundle_path": "RTL88WiFiNative.kext", "enabled": true, "executable_exists": true, "executable_path": "Contents/MacOS/RTL88WiFiNative", "index": 31, "max_kernel": "", "min_kernel": "", "plist_executable": "RTL88WiFiNative", "resolved_bundle": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext", "sha256": "409137db0772c6f5326af89f9f6dc699f8f18a13eb9025bc194b58e5bb92cd0a"}]
+NATIVE_KERNEL_ADD_COUNT=1
+NATIVE_KERNEL_ADD_ENABLED_COUNT=1
+NATIVE_EXECUTABLE_SHA_MATCH_STAGE113=True
+RELEVANT_ENABLED_KERNEL_BLOCKS=NONE
+NATIVE_PERSONALITY={"IOClass": "RTW88WCLController", "IOPCIMatch": "0xC82110EC 0xB82110EC", "IOProbeScore": 5000, "IOProviderClass": "IOPCIDevice", "name": "RTL88WiFiNative_8821CE"}
+CONFIGURED_BOOT_ARGS=keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+CONFIGURED_CSR_ACTIVE_CONFIG_HEX=00000000
+SECURE_BOOT_MODEL=Disabled
+VAULT=Optional
+OPENCORE_DEBUG_TARGET=0
+OPENCORE_DEBUG_DISPLAY_LEVEL=2147483650
+OPENCORE_DEBUG_LOGGING_DISABLED=True
+OPENCORE_CONFIG_RESULT=PARSED
+NATIVE_EFI_STAT={"gid": 20, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext", "size": null, "uid": 501}
+NATIVE_EFI_STAT={"gid": 20, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/Info.plist", "size": 2395, "uid": 501}
+NATIVE_EFI_STAT={"gid": 20, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative", "size": 1686024, "uid": 501}
+NATIVE_EFI_ACL_EXIT=0
+----- NATIVE_EFI_ACL -----
+drwx------  1 shohel  staff      512 Nov  6 11:28 /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext
+drwx------  1 shohel  staff      512 Nov  6 14:10 /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents
+-rwx------  1 shohel  staff     2395 Nov  6 18:07 /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/Info.plist
+-rwx------  1 shohel  staff  1686024 Nov  6 18:07 /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+----- END NATIVE_EFI_ACL -----
+NATIVE_CODESIGN_DISPLAY_EXIT=1
+----- NATIVE_CODESIGN_DISPLAY -----
+/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext: code object is not signed at all
+----- END NATIVE_CODESIGN_DISPLAY -----
+NATIVE_CODESIGN_VERIFY_EXIT=1
+----- NATIVE_CODESIGN_VERIFY -----
+/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext: code object is not signed at all
+In architecture: x86_64
+----- END NATIVE_CODESIGN_VERIFY -----
+NATIVE_SIGNATURE_CLASSIFICATION=UNSIGNED
+NATIVE_KMUTIL_PRINT_DIAGNOSTICS_EXIT=0
+----- NATIVE_KMUTIL_PRINT_DIAGNOSTICS -----
+No variant specified, falling back to release
+Diagnosing /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext...
+Error:
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/Info.plist
+	Authenticating extension failed: Bad code signature
+Resolving dependencies for /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext...
+Dependencies: OK
+----- END NATIVE_KMUTIL_PRINT_DIAGNOSTICS -----
+----- KMUTIL_DIAGNOSTIC_FINDINGS -----
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/Info.plist
+	Authenticating extension failed: Bad code signature
+----- END KMUTIL_DIAGNOSTIC_FINDINGS -----
+KMUTIL_DIAGNOSTICS_COMMAND_ACCEPTED=True
+KMUTIL_EXPLICIT_BAD_SIGNATURE_LINE_COUNT=1
+KMUTIL_INVALID_OWNERSHIP_LINE_COUNT=5
+KMUTIL_PERMISSION_OR_OWNER_LINE_COUNT=5
+NATIVE_KMUTIL_LIBRARIES_EXIT=0
+----- NATIVE_KMUTIL_LIBRARIES -----
+No variant specified, falling back to release
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.iokit.IO80211Family</key>
+		<string>1200.13.1</string>
+		<key>com.apple.iokit.IONetworkingFamily</key>
+		<string>3.4</string>
+		<key>com.apple.iokit.IOPCIFamily</key>
+		<string>2.9</string>
+		<key>com.apple.iokit.IOSkywalkFamily</key>
+		<string>1.0</string>
+		<key>com.apple.kpi.bsd</key>
+		<string>24.6.0</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>24.6.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>24.6.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>24.6.0</string>
+		<key>com.apple.kpi.private</key>
+		<string>24.6.0</string>
+... 4 additional lines omitted
+----- END NATIVE_KMUTIL_LIBRARIES -----
+KMUTIL_LIBRARIES_RESULT=PASS
+KMUTIL_NATIVE_QUERY_EXIT=0
+----- KMUTIL_NATIVE_LOADED_QUERY -----
+No variant specified, falling back to release
+Index Refs Address            Size       Wired      Name (Version) UUID <Linked Against>
+----- END KMUTIL_NATIVE_LOADED_QUERY -----
+NATIVE_KEXT_PRESENT_IN_SHOWLOADED=False
+IOREG_RTW88WCLController_EXIT=0
+----- IOREG_RTW88WCLController -----
+(no output)
+----- END IOREG_RTW88WCLController -----
+IOREG_RTW88WCLController_STATE=NO_MATCH
+IOREG_RTW88WCLInfraInterface_EXIT=0
+----- IOREG_RTW88WCLInfraInterface -----
+(no output)
+----- END IOREG_RTW88WCLInfraInterface -----
+IOREG_RTW88WCLInfraInterface_STATE=NO_MATCH
+IOREG_RTL8821CE_NODE_QUERY_EXIT=0
+----- IOREG_RTL8821CE_NODE -----
+(no output)
+----- END IOREG_RTL8821CE_NODE -----
+IOREG_RTL8821CE_NODE_MATCH=False
+NATIVE_TARGETED_UNIFIED_LOG_EXIT=124
+----- NATIVE_TARGETED_UNIFIED_LOG_ERROR -----
+Wall Clock adjustment detected - results might be strange while using --end
+
+COMMAND_TIMEOUT
+----- END NATIVE_TARGETED_UNIFIED_LOG_ERROR -----
+NATIVE_SPECIFIC_SIGNATURE_REJECTION_LOG=UNKNOWN
+OPENCORE_LOG_FILES_FOUND=0
+STAGE116_PRIMARY_DIAGNOSIS=KMUTIL_DIAGNOSTIC_REPORTS_AUTH_OR_OWNERSHIP_ISSUE_OPENCORE_CAUSALITY_UNPROVEN
+STAGE116_SIGNATURE_CLASSIFICATION=UNSIGNED
+STAGE116_KMUTIL_DIAGNOSTICS_EXIT=0
+STAGE116_NATIVE_SPECIFIC_REJECTION_LOG=None
+STAGE116_RTL8821CE_NODE_MATCH=False
+STAGE116_NATIVE_CONTROLLER_IOREGISTRY=NO_MATCH
+STAGE116_NATIVE_INTERFACE_IOREGISTRY=NO_MATCH
+STAGE116_OPENCORE_LOG_FILES=0
+STAGE116_RESULT=EVIDENCE_CAPTURED_REQUIRES_REVIEW
+STAGE116_ACTIVATION=BLOCKED
+SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN
+PR4_MERGE=BLOCKED
