@@ -1,0 +1,671 @@
+========== STAGE126 APPLE POWER STATE ABI AUDIT ==========
+STAGE126_SOURCE_COMMIT=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE126_EXECUTION_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE126_WORKTREE_STATUS_ENTRIES=198
+STAGE126_STAGE125_BASE=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE126_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE126_SCOPE=READ_ONLY_APPLE_24H32_POWER_METHOD_DISASSEMBLY
+STAGE126_KC_MACHO_SHA256=8e95c4ec87ed99e3732354f32ad9eed45b7607e7bc7034f32ff7437e0c6ec878
+STAGE126_KC_MACHO_PATH=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho
+STAGE126_DRIVER_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+--- Exact Apple power-state symbols (raw mangled names) ---
+--- Disassembly of exact Apple power-state methods ---
+===== SYMBOL __ZN21IO80211InfraInterface18setInterfaceEnableEb =====
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+ffffff8002110815:	48 8b 00	movq	(%rax), %rax
+ffffff8002110818:	48 85 c0	testq	%rax, %rax
+ffffff800211081b:	74 03	je	0xffffff8002110820
+ffffff800211081d:	5d	popq	%rbp
+ffffff800211081e:	ff e0	jmpq	*%rax
+ffffff8002110820:	31 c0	xorl	%eax, %eax
+ffffff8002110822:	5d	popq	%rbp
+ffffff8002110823:	c3	retq
+ffffff8002110824:	90	nop
+ffffff8002110825:	90	nop
+ffffff8002110826:	90	nop
+ffffff8002110827:	90	nop
+ffffff8002110828:	90	nop
+ffffff8002110829:	90	nop
+ffffff800211082a:	90	nop
+ffffff800211082b:	90	nop
+ffffff800211082c:	90	nop
+ffffff800211082d:	90	nop
+ffffff800211082e:	90	nop
+ffffff800211082f:	90	nop
+___chkstk_darwin_probe:
+ffffff8002110830:	51	pushq	%rcx
+ffffff8002110831:	50	pushq	%rax
+ffffff8002110832:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110838:	48 8d 4c 24 18	leaq	0x18(%rsp), %rcx
+ffffff800211083d:	72 17	jb	0xffffff8002110856
+ffffff800211083f:	48 81 e9 00 10 00 00	subq	$0x1000, %rcx
+ffffff8002110846:	84 09	testb	%cl, (%rcx)
+ffffff8002110848:	48 2d 00 10 00 00	subq	$0x1000, %rax
+ffffff800211084e:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110854:	77 e9	ja	0xffffff800211083f
+ffffff8002110856:	48 29 c1	subq	%rax, %rcx
+ffffff8002110859:	84 09	testb	%cl, (%rcx)
+ffffff800211085b:	58	popq	%rax
+ffffff800211085c:	59	popq	%rcx
+ffffff800211085d:	c3	retq
+ffffff800211085e:	90	nop
+ffffff800211085f:	90	nop
+____chkstk_darwin:
+ffffff8002110860:	e9 cb ff ff ff	jmp	___chkstk_darwin_probe
+ffffff8002110865:	90	nop
+__ZN19IO80211TimeSyncPeer9MetaClassC1Ev:
+ffffff8002110866:	55	pushq	%rbp
+ffffff8002110867:	48 89 e5	movq	%rsp, %rbp
+ffffff800211086a:	53	pushq	%rbx
+ffffff800211086b:	50	pushq	%rax
+ffffff800211086c:	48 89 fb	movq	%rdi, %rbx
+ffffff800211086f:	48 8d 35 ba 54 21 00	leaq	0x2154ba(%rip), %rsi ## literal pool for: "IO80211TimeSyncPeer"
+ffffff8002110876:	48 8b 15 13 b8 2a 00	movq	0x2ab813(%rip), %rdx
+ffffff800211087d:	b9 18 00 00 00	movl	$0x18, %ecx
+ffffff8002110882:	e8 b9 90 93 fe	callq	0xffffff8000a49940
+ffffff8002110887:	48 8d 05 a2 c4 2a 00	leaq	0x2ac4a2(%rip), %rax
+ffffff800211088e:	48 89 03	movq	%rax, (%rbx)
+ffffff8002110891:	48 83 c4 08	addq	$0x8, %rsp
+ffffff8002110895:	5b	popq	%rbx
+ffffff8002110896:	5d	popq	%rbp
+ffffff8002110897:	c3	retq
+__ZN19IO80211TimeSyncPeer9MetaClassD1Ev:
+ffffff8002110898:	55	pushq	%rbp
+ffffff8002110899:	48 89 e5	movq	%rsp, %rbp
+ffffff800211089c:	5d	popq	%rbp
+ffffff800211089d:	e9 9e 97 93 fe	jmp	0xffffff8000a4a040
+===== SYMBOL __ZN22IO80211MacAddressAgent18setInterfaceEnableEb =====
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+ffffff8002110815:	48 8b 00	movq	(%rax), %rax
+ffffff8002110818:	48 85 c0	testq	%rax, %rax
+ffffff800211081b:	74 03	je	0xffffff8002110820
+ffffff800211081d:	5d	popq	%rbp
+ffffff800211081e:	ff e0	jmpq	*%rax
+ffffff8002110820:	31 c0	xorl	%eax, %eax
+ffffff8002110822:	5d	popq	%rbp
+ffffff8002110823:	c3	retq
+ffffff8002110824:	90	nop
+ffffff8002110825:	90	nop
+ffffff8002110826:	90	nop
+ffffff8002110827:	90	nop
+ffffff8002110828:	90	nop
+ffffff8002110829:	90	nop
+ffffff800211082a:	90	nop
+ffffff800211082b:	90	nop
+ffffff800211082c:	90	nop
+ffffff800211082d:	90	nop
+ffffff800211082e:	90	nop
+ffffff800211082f:	90	nop
+___chkstk_darwin_probe:
+ffffff8002110830:	51	pushq	%rcx
+ffffff8002110831:	50	pushq	%rax
+ffffff8002110832:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110838:	48 8d 4c 24 18	leaq	0x18(%rsp), %rcx
+ffffff800211083d:	72 17	jb	0xffffff8002110856
+ffffff800211083f:	48 81 e9 00 10 00 00	subq	$0x1000, %rcx
+ffffff8002110846:	84 09	testb	%cl, (%rcx)
+ffffff8002110848:	48 2d 00 10 00 00	subq	$0x1000, %rax
+ffffff800211084e:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110854:	77 e9	ja	0xffffff800211083f
+ffffff8002110856:	48 29 c1	subq	%rax, %rcx
+ffffff8002110859:	84 09	testb	%cl, (%rcx)
+ffffff800211085b:	58	popq	%rax
+ffffff800211085c:	59	popq	%rcx
+ffffff800211085d:	c3	retq
+ffffff800211085e:	90	nop
+ffffff800211085f:	90	nop
+____chkstk_darwin:
+ffffff8002110860:	e9 cb ff ff ff	jmp	___chkstk_darwin_probe
+ffffff8002110865:	90	nop
+__ZN19IO80211TimeSyncPeer9MetaClassC1Ev:
+ffffff8002110866:	55	pushq	%rbp
+ffffff8002110867:	48 89 e5	movq	%rsp, %rbp
+ffffff800211086a:	53	pushq	%rbx
+ffffff800211086b:	50	pushq	%rax
+ffffff800211086c:	48 89 fb	movq	%rdi, %rbx
+ffffff800211086f:	48 8d 35 ba 54 21 00	leaq	0x2154ba(%rip), %rsi ## literal pool for: "IO80211TimeSyncPeer"
+ffffff8002110876:	48 8b 15 13 b8 2a 00	movq	0x2ab813(%rip), %rdx
+ffffff800211087d:	b9 18 00 00 00	movl	$0x18, %ecx
+ffffff8002110882:	e8 b9 90 93 fe	callq	0xffffff8000a49940
+ffffff8002110887:	48 8d 05 a2 c4 2a 00	leaq	0x2ac4a2(%rip), %rax
+ffffff800211088e:	48 89 03	movq	%rax, (%rbx)
+ffffff8002110891:	48 83 c4 08	addq	$0x8, %rsp
+ffffff8002110895:	5b	popq	%rbx
+ffffff8002110896:	5d	popq	%rbp
+ffffff8002110897:	c3	retq
+__ZN19IO80211TimeSyncPeer9MetaClassD1Ev:
+ffffff8002110898:	55	pushq	%rbp
+ffffff8002110899:	48 89 e5	movq	%rsp, %rbp
+ffffff800211089c:	5d	popq	%rbp
+ffffff800211089d:	e9 9e 97 93 fe	jmp	0xffffff8000a4a040
+===== SYMBOL __ZN23IO80211SkywalkInterface14enableDatapathEv =====
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+ffffff8002110815:	48 8b 00	movq	(%rax), %rax
+ffffff8002110818:	48 85 c0	testq	%rax, %rax
+ffffff800211081b:	74 03	je	0xffffff8002110820
+ffffff800211081d:	5d	popq	%rbp
+ffffff800211081e:	ff e0	jmpq	*%rax
+ffffff8002110820:	31 c0	xorl	%eax, %eax
+ffffff8002110822:	5d	popq	%rbp
+ffffff8002110823:	c3	retq
+ffffff8002110824:	90	nop
+ffffff8002110825:	90	nop
+ffffff8002110826:	90	nop
+ffffff8002110827:	90	nop
+ffffff8002110828:	90	nop
+ffffff8002110829:	90	nop
+ffffff800211082a:	90	nop
+ffffff800211082b:	90	nop
+ffffff800211082c:	90	nop
+ffffff800211082d:	90	nop
+ffffff800211082e:	90	nop
+ffffff800211082f:	90	nop
+___chkstk_darwin_probe:
+ffffff8002110830:	51	pushq	%rcx
+ffffff8002110831:	50	pushq	%rax
+ffffff8002110832:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110838:	48 8d 4c 24 18	leaq	0x18(%rsp), %rcx
+ffffff800211083d:	72 17	jb	0xffffff8002110856
+ffffff800211083f:	48 81 e9 00 10 00 00	subq	$0x1000, %rcx
+ffffff8002110846:	84 09	testb	%cl, (%rcx)
+ffffff8002110848:	48 2d 00 10 00 00	subq	$0x1000, %rax
+ffffff800211084e:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110854:	77 e9	ja	0xffffff800211083f
+ffffff8002110856:	48 29 c1	subq	%rax, %rcx
+ffffff8002110859:	84 09	testb	%cl, (%rcx)
+ffffff800211085b:	58	popq	%rax
+ffffff800211085c:	59	popq	%rcx
+ffffff800211085d:	c3	retq
+ffffff800211085e:	90	nop
+ffffff800211085f:	90	nop
+____chkstk_darwin:
+ffffff8002110860:	e9 cb ff ff ff	jmp	___chkstk_darwin_probe
+ffffff8002110865:	90	nop
+__ZN19IO80211TimeSyncPeer9MetaClassC1Ev:
+ffffff8002110866:	55	pushq	%rbp
+ffffff8002110867:	48 89 e5	movq	%rsp, %rbp
+ffffff800211086a:	53	pushq	%rbx
+ffffff800211086b:	50	pushq	%rax
+ffffff800211086c:	48 89 fb	movq	%rdi, %rbx
+ffffff800211086f:	48 8d 35 ba 54 21 00	leaq	0x2154ba(%rip), %rsi ## literal pool for: "IO80211TimeSyncPeer"
+ffffff8002110876:	48 8b 15 13 b8 2a 00	movq	0x2ab813(%rip), %rdx
+ffffff800211087d:	b9 18 00 00 00	movl	$0x18, %ecx
+ffffff8002110882:	e8 b9 90 93 fe	callq	0xffffff8000a49940
+ffffff8002110887:	48 8d 05 a2 c4 2a 00	leaq	0x2ac4a2(%rip), %rax
+ffffff800211088e:	48 89 03	movq	%rax, (%rbx)
+ffffff8002110891:	48 83 c4 08	addq	$0x8, %rsp
+ffffff8002110895:	5b	popq	%rbx
+ffffff8002110896:	5d	popq	%rbp
+ffffff8002110897:	c3	retq
+__ZN19IO80211TimeSyncPeer9MetaClassD1Ev:
+ffffff8002110898:	55	pushq	%rbp
+ffffff8002110899:	48 89 e5	movq	%rsp, %rbp
+ffffff800211089c:	5d	popq	%rbp
+ffffff800211089d:	e9 9e 97 93 fe	jmp	0xffffff8000a4a040
+===== SYMBOL __ZN23IO80211SkywalkInterface15disableDatapathEv =====
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+ffffff8002110815:	48 8b 00	movq	(%rax), %rax
+ffffff8002110818:	48 85 c0	testq	%rax, %rax
+ffffff800211081b:	74 03	je	0xffffff8002110820
+ffffff800211081d:	5d	popq	%rbp
+ffffff800211081e:	ff e0	jmpq	*%rax
+ffffff8002110820:	31 c0	xorl	%eax, %eax
+ffffff8002110822:	5d	popq	%rbp
+ffffff8002110823:	c3	retq
+ffffff8002110824:	90	nop
+ffffff8002110825:	90	nop
+ffffff8002110826:	90	nop
+ffffff8002110827:	90	nop
+ffffff8002110828:	90	nop
+ffffff8002110829:	90	nop
+ffffff800211082a:	90	nop
+ffffff800211082b:	90	nop
+ffffff800211082c:	90	nop
+ffffff800211082d:	90	nop
+ffffff800211082e:	90	nop
+ffffff800211082f:	90	nop
+___chkstk_darwin_probe:
+ffffff8002110830:	51	pushq	%rcx
+ffffff8002110831:	50	pushq	%rax
+ffffff8002110832:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110838:	48 8d 4c 24 18	leaq	0x18(%rsp), %rcx
+ffffff800211083d:	72 17	jb	0xffffff8002110856
+ffffff800211083f:	48 81 e9 00 10 00 00	subq	$0x1000, %rcx
+ffffff8002110846:	84 09	testb	%cl, (%rcx)
+ffffff8002110848:	48 2d 00 10 00 00	subq	$0x1000, %rax
+ffffff800211084e:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110854:	77 e9	ja	0xffffff800211083f
+ffffff8002110856:	48 29 c1	subq	%rax, %rcx
+ffffff8002110859:	84 09	testb	%cl, (%rcx)
+ffffff800211085b:	58	popq	%rax
+ffffff800211085c:	59	popq	%rcx
+ffffff800211085d:	c3	retq
+ffffff800211085e:	90	nop
+ffffff800211085f:	90	nop
+____chkstk_darwin:
+ffffff8002110860:	e9 cb ff ff ff	jmp	___chkstk_darwin_probe
+ffffff8002110865:	90	nop
+__ZN19IO80211TimeSyncPeer9MetaClassC1Ev:
+ffffff8002110866:	55	pushq	%rbp
+ffffff8002110867:	48 89 e5	movq	%rsp, %rbp
+ffffff800211086a:	53	pushq	%rbx
+ffffff800211086b:	50	pushq	%rax
+ffffff800211086c:	48 89 fb	movq	%rdi, %rbx
+ffffff800211086f:	48 8d 35 ba 54 21 00	leaq	0x2154ba(%rip), %rsi ## literal pool for: "IO80211TimeSyncPeer"
+ffffff8002110876:	48 8b 15 13 b8 2a 00	movq	0x2ab813(%rip), %rdx
+ffffff800211087d:	b9 18 00 00 00	movl	$0x18, %ecx
+ffffff8002110882:	e8 b9 90 93 fe	callq	0xffffff8000a49940
+ffffff8002110887:	48 8d 05 a2 c4 2a 00	leaq	0x2ac4a2(%rip), %rax
+ffffff800211088e:	48 89 03	movq	%rax, (%rbx)
+ffffff8002110891:	48 83 c4 08	addq	$0x8, %rsp
+ffffff8002110895:	5b	popq	%rbx
+ffffff8002110896:	5d	popq	%rbp
+ffffff8002110897:	c3	retq
+__ZN19IO80211TimeSyncPeer9MetaClassD1Ev:
+ffffff8002110898:	55	pushq	%rbp
+ffffff8002110899:	48 89 e5	movq	%rsp, %rbp
+ffffff800211089c:	5d	popq	%rbp
+ffffff800211089d:	e9 9e 97 93 fe	jmp	0xffffff8000a4a040
+===== SYMBOL __ZN23IO80211SkywalkInterface18isInterfaceEnabledEv =====
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+ffffff8002110815:	48 8b 00	movq	(%rax), %rax
+ffffff8002110818:	48 85 c0	testq	%rax, %rax
+ffffff800211081b:	74 03	je	0xffffff8002110820
+ffffff800211081d:	5d	popq	%rbp
+ffffff800211081e:	ff e0	jmpq	*%rax
+ffffff8002110820:	31 c0	xorl	%eax, %eax
+ffffff8002110822:	5d	popq	%rbp
+ffffff8002110823:	c3	retq
+ffffff8002110824:	90	nop
+ffffff8002110825:	90	nop
+ffffff8002110826:	90	nop
+ffffff8002110827:	90	nop
+ffffff8002110828:	90	nop
+ffffff8002110829:	90	nop
+ffffff800211082a:	90	nop
+ffffff800211082b:	90	nop
+ffffff800211082c:	90	nop
+ffffff800211082d:	90	nop
+ffffff800211082e:	90	nop
+ffffff800211082f:	90	nop
+___chkstk_darwin_probe:
+ffffff8002110830:	51	pushq	%rcx
+ffffff8002110831:	50	pushq	%rax
+ffffff8002110832:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110838:	48 8d 4c 24 18	leaq	0x18(%rsp), %rcx
+ffffff800211083d:	72 17	jb	0xffffff8002110856
+ffffff800211083f:	48 81 e9 00 10 00 00	subq	$0x1000, %rcx
+ffffff8002110846:	84 09	testb	%cl, (%rcx)
+ffffff8002110848:	48 2d 00 10 00 00	subq	$0x1000, %rax
+ffffff800211084e:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110854:	77 e9	ja	0xffffff800211083f
+ffffff8002110856:	48 29 c1	subq	%rax, %rcx
+ffffff8002110859:	84 09	testb	%cl, (%rcx)
+ffffff800211085b:	58	popq	%rax
+ffffff800211085c:	59	popq	%rcx
+ffffff800211085d:	c3	retq
+ffffff800211085e:	90	nop
+ffffff800211085f:	90	nop
+____chkstk_darwin:
+ffffff8002110860:	e9 cb ff ff ff	jmp	___chkstk_darwin_probe
+ffffff8002110865:	90	nop
+__ZN19IO80211TimeSyncPeer9MetaClassC1Ev:
+ffffff8002110866:	55	pushq	%rbp
+ffffff8002110867:	48 89 e5	movq	%rsp, %rbp
+ffffff800211086a:	53	pushq	%rbx
+ffffff800211086b:	50	pushq	%rax
+ffffff800211086c:	48 89 fb	movq	%rdi, %rbx
+ffffff800211086f:	48 8d 35 ba 54 21 00	leaq	0x2154ba(%rip), %rsi ## literal pool for: "IO80211TimeSyncPeer"
+ffffff8002110876:	48 8b 15 13 b8 2a 00	movq	0x2ab813(%rip), %rdx
+ffffff800211087d:	b9 18 00 00 00	movl	$0x18, %ecx
+ffffff8002110882:	e8 b9 90 93 fe	callq	0xffffff8000a49940
+ffffff8002110887:	48 8d 05 a2 c4 2a 00	leaq	0x2ac4a2(%rip), %rax
+ffffff800211088e:	48 89 03	movq	%rax, (%rbx)
+ffffff8002110891:	48 83 c4 08	addq	$0x8, %rsp
+ffffff8002110895:	5b	popq	%rbx
+ffffff8002110896:	5d	popq	%rbp
+ffffff8002110897:	c3	retq
+__ZN19IO80211TimeSyncPeer9MetaClassD1Ev:
+ffffff8002110898:	55	pushq	%rbp
+ffffff8002110899:	48 89 e5	movq	%rsp, %rbp
+ffffff800211089c:	5d	popq	%rbp
+ffffff800211089d:	e9 9e 97 93 fe	jmp	0xffffff8000a4a040
+===== SYMBOL __ZN23IO80211SkywalkInterface18setInterfaceEnableEb =====
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+ffffff8002110815:	48 8b 00	movq	(%rax), %rax
+ffffff8002110818:	48 85 c0	testq	%rax, %rax
+ffffff800211081b:	74 03	je	0xffffff8002110820
+ffffff800211081d:	5d	popq	%rbp
+ffffff800211081e:	ff e0	jmpq	*%rax
+ffffff8002110820:	31 c0	xorl	%eax, %eax
+ffffff8002110822:	5d	popq	%rbp
+ffffff8002110823:	c3	retq
+ffffff8002110824:	90	nop
+ffffff8002110825:	90	nop
+ffffff8002110826:	90	nop
+ffffff8002110827:	90	nop
+ffffff8002110828:	90	nop
+ffffff8002110829:	90	nop
+ffffff800211082a:	90	nop
+ffffff800211082b:	90	nop
+ffffff800211082c:	90	nop
+ffffff800211082d:	90	nop
+ffffff800211082e:	90	nop
+ffffff800211082f:	90	nop
+___chkstk_darwin_probe:
+ffffff8002110830:	51	pushq	%rcx
+ffffff8002110831:	50	pushq	%rax
+ffffff8002110832:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110838:	48 8d 4c 24 18	leaq	0x18(%rsp), %rcx
+ffffff800211083d:	72 17	jb	0xffffff8002110856
+ffffff800211083f:	48 81 e9 00 10 00 00	subq	$0x1000, %rcx
+ffffff8002110846:	84 09	testb	%cl, (%rcx)
+ffffff8002110848:	48 2d 00 10 00 00	subq	$0x1000, %rax
+ffffff800211084e:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110854:	77 e9	ja	0xffffff800211083f
+ffffff8002110856:	48 29 c1	subq	%rax, %rcx
+ffffff8002110859:	84 09	testb	%cl, (%rcx)
+ffffff800211085b:	58	popq	%rax
+ffffff800211085c:	59	popq	%rcx
+ffffff800211085d:	c3	retq
+ffffff800211085e:	90	nop
+ffffff800211085f:	90	nop
+____chkstk_darwin:
+ffffff8002110860:	e9 cb ff ff ff	jmp	___chkstk_darwin_probe
+ffffff8002110865:	90	nop
+__ZN19IO80211TimeSyncPeer9MetaClassC1Ev:
+ffffff8002110866:	55	pushq	%rbp
+ffffff8002110867:	48 89 e5	movq	%rsp, %rbp
+ffffff800211086a:	53	pushq	%rbx
+ffffff800211086b:	50	pushq	%rax
+ffffff800211086c:	48 89 fb	movq	%rdi, %rbx
+ffffff800211086f:	48 8d 35 ba 54 21 00	leaq	0x2154ba(%rip), %rsi ## literal pool for: "IO80211TimeSyncPeer"
+ffffff8002110876:	48 8b 15 13 b8 2a 00	movq	0x2ab813(%rip), %rdx
+ffffff800211087d:	b9 18 00 00 00	movl	$0x18, %ecx
+ffffff8002110882:	e8 b9 90 93 fe	callq	0xffffff8000a49940
+ffffff8002110887:	48 8d 05 a2 c4 2a 00	leaq	0x2ac4a2(%rip), %rax
+ffffff800211088e:	48 89 03	movq	%rax, (%rbx)
+ffffff8002110891:	48 83 c4 08	addq	$0x8, %rsp
+ffffff8002110895:	5b	popq	%rbx
+ffffff8002110896:	5d	popq	%rbp
+ffffff8002110897:	c3	retq
+__ZN19IO80211TimeSyncPeer9MetaClassD1Ev:
+ffffff8002110898:	55	pushq	%rbp
+ffffff8002110899:	48 89 e5	movq	%rsp, %rbp
+ffffff800211089c:	5d	popq	%rbp
+ffffff800211089d:	e9 9e 97 93 fe	jmp	0xffffff8000a4a040
+===== SYMBOL __ZN23IO80211SkywalkInterface6enableEj =====
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+ffffff8002110815:	48 8b 00	movq	(%rax), %rax
+ffffff8002110818:	48 85 c0	testq	%rax, %rax
+ffffff800211081b:	74 03	je	0xffffff8002110820
+ffffff800211081d:	5d	popq	%rbp
+ffffff800211081e:	ff e0	jmpq	*%rax
+ffffff8002110820:	31 c0	xorl	%eax, %eax
+ffffff8002110822:	5d	popq	%rbp
+ffffff8002110823:	c3	retq
+ffffff8002110824:	90	nop
+ffffff8002110825:	90	nop
+ffffff8002110826:	90	nop
+ffffff8002110827:	90	nop
+ffffff8002110828:	90	nop
+ffffff8002110829:	90	nop
+ffffff800211082a:	90	nop
+ffffff800211082b:	90	nop
+ffffff800211082c:	90	nop
+ffffff800211082d:	90	nop
+ffffff800211082e:	90	nop
+ffffff800211082f:	90	nop
+___chkstk_darwin_probe:
+ffffff8002110830:	51	pushq	%rcx
+ffffff8002110831:	50	pushq	%rax
+ffffff8002110832:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110838:	48 8d 4c 24 18	leaq	0x18(%rsp), %rcx
+ffffff800211083d:	72 17	jb	0xffffff8002110856
+ffffff800211083f:	48 81 e9 00 10 00 00	subq	$0x1000, %rcx
+ffffff8002110846:	84 09	testb	%cl, (%rcx)
+ffffff8002110848:	48 2d 00 10 00 00	subq	$0x1000, %rax
+ffffff800211084e:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110854:	77 e9	ja	0xffffff800211083f
+ffffff8002110856:	48 29 c1	subq	%rax, %rcx
+ffffff8002110859:	84 09	testb	%cl, (%rcx)
+ffffff800211085b:	58	popq	%rax
+ffffff800211085c:	59	popq	%rcx
+ffffff800211085d:	c3	retq
+ffffff800211085e:	90	nop
+ffffff800211085f:	90	nop
+____chkstk_darwin:
+ffffff8002110860:	e9 cb ff ff ff	jmp	___chkstk_darwin_probe
+ffffff8002110865:	90	nop
+__ZN19IO80211TimeSyncPeer9MetaClassC1Ev:
+ffffff8002110866:	55	pushq	%rbp
+ffffff8002110867:	48 89 e5	movq	%rsp, %rbp
+ffffff800211086a:	53	pushq	%rbx
+ffffff800211086b:	50	pushq	%rax
+ffffff800211086c:	48 89 fb	movq	%rdi, %rbx
+ffffff800211086f:	48 8d 35 ba 54 21 00	leaq	0x2154ba(%rip), %rsi ## literal pool for: "IO80211TimeSyncPeer"
+ffffff8002110876:	48 8b 15 13 b8 2a 00	movq	0x2ab813(%rip), %rdx
+ffffff800211087d:	b9 18 00 00 00	movl	$0x18, %ecx
+ffffff8002110882:	e8 b9 90 93 fe	callq	0xffffff8000a49940
+ffffff8002110887:	48 8d 05 a2 c4 2a 00	leaq	0x2ac4a2(%rip), %rax
+ffffff800211088e:	48 89 03	movq	%rax, (%rbx)
+ffffff8002110891:	48 83 c4 08	addq	$0x8, %rsp
+ffffff8002110895:	5b	popq	%rbx
+ffffff8002110896:	5d	popq	%rbp
+ffffff8002110897:	c3	retq
+__ZN19IO80211TimeSyncPeer9MetaClassD1Ev:
+ffffff8002110898:	55	pushq	%rbp
+ffffff8002110899:	48 89 e5	movq	%rsp, %rbp
+ffffff800211089c:	5d	popq	%rbp
+ffffff800211089d:	e9 9e 97 93 fe	jmp	0xffffff8000a4a040
+===== SYMBOL __ZN23IO80211SkywalkInterface7disableEj =====
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho:
+(__TEXT,__text) section
+__start:
+ffffff80021107f0:	55	pushq	%rbp
+ffffff80021107f1:	48 89 e5	movq	%rsp, %rbp
+ffffff80021107f4:	48 8d 05 c5 5d 2e 00	leaq	__realmain(%rip), %rax
+ffffff80021107fb:	48 8b 00	movq	(%rax), %rax
+ffffff80021107fe:	48 85 c0	testq	%rax, %rax
+ffffff8002110801:	74 03	je	0xffffff8002110806
+ffffff8002110803:	5d	popq	%rbp
+ffffff8002110804:	ff e0	jmpq	*%rax
+ffffff8002110806:	31 c0	xorl	%eax, %eax
+ffffff8002110808:	5d	popq	%rbp
+ffffff8002110809:	c3	retq
+__stop:
+ffffff800211080a:	55	pushq	%rbp
+ffffff800211080b:	48 89 e5	movq	%rsp, %rbp
+ffffff800211080e:	48 8d 05 b3 5d 2e 00	leaq	__antimain(%rip), %rax
+ffffff8002110815:	48 8b 00	movq	(%rax), %rax
+ffffff8002110818:	48 85 c0	testq	%rax, %rax
+ffffff800211081b:	74 03	je	0xffffff8002110820
+ffffff800211081d:	5d	popq	%rbp
+ffffff800211081e:	ff e0	jmpq	*%rax
+ffffff8002110820:	31 c0	xorl	%eax, %eax
+ffffff8002110822:	5d	popq	%rbp
+ffffff8002110823:	c3	retq
+ffffff8002110824:	90	nop
+ffffff8002110825:	90	nop
+ffffff8002110826:	90	nop
+ffffff8002110827:	90	nop
+ffffff8002110828:	90	nop
+ffffff8002110829:	90	nop
+ffffff800211082a:	90	nop
+ffffff800211082b:	90	nop
+ffffff800211082c:	90	nop
+ffffff800211082d:	90	nop
+ffffff800211082e:	90	nop
+ffffff800211082f:	90	nop
+___chkstk_darwin_probe:
+ffffff8002110830:	51	pushq	%rcx
+ffffff8002110831:	50	pushq	%rax
+ffffff8002110832:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110838:	48 8d 4c 24 18	leaq	0x18(%rsp), %rcx
+ffffff800211083d:	72 17	jb	0xffffff8002110856
+ffffff800211083f:	48 81 e9 00 10 00 00	subq	$0x1000, %rcx
+ffffff8002110846:	84 09	testb	%cl, (%rcx)
+ffffff8002110848:	48 2d 00 10 00 00	subq	$0x1000, %rax
+ffffff800211084e:	48 3d 00 10 00 00	cmpq	$0x1000, %rax
+ffffff8002110854:	77 e9	ja	0xffffff800211083f
+ffffff8002110856:	48 29 c1	subq	%rax, %rcx
+ffffff8002110859:	84 09	testb	%cl, (%rcx)
+ffffff800211085b:	58	popq	%rax
+ffffff800211085c:	59	popq	%rcx
+ffffff800211085d:	c3	retq
+ffffff800211085e:	90	nop
+ffffff800211085f:	90	nop
+____chkstk_darwin:
+ffffff8002110860:	e9 cb ff ff ff	jmp	___chkstk_darwin_probe
+ffffff8002110865:	90	nop
+__ZN19IO80211TimeSyncPeer9MetaClassC1Ev:
+ffffff8002110866:	55	pushq	%rbp
+ffffff8002110867:	48 89 e5	movq	%rsp, %rbp
+ffffff800211086a:	53	pushq	%rbx
+ffffff800211086b:	50	pushq	%rax
+ffffff800211086c:	48 89 fb	movq	%rdi, %rbx
+ffffff800211086f:	48 8d 35 ba 54 21 00	leaq	0x2154ba(%rip), %rsi ## literal pool for: "IO80211TimeSyncPeer"
+ffffff8002110876:	48 8b 15 13 b8 2a 00	movq	0x2ab813(%rip), %rdx
+ffffff800211087d:	b9 18 00 00 00	movl	$0x18, %ecx
+ffffff8002110882:	e8 b9 90 93 fe	callq	0xffffff8000a49940
+ffffff8002110887:	48 8d 05 a2 c4 2a 00	leaq	0x2ac4a2(%rip), %rax
+ffffff800211088e:	48 89 03	movq	%rax, (%rbx)
+ffffff8002110891:	48 83 c4 08	addq	$0x8, %rsp
+ffffff8002110895:	5b	popq	%rbx
+ffffff8002110896:	5d	popq	%rbp
+ffffff8002110897:	c3	retq
+__ZN19IO80211TimeSyncPeer9MetaClassD1Ev:
+ffffff8002110898:	55	pushq	%rbp
+ffffff8002110899:	48 89 e5	movq	%rsp, %rbp
+ffffff800211089c:	5d	popq	%rbp
+ffffff800211089d:	e9 9e 97 93 fe	jmp	0xffffff8000a4a040
+STAGE126_POWER_SYMBOL_COUNT=8
+STAGE126_POWER_METHODS=DISASSEMBLED_CANDIDATES
+--- Apple controller power selector symbols ---
+STAGE126_POWER_CALL_GRAPH=REVIEW_REQUIRED
+STAGE126_DRIVER_SOURCE_MODIFIED=NO
+STAGE126_BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+========== END STAGE126 ==========
+STAGE126_UPLOAD_COMPACTED=YES
+STAGE126_FULL_REPORT_BYTES=245571662
