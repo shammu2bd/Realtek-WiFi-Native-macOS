@@ -29,7 +29,7 @@ void rtw_sec_write_cam(struct rtw_dev *rtwdev,
 
 	if (hw_key_idx >= RTW_MAX_SEC_CAM_NUM ||
 	    hw_key_idx >= sec->total_cam_num) {
-		rtw_warn(rtwdev, "refusing out-of-range CAM write index %u\n",
+		dev_warn(rtwdev->dev, "refusing out-of-range CAM write index %u\n",
 			 hw_key_idx);
 		return;
 	}
@@ -95,7 +95,7 @@ void rtw_sec_clear_cam(struct rtw_dev *rtwdev,
 
 	if (hw_key_idx >= RTW_MAX_SEC_CAM_NUM ||
 	    hw_key_idx >= sec->total_cam_num) {
-		rtw_warn(rtwdev, "refusing out-of-range CAM clear index %u\n",
+		dev_warn(rtwdev->dev, "refusing out-of-range CAM clear index %u\n",
 			 hw_key_idx);
 		return;
 	}
