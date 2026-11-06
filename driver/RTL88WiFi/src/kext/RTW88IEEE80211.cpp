@@ -779,7 +779,7 @@ void RTW88IEEE80211::clearKeys()
     memset(_snonce, 0, sizeof(_snonce));
     memset(_replayCtr, 0, sizeof(_replayCtr));
     memset(_installedM3ReplayCtr, 0, sizeof(_installedM3ReplayCtr));
-    _txBAState.clear();
+    _txBaState.clear();
     __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
     if (_lock) IOLockLock(_lock);
     _txBaPending = false;
@@ -830,7 +830,7 @@ void RTW88IEEE80211::releaseSta()
         _sta = nullptr;
         _staAllocSize = 0;
     }
-    _txBAState.clear();
+    _txBaState.clear();
     /* Sequence counters are monotonic for the lifetime of this radio object.
      * They are deliberately not reset on station/key teardown. */
     rxBaTeardownAll();
@@ -1810,7 +1810,7 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
             }
             const bool lostLinkDuringConnectedScan =
                 (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
-                 __atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED
+                 __atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);
             clearKeys();
             rxBaTeardownAll();
             if (lostLinkDuringConnectedScan) {
@@ -2213,7 +2213,7 @@ void RTW88IEEE80211::processRxData(struct sk_buff *skb)
     bool connected = (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED) ||
                      (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_HANDSHAKING) ||
                      (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
-                      __atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED
+                      __atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);
     if (!connected) {
         kfree_skb(skb);
         return;
@@ -4780,6 +4780,8 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
         uint8_t replayCopy[8] = {};
         bool duplicate = false;
         RTW88TxStateGate::TransmitLease txLease;
+        uint8_t gtk_len = 0;
+        uint8_t gtk_idx = 0;
         {
             /* Validate M3, verify its MIC, unwrap the GTK and install both
              * hardware keys while the writer side owns the entire key state.
@@ -4804,8 +4806,6 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             }
 
             uint8_t gtk[32] = {};
-            uint8_t gtk_len = 0;
-            uint8_t gtk_idx = 0;
             const uint8_t *key_data = data + 99;
             uint8_t unwrapped[256] = {};
             uint16_t unwrapped_len = 0;
@@ -5144,7 +5144,7 @@ void RTW88IEEE80211::startTxAggregation()
     auto txLease = _txStateGate.tryEnterTransmit();
     if (!txLease)
         return;
-    if (_txBAState.active())
+    if (_txBaState.active())
         return;
     if (!htAllowed() || !_sta || !_sta->deflink.ht_cap.ht_supported) {
         if (_lock) IOLockLock(_lock);
@@ -5181,7 +5181,7 @@ void RTW88IEEE80211::housekeeping()
         _baRecovery.onFailed(now);
         IOLog("rtw88: TX ADDBA response timed out; will retry\n");
     }
-    retry = !_txBAState.active() && !_txBaPending && _baRecovery.due(now);
+    retry = !_txBaState.active() && !_txBaPending && _baRecovery.due(now);
     if (_lock) IOLockUnlock(_lock);
 
     if (retry)
@@ -5234,7 +5234,7 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
             _txBaPending = false;
             accepted = status == 0 && (param & (1u << 1));
             if (accepted) {
-                _txBAState.activate(tid);
+                _txBaState.activate(tid);
                 _baRecovery.onAccepted(rtw88JoinNowUS());
             } else {
                 _baRecovery.onFailed(rtw88JoinNowUS());
@@ -5263,9 +5263,9 @@ void RTW88IEEE80211::handleBackAction(const uint8_t *b, uint32_t len)
         auto mutation = beginTxStateMutation();
         if (_lock) IOLockLock(_lock);
         tore = !initiator && tid == _baTid;
-        wasActive = _txBAState.active();
+        wasActive = _txBaState.active();
         if (tore) {
-            _txBAState.clear();
+            _txBaState.clear();
             _txBaPending = false;
             _baRecovery.onTornDown(rtw88JoinNowUS());
         }
@@ -5688,7 +5688,7 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
     memset(info, 0, sizeof(*info));
     info->flags = IEEE80211_TX_CTL_FIRST_FRAGMENT;
-    const uint32_t baState = _txBAState.snapshot();
+    const uint32_t baState = _txBaState.snapshot();
     if (qos && accessCategory == IEEE80211_AC_BE &&
         (baState & RTW88TxBAState::kActiveBit) &&
         tid == (baState & RTW88TxBAState::kTidMask) && !eapol)
