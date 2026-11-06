@@ -1,0 +1,312 @@
+========== STAGE108 REGISTRATION TRANSACTION ==========
+STAGE108_SOURCE_COMMIT=fc08608ec5c8a52899a96db4faa57f8033e96332
+STAGE108_TARGET=macOS_15.8.1_24H32_x86_64
+STAGE108_SCOPE=ATOMIC_REGISTRATION_DEREGISTRATION_QUEUE_OWNER_ROLLBACK
+STAGE108_SIGNING=DISABLED
+STAGE108_SIP_OR_OPENCORE_CHANGE=NONE
+
+----- C++ transaction state-machine test -----
+PASS: Stage108 C++ transaction state machine
+
+----- Python source-contract suite -----
+PASS: 24H32 registration uses Apple's audited infra wrapper and stable seven-queue vector
+PASS: atomic begin/commit/abort and deregistration retry/quarantine states guard queue ownership
+PASS: opaque descriptor tail and private QueueSet/LogicalLink layouts are not guessed
+PASS: controller publishes only after registration and opens PCI interrupt gate afterward
+PASS: RX sink transfers only accepted packets after both interface and queue registration
+PASS: failed local registration rollback quarantines all queue owners
+PASS: radio events and power controls flow through the registered infra interface
+PASS: obsolete bool registration shortcuts are absent
+PASS: RTW88 TX-resume callback wakes all four registered WMM queues
+PASS: registration payloads/expansion blocks remain opaque and target ABI declarations are pinned
+PASS: native interface uses Apple's 24H32 registration/deregistration wrapper transactionally
+PASS: QueueSet/LogicalLink private layouts are not constructed by driver code
+PASS: controller commits infra registration before publication and PCI interrupt activation
+PASS: 0x130-byte aligned opaque RegistrationInfo storage
+PASS: exact 24H32 Apple producer overrides and six-byte address copy
+PASS: all unlisted initializer-owned bytes remain untouched
+PASS: version/size header validation and clear
+PASS: RegistrationInfo buffer is 0x130 bytes and 8-byte aligned
+PASS: builder follows initRegistrationInfo(option=1, size=0x130)
+PASS: Stage108 registration/deregistration uses explicit queue-owner state
+PASS: controller registers and publishes the interface before PCI interrupt activation
+PASS: four-entry target WMM queue array is fixed, ordered, validated, and journal-rollback compatible
+PASS: target TX action reports accepted prefix; native registration remains fenced
+PASS: all nine queue/pool acquisitions are journaled and committed only when complete
+PASS: partial and committed teardown pop resources in reverse order
+PASS: registration and packet callbacks remain fail-closed
+
+----- Native unsigned kext rebuild -----
+  WCL-ABI CXX  RTW88WCLController.cpp (24H32, bounded RX packet owner; compile-only)
+  WCL-ABI CXX  RTW88WCLInfraInterface.cpp (24H32, compile-only)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:277:16: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  277 |     if (!queues->queuesAllocated())
+      |                ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:323:20: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  323 |     status = queues->beginRegistrationTransaction();
+      |                    ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:335:21: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  335 |         info, queues->registrationQueueArray(),
+      |                     ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:336:15: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  336 |         queues->registrationQueueCount(),
+      |               ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:337:15: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  337 |         queues->txPacketPool(), queues->rxPacketPool());
+      |               ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:337:39: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  337 |         queues->txPacketPool(), queues->rxPacketPool());
+      |                                       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:340:19: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  340 |             queues->abortRegistrationTransaction();
+      |                   ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:342:25: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  342 |             (void)queues->abortRegistrationTransaction(true);
+      |                         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:354:41: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  354 |     const IOReturn commitStatus = queues->commitRegistrationTransaction();
+      |                                         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:359:23: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  359 |                 queues->abortRegistrationTransaction();
+      |                       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:361:29: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  361 |                 (void)queues->abortRegistrationTransaction(true);
+      |                             ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:366:25: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  366 |             (void)queues->abortRegistrationTransaction(true);
+      |                         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:409:19: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  409 |         if (queues->registrationInProgress() ||
+      |                   ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:410:19: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  410 |             queues->registrationQuarantined())
+      |                   ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:413:19: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  413 |         if (queues->isRegistered()) {
+      |                   ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:414:37: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  414 |             IOReturn status = queues->beginDeregistrationTransaction();
+      |                                     ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:421:27: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  421 |                     queues->abortDeregistrationTransaction();
+      |                           ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:423:33: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  423 |                     (void)queues->abortDeregistrationTransaction(true);
+      |                                 ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:431:28: error: member access into incomplete type 'RTW88WCLSkywalkQueues'
+  431 |             status = queues->finishDeregistrationTransaction();
+      |                            ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:17:7: note: forward declaration of 'RTW88WCLSkywalkQueues'
+   17 | class RTW88WCLSkywalkQueues;
+      |       ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:33:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/types.h:141:9: warning: 'ALIGN' macro redefined [-Wmacro-redefined]
+  141 | #define ALIGN(x, a)      (((x) + (a) - 1) & ~((a) - 1))
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/param.h:83:9: note: previous definition is here
+   83 | #define ALIGN(p)        __DARWIN_ALIGN(p)
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:33:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/types.h:150:9: warning: 'LIST_HEAD' macro redefined [-Wmacro-redefined]
+  150 | #define LIST_HEAD(name) struct list_head name = LIST_HEAD_INIT(name)
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/queue.h:465:9: note: previous definition is here
+  465 | #define LIST_HEAD(name, type)                                           \
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+20 errors generated.
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:62:9: warning: 'EAGAIN' macro redefined [-Wmacro-redefined]
+   62 | #define EAGAIN        11
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:120:9: note: previous definition is here
+  120 | #define EAGAIN          35              /* Resource temporarily unavailable */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:71:9: warning: 'EOPNOTSUPP' macro redefined [-Wmacro-redefined]
+   71 | #define EOPNOTSUPP    95
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:230:9: note: previous definition is here
+  230 | #define EOPNOTSUPP      102             /* Operation not supported on socket */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:72:9: warning: 'ETIMEDOUT' macro redefined [-Wmacro-redefined]
+   72 | #define ETIMEDOUT    110
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:157:9: note: previous definition is here
+  157 | #define ETIMEDOUT       60              /* Operation timed out */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:73:9: warning: 'ENOTSUP' macro redefined [-Wmacro-redefined]
+   73 | #define ENOTSUP EOPNOTSUPP
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:135:9: note: previous definition is here
+  135 | #define ENOTSUP         45              /* Operation not supported */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:75:9: warning: 'EPROTO' macro redefined [-Wmacro-redefined]
+   75 | #define EPROTO        71
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:226:9: note: previous definition is here
+  226 | #define EPROTO          100             /* Protocol error */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:76:9: warning: 'EOVERFLOW' macro redefined [-Wmacro-redefined]
+   76 | #define EOVERFLOW     75
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:201:9: note: previous definition is here
+  201 | #define EOVERFLOW       84              /* Value too large to be stored in data type */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:78:9: warning: 'ESHUTDOWN' macro redefined [-Wmacro-redefined]
+   78 | #define ESHUTDOWN    108
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:154:9: note: previous definition is here
+  154 | #define ESHUTDOWN       58              /* Can't send after socket shutdown */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:79:9: warning: 'EINPROGRESS' macro redefined [-Wmacro-redefined]
+   79 | #define EINPROGRESS  115
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:122:9: note: previous definition is here
+  122 | #define EINPROGRESS     36              /* Operation now in progress */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:80:9: warning: 'EILSEQ' macro redefined [-Wmacro-redefined]
+   80 | #define EILSEQ        84
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:215:9: note: previous definition is here
+  215 | #define EILSEQ          92              /* Illegal byte sequence */
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:38:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/kernel.h:81:9: warning: 'ETIME' macro redefined [-Wmacro-redefined]
+   81 | #define ETIME         62
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/errno.h:227:9: note: previous definition is here
+  227 | #define ETIME           101             /* STREAM ioctl timeout */
+      |         ^
+make: *** [/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o] Error 1
+make: *** Waiting for unfinished jobs....
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:14:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:63:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/net/mac80211.h:96:9: warning: struct has size 0 in C, size 1 in C++ [-Wextern-c-compat]
+   96 |         struct {
+      |         ^
+22 warnings generated.
+
+STAGE108_RESULT=FAIL
+STAGE108_SOURCE_COMMIT=fc08608ec5c8a52899a96db4faa57f8033e96332
+STAGE108_DETAIL_LOG=Development/Logs/stage108-registration-transaction-20261106T093052Z.log
+STAGE108_REGISTRATION_RUNTIME=NOT_RUN
+STAGE108_RADIO_START=SOURCE_PATH_IMPLEMENTED_RUNTIME_NOT_RUN
+STAGE108_TX_RX_RUNTIME=NOT_RUN
+STAGE108_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN HARDWARE_TEST=NOT_RUN
+STAGE108_SIP_CHANGE=NONE NVRAM_CHANGE=NONE EFI_WRITE=NONE
+STAGE108_PR4_MERGE=BLOCKED
+=======================================================
