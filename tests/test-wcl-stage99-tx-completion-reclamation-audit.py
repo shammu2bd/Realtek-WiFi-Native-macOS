@@ -21,7 +21,7 @@ ADAPTER_HPP = (WCL / "RTW88WCLSkywalkTxAdapter.hpp").read_text()
 WORKER_CPP = (WCL / "RTW88WCLTxCompletionWorkQueue.cpp").read_text()
 WORKER_HPP = (WCL / "RTW88WCLTxCompletionWorkQueue.hpp").read_text()
 CONTROLLER_CPP = (WCL / "RTW88WCLController.cpp").read_text()
-RETIRE_LIST = (WCL / "RTW88WCLCompletionTokenRetireList.hpp").read_text()
+QUEUE = (COMPAT / "linux/mpsc_bounded_queue.h").read_text()
 MAKE = (ROOT / "driver/RTL88WiFi/Makefile").read_text()
 
 
@@ -100,10 +100,11 @@ pci_tx_isr = body(PCI_C, "static void rtw_pci_tx_isr(")
 tx_report = body(TX_C, "void rtw_tx_report_handle(")
 native_tx_status = body(RADIO_CPP, "void RTW88IEEE80211::txStatus(")
 
-check("TOKEN_HAS_INTRUSIVE_RETIRED_LINK",
-      "struct rtw88_skb_tx_completion_token *deferred_next;" in TOKEN_H and
-      "RTW88WCLCompletionTokenRetireList<rtw88_skb_tx_completion_token>" in ADAPTER_HPP,
-      "token embeds the link consumed by the adapter's MPSC retire stack")
+check("TOKEN_USES_EXTERNAL_BOUNDED_RETIRE_STORAGE",
+      "deferred_next" not in TOKEN_H and
+      "RTW88WCLCompletionTokenRetireList" not in ADAPTER_HPP and
+      "struct rtw88_mpsc_bounded_queue _retiredCompletionTokens" in ADAPTER_HPP,
+      "token memory is queued externally and no reclaimed intrusive next pointer remains")
 
 check("TOKEN_RETIRED_BEFORE_BACKEND_CALLBACK",
       token_dispatch.find("if (release)") < token_dispatch.find("release(token)") <
@@ -116,25 +117,24 @@ check("IRQ_CONTEXT_RELEASE_HOOK_DOES_NOT_FREE",
       "kfree(token)" not in radio_release and "IOFree(" not in radio_release,
       "release hook performs only an atomic hook lookup and bounded retire callback")
 
-check("LOCK_FREE_MPSC_RETIRE_STACK",
-      "node->deferred_next = head;" in RETIRE_LIST and
-      "__atomic_compare_exchange_n" in RETIRE_LIST and
-      "__atomic_exchange_n" in RETIRE_LIST and
-      "IOLock" not in RETIRE_LIST and "spin_lock" not in RETIRE_LIST and
-      "kfree(" not in RETIRE_LIST and "IOFree(" not in RETIRE_LIST,
-      "completion producers use atomic intrusive push; one consumer detaches a whole list")
+check("LOCK_FREE_SEQUENCE_NUMBERED_TOKEN_QUEUE",
+      "volatile uint32_t sequence" in QUEUE and
+      "__atomic_compare_exchange_n(&queue->enqueue_pos" in QUEUE and
+      "__ATOMIC_RELEASE" in QUEUE and
+      "RTW88_MPSC_QUEUE_CAPACITY 2048U" in QUEUE,
+      "completion producers reserve sequence-numbered slots; a single consumer reclaims pointers")
 
-check("RETIRE_PUBLICATION_COUNTER_PRECEDES_PUSH",
+check("RETIRE_PUBLICATION_COUNTER_PRECEDES_ENQUEUE",
       retire.find("__atomic_add_fetch(&_retiredCompletionTokenCount") <
-      retire.find("_retiredCompletionTokens.push(token)") and
+      retire.find("rtw88_mpsc_bounded_queue_enqueue") and
       "kfree(" not in retire and "IOFree(" not in retire,
       "teardown sees a token in the publication window and the producer never frees it")
 
 check("POTENTIALLY_BLOCKING_FREE_ONLY_IN_REAPER",
-      reap.find("_retiredCompletionTokens.takeAll()") <
-      reap.find("token->deferred_next") < reap.find("kfree(token)") <
+      reap.find("rtw88_mpsc_bounded_queue_dequeue") <
+      reap.find("kfree(token)") <
       reap.find("__atomic_sub_fetch(&_retiredCompletionTokenCount"),
-      "deferred consumer saves the next link, frees token storage, then drops outstanding count")
+      "deferred single consumer dequeues token, frees storage, then drops outstanding count")
 
 check("C_BRIDGE_RETURNS_TOKEN_TO_OWNING_ADAPTER",
       "adapter->retireCompletionToken(" in bridge and
