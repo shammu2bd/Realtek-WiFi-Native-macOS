@@ -1563,3 +1563,24 @@ STAGE89_V20_LOGS: Development/Logs/stage89-v20/run-20261105-112544-ad7cb1db9420/
 - Full report: Development/Logs/stage94-radio-tx-sync-20261106.md
 - Validation remains Linux-host portable/source audit only; no macOS kernel/IOKit compile, full kext link, signing, install, load, running-24H32 runtime/disassembly, RTL8821CE hardware TX/RX or throughput test.
 - Native queue registration/enabling, interface publication, radio start and PR #4 merge remain BLOCKED.
+
+
+========== STAGE95 INDEPENDENT PCI KEY-RETIREMENT / TXQ ADMISSION AUDIT ==========
+STAGE95_DATE=2026-11-06
+STAGE95_BRANCH=work/stage91-tx-submission-callback-v1
+STAGE95_SCOPE=READ_ONLY_SOURCE_AUDIT; PCI_HI0_RING_RETIREMENT; MAC80211_TXQ_PRODUCER_QUIESCENCE; HCI_CALLBACK; FLUSH_WORK_LOCK_ORDER
+STAGE95_REPORT=Development/Logs/stage95-key-retirement-audit-20261106.md
+STAGE95_TEST=tests/test-wcl-stage95-key-retirement.py
+STAGE95_COMBINED_RUNNER=tools/run-stage95-key-retirement-audit.sh
+STAGE95_WORKFLOW=.github/workflows/stage95-key-retirement-audit.yml
+STAGE95_RESULT=BLOCKED_TWO_SOURCE_FINDINGS
+FINDING_1=PCI synchronous all-queues drain skips RTW_TX_QUEUE_HI0 although broadcast/multicast data maps to HI0 and PCI has a dedicated HI0 ring/doorbell; GTK CAM retirement is therefore not proven safe.
+FINDING_2=rtw_ops_wake_tx_queue invokes __rtw_tx_work synchronously for VO; flush_work(&rtwdev->tx_work) does not wait for that inline producer and no shared TXQ admission-close barrier was found in the reviewed path.
+MUTEX_REVIEW=flush_work occurs while rtwdev->mutex is held; no direct mutex acquisition was found in the audited tx_work/txq_push bodies, so a deadlock is not claimed. Lower HCI call-chain/runtime review remains open.
+CONFIRMED=PCI HCI synchronous callback registered; missing callback fails closed; CAM clear follows both PCI/HCI and MAC FIFO drain success.
+DRIVER_SOURCE_MODIFIED=NO
+TEST_RESULT_EXPECTED=Audit runner succeeds when it correctly identifies both blockers; audit gate remains BLOCKED.
+MACOS_KERNEL_BUILD=NOT_RUN | FULL_KEXT_LINK=NOT_RUN | SIGN=NOT_RUN | INSTALL=NOT_RUN | LOAD=NOT_RUN
+HARDWARE_TX_RX=NOT_RUN | THROUGHPUT=NOT_RUN | NATIVE_QUEUE_ACTIVATION=BLOCKED | PR_MERGE=BLOCKED
+KNOWN_GOOD_LEGACY_KEXT=UNCHANGED | OPENCORE_SIP_NVRAM=UNCHANGED
+==============================================================
