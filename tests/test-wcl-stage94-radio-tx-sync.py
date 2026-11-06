@@ -209,6 +209,7 @@ check("CLEAR_KEYS_RETAINS_UNRETIRED_OBJECTS",
 pci_ring_flush = function(pci, "static bool __pci_flush_queue_sync(")
 pci_all_flush = function(pci, "static bool rtw_pci_flush_queues_sync(")
 mac_all_flush = function(mac, "bool rtw_mac_flush_queues_sync(")
+mac_one_flush = function(mac, "static bool __rtw_mac_flush_prio_queue_sync(")
 hci_all_flush = function(hci, "static inline bool rtw_hci_flush_all_queues_sync(")
 set_key = function(mac80211, "static int rtw_ops_set_key(")
 check("PCI_RING_DRAIN_REPORTS_TIMEOUT",
@@ -217,8 +218,9 @@ check("PCI_RING_DRAIN_REPORTS_TIMEOUT",
       "__pci_flush_queue_sync(rtwdev, q)" in pci_all_flush,
       "PCI drain succeeds only when hardware consumer reaches software producer; timeout is false")
 check("MAC_FIRMWARE_FIFO_DRAIN_REPORTS_TIMEOUT",
-      "rsvd_page == avail_page" in mac_all_flush and
-      "return true;" in mac_all_flush and "return false;" in mac_all_flush,
+      "rsvd_page == avail_page" in mac_one_flush and
+      "return true;" in mac_one_flush and "return false;" in mac_one_flush and
+      "__rtw_mac_flush_prio_queue_sync(rtwdev, q, drop)" in mac_all_flush,
       "firmware priority FIFO page return is explicitly checked")
 check("HCI_SYNC_FLUSH_MISSING_CALLBACK_FAILS_CLOSED",
       "!rtwdev->hci.ops->flush_queues_sync" in hci_all_flush and
@@ -268,7 +270,9 @@ scan = function(cpp, "void RTW88IEEE80211::runManualScan()")
 check("TARGET_BSS_RETRY_PUBLICATION",
       "beginTxStateMutation()" in retry and
       retry.find("beginTxStateMutation()") < retry.find("memcpy(&_targetBSS") and
-      retry.find("IOLockUnlock(_bssLock)") < retry.find("mutation.finish()"),
+      retry.find("beginTxStateMutation()") < retry.find("IOLockLock(_bssLock)") <
+      retry.find("IOLockUnlock(_bssLock)") < retry.find("memcpy(&_targetBSS") <
+      retry.rfind("mutation.finish()"),
       "retry-to-another-BSS target/RSN publication is atomic to TX and does not wait for the gate while holding the BSS lock")
 check("CHANNEL_AND_WIDTH_MUTATION",
       ("beginTxStateMutation()" in channel or "existingMutation" in channel) and
@@ -287,9 +291,9 @@ check("POWEROFF_RELEASES_WRITER_BEFORE_CORE_DRAIN",
       "_coreStopping" in power_off,
       "powered=false and reader drain complete before ops->stop runs with no writer held")
 check("STOP_RELEASES_WRITER_BEFORE_REMOVAL",
-      stop.find("powerOff();") < stop.find("remove_interface") <
+      stop.find("powerOff();") < stop.find("hw->ops->remove_interface(") <
       stop.find("rtw_pci_remove(") and
-      "ops->stop" not in stop,
+      "hw->ops->stop(" not in stop,
       "VIF/PCI teardown follows the out-of-gate core stop/drain sequence")
 power_on = function(cpp, "IOReturn RTW88IEEE80211::powerOn()")
 check("POWERON_PUBLISHES_AFTER_RESTORE",
