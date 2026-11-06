@@ -69,17 +69,22 @@ If any drain or join fails, cleanup returns busy/false and retains owners rather
 - [Stage94 radio synchronization run 42166532656](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42166532656): success; **39 checks passed, 0 blockers**.
 - The initial target-Mac clean dual-object build was subsequently attempted from source commit `f0ce12ca9b1265bda583f9443f42d6e4baba5d52` on Sequoia 15.8.1 (24H32) / Xcode 16.4. The build failed at `rtw88_compat.c:1340`: a diagnostic string contained a raw source newline, producing an unterminated string and `expected expression`.
 - Corrected the diagnostic to use an escaped newline in commit `51ec80ac018328469613337ba7175642f55a9e0a`. Added a regression assertion in `tests/test-stage102-xnu-thread-call-lifecycle.py` to reject this exact malformed form; the final regression-test commit is `b6e7b9913f5781f38a5159cc5b7d7325b6c445f0`.
-- The post-fix static/portable suite and target-Mac clean dual-object compile have **not yet been rerun**. The original 31-check Stage102 Actions pass therefore predates the diagnostic fix and does not validate the amended test/source pair.
+- Post-fix target-Mac run from source commit `bc85f74408787bde826f20e210706d0ae15584b5`: **PASS** on macOS 15.8.1 (24H32), x86_64, Xcode 16.4 (16F6).
+- Post-fix Stage102 source/API suite: **32 checks passed, 0 failed**; the new malformed-string regression assertion passed.
+- Portable thread-call cancellation and producer-admission models: **PASS**, including the 12-producer shutdown race.
+- Stage99 bounded MPSC token-reclamation audit: **25 checks passed, 0 failed**; 12-producer retirement stress and exactly-once consumption passed.
+- Clean dual-object build: `NATIVE_COMPILE_ONLY=PASS`, `ALL_OBJECT_COMPILE_ONLY=PASS`, **49 object files**, exit status **0**. The compile is object-only; no link, bundle, signing, install or load.
+- Build transcript: [Stage102 post-fix clean dual-object compile](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/blob/work/stage91-tx-submission-callback-v1/Development/Logs/stage102-post-fix-clean-dual-object-compile-20261106T051547Z.log).
 
 ## Build failure and correction
 
 The published clean-build log is `Development/Logs/stage102-clean-dual-object-compile-20261106T051059Z.log`. It records exit status 2 and one compiler error: `rtw88_compat.c:1340:29: error: expected expression`, preceded by `missing terminating '"' character`. The compiler stopped while building `build/compat/rtw88_compat.o`; the other displayed warnings are nonfatal and are not the cause of the failure.
 
-The source and regression-test corrections are committed, but Actions verification and a fresh target-Mac clean dual-object build remain pending. No compile pass is claimed.
+The source and regression-test corrections are committed, and both the post-fix portable/source validation and the fresh target-Mac clean dual-object build now pass. The build source commit is recorded in the transcript as `bc85f74408787bde826f20e210706d0ae15584b5`.
 
 ## Still open — no runtime claim
 
-- Fresh target-Mac 24H32 compile of the Stage102 source: **pending**.
+- Fresh target-Mac 24H32 clean dual-object compile: **passed** (49 objects; object-only).
 - Real XNU thread-call execution / cancellation / re-enqueue race testing on the Hackintosh: **not run**.
 - Real IOWorkLoop/timer callback teardown under kernel scheduling: **not run**.
 - Full kext link, signing, installation/loading, native activation and RTL8821CE hardware TX/RX: **not performed**.
