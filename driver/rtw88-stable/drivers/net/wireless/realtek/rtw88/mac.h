@@ -40,12 +40,19 @@ int rtw_download_firmware(struct rtw_dev *rtwdev, struct rtw_fw_state *fw);
 int rtw_mac_init(struct rtw_dev *rtwdev);
 int rtw_mac_postinit(struct rtw_dev *rtwdev);
 void rtw_mac_flush_queues(struct rtw_dev *rtwdev, u32 queues, bool drop);
+bool rtw_mac_flush_queues_sync(struct rtw_dev *rtwdev, u32 queues, bool drop);
 int rtw_set_trx_fifo_info(struct rtw_dev *rtwdev);
 int rtw_ddma_to_fw_fifo(struct rtw_dev *rtwdev, u32 ocp_src, u32 size);
 
 static inline void rtw_mac_flush_all_queues(struct rtw_dev *rtwdev, bool drop)
 {
 	rtw_mac_flush_queues(rtwdev, BIT(rtwdev->hw->queues) - 1, drop);
+}
+
+static inline bool rtw_mac_flush_all_queues_sync(struct rtw_dev *rtwdev, bool drop)
+{
+	return rtw_mac_flush_queues_sync(
+		rtwdev, BIT(rtwdev->hw->queues) - 1, drop);
 }
 
 #endif
