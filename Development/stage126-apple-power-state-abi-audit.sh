@@ -39,11 +39,12 @@ SOURCE_COMMIT="$(git rev-parse HEAD)"
   echo "STAGE126_DRIVER_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN"
   echo "STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN"
   echo
-  echo "--- Candidate Apple power symbols (raw mangled names) ---"
-  "$NM" --defined-only "$KC" 2>&1 | grep -E 'setInterfaceEnable|isInterfaceEnabled|IO80211InfraInterface.*enable|IO80211InfraInterface.*disable|IO80211SkywalkInterface.*enable|IO80211SkywalkInterface.*disable' || true
+  echo "--- Exact Apple power-state symbols (raw mangled names) ---"
+  SYMBOL_RE='^(__ZN21IO80211InfraInterface18setInterfaceEnableEb|__ZN22IO80211MacAddressAgent18setInterfaceEnableEb|__ZN23IO80211SkywalkInterface14enableDatapathEv|__ZN23IO80211SkywalkInterface15disableDatapathEv|__ZN23IO80211SkywalkInterface18isInterfaceEnabledEv|__ZN23IO80211SkywalkInterface18setInterfaceEnableEb|__ZN23IO80211SkywalkInterface6enableEj|__ZN23IO80211SkywalkInterface7disableEj)$'
+  "$NM" --defined-only "$KC" 2>&1 | awk '{print $NF}' | grep -E "$SYMBOL_RE" | sort -u || true
   echo
-  echo "--- Disassembly of matched Apple power methods ---"
-  SYMBOLS="$("$NM" --defined-only "$KC" 2>/dev/null | awk '{print $NF}' | grep -E 'setInterfaceEnable|isInterfaceEnabled|IO80211InfraInterface.*enable|IO80211InfraInterface.*disable|IO80211SkywalkInterface.*enable|IO80211SkywalkInterface.*disable' | sort -u || true)"
+  echo "--- Disassembly of exact Apple power-state methods ---"
+  SYMBOLS="$("$NM" --defined-only "$KC" 2>/dev/null | awk '{print $NF}' | grep -E "$SYMBOL_RE" | sort -u || true)"
   COUNT=0
   while IFS= read -r SYMBOL; do
     [[ -n "$SYMBOL" ]] || continue
@@ -69,20 +70,44 @@ echo "STAGE126_LOCAL_REPORT=$REPORT"
 python3 - "$REPORT" "$STAMP" "$REPO" <<'PY'
 import base64, hashlib, json, pathlib, subprocess, sys, tempfile
 report=pathlib.Path(sys.argv[1]); stamp=sys.argv[2]; repo=sys.argv[3]
-data=report.read_bytes()
+full=report.read_bytes()
+data=full
+compacted=False
+# Preserve the full report locally; bound GitHub Contents API payload size.
+if len(data) > 700_000:
+    lines=full.decode("utf-8", "replace").splitlines()
+    out=[]; in_symbol=False; kept=0
+    for line in lines:
+        if line.startswith("===== SYMBOL "):
+            in_symbol=True; kept=0; out.append(line); continue
+        if line.startswith("STAGE126_") or line.startswith("==========") or line.startswith("---"):
+            in_symbol=False; out.append(line); continue
+        if in_symbol and kept < 80:
+            out.append(line); kept += 1
+    out.append("STAGE126_UPLOAD_COMPACTED=YES")
+    out.append("STAGE126_FULL_REPORT_BYTES="+str(len(full)))
+    data=("\\n".join(out)+"\\n").encode()
+    compacted=True
+if len(data) > 850_000:
+    raise SystemExit("STAGE126_UPLOAD=TOO_LARGE_AFTER_COMPACTION bytes="+str(len(data)))
 dest=f"Development/Logs/stage126-apple-power-state-{stamp}.log"
-payload={"message":"Stage126: publish read-only Apple 24H32 power-state ABI audit","branch":"main","content":base64.b64encode(data).decode("ascii")}
+payload={"message":"Stage126: publish targeted read-only Apple 24H32 power-state ABI audit","branch":"main","content":base64.b64encode(data).decode("ascii")}
 with tempfile.NamedTemporaryFile(mode="w",suffix=".json") as f:
     json.dump(payload,f); f.flush()
     r=subprocess.run(["gh","api","--method","PUT",f"repos/{repo}/contents/{dest}","--input",f.name],capture_output=True,text=True)
 if r.returncode:
-    print("STAGE126_UPLOAD=FAILED"); print(r.stderr.strip()); sys.exit(r.returncode)
+    print("STAGE126_UPLOAD=FAILED")
+    print("STAGE126_UPLOAD_BYTES="+str(len(data)))
+    print(r.stderr.strip())
+    sys.exit(r.returncode)
 obj=json.loads(r.stdout)
-expected=hashlib.sha1(f"blob {len(data)}\0".encode("ascii")+data).hexdigest()
+expected=hashlib.sha1(f"blob {len(data)}\\0".encode("ascii")+data).hexdigest()
 actual=obj.get("content",{}).get("sha")
 if actual!=expected:
     print("STAGE126_UPLOAD=VERIFY_REQUIRED"); print("EXPECTED="+expected); print("ACTUAL="+str(actual)); sys.exit(4)
 print("STAGE126_UPLOAD=PASS")
+print("STAGE126_UPLOAD_BYTES="+str(len(data)))
+print("STAGE126_UPLOAD_COMPACTED="+("YES" if compacted else "NO"))
 print("STAGE126_UPLOAD_SHA="+actual)
 print("STAGE126_GITHUB_PATH="+dest)
 print("STAGE126_GITHUB_URL=https://github.com/"+repo+"/blob/main/"+dest)
