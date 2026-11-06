@@ -147,6 +147,8 @@ def main():
     amfipass_order = "UNKNOWN"
     amfipass_count = "UNKNOWN"
     amfipass_enabled = "UNKNOWN"
+    lilu_count = "UNKNOWN"
+    lilu_enabled = "UNKNOWN"
     native_count = "UNKNOWN"
     native_enabled = "UNKNOWN"
     realtek_collision_count = "UNKNOWN"
@@ -230,15 +232,21 @@ def main():
 
                 amfipass_count = str(len(amfi_rows))
                 amfipass_enabled = str(sum(1 for x in amfi_rows if x["enabled"]))
+                lilu_count = str(len(lilu_rows))
+                lilu_enabled = str(sum(1 for x in lilu_rows if x["enabled"]))
                 native_count = str(len(native_rows))
                 native_enabled = str(sum(1 for x in native_rows if x["enabled"]))
                 realtek_collision_count = str(len(other_realtek_rows))
                 if native_rows:
                     efi_hash_match = str(all(x["sha256"] == EXPECTED_NATIVE_SHA for x in native_rows))
-                if amfi_rows and lilu_rows:
-                    amfipass_order = "LILU_BEFORE_AMFIPASS" if min(x["index"] for x in lilu_rows) < min(x["index"] for x in amfi_rows) else "LILU_NOT_BEFORE_AMFIPASS"
+                enabled_amfi_rows = [x for x in amfi_rows if x["enabled"]]
+                enabled_lilu_rows = [x for x in lilu_rows if x["enabled"]]
+                if enabled_amfi_rows and enabled_lilu_rows:
+                    amfipass_order = "ENABLED_LILU_BEFORE_ENABLED_AMFIPASS" if min(x["index"] for x in enabled_lilu_rows) < min(x["index"] for x in enabled_amfi_rows) else "ENABLED_LILU_NOT_BEFORE_ENABLED_AMFIPASS"
+                elif enabled_amfi_rows:
+                    amfipass_order = "ENABLED_AMFIPASS_WITHOUT_ENABLED_LILU"
                 elif amfi_rows:
-                    amfipass_order = "AMFIPASS_PRESENT_LILU_ENTRY_MISSING"
+                    amfipass_order = "AMFIPASS_DISABLED"
                 elif lilu_rows:
                     amfipass_order = "AMFIPASS_ENTRY_MISSING"
                 if len(amfi_rows) == 0:
@@ -247,10 +255,10 @@ def main():
                     mark("WARN", "AMFIPass entry exists but is disabled")
                 else:
                     mark("PASS", "AMFIPass entry exists and is enabled")
-                if amfipass_order == "LILU_BEFORE_AMFIPASS":
-                    mark("PASS", "Lilu is listed before AMFIPass")
+                if amfipass_order == "ENABLED_LILU_BEFORE_ENABLED_AMFIPASS":
+                    mark("PASS", "enabled Lilu entry is listed before enabled AMFIPass entry")
                 elif amfi_rows:
-                    mark("WARN", "Lilu/AMFIPass load order or Lilu presence needs review")
+                    mark("WARN", "enabled Lilu/AMFIPass presence or load order needs review")
                 if native_count == "1" and native_enabled == "1":
                     mark("PASS", "exactly one enabled native EFI entry")
                 else:
@@ -275,6 +283,8 @@ def main():
     emit("STAGE111_EFI_CONFIG_RESULT=" + efi_state)
     emit("STAGE111_AMFIPASS_EFI_COUNT=" + str(amfipass_count))
     emit("STAGE111_AMFIPASS_EFI_ENABLED_COUNT=" + str(amfipass_enabled))
+    emit("STAGE111_LILU_EFI_COUNT=" + str(lilu_count))
+    emit("STAGE111_LILU_EFI_ENABLED_COUNT=" + str(lilu_enabled))
     emit("STAGE111_LILU_AMFIPASS_ORDER=" + str(amfipass_order))
     emit("STAGE111_NATIVE_EFI_COUNT=" + str(native_count))
     emit("STAGE111_NATIVE_EFI_ENABLED_COUNT=" + str(native_enabled))
@@ -399,6 +409,8 @@ def main():
         f.write("STAGE111_FAIL_COUNT=" + str(counts["FAIL"]) + "\n")
         f.write("STAGE111_WARN_COUNT=" + str(counts["WARN"]) + "\n")
         f.write("STAGE111_AMFIPASS_EFI_STATE=" + amfi_config + "\n")
+        f.write("STAGE111_LILU_EFI_COUNT=" + str(lilu_count) + "\n")
+        f.write("STAGE111_LILU_EFI_ENABLED_COUNT=" + str(lilu_enabled) + "\n")
         f.write("STAGE111_LILU_AMFIPASS_ORDER=" + str(order_summary) + "\n")
         f.write("STAGE111_AMFIPASS_RUNTIME_LOADED=" + runtime_amfipass + "\n")
         f.write("STAGE111_LILU_RUNTIME_LOADED=" + runtime_lilu + "\n")
