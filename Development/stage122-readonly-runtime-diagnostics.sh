@@ -130,23 +130,42 @@ DRIVER_LOG="$(log show --last 24h --style compact --info --predicate 'eventMessa
 DRIVER_LOG_EXIT=$?
 printf '%s\n' "$DRIVER_LOG" | tail -n 180
 echo "DRIVER_LOG_QUERY_EXIT=$DRIVER_LOG_EXIT"
-if printf '%s\n' "$DRIVER_LOG" | grep -Fq 'Apple primary Skywalk interface attached and getter-verified'; then
+ATTACH_SUCCESS=0
+ATTACH_FAILURE=0
+DETACH_SUCCESS=0
+DETACH_FAILURE=0
+REGISTRATION_SUCCESS=0
+REGISTRATION_FAILURE=0
+if printf '%s\n' "$DRIVER_LOG" | grep -Fq 'Apple primary Skywalk interface attached and getter-verified'; then ATTACH_SUCCESS=1; fi
+if printf '%s\n' "$DRIVER_LOG" | grep -Eiq 'attachInterface rejected|without publishing this primary interface|could not become controller primary|already owns a different primary'; then ATTACH_FAILURE=1; fi
+if printf '%s\n' "$DRIVER_LOG" | grep -Fq 'Apple primary Skywalk interface detached and getter-verified'; then DETACH_SUCCESS=1; fi
+if printf '%s\n' "$DRIVER_LOG" | grep -Fq 'Apple detachInterface did not clear the primary pointer'; then DETACH_FAILURE=1; fi
+if printf '%s\n' "$DRIVER_LOG" | grep -Fq 'native 24H32 infrastructure interface registered'; then REGISTRATION_SUCCESS=1; fi
+if printf '%s\n' "$DRIVER_LOG" | grep -Eiq 'registerInfraEthernetInterface failed|registration transaction commit failed'; then REGISTRATION_FAILURE=1; fi
+
+if [ "$ATTACH_SUCCESS" -eq 1 ] && [ "$ATTACH_FAILURE" -eq 1 ]; then
+  ATTACH_STATE="MIXED_MARKERS_REVIEW"
+elif [ "$ATTACH_SUCCESS" -eq 1 ]; then
   ATTACH_STATE="VERIFIED"
-elif printf '%s\n' "$DRIVER_LOG" | grep -Eiq 'attachInterface rejected|without publishing this primary interface|could not become controller primary|already owns a different primary'; then
+elif [ "$ATTACH_FAILURE" -eq 1 ]; then
   ATTACH_STATE="FAILURE_MARKER_OBSERVED"
 else
   ATTACH_STATE="NOT_OBSERVED"
 fi
-if printf '%s\n' "$DRIVER_LOG" | grep -Fq 'Apple primary Skywalk interface detached and getter-verified'; then
+if [ "$DETACH_SUCCESS" -eq 1 ] && [ "$DETACH_FAILURE" -eq 1 ]; then
+  DETACH_STATE="MIXED_MARKERS_REVIEW"
+elif [ "$DETACH_SUCCESS" -eq 1 ]; then
   DETACH_STATE="VERIFIED"
-elif printf '%s\n' "$DRIVER_LOG" | grep -Fq 'Apple detachInterface did not clear the primary pointer'; then
+elif [ "$DETACH_FAILURE" -eq 1 ]; then
   DETACH_STATE="FAILURE_MARKER_OBSERVED"
 else
   DETACH_STATE="NOT_OBSERVED"
 fi
-if printf '%s\n' "$DRIVER_LOG" | grep -Fq 'native 24H32 infrastructure interface registered'; then
+if [ "$REGISTRATION_SUCCESS" -eq 1 ] && [ "$REGISTRATION_FAILURE" -eq 1 ]; then
+  REGISTRATION_LOG_STATE="MIXED_MARKERS_REVIEW"
+elif [ "$REGISTRATION_SUCCESS" -eq 1 ]; then
   REGISTRATION_LOG_STATE="SUCCESS_MARKER_OBSERVED"
-elif printf '%s\n' "$DRIVER_LOG" | grep -Eiq 'registerInfraEthernetInterface failed|registration transaction commit failed'; then
+elif [ "$REGISTRATION_FAILURE" -eq 1 ]; then
   REGISTRATION_LOG_STATE="FAILURE_MARKER_OBSERVED"
 else
   REGISTRATION_LOG_STATE="NOT_OBSERVED"
@@ -184,15 +203,18 @@ echo "AIRPORT_SYSTEM_PROFILER_EXIT=$AIRPORT_EXIT"
 echo
 
 echo "----- 11. Runtime interpretation -----"
-if [ "$ATTACH_STATE" = "FAILURE_MARKER_OBSERVED" ] || \
-   [ "$REGISTRATION_LOG_STATE" = "FAILURE_MARKER_OBSERVED" ] || \
-   [ "$DETACH_STATE" = "FAILURE_MARKER_OBSERVED" ]; then
-  RUNTIME_INTERPRETATION="FAILURE_MARKERS_OBSERVED"
+if [ "$ATTACH_STATE" = "FAILURE_MARKER_OBSERVED" ] || [ "$ATTACH_STATE" = "MIXED_MARKERS_REVIEW" ] || \
+   [ "$REGISTRATION_LOG_STATE" = "FAILURE_MARKER_OBSERVED" ] || [ "$REGISTRATION_LOG_STATE" = "MIXED_MARKERS_REVIEW" ] || \
+   [ "$DETACH_STATE" = "FAILURE_MARKER_OBSERVED" ] || [ "$DETACH_STATE" = "MIXED_MARKERS_REVIEW" ]; then
+  RUNTIME_INTERPRETATION="FAILURE_OR_CONFLICT_MARKERS_OBSERVED"
 elif [ "$NATIVE_KEXT_STATE" = "LOADED" ] && \
      [ "$CONTROLLER_IOREG_STATE" = "FOUND" ] && \
      [ "$INTERFACE_IOREG_STATE" = "FOUND" ] && \
+     [ "$CONTROLLER_PUBLISHED_STATE" = "PROPERTY_FOUND" ] && \
+     [ "$REGISTRATION_PROPERTY_STATE" = "PROPERTY_FOUND" ] && \
      [ "$ATTACH_STATE" = "VERIFIED" ] && \
-     [ "$REGISTRATION_LOG_STATE" = "SUCCESS_MARKER_OBSERVED" ]; then
+     [ "$REGISTRATION_LOG_STATE" = "SUCCESS_MARKER_OBSERVED" ] && \
+     [ "$PUBLISHED_LOG_STATE" = "SUCCESS_MARKER_OBSERVED" ]; then
   RUNTIME_INTERPRETATION="ATTACHMENT_AND_REGISTRATION_OBSERVED"
 else
   RUNTIME_INTERPRETATION="INCOMPLETE_OR_NOT_OBSERVED"
