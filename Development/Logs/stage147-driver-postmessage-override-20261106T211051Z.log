@@ -1,0 +1,303 @@
+========== STAGE147 DRIVER POSTMESSAGE OVERRIDE AUDIT ==========
+STAGE147_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE147_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE147_WORKTREE_STATUS_ENTRIES=198
+STAGE147_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE147_SCOPE=READ_ONLY_MOST_DERIVED_OVERRIDE_AND_CONTROLLER_FORWARDING
+STAGE147_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE147_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+\nSOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4 BYTES=17853
+SOURCE_PATTERN file=RTW88WCLInfraInterface.hpp regex=\bclass\s+RTW88WCLInfraInterface\b MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCLInfraInterface.hpp regex=\bpostMessage\s*\( MATCH_COUNT=0
+SOURCE_PATTERN file=RTW88WCLInfraInterface.hpp regex=\bRTW88WCLController\b MATCH_COUNT=2
+SOURCE_CONTEXT_BEGIN=RTW88WCLInfraInterface.hpp#1[\bRTW88WCLController\b@15;\bclass\s+RTW88WCLInfraInterface\b@22]
+00013 #include "../RTW88WCLWorkQueue.hpp"
+00014 
+00015 class RTW88WCLController;
+00016 
+00017 #define RTW88_WCL_UNSUPPORTED(name, type) \
+00018     IOReturn name(type *data) override { \
+00019         return data ? kIOReturnUnsupported : kIOReturnBadArgument; \
+00020     }
+00021 
+00022 class RTW88WCLInfraInterface final : public IO80211InfraProtocol,
+00023                                      public RTW88WCLRadioEventHandler {
+00024     OSDeclareDefaultStructors(RTW88WCLInfraInterface)
+00025 public:
+00026     bool init() override;
+00027     bool init(IOService *provider, ether_addr *address) override;
+00028     void free() override;
+00029     bool start(IOService *provider) override;
+00030     void stop(IOService *provider) override;
+00031 
+00032     IOReturn enable(unsigned int options) override;
+00033     IOReturn disable(unsigned int options) override;
+00034     SInt32 initBSDInterfaceParameters(ifnet_init_eparams *params,
+00035                                       sockaddr_dl **address) override;
+00036     IOReturn setMacAddress(ether_addr &address) override;
+00037     IOReturn getHardwareAddress(ether_addr *address) override;
+00038     IOReturn setHardwareAddress(ether_addr *address) override;
+00039     IO80211Controller *getController() override;
+00040     bool isChipInterfaceReady() override;
+00041     bool isDebounceOnGoing() override;
+00042     IO80211LinkState linkState() override;
+00043     bool setLinkState(IO80211LinkState state, unsigned int reason,
+00044                       bool debounce, unsigned int duration) override;
+00045     int getAssocState() override;
+00046     UInt getHardwareAssists() override;
+00047     bool bpfTap(unsigned int direction, unsigned int flags) override;
+00048     void hwConfigNicProxyData(nicproxy_info_s *info) override;
+00049 
+00050     IOReturn getCHANNEL(apple80211_channel_data *data) override;
+00051     IOReturn getRSSI(apple80211_rssi_data *data) override;
+SOURCE_CONTEXT_END=RTW88WCLInfraInterface.hpp#1[\bRTW88WCLController\b@15;\bclass\s+RTW88WCLInfraInterface\b@22]
+SOURCE_CONTEXT_BEGIN=RTW88WCLInfraInterface.hpp#2[\bRTW88WCLController\b@268]
+00266                             unsigned long length);
+00267 
+00268     RTW88WCLController *_controller = nullptr; // provider-owned
+00269     RTW88WCLRadioBridge _bridge;
+00270     RTW88WCLWorkQueue *_workQueue = nullptr;   // interface-owned
+00271     ScanFilter _scanFilter = {};
+00272     uint8_t _targetBSSID[6] = {0};
+00273     bool _scanActive = false;
+00274     uint32_t _activeScanGeneration = 0;
+00275     uint32_t _activeJoinGeneration = 0;
+SOURCE_CONTEXT_END=RTW88WCLInfraInterface.hpp#2[\bRTW88WCLController\b@268]
+\nSOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b BYTES=29184
+SOURCE_PATTERN file=RTW88WCLInfraInterface.cpp regex=RTW88WCLInfraInterface::postMessage\s*\( MATCH_COUNT=0
+SOURCE_PATTERN file=RTW88WCLInfraInterface.cpp regex=_controller\s*->\s*postMessage\s*\( MATCH_COUNT=1
+SOURCE_CONTEXT_BEGIN=RTW88WCLInfraInterface.cpp#1[_controller\s*->\s*postMessage\s*\(@681]
+00678                                                  unsigned long length)
+00679 {
+00680     if (!_controller) return kIOReturnNotReady;
+00681     return _controller->postMessage(this, message, payload, length, true);
+00682 }
+00683 
+00684 void RTW88WCLInfraInterface::publishScanResults(IOReturn status)
+00685 {
+00686     if (!_controller) return;
+00687     if (status == kIOReturnSuccess) {
+00688         for (uint32_t index = 0; index < 128; ++index) {
+00689             RTW88BSS bss = {};
+00690             IOReturn copied = _bridge.copyScanBSS(index, &bss);
+SOURCE_CONTEXT_END=RTW88WCLInfraInterface.cpp#1[_controller\s*->\s*postMessage\s*\(@681]
+\nSOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp SHA256=a312895412fc504602189683a6a32ba013f5bafdc9bd8482da14734f4e55212a BYTES=8089
+SOURCE_PATTERN file=RTW88WCL24H32ABI.hpp regex=\bclass\s+IO80211Controller\b MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCL24H32ABI.hpp regex=\bpostMessage\s*\( MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCL24H32ABI.hpp regex=\bgetPOWER\s*\( MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCL24H32ABI.hpp regex=\bsetPOWER\s*\( MATCH_COUNT=1
+SOURCE_CONTEXT_BEGIN=RTW88WCL24H32ABI.hpp#1[\bclass\s+IO80211Controller\b@59;\bpostMessage\s*\(@62]
+00055 enum IO80211FeatureCode {
+00056     kIO80211Feature80211n = 1
+00057 };
+00058 
+00059 class IO80211Controller : public IOEthernetController {
+00060     OSDeclareAbstractStructors(IO80211Controller)
+00061 public:
+00062     IOReturn postMessage(IO80211SkywalkInterface *, unsigned int, void *, unsigned long, bool);
+00063     virtual void _RESERVEDIONetworkController6() __asm__("__ZN19IONetworkController20allocatePacketNoWaitEj") override;
+00064     virtual void _RESERVEDIONetworkController7() __asm__("__ZN19IONetworkController18setHardwareAssistsEjj") override;
+00065     virtual void free() override;
+00066     virtual bool init(OSDictionary *) override;
+00067     virtual IOReturn configureReport(IOReportChannelList *, unsigned int, void *, void *) override;
+00068     virtual IOReturn updateReport(IOReportChannelList *, unsigned int, void *, void *) override;
+00069     virtual bool start(IOService *) override;
+00070     virtual void stop(IOService *) override;
+00071     virtual IOWorkLoop *getWorkLoop() const override;
+SOURCE_CONTEXT_END=RTW88WCL24H32ABI.hpp#1[\bclass\s+IO80211Controller\b@59;\bpostMessage\s*\(@62]
+SOURCE_CONTEXT_BEGIN=RTW88WCL24H32ABI.hpp#2[\bgetPOWER\s*\(@100;\bsetPOWER\s*\(@101]
+00098     virtual IOReturn getHARDWARE_VERSION(IO80211SkywalkInterface *, apple80211_version_data *) = 0;
+00099     virtual IOReturn getCARD_CAPABILITIES(IO80211SkywalkInterface *, apple80211_capability_data *) = 0;
+00100     virtual IOReturn getPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+00101     virtual IOReturn setPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+00102     virtual IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *, apple80211_country_code_data *) = 0;
+00103     virtual IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *, apple80211_country_code_data *) = 0;
+00104     virtual IOReturn setGET_DEBUG_INFO(IO80211SkywalkInterface *, apple80211_debug_command *) = 0;
+00105 private:
+00106     virtual void _abi_0d00() __asm__("__ZN17IO80211Controller18getPLATFORM_CONFIGEP23IO80211SkywalkInterfaceP26apple80211_platform_config");
+00107 public:
+00108     virtual SInt32 enableVirtualInterface(IO80211VirtualInterface *);
+SOURCE_CONTEXT_END=RTW88WCL24H32ABI.hpp#2[\bgetPOWER\s*\(@100;\bsetPOWER\s*\(@101]
+\nSOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp SHA256=63a6a038ef7513312c686199b00e8cf45a16d251c7792ab03d2f5986f9fd84fb BYTES=49082
+SOURCE_PATTERN file=RTW88WCL24H32InterfaceABI.hpp regex=\bclass\s+IO80211InfraProtocol\b MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCL24H32InterfaceABI.hpp regex=\bclass\s+IO80211InfraInterface\b MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCL24H32InterfaceABI.hpp regex=\bpostMessage\s*\( MATCH_COUNT=2
+SOURCE_CONTEXT_BEGIN=RTW88WCL24H32InterfaceABI.hpp#1[\bpostMessage\s*\(@502]
+00500     virtual void _abi_0b10() __asm__("__ZN23IO80211SkywalkInterface10createPeerEPKhP18IO80211PeerManager");
+00501 public:
+00502     virtual void postMessage(unsigned int, void *, unsigned long, bool);
+00503     virtual IOReturn reportDataPathEvents(unsigned int, void *, unsigned long, bool);
+00504     virtual IOReturn recordOutputPackets(TxSubmissionDequeueStats *, TxSubmissionDequeueStats *);
+00505     virtual IOReturn recordOutputPacket(apple80211_wme_ac, int, int);
+00506     virtual void logTxPacket(IO80211NetworkPacket *, PacketSkywalkScratch *, apple80211_wme_ac, bool);
+00507     virtual void logTxCompletionPacket(IO80211NetworkPacket *, PacketSkywalkScratch *, unsigned char *, apple80211_wme_ac, int, unsigned int, bool, bool);
+00508     virtual IOReturn recordCompletionPackets(TxCompletionEnqueueStats *, TxCompletionEnqueueStats *);
+00509     virtual IOReturn inputPacket(IO80211NetworkPacket *, packet_info_tag *, ether_header *, bool *, bool);
+SOURCE_CONTEXT_END=RTW88WCL24H32InterfaceABI.hpp#1[\bpostMessage\s*\(@502]
+SOURCE_CONTEXT_BEGIN=RTW88WCL24H32InterfaceABI.hpp#2[\bclass\s+IO80211InfraInterface\b@626;\bpostMessage\s*\(@643]
+00620     OSString *setInterfaceRole(unsigned int);
+00621     void *setInterfaceId(unsigned int);
+00622     int getInterfaceRole();
+00623 };
+00624 static_assert(sizeof(IO80211SkywalkInterface) == 0x118, "24H32 IO80211SkywalkInterface ABI");
+00625 
+00626 class IO80211InfraInterface : public IO80211SkywalkInterface {
+00627     OSDeclareAbstractStructors(IO80211InfraInterface)
+00628 public:
+00629     virtual bool init() override;
+00630     virtual void free() override;
+00631     virtual IOReturn configureReport(IOReportChannelList *, unsigned int, void *, void *) override;
+00632     virtual IOReturn updateReport(IOReportChannelList *, unsigned int, void *, void *) override;
+00633     virtual bool start(IOService *) override;
+00634     virtual void stop(IOService *) override;
+00635     virtual IOReturn setPowerState(unsigned long, IOService *) override;
+00636     virtual SInt32 initBSDInterfaceParameters(ifnet_init_eparams *, sockaddr_dl **) override;
+00637     virtual IOReturn prepareBSDInterface(struct __ifnet *, unsigned int) override;
+00638     virtual IOReturn processBSDCommand(struct __ifnet *, unsigned int, void *) override;
+00639     virtual SInt32 setInterfaceEnable(bool) override;
+00640     virtual UInt getHardwareAssists() override;
+00641     virtual bool bpfTap(unsigned int, unsigned int) override;
+00642     virtual void hwConfigNicProxyData(nicproxy_info_s *) override;
+00643     virtual void postMessage(unsigned int, void *, unsigned long, bool) override;
+00644     virtual IOReturn recordOutputPackets(TxSubmissionDequeueStats *, TxSubmissionDequeueStats *) override;
+00645     virtual void logTxPacket(IO80211NetworkPacket *, PacketSkywalkScratch *, apple80211_wme_ac, bool) override;
+00646     virtual void logTxCompletionPacket(IO80211NetworkPacket *, PacketSkywalkScratch *, unsigned char *, apple80211_wme_ac, int, unsigned int, bool, bool) override;
+00647     virtual IOReturn recordCompletionPackets(TxCompletionEnqueueStats *, TxCompletionEnqueueStats *) override;
+00648     virtual IOReturn inputPacket(IO80211NetworkPacket *, packet_info_tag *, ether_header *, bool *, bool) override;
+00649     virtual SInt64 pendingPackets(unsigned char) override;
+00650     virtual SInt64 packetSpace(unsigned char) override;
+SOURCE_CONTEXT_END=RTW88WCL24H32InterfaceABI.hpp#2[\bclass\s+IO80211InfraInterface\b@626;\bpostMessage\s*\(@643]
+SOURCE_CONTEXT_BEGIN=RTW88WCL24H32InterfaceABI.hpp#3[\bclass\s+IO80211InfraProtocol\b@699]
+00693 };
+00694 static_assert(sizeof(IO80211InfraInterface) == 0x120, "24H32 IO80211InfraInterface ABI");
+00695 
+00696 /* IO80211InfraProtocol's pure virtual selector order is part of the WCL ABI.
+00697  * Unsupported optional selectors are implemented by the concrete adapter as
+00698  * kIOReturnUnsupported. Do not reorder this list. */
+00699 class IO80211InfraProtocol : public IO80211InfraInterface {
+00700     OSDeclareAbstractStructors(IO80211InfraProtocol)
+00701 public:
+00702 #define RTW88_WCL_ABI_METHOD(name, type) virtual IOReturn name(type *) = 0;
+00703     RTW88_WCL_ABI_METHOD(getCHANNEL, apple80211_channel_data)
+00704     RTW88_WCL_ABI_METHOD(getPOWERSAVE, apple80211_powersave_data)
+00705     RTW88_WCL_ABI_METHOD(getTXPOWER, apple80211_txpower_data)
+00706     RTW88_WCL_ABI_METHOD(getRATE, apple80211_rate_data)
+00707     RTW88_WCL_ABI_METHOD(getOP_MODE, apple80211_opmode_data)
+00708     RTW88_WCL_ABI_METHOD(getRSSI, apple80211_rssi_data)
+00709     RTW88_WCL_ABI_METHOD(getSUPPORTED_CHANNELS, apple80211_sup_channel_data)
+00710     RTW88_WCL_ABI_METHOD(getGUARD_INTERVAL, apple80211_guard_interval_data)
+00711     RTW88_WCL_ABI_METHOD(getMCS, apple80211_mcs_data)
+00712     RTW88_WCL_ABI_METHOD(getPOWER_DEBUG_INFO, apple80211_power_debug_info)
+00713     RTW88_WCL_ABI_METHOD(getHT_CAPABILITY, apple80211_ht_capability)
+00714     RTW88_WCL_ABI_METHOD(getMCS_VHT, apple80211_mcs_vht_data)
+00715     RTW88_WCL_ABI_METHOD(getCHANNELS_INFO, apple80211_channels_info)
+00716     RTW88_WCL_ABI_METHOD(getVHT_CAPABILITY, apple80211_vht_capability)
+SOURCE_CONTEXT_END=RTW88WCL24H32InterfaceABI.hpp#3[\bclass\s+IO80211InfraProtocol\b@699]
+\nSOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp SHA256=740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee BYTES=5330
+SOURCE_PATTERN file=RTW88WCLController.hpp regex=\bclass\s+RTW88WCLController\b MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCLController.hpp regex=\bpostMessage\s*\( MATCH_COUNT=0
+SOURCE_PATTERN file=RTW88WCLController.hpp regex=\bgetPOWER\s*\( MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCLController.hpp regex=\bsetPOWER\s*\( MATCH_COUNT=1
+SOURCE_CONTEXT_BEGIN=RTW88WCLController.hpp#1[\bclass\s+RTW88WCLController\b@21]
+00013 #include "RTW88WCLMbufRing.hpp"
+00014 #include <IOKit/IOWorkLoop.h>
+00015 
+00016 class RTW88IEEE80211;
+00017 class RTW88WCLSkywalkQueues;
+00018 class RTW88WCLSkywalkRxAdapter;
+00019 class IOSkywalkPacket;
+00020 
+00021 class RTW88WCLController final : public IO80211Controller,
+00022                                  public RTW88WCLPCIBackendClient,
+00023                                  public RTW88EventDelegate,
+00024                                  public RTW88RxDelegate {
+00025     OSDeclareDefaultStructors(RTW88WCLController)
+00026 
+00027 public:
+00028     bool init(OSDictionary *properties) override;
+00029     bool start(IOService *provider) override;
+00030     void stop(IOService *provider) override;
+00031     void free() override;
+00032     bool createWorkLoop() override;
+00033     IOWorkLoop *getWorkLoop() const override;
+00034 
+00035     /* Native Ethernet mbuf handoff seam. Skywalk queue callbacks must call these
+00036      * only after their packet rings are registered and the radio is started. */
+00037     UInt32 outputPacket(mbuf_t packet, void *param) override;
+00038     IOReturn activatePacketPath(IO80211SkywalkInterface *interface);
+00039     IOReturn quiescePacketPath();
+00040 
+00041     /* Required pure virtuals in the 24H32 IO80211Controller ABI. Until the
+00042      * native protocol + Skywalk datapath are attached, operations fail closed. */
+00043     bool isCommandProhibited(int command) override;
+00044     SInt32 handleCardSpecific(IO80211SkywalkInterface *interface,
+SOURCE_CONTEXT_END=RTW88WCLController.hpp#1[\bclass\s+RTW88WCLController\b@21]
+SOURCE_CONTEXT_BEGIN=RTW88WCLController.hpp#2[\bgetPOWER\s*\(@53;\bsetPOWER\s*\(@55]
+00051     IOReturn getCARD_CAPABILITIES(IO80211SkywalkInterface *interface,
+00052                                   apple80211_capability_data *data) override;
+00053     IOReturn getPOWER(IO80211SkywalkInterface *interface,
+00054                       apple80211_power_data *data) override;
+00055     IOReturn setPOWER(IO80211SkywalkInterface *interface,
+00056                       apple80211_power_data *data) override;
+00057     IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+00058                              apple80211_country_code_data *data) override;
+00059     IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+00060                              apple80211_country_code_data *data) override;
+00061     IOReturn setGET_DEBUG_INFO(IO80211SkywalkInterface *interface,
+00062                                apple80211_debug_command *data) override;
+SOURCE_CONTEXT_END=RTW88WCLController.hpp#2[\bgetPOWER\s*\(@53;\bsetPOWER\s*\(@55]
+\nSOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp SHA256=2c67658a50b40ec65cc400fbc7f13295d054e95a039aaf7060a65457c6087059 BYTES=20358
+SOURCE_PATTERN file=RTW88WCLController.cpp regex=RTW88WCLController::postMessage\s*\( MATCH_COUNT=0
+SOURCE_PATTERN file=RTW88WCLController.cpp regex=RTW88WCLController::getPOWER\s*\( MATCH_COUNT=1
+SOURCE_PATTERN file=RTW88WCLController.cpp regex=RTW88WCLController::setPOWER\s*\( MATCH_COUNT=1
+SOURCE_CONTEXT_BEGIN=RTW88WCLController.cpp#1[RTW88WCLController::getPOWER\s*\(@333;RTW88WCLController::setPOWER\s*\(@344]
+00327     data->version = APPLE80211_VERSION;
+00328     /* Do not advertise unsupported modes or ciphers before the radio owner
+00329      * and InfraProtocol capabilities are wired up. */
+00330     return kIOReturnNotReady;
+00331 }
+00332 
+00333 IOReturn RTW88WCLController::getPOWER(IO80211SkywalkInterface *interface,
+00334                                        apple80211_power_data *data)
+00335 {
+00336     (void)interface;
+00337     if (!data)
+00338         return kIOReturnBadArgument;
+00339     bzero(data, sizeof(*data));
+00340     data->version = APPLE80211_VERSION;
+00341     return kIOReturnNotReady;
+00342 }
+00343 
+00344 IOReturn RTW88WCLController::setPOWER(IO80211SkywalkInterface *interface,
+00345                                        apple80211_power_data *data)
+00346 {
+00347     (void)interface;
+00348     return data ? kIOReturnNotReady : kIOReturnBadArgument;
+00349 }
+00350 
+00351 IOReturn RTW88WCLController::getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+00352                                               apple80211_country_code_data *data)
+00353 {
+00354     (void)interface;
+00355     if (!data)
+00356         return kIOReturnBadArgument;
+00357     bzero(data, sizeof(*data));
+00358     data->version = APPLE80211_VERSION;
+00359     return kIOReturnNotReady;
+00360 }
+00361 
+00362 IOReturn RTW88WCLController::setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+00363                                               apple80211_country_code_data *data)
+SOURCE_CONTEXT_END=RTW88WCLController.cpp#1[RTW88WCLController::getPOWER\s*\(@333;RTW88WCLController::setPOWER\s*\(@344]
+\n--- Static conclusion checks ---
+DRIVER_INFRA_POSTMESSAGE_DECLARED=NO
+DRIVER_INFRA_POSTMESSAGE_DEFINED=NO
+DRIVER_INFRA_POSTMESSAGE_FORWARDS_CONTROLLER=YES
+DRIVER_CONTROLLER_POSTMESSAGE_DECLARED=NO
+DRIVER_CONTROLLER_POSTMESSAGE_DEFINED=NO
+DRIVER_CONTROLLER_POWER_GET_DEFINED=YES
+DRIVER_CONTROLLER_POWER_SET_DEFINED=YES
+STAGE147_INTERPRETATION=SOURCE_DECLARATION_AND_FORWARDING_ONLY; NO_COMPILED_VTABLE_OR_RUNTIME_PROOF
+STAGE147_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE147_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE147 ==========
