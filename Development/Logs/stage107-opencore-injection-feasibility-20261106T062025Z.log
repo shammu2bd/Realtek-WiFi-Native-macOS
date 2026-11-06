@@ -1,0 +1,83 @@
+========== STAGE107 OPENCORE INJECTION FEASIBILITY ==========
+UTC_STAMP=20261106T062025Z
+BRANCH=work/stage91-tx-submission-callback-v1
+HEAD=6f63196b363f4c9007ef3283e19e26cca7ae8eed
+SCOPE=READ_ONLY_HOST_SECURITY_OPENCORE_CONFIG_KERNEL_ADD_BLOCK_DEPENDENCY_ORDER_VAULT
+BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN SIP_CHANGE=NONE NVRAM_CHANGE=NONE EFI_WRITE=NONE HARDWARE_TEST=NOT_RUN
+PASS: tool available: sw_vers
+PASS: tool available: uname
+PASS: tool available: csrutil
+PASS: tool available: nvram
+PASS: tool available: sysctl
+PASS: tool available: kmutil
+PASS: tool available: plutil
+PASS: tool available: python3
+PASS: tool available: shasum
+PASS: tool available: git
+HOST_PRODUCT_VERSION=15.8.1
+HOST_BUILD_VERSION=24H32
+HOST_ARCH=x86_64
+PASS: host matches Sequoia 15.8.1 build 24H32 x86_64
+COMMAND_sip-status_EXIT=0
+System Integrity Protection status: enabled.
+PASS: SIP is enabled
+STAGE107_CANDIDATE_BINARY_SHA256=5d63db951e4a5c0228d4d73e664ab8e9457fc1fe805cce23444fe022f04f2513
+PASS: candidate matches Stage104/105 audited binary
+BOOTED_OPENCORE_VERSION=REL-108-2026-09-27
+SECURITY_RELEVANT_BOOT_ARGS=NONE_DETECTED
+PASS: no recognized AMFI/code-signing bypass boot argument detected
+OPENCORE_CONFIG_SOURCE=EXPLICIT_READ_ONLY_PATH
+OPENCORE_CONFIG_PATH=/Volumes/EFI/EFI/OC/config.plist
+/Volumes/EFI/EFI/OC/config.plist: OK
+PASS: selected OpenCore config.plist passes plutil
+CONFIG_PARSE=PASS
+OC_SECURE_BOOT_MODEL=Disabled
+OC_VAULT=Optional
+APPLE_SECURE_BOOT_POLICY=DISABLED_IN_CONFIG
+CONFIG_CSR_ACTIVE_CONFIG=00000000
+CONFIG_CSR_ACTIVE_CONFIG_DELETE=False
+KERNEL_ADD_COUNT=32
+KERNEL_ADD[31]=enabled:True;arch:Any;bundle:RTL88WiFiNative.kext;resolved:/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext;id:io.github.x1ren41l.RTL88WiFi;version:1.0.11;executable:Contents/MacOS/RTL88WiFiNative;plist:Contents/Info.plist
+NATIVE_KERNEL_ADD_ENTRY=FOUND
+NATIVE_KERNEL_ADD_ENABLED=True
+LEGACY_REALTEK_KERNEL_ADD_ENTRIES=1
+RTL88_WIFI_KERNEL_ADD_ENTRY=(31, True, 'RTL88WiFiNative.kext', 'io.github.x1ren41l.RTL88WiFi', '1.0.11')
+INJECTED_IOSKYWALK_FAMILY_ENTRIES=0
+INJECTED_IO80211FAMILYLEGACY_ENTRIES=0
+RELEVANT_KERNEL_BLOCK_ENTRIES=0
+IOSKYWALK_BLOCK_ENABLED=False
+KERNEL_QUIRK_DISABLE_LINKEDIT_JETTISON=True
+NATIVE_BUNDLE_PRESENT_AT_REPO_PATH=True
+NATIVE_BUNDLE_ID=io.github.x1ren41l.RTL88WiFi
+NATIVE_OSBUNDLE_LIBRARIES=com.apple.iokit.IO80211Family,com.apple.iokit.IONetworkingFamily,com.apple.iokit.IOPCIFamily,com.apple.iokit.IOSkywalkFamily,com.apple.kpi.bsd,com.apple.kpi.iokit,com.apple.kpi.libkern,com.apple.kpi.mach,com.apple.kpi.unsupported
+NATIVE_REQUIRES_IOSKY_FAMILY=True
+NATIVE_REQUIRES_LEGACY_80211=False
+PASS: OpenCore config parsed read-only
+PASS: SecureBootModel Disabled; this avoids the documented Apple Secure Boot unsigned-kext restriction
+PASS: no enabled IOSkywalkFamily block detected
+PASS: OpenCore Vault is Optional
+WARN: native candidate already appears in Kernel->Add; verify exact active config provenance
+WARN: existing Realtek/RTL88 entry may conflict; compare identifiers and order before replacing anything
+COMMAND_loaded-kexts_EXIT=0
+   55    5 0xffffff8004150000 0xce000    0xce000    com.apple.iokit.IOSkywalkFamily (1.0) 035A9AD9-6CDE-362F-8DEC-B664BC6431EC <54 53 9 8 7 6 3 1>
+   91    0 0xffffff800422b000 0x93000    0x93000    com.insanelymac.RealtekRTL8111 (3.0.4) AE536A7A-871B-38D4-9848-979EB40D9C97 <53 18 7 6 3 1>
+   96    1 0xffffff8004645000 0x20a000   0x20a000   com.apple.iokit.IO80211FamilyLegacy (1200.12.2b1) 4C07538B-62EB-3D6D-AEF9-93BCDCF45FAB <95 55 53 27 23 10 9 8 7 6 3 1>
+   97    0 0xffffff800491c000 0x19e000   0x19e000   io.github.x1ren41l.RTL88WiFi (1.0.11) 56A46419-04F3-3261-A7C9-2AC8C0EE8919 <96 55 53 18 9 7 6 3 1>
+PASS: loaded-kext inventory completed (matching lines only)
+
+========== STAGE107 SUMMARY ==========
+STAGE107_PASS_COUNT=20
+STAGE107_FAIL_COUNT=0
+STAGE107_WARN_COUNT=2
+STAGE107_SIP_STATE=ENABLED
+STAGE107_OPENCORE_CONFIG_RESULT=PARSED
+STAGE107_SECURE_BOOT_MODEL=Disabled
+STAGE107_VAULT_POLICY=Optional
+STAGE107_NATIVE_KERNEL_ADD_ENTRY=FOUND
+STAGE107_IOSKYWALK_BLOCK_ENABLED=False
+STAGE107_LEGACY_REALTEK_ENTRIES=1
+STAGE107_CONFIG_CSR_ACTIVE_CONFIG=00000000
+STAGE107_INJECTION_FEASIBILITY=BOOT_INJECTION_CONFIGURATION_POSSIBLE_BUT_UNSIGNED_KEXT_ACCEPTANCE_NOT_PROVEN
+STAGE107_DETAIL_LOG=Development/Logs/stage107-opencore-injection-feasibility-20261106T062025Z.log
+BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN SIP_CHANGE=NONE NVRAM_CHANGE=NONE EFI_WRITE=NONE HARDWARE_TEST=NOT_RUN
+======================================
