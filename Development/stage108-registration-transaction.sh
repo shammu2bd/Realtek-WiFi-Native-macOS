@@ -22,11 +22,13 @@ STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 LOG="Development/Logs/stage108-registration-transaction-${STAMP}.log"
 SOURCE_COMMIT="$(git rev-parse HEAD)"
 CXX_BIN="${CXX:-$(xcrun --find clang++ 2>/dev/null || command -v clang++)}"
-TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/rtl88wcl-stage108.XXXXXX")"
+TMP_BASE="${TMPDIR:-/tmp}"
+[[ -d "$TMP_BASE" && -w "$TMP_BASE" ]] || TMP_BASE="/tmp"
+TMP_DIR="$(mktemp -d "$TMP_BASE/rtl88wcl-stage108.XXXXXX")"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
-set +e
-{
+if (
+  set -euo pipefail
   echo "========== STAGE108 REGISTRATION TRANSACTION =========="
   echo "STAGE108_SOURCE_COMMIT=$SOURCE_COMMIT"
   echo "STAGE108_TARGET=macOS_15.8.1_24H32_x86_64"
@@ -64,9 +66,11 @@ set +e
   lipo "$BIN" -verify_arch x86_64
   echo "STAGE108_NATIVE_BINARY_SHA256=$(shasum -a 256 "$BIN" | awk '{print $1}')"
   echo "STAGE108_BUILD_RESULT=PASS"
-} 2>&1 | tee "$LOG"
-RUN_STATUS=$?
-set -e
+) 2>&1 | tee "$LOG"; then
+  RUN_STATUS=0
+else
+  RUN_STATUS=$?
+fi
 
 if [[ $RUN_STATUS -eq 0 ]]; then
   RESULT="PASS"
