@@ -76,10 +76,14 @@ static void rtw88_release_skb_tx_completion_token(void *token)
     rtw88_skb_tx_completion_retire_hook hook =
         __atomic_load_n(&g_rtw88TxCompletionTokenRetireHook,
                         __ATOMIC_ACQUIRE);
-    if (hook)
+    if (hook) {
         hook(completion->context, token);
-    else
-        kfree(token);
+    } else {
+        /* No callback-token producer exists in the legacy Airport build.
+         * If a token nevertheless appears without a registered native retire
+         * hook, leak it rather than calling potentially blocking IOFree here. */
+        (void)completion;
+    }
 }
 
 #define IOLog rtw88_candidate_log
