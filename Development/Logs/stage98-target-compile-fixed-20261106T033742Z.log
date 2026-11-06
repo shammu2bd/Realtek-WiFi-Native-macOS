@@ -1,0 +1,1103 @@
+===== STAGE98 FIXED TARGET COMPILE =====
+SOURCE_COMMIT=2b89c8622fd53c61db65563e288c7c2013a2fa5f
+ProductName:		macOS
+ProductVersion:		15.8.1
+BuildVersion:		24H32
+Xcode 16.4
+Build version 16F6
+/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
+  CC   sec.c
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -include /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88 -DRTW88_MACOS=1 -D__KERNEL__ -DCONFIG_RTW88_PCI=1 -DCONFIG_RTW88_8822B=1 -DCONFIG_RTW88_8822BE=1 -DCONFIG_RTW88_8822C=1 -DCONFIG_RTW88_8822CE=1 -DCONFIG_RTW88_8821C=1 -DCONFIG_RTW88_8821CE=1 -Werror=implicit-function-declaration -Werror=int-conversion -Werror=incompatible-pointer-types -Wno-unused-variable -Wno-unused-function -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/sec.o
+  CC   rtw8821c_table.c
+  CC   rtw8821c.c
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -include /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88 -DRTW88_MACOS=1 -D__KERNEL__ -DCONFIG_RTW88_PCI=1 -DCONFIG_RTW88_8822B=1 -DCONFIG_RTW88_8822BE=1 -DCONFIG_RTW88_8822C=1 -DCONFIG_RTW88_8822CE=1 -DCONFIG_RTW88_8821C=1 -DCONFIG_RTW88_8821CE=1 -Werror=implicit-function-declaration -Werror=int-conversion -Werror=incompatible-pointer-types -Wno-unused-variable -Wno-unused-function -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c_table.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8821c_table.o
+  CC   rtw8821ce.c
+  CC   rtw88_compat.c
+  CC   rtw88_thread_call.c
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -include /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88 -DRTW88_MACOS=1 -D__KERNEL__ -DCONFIG_RTW88_PCI=1 -DCONFIG_RTW88_8822B=1 -DCONFIG_RTW88_8822BE=1 -DCONFIG_RTW88_8822C=1 -DCONFIG_RTW88_8822CE=1 -DCONFIG_RTW88_8821C=1 -DCONFIG_RTW88_8821CE=1 -Werror=implicit-function-declaration -Werror=int-conversion -Werror=incompatible-pointer-types -Wno-unused-variable -Wno-unused-function -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8821ce.o
+  CC   rtw88_firmware.c
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -Wno-unused-function -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_firmware.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/compat/rtw88_firmware.o
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -include /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88 -DRTW88_MACOS=1 -D__KERNEL__ -DCONFIG_RTW88_PCI=1 -DCONFIG_RTW88_8822B=1 -DCONFIG_RTW88_8822BE=1 -DCONFIG_RTW88_8822C=1 -DCONFIG_RTW88_8822CE=1 -DCONFIG_RTW88_8821C=1 -DCONFIG_RTW88_8821CE=1 -Werror=implicit-function-declaration -Werror=int-conversion -Werror=incompatible-pointer-types -Wno-unused-variable -Wno-unused-function -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/compat/rtw88_compat.o
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -include /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88 -DRTW88_MACOS=1 -D__KERNEL__ -DCONFIG_RTW88_PCI=1 -DCONFIG_RTW88_8822B=1 -DCONFIG_RTW88_8822BE=1 -DCONFIG_RTW88_8822C=1 -DCONFIG_RTW88_8822CE=1 -DCONFIG_RTW88_8821C=1 -DCONFIG_RTW88_8821CE=1 -Werror=implicit-function-declaration -Werror=int-conversion -Werror=incompatible-pointer-types -Wno-unused-variable -Wno-unused-function -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_thread_call.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/compat/rtw88_thread_call.o
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -include /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88 -DRTW88_MACOS=1 -D__KERNEL__ -DCONFIG_RTW88_PCI=1 -DCONFIG_RTW88_8822B=1 -DCONFIG_RTW88_8822BE=1 -DCONFIG_RTW88_8822C=1 -DCONFIG_RTW88_8822CE=1 -DCONFIG_RTW88_8821C=1 -DCONFIG_RTW88_8821CE=1 -Werror=implicit-function-declaration -Werror=int-conversion -Werror=incompatible-pointer-types -Wno-unused-variable -Wno-unused-function -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8821c.o
+  CC   fw_blobs.c
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -Wno-unused-function -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/fw_blobs.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/compat/fw_blobs.o
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_firmware.c:5:40: warning: '/*' within block comment [-Wcomment]
+    5 |  * (fw_blobs.c, generated from firmware/*.bin).  No VFS needed at boot.
+      |                                        ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.hIn file included from <built-in>:1In file included from :11:
+:
+In file included from In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h::1032:
+:
+In file included from In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h::3511:
+:
+In file included from In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h::7110:
+:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.hIn file included from :/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h178::359:
+:In file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.hwarning: :'__cold' macro redefined [-Wmacro-redefined]
+<built-in>71:1:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:11:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:10:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:  178 | :178:9: warning: '__cold' macro redefined [-Wmacro-redefined]
+#def  i178n | #35def:
+iIn file included from n/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.he: 71_e_co ld  __c:
+old/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:178:9: In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:11:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:10 warning:  :
+  In file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h : 35 :
+ In file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h : 71:
+In file included from '__cold' macro redefined [-Wmacro-redefined]
+<built-in>: 1:
+ In file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h : 32 :
+_In file included from   _178a | #de/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.htt:r11ib:
+In file included from _/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h_f:178:i9:/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h :warning: 10'__cold' macro redefined [-Wmacro-redefined]:
+nIn file included from e/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.huat
+:35:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:71:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:178e__(t(t_r_ic:o ld_  _)178) | 
+#d9e:__cfin warning:       '__cold' macro redefined [-Wmacro-redefined]| 
+        ^
+  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h178: | #e b18:d_e_fineu t_e__c_o(l(d_ _ c   colod l d              o ld 9: note: previous definition is here
+__)   )18 | # d
+e_f_iante t rib       |  _In file included from __a_<built-in>c:o   __attt1rui:
+btur        ^ilbIn file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.ht:32:
+dIn file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h
+:11t:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.hu:10t:
+eIn file included from _/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.he:_35:
+e___atIn file included from (__(t/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:_71(:
+(/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h_:_178c:ri9:/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h ((o____ccobludt:e18_warning: :9:'__cold' macro redefined [-Wmacro-redefined] __note: )previous definition is here)
+o
+l      |         ^_
+
+l((c/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.ho:l18d:)9:)d_   _)18) | #  d
+e      f
+|       | d178i | _#_d)        ^)n        ^
+ 
+
+      | /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:18:9e:        ^  
+__colnote: dprevious definition is here 
+__ae   18f | i#nnote: e _previous definition is here_
+c/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.ho:18l:   918: |  note: dprevious definition is here 
+d efit  # d e f      18tnrib_ | _aIn file included from e _u_icto#l<built-in>tend_e_f(i(nce: 1d:
+ In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.ho_l_dct)r)ieb u_to
+ld e____a(t(t_r_i:c32_:
+bc_oIn file included from _atotldutldr_ibu/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.ht:e11___)()      (| c        ^
+      |          ^
+eo_l_d()()__a
+c
+o      l| d        ^)
+)
+      | /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:ttribute__((cold))
+      |         ^
+In file included from <built-in>:1:
+In file included from In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h<built-in>::321:
+:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:11:
+In file included from 18/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h::910::
+In file included from In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:<built-in>35:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:
+:71:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h::21810::
+9In file included from :/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h :warning: 35'__pure' macro redefined [-Wmacro-redefined]:
+
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:71  :        ^
+1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:In file included from 32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:11:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h 218 | :note: :
+:/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:218:9: warning: 10#In file included from defi32ne:
+ :
+_In file included from '__pure' macro redefined [-Wmacro-redefined]previous definition is here
+<built-in>:/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h1:   :
+18In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h
+:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:  11218:
+ | In file included from #/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:10 | #dIn file included from efi/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.hn:e35 :
+_In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.hpu:
+reIn file included from 
+      | :        ^71
+:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:218/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:22:9_: _note: cprevious definition is hereo
+ld _11_/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:
+:35:In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:d:
+eIn file included from fin9: warning: /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h   :2271 | e10#defin e_ __p_upruer
+e      :
+|         ^a'__pure' macro redefined [-Wmacro-redefined]t
+t:
+rib/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h  :218 | #de
+fine /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h_:_22p:u9r __atturitbeue218:In file included from 9: 
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.hwarning: :35:
+      |         ^_
+_((c:t eIn file included from _/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h_'__pure' macro redefined [-Wmacro-redefined]((
+note:   previous definition is here218
+ | #def   i22n | e# d_e_fpiunree 
+_      _| ppuu/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.ho::2271:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.hld)rer _e_))
+        ^::218:
+at/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.ht)      
+      9ri|         ^
+:: 22note: :previous definition is here9
+: note: | 9: warning: '__pure' macro redefined [-Wmacro-redefined]
+  218 | #define __pu        ^
+b   22In file included from  | <built-in>:1:
+uIn file included from t/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.he:previous definition is here
+r#def   i22n | e# e_32_((_p_udrefi:
+In file included from 
+n      | ep/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.hu:11:
+In file included from  __peu)r)        ^
+      
+|         ^r
+e /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h_:_att/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.he __attribute__22:9: rnote: previous definition is herei
+bute_   22:10:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:35:
+In file included from  | #((pu_re()()p
+u      r| e        ^)
+)
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:71:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:218:9: warning: '__pure' macro redefined [-Wmacro-redefined]
+  218 | #define __pure
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:22:9: note: previous definition is here
+   22 | #define __pure __attribute__((pure))
+      |         ^
+define __pure __attribute__((pure))
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:143:9: warning: 'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+  143 | #define THREAD_UNINT                    0x00000000  /* not interruptible      */
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:39:9: note: previous definition is here
+   39 | #define THREAD_UNINT         0
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:144:9: warning: 'THREAD_INTERRUPTIBLE' macro redefined [-Wmacro-redefined]
+  144 | #define THREAD_INTERRUPTIBLE            0x00000001  /* may not be restartable */
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:38:9: note: previous definition is here
+   38 | #define THREAD_INTERRUPTIBLE 1
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:143:9: warning: 'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+  143 | #define THREAD_UNINT                    0x00000000  /* not interruptible      */
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:39:9: note: previous definition is here
+   39 | #define THREAD_UNINT         0
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:144:9: warning: 'THREAD_INTERRUPTIBLE' macro redefined [-Wmacro-redefined]
+  144 | #define THREAD_INTERRUPTIBLE            0x00000001  /* may not be restartable */
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:38:9: note: previous definition is here
+   38 | #define THREAD_INTERRUPTIBLE 1
+      | In file included from <built-in>:1In file included from         ^
+:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:143:9: warning: 'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+  143 | #define THREAD_UNINT                    0x000In file included from <built-in>44::
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:14310:
+0In file included from 0/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h0:032 :
+ In file included from //Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h*: 73n:
+oIn file included from t/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h :i39n:
+tIn file included from e/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.hr:r44u:
+p/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.ht:i143b:l9e:   warning:  'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+  143 | #d:9: warning: 'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+  143 | #define THREAD_UNINT                    0x00000In file included from <built-in>:1e:
+fIn file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h: 32 :
+*In file included from //Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h
+      |         ^
+0ine:73:
+In file included from  T/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.hH:R39E:A9D:/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:_UNIN 0note: T39 :
+0In file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h :/44*:
+ /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.hn:o143t: 9i:n twarning: e'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+       143  |  # d e f i n e   T H R E A0Dx_0U0N0I0N0T0 0 0     / *   n o t   i n t e r r u p t0ixb0l0e0 0 0 0 0 0  * //
+      |         ^
+rrprevious definition is hereup
+ti/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.hb:l39e: 9   :39 * nonote: previous definition is here
+       39  | *#/d
+e      f| i        ^n
+e THREA/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:39:9: note: previous definition is here
+   39 |  | #d#edfeifnien eT HTRHERAEDA_DU_NUINNITN T                0 
+0      
+|               ^| 
+        ^
+In file included from <built-in>:1In file included from :
+<built-in>In file included from :/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h1::
+32In file included from :
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.hIn file included from :/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h32::
+73In file included from :
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.hIn file included from :/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h73::
+39In file included from :
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.hIn file included from :/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h39::
+44In file included from :
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h::44144:
+:/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h9::144 :warning: 9'THREAD_INTERRUPTIBLE' macro redefined [-Wmacro-redefined]:
+ warning: 'THREAD_INTERRUPTIBLE' macro redefined [-Wmacro-redefined]
+  144 | #  144 | #det inDte_rUrNuIpNtTi b l e            0*
+/      
+|               ^| 
+        ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:39:9:In file included from <built-in>:1:
+In file included from fine THREA/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h note: dprevious definition is here
+efine   39 | #dDef_iInNeT ETRHRRUEPATDI_BULNEI N T                   00
+x      0| 0        ^0
+00001  /* may In file included from n<built-in>o:t1 :
+bIn file included from e/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h :r32e:
+sIn file included from t/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.ha:r73t:
+aIn file included from b/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.hl:e39 :
+*In file included from //Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h
+:      44| :
+        ^/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h
+:144:9:/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:38:32 THREAD_INTERR:U9P:T IBnote: previous definition is here
+    38:
+ | #dIn file included from e/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.hf:i73n:
+eIn file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.hT:H39Rwarning: EA'THREAD_INTERRUPTIBLE' macro redefined [-Wmacro-redefined]
+L  144 | #deE            D_INfTEiRnReU PTTHIRBELAED _1I
+N      T| E        ^R
+RUPTIBLE   :
+    In file included from  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h : 44 :
+ /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h0:x1440:090:0 0warning: 001  /* m0x00000001  /* may not be restartable */
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:38:9: note: previous definition is here
+   38 | #define THREAD_INTERRUPTIBLE 1
+      |         ^
+'THREAD_INTERRUPTIBLE' macro redefined [-Wmacro-redefined]
+  144 | #define THREAD_INTERRUPTIBLE            0x00000001  /* maay not be restartable */
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:38:9: note: previous definition is here
+   38 | #define THREAD_INTERRUPTIBLE 1
+      |         ^
+y not be restartable */
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/iokit_shim.h:38:9: note: previous definition is here
+   38 | #define THREAD_INTERRUPTIBLE 1
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:76In file included from <built-in>:1:In file included from 12<built-in>:: 1warning: :
+implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:35:
+   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h76 |     :
+:In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:r35e:
+t/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.hu:r53n53 :_12_:b uwarning: iltin_po:pc12o:u nwarning: tlimplicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion](
+x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+   53 |     return __builtin_cimplicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builttzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+in_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |  :58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]   r
+eturn (BITS   _58P | E R _ L OrNeGt u-r n1 )( B-I T_S__bPuEiRl_tLiOnN_Gc l-z l1()x )-; 
+_      _| b                               ~ ^~~~~~~~~~~~~~~~~u
+iltin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |    /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion] retur
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~n __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/module.h:36In file included from :<built-in>9::1 :
+warning: In file included from 'module_usb_driver' macro redefined [-Wmacro-redefined]/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h
+:58:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h   36 | #d:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     efine mreturn (oduleUSB_EN_DPuOsIbN_Td_rXiFvEeRr_(B_U_LuKs b<_<d r3i0v)e r|)  (\e
+p       |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+& 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOIn file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | INT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+(ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+In file included from <built-in>:1:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:148In file included from :31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (U/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.hS:59:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/module.h:36:9: Bwarning: _EN'module_usb_driver' macro redefined [-Wmacro-redefined]D
+POINT   _XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__u/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]sb_driver) \
+      |         ^
+
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     r) \
+      |         ^
+eturn (USB_DIR_IN /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:311:9:<< 24 note: previous definition is here
+  311 | #define module_usb_driver(__us) | (USB_ENDPOINT_XFER_b_driver) \
+      |         ^
+BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/module.h:36/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h::9148:: 31warning: :'module_usb_driver' macro redefined [-Wmacro-redefined] 
+warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   36 | #de  f148i | n e   m ordeutluer_nu s(bU_SdBr_iDvIeRr_(I_N_ u<s<b _2d4r)i v|e r()U S\B
+_      E| N        ^D
+POI/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.hN:T311_:X9F:E Rnote: _previous definition is hereB
+ULK   <311< |  #3d0e)f i|n e( empo d&u l0ex_fu)s;b
+_      d| r           ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~i
+ver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c:123:37: warning: implicit conversion changes signedness: 'int' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  123 |         pos += snprintf(line + pos, (int)(sizeof(line) - pos), "  %04zx: ", i);
+      |                ~~~~~~~~             ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c:123:58: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  123 |         pos += snprintf(line + pos, (int)(sizeof(line) - pos), "  %04zx: ", i);
+      |                                                        ~ ^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c:125:41: warning: implicit conversion changes signedness: 'int' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  125 |             pos += snprintf(line + pos, (int)(sizeof(line) - pos), "%02x ", p[j]);
+      |                    ~~~~~~~~             ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c:125:62: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  125 |             pos += snprintf(line + pos, (int)(sizeof(line) - pos), "%02x ", p[j]);
+      |                                                            ~ ^~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c_table.c:5:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2138:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:206:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  206 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:6:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2138:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:206:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  206 |         u32 shift = __ffs(m/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:226:a9s:k )warning: ;
+implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  226 |               r|             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:226:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  226 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:219:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  219 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+eturn ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:219:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  219 |         u32 shift = __ffs(mask);
+      /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h| :239:9            ~~~~~   ^~~~~~~~~~~
+: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  239 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:232:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  232/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:239:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  239 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:232:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  232 |         u32 shift = __ffs( | mask        )u;3
+2       | s            ~~~~~   ^~~~~~~~~~~h
+ift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:245:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  245 |         In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:5:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:u32 shif/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.ht: 245=: 14_:2138:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h_ warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  245 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+ffs(ma:206:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  206 |         u3sk);
+      |             ~~~~~   ^~~~~~~~~~~
+2 shift = _In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c:7:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:8:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2138:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:206:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  206 |         u32 shift = __ffs(/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:266_ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+:23: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  266 |         set = (orig & ~mask) | ((data << /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.hs:h266i:f23t:)  warning: &implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion] 
+mask);
+        266|  |             ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~        
+set m= a(sokr)i;g
+       |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:266&:32 :~ mwarning: asimplicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  266 |         set = (orig & ~mask) | ((data << shift) & mask);
+      |                                  ~~~~~^~~~~~~~  ~
+k) | ((data << shift) & ma/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:226:s9k:) ;warning: 
+      /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h| :            ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~263
+:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.himplicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]:226
+  263 | /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h        ::s2669::32:  warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]h
+ifwarning:     226266 |  | t                 =r e__ffimplicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]s(
+mask);  t226u | rs
+etn       | =         r              ~ ^~~~~~~~~~~
+ret;
+etu (orig rn ret;
+      |         ~~~~~~ ^~~
+& ~mask) |       |         ~~~~~~ ^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:219:14:((data << shift/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h): 219&: 14m:a swarning: kimplicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32])
+;
+      |                                  ~~~~~^~~~~~~~  ~
+  219 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:263:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  263 | /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h        :s286h:i36f:t  warning: =implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32] 
+__ffs(m  285 |                 rtwde vawarning: skimplicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  ->hci.);
+      |               ~ ^~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:239:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  239 |         return ret;
+      |         ~~~~~~ ^~~
+219 |         u32 shift = __/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:232o:14p:s -warning: >implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]f
+lush_q  u232e | u        eus3(2r tswhdiefvt, 
+=       | _                ~~~~~~_
+ffs(mas  k286) | ;        
+                      |                     ~~~~~   ^~~~~~~~~~~        
+      BIT(rtwdev->hw->queues)f - f1s,(
+m      a| s                                              ~~~~~~~~~~~~~~~~~~~~~~~~^~~k
+);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:286:36: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]:295:35: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+
+  294 |           r285 | e        t        urrtnw dretvw-d>ehvc->hci.ops->fl/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:239:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]i.ops->fl/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.hus:h245_:q14u:e uwarning: eimplicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]s
+(r
+twde  v245, | 
+              u| 3                ~~~~~~  239 |         uret2u srn srheitf;
+ht   286= |          _        _        f        f_sq(
+u      |                 ~~~~~~ ^~~
+   euemask);
+      |             ~~~~~   ^~~~~~~~~~~
+   BIT(r/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.ht:w232d:e14v:- >warning: himplicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]w
+->quse  232 |         u32_ useysn)c (-
+      |  1s,
+h      i| f                                              ~~~~~~~~~~~~~~~~~~~~~~~~^~~t
+ = __ff               ~~~~~~s
+  295 | (mask);
+                      rtw|             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h::295266::3523::  warning: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+
+    294266 |  |                 rseettu r=n  (rotrwidge v&- >~hmcais.ko)p sd-e>v, BIT(rtwdeflusvh_q|ueues_s-yn>ch(w
+-      >| q               ~~~~~~u
+eues) (  (data295  |  - <1,<  dsrhoifpt)                 rtwd& mask);
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~^~~);ev, BIT(rtwdev
+-      >| h            ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~w
+->que
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:266:32: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  266 |         set = (or/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:245:14: ues) - ig warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  245 |         u3& 12,  dsrhoipf)t;
+      | ~                        ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+ = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+mask) | ((data << shift) & mask);
+      |                                  ~~~~~^~~~~~~~  ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:263:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  263 |         shift = __ffs(ma/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:266:23: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  266 |         set = (orig & ~mask) | ((data << shift) & mask);
+      |             ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:266:32: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  266 |         set = (orig & ~mask) | ((data << shift) & mask)sk);
+      |               ~ ^~~~~~~~~~~;
+      |                                  ~~~~~^~~~~~~~  ~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:6:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2199:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2199
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:263:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  263 |         shift = __ffs(mask);
+      |               ~ ^~~~~~~~~~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c_table.c:5:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2199:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2199 |         retu | rn m        return mac_id;
+      |         ~~~~~~ ^~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.hac_id;
+      |         ~~~~~~ ^~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:286:36: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  285 |                 rtw:d2197e:v11-:> hwarning: ciimplicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h 2197:2197. | op        s        -s>eftl_ubsiht_(qmuaecu/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:11:e:s286(:r36t:w  dwarning: warning: evimplicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+
+  285 |                 rtwdev-> h2197 |         _        se,t_
+b      i| t                ~~~~~~(
+mac_id,ci.ops->flush_queues(rtiwdd  286 | , ev ,
+rtw                              |                         ~~~~~~        r  dtevw->madce_
+    iBvd_map);
+      |                 ~~~~~~~ ^~~~~~  286 |         -                I        
+         T(rtwd>emvac-_id    _map);
+      |                 ~~~~~~~ ^~~~~~
+>hw-> BIT(rtwdqueues) - 1,
+      |                                               ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+ev->hw->queues) - 1,
+      |                                               ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:295:35: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  294 |         return rtwdev->hci.ops->flush_queues_sync(
+      |                ~~~~~~
+  295 |                 rtwdev,/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:295:35: warning:  BIT(rtwdev->hw->queues) - 1, drop);
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  294 |         return rtwdev->hci.ops->flush_queues_sync(
+      |                ~~~~~~
+  295 |                 rtwdev, BIT(rtwdev->hw->queues) - 1, drop);
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:5:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2199:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2199 |         return mac_id;
+      |         ~~~~~~ ^~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2197:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+ 2197 |                 set_bit(mac_id, rtwdev->mac_id_map);
+      |                 ~~~~~~~ ^~~~~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c:7:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:8:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2199:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2199 |         return mac_id;
+      |         ~~~~~~ ^~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2197:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+ 2197 |                 set_bit(mac_id, rtwdev->mac_id_map);
+      |                 ~~~~~~~ ^~~~~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c:7:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:157:18: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  157 |                 return rp - w13 warnings generated.
+p - 1;
+      |                 ~~~~~~ ~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:159:24: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  159 |                 return len - wp + rp - 1;
+      |                 ~~~~~~ ~~~~~~~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:16:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+   16 |                 return find_next_zero_bit(sec->cam_map, RTW_MAX_SEC_CAM_NUM,
+      |                 ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   17 |                                           RTW_SEC_DEFAULT_KEY_NUM);
+      |                                           ~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:19:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'int' [-Wshorten-64-to-32]
+   19 |         return find_first_zero_bit(sec->cam_map, RTW_MAX_SEC_CAM_NUM);
+      |         ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:54:20: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+   54 |         addr = hw_key_idx << RTW_SEC_CAM_ENTRY_SHIFT;
+      |              ~ ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:62:29: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+   58 |                         content = ((key->keyidx & 0x3))         |
+      |                                 ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   59 |                                   ((hw_key_type & 0x7)  << 2)   |
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   60 |                                   (cam->group           << 6)   |
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   61 |                                   (cam->valid           << 15)  |
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   62 |                                   (cam->addr[0]         << 16)  |
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+   63 |                                   (cam->addr[1]         << 24);
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:68:29: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+   66 |                         content = (cam->addr[2])                |
+      |                                 ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   67 |                                   (cam->addr[3]         << 8)   |
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   68 |                                   (cam->addr[4]         << 16)  |
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+   69 |                                   (cam->addr[5]         << 24);
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:79:31: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+   77 |                         content = (key->key[j])                 |
+      |                                 ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   78 |                                   (key->key[j + 1]      << 8)   |
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   79 |                                   (key->key[j + 2]      << 16)  |
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+   80 |                                   (key->key[j + 3]      << 24);
+      |                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:84:33: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+   84 |                 command = write_cmd | (addr + i);
+      |                                             ~ ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:113:20: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  113 |         addr = hw_key_idx << RTW_SEC_CAM_ENTRY_SHIFT;
+      |              ~ ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c:129:7: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  129 |                 n = find_next_bit(sec->cam_map, RTW_MAX_SEC_CAM_NUM, offset);
+      |                   ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c:1017:37: warning: declaration of 'struct sdio_func' will not be visible outside of this function [-Wvisibility]
+ 1017 | unsigned int sdio_align_size(struct sdio_func *func, unsigned int size)
+      |                                     ^
+28 warnings generated.
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:14:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h:49:55: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+   49 |         rtw_mac_flush_queues(rtwdev, BIT(rtwdev->hw->queues) - 1, drop);
+      |         ~~~~~~~~~~~~~~~~~~~~         ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c:1048:37: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+ 1048 |         sizeof(struct net_device) + sizeof_priv, GFP_KERNEL);
+      |                                   ~ ^~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h:55:35: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+   54 |         return rtw_mac_flush_queues_sync(
+      |                ~~~~~~~~~~~~~~~~~~~~~~~~~
+   55 |                 rtwdev, BIT(rtwdev->hw->queues) - 1, drop);
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:519:55: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  519 |                 val32 |= 0x20020000 | ((primary_ch_idx & 0xf) << 2) |
+      |                       ~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  520 |                          RTW_CHANNEL_WIDTH_40;
+      |                          ~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:528:55: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  528 |                 val32 |= 0x40040000 | ((primary_ch_idx & 0xf) << 2) |
+      |                       ~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  529 |                          RTW_CHANNEL_WIDTH_80;
+      |                          ~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:609:24: warning: implicit conversion loses integer precision: 'int' to 's8' (aka 'signed char') [-Wimplicit-int-conversion]
+  609 |         rx_pwr_all = lna_gain - 2 * vga_idx;
+      |                    ~ ~~~~~~~~~^~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:622:12: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  622 |         vga_idx = GET_PHY_STAT_P0_VGA(phy_status);
+      |                 ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h:182:2: note: expanded from macro 'GET_PHY_STAT_P0_VGA'
+  182 |         le32_get_bits(*((__le32 *)(phy_stat) + 0x03), GENMASK(12, 8))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:642:10: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  642 |                 rxsc = GET_PHY_STAT_P1_In file included from L/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c_:R1143X:
+SIn file included from C/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h(:p2138h:
+y/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h_:s206t:a14t:u swarning: )implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32];
+
+      |                      ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  206 | /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h        :u1983:22 :s hnote: iexpanded from macro 'GET_PHY_STAT_P1_L_RXSC'f
+t = _  198 |         le32__get_bfiftss((m*ask);
+      |             ~~~~~   ^~~~~~~~~~~
+((__le32 *)(phy_stat) + 0x01), GENMASK(11, 8))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:226:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  226 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:644:10: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:219:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  219  644 |                 rxsc = GET_PH |         u32 shY_STAT_P1_HT_RXSC(phy_status);
+      |                      ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h:200:2: note: expanded from macro 'GET_PHY_STAT_P1_HT_RXSC'
+ift   200= |          _l_ef3f2s_(gmeats_kb)i;t
+s      (| *            ~~~~~   ^~~~~~~~~~~(
+(__le32 *)(phy_stat) + 0x01), GENMASK(15, 12))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:239:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  239 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:232:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  232 |         u32 shift = __ff/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.cs:(653m:a8s:k )warning: ;implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+
+      |             ~~~~~   ^~~~~~~~~~~
+  653 |                 bw = GET_PHY_STAT_P1_RF_MODE(phy_status);
+      |                    ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h:196:2: note: expanded from macro 'GET_PHY_STAT_P1_RF_MODE'
+  196 |         le32_get_bits(*((__le32 *)(phy_stat) + 0x03), GENMASK(29, 28))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:245:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  245 |         u32 shift = __ffs(mas/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.ck:)655;:
+69      :|              ~~~~~   ^~~~~~~~~~~warning: 
+implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 's8' (aka 'signed char') [-Wimplicit-int-conversion]
+  655 |         pkt_stat->rx_power[RF_PATH_A] = GET_PHY_STAT_P1_PWDB_A(phy_status) - 110;
+      |                                       ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:266:23: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  266 |         set = (orig & ~mask) | ((data << shift) & mask);
+      |             ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:662:32: /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.hwarning: :implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 's8' (aka 'signed char') [-Wimplicit-int-conversion]266
+:32: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  662 |         p  35 warnings generated.
+kt266_ | st        aste-t> r=x _(sonrri[gR F&_ P~AmTaHs_kA)]  |=  (G(EdTa_tPaH Y<_<S TsAhTi_fPt1)_ R&X SmNaRs_kA)(;p
+h      y| _                                 ~~~~~^~~~~~~~  ~s
+tatus);
+      |                                     ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h:210:2: note: expanded from macro 'GET_PHY_STAT_P1_RXSNR_A'
+  210 |         le3/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h2:_263g:e10t:_ bwarning: iimplicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]t
+s(*((  _263_ | l        es3h2i f*t) (=p h_y__fsftsa(tm)a s+k )0;x
+0      6| )              ~ ^~~~~~~~~~~,
+ GENMASK(7, 0))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:286:36: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  285 |                 rtwdev->hci.ops->flush_queues(rtwdev,
+      |                 ~~~~~~
+  286 |                                               BIT(rtwdev->hw->queues) - 1,
+      |                                               ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:295:35: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  294 |         return rtwdev->hci.ops->flush_queues_sync(
+      |                ~~~~~~
+  295 |                 rtwdev, BIT(rtwdev->hw->queues) - 1, drop);
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:700:15: warning: implicit conversion changes signedness: 's8' (aka 'signed char') to 'u8' (aka 'unsigned char') [-Wsign-conversion]
+  700 |                 pwr_index = hal->tx_pwr_tbl[path][rate];
+      |                           ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:723:54: warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  723 |                         rtw8821c_set_tx_power_index_by_rate(rtwdev, pathIn file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/rtw88_compat.c:, r1143:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2199:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2199 |         return mac_id;
+      |         ~~~~~~ ^~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2197:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+ 2197 |                 set_bit(mac_id, rtwdev->mac_id_maps);
+,
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~               ^~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:723:48: warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  723 |                       |                 ~~~~~~~ ^~~~~~
+        rtw8821c_set_tx_power_index_by_rate(rtwdev, path, rs,
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         ^~~~
+  CC   airport/kmod_info.c
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1034:16: warning: implicit conversion changes signedness: 'u8' (aka 'unsigned char') to 's8' (aka 'signed char') [-Wsign-conversion]
+ 1034 |                         agc_index = pwr_idx_offset;
+      |                                   ~ ^~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1036:20: warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1035 |                         swing_index = dm_info->default_ofdm_index +
+      |                                     ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1036 |                                         delta_pwr_idx - pwr_idx_offset;
+      |                                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1047:20: warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1046 |                                 swing_index = dm_info->default_ofdm_index +
+      |                                             ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1047 |                                         delta_pwr_idx - pwr_idx_offset_lower;
+      |                                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1072:56: warning: implicit conversion changes signedness: 's8' (aka 'signed char') to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+ 1072 |         rtw_write32_mask(rtwdev, REG_TXAGCIDX, GENMASK(6, 1), txagc_idx);
+      |         ~~~~~~~~~~~~~~~~                                      ^~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1110:18: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1110 |         thermal_value = rtw_read_rf(rtwdev, RF_PATH_A, RF_T_METER, 0xfc00);
+      |                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -DRTW88_AIRPORT_KMOD=1 -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/kmod_info.c -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/airport/kmod_info.o
+  NATIVE CXX  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp (24H32 isolated RTW88 core object)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/native/RTW88IEEE80211.o
+26 warnings generated.
+45 warnings generated.
+32 warnings generated.
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:7:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp:20:38: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+   20 |     etherType = uint16_t(p[14]) << 8 | p[15];
+      |               ~ ~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp:48:64: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+   48 | inline uint16_t le16(const uint8_t *p) { return uint16_t(p[0]) | (uint16_t(p[1]) << 8); }
+      |                                          ~~~~~~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp:213:44: warning: implicit conversion changes signedness: 'const char' to 'uint8_t' (aka 'unsigned char') [-Wsign-conversion]
+  213 |         for(unsigned i=0;i<6;++i){v[8+2*i]=digits[local[i]>>4];v[9+2*i]=digits[local[i]&15];}
+      |                                           ~^~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp:213:73: warning: implicit conversion changes signedness: 'const char' to 'uint8_t' (aka 'unsigned char') [-Wsign-conversion]
+  213 |         for(unsigned i=0;i<6;++i){v[8+2*i]=digits[local[i]>>4];v[9+2*i]=digits[local[i]&15];}
+      |                                                                        ~^~~~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:63:
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/../compat/net/mac80211.h:96:9: warning: struct has size 0 in C, size 1 in C++ [-Wextern-c-compat]
+   96 |         struct {
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:782:5: error: use of undeclared identifier '_txBAState'; did you mean '_txBaState'?
+  782 |     _txBAState.clear();
+      |     ^~~~~~~~~~
+      |     _txBaState
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:545:20: note: '_txBaState' declared here
+  545 |     RTW88TxBAState _txBaState;      /* atomic active+TID snapshot shared by four AC submitters */
+      |                    ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:833:5: error: use of undeclared identifier '_txBAState'; did you mean '_txBaState'?
+  833 |     _txBAState.clear();
+      |     ^~~~~~~~~~
+      |     _txBaState
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:545:20: note: '_txBaState' declared here
+  545 |     RTW88TxBAState _txBaState;      /* atomic active+TID snapshot shared by four AC submitters */
+      |                    ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1814:13: error: expected ')'
+ 1814 |             clearKeys();
+      |             ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1812:17: note: to match this '('
+ 1812 |                 (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
+      |                 ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2055:42: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 2055 |     bss->beacon_interval = skb->data[32] | (uint16_t(skb->data[33]) << 8);
+      |                          ~ ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2056:39: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 2056 |     bss->capabilities = skb->data[34] | (uint16_t(skb->data[35]) << 8);
+      |                       ~ ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2134:39: warning: implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2134 |             bss->channel = (f - 2407) / 5;
+      |                          ~ ~~~~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2136:39: warning: implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2136 |             bss->channel = (f - 5000) / 5;
+      |                          ~ ~~~~~~~~~~~^~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2217:5: error: expected ')'
+ 2217 |     if (!connected) {
+      |     ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2215:22: note: to match this '('
+ 2215 |                      (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
+      |                      ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2226:36: error: use of undeclared identifier 'infraHdr'
+ 2226 |     uint16_t infraFc = le16_to_cpu(infraHdr->frame_control);
+      |                                    ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2228:24: error: use of undeclared identifier 'infraHdr'
+ 2228 |     bool toUs = memcmp(infraHdr->addr1, _macAddr, 6) == 0 ||
+      |                        ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2229:41: error: use of undeclared identifier 'infraHdr'
+ 2229 |                 is_broadcast_ether_addr(infraHdr->addr1) ||
+      |                                         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2230:41: error: use of undeclared identifier 'infraHdr'
+ 2230 |                 is_multicast_ether_addr(infraHdr->addr1);
+      |                                         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:2231:26: error: use of undeclared identifier 'infraHdr'
+ 2231 |     bool fromAP = memcmp(infraHdr->addr2, _targetBSS.bssid, 6) == 0;
+      |                          ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3511:45: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+ 3511 |             hex[2 * i]     = hexd[b.ies[rsn + 2 + i] >> 4];
+      |                                         ~~~~^~~ ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3512:45: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+ 3512 |             hex[2 * i + 1] = hexd[b.ies[rsn + 2 + i] & 0x0f];
+      |                                         ~~~~^~~ ~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3683:63: warning: implicit conversion loses integer precision: 'uint32_t' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 3681 |         _wpa2 = RTW88Join::useWpa2(externalSupplicant,
+      |                 ~~~~~~~~~
+ 3682 |                                    _targetBSS.cipher == WLAN_CIPHER_SUITE_CCMP,
+ 3683 |                                    pmk != nullptr, _targetBSS.capabilities);
+      |                                                    ~~~~~~~~~~~^~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4893:65: error: use of undeclared identifier 'gtk_len'
+ 4893 |         IOLog("rtw88: WPA2 connected! gtk_len=%u gtk_idx=%u\n", gtk_len, gtk_idx);
+      |                                                                 ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4893:74: error: use of undeclared identifier 'gtk_idx'
+ 4893 |         IOLog("rtw88: WPA2 connected! gtk_len=%u gtk_idx=%u\n", gtk_len, gtk_idx);
+      |                                                                          ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4983:38: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 4983 |     uint16_t fc = (uint16_t)frame[0] | ((uint16_t)frame[1] << 8);
+      |              ~~   ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:5147:9: error: use of undeclared identifier '_txBAState'
+ 5147 |     if (_txBAState.active())
+      |         ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:5184:14: error: use of undeclared identifier '_txBAState'; did you mean '_txBaState'?
+ 5184 |     retry = !_txBAState.active() && !_txBaPending && _baRecovery.due(now);
+      |              ^~~~~~~~~~
+      |              _txBaState
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:545:20: note: '_txBaState' declared here
+  545 |     RTW88TxBAState _txBaState;      /* atomic active+TID snapshot shared by four AC submitters */
+      |                    ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:5237:17: error: use of undeclared identifier '_txBAState'; did you mean '_txBaState'?
+ 5237 |                 _txBAState.activate(tid);
+      |                 ^~~~~~~~~~
+      |                 _txBaState
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:545:20: note: '_txBaState' declared here
+  545 |     RTW88TxBAState _txBaState;      /* atomic active+TID snapshot shared by four AC submitters */
+      |                    ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:5266:21: error: use of undeclared identifier '_txBAState'; did you mean '_txBaState'?
+ 5266 |         wasActive = _txBAState.active();
+      |                     ^~~~~~~~~~
+      |                     _txBaState
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:545:20: note: '_txBaState' declared here
+  545 |     RTW88TxBAState _txBaState;      /* atomic active+TID snapshot shared by four AC submitters */
+      |                    ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:5268:13: error: use of undeclared identifier '_txBAState'; did you mean '_txBaState'?
+ 5268 |             _txBAState.clear();
+      |             ^~~~~~~~~~
+      |             _txBaState
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:545:20: note: '_txBaState' declared here
+  545 |     RTW88TxBAState _txBaState;      /* atomic active+TID snapshot shared by four AC submitters */
+      |                    ^
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:5691:30: error: use of undeclared identifier '_txBAState'; did you mean '_txBaState'?
+ 5691 |     const uint32_t baState = _txBAState.snapshot();
+      |                              ^~~~~~~~~~
+      |                              _txBaState
+/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:545:20: note: '_txBaState' declared here
+  545 |     RTW88TxBAState _txBaState;      /* atomic active+TID snapshot shared by four AC submitters */
+      |                    ^
+22 warnings and 17 errors generated.
+make: *** [/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/native/RTW88IEEE80211.o] Error 1
