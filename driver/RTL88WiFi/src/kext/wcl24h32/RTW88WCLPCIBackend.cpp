@@ -186,11 +186,12 @@ IOReturn RTW88WCLPCIBackend::close()
 {
     if (_radioRunning)
         return kIOReturnBusy;
-    closeResources();
+    if (!closeResources())
+        return kIOReturnBusy;
     return kIOReturnSuccess;
 }
 
-void RTW88WCLPCIBackend::closeResources()
+bool RTW88WCLPCIBackend::closeResources()
 {
     if (_interruptSource) {
         _interruptSource->disable();
@@ -200,17 +201,17 @@ void RTW88WCLPCIBackend::closeResources()
         _interruptSource = nullptr;
     }
 
-    /* Stop all compat work before reclaiming DMA buffers and releasing the
-     * callbacks they may invoke. The RTW88 core must already be stopped. */
     if (_compatInitialized) {
-        rtw88_compat_exit();
+        if (!rtw88_compat_exit()) {
+            IOLog("rtl88wifi-wcl: compat deferred TX reaper failed to drain; retaining PCI/DMA resources\\n");
+            return false;
+        }
         _compatInitialized = false;
     }
 
     if (preemption_enabled())
         drainPendingFree();
     releaseDMAEntries();
-
     clearCompatLease();
 
     if (_pciDev) {
@@ -226,7 +227,6 @@ void RTW88WCLPCIBackend::closeResources()
         _mmioMap = nullptr;
     }
     _mmioBase = nullptr;
-
     if (_workLoop) {
         _workLoop->release();
         _workLoop = nullptr;
@@ -243,10 +243,10 @@ void RTW88WCLPCIBackend::closeResources()
         IOSimpleLockFree(_dmaLock);
         _dmaLock = nullptr;
     }
-
     _client = nullptr;
     _radioRunning = false;
     _opened = false;
+    return true;
 }
 
 void RTW88WCLPCIBackend::clearCompatLease()
@@ -271,15 +271,15 @@ void RTW88WCLPCIBackend::free()
         _pciDev->setBusMasterEnable(false);
         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
         if (command & 0x0004U) {
-            IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\n",
+            IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\\n",
                   command);
-            /* Keep this object, DMA descriptors, MMIO map, locks, and PCI
-             * reference alive until hardware bus mastering is demonstrably off. */
             return;
         }
     }
-    _radioRunning = false;
-    closeResources();
+    if (!closeResources()) {
+        IOLog("rtl88wifi-wcl: compat teardown incomplete; backend quarantined with DMA resources retained\\n");
+        return;
+    }
     super::free();
 }
 
