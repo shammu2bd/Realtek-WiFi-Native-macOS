@@ -186,7 +186,7 @@ bool RTW88WCLController::start(IOService *provider)
                 _txCompletionWorker->release();
                 _txCompletionWorker = nullptr;
             } else {
-                IOLog("rtl88wifi-wcl: partial TX completion worker cleanup deferred: 0x%08x\\n",
+                IOLog("rtl88wifi-wcl: partial TX completion worker cleanup deferred: 0x%08x\n",
                       workerStopStatus);
             }
         }
