@@ -32,6 +32,12 @@ bool RTW88WCLTxCompletionWorkQueue::init(
     if (!_retryTimer)
         goto fail;
 
+    _tokenReapCall = thread_call_allocate_with_priority(
+        &RTW88WCLTxCompletionWorkQueue::deferredTokenReap,
+        this, THREAD_CALL_PRIORITY_KERNEL);
+    if (!_tokenReapCall)
+        goto fail;
+
     if (_workLoop->addEventSource(this) != kIOReturnSuccess)
         goto fail;
     _eventSourceRegistered = true;
@@ -54,16 +60,21 @@ bool RTW88WCLTxCompletionWorkQueue::init(
     return true;
 
 fail:
-    stop();
+    (void)stop();
     return false;
 }
 
-void RTW88WCLTxCompletionWorkQueue::stop()
+IOReturn RTW88WCLTxCompletionWorkQueue::stop()
 {
-    __atomic_store_n(&_stopping, 1U, __ATOMIC_RELEASE);
+    /* A live ticket or retired token still owns callback context. Keep the
+     * event source, thread call, adapter and queue alive until controller
+     * unbind proves both producer and deferred-reclamation paths are drained. */
+    if (_adapter &&
+        (_adapter->hasOutstandingCompletions() ||
+         _adapter->hasRetiredCompletionTokens()))
+        return kIOReturnBusy;
 
-    /* Controller calls stop only after adapter->unbind() proves the ticket
-     * table empty and the RTW88 producer stopped. */
+    __atomic_store_n(&_stopping, 1U, __ATOMIC_RELEASE);
     if (_adapter)
         _adapter->clearCompletionNotifier(this);
 
@@ -83,6 +94,19 @@ void RTW88WCLTxCompletionWorkQueue::stop()
     }
     _workLoop = nullptr;
 
+    /* Event-source removal closes the only scheduler. The thread-call callback
+     * never re-enqueues itself; cancel_wait therefore covers the one pending or
+     * active invocation before its storage and adapter references are released. */
+    if (_tokenReapCall) {
+        (void)thread_call_cancel_wait(_tokenReapCall);
+        if (!thread_call_free(_tokenReapCall)) {
+            IOLog("rtl88wifi-wcl: token reaper thread-call still active; retaining worker owners\\n");
+            return kIOReturnBusy;
+        }
+        _tokenReapCall = nullptr;
+    }
+    __atomic_store_n(&_tokenReapState, 0U, __ATOMIC_RELEASE);
+
     if (_completionQueue) {
         _completionQueue->release();
         _completionQueue = nullptr;
@@ -91,11 +115,15 @@ void RTW88WCLTxCompletionWorkQueue::stop()
         _adapter->release();
         _adapter = nullptr;
     }
+    return kIOReturnSuccess;
 }
 
 void RTW88WCLTxCompletionWorkQueue::free()
 {
-    stop();
+    if (stop() != kIOReturnSuccess) {
+        IOLog("rtl88wifi-wcl: completion worker free deferred; callback ownership remains\\n");
+        return;
+    }
     super::free();
 }
 
@@ -150,6 +178,72 @@ bool RTW88WCLTxCompletionWorkQueue::completionSink(
            kIOReturnSuccess;
 }
 
+void RTW88WCLTxCompletionWorkQueue::scheduleTokenReap()
+{
+    if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) != 0 ||
+        !_adapter || !_tokenReapCall ||
+        !_adapter->hasReapableCompletionTokens())
+        return;
+
+    uint32_t state = __atomic_load_n(&_tokenReapState, __ATOMIC_ACQUIRE);
+    for (;;) {
+        if (state & kTokenReapScheduled) {
+            if (state & kTokenReapResignal)
+                return;
+            const uint32_t desired = state | kTokenReapResignal;
+            if (__atomic_compare_exchange_n(&_tokenReapState, &state, desired,
+                                            false, __ATOMIC_ACQ_REL,
+                                            __ATOMIC_ACQUIRE))
+                return;
+        } else {
+            if (__atomic_compare_exchange_n(&_tokenReapState, &state,
+                                            kTokenReapScheduled, false,
+                                            __ATOMIC_ACQ_REL,
+                                            __ATOMIC_ACQUIRE)) {
+                /* TRUE means already pending; it is not an error. Keep the
+                 * scheduled bit set until the one callback reaches its tail. */
+                (void)thread_call_enter(_tokenReapCall);
+                return;
+            }
+        }
+        state = __atomic_load_n(&_tokenReapState, __ATOMIC_ACQUIRE);
+    }
+}
+
+void RTW88WCLTxCompletionWorkQueue::deferredTokenReap(
+    thread_call_param_t context, thread_call_param_t unused)
+{
+    (void)unused;
+    auto *self = static_cast<RTW88WCLTxCompletionWorkQueue *>(context);
+    if (!self)
+        return;
+
+    for (;;) {
+        if (self->_adapter)
+            self->_adapter->reapDeferredCompletionTokens();
+
+        uint32_t state = __atomic_load_n(&self->_tokenReapState,
+                                         __ATOMIC_ACQUIRE);
+        if (state & kTokenReapResignal) {
+            uint32_t expected = state;
+            if (__atomic_compare_exchange_n(&self->_tokenReapState, &expected,
+                                            kTokenReapScheduled, false,
+                                            __ATOMIC_ACQ_REL,
+                                            __ATOMIC_ACQUIRE))
+                continue;
+            continue;
+        }
+
+        uint32_t expected = kTokenReapScheduled;
+        if (__atomic_compare_exchange_n(&self->_tokenReapState, &expected, 0U,
+                                        false, __ATOMIC_ACQ_REL,
+                                        __ATOMIC_ACQUIRE))
+            return;
+        if (!(expected & kTokenReapScheduled))
+            return;
+    }
+}
+
 bool RTW88WCLTxCompletionWorkQueue::checkForWork()
 {
     if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) != 0 ||
@@ -158,6 +252,7 @@ bool RTW88WCLTxCompletionWorkQueue::checkForWork()
 
     (void)_adapter->drainCompletions(
         &RTW88WCLTxCompletionWorkQueue::completionSink, this);
+    scheduleTokenReap();
 
     /* drainCompletions stops on the first rejected handoff and returns the
      * ticket to Completed. Retry later rather than spinning when Skywalk is
