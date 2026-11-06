@@ -24,7 +24,7 @@ curl -fsSLo "$WORK/kcfile.py" "https://raw.githubusercontent.com/watchthelight-l
 python3 - "$WORK/kcfile.py" "$READER_SHA" <<'PY'
 import hashlib,pathlib,sys
 d=pathlib.Path(sys.argv[1]).read_bytes()
-h=hashlib.sha1(b"blob "+str(len(d)).encode()+b"\\0"+d).hexdigest()
+h=hashlib.sha1(b"blob "+str(len(d)).encode()+b"\0"+d).hexdigest()
 print("READER_BLOB_SHA="+h)
 if h!=sys.argv[2]: raise SystemExit("reader SHA mismatch")
 PY
@@ -66,7 +66,7 @@ print("OTOOL_EXIT=%d"%p.returncode)
 if p.returncode: print(p.stderr[:3000]); raise SystemExit("disassembly failed")
 selected=[]
 for line in p.stdout.splitlines():
- m=re.match(r"^\\s*(?:0x)?([0-9a-fA-F]{8,}):?\\s+(.*)$",line)
+ m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):?\s+(.*)$",line)
  if m:
   a=int(m.group(1),16)
   if target<=a<end: selected.append((a,line.strip(),m.group(2)))
@@ -76,7 +76,7 @@ print("STAGE137_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED")
 print("INSTRUCTION_COUNT=%d"%len(selected))
 for a,rawline,asm in selected:
  print(rawline)
- if re.search(r"\\b(call|jmp)q?\\b",asm): print("CONTROL_FLOW=0x%x %s"%(a,asm))
+ if re.search(r"\b(call|jmp)q?\b",asm): print("CONTROL_FLOW=0x%x %s"%(a,asm))
 PY
  echo "STAGE137_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN"
  echo "STAGE137_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN"
@@ -88,7 +88,7 @@ python3 - "$REPORT" "$STAMP" "$REPO" <<'PY'
 import base64,hashlib,json,pathlib,subprocess,sys,tempfile
 p=pathlib.Path(sys.argv[1]); stamp,repo=sys.argv[2:]
 data=p.read_bytes(); path="Development/Logs/stage137-network-enable-dispatch-"+stamp+".log"
-sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\\0"+data).hexdigest()
+sha=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
 payload={"message":"Stage137: publish read-only network enable dispatch audit","branch":"main","content":base64.b64encode(data).decode()}
 with tempfile.NamedTemporaryFile(mode="w") as f:
  json.dump(payload,f); f.flush()
