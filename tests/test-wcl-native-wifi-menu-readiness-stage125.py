@@ -59,7 +59,7 @@ def main() -> None:
     for rel, expected in PINNED.items():
         data = (ROOT / rel).read_bytes()
         actual = git_blob_sha(data)
-        check("SOURCE_PIN_" + Path(rel).stem.upper().replace(".", "_"),
+        check("SOURCE_PIN_" + Path(rel).name.upper().replace(".", "_"),
               actual == expected,
               f"{rel}: expected {expected}, actual {actual}")
 
@@ -187,6 +187,19 @@ def main() -> None:
         infra,
         "IOReturn RTW88WCLInfraInterface::disable(",
         "SInt32 RTW88WCLInfraInterface::initBSDInterfaceParameters(")
+    check("CONTROLLER_POWER_ABI_DECLARED",
+          "getPOWER(IO80211SkywalkInterface *interface" in controller_h
+          and "setPOWER(IO80211SkywalkInterface *interface" in controller_h,
+          "Concrete controller declares the 24H32 power selectors.")
+    check("APPLE_INTERFACE_ENABLE_STATE_API",
+          "virtual SInt32 setInterfaceEnable(bool) override;" in abi
+          and "virtual bool isInterfaceEnabled();" in abi,
+          "Pinned 24H32 ABI surface contains Apple setInterfaceEnable and isInterfaceEnabled methods.")
+    check("RADIO_POWER_BACKEND",
+          "_radio->cmdPowerOn()" in bridge and "_radio->cmdPowerOff()" in bridge
+          and "__atomic_store_n(&_powered, true" in radio,
+          "RTW88 bridge forwards to explicit backend radio power state.")
+
     check("POWER_GETTER_SOURCE",
           "_infraInterface->isInterfaceEnabled()" in power_get,
           "Controller getPOWER reports the inherited Apple interface-enabled flag.")
@@ -219,6 +232,11 @@ def main() -> None:
         and "request.type != APPLE80211_SCAN_TYPE_FAST" in scan
         and "return kIOReturnUnsupported;" in scan,
         "Only active/FAST scans are accepted; passive and background scan requests are rejected.")
+
+    gap("CURRENT_BSS_WCL_SELECTORS",
+        "RTW88_WCL_UNSUPPORTED(getWCL_BSS_INFO" in infra_h
+        and "RTW88_WCL_UNSUPPORTED(getWCL_EXTENDED_BSS_INFO" in infra_h,
+        "WCL current/extended BSS information selectors are explicitly unsupported; current-network detail retrieval via these selectors is not established.")
 
     unsupported_count = infra_h.count("RTW88_WCL_UNSUPPORTED(")
     print(f"STAGE125_OPTIONAL_UNSUPPORTED_SELECTOR_MACROS={unsupported_count}")
