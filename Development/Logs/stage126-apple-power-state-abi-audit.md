@@ -14,3 +14,6 @@ The Stage120 extracted Apple IO80211Family Mach-O is reused if present. Otherwis
 
 
 **Stage126 narrowed rerun:** The first nm expression matched unrelated Wi-Fi feature selectors, producing an oversized report (GitHub HTTP 413). The `main` runner now selects only eight exact mangled power-state methods spanning `IO80211InfraInterface`, `IO80211MacAddressAgent`, and `IO80211SkywalkInterface`. The complete report remains local; a bounded, explicitly marked compact upload is used only if the report exceeds 700 KB.
+
+
+**Disassembly validity correction:** The first uploaded output repeated the beginning of the Mach-O `__text` section for each requested symbol and is not usable as method-body evidence. The runner now uses LLVM's Mach-O-specific `--dis-symname` selector and records a method as verified only when its exact mangled symbol label is present and the output does not look like the generic section prelude. The power-state call graph remains unproven until the corrected target run produces isolated bodies.
