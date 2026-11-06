@@ -49,15 +49,14 @@ extern const struct rtw_chip_info rtw8821c_hw_spec;
 
 } /* extern "C" */
 
-using RTW88TxCompletionTokenRetireHook = void (*)(void *context, void *token);
-static RTW88TxCompletionTokenRetireHook volatile
+static rtw88_skb_tx_completion_retire_hook volatile
     g_rtw88TxCompletionTokenRetireHook = nullptr;
 
 /* The shared radio object is also linked into the legacy Airport kext, where
  * no WCL adapter object exists. Native WCL registers its hook before queues can
  * submit packets; the legacy path never binds completion tokens. */
 extern "C" void rtw88_set_skb_tx_completion_token_releaser(
-    RTW88TxCompletionTokenRetireHook hook)
+    rtw88_skb_tx_completion_retire_hook hook)
 {
     __atomic_store_n(&g_rtw88TxCompletionTokenRetireHook, hook,
                      __ATOMIC_RELEASE);
@@ -74,7 +73,7 @@ static void rtw88_release_skb_tx_completion_token(void *token)
         return;
     auto *completion =
         static_cast<struct rtw88_skb_tx_completion_token *>(token);
-    RTW88TxCompletionTokenRetireHook hook =
+    rtw88_skb_tx_completion_retire_hook hook =
         __atomic_load_n(&g_rtw88TxCompletionTokenRetireHook,
                         __ATOMIC_ACQUIRE);
     if (hook)
