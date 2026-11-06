@@ -100,9 +100,14 @@ if not matches:
     raise SystemExit(2)
 start=min(matches)
 next_global=[a for a,t,n in entries if a > start and t.upper() == "T"]
-candidate=min(next_global) if next_global else start+0x600
-end=min(candidate, start+0x600)
-reason="NEXT_GLOBAL_TEXT_SYMBOL" if candidate <= start+0x600 else "SAFETY_CAP"
+candidate=min(next_global) if next_global else None
+cap=start+0x600
+if candidate is not None and candidate <= cap:
+    end=candidate
+    reason="NEXT_GLOBAL_TEXT_SYMBOL"
+else:
+    end=cap
+    reason="SAFETY_CAP"
 if end <= start:
     raise SystemExit(3)
 print(f"{start:x} {end:x} {end-start:x} {reason}")
@@ -136,6 +141,7 @@ PY
       continue
     fi
 
+    VERIFY=""
     if VERIFY="$(python3 - "$DUMP_FILE" "$START" "$END" <<'PY'
 import pathlib, re, sys
 path, start_s, end_s=sys.argv[1:]
