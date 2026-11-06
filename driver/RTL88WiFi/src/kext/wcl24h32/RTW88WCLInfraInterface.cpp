@@ -352,7 +352,13 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
     if (commitStatus != kIOReturnSuccess) {
         const IOReturn rollbackStatus = deregisterEthernetInterface(0);
         if (rollbackStatus == kIOReturnSuccess) {
-            (void)queues->abortRegistrationTransaction();
+            const IOReturn abortStatus =
+                queues->abortRegistrationTransaction();
+            if (abortStatus != kIOReturnSuccess) {
+                (void)queues->abortRegistrationTransaction(true);
+                IOLog("rtl88wifi-wcl: Apple rollback succeeded but local registration abort failed (0x%08x); queue owner quarantined\n",
+                      abortStatus);
+            }
         } else {
             (void)queues->abortRegistrationTransaction(true);
             IOLog("rtl88wifi-wcl: registration commit failed and Apple rollback failed (0x%08x); queue owner quarantined\n",
