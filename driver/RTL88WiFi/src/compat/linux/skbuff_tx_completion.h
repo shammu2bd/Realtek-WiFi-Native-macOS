@@ -21,6 +21,13 @@ typedef void (*rtw88_skb_tx_completion_fn)(void *context, void *cookie,
                                            bool transmitted);
 typedef void (*rtw88_skb_tx_completion_release_fn)(void *token);
 
+/* Optional native adapter hook, registered before completion tokens can exist.
+ * Keeping this indirection here lets the shared radio object also link into
+ * the legacy Airport kext without a direct WCL adapter symbol dependency. */
+typedef void (*rtw88_skb_tx_completion_retire_hook)(void *context, void *token);
+void rtw88_set_skb_tx_completion_token_releaser(
+    rtw88_skb_tx_completion_retire_hook hook);
+
 struct rtw88_skb_tx_completion_token {
     rtw88_skb_tx_completion_fn callback;
     rtw88_skb_tx_completion_release_fn release;
