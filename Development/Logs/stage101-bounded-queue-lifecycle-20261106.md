@@ -36,3 +36,11 @@ Stage101 Actions passed 31 static source/lifecycle assertions and a 12-producer/
 ## Target-Mac compile follow-up
 
 The first clean 24H32 build was uploaded as [stage101-clean-dual-object-compile-20261106T044830Z.log](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/blob/work/stage91-tx-submission-callback-v1/Development/Logs/stage101-clean-dual-object-compile-20261106T044830Z.log). The build exited with status 2 because `RTW88WCLController.cpp` called `rtw88_compat_quiesce_tx_status()` without importing its declaration. The controller now includes `../../compat/rtw88_compat.h` inside an `extern "C"` block, matching the other WCL/legacy users, and Stage101 gained a regression assertion for that declaration. A fresh target-Mac rebuild is required; the previous failure must not be treated as a successful compile.
+
+## Verification after header fix
+
+- [Stage101 run 42164772714](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42164772714): success; **32 source/lifecycle assertions passed, 0 failed**, including the new WCL declaration/import check.
+- 12 producers completed 36,000 publications using reused node addresses with exactly-once consumption. Queue-full rejection, slot recycling, and sequence wrap passed.
+- [Stage100 callback audit run 42164772568](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42164772568): success; **32 assertions passed, 0 failed**.
+- [Stage94 run 42164791329](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42164791329): success; **39 checks passed, 0 blockers**.
+- These host checks validate source structure and the portable model. They do not replace a fresh macOS 24H32 compile after the controller include fix.
