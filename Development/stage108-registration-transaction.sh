@@ -34,6 +34,8 @@ trap 'rm -rf "$TMP_DIR"' EXIT
 
 if (
   set -euo pipefail
+  export CXX="$CXX_BIN"
+  export SDKROOT="$SDK_PATH"
   echo "========== STAGE108 REGISTRATION TRANSACTION =========="
   echo "STAGE108_SOURCE_COMMIT=$SOURCE_COMMIT"
   echo "STAGE108_TARGET=macOS_15.8.1_24H32_x86_64"
