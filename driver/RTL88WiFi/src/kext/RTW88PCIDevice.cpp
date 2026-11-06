@@ -317,7 +317,12 @@ bool RTW88PCIDevice::start(IOService *provider)
     rtw88_dma_ops      = &_dma_ops;
 
     /* Initialise compat runtime (workqueues, timers) */
-    rtw88_compat_init();
+    const int compatStatus = rtw88_compat_init();
+    if (compatStatus != 0) {
+        IOLog("rtw88: compatibility runtime initialization failed (%d)\\n", compatStatus);
+        return false;
+    }
+    _compatInitialized = true;
 
     /* Build the pci_dev struct for the Linux driver */
     _compatPciDev = (struct pci_dev *)IOMallocZero(sizeof(struct pci_dev));
@@ -442,7 +447,10 @@ void RTW88PCIDevice::teardown()
 
     if (_ieee80211)  { _ieee80211->stop(); _ieee80211->release(); _ieee80211 = nullptr; }
 
-    rtw88_compat_exit();
+    if (_compatInitialized) {
+        rtw88_compat_exit();
+        _compatInitialized = false;
+    }
 
     if (_debugTimer) { _debugTimer->cancelTimeout(); _workLoop->removeEventSource(_debugTimer); _debugTimer->release(); _debugTimer = nullptr; }
     if (_intrSrc)  { _workLoop->removeEventSource(_intrSrc); _intrSrc->release();  _intrSrc = nullptr; }
