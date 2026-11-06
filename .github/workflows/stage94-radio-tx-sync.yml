@@ -1,0 +1,59 @@
+name: Stage94 radio TX synchronization
+
+on:
+  push:
+    branches:
+      - work/stage91-tx-submission-callback-v1
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  portable-radio-sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out pinned branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/stage91-tx-submission-callback-v1
+
+      - name: Show toolchain
+        run: |
+          c++ --version
+          python3 --version
+
+      - name: Run radio TX gate model (four-AC stress x3)
+        env:
+          CXX: c++
+          STRESS_RUNS: "3"
+        run: bash tools/run-stage94-radio-tx-sync-model-tests.sh
+
+      - name: Run packed Block Ack snapshot model
+        env:
+          CXX: c++
+        run: bash tools/run-stage94-radio-tx-ba-model-tests.sh
+
+      - name: Run Stage94 source integration audit
+        run: python3 tests/test-wcl-stage94-radio-tx-sync.py
+
+      - name: Record validation scope
+        run: |
+          {
+            echo "Stage94 portable source validation: completed"
+            echo "Host: Ubuntu GitHub Actions runner"
+            echo "Gate model: three stress runs"
+            echo "BA snapshot model: one concurrency run"
+            echo "Source integration audit: read-only"
+            echo "macOS kernel object compile: NOT RUN"
+            echo "kext link/sign/install/load: NOT RUN"
+            echo "hardware TX/RX: NOT RUN"
+            echo "native queue activation: BLOCKED"
+          } | tee stage94-validation-scope.txt
+
+      - name: Upload validation scope
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage94-radio-tx-sync-validation-scope
+          path: stage94-validation-scope.txt
