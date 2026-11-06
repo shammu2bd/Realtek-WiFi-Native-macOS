@@ -132,8 +132,53 @@ assert "_infraInterface->isRegistered()" in rx_sink
 assert "enqueueRXPacketForNetworking(preparedPacket)" in rx_sink
 assert "return accepted == 1;" in rx_sink
 
+# The local commit failure path must reconcile the external Apple side effect
+# before queue owners can become unpinned. If reconciliation fails, quarantine.
+commit_fail = infra_cpp[infra_cpp.index("const IOReturn commitStatus"):start_mark]
+assert "const IOReturn rollbackStatus = deregisterEthernetInterface(0);" in commit_fail
+assert "const IOReturn abortStatus =" in commit_fail
+assert "if (abortStatus != kIOReturnSuccess)" in commit_fail
+assert "abortRegistrationTransaction(true)" in commit_fail
+
+# No obsolete boolean registration API may bypass the transaction state machine.
+assert "setRegistered(" not in queues_h
+assert "setRegistered(" not in queues_cpp
+assert "markSkywalkQueuesRegistered" not in controller_cpp_raw
+
+# The radio event bridge must be installed before WCL operations are enabled,
+# and event delivery must go through the interface-owned work queue.
+attach_radio = infra_cpp[infra_cpp.index("IOReturn RTW88WCLInfraInterface::attachRadio"):
+                        infra_cpp.index("void RTW88WCLInfraInterface::detachRadio")]
+assert "queue->init(this, workLoop, this)" in attach_radio
+assert "_bridge.attach(radio, queue)" in attach_radio
+bridge_cpp = (ROOT / "driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp").read_text()
+assert "radio->setEventDelegate(this)" in bridge_cpp
+assert "_sink->onRTW88WCLRadioEvent(event)" in bridge_cpp
+
+# User-facing power and capability control is available only after successful
+# registration; no unregistered interface can activate the packet path.
+enable_start = infra_cpp.index("IOReturn RTW88WCLInfraInterface::enable(")
+enable_end = infra_cpp.index("IOReturn RTW88WCLInfraInterface::disable(", enable_start)
+enable = infra_cpp[enable_start:enable_end]
+assert "powerOn()" in enable
+assert "activatePacketPath(this)" in enable
+disable_start = enable_end
+disable_end = infra_cpp.index("SInt32 RTW88WCLInfraInterface::initBSDInterfaceParameters", disable_start)
+disable = infra_cpp[disable_start:disable_end]
+assert disable.index("quiescePacketPath()") < disable.index("powerOff()")
+assert "return !_infraInterface || !_infraInterface->isRegistered();" in controller_cpp
+
+# TX ownership stays connected to the existing deferred completion consumer.
+assert "_txCompletionWorker->init(this, _workLoop, _txAdapter" in controller_cpp
+assert "enqueuePackets(packets, 1, 0)" in (
+    ROOT / "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp"
+).read_text()
+
 print("PASS: 24H32 registration uses Apple's audited infra wrapper and stable seven-queue vector")
 print("PASS: atomic begin/commit/abort and deregistration retry/quarantine states guard queue ownership")
 print("PASS: opaque descriptor tail and private QueueSet/LogicalLink layouts are not guessed")
 print("PASS: controller publishes only after registration and opens PCI interrupt gate afterward")
 print("PASS: RX sink transfers only accepted packets after both interface and queue registration")
+print("PASS: failed local registration rollback quarantines all queue owners")
+print("PASS: radio events and power controls flow through the registered infra interface")
+print("PASS: obsolete bool registration shortcuts are absent")
