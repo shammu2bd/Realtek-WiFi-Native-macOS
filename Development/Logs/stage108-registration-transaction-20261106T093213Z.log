@@ -1,0 +1,61 @@
+========== STAGE108 REGISTRATION TRANSACTION ==========
+STAGE108_SOURCE_COMMIT=88b616e50c3e67b7dd5a8d98437a0b0d7dcc4c43
+STAGE108_TARGET=macOS_15.8.1_24H32_x86_64
+STAGE108_SCOPE=ATOMIC_REGISTRATION_DEREGISTRATION_QUEUE_OWNER_ROLLBACK
+STAGE108_SIGNING=DISABLED
+STAGE108_SIP_OR_OPENCORE_CHANGE=NONE
+
+----- C++ transaction state-machine test -----
+PASS: Stage108 C++ transaction state machine
+
+----- Python source-contract suite -----
+PASS: 24H32 registration uses Apple's audited infra wrapper and stable seven-queue vector
+PASS: atomic begin/commit/abort and deregistration retry/quarantine states guard queue ownership
+PASS: opaque descriptor tail and private QueueSet/LogicalLink layouts are not guessed
+PASS: controller publishes only after registration and opens PCI interrupt gate afterward
+PASS: RX sink transfers only accepted packets after both interface and queue registration
+PASS: failed local registration rollback quarantines all queue owners
+PASS: radio events and power controls flow through the registered infra interface
+PASS: obsolete bool registration shortcuts are absent
+PASS: RTW88 TX-resume callback wakes all four registered WMM queues
+PASS: registration payloads/expansion blocks remain opaque and target ABI declarations are pinned
+PASS: native interface uses Apple's 24H32 registration/deregistration wrapper transactionally
+PASS: QueueSet/LogicalLink private layouts are not constructed by driver code
+PASS: controller commits infra registration before publication and PCI interrupt activation
+PASS: 0x130-byte aligned opaque RegistrationInfo storage
+PASS: exact 24H32 Apple producer overrides and six-byte address copy
+PASS: all unlisted initializer-owned bytes remain untouched
+PASS: version/size header validation and clear
+PASS: RegistrationInfo buffer is 0x130 bytes and 8-byte aligned
+PASS: builder follows initRegistrationInfo(option=1, size=0x130)
+PASS: Stage108 registration/deregistration uses explicit queue-owner state
+PASS: controller registers and publishes the interface before PCI interrupt activation
+PASS: four-entry target WMM queue array is fixed, ordered, validated, and journal-rollback compatible
+PASS: target TX action reports accepted prefix; native registration remains fenced
+PASS: all nine queue/pool acquisitions are journaled and committed only when complete
+PASS: partial and committed teardown pop resources in reverse order
+PASS: registration and packet callbacks remain fail-closed
+
+----- Native unsigned kext rebuild -----
+  WCL-ABI CXX  RTW88WCLInfraInterface.cpp (24H32, compile-only)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o
+  NATIVE LD   RTL88WiFiNative
+xcrun clang++ -arch x86_64 -static -nostdlib -Xlinker -kext /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/MacKernelSDK/Library/x86_64/libkmod.a -Xlinker -undefined -Xlinker dynamic_lookup -o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/main.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/mac.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/phy.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/fw.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/tx.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rx.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/sec.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/efuse.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/coex.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/ps.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/regd.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/bf.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/sar.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/util.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/pci.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/mac80211.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8822b.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8822b_table.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8822be.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8822c.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8822c_table.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8822ce.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8821c.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8821c_table.o   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/driver/rtw8821ce.o  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/compat/rtw88_thread_call.o  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/compat/rtw88_compat.o  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/compat/rtw88_firmware.o  /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/compat/fw_blobs.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/airport/kmod_info.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/native/RTW88IEEE80211.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/native/RTW88HwOps.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/native/RTW88WCLRadioBridge.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/native/RTW88WCLWorkQueue.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLPCIBackend.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkQueues.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkTxAdapter.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLTxCompletionWorkQueue.o /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+  NATIVE SYNC /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+rsync -a --exclude='MacOS' /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/native-skeleton/RTL88WiFiNative.kext/ /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/
+  NATIVE OK   /Users/shohel/Developer/Realtek-WiFi-Native-macOS-Stage91-PR4-Review/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/Info.plist: OK
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative: Mach-O 64-bit kext bundle x86_64
+STAGE108_NATIVE_BINARY_SHA256=409137db0772c6f5326af89f9f6dc699f8f18a13eb9025bc194b58e5bb92cd0a
+STAGE108_BUILD_RESULT=PASS
+
+STAGE108_RESULT=PASS
+STAGE108_SOURCE_COMMIT=88b616e50c3e67b7dd5a8d98437a0b0d7dcc4c43
+STAGE108_DETAIL_LOG=Development/Logs/stage108-registration-transaction-20261106T093213Z.log
+STAGE108_REGISTRATION_RUNTIME=NOT_RUN
+STAGE108_RADIO_START=SOURCE_PATH_IMPLEMENTED_RUNTIME_NOT_RUN
+STAGE108_TX_RX_RUNTIME=NOT_RUN
+STAGE108_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN HARDWARE_TEST=NOT_RUN
+STAGE108_SIP_CHANGE=NONE NVRAM_CHANGE=NONE EFI_WRITE=NONE
+STAGE108_PR4_MERGE=BLOCKED
+=======================================================
