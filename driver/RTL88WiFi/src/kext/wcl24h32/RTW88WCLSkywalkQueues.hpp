@@ -58,6 +58,7 @@ public:
      * from the driver to the RX networking pipeline. */
     /* Returns the number of packets accepted by the 24H32 networking path. */
     UInt32 enqueueRXPacketForNetworking(IOSkywalkPacket *packet);
+    IOReturn requestTXSubmissionDequeue();
 
     IOReturn bindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
     IOReturn unbindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
