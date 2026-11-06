@@ -1,0 +1,146 @@
+========== STAGE134 APPLE SKYWALK ENABLE / DISABLE CALLBACK DISASSEMBLY ==========
+STAGE134_SOURCE_COMMIT=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE134_EXECUTION_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE134_WORKTREE_STATUS_ENTRIES=198
+STAGE134_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE134_SCOPE=READ_ONLY_FILESSET_AWARE_CALLBACK_METHOD_DISASSEMBLY
+STAGE134_BOOTKC_PATH=/System/Library/KernelCollections/BootKernelExtensions.kc
+STAGE134_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE134_OTOOL=/usr/bin/otool
+STAGE134_UPSTREAM_READER=watchthelight-labs/WTLKcAbi@cea28a5297633118177cee6a75e86d8bc57f1960
+STAGE134_DRIVER_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE134_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+
+STAGE134_FILES_BASE=0xffffff8000100000
+STAGE134_FILESET_ENTRY_COUNT=211
+STAGE134_SYMBOL_COUNT=165349
+
+--- Exact callback owner and target identity ---
+CALLBACK_ENABLE_ADDRESS=0xffffff8002988af8
+CALLBACK_ENABLE_SYMBOL=__ZN26IOSkywalkEthernetInterface6enableEj
+CALLBACK_ENABLE_OWNER=com.apple.iokit.IOSkywalkFamily
+CALLBACK_ENABLE_OWNER_CHECK=PASS
+CALLBACK_ENABLE_SEGMENT=__TEXT VMADDR=0xffffff8002973000 VMSIZE=0x34000 FILEOFF=0x2873000 FILESIZE=0x34000 INITPROT=0x5
+CALLBACK_ENABLE_EXECUTABLE=YES
+CALLBACK_DISABLE_ADDRESS=0xffffff8002982bae
+CALLBACK_DISABLE_SYMBOL=__ZN25IOSkywalkNetworkInterface7disableEj
+CALLBACK_DISABLE_OWNER=com.apple.iokit.IOSkywalkFamily
+CALLBACK_DISABLE_OWNER_CHECK=PASS
+CALLBACK_DISABLE_SEGMENT=__TEXT VMADDR=0xffffff8002973000 VMSIZE=0x34000 FILEOFF=0x2873000 FILESIZE=0x34000 INITPROT=0x5
+CALLBACK_DISABLE_EXECUTABLE=YES
+STAGE134_EXPECTED_CALLBACKS=2
+STAGE134_CALLBACKS_OWNER_VALIDATED=2
+
+--- Related enable/disable methods in callback owner classes ---
+CLASS=IOSkywalkEthernetInterface RELATED_METHOD_COUNT=4
+RELATED_METHOD class=IOSkywalkEthernetInterface address=0xffffff8002988af8 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN26IOSkywalkEthernetInterface6enableEj
+RELATED_METHOD class=IOSkywalkEthernetInterface address=0xffffff8002988b7e owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN26IOSkywalkEthernetInterface24setPromiscuousModeEnableEbj
+RELATED_METHOD class=IOSkywalkEthernetInterface address=0xffffff8002988c68 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN26IOSkywalkEthernetInterface25setAllMulticastModeEnableEb
+RELATED_METHOD class=IOSkywalkEthernetInterface address=0xffffff8002989726 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN26IOSkywalkEthernetInterface17enableNetworkWakeEj
+CLASS=IOSkywalkNetworkInterface RELATED_METHOD_COUNT=6
+RELATED_METHOD class=IOSkywalkNetworkInterface address=0xffffff8002982b86 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN25IOSkywalkNetworkInterface6enableEj
+RELATED_METHOD class=IOSkywalkNetworkInterface address=0xffffff8002982bae owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN25IOSkywalkNetworkInterface7disableEj
+RELATED_METHOD class=IOSkywalkNetworkInterface address=0xffffff8002982cb0 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN25IOSkywalkNetworkInterface9isEnabledEv
+RELATED_METHOD class=IOSkywalkNetworkInterface address=0xffffff8002982cbc owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN25IOSkywalkNetworkInterface18setInterfaceEnableEb
+RELATED_METHOD class=IOSkywalkNetworkInterface address=0xffffff8002982f16 owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN25IOSkywalkNetworkInterface23interfaceAdvisoryEnableEb
+RELATED_METHOD class=IOSkywalkNetworkInterface address=0xffffff8002982f7a owner=com.apple.iokit.IOSkywalkFamily symbol=__ZN25IOSkywalkNetworkInterface17enableNetworkWakeEj
+CLASS=IOSkywalkInterface RELATED_METHOD_COUNT=0
+
+--- Carve and disassemble exact owning fileset image ---
+CARVED_OWNER=com.apple.iokit.IOSkywalkFamily
+CARVED_PATH=/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/stage134-tools-iNexk6/carved/com.apple.iokit.IOSkywalkFamily.macho
+CARVED_BYTES=66125824
+CARVED_FILE_TYPE=/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/stage134-tools-iNexk6/carved/com.apple.iokit.IOSkywalkFamily.macho: Mach-O 64-bit kext bundle x86_64
+OTOOL_OWNER_DUMP=com.apple.iokit.IOSkywalkFamily EXIT=0 START=__ZN25IOSkywalkNetworkInterface7disableEj
+
+===== METHOD ENABLE =====
+METHOD_SYMBOL=__ZN26IOSkywalkEthernetInterface6enableEj
+METHOD_RANGE=0xffffff8002988af8..0xffffff8002988b7e
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+METHOD_INSTRUCTION_COUNT=42
+ffffff8002988af8	pushq	%rbp
+ffffff8002988af9	movq	%rsp, %rbp
+ffffff8002988afc	pushq	%r15
+ffffff8002988afe	pushq	%r14
+ffffff8002988b00	pushq	%rbx
+ffffff8002988b01	pushq	%rax
+ffffff8002988b02	movq	%rdi, %rbx
+ffffff8002988b05	movq	(%rdi), %rax
+ffffff8002988b08	callq	*0x8f8(%rax)
+METHOD_CONTROL_FLOW=0xffffff8002988b08 callq	*0x8f8(%rax)
+ffffff8002988b0e	testq	%rax, %rax
+ffffff8002988b11	je	0xffffff8002988b6a
+ffffff8002988b13	movq	%rax, %r15
+ffffff8002988b16	leaq	__ZTV25IOSkywalkNetworkInterface(%rip), %rax ## vtable for IOSkywalkNetworkInterface
+ffffff8002988b1d	movq	%rbx, %rdi
+ffffff8002988b20	movl	$0x1, %esi
+ffffff8002988b25	callq	*0x860(%rax)
+METHOD_CONTROL_FLOW=0xffffff8002988b25 callq	*0x860(%rax)
+ffffff8002988b2b	movl	%eax, %r14d
+ffffff8002988b2e	testl	%eax, %eax
+ffffff8002988b30	jne	0xffffff8002988b70
+ffffff8002988b32	movq	%rbx, %rdi
+ffffff8002988b35	movq	%r15, %rsi
+ffffff8002988b38	movl	$0x1, %edx
+ffffff8002988b3d	callq	__ZN26IOSkywalkEthernetInterface15ioctl_multicastEP7__ifnetb ## IOSkywalkEthernetInterface::ioctl_multicast(__ifnet*, bool)
+METHOD_CONTROL_FLOW=0xffffff8002988b3d callq	__ZN26IOSkywalkEthernetInterface15ioctl_multicastEP7__ifnetb ## IOSkywalkEthernetInterface::ioctl_multicast(__ifnet*, bool)
+ffffff8002988b42	movq	0x108(%rbx), %rax
+ffffff8002988b49	xorl	%r14d, %r14d
+ffffff8002988b4c	testb	$0x1, 0x1d(%rax)
+ffffff8002988b50	je	0xffffff8002988b70
+ffffff8002988b52	movq	(%rbx), %rax
+ffffff8002988b55	xorl	%r14d, %r14d
+ffffff8002988b58	movq	%rbx, %rdi
+ffffff8002988b5b	movl	$0x1, %esi
+ffffff8002988b60	xorl	%edx, %edx
+ffffff8002988b62	callq	*0xa90(%rax)
+METHOD_CONTROL_FLOW=0xffffff8002988b62 callq	*0xa90(%rax)
+ffffff8002988b68	jmp	0xffffff8002988b70
+METHOD_CONTROL_FLOW=0xffffff8002988b68 jmp	0xffffff8002988b70
+ffffff8002988b6a	movl	$0xe00002d8, %r14d              ## imm = 0xE00002D8
+ffffff8002988b70	movl	%r14d, %eax
+ffffff8002988b73	addq	$0x8, %rsp
+ffffff8002988b77	popq	%rbx
+ffffff8002988b78	popq	%r14
+ffffff8002988b7a	popq	%r15
+ffffff8002988b7c	popq	%rbp
+ffffff8002988b7d	retq
+
+===== METHOD DISABLE =====
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface7disableEj
+METHOD_RANGE=0xffffff8002982bae..0xffffff8002982c04
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+METHOD_INSTRUCTION_COUNT=26
+ffffff8002982bae	xorl	%ecx, %ecx
+ffffff8002982bb0	movb	$0x1, %al
+ffffff8002982bb2	lock
+ffffff8002982bb3	cmpxchgb	%cl, 0xc8(%rdi)
+ffffff8002982bba	jne	0xffffff8002982c03
+ffffff8002982bbc	pushq	%rbp
+ffffff8002982bbd	movq	%rsp, %rbp
+ffffff8002982bc0	pushq	%rbx
+ffffff8002982bc1	pushq	%rax
+ffffff8002982bc2	movq	%rdi, %rbx
+ffffff8002982bc5	movq	(%rdi), %rax
+ffffff8002982bc8	xorl	%esi, %esi
+ffffff8002982bca	callq	*0x928(%rax)
+METHOD_CONTROL_FLOW=0xffffff8002982bca callq	*0x928(%rax)
+ffffff8002982bd0	movq	0xb8(%rbx), %rax
+ffffff8002982bd7	testb	$0x1, 0x3c(%rax)
+ffffff8002982bdb	jne	0xffffff8002982bfd
+ffffff8002982bdd	movq	%rbx, %rdi
+ffffff8002982be0	movl	$0x1, %esi
+ffffff8002982be5	movl	$0x2, %edx
+ffffff8002982bea	callq	__ZN25IOSkywalkNetworkInterface16reportLinkStatusEjj ## IOSkywalkNetworkInterface::reportLinkStatus(unsigned int, unsigned int)
+METHOD_CONTROL_FLOW=0xffffff8002982bea callq	__ZN25IOSkywalkNetworkInterface16reportLinkStatusEjj ## IOSkywalkNetworkInterface::reportLinkStatus(unsigned int, unsigned int)
+ffffff8002982bef	movq	0xb8(%rbx), %rax
+ffffff8002982bf6	movl	$0x0, 0x3c(%rax)
+ffffff8002982bfd	addq	$0x8, %rsp
+ffffff8002982c01	popq	%rbx
+ffffff8002982c02	popq	%rbp
+ffffff8002982c03	retq
+
+STAGE134_DRIVER_SOURCE_MODIFIED=NO
+STAGE134_BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE134_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+========== END STAGE134 ==========
