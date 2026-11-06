@@ -2,7 +2,7 @@
 
 Date: 2026-11-06  
 Branch: `work/stage91-tx-submission-callback-v1`  
-Validated source head: `53f0227f7d8dc6b3d3923d6efb8007c1e402d390`
+Final validated source head: `b667bfc4aac0f2ceacf8239a00e20551b45674df`
 
 ## Result
 
@@ -12,7 +12,7 @@ GitHub Actions run: [42150985888](https://github.com/shammu2bd/Realtek-WiFi-Nati
 
 - Radio admission gate: C++11 model compiled and passed three four-AC stress runs.
 - Packed Block Ack state: C++11 concurrency model passed.
-- Source integration audit: 38 checks passed; zero blockers.
+- Source integration audit: 39 checks passed; zero blockers.
 
 ## Production-source integration
 
@@ -34,7 +34,7 @@ GitHub Actions run: [42150985888](https://github.com/shammu2bd/Realtek-WiFi-Nati
 
 ## Exact validation scope and remaining gates
 
-The successful run used Ubuntu 26.04, GNU C++ 15.2.0 and Python 3.14.4. It did **not** compile the macOS kernel/IOKit driver or target Mach-O objects.
+The successful run used Ubuntu 26.04, GNU C++ 15.2.0 and Python 3.14.4. It did **not** compile the macOS kernel/IOKit driver or target Mach-O objects. A final atomic-power-load assertion was added and passed in the final run.
 
 Not performed: full kext link, signing, installation, loading, target 24H32 runtime validation, fresh running-kernel disassembly, RTL8821CE hardware TX/RX or throughput testing.
 
