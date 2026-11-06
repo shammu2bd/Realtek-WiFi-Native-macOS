@@ -747,7 +747,7 @@ void RTW88IEEE80211::clearKeys()
         } else {
             /* Keep the key object so a later cleanup/rekey can retry the CAM
              * retirement. The controlled port remains closed. */
-            IOLog("rtw88: retaining PTK object after CAM drain timeout ret=%d hw_idx=%u\\n",
+            IOLog("rtw88: retaining PTK object after CAM drain timeout ret=%d hw_idx=%u\n",
                   ret, _ptkConf->hw_key_idx);
         }
     }
@@ -758,7 +758,7 @@ void RTW88IEEE80211::clearKeys()
             IOFree(_gtkConf, sizeof(*_gtkConf));
             _gtkConf = nullptr;
         } else {
-            IOLog("rtw88: retaining GTK object after CAM drain timeout ret=%d hw_idx=%u\\n",
+            IOLog("rtw88: retaining GTK object after CAM drain timeout ret=%d hw_idx=%u\n",
                   ret, _gtkConf->hw_key_idx);
         }
     }
