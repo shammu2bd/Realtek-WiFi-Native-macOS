@@ -61,6 +61,7 @@ def check(name: str, ok: bool, detail: str) -> None:
 
 pci_sync = body(PCI, "static bool rtw_pci_flush_queues_sync(")
 pci_wait = body(PCI, "static bool __pci_flush_queue_sync(")
+pci_hw_rp = body(PCI, "static u32 __pci_get_hw_tx_ring_rp(")
 tx_map = body(TX, "enum rtw_tx_queue_type rtw_tx_queue_mapping(")
 tx_work = body(TX, "void __rtw_tx_work(")
 quiesce = body(TX, "void rtw_txq_quiesce(")
@@ -72,9 +73,11 @@ set_key = body(MAC80211, "static int rtw_ops_set_key(")
 check("HI0_MULTICAST_MAPPING", "queue = RTW_TX_QUEUE_HI0;" in tx_map and
       "is_multicast_ether_addr(hdr->addr1)" in tx_map,
       "multicast/broadcast frames map to HI0")
-check("HI0_HAS_PCI_DOORBELL", "RTK_PCI_TXBD_IDX_HI0Q" in PCI and
-      "rtw_pci_tx_queue_idx_addr[pci_q]" in pci_wait,
-      "HI0 hardware consumer pointer is addressable")
+check("HI0_HAS_PCI_DOORBELL",
+      "[RTW_TX_QUEUE_HI0]" in PCI and "RTK_PCI_TXBD_IDX_HI0Q" in PCI and
+      "rtw_pci_tx_queue_idx_addr[pci_q]" in pci_hw_rp and
+      "__pci_get_hw_tx_ring_rp(rtwdev, pci_q)" in pci_wait,
+      "HI0 ring index maps to its PCI hardware consumer-pointer register")
 check("HI0_INCLUDED_IN_SYNC_DRAIN",
       "q == RTW_TX_QUEUE_BCN || q == RTW_TX_QUEUE_H2C" in pci_sync and
       "q == RTW_TX_QUEUE_HI0" not in pci_sync and
