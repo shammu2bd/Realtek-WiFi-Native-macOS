@@ -77,11 +77,11 @@ for p in candidates:
  print("SOURCE_FILE=%s SHA256=%s BYTES=%d"%(p.relative_to(root),hashlib.sha256(d).hexdigest(),len(d)))
  lines=d.decode("utf-8","replace").splitlines()
  for i,line in enumerate(lines):
-  if re.search(r"RTW88WCLController::(getPOWER|setPOWER)\\s*\\(",line):
+  if re.search(r"RTW88WCLController::(getPOWER|setPOWER)\s*\(",line):
    print("CALLBACK_SOURCE_BEGIN file=%s line=%d"%(p.name,i+1))
    for j in range(i,min(len(lines),i+65)):
     print("%05d %s"%(j+1,lines[j]))
-    if j>i and re.match(r"^\\s*}",lines[j]): break
+    if j>i and re.match(r"^\s*}",lines[j]): break
    print("CALLBACK_SOURCE_END")
 print("\n--- Exact bounded disassembly for interface 0xB10 target(s) ---")
 owner_to_path={}
@@ -103,7 +103,7 @@ for owner,dest in owner_to_path.items():
   if p.returncode: print("METHOD_DISASSEMBLY=FAILED"); continue
   ins=[]
   for line in p.stdout.splitlines():
-   mm=re.match(r"^\\s*(?:0x)?([0-9a-fA-F]{8,}):?\\s+(.*)$",line)
+   mm=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):?\s+(.*)$",line)
    if mm:
     a=int(mm.group(1),16)
     if addr<=a<end: ins.append((a,line.strip(),mm.group(2)))
@@ -112,7 +112,7 @@ for owner,dest in owner_to_path.items():
   print("INSTRUCTION_COUNT=%d"%len(ins))
   for a,raw,asm in ins:
    print(raw)
-   if re.search(r"\\b(call|jmp)q?\\b",asm): print("CONTROL_FLOW=0x%x %s"%(a,asm))
+   if re.search(r"\b(call|jmp)q?\b",asm): print("CONTROL_FLOW=0x%x %s"%(a,asm))
 print("STAGE145_DISPATCH_IDENTITY_POLICY=EXACT_INTERFACE_VTABLE_ENTRY_AND_SYMBOL_OWNERSHIP")
 print("STAGE145_INTERPRETATION=STATIC_ABI_MAPPING_ONLY; 0xB10_IS_NOT_AN_IO80211CONTROLLER_SLOT")
 PY
