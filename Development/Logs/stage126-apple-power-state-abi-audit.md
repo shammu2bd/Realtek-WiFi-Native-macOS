@@ -1,6 +1,6 @@
 # Stage126 — Apple 24H32 power-state ABI audit
 
-**Run location:** use the repository `main` branch and run `bash Development/stage126-apple-power-state-abi-audit.sh` from a clean checkout. The runner explicitly requires `main`; it does not require Stage125 branch ancestry because this stage inspects the extracted Apple binary only.
+**Run location:** the authoritative runner is published on `main` at `Development/stage126-apple-power-state-abi-audit.sh`. It may be executed from the existing project checkout without switching branches. It does not require a clean worktree because it only inspects the extracted Apple IO80211Family Mach-O; the report records the current branch and count of local status entries. Run the verified copy fetched from `main` when the local checkout contains staged work.
 
 **Scope:** read-only disassembly of Apple IO80211Family power-state methods on macOS 15.8.1 build 24H32 x86_64.
 
