@@ -32,6 +32,7 @@ bool RTW88WCLTxCompletionWorkQueue::init(
     _adapter->retain();
     _completionQueue->retain();
     _stopping = 1;
+    _workCallbackGate = kWorkCallbackGateClosed;
 
     _retryTimer = IOTimerEventSource::timerEventSource(
         this, &RTW88WCLTxCompletionWorkQueue::retryTimerFired);
@@ -52,6 +53,7 @@ bool RTW88WCLTxCompletionWorkQueue::init(
         goto fail;
     _timerRegistered = true;
 
+    __atomic_store_n(&_workCallbackGate, 0U, __ATOMIC_RELEASE);
     __atomic_store_n(&_stopping, 0U, __ATOMIC_RELEASE);
     if (_adapter->setCompletionNotifier(
             &RTW88WCLTxCompletionWorkQueue::completionNotifier,
@@ -78,9 +80,9 @@ fail:
 
 IOReturn RTW88WCLTxCompletionWorkQueue::stop()
 {
-    /* A live ticket or retired token still owns callback context. Keep the
-     * event source, thread call, adapter and queue alive until controller
-     * unbind proves both producer and deferred-reclamation paths are drained. */
+    /* Controller unbind must first stop RTW88 and prove ticket callbacks have
+     * returned. Remaining token ownership keeps this worker alive and retryable.
+     */
     if (_adapter &&
         (_adapter->hasOutstandingCompletions() ||
          _adapter->hasRetiredCompletionTokens()))
@@ -106,20 +108,45 @@ IOReturn RTW88WCLTxCompletionWorkQueue::stop()
     }
     _workLoop = nullptr;
 
-    /* Event-source removal closes the only scheduler. The thread-call callback
-     * never re-enqueues itself; cancel_wait therefore covers the one pending or
-     * active invocation before its storage and adapter references are released. */
+    /* Event-source/timer dispatches are counted at entry. Once they are
+     * removed, close admission and join any callback already inside the
+     * worker before touching its adapter or thread-call context.
+     */
+    __atomic_fetch_or(&_workCallbackGate, kWorkCallbackGateClosed,
+                      __ATOMIC_ACQ_REL);
+    while ((__atomic_load_n(&_workCallbackGate, __ATOMIC_ACQUIRE) &
+            kWorkCallbackGateActive) != 0)
+        IOSleep(1);
+
     if (_tokenReapCall) {
+        /* cancel_wait can cancel a pending invocation without joining another
+         * active invocation for a normal non-ONCE call. Producer admission is
+         * now closed, so isactive is a stable final join condition.
+         */
         (void)thread_call_cancel_wait(_tokenReapCall);
+        while (thread_call_isactive(_tokenReapCall))
+            IOSleep(1);
         if (!thread_call_free(_tokenReapCall)) {
-            IOLog("rtl88wifi-wcl: token reaper thread-call still active; retaining worker owners\n");
+            IOLog("rtl88wifi-wcl: token reaper thread-call still active; retaining worker owners\\n");
             return kIOReturnBusy;
         }
         _tokenReapCall = nullptr;
     }
-    __atomic_store_n(&_tokenReapState, 0U, __ATOMIC_RELEASE);
-    rtw88_set_skb_tx_completion_token_releaser(nullptr);
 
+    __atomic_store_n(&_tokenReapState, 0U, __ATOMIC_RELEASE);
+
+    /* All release-hook producers were stopped by controller unbind, all
+     * workloop schedulers are joined, and the thread call is idle. A final
+     * passive drain is now the only token consumer.
+     */
+    if (_adapter && _adapter->hasRetiredCompletionTokens())
+        _adapter->reapDeferredCompletionTokens();
+    if (_adapter && _adapter->hasRetiredCompletionTokens()) {
+        IOLog("rtl88wifi-wcl: retired completion tokens remain after final drain; retaining worker\\n");
+        return kIOReturnBusy;
+    }
+
+    rtw88_set_skb_tx_completion_token_releaser(nullptr);
     if (_completionQueue) {
         _completionQueue->release();
         _completionQueue = nullptr;
@@ -140,11 +167,33 @@ void RTW88WCLTxCompletionWorkQueue::free()
     super::free();
 }
 
+bool RTW88WCLTxCompletionWorkQueue::enterWorkCallback()
+{
+    uint32_t gate = __atomic_load_n(&_workCallbackGate, __ATOMIC_ACQUIRE);
+    for (;;) {
+        if (gate & kWorkCallbackGateClosed)
+            return false;
+        if ((gate & kWorkCallbackGateActive) == kWorkCallbackGateActive)
+            return false;
+        if (__atomic_compare_exchange_n(&_workCallbackGate, &gate, gate + 1U,
+                                        false, __ATOMIC_ACQ_REL,
+                                        __ATOMIC_ACQUIRE))
+            return true;
+    }
+}
+
+void RTW88WCLTxCompletionWorkQueue::leaveWorkCallback()
+{
+    __atomic_sub_fetch(&_workCallbackGate, 1U, __ATOMIC_RELEASE);
+}
+
 void RTW88WCLTxCompletionWorkQueue::completionNotifier(void *context)
 {
     auto *self = static_cast<RTW88WCLTxCompletionWorkQueue *>(context);
-    if (self)
+    if (self && self->enterWorkCallback()) {
         self->signalCompletionAvailable();
+        self->leaveWorkCallback();
+    }
 }
 
 void RTW88WCLTxCompletionWorkQueue::retryTimerFired(
@@ -152,8 +201,10 @@ void RTW88WCLTxCompletionWorkQueue::retryTimerFired(
 {
     (void)timer;
     auto *self = OSDynamicCast(RTW88WCLTxCompletionWorkQueue, owner);
-    if (self)
+    if (self && self->enterWorkCallback()) {
         self->signalCompletionAvailable();
+        self->leaveWorkCallback();
+    }
 }
 
 void RTW88WCLTxCompletionWorkQueue::signalCompletionAvailable()
@@ -259,20 +310,23 @@ void RTW88WCLTxCompletionWorkQueue::deferredTokenReap(
 
 bool RTW88WCLTxCompletionWorkQueue::checkForWork()
 {
-    if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) != 0 ||
-        !_adapter || !_completionQueue)
+    if (!enterWorkCallback())
         return false;
 
-    (void)_adapter->drainCompletions(
-        &RTW88WCLTxCompletionWorkQueue::completionSink, this);
-    scheduleTokenReap();
+    bool more = false;
+    if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) == 0 &&
+        _adapter && _completionQueue) {
+        (void)_adapter->drainCompletions(
+            &RTW88WCLTxCompletionWorkQueue::completionSink, this);
+        scheduleTokenReap();
 
-    /* drainCompletions stops on the first rejected handoff and returns the
-     * ticket to Completed. Retry later rather than spinning when Skywalk is
-     * temporarily not-ready or its internal action gate is busy. */
-    if (_adapter->readyCompletionCount() != 0 && _retryTimer)
-        _retryTimer->setTimeoutMS(kRetryDelayMilliseconds);
-    return false;
+        more = _adapter->readyCompletionCount() != 0;
+        if (!more && _retryTimer)
+            _retryTimer->setTimeoutMS(kRetryDelayMilliseconds);
+    }
+
+    leaveWorkCallback();
+    return more;
 }
 
 #undef super
