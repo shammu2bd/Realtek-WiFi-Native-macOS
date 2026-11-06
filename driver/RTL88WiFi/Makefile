@@ -490,7 +490,7 @@ NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88Hw
 NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_TX_COMPLETION_WORK_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
 NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
 
-.PHONY: rtl88wifi-native native-plist native-compile-only airport-compile-only all-object-compile-only
+.PHONY: rtl88wifi-native native-plist native-compile-only native-dependency-test airport-compile-only all-object-compile-only
 rtl88wifi-native: $(NATIVE_OUT_BIN)
 
 # Compile every object required by the isolated native target without invoking
@@ -498,6 +498,12 @@ rtl88wifi-native: $(NATIVE_OUT_BIN)
 # This is the supported target-Mac validation gate while activation is blocked.
 native-compile-only: $(NATIVE_ALL_OBJS)
 	@echo "NATIVE_COMPILE_ONLY=PASS (objects only; no link/sign/install/load)"
+
+# Exercise the executable-derived plist synchronizer using a mocked kmutil
+# response; this test does not inspect or modify the host's kernel state.
+native-dependency-test:
+	python3 $(PROJ_ROOT)/../../tests/test-native-dependency-sync-stage113.py
+	@echo "NATIVE_DEPENDENCY_SYNC_TEST=PASS"
 
 # Compile the legacy Airport object graph without its linker/bundle recipe.
 # RTW88IEEE80211.cpp is intentionally shared by both frontends; this target
@@ -535,7 +541,7 @@ $(NATIVE_CORE_OBJ_DIR)/%.o: $(KEXT_SRC)/%.cpp $(NATIVE_CORE_HEADERS) | $(NATIVE_
 $(NATIVE_OUT_KEXT)/Contents/MacOS:
 	mkdir -p $@
 
-$(NATIVE_OUT_BIN): $(NATIVE_ALL_OBJS) $(NATIVE_INFO_PLIST) $(NATIVE_DEPENDENCY_SYNC) | $(NATIVE_OUT_KEXT)/Contents/MacOS
+$(NATIVE_OUT_BIN): $(NATIVE_ALL_OBJS) $(NATIVE_INFO_PLIST) $(NATIVE_DEPENDENCY_SYNC) | $(NATIVE_OUT_KEXT)/Contents/MacOS native-dependency-test
 	@echo "  NATIVE LD   $(notdir $@)"
 	$(LD) $(NATIVE_LDFLAGS) -o $@ $(NATIVE_ALL_OBJS)
 	@echo "  NATIVE SYNC $(NATIVE_OUT_KEXT)"
