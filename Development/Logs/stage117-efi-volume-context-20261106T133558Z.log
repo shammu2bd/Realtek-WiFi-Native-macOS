@@ -1,0 +1,144 @@
+========== STAGE117 EFI VOLUME / BOOT-LOG CONTEXT ==========
+UTC_STAMP=20261106T133558Z
+BRANCH=work/stage117-efi-volume-context
+HEAD=41420c17e5fcd4e08a1bfcc9792fd044b13ce8cd
+BASE_COMMIT=ab4ab2e4bf3367b6ddf228e6661573a0d167cead
+RUNNER_GIT_BLOB_SHA=0639489247959939776b73c2a4f3c4702e12fdb1
+TARGET=15.8.1 (24H32) x86_64
+TARGET_MATCH_24H32=True
+SCOPE=READ_ONLY_EXISTING_EFI_MOUNT_OWNERSHIP_FILESYSTEM_OPENCORE_DEBUG_IOREGISTRY
+BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_RUN
+MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN
+SIP_STATUS_EXIT=0
+----- SIP_STATUS -----
+System Integrity Protection status: enabled.
+----- END SIP_STATUS -----
+SIP_STATE=ENABLED
+OPENCORE_CONFIG_PLUTIL_EXIT=0
+----- OPENCORE_CONFIG_PLUTIL -----
+/Volumes/EFI/EFI/OC/config.plist: OK
+----- END OPENCORE_CONFIG_PLUTIL -----
+OPENCORE_CONFIG_PATH=/Volumes/EFI/EFI/OC/config.plist
+NATIVE_KERNEL_ADD_ROWS=[{"arch": "Any", "bundle_id": "io.github.x1ren41l.RTL88WiFi", "bundle_path": "RTL88WiFiNative.kext", "enabled": true, "executable_exists": true, "index": 31, "sha256": "409137db0772c6f5326af89f9f6dc699f8f18a13eb9025bc194b58e5bb92cd0a"}]
+NATIVE_KERNEL_ADD_COUNT=1
+NATIVE_KERNEL_ADD_ENABLED_COUNT=1
+NATIVE_EXECUTABLE_SHA_MATCH_STAGE113=True
+CONFIGURED_BOOT_ARGS=keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+CONFIGURED_CSR_ACTIVE_CONFIG_HEX=00000000
+SECURE_BOOT_MODEL=Disabled
+OPENCORE_DEBUG_TARGET=0
+OPENCORE_DEBUG_APPLE_DEBUG=True
+OPENCORE_DEBUG_APPLE_PANIC=True
+OPENCORE_DEBUG_LOGGING_DISABLED=True
+OPENCORE_CONFIG_RESULT=PARSED
+OPENCORE_CONFIG_STATE=PARSED
+EFI_DISKUTIL_INFO_EXIT=0
+----- EFI_DISKUTIL_INFO -----
+   Device Identifier:         disk3s1
+   Device Node:               /dev/disk3s1
+   Whole:                     No
+   Part of Whole:             disk3
+
+   Volume Name:               EFI
+   Mounted:                   Yes
+   Mount Point:               /Volumes/EFI
+
+   Partition Type:            EFI
+   File System Personality:   MS-DOS FAT32
+   Type (Bundle):             msdos
+   Name (User Visible):       MS-DOS (FAT32)
+
+   OS Can Be Installed:       No
+   Media Type:                Generic
+   Protocol:                  USB
+   SMART Status:              Not Supported
+   Volume UUID:               0E239BC6-F960-3107-89CF-1C97F78BB46B
+   Disk / Partition UUID:     803DA4F1-7C15-4113-84D7-C6FA6A077DC6
+   Partition Offset:          20480 Bytes (40 512-Byte-Device-Blocks)
+
+   Disk Size:                 209.7 MB (209715200 Bytes) (exactly 409600 512-Byte-Units)
+   Device Block Size:         512 Bytes
+
+   Volume Total Space:        206.5 MB (206472704 Bytes) (exactly 403267 512-Byte-Units)
+   Volume Used Space:         35.4 MB (35373568 Bytes) (exactly 69089 512-Byte-Units) (17.1%)
+   Volume Free Space:         171.1 MB (171099136 Bytes) (exactly 334178 512-Byte-Units) (82.9%)
+   Allocation Block Size:     512 Bytes
+
+   Media OS Use Only:         No
+   Media Read-Only:           No
+   Volume Read-Only:          No
+
+   Device Location:           Internal
+   Removable Media:           Removable
+   Media Removal:             Software-Activated
+
+   Solid State:               Info not available
+
+----- END EFI_DISKUTIL_INFO -----
+EFI_DISKUTIL_FIELD=Device Node:               /dev/disk3s1
+EFI_DISKUTIL_FIELD=Volume Name:               EFI
+EFI_DISKUTIL_FIELD=Mounted:                   Yes
+EFI_DISKUTIL_FIELD=File System Personality:   MS-DOS FAT32
+EFI_DISKUTIL_FIELD=Type (Bundle):             msdos
+----- EFI_MOUNT_LINE -----
+/dev/disk3s1 on /Volumes/EFI (msdos, local, nodev, nosuid, noowners, noatime, fskit)
+----- END EFI_MOUNT_LINE -----
+EFI_MOUNT_OPTIONS=msdos, local, nodev, nosuid, noowners, noatime, fskit
+EFI_OWNERS_SETTING=NOT_REPORTED
+EFI_MOUNT_HAS_NOOWNERS=True
+EFI_OWNERSHIP_DISABLED_OR_EMULATED=True
+EFI_FILESYSTEM_PERSONALITY=MS-DOS FAT32
+EFI_OWNER_METADATA_INTERPRETATION=FAT_VOLUME_WITH_OWNERS_DISABLED; PATH_UID_GID_ARE_MOUNT_PRESENTATION_NOT_PERSISTED_PER_FILE_OWNER
+EFI_MOUNT_STAT={"gid": 20, "is_dir": true, "mode": "0o700", "path": "/Volumes/EFI", "uid": 501}
+EFI_MOUNT_STAT={"gid": 20, "is_dir": true, "mode": "0o700", "path": "/Volumes/EFI/EFI", "uid": 501}
+EFI_MOUNT_STAT={"gid": 20, "is_dir": true, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC", "uid": 501}
+EFI_MOUNT_STAT={"gid": 20, "is_dir": true, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts", "uid": 501}
+EFI_MOUNT_STAT={"gid": 20, "is_dir": true, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext", "uid": 501}
+OPENCORE_EFI_BINARY_FINGERPRINTS=[{"file_type": "/Volumes/EFI/EFI/BOOT/BOOTx64.efi: MS-DOS executable PE32+ executable (EFI application) x86-64, for MS Windows", "path": "/Volumes/EFI/EFI/BOOT/BOOTx64.efi", "sha256": "d0163dfbe5d2ea46aececd7d7349acfa5b75dfed2993e8489816f3dda71914c8", "size": 24576}, {"file_type": "/Volumes/EFI/EFI/OC/OpenCore.efi: MS-DOS executable PE32+ executable (EFI application) x86-64, for MS Windows", "path": "/Volumes/EFI/EFI/OC/OpenCore.efi", "sha256": "9ef21f9d846a992c030fa5858736a6d9efa70a3b4ad88b8d747338bb457b14d4", "size": 626688}, {"file_type": "/Volumes/EFI/EFI/OC/Drivers/OpenRuntime.efi: MS-DOS executable PE32+ executable (EFI runtime driver) x86-64, for MS Windows", "path": "/Volumes/EFI/EFI/OC/Drivers/OpenRuntime.efi", "sha256": "c67be56660047237360df5eb7f080a2b13129d68e829bee9ad0230e45d516be8", "size": 24576}]
+EFI_NATIVE_KMUTIL_DIAGNOSTICS_EXIT=0
+----- EFI_NATIVE_KMUTIL_DIAGNOSTICS -----
+No variant specified, falling back to release
+Diagnosing /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext...
+Error:
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+	Filesystem error: Invalid ownership (501:20) should be (0:0) on /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/Info.plist
+	Authenticating extension failed: Bad code signature
+Resolving dependencies for /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext...
+Dependencies: OK
+----- END EFI_NATIVE_KMUTIL_DIAGNOSTICS -----
+EFI_NATIVE_KMUTIL_INVALID_OWNERSHIP_COUNT=5
+EFI_NATIVE_KMUTIL_BAD_CODE_SIGNATURE=True
+EFI_NATIVE_KMUTIL_DEPENDENCIES_OK=True
+IOREG_FULL_IO_SERVICE_QUERY_EXIT=0
+----- RTL8821CE_EXACT_IOREGISTRY_NODE -----
+(no output)
+----- END RTL8821CE_EXACT_IOREGISTRY_NODE -----
+IOREG_RTL8821CE_EXACT_NODE_MATCH=False
+IOREG_RTL8821CE_NODE_OCCURRENCES=0
+IOREG_RTL8821CE_VENDOR_ID_PROPERTY=False
+IOREG_RTL8821CE_DEVICE_ID_PROPERTY=False
+----- LOADED_RELEVANT_KEXTS -----
+   55    3 0xffffff8002973000 0x33ff8    0x33ff8    com.apple.iokit.IOSkywalkFamily (1.0) 70DFAA8E-E369-3417-B6FD-B19FB6D5D49B <54 53 9 8 7 6 3 1>
+   57   14 0xffffff8004013000 0x31000    0x31000    as.vit9696.Lilu (1.7.2) C2A303B8-6D22-3163-A905-5DB8E340D285 <9 7 6 3 2 1>
+   58    0 0xffffff8004044000 0xcf000    0xcf000    com.dhinakg.AMFIPass (1.4.1) 7DF1CDFC-7EFE-3D82-A3A2-7DACE8B1D097 <57 9 8 7 6 3 2 1>
+  129    0 0xffffff8004643000 0xb40000   0xb40000   com.realtek.driver.RtWlanU (1830.32.b27) DB501FB3-487F-382A-A630-86C151C13BFB <98 53 7 6 3 1>
+----- END LOADED_RELEVANT_KEXTS -----
+NATIVE_KEXT_PRESENT_IN_SHOWLOADED=False
+OPENCORE_LOG_FILES_FOUND=0
+OPENCORE_LOGGING_OBSERVABILITY=DISABLED_BY_TARGET_ZERO
+STAGE117_PRIMARY_DIAGNOSIS=BOOT_INJECTION_CAUSE_UNOBSERVABLE_OPENCORE_FILE_LOGGING_DISABLED
+STAGE117_EFI_FILESYSTEM_PERSONALITY=MS-DOS FAT32
+STAGE117_EFI_OWNERS_SETTING=UNKNOWN
+STAGE117_EFI_OWNERSHIP_DISABLED_OR_EMULATED=True
+STAGE117_KMUTIL_DIAGNOSTICS_EXIT=0
+STAGE117_KMUTIL_BAD_CODE_SIGNATURE=True
+STAGE117_KMUTIL_INVALID_OWNERSHIP_COUNT=5
+STAGE117_RTL8821CE_EXACT_NODE_MATCH=False
+STAGE117_NATIVE_KEXT_PRESENT_IN_SHOWLOADED=False
+STAGE117_OPENCORE_LOGGING_OBSERVABILITY=DISABLED_BY_TARGET_ZERO
+STAGE117_RESULT=EVIDENCE_CAPTURED_REQUIRES_REVIEW
+STAGE117_ACTIVATION=BLOCKED
+EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_RUN HARDWARE_TEST=NOT_RUN PR4_MERGE=BLOCKED
