@@ -6,6 +6,7 @@
 #include "slab.h"
 #include "spinlock.h"
 #include "skbuff_tx_completion.h"
+#include "mpsc_retire_stack.h"
 #include <string.h>
 
 /*
@@ -43,6 +44,8 @@ struct sk_buff {
      * once either when the PCI TX status arrives or when any path frees this
      * skb before normal completion. It must be non-blocking/IRQ-safe. */
     struct rtw88_skb_tx_completion tx_completion;
+    /* Intrusive node used only after TX-status ownership transfers to reaper. */
+    struct rtw88_mpsc_retire_node deferred_free_node;
 };
 
 /* sk_buff_head — queue */
