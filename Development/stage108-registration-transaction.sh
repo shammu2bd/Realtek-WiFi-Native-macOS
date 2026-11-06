@@ -40,31 +40,32 @@ if (
   echo "----- C++ transaction state-machine test -----"
   "$CXX_BIN" -std=c++17 -Wall -Wextra -Werror -O2 \
     tests/wcl_registration_transaction_stage108_test.cpp \
-    -o "$TMP_DIR/registration-transaction-test" &&
-  "$TMP_DIR/registration-transaction-test" &&
+    -o "$TMP_DIR/registration-transaction-test" || exit $?
+  "$TMP_DIR/registration-transaction-test" || exit $?
   echo "PASS: Stage108 C++ transaction state machine"
 
   echo
   echo "----- Python source-contract suite -----"
-  python3 tests/test-wcl-registration-transaction-stage108.py &&
-  python3 tests/test-wcl-registration-contract.py &&
-  python3 tests/test-wcl-registration-info-stage11.py &&
-  python3 tests/test-wcl-tx-queue-array-contract.py &&
-  python3 tests/test-wcl-resource-transaction.py
+  python3 tests/test-wcl-registration-transaction-stage108.py || exit $?
+  python3 tests/test-wcl-registration-contract.py || exit $?
+  python3 tests/test-wcl-registration-info-stage11.py || exit $?
+  python3 tests/test-wcl-tx-queue-array-contract.py || exit $?
+  python3 tests/test-wcl-resource-transaction.py || exit $?
 
   echo
   echo "----- Native unsigned kext rebuild -----"
-  make -C driver/RTL88WiFi rtl88wifi-native
+  make -C driver/RTL88WiFi rtl88wifi-native || exit $?
 
   BUNDLE="driver/RTL88WiFi/build/out/RTL88WiFiNative.kext"
   BIN="$BUNDLE/Contents/MacOS/RTL88WiFiNative"
   PLIST="$BUNDLE/Contents/Info.plist"
-  test -s "$BIN"
-  test -s "$PLIST"
-  plutil -lint "$PLIST"
-  file "$BIN"
-  lipo "$BIN" -verify_arch x86_64
-  echo "STAGE108_NATIVE_BINARY_SHA256=$(shasum -a 256 "$BIN" | awk '{print $1}')"
+  test -s "$BIN" || exit $?
+  test -s "$PLIST" || exit $?
+  plutil -lint "$PLIST" || exit $?
+  file "$BIN" || exit $?
+  lipo "$BIN" -verify_arch x86_64 || exit $?
+  BINARY_SHA="$(shasum -a 256 "$BIN" | awk '{print $1}')" || exit $?
+  echo "STAGE108_NATIVE_BINARY_SHA256=$BINARY_SHA"
   echo "STAGE108_BUILD_RESULT=PASS"
 ) 2>&1 | tee "$LOG"; then
   RUN_STATUS=0

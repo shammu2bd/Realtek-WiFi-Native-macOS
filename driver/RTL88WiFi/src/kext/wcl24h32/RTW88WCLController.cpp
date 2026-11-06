@@ -215,6 +215,7 @@ bool RTW88WCLController::start(IOService *provider)
         goto fail;
     }
 
+    {
     /* Probe the RTW88 core before constructing the interface so the real
      * eFuse MAC and PHY capabilities are available to 24H32 RegistrationInfo.
      * PCI interrupts remain masked until all Skywalk queues are registered. */
@@ -262,6 +263,8 @@ bool RTW88WCLController::start(IOService *provider)
         IOLog("rtl88wifi-wcl: PCI interrupt activation failed: 0x%08x\n",
               interruptStatus);
         goto fail;
+    }
+
     }
 
     provider->setProperty("RTW88WCLControllerStage",
