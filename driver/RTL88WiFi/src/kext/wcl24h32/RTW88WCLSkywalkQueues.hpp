@@ -47,7 +47,8 @@ public:
 
     /* Successful 24H32 enqueuePacketsForNetworking transfers packet ownership
      * from the driver to the RX networking pipeline. */
-    IOReturn enqueueRXPacketForNetworking(IOSkywalkPacket *packet);
+    /* Returns the number of packets accepted by the 24H32 networking path. */
+    UInt32 enqueueRXPacketForNetworking(IOSkywalkPacket *packet);
 
     IOReturn bindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
     IOReturn unbindTXAdapter(RTW88WCLSkywalkTxAdapter *adapter);
