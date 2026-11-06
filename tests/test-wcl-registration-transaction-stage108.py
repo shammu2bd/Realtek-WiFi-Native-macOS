@@ -101,15 +101,32 @@ assert "abortDeregistrationTransaction()" in shutdown
 assert "registrationQuarantined()" in shutdown
 assert "clearRegistrationInfo();" in shutdown
 
-# Controller start deliberately remains fail-closed: Stage108 implements the
-# transaction method, not end-to-end interface construction or radio activation.
-assert "refusing publication until Skywalk datapath is ready" in controller_cpp_raw
-assert "goto fail;" in controller_cpp
-assert "_infraInterface" not in controller_cpp
-assert "_radioStarted = true" not in controller_cpp
-assert "radio->start()" not in controller_cpp
+# Controller integration is deliberately ordered: the RTW88 core is probed
+# with PCI interrupts masked, then interface registration succeeds, then the
+# service is published, and only then is the PCI producer/interrupt gate opened.
+controller_start = controller_cpp.index("bool RTW88WCLController::start(")
+controller_end = controller_cpp.index("void RTW88WCLController::stop(", controller_start)
+controller_start_code = controller_cpp[controller_start:controller_end]
+radio_probe = controller_start_code.index("_radio->start()")
+infra_start = controller_start_code.index("_infraInterface->start(this)")
+service_publish = controller_start_code.index("_infraInterface->registerService()")
+pci_enable = controller_start_code.index("_pciBackend->setRadioRunning(true)")
+assert radio_probe < infra_start < service_publish < pci_enable
+assert "RTW88WCLInfraInterface.hpp" in controller_cpp_raw
+assert "_infraInterface = nullptr;" in controller_cpp_raw
+assert "_infraInterface->shutdownForController()" in controller_cpp
+assert controller_cpp.index("_infraInterface->shutdownForController()") < controller_cpp.index("_skywalkQueues->destroyQueues()")
 
-print("PASS: 24H32 registration uses the audited Apple infra wrapper and stable seven-queue vector")
+rx_sink_start = controller_cpp.index("bool RTW88WCLController::stagedRxFrame(")
+rx_sink_end = controller_cpp.index("IOWorkLoop *RTW88WCLController::getRxWorkLoop()", rx_sink_start)
+rx_sink = controller_cpp[rx_sink_start:rx_sink_end]
+assert "_skywalkQueues->isRegistered()" in rx_sink
+assert "_infraInterface->isRegistered()" in rx_sink
+assert "enqueueRXPacketForNetworking(preparedPacket)" in rx_sink
+assert "return accepted == 1;" in rx_sink
+
+print("PASS: 24H32 registration uses Apple's audited infra wrapper and stable seven-queue vector")
 print("PASS: atomic begin/commit/abort and deregistration retry/quarantine states guard queue ownership")
 print("PASS: opaque descriptor tail and private QueueSet/LogicalLink layouts are not guessed")
-print("PASS: controller/radio activation remains fail-closed for later datapath stages")
+print("PASS: controller publishes only after registration and opens PCI interrupt gate afterward")
+print("PASS: RX sink transfers only accepted packets after both interface and queue registration")
