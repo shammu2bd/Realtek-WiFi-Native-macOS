@@ -1,0 +1,34 @@
+name: Stage98 native compile graph and TX callback audit
+on:
+  push:
+    branches:
+      - work/stage91-tx-submission-callback-v1
+    paths:
+      - 'driver/RTL88WiFi/Makefile'
+      - 'driver/RTL88WiFi/src/compat/rtw88_compat.c'
+      - 'driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp'
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c'
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c'
+      - 'tests/test-wcl-stage98-native-build-lock-audit.py'
+      - 'tools/run-stage98-native-build-lock-audit.sh'
+      - '.github/workflows/stage98-native-build-lock-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-build-lock-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/stage91-tx-submission-callback-v1
+      - name: Run Stage98 static audit
+        run: bash tools/run-stage98-native-build-lock-audit.sh | tee stage98-result.txt
+      - name: Upload Stage98 audit result
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage98-native-build-lock-audit
+          path: stage98-result.txt
