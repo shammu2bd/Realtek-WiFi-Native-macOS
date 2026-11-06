@@ -121,7 +121,7 @@ IOReturn RTW88WCLTxCompletionWorkQueue::stop()
 void RTW88WCLTxCompletionWorkQueue::free()
 {
     if (stop() != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: completion worker free deferred; callback ownership remains\\n");
+        IOLog("rtl88wifi-wcl: completion worker free deferred; callback ownership remains\n");
         return;
     }
     super::free();
