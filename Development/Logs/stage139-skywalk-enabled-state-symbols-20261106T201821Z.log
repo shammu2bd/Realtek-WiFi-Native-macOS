@@ -1,0 +1,4238 @@
+========== STAGE139 SKYWALK ENABLED STATE SYMBOL RESOLUTION ==========
+STAGE139_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE139_WORKTREE_STATUS_ENTRIES=198
+STAGE139_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE139_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE139_SCOPE=READ_ONLY_SYMBOL_ENUMERATION_VTABLE_CORRELATION_AND_BOUNDED_DISASSEMBLY
+STAGE139_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE139_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+STAGE139_FILES_BASE=0xffffff8000100000
+STAGE139_FILESET_ENTRY_COUNT=211
+STAGE139_SYMBOL_COUNT=165349
+STAGE139_OWNER_ENTRY=com.apple.iokit.IOSkywalkFamily VMADDR=0xffffff8002973000 FILEOFF=0x2873000
+
+--- Class method inventory (exact BootKC symbols) ---
+CLASS=IOSkywalkInterface METHOD_COUNT=38
+CLASS=IOSkywalkNetworkInterface METHOD_COUNT=109
+CLASS_METHOD=0xffffff8002982b86 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface6enableEj
+CLASS_METHOD=0xffffff8002982bae OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface7disableEj
+CLASS_METHOD=0xffffff8002982cb0 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface9isEnabledEv
+CLASS_METHOD=0xffffff8002982cbc OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface18setInterfaceEnableEb
+CLASS_METHOD=0xffffff8002982e5c OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface26setInterfaceAdvisoryNoticeEPvPFiS0_PK24ifnet_interface_advisoryE
+CLASS_METHOD=0xffffff8002982ec4 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface23reportInterfaceAdvisoryEPK24ifnet_interface_advisory
+CLASS_METHOD=0xffffff8002982f16 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface23interfaceAdvisoryEnableEb
+CLASS_METHOD=0xffffff8002982f7a OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface17enableNetworkWakeEj
+CLASS=IOSkywalkEthernetInterface METHOD_COUNT=68
+CLASS_METHOD=0xffffff8002988af8 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN26IOSkywalkEthernetInterface6enableEj
+CLASS_METHOD=0xffffff8002988b7e OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN26IOSkywalkEthernetInterface24setPromiscuousModeEnableEbj
+CLASS_METHOD=0xffffff8002988c68 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN26IOSkywalkEthernetInterface25setAllMulticastModeEnableEb
+CLASS_METHOD=0xffffff8002989726 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN26IOSkywalkEthernetInterface17enableNetworkWakeEj
+
+--- Owner-wide enabled/advisory symbol inventory ---
+OWNER_SYMBOL=0xffffff80029789c0 SYMBOL=__ZN25IOSkywalkNetworkBSDClient21adjustInterfaceEnableEv
+OWNER_SYMBOL=0xffffff8002978a5a SYMBOL=__ZN25IOSkywalkNetworkBSDClient15enableInterfaceEP25IOSkywalkNetworkInterface
+OWNER_SYMBOL=0xffffff8002978ae4 SYMBOL=__ZN25IOSkywalkNetworkBSDClient16disableInterfaceEP25IOSkywalkNetworkInterface
+OWNER_SYMBOL=0xffffff8002979156 SYMBOL=__ZN25IOSkywalkNetworkBSDClient26configureInterfaceAdvisoryEPvPj
+OWNER_SYMBOL=0xffffff80029791d6 SYMBOL=__ZN25IOSkywalkNetworkBSDClient14advisoryEnableEb
+OWNER_SYMBOL=0xffffff80029797ac SYMBOL=__ZN30IOUserNetworkPacketQueueCompat14SetEnable_ImplEb
+OWNER_SYMBOL=0xffffff80029797b8 SYMBOL=__ZN30IOUserNetworkPacketQueueCompat15_SetEnable_ImplEb
+OWNER_SYMBOL=0xffffff80029797ca SYMBOL=__ZN30IOUserNetworkPacketQueueCompat9setEnableEb
+OWNER_SYMBOL=0xffffff8002979bda SYMBOL=__ZN36IOUserNetworkRxCompletionQueueCompat6enableEv
+OWNER_SYMBOL=0xffffff8002979c0c SYMBOL=__ZN36IOUserNetworkRxCompletionQueueCompat7disableEv
+OWNER_SYMBOL=0xffffff800297a644 SYMBOL=__ZN36IOUserNetworkRxSubmissionQueueCompat6enableEv
+OWNER_SYMBOL=0xffffff800297a9a2 SYMBOL=__ZN36IOUserNetworkRxSubmissionQueueCompat7disableEv
+OWNER_SYMBOL=0xffffff800297ae76 SYMBOL=__ZN36IOUserNetworkRxSubmissionQueueCompat15_SetEnable_ImplEb
+OWNER_SYMBOL=0xffffff800297b23e SYMBOL=__ZN36IOUserNetworkTxCompletionQueueCompat6enableEv
+OWNER_SYMBOL=0xffffff800297b270 SYMBOL=__ZN36IOUserNetworkTxCompletionQueueCompat7disableEv
+OWNER_SYMBOL=0xffffff800297bbf0 SYMBOL=__ZN36IOUserNetworkTxSubmissionQueueCompat6enableEv
+OWNER_SYMBOL=0xffffff800297bc38 SYMBOL=__ZN36IOUserNetworkTxSubmissionQueueCompat7disableEv
+OWNER_SYMBOL=0xffffff800297f8e4 SYMBOL=__ZN17IOUserNetworkWLAN23interfaceAdvisoryEnableEb
+OWNER_SYMBOL=0xffffff800297f8f0 SYMBOL=__ZN17IOUserNetworkWLAN29_InterfaceAdvisoryEnable_ImplEb
+OWNER_SYMBOL=0xffffff800297f8fc SYMBOL=__ZN17IOUserNetworkWLAN29_ReportInterfaceAdvisory_ImplEPK24ifnet_interface_advisory
+OWNER_SYMBOL=0xffffff8002980ac0 SYMBOL=__ZN20IOSkywalkPacketQueue7disableEv
+OWNER_SYMBOL=0xffffff8002982b86 SYMBOL=__ZN25IOSkywalkNetworkInterface6enableEj
+OWNER_SYMBOL=0xffffff8002982bae SYMBOL=__ZN25IOSkywalkNetworkInterface7disableEj
+OWNER_SYMBOL=0xffffff8002982cb0 SYMBOL=__ZN25IOSkywalkNetworkInterface9isEnabledEv
+OWNER_SYMBOL=0xffffff8002982cbc SYMBOL=__ZN25IOSkywalkNetworkInterface18setInterfaceEnableEb
+OWNER_SYMBOL=0xffffff8002982e5c SYMBOL=__ZN25IOSkywalkNetworkInterface26setInterfaceAdvisoryNoticeEPvPFiS0_PK24ifnet_interface_advisoryE
+OWNER_SYMBOL=0xffffff8002982ec4 SYMBOL=__ZN25IOSkywalkNetworkInterface23reportInterfaceAdvisoryEPK24ifnet_interface_advisory
+OWNER_SYMBOL=0xffffff8002982f16 SYMBOL=__ZN25IOSkywalkNetworkInterface23interfaceAdvisoryEnableEb
+OWNER_SYMBOL=0xffffff8002982f7a SYMBOL=__ZN25IOSkywalkNetworkInterface17enableNetworkWakeEj
+OWNER_SYMBOL=0xffffff8002983c90 SYMBOL=__ZN20IOSkywalkLogicalLink9setEnableEb
+OWNER_SYMBOL=0xffffff80029842b2 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue6enableEv
+OWNER_SYMBOL=0xffffff8002984312 SYMBOL=__ZN26IOSkywalkTxSubmissionQueue7disableEv
+OWNER_SYMBOL=0xffffff80029859fa SYMBOL=__ZN26IOSkywalkRxSubmissionQueue6enableEv
+OWNER_SYMBOL=0xffffff8002985a26 SYMBOL=__ZN26IOSkywalkRxSubmissionQueue7disableEv
+OWNER_SYMBOL=0xffffff80029865bc SYMBOL=__ZN26IOSkywalkRxCompletionQueue6enableEv
+OWNER_SYMBOL=0xffffff800298661c SYMBOL=__ZN26IOSkywalkRxCompletionQueue7disableEv
+OWNER_SYMBOL=0xffffff80029879fe SYMBOL=__ZN25IOSkywalkNetworkKDPPoller13enablePollingEj
+OWNER_SYMBOL=0xffffff8002987a06 SYMBOL=__ZN25IOSkywalkNetworkKDPPoller14disablePollingEj
+OWNER_SYMBOL=0xffffff8002988af8 SYMBOL=__ZN26IOSkywalkEthernetInterface6enableEj
+OWNER_SYMBOL=0xffffff8002988b7e SYMBOL=__ZN26IOSkywalkEthernetInterface24setPromiscuousModeEnableEbj
+OWNER_SYMBOL=0xffffff8002988c68 SYMBOL=__ZN26IOSkywalkEthernetInterface25setAllMulticastModeEnableEb
+OWNER_SYMBOL=0xffffff8002989726 SYMBOL=__ZN26IOSkywalkEthernetInterface17enableNetworkWakeEj
+OWNER_SYMBOL=0xffffff8002989fca SYMBOL=__ZN26IOSkywalkTxCompletionQueue6enableEv
+OWNER_SYMBOL=0xffffff8002989ff6 SYMBOL=__ZN26IOSkywalkTxCompletionQueue7disableEv
+OWNER_SYMBOL=0xffffff800298aea0 SYMBOL=__ZN17IOSkywalkQueueSet9setEnableEb
+OWNER_SYMBOL=0xffffff800298b462 SYMBOL=__ZN21IOSkywalkPacketPoller6enableEv
+OWNER_SYMBOL=0xffffff800298b474 SYMBOL=__ZN21IOSkywalkPacketPoller7disableEv
+OWNER_SYMBOL=0xffffff800298c74c SYMBOL=__ZN21IOUserNetworkEthernet16disableAllQueuesEv
+OWNER_SYMBOL=0xffffff800298c87c SYMBOL=__ZN21IOUserNetworkEthernet18setInterfaceEnableEb
+OWNER_SYMBOL=0xffffff800298c8dc SYMBOL=__ZN21IOUserNetworkEthernet24setPromiscuousModeEnableEbj
+OWNER_SYMBOL=0xffffff800298c8e8 SYMBOL=__ZN21IOUserNetworkEthernet25setAllMulticastModeEnableEb
+OWNER_SYMBOL=0xffffff800298d59a SYMBOL=__ZN21IOUserNetworkEthernet24_SetInterfaceEnable_ImplEb
+OWNER_SYMBOL=0xffffff800298d5a6 SYMBOL=__ZN21IOUserNetworkEthernet30_SetPromiscuousModeEnable_ImplEb
+OWNER_SYMBOL=0xffffff800298d5b2 SYMBOL=__ZN21IOUserNetworkEthernet31_SetAllMulticastModeEnable_ImplEb
+OWNER_SYMBOL=0xffffff800298db3a SYMBOL=__ZN24IOUserNetworkLogicalLink15_SetEnable_ImplEb
+OWNER_SYMBOL=0xffffff800298e7da SYMBOL=__ZN24IOUserNetworkPacketQueue14SetEnable_ImplEb
+OWNER_SYMBOL=0xffffff800298e7e6 SYMBOL=__ZN24IOUserNetworkPacketQueue15_SetEnable_ImplEb
+OWNER_SYMBOL=0xffffff800298e7f8 SYMBOL=__ZN24IOUserNetworkPacketQueue9setEnableEb
+OWNER_SYMBOL=0xffffff800298ee2c SYMBOL=__ZN30IOUserNetworkTxSubmissionQueue6enableEv
+OWNER_SYMBOL=0xffffff800298ee74 SYMBOL=__ZN30IOUserNetworkTxSubmissionQueue7disableEv
+OWNER_SYMBOL=0xffffff80029902d6 SYMBOL=__ZN30IOUserNetworkTxCompletionQueue6enableEv
+OWNER_SYMBOL=0xffffff8002990308 SYMBOL=__ZN30IOUserNetworkTxCompletionQueue7disableEv
+OWNER_SYMBOL=0xffffff8002990a62 SYMBOL=__ZN30IOUserNetworkRxCompletionQueue6enableEv
+OWNER_SYMBOL=0xffffff8002990a94 SYMBOL=__ZN30IOUserNetworkRxCompletionQueue7disableEv
+OWNER_SYMBOL=0xffffff8002991428 SYMBOL=__ZN30IOUserNetworkRxSubmissionQueue6enableEv
+OWNER_SYMBOL=0xffffff8002991786 SYMBOL=__ZN30IOUserNetworkRxSubmissionQueue7disableEv
+OWNER_SYMBOL=0xffffff8002991c46 SYMBOL=__ZN30IOUserNetworkRxSubmissionQueue15_SetEnable_ImplEb
+OWNER_SYMBOL=0xffffff8002991f4c SYMBOL=__ZN21IOUserNetworkQueueSet15_SetEnable_ImplEb
+OWNER_SYMBOL=0xffffff8002992112 SYMBOL=__ZN30IOUserNetworkPacketQueueCompat17_SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff800299218a SYMBOL=__ZN30IOUserNetworkPacketQueueCompat16SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff80029922e8 SYMBOL=__ZN30IOUserNetworkPacketQueueCompat10_SetEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff800299242e SYMBOL=__ZN30IOUserNetworkPacketQueueCompat9SetEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff8002995976 SYMBOL=__ZN21IOUserNetworkEthernet33_SetAllMulticastModeEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff80029959ee SYMBOL=__ZN21IOUserNetworkEthernet32_SetPromiscuousModeEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff8002995a66 SYMBOL=__ZN21IOUserNetworkEthernet26_SetInterfaceEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff8002997d72 SYMBOL=__ZN21IOUserNetworkEthernet26_SetAllMulticastModeEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff8002997eb8 SYMBOL=__ZN21IOUserNetworkEthernet25_SetPromiscuousModeEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff8002997ffe SYMBOL=__ZN21IOUserNetworkEthernet19_SetInterfaceEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff8002998f18 SYMBOL=__ZN21IOUserNetworkEthernet18SetInterfaceEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff800299905e SYMBOL=__ZN21IOUserNetworkEthernet24SetPromiscuousModeEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff8002999300 SYMBOL=__ZN21IOUserNetworkEthernet25SetAllMulticastModeEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff800299958c SYMBOL=__ZN21IOUserNetworkEthernet26SetWakeOnMagicPacketEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff8002999d3c SYMBOL=__ZN21IOUserNetworkEthernet25SetInterfaceEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff8002999db4 SYMBOL=__ZN21IOUserNetworkEthernet31SetPromiscuousModeEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff8002999ea6 SYMBOL=__ZN21IOUserNetworkEthernet32SetAllMulticastModeEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff8002999f94 SYMBOL=__ZN21IOUserNetworkEthernet33SetWakeOnMagicPacketEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff800299b962 SYMBOL=__ZN17IOUserNetworkWLAN31_ReportInterfaceAdvisory_InvokeE5IORPCP15OSMetaClassBasePFiS2_PK24ifnet_interface_advisoryE
+OWNER_SYMBOL=0xffffff800299b9dc SYMBOL=__ZN17IOUserNetworkWLAN31_InterfaceAdvisoryEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff800299ce72 SYMBOL=__ZN17IOUserNetworkWLAN24_ReportInterfaceAdvisoryEPK24ifnet_interface_advisoryPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff800299cfa2 SYMBOL=__ZN17IOUserNetworkWLAN24_InterfaceAdvisoryEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff800299d272 SYMBOL=__ZN24IOUserNetworkPacketQueue17_SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff800299d2ea SYMBOL=__ZN24IOUserNetworkPacketQueue16SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff800299d448 SYMBOL=__ZN24IOUserNetworkPacketQueue10_SetEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff800299d58e SYMBOL=__ZN24IOUserNetworkPacketQueue9SetEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff80029a00fe SYMBOL=__ZN24IOUserNetworkLogicalLink17_SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff80029a03ac SYMBOL=__ZN24IOUserNetworkLogicalLink10_SetEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff80029a06f0 SYMBOL=__ZN21IOUserNetworkQueueSet17_SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+OWNER_SYMBOL=0xffffff80029a09ba SYMBOL=__ZN21IOUserNetworkQueueSet10_SetEnableEbPFiP15OSMetaClassBase5IORPCE
+OWNER_SYMBOL=0xffffff80029a0f09 SYMBOL=__ZN25IOSkywalkNetworkBSDClient21adjustInterfaceEnableEv.cold.1
+OWNER_SYMBOL=0xffffff80029a0f27 SYMBOL=__ZN25IOSkywalkNetworkBSDClient15enableInterfaceEP25IOSkywalkNetworkInterface.cold.1
+OWNER_SYMBOL=0xffffff80029a0f45 SYMBOL=__ZN25IOSkywalkNetworkBSDClient16disableInterfaceEP25IOSkywalkNetworkInterface.cold.1
+OWNER_SYMBOL=0xffffff80029a4012 SYMBOL=__ZN21IOSkywalkPacketPoller7disableEv.cold.1
+OWNER_SYMBOL=0xffffff80029b6708 SYMBOL=_gIOSkywalkPollEnable
+OWNER_SYMBOL=0xffffff80029b6724 SYMBOL=_gIOSkywalkBTFixEnable
+OWNER_SYMBOL=0xffffff80029b680c SYMBOL=_gIOSkywalkABFSEnable
+STAGE139_UNIQUE_DISASSEMBLY_CANDIDATES=105
+
+--- Relevant vtable targets ---
+VTABLE_TARGET CLASS=IOSkywalkInterface WORD=228 OBJECT_VPTR_OFFSET=0x710 RAW=0x400000009c5400 TARGET=0xffffff8000ac5400 OWNER=com.apple.kernel SYMBOL=__ZN9IOService15enableInterruptEi
+VTABLE_TARGET CLASS=IOSkywalkInterface WORD=229 OBJECT_VPTR_OFFSET=0x718 RAW=0x400000009c5470 TARGET=0xffffff8000ac5470 OWNER=com.apple.kernel SYMBOL=__ZN9IOService16disableInterruptEi
+VTABLE_CLASS=IOSkywalkInterface RELEVANT_TARGET_COUNT=2
+VTABLE_TARGET CLASS=IOSkywalkNetworkInterface WORD=228 OBJECT_VPTR_OFFSET=0x710 RAW=0x400000009c5400 TARGET=0xffffff8000ac5400 OWNER=com.apple.kernel SYMBOL=__ZN9IOService15enableInterruptEi
+VTABLE_TARGET CLASS=IOSkywalkNetworkInterface WORD=229 OBJECT_VPTR_OFFSET=0x718 RAW=0x400000009c5470 TARGET=0xffffff8000ac5470 OWNER=com.apple.kernel SYMBOL=__ZN9IOService16disableInterruptEi
+VTABLE_TARGET CLASS=IOSkywalkNetworkInterface WORD=268 OBJECT_VPTR_OFFSET=0x850 RAW=0x40000002882b86 TARGET=0xffffff8002982b86 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface6enableEj
+VTABLE_TARGET CLASS=IOSkywalkNetworkInterface WORD=269 OBJECT_VPTR_OFFSET=0x858 RAW=0x40000002882bae TARGET=0xffffff8002982bae OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface7disableEj
+VTABLE_TARGET CLASS=IOSkywalkNetworkInterface WORD=294 OBJECT_VPTR_OFFSET=0x920 RAW=0x40000002882f16 TARGET=0xffffff8002982f16 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface23interfaceAdvisoryEnableEb
+VTABLE_TARGET CLASS=IOSkywalkNetworkInterface WORD=295 OBJECT_VPTR_OFFSET=0x928 RAW=0x40000002882cbc TARGET=0xffffff8002982cbc OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface18setInterfaceEnableEb
+VTABLE_TARGET CLASS=IOSkywalkNetworkInterface WORD=302 OBJECT_VPTR_OFFSET=0x960 RAW=0x40000002882f7a TARGET=0xffffff8002982f7a OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface17enableNetworkWakeEj
+VTABLE_CLASS=IOSkywalkNetworkInterface RELEVANT_TARGET_COUNT=7
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=228 OBJECT_VPTR_OFFSET=0x710 RAW=0x400000009c5400 TARGET=0xffffff8000ac5400 OWNER=com.apple.kernel SYMBOL=__ZN9IOService15enableInterruptEi
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=229 OBJECT_VPTR_OFFSET=0x718 RAW=0x400000009c5470 TARGET=0xffffff8000ac5470 OWNER=com.apple.kernel SYMBOL=__ZN9IOService16disableInterruptEi
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=268 OBJECT_VPTR_OFFSET=0x850 RAW=0x40000002888af8 TARGET=0xffffff8002988af8 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN26IOSkywalkEthernetInterface6enableEj
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=269 OBJECT_VPTR_OFFSET=0x858 RAW=0x40000002882bae TARGET=0xffffff8002982bae OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface7disableEj
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=294 OBJECT_VPTR_OFFSET=0x920 RAW=0x40000002882f16 TARGET=0xffffff8002982f16 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface23interfaceAdvisoryEnableEb
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=295 OBJECT_VPTR_OFFSET=0x928 RAW=0x40000002882cbc TARGET=0xffffff8002982cbc OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN25IOSkywalkNetworkInterface18setInterfaceEnableEb
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=302 OBJECT_VPTR_OFFSET=0x960 RAW=0x40000002889726 TARGET=0xffffff8002989726 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN26IOSkywalkEthernetInterface17enableNetworkWakeEj
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=339 OBJECT_VPTR_OFFSET=0xa88 RAW=0x40000002888c68 TARGET=0xffffff8002988c68 OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN26IOSkywalkEthernetInterface25setAllMulticastModeEnableEb
+VTABLE_TARGET CLASS=IOSkywalkEthernetInterface WORD=340 OBJECT_VPTR_OFFSET=0xa90 RAW=0x40000002888b7e TARGET=0xffffff8002988b7e OWNER=com.apple.iokit.IOSkywalkFamily SYMBOL=__ZN26IOSkywalkEthernetInterface24setPromiscuousModeEnableEbj
+VTABLE_CLASS=IOSkywalkEthernetInterface RELEVANT_TARGET_COUNT=9
+
+--- Bounded exact-start disassembly of candidates ---
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkBSDClient21adjustInterfaceEnableEv
+METHOD_ADDRESS=0xffffff80029789c0
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002978a5a
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=46
+ffffff80029789c0	pushq	%rbp
+ffffff80029789c1	movq	%rsp, %rbp
+ffffff80029789c4	pushq	%r14
+ffffff80029789c6	pushq	%rbx
+ffffff80029789c7	movq	%rdi, %rbx
+ffffff80029789ca	movq	0x90(%rdi), %rdi
+ffffff80029789d1	testq	%rdi, %rdi
+ffffff80029789d4	je	0xffffff80029789f4
+ffffff80029789d6	movq	(%rdi), %rax
+ffffff80029789d9	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff80029789d9 callq	*0x168(%rax)
+ffffff80029789df	testq	%rax, %rax
+ffffff80029789e2	je	0xffffff80029789f4
+ffffff80029789e4	movq	(%rax), %rcx
+ffffff80029789e7	movq	%rax, %rdi
+ffffff80029789ea	callq	*0x138(%rcx)
+CONTROL_FLOW=0xffffff80029789ea callq	*0x138(%rcx)
+ffffff80029789f0	testb	%al, %al
+ffffff80029789f2	je	0xffffff8002978a54
+ffffff80029789f4	xorl	%eax, %eax
+ffffff80029789f6	cmpb	$0x1, 0x141(%rbx)
+ffffff80029789fd	movl	$0x0, %r14d
+ffffff8002978a03	jne	0xffffff8002978a1e
+ffffff8002978a05	cmpb	$0x1, 0x13f(%rbx)
+ffffff8002978a0c	jne	0xffffff8002978a1b
+ffffff8002978a0e	movb	0x142(%rbx), %r14b
+ffffff8002978a15	xorb	$0x1, %r14b
+ffffff8002978a19	jmp	0xffffff8002978a1e
+CONTROL_FLOW=0xffffff8002978a19 jmp	0xffffff8002978a1e
+ffffff8002978a1b	xorl	%r14d, %r14d
+ffffff8002978a1e	cmpb	%r14b, 0x140(%rbx)
+ffffff8002978a25	je	0xffffff8002978a4f
+ffffff8002978a27	movq	0xe8(%rbx), %rsi
+ffffff8002978a2e	movq	%rbx, %rdi
+ffffff8002978a31	testb	%r14b, %r14b
+ffffff8002978a34	je	0xffffff8002978a41
+ffffff8002978a36	callq	__ZN25IOSkywalkNetworkBSDClient15enableInterfaceEP25IOSkywalkNetworkInterface ## IOSkywalkNetworkBSDClient::enableInterface(IOSkywalkNetworkInterface*)
+CONTROL_FLOW=0xffffff8002978a36 callq	__ZN25IOSkywalkNetworkBSDClient15enableInterfaceEP25IOSkywalkNetworkInterface ## IOSkywalkNetworkBSDClient::enableInterface(IOSkywalkNetworkInterface*)
+ffffff8002978a3b	testl	%eax, %eax
+ffffff8002978a3d	jne	0xffffff8002978a4f
+ffffff8002978a3f	jmp	0xffffff8002978a46
+CONTROL_FLOW=0xffffff8002978a3f jmp	0xffffff8002978a46
+ffffff8002978a41	callq	__ZN25IOSkywalkNetworkBSDClient16disableInterfaceEP25IOSkywalkNetworkInterface ## IOSkywalkNetworkBSDClient::disableInterface(IOSkywalkNetworkInterface*)
+CONTROL_FLOW=0xffffff8002978a41 callq	__ZN25IOSkywalkNetworkBSDClient16disableInterfaceEP25IOSkywalkNetworkInterface ## IOSkywalkNetworkBSDClient::disableInterface(IOSkywalkNetworkInterface*)
+ffffff8002978a46	movb	%r14b, 0x140(%rbx)
+ffffff8002978a4d	xorl	%eax, %eax
+ffffff8002978a4f	popq	%rbx
+ffffff8002978a50	popq	%r14
+ffffff8002978a52	popq	%rbp
+ffffff8002978a53	retq
+ffffff8002978a54	callq	__ZN25IOSkywalkNetworkBSDClient21adjustInterfaceEnableEv.cold.1 ## IOSkywalkNetworkBSDClient::adjustInterfaceEnable() (.cold.1)
+CONTROL_FLOW=0xffffff8002978a54 callq	__ZN25IOSkywalkNetworkBSDClient21adjustInterfaceEnableEv.cold.1 ## IOSkywalkNetworkBSDClient::adjustInterfaceEnable() (.cold.1)
+ffffff8002978a59	nop
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkBSDClient15enableInterfaceEP25IOSkywalkNetworkInterface
+METHOD_ADDRESS=0xffffff8002978a5a
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002978ae4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=42
+ffffff8002978a5a	pushq	%rbp
+ffffff8002978a5b	movq	%rsp, %rbp
+ffffff8002978a5e	pushq	%r14
+ffffff8002978a60	pushq	%rbx
+ffffff8002978a61	movq	%rsi, %r14
+ffffff8002978a64	movq	%rdi, %rbx
+ffffff8002978a67	movq	0x90(%rdi), %rdi
+ffffff8002978a6e	testq	%rdi, %rdi
+ffffff8002978a71	je	0xffffff8002978a91
+ffffff8002978a73	movq	(%rdi), %rax
+ffffff8002978a76	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002978a76 callq	*0x168(%rax)
+ffffff8002978a7c	testq	%rax, %rax
+ffffff8002978a7f	je	0xffffff8002978a91
+ffffff8002978a81	movq	(%rax), %rcx
+ffffff8002978a84	movq	%rax, %rdi
+ffffff8002978a87	callq	*0x138(%rcx)
+CONTROL_FLOW=0xffffff8002978a87 callq	*0x138(%rcx)
+ffffff8002978a8d	testb	%al, %al
+ffffff8002978a8f	je	0xffffff8002978ade
+ffffff8002978a91	movq	(%r14), %rax
+ffffff8002978a94	movq	%r14, %rdi
+ffffff8002978a97	xorl	%esi, %esi
+ffffff8002978a99	callq	*0x850(%rax)
+CONTROL_FLOW=0xffffff8002978a99 callq	*0x850(%rax)
+ffffff8002978a9f	movl	%eax, %r14d
+ffffff8002978aa2	testl	%eax, %eax
+ffffff8002978aa4	jne	0xffffff8002978ad6
+ffffff8002978aa6	movb	$0x1, 0x140(%rbx)
+ffffff8002978aad	movq	%rbx, %rdi
+ffffff8002978ab0	callq	__ZN25IOSkywalkNetworkBSDClient24reportInterfaceWakeFlagsEv ## IOSkywalkNetworkBSDClient::reportInterfaceWakeFlags()
+CONTROL_FLOW=0xffffff8002978ab0 callq	__ZN25IOSkywalkNetworkBSDClient24reportInterfaceWakeFlagsEv ## IOSkywalkNetworkBSDClient::reportInterfaceWakeFlags()
+ffffff8002978ab5	movq	0xe8(%rbx), %rax
+ffffff8002978abc	movq	0xb8(%rax), %rax
+ffffff8002978ac3	movq	0x20(%rax), %rdi
+ffffff8002978ac7	testq	%rdi, %rdi
+ffffff8002978aca	je	0xffffff8002978ad6
+ffffff8002978acc	movl	$0x1, %esi
+ffffff8002978ad1	callq	__ZN25IOSkywalkNetworkKDPPoller13handleRequestENS_11RequestTypeE ## IOSkywalkNetworkKDPPoller::handleRequest(IOSkywalkNetworkKDPPoller::RequestType)
+CONTROL_FLOW=0xffffff8002978ad1 callq	__ZN25IOSkywalkNetworkKDPPoller13handleRequestENS_11RequestTypeE ## IOSkywalkNetworkKDPPoller::handleRequest(IOSkywalkNetworkKDPPoller::RequestType)
+ffffff8002978ad6	movl	%r14d, %eax
+ffffff8002978ad9	popq	%rbx
+ffffff8002978ada	popq	%r14
+ffffff8002978adc	popq	%rbp
+ffffff8002978add	retq
+ffffff8002978ade	callq	__ZN25IOSkywalkNetworkBSDClient15enableInterfaceEP25IOSkywalkNetworkInterface.cold.1 ## IOSkywalkNetworkBSDClient::enableInterface(IOSkywalkNetworkInterface*) (.cold.1)
+CONTROL_FLOW=0xffffff8002978ade callq	__ZN25IOSkywalkNetworkBSDClient15enableInterfaceEP25IOSkywalkNetworkInterface.cold.1 ## IOSkywalkNetworkBSDClient::enableInterface(IOSkywalkNetworkInterface*) (.cold.1)
+ffffff8002978ae3	nop
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkBSDClient16disableInterfaceEP25IOSkywalkNetworkInterface
+METHOD_ADDRESS=0xffffff8002978ae4
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002978b58
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=35
+ffffff8002978ae4	pushq	%rbp
+ffffff8002978ae5	movq	%rsp, %rbp
+ffffff8002978ae8	pushq	%r14
+ffffff8002978aea	pushq	%rbx
+ffffff8002978aeb	movq	%rsi, %r14
+ffffff8002978aee	movq	%rdi, %rbx
+ffffff8002978af1	movq	0x90(%rdi), %rdi
+ffffff8002978af8	testq	%rdi, %rdi
+ffffff8002978afb	je	0xffffff8002978b1b
+ffffff8002978afd	movq	(%rdi), %rax
+ffffff8002978b00	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002978b00 callq	*0x168(%rax)
+ffffff8002978b06	testq	%rax, %rax
+ffffff8002978b09	je	0xffffff8002978b1b
+ffffff8002978b0b	movq	(%rax), %rcx
+ffffff8002978b0e	movq	%rax, %rdi
+ffffff8002978b11	callq	*0x138(%rcx)
+CONTROL_FLOW=0xffffff8002978b11 callq	*0x138(%rcx)
+ffffff8002978b17	testb	%al, %al
+ffffff8002978b19	je	0xffffff8002978b53
+ffffff8002978b1b	movq	0xe8(%rbx), %rax
+ffffff8002978b22	movq	0xb8(%rax), %rax
+ffffff8002978b29	movq	0x20(%rax), %rdi
+ffffff8002978b2d	testq	%rdi, %rdi
+ffffff8002978b30	je	0xffffff8002978b39
+ffffff8002978b32	xorl	%esi, %esi
+ffffff8002978b34	callq	__ZN25IOSkywalkNetworkKDPPoller13handleRequestENS_11RequestTypeE ## IOSkywalkNetworkKDPPoller::handleRequest(IOSkywalkNetworkKDPPoller::RequestType)
+CONTROL_FLOW=0xffffff8002978b34 callq	__ZN25IOSkywalkNetworkKDPPoller13handleRequestENS_11RequestTypeE ## IOSkywalkNetworkKDPPoller::handleRequest(IOSkywalkNetworkKDPPoller::RequestType)
+ffffff8002978b39	movq	(%r14), %rax
+ffffff8002978b3c	movq	%r14, %rdi
+ffffff8002978b3f	xorl	%esi, %esi
+ffffff8002978b41	callq	*0x858(%rax)
+CONTROL_FLOW=0xffffff8002978b41 callq	*0x858(%rax)
+ffffff8002978b47	movb	$0x0, 0x140(%rbx)
+ffffff8002978b4e	popq	%rbx
+ffffff8002978b4f	popq	%r14
+ffffff8002978b51	popq	%rbp
+ffffff8002978b52	retq
+ffffff8002978b53	callq	__ZN25IOSkywalkNetworkBSDClient16disableInterfaceEP25IOSkywalkNetworkInterface.cold.1 ## IOSkywalkNetworkBSDClient::disableInterface(IOSkywalkNetworkInterface*) (.cold.1)
+CONTROL_FLOW=0xffffff8002978b53 callq	__ZN25IOSkywalkNetworkBSDClient16disableInterfaceEP25IOSkywalkNetworkInterface.cold.1 ## IOSkywalkNetworkBSDClient::disableInterface(IOSkywalkNetworkInterface*) (.cold.1)
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkBSDClient26configureInterfaceAdvisoryEPvPj
+METHOD_ADDRESS=0xffffff8002979156
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029791aa
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=29
+ffffff8002979156	movl	$0xe00002c2, %eax               ## imm = 0xE00002C2
+ffffff800297915b	testq	%rsi, %rsi
+ffffff800297915e	je	0xffffff80029791a9
+ffffff8002979160	cmpl	$0x28, (%rdx)
+ffffff8002979163	jne	0xffffff80029791a9
+ffffff8002979165	pushq	%rbp
+ffffff8002979166	movq	%rsp, %rbp
+ffffff8002979169	pushq	%r14
+ffffff800297916b	pushq	%rbx
+ffffff800297916c	movq	%rsi, %rbx
+ffffff800297916f	cmpl	$0x1, (%rsi)
+ffffff8002979172	jne	0xffffff80029791a5
+ffffff8002979174	movq	%rdi, %r14
+ffffff8002979177	movq	0xe8(%rdi), %rdi
+ffffff800297917e	testq	%rdi, %rdi
+ffffff8002979181	je	0xffffff80029791a5
+ffffff8002979183	movq	0x8(%rbx), %rsi
+ffffff8002979187	movq	0x18(%rbx), %rdx
+ffffff800297918b	callq	__ZN25IOSkywalkNetworkInterface26setInterfaceAdvisoryNoticeEPvPFiS0_PK24ifnet_interface_advisoryE ## IOSkywalkNetworkInterface::setInterfaceAdvisoryNotice(void*, int (*)(void*, ifnet_interface_advisory const*))
+CONTROL_FLOW=0xffffff800297918b callq	__ZN25IOSkywalkNetworkInterface26setInterfaceAdvisoryNoticeEPvPFiS0_PK24ifnet_interface_advisoryE ## IOSkywalkNetworkInterface::setInterfaceAdvisoryNotice(void*, int (*)(void*, ifnet_interface_advisory const*))
+ffffff8002979190	testl	%eax, %eax
+ffffff8002979192	jne	0xffffff80029791a5
+ffffff8002979194	leaq	__ZN25IOSkywalkNetworkBSDClient14advisoryEnableEb(%rip), %rax ## IOSkywalkNetworkBSDClient::advisoryEnable(bool)
+ffffff800297919b	movq	%rax, 0x20(%rbx)
+ffffff800297919f	movq	%r14, 0x10(%rbx)
+ffffff80029791a3	xorl	%eax, %eax
+ffffff80029791a5	popq	%rbx
+ffffff80029791a6	popq	%r14
+ffffff80029791a8	popq	%rbp
+ffffff80029791a9	retq
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkBSDClient14advisoryEnableEb
+METHOD_ADDRESS=0xffffff80029791d6
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297921c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=25
+ffffff80029791d6	pushq	%rbp
+ffffff80029791d7	movq	%rsp, %rbp
+ffffff80029791da	pushq	%rbx
+ffffff80029791db	pushq	%rax
+ffffff80029791dc	movq	%rdi, %rbx
+ffffff80029791df	movq	0xe8(%rdi), %rdi
+ffffff80029791e6	testq	%rdi, %rdi
+ffffff80029791e9	je	0xffffff800297920f
+ffffff80029791eb	movq	(%rdi), %rax
+ffffff80029791ee	movzbl	%sil, %esi
+ffffff80029791f2	callq	*0x920(%rax)
+CONTROL_FLOW=0xffffff80029791f2 callq	*0x920(%rax)
+ffffff80029791f8	movq	(%rbx), %rcx
+ffffff80029791fb	movq	0x788(%rcx), %rcx
+ffffff8002979202	movq	%rbx, %rdi
+ffffff8002979205	movl	%eax, %esi
+ffffff8002979207	addq	$0x8, %rsp
+ffffff800297920b	popq	%rbx
+ffffff800297920c	popq	%rbp
+ffffff800297920d	jmpq	*%rcx
+CONTROL_FLOW=0xffffff800297920d jmpq	*%rcx
+ffffff800297920f	movl	$0x16, %eax
+ffffff8002979214	addq	$0x8, %rsp
+ffffff8002979218	popq	%rbx
+ffffff8002979219	popq	%rbp
+ffffff800297921a	retq
+ffffff800297921b	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkPacketQueueCompat14SetEnable_ImplEb
+METHOD_ADDRESS=0xffffff80029797ac
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029797b8
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff80029797ac	pushq	%rbp
+ffffff80029797ad	movq	%rsp, %rbp
+ffffff80029797b0	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff80029797b5	popq	%rbp
+ffffff80029797b6	retq
+ffffff80029797b7	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkPacketQueueCompat15_SetEnable_ImplEb
+METHOD_ADDRESS=0xffffff80029797b8
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029797ca
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=7
+ffffff80029797b8	pushq	%rbp
+ffffff80029797b9	movq	%rsp, %rbp
+ffffff80029797bc	movq	(%rdi), %rax
+ffffff80029797bf	movq	0x2b8(%rax), %rax
+ffffff80029797c6	popq	%rbp
+ffffff80029797c7	jmpq	*%rax
+CONTROL_FLOW=0xffffff80029797c7 jmpq	*%rax
+ffffff80029797c9	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkPacketQueueCompat9setEnableEb
+METHOD_ADDRESS=0xffffff80029797ca
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002979832
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=36
+ffffff80029797ca	pushq	%rbp
+ffffff80029797cb	movq	%rsp, %rbp
+ffffff80029797ce	pushq	%rbx
+ffffff80029797cf	pushq	%rax
+ffffff80029797d0	movq	%rdi, %rbx
+ffffff80029797d3	testl	%esi, %esi
+ffffff80029797d5	je	0xffffff8002979803
+ffffff80029797d7	movl	$0xe00002d8, %eax               ## imm = 0xE00002D8
+ffffff80029797dc	cmpb	$0x1, 0xcc(%rbx)
+ffffff80029797e3	jne	0xffffff800297982a
+ffffff80029797e5	movq	(%rbx), %rax
+ffffff80029797e8	movq	%rbx, %rdi
+ffffff80029797eb	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff80029797eb callq	*0x160(%rax)
+ffffff80029797f1	movl	%eax, %ecx
+ffffff80029797f3	movl	$0x150, %edx                    ## imm = 0x150
+ffffff80029797f8	movl	$0xe00002c2, %eax               ## imm = 0xE00002C2
+ffffff80029797fd	testb	%cl, %cl
+ffffff80029797ff	je	0xffffff800297981f
+ffffff8002979801	jmp	0xffffff800297982a
+CONTROL_FLOW=0xffffff8002979801 jmp	0xffffff800297982a
+ffffff8002979803	movq	(%rbx), %rax
+ffffff8002979806	movq	%rbx, %rdi
+ffffff8002979809	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002979809 callq	*0x160(%rax)
+ffffff800297980f	movl	%eax, %ecx
+ffffff8002979811	movl	$0xe00002c2, %eax               ## imm = 0xE00002C2
+ffffff8002979816	movl	$0x158, %edx                    ## imm = 0x158
+ffffff800297981b	testb	%cl, %cl
+ffffff800297981d	je	0xffffff800297982a
+ffffff800297981f	movq	(%rbx), %rax
+ffffff8002979822	movq	%rbx, %rdi
+ffffff8002979825	callq	*(%rax,%rdx)
+CONTROL_FLOW=0xffffff8002979825 callq	*(%rax,%rdx)
+ffffff8002979828	xorl	%eax, %eax
+ffffff800297982a	addq	$0x8, %rsp
+ffffff800297982e	popq	%rbx
+ffffff800297982f	popq	%rbp
+ffffff8002979830	retq
+ffffff8002979831	nop
+
+METHOD_SYMBOL=__ZN36IOUserNetworkRxCompletionQueueCompat6enableEv
+METHOD_ADDRESS=0xffffff8002979bda
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002979c0c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=15
+ffffff8002979bda	pushq	%rbp
+ffffff8002979bdb	movq	%rsp, %rbp
+ffffff8002979bde	pushq	%rbx
+ffffff8002979bdf	pushq	%rax
+ffffff8002979be0	movq	%rdi, %rbx
+ffffff8002979be3	movq	0x108(%rdi), %rdi
+ffffff8002979bea	movq	(%rdi), %rax
+ffffff8002979bed	movq	%rbx, %rsi
+ffffff8002979bf0	callq	*0x140(%rax)
+CONTROL_FLOW=0xffffff8002979bf0 callq	*0x140(%rax)
+ffffff8002979bf6	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff8002979bfd	movq	%rbx, %rdi
+ffffff8002979c00	addq	$0x8, %rsp
+ffffff8002979c04	popq	%rbx
+ffffff8002979c05	popq	%rbp
+ffffff8002979c06	jmpq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002979c06 jmpq	*0x160(%rax)
+
+METHOD_SYMBOL=__ZN36IOUserNetworkRxCompletionQueueCompat7disableEv
+METHOD_ADDRESS=0xffffff8002979c0c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002979c56
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=25
+ffffff8002979c0c	pushq	%rbp
+ffffff8002979c0d	movq	%rsp, %rbp
+ffffff8002979c10	pushq	%rbx
+ffffff8002979c11	pushq	%rax
+ffffff8002979c12	movq	%rdi, %rbx
+ffffff8002979c15	movq	(%rdi), %rax
+ffffff8002979c18	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002979c18 callq	*0x160(%rax)
+ffffff8002979c1e	testb	%al, %al
+ffffff8002979c20	je	0xffffff8002979c4e
+ffffff8002979c22	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff8002979c29	movq	%rbx, %rdi
+ffffff8002979c2c	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002979c2c callq	*0x168(%rax)
+ffffff8002979c32	movq	0x108(%rbx), %rdi
+ffffff8002979c39	movq	(%rdi), %rax
+ffffff8002979c3c	movq	0x148(%rax), %rax
+ffffff8002979c43	movq	%rbx, %rsi
+ffffff8002979c46	addq	$0x8, %rsp
+ffffff8002979c4a	popq	%rbx
+ffffff8002979c4b	popq	%rbp
+ffffff8002979c4c	jmpq	*%rax
+CONTROL_FLOW=0xffffff8002979c4c jmpq	*%rax
+ffffff8002979c4e	addq	$0x8, %rsp
+ffffff8002979c52	popq	%rbx
+ffffff8002979c53	popq	%rbp
+ffffff8002979c54	retq
+ffffff8002979c55	nop
+
+METHOD_SYMBOL=__ZN36IOUserNetworkRxSubmissionQueueCompat6enableEv
+METHOD_ADDRESS=0xffffff800297a644
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297a668
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=12
+ffffff800297a644	pushq	%rbp
+ffffff800297a645	movq	%rsp, %rbp
+ffffff800297a648	pushq	%rbx
+ffffff800297a649	pushq	%rax
+ffffff800297a64a	movq	%rdi, %rbx
+ffffff800297a64d	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff800297a654	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff800297a654 callq	*0x160(%rax)
+ffffff800297a65a	movq	%rbx, %rdi
+ffffff800297a65d	addq	$0x8, %rsp
+ffffff800297a661	popq	%rbx
+ffffff800297a662	popq	%rbp
+ffffff800297a663	jmp	__ZN36IOUserNetworkRxSubmissionQueueCompat15replenishQueuesEv ## IOUserNetworkRxSubmissionQueueCompat::replenishQueues()
+CONTROL_FLOW=0xffffff800297a663 jmp	__ZN36IOUserNetworkRxSubmissionQueueCompat15replenishQueuesEv ## IOUserNetworkRxSubmissionQueueCompat::replenishQueues()
+
+METHOD_SYMBOL=__ZN36IOUserNetworkRxSubmissionQueueCompat7disableEv
+METHOD_ADDRESS=0xffffff800297a9a2
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297a9b4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff800297a9a2	pushq	%rbp
+ffffff800297a9a3	movq	%rsp, %rbp
+ffffff800297a9a6	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff800297a9ad	popq	%rbp
+ffffff800297a9ae	jmpq	*0x168(%rax)
+CONTROL_FLOW=0xffffff800297a9ae jmpq	*0x168(%rax)
+
+METHOD_SYMBOL=__ZN36IOUserNetworkRxSubmissionQueueCompat15_SetEnable_ImplEb
+METHOD_ADDRESS=0xffffff800297ae76
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297ae88
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff800297ae76	pushq	%rbp
+ffffff800297ae77	movq	%rsp, %rbp
+ffffff800297ae7a	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff800297ae81	popq	%rbp
+ffffff800297ae82	jmpq	*0x2c8(%rax)
+CONTROL_FLOW=0xffffff800297ae82 jmpq	*0x2c8(%rax)
+
+METHOD_SYMBOL=__ZN36IOUserNetworkTxCompletionQueueCompat6enableEv
+METHOD_ADDRESS=0xffffff800297b23e
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297b270
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=15
+ffffff800297b23e	pushq	%rbp
+ffffff800297b23f	movq	%rsp, %rbp
+ffffff800297b242	pushq	%rbx
+ffffff800297b243	pushq	%rax
+ffffff800297b244	movq	%rdi, %rbx
+ffffff800297b247	movq	0x108(%rdi), %rdi
+ffffff800297b24e	movq	(%rdi), %rax
+ffffff800297b251	movq	%rbx, %rsi
+ffffff800297b254	callq	*0x140(%rax)
+CONTROL_FLOW=0xffffff800297b254 callq	*0x140(%rax)
+ffffff800297b25a	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff800297b261	movq	%rbx, %rdi
+ffffff800297b264	addq	$0x8, %rsp
+ffffff800297b268	popq	%rbx
+ffffff800297b269	popq	%rbp
+ffffff800297b26a	jmpq	*0x160(%rax)
+CONTROL_FLOW=0xffffff800297b26a jmpq	*0x160(%rax)
+
+METHOD_SYMBOL=__ZN36IOUserNetworkTxCompletionQueueCompat7disableEv
+METHOD_ADDRESS=0xffffff800297b270
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297b2ba
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=25
+ffffff800297b270	pushq	%rbp
+ffffff800297b271	movq	%rsp, %rbp
+ffffff800297b274	pushq	%rbx
+ffffff800297b275	pushq	%rax
+ffffff800297b276	movq	%rdi, %rbx
+ffffff800297b279	movq	(%rdi), %rax
+ffffff800297b27c	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff800297b27c callq	*0x160(%rax)
+ffffff800297b282	testb	%al, %al
+ffffff800297b284	je	0xffffff800297b2b2
+ffffff800297b286	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff800297b28d	movq	%rbx, %rdi
+ffffff800297b290	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff800297b290 callq	*0x168(%rax)
+ffffff800297b296	movq	0x108(%rbx), %rdi
+ffffff800297b29d	movq	(%rdi), %rax
+ffffff800297b2a0	movq	0x148(%rax), %rax
+ffffff800297b2a7	movq	%rbx, %rsi
+ffffff800297b2aa	addq	$0x8, %rsp
+ffffff800297b2ae	popq	%rbx
+ffffff800297b2af	popq	%rbp
+ffffff800297b2b0	jmpq	*%rax
+CONTROL_FLOW=0xffffff800297b2b0 jmpq	*%rax
+ffffff800297b2b2	addq	$0x8, %rsp
+ffffff800297b2b6	popq	%rbx
+ffffff800297b2b7	popq	%rbp
+ffffff800297b2b8	retq
+ffffff800297b2b9	nop
+
+METHOD_SYMBOL=__ZN36IOUserNetworkTxSubmissionQueueCompat6enableEv
+METHOD_ADDRESS=0xffffff800297bbf0
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297bc38
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=19
+ffffff800297bbf0	pushq	%rbp
+ffffff800297bbf1	movq	%rsp, %rbp
+ffffff800297bbf4	pushq	%rbx
+ffffff800297bbf5	pushq	%rax
+ffffff800297bbf6	movq	%rdi, %rbx
+ffffff800297bbf9	movq	0xe0(%rdi), %rdi
+ffffff800297bc00	callq	0xffffff8000ab71b0
+CONTROL_FLOW=0xffffff800297bc00 callq	0xffffff8000ab71b0
+ffffff800297bc05	movq	0x140(%rbx), %rdi
+ffffff800297bc0c	movq	(%rdi), %rax
+ffffff800297bc0f	callq	*0x150(%rax)
+CONTROL_FLOW=0xffffff800297bc0f callq	*0x150(%rax)
+ffffff800297bc15	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff800297bc1c	movq	%rbx, %rdi
+ffffff800297bc1f	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff800297bc1f callq	*0x160(%rax)
+ffffff800297bc25	movq	0xe0(%rbx), %rdi
+ffffff800297bc2c	addq	$0x8, %rsp
+ffffff800297bc30	popq	%rbx
+ffffff800297bc31	popq	%rbp
+ffffff800297bc32	jmp	0xffffff8000ab7240
+CONTROL_FLOW=0xffffff800297bc32 jmp	0xffffff8000ab7240
+ffffff800297bc37	nop
+
+METHOD_SYMBOL=__ZN36IOUserNetworkTxSubmissionQueueCompat7disableEv
+METHOD_ADDRESS=0xffffff800297bc38
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297bca4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=27
+ffffff800297bc38	pushq	%rbp
+ffffff800297bc39	movq	%rsp, %rbp
+ffffff800297bc3c	pushq	%rbx
+ffffff800297bc3d	pushq	%rax
+ffffff800297bc3e	movq	%rdi, %rbx
+ffffff800297bc41	movq	0xe0(%rdi), %rdi
+ffffff800297bc48	callq	0xffffff8000ab71b0
+CONTROL_FLOW=0xffffff800297bc48 callq	0xffffff8000ab71b0
+ffffff800297bc4d	movq	0x140(%rbx), %rdi
+ffffff800297bc54	movq	(%rdi), %rax
+ffffff800297bc57	callq	*0x218(%rax)
+CONTROL_FLOW=0xffffff800297bc57 callq	*0x218(%rax)
+ffffff800297bc5d	xorl	%eax, %eax
+ffffff800297bc5f	xchgb	%al, 0x158(%rbx)
+ffffff800297bc65	movq	0x140(%rbx), %rdi
+ffffff800297bc6c	movq	(%rdi), %rax
+ffffff800297bc6f	callq	*0x158(%rax)
+CONTROL_FLOW=0xffffff800297bc6f callq	*0x158(%rax)
+ffffff800297bc75	leaq	__ZTV30IOUserNetworkPacketQueueCompat(%rip), %rax ## vtable for IOUserNetworkPacketQueueCompat
+ffffff800297bc7c	movq	%rbx, %rdi
+ffffff800297bc7f	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff800297bc7f callq	*0x168(%rax)
+ffffff800297bc85	movq	(%rbx), %rax
+ffffff800297bc88	movq	%rbx, %rdi
+ffffff800297bc8b	callq	*0x2c0(%rax)
+CONTROL_FLOW=0xffffff800297bc8b callq	*0x2c0(%rax)
+ffffff800297bc91	movq	0xe0(%rbx), %rdi
+ffffff800297bc98	addq	$0x8, %rsp
+ffffff800297bc9c	popq	%rbx
+ffffff800297bc9d	popq	%rbp
+ffffff800297bc9e	jmp	0xffffff8000ab7240
+CONTROL_FLOW=0xffffff800297bc9e jmp	0xffffff8000ab7240
+ffffff800297bca3	nop
+
+METHOD_SYMBOL=__ZN17IOUserNetworkWLAN23interfaceAdvisoryEnableEb
+METHOD_ADDRESS=0xffffff800297f8e4
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297f8f0
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff800297f8e4	pushq	%rbp
+ffffff800297f8e5	movq	%rsp, %rbp
+ffffff800297f8e8	xorl	%edx, %edx
+ffffff800297f8ea	popq	%rbp
+ffffff800297f8eb	jmp	__ZN17IOUserNetworkWLAN24_InterfaceAdvisoryEnableEbPFiP15OSMetaClassBase5IORPCE ## IOUserNetworkWLAN::_InterfaceAdvisoryEnable(bool, int (*)(OSMetaClassBase*, IORPC))
+CONTROL_FLOW=0xffffff800297f8eb jmp	__ZN17IOUserNetworkWLAN24_InterfaceAdvisoryEnableEbPFiP15OSMetaClassBase5IORPCE ## IOUserNetworkWLAN::_InterfaceAdvisoryEnable(bool, int (*)(OSMetaClassBase*, IORPC))
+
+METHOD_SYMBOL=__ZN17IOUserNetworkWLAN29_InterfaceAdvisoryEnable_ImplEb
+METHOD_ADDRESS=0xffffff800297f8f0
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297f8fc
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff800297f8f0	pushq	%rbp
+ffffff800297f8f1	movq	%rsp, %rbp
+ffffff800297f8f4	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff800297f8f9	popq	%rbp
+ffffff800297f8fa	retq
+ffffff800297f8fb	nop
+
+METHOD_SYMBOL=__ZN17IOUserNetworkWLAN29_ReportInterfaceAdvisory_ImplEPK24ifnet_interface_advisory
+METHOD_ADDRESS=0xffffff800297f8fc
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800297f906
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=4
+ffffff800297f8fc	pushq	%rbp
+ffffff800297f8fd	movq	%rsp, %rbp
+ffffff800297f900	popq	%rbp
+ffffff800297f901	jmp	__ZN25IOSkywalkNetworkInterface23reportInterfaceAdvisoryEPK24ifnet_interface_advisory ## IOSkywalkNetworkInterface::reportInterfaceAdvisory(ifnet_interface_advisory const*)
+CONTROL_FLOW=0xffffff800297f901 jmp	__ZN25IOSkywalkNetworkInterface23reportInterfaceAdvisoryEPK24ifnet_interface_advisory ## IOSkywalkNetworkInterface::reportInterfaceAdvisory(ifnet_interface_advisory const*)
+
+METHOD_SYMBOL=__ZN20IOSkywalkPacketQueue7disableEv
+METHOD_ADDRESS=0xffffff8002980ac0
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002980aee
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=15
+ffffff8002980ac0	pushq	%rbp
+ffffff8002980ac1	movq	%rsp, %rbp
+ffffff8002980ac4	pushq	%rbx
+ffffff8002980ac5	pushq	%rax
+ffffff8002980ac6	movq	%rdi, %rbx
+ffffff8002980ac9	cmpq	$0x0, 0x68(%rdi)
+ffffff8002980ace	je	0xffffff8002980ad8
+ffffff8002980ad0	movq	%rbx, %rdi
+ffffff8002980ad3	callq	__ZN20IOSkywalkPacketQueue9resetABFSEv ## IOSkywalkPacketQueue::resetABFS()
+CONTROL_FLOW=0xffffff8002980ad3 callq	__ZN20IOSkywalkPacketQueue9resetABFSEv ## IOSkywalkPacketQueue::resetABFS()
+ffffff8002980ad8	movq	0x265f1(%rip), %rax
+ffffff8002980adf	movq	%rbx, %rdi
+ffffff8002980ae2	addq	$0x8, %rsp
+ffffff8002980ae6	popq	%rbx
+ffffff8002980ae7	popq	%rbp
+ffffff8002980ae8	jmpq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002980ae8 jmpq	*0x168(%rax)
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface6enableEj
+METHOD_ADDRESS=0xffffff8002982b86
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002982bae
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=15
+ffffff8002982b86	pushq	%rbp
+ffffff8002982b87	movq	%rsp, %rbp
+ffffff8002982b8a	pushq	%rbx
+ffffff8002982b8b	pushq	%rax
+ffffff8002982b8c	movq	%rdi, %rbx
+ffffff8002982b8f	movq	(%rdi), %rax
+ffffff8002982b92	movl	$0x1, %esi
+ffffff8002982b97	callq	*0x928(%rax)
+CONTROL_FLOW=0xffffff8002982b97 callq	*0x928(%rax)
+ffffff8002982b9d	testl	%eax, %eax
+ffffff8002982b9f	sete	0xc8(%rbx)
+ffffff8002982ba6	addq	$0x8, %rsp
+ffffff8002982baa	popq	%rbx
+ffffff8002982bab	popq	%rbp
+ffffff8002982bac	retq
+ffffff8002982bad	nop
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface7disableEj
+METHOD_ADDRESS=0xffffff8002982bae
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002982c04
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=26
+ffffff8002982bae	xorl	%ecx, %ecx
+ffffff8002982bb0	movb	$0x1, %al
+ffffff8002982bb2	lock
+ffffff8002982bb3	cmpxchgb	%cl, 0xc8(%rdi)
+ffffff8002982bba	jne	0xffffff8002982c03
+ffffff8002982bbc	pushq	%rbp
+ffffff8002982bbd	movq	%rsp, %rbp
+ffffff8002982bc0	pushq	%rbx
+ffffff8002982bc1	pushq	%rax
+ffffff8002982bc2	movq	%rdi, %rbx
+ffffff8002982bc5	movq	(%rdi), %rax
+ffffff8002982bc8	xorl	%esi, %esi
+ffffff8002982bca	callq	*0x928(%rax)
+CONTROL_FLOW=0xffffff8002982bca callq	*0x928(%rax)
+ffffff8002982bd0	movq	0xb8(%rbx), %rax
+ffffff8002982bd7	testb	$0x1, 0x3c(%rax)
+ffffff8002982bdb	jne	0xffffff8002982bfd
+ffffff8002982bdd	movq	%rbx, %rdi
+ffffff8002982be0	movl	$0x1, %esi
+ffffff8002982be5	movl	$0x2, %edx
+ffffff8002982bea	callq	__ZN25IOSkywalkNetworkInterface16reportLinkStatusEjj ## IOSkywalkNetworkInterface::reportLinkStatus(unsigned int, unsigned int)
+CONTROL_FLOW=0xffffff8002982bea callq	__ZN25IOSkywalkNetworkInterface16reportLinkStatusEjj ## IOSkywalkNetworkInterface::reportLinkStatus(unsigned int, unsigned int)
+ffffff8002982bef	movq	0xb8(%rbx), %rax
+ffffff8002982bf6	movl	$0x0, 0x3c(%rax)
+ffffff8002982bfd	addq	$0x8, %rsp
+ffffff8002982c01	popq	%rbx
+ffffff8002982c02	popq	%rbp
+ffffff8002982c03	retq
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface9isEnabledEv
+METHOD_ADDRESS=0xffffff8002982cb0
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002982cbc
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff8002982cb0	pushq	%rbp
+ffffff8002982cb1	movq	%rsp, %rbp
+ffffff8002982cb4	movb	0xc8(%rdi), %al
+ffffff8002982cba	popq	%rbp
+ffffff8002982cbb	retq
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface18setInterfaceEnableEb
+METHOD_ADDRESS=0xffffff8002982cbc
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002982cc4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff8002982cbc	pushq	%rbp
+ffffff8002982cbd	movq	%rsp, %rbp
+ffffff8002982cc0	xorl	%eax, %eax
+ffffff8002982cc2	popq	%rbp
+ffffff8002982cc3	retq
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface26setInterfaceAdvisoryNoticeEPvPFiS0_PK24ifnet_interface_advisoryE
+METHOD_ADDRESS=0xffffff8002982e5c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002982e8a
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=15
+ffffff8002982e5c	testq	%rsi, %rsi
+ffffff8002982e5f	sete	%cl
+ffffff8002982e62	testq	%rdx, %rdx
+ffffff8002982e65	sete	%r8b
+ffffff8002982e69	movl	$0xe0000001, %eax               ## imm = 0xE0000001
+ffffff8002982e6e	orb	%cl, %r8b
+ffffff8002982e71	jne	0xffffff8002982e89
+ffffff8002982e73	pushq	%rbp
+ffffff8002982e74	movq	%rsp, %rbp
+ffffff8002982e77	movq	0xb8(%rdi), %rax
+ffffff8002982e7e	movq	%rsi, 0x58(%rax)
+ffffff8002982e82	movq	%rdx, 0x60(%rax)
+ffffff8002982e86	xorl	%eax, %eax
+ffffff8002982e88	popq	%rbp
+ffffff8002982e89	retq
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface23reportInterfaceAdvisoryEPK24ifnet_interface_advisory
+METHOD_ADDRESS=0xffffff8002982ec4
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002982f16
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=31
+ffffff8002982ec4	pushq	%rbp
+ffffff8002982ec5	movq	%rsp, %rbp
+ffffff8002982ec8	pushq	%rbx
+ffffff8002982ec9	pushq	%rax
+ffffff8002982eca	movl	$0xe00002c2, %ebx               ## imm = 0xE00002C2
+ffffff8002982ecf	testq	%rsi, %rsi
+ffffff8002982ed2	je	0xffffff8002982f09
+ffffff8002982ed4	movq	0xb8(%rdi), %rax
+ffffff8002982edb	movq	0x58(%rax), %rdi
+ffffff8002982edf	testq	%rdi, %rdi
+ffffff8002982ee2	je	0xffffff8002982f04
+ffffff8002982ee4	movq	0x60(%rax), %rax
+ffffff8002982ee8	testq	%rax, %rax
+ffffff8002982eeb	je	0xffffff8002982f04
+ffffff8002982eed	callq	*%rax
+CONTROL_FLOW=0xffffff8002982eed callq	*%rax
+ffffff8002982eef	testl	%eax, %eax
+ffffff8002982ef1	je	0xffffff8002982f12
+ffffff8002982ef3	cmpl	$0x16, %eax
+ffffff8002982ef6	je	0xffffff8002982f09
+ffffff8002982ef8	cmpl	$0x2, %eax
+ffffff8002982efb	jne	0xffffff8002982f04
+ffffff8002982efd	movl	$0xe00002f0, %ebx               ## imm = 0xE00002F0
+ffffff8002982f02	jmp	0xffffff8002982f09
+CONTROL_FLOW=0xffffff8002982f02 jmp	0xffffff8002982f09
+ffffff8002982f04	movl	$0xe00002bc, %ebx               ## imm = 0xE00002BC
+ffffff8002982f09	movl	%ebx, %eax
+ffffff8002982f0b	addq	$0x8, %rsp
+ffffff8002982f0f	popq	%rbx
+ffffff8002982f10	popq	%rbp
+ffffff8002982f11	retq
+ffffff8002982f12	movl	%eax, %ebx
+ffffff8002982f14	jmp	0xffffff8002982f09
+CONTROL_FLOW=0xffffff8002982f14 jmp	0xffffff8002982f09
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface23interfaceAdvisoryEnableEb
+METHOD_ADDRESS=0xffffff8002982f16
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002982f22
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff8002982f16	pushq	%rbp
+ffffff8002982f17	movq	%rsp, %rbp
+ffffff8002982f1a	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff8002982f1f	popq	%rbp
+ffffff8002982f20	retq
+ffffff8002982f21	nop
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkInterface17enableNetworkWakeEj
+METHOD_ADDRESS=0xffffff8002982f7a
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002982f8c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=7
+ffffff8002982f7a	pushq	%rbp
+ffffff8002982f7b	movq	%rsp, %rbp
+ffffff8002982f7e	movq	0xb8(%rdi), %rax
+ffffff8002982f85	movl	%esi, 0x3c(%rax)
+ffffff8002982f88	xorl	%eax, %eax
+ffffff8002982f8a	popq	%rbp
+ffffff8002982f8b	retq
+
+METHOD_SYMBOL=__ZN20IOSkywalkLogicalLink9setEnableEb
+METHOD_ADDRESS=0xffffff8002983c90
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002983ce0
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=31
+ffffff8002983c90	cmpq	$0x0, 0x28(%rdi)
+ffffff8002983c95	je	0xffffff8002983cd9
+ffffff8002983c97	pushq	%rbp
+ffffff8002983c98	movq	%rsp, %rbp
+ffffff8002983c9b	pushq	%r15
+ffffff8002983c9d	pushq	%r14
+ffffff8002983c9f	pushq	%rbx
+ffffff8002983ca0	pushq	%rax
+ffffff8002983ca1	movq	%rdi, %rbx
+ffffff8002983ca4	xorl	%r15d, %r15d
+ffffff8002983ca7	movzbl	%sil, %r14d
+ffffff8002983cab	movq	0x10(%rbx), %rax
+ffffff8002983caf	movq	(%rax,%r15,8), %rdi
+ffffff8002983cb3	movq	(%rdi), %rax
+ffffff8002983cb6	movl	%r14d, %esi
+ffffff8002983cb9	callq	*0x118(%rax)
+CONTROL_FLOW=0xffffff8002983cb9 callq	*0x118(%rax)
+ffffff8002983cbf	testl	%eax, %eax
+ffffff8002983cc1	jne	0xffffff8002983cce
+ffffff8002983cc3	incq	%r15
+ffffff8002983cc6	cmpq	0x28(%rbx), %r15
+ffffff8002983cca	jb	0xffffff8002983cab
+ffffff8002983ccc	xorl	%eax, %eax
+ffffff8002983cce	addq	$0x8, %rsp
+ffffff8002983cd2	popq	%rbx
+ffffff8002983cd3	popq	%r14
+ffffff8002983cd5	popq	%r15
+ffffff8002983cd7	popq	%rbp
+ffffff8002983cd8	retq
+ffffff8002983cd9	movl	$0xe00002bc, %eax               ## imm = 0xE00002BC
+ffffff8002983cde	retq
+ffffff8002983cdf	nop
+
+METHOD_SYMBOL=__ZN26IOSkywalkTxSubmissionQueue6enableEv
+METHOD_ADDRESS=0xffffff80029842b2
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002984312
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=29
+ffffff80029842b2	pushq	%rbp
+ffffff80029842b3	movq	%rsp, %rbp
+ffffff80029842b6	pushq	%rbx
+ffffff80029842b7	pushq	%rax
+ffffff80029842b8	movq	%rdi, %rbx
+ffffff80029842bb	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff80029842bb callq	0xffffff8000afb010
+ffffff80029842c0	cmpb	$0x0, 0x28(%rbx)
+ffffff80029842c4	jne	0xffffff8002984304
+ffffff80029842c6	leaq	__ZTV20IOSkywalkPacketQueue(%rip), %rax ## vtable for IOSkywalkPacketQueue
+ffffff80029842cd	movq	%rbx, %rdi
+ffffff80029842d0	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff80029842d0 callq	*0x160(%rax)
+ffffff80029842d6	cmpq	$0x0, 0x78(%rbx)
+ffffff80029842db	je	0xffffff80029842f6
+ffffff80029842dd	testb	$0x4, 0x142(%rbx)
+ffffff80029842e4	jne	0xffffff8002984304
+ffffff80029842e6	movq	(%rbx), %rax
+ffffff80029842e9	movq	%rbx, %rdi
+ffffff80029842ec	xorl	%esi, %esi
+ffffff80029842ee	callq	*0x1d8(%rax)
+CONTROL_FLOW=0xffffff80029842ee callq	*0x1d8(%rax)
+ffffff80029842f4	jmp	0xffffff8002984304
+CONTROL_FLOW=0xffffff80029842f4 jmp	0xffffff8002984304
+ffffff80029842f6	movq	(%rbx), %rax
+ffffff80029842f9	movq	%rbx, %rdi
+ffffff80029842fc	xorl	%esi, %esi
+ffffff80029842fe	callq	*0x1e0(%rax)
+CONTROL_FLOW=0xffffff80029842fe callq	*0x1e0(%rax)
+ffffff8002984304	movq	%rbx, %rdi
+ffffff8002984307	addq	$0x8, %rsp
+ffffff800298430b	popq	%rbx
+ffffff800298430c	popq	%rbp
+ffffff800298430d	jmp	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff800298430d jmp	0xffffff8000afafd0
+
+METHOD_SYMBOL=__ZN26IOSkywalkTxSubmissionQueue7disableEv
+METHOD_ADDRESS=0xffffff8002984312
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002984356
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=23
+ffffff8002984312	pushq	%rbp
+ffffff8002984313	movq	%rsp, %rbp
+ffffff8002984316	pushq	%rbx
+ffffff8002984317	pushq	%rax
+ffffff8002984318	movq	%rdi, %rbx
+ffffff800298431b	cmpq	$0x0, 0x30(%rdi)
+ffffff8002984320	je	0xffffff800298432a
+ffffff8002984322	movq	%rbx, %rdi
+ffffff8002984325	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff8002984325 callq	0xffffff8000afb010
+ffffff800298432a	leaq	__ZTV20IOSkywalkPacketQueue(%rip), %rax ## vtable for IOSkywalkPacketQueue
+ffffff8002984331	movq	%rbx, %rdi
+ffffff8002984334	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002984334 callq	*0x168(%rax)
+ffffff800298433a	cmpq	$0x0, 0x30(%rbx)
+ffffff800298433f	je	0xffffff800298434f
+ffffff8002984341	movq	%rbx, %rdi
+ffffff8002984344	addq	$0x8, %rsp
+ffffff8002984348	popq	%rbx
+ffffff8002984349	popq	%rbp
+ffffff800298434a	jmp	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff800298434a jmp	0xffffff8000afafd0
+ffffff800298434f	addq	$0x8, %rsp
+ffffff8002984353	popq	%rbx
+ffffff8002984354	popq	%rbp
+ffffff8002984355	retq
+
+METHOD_SYMBOL=__ZN26IOSkywalkRxSubmissionQueue6enableEv
+METHOD_ADDRESS=0xffffff80029859fa
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002985a26
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=14
+ffffff80029859fa	pushq	%rbp
+ffffff80029859fb	movq	%rsp, %rbp
+ffffff80029859fe	pushq	%rbx
+ffffff80029859ff	pushq	%rax
+ffffff8002985a00	movq	%rdi, %rbx
+ffffff8002985a03	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff8002985a03 callq	0xffffff8000afb010
+ffffff8002985a08	leaq	__ZTV20IOSkywalkPacketQueue(%rip), %rax ## vtable for IOSkywalkPacketQueue
+ffffff8002985a0f	movq	%rbx, %rdi
+ffffff8002985a12	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002985a12 callq	*0x160(%rax)
+ffffff8002985a18	movq	%rbx, %rdi
+ffffff8002985a1b	addq	$0x8, %rsp
+ffffff8002985a1f	popq	%rbx
+ffffff8002985a20	popq	%rbp
+ffffff8002985a21	jmp	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff8002985a21 jmp	0xffffff8000afafd0
+
+METHOD_SYMBOL=__ZN26IOSkywalkRxSubmissionQueue7disableEv
+METHOD_ADDRESS=0xffffff8002985a26
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002985a6c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=25
+ffffff8002985a26	pushq	%rbp
+ffffff8002985a27	movq	%rsp, %rbp
+ffffff8002985a2a	pushq	%rbx
+ffffff8002985a2b	pushq	%rax
+ffffff8002985a2c	movq	%rdi, %rbx
+ffffff8002985a2f	cmpq	$0x0, 0x30(%rdi)
+ffffff8002985a34	je	0xffffff8002985a3e
+ffffff8002985a36	movq	%rbx, %rdi
+ffffff8002985a39	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff8002985a39 callq	0xffffff8000afb010
+ffffff8002985a3e	leaq	__ZTV20IOSkywalkPacketQueue(%rip), %rax ## vtable for IOSkywalkPacketQueue
+ffffff8002985a45	movq	%rbx, %rdi
+ffffff8002985a48	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002985a48 callq	*0x168(%rax)
+ffffff8002985a4e	cmpq	$0x0, 0x30(%rbx)
+ffffff8002985a53	je	0xffffff8002985a63
+ffffff8002985a55	movq	%rbx, %rdi
+ffffff8002985a58	addq	$0x8, %rsp
+ffffff8002985a5c	popq	%rbx
+ffffff8002985a5d	popq	%rbp
+ffffff8002985a5e	jmp	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff8002985a5e jmp	0xffffff8000afafd0
+ffffff8002985a63	addq	$0x8, %rsp
+ffffff8002985a67	popq	%rbx
+ffffff8002985a68	popq	%rbp
+ffffff8002985a69	retq
+ffffff8002985a6a	nop
+ffffff8002985a6b	nop
+
+METHOD_SYMBOL=__ZN26IOSkywalkRxCompletionQueue6enableEv
+METHOD_ADDRESS=0xffffff80029865bc
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298661c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=30
+ffffff80029865bc	pushq	%rbp
+ffffff80029865bd	movq	%rsp, %rbp
+ffffff80029865c0	pushq	%rbx
+ffffff80029865c1	pushq	%rax
+ffffff80029865c2	movq	%rdi, %rbx
+ffffff80029865c5	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff80029865c5 callq	0xffffff8000afb010
+ffffff80029865ca	cmpb	$0x0, 0x28(%rbx)
+ffffff80029865ce	jne	0xffffff80029865e7
+ffffff80029865d0	leaq	__ZTV20IOSkywalkPacketQueue(%rip), %rax ## vtable for IOSkywalkPacketQueue
+ffffff80029865d7	movq	%rbx, %rdi
+ffffff80029865da	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff80029865da callq	*0x160(%rax)
+ffffff80029865e0	cmpq	$0x0, 0x78(%rbx)
+ffffff80029865e5	je	0xffffff80029865f5
+ffffff80029865e7	movq	%rbx, %rdi
+ffffff80029865ea	addq	$0x8, %rsp
+ffffff80029865ee	popq	%rbx
+ffffff80029865ef	popq	%rbp
+ffffff80029865f0	jmp	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff80029865f0 jmp	0xffffff8000afafd0
+ffffff80029865f5	movq	0xe8(%rbx), %rax
+ffffff80029865fc	testq	%rax, %rax
+ffffff80029865ff	je	0xffffff80029865e7
+ffffff8002986601	movl	(%rax), %ecx
+ffffff8002986603	cmpl	0x80(%rax), %ecx
+ffffff8002986609	je	0xffffff80029865e7
+ffffff800298660b	movq	(%rbx), %rax
+ffffff800298660e	movq	%rbx, %rdi
+ffffff8002986611	xorl	%esi, %esi
+ffffff8002986613	callq	*0x1e0(%rax)
+CONTROL_FLOW=0xffffff8002986613 callq	*0x1e0(%rax)
+ffffff8002986619	jmp	0xffffff80029865e7
+CONTROL_FLOW=0xffffff8002986619 jmp	0xffffff80029865e7
+ffffff800298661b	nop
+
+METHOD_SYMBOL=__ZN26IOSkywalkRxCompletionQueue7disableEv
+METHOD_ADDRESS=0xffffff800298661c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002986660
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=23
+ffffff800298661c	pushq	%rbp
+ffffff800298661d	movq	%rsp, %rbp
+ffffff8002986620	pushq	%rbx
+ffffff8002986621	pushq	%rax
+ffffff8002986622	movq	%rdi, %rbx
+ffffff8002986625	cmpq	$0x0, 0x30(%rdi)
+ffffff800298662a	je	0xffffff8002986634
+ffffff800298662c	movq	%rbx, %rdi
+ffffff800298662f	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff800298662f callq	0xffffff8000afb010
+ffffff8002986634	leaq	__ZTV20IOSkywalkPacketQueue(%rip), %rax ## vtable for IOSkywalkPacketQueue
+ffffff800298663b	movq	%rbx, %rdi
+ffffff800298663e	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff800298663e callq	*0x168(%rax)
+ffffff8002986644	cmpq	$0x0, 0x30(%rbx)
+ffffff8002986649	je	0xffffff8002986659
+ffffff800298664b	movq	%rbx, %rdi
+ffffff800298664e	addq	$0x8, %rsp
+ffffff8002986652	popq	%rbx
+ffffff8002986653	popq	%rbp
+ffffff8002986654	jmp	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff8002986654 jmp	0xffffff8000afafd0
+ffffff8002986659	addq	$0x8, %rsp
+ffffff800298665d	popq	%rbx
+ffffff800298665e	popq	%rbp
+ffffff800298665f	retq
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkKDPPoller13enablePollingEj
+METHOD_ADDRESS=0xffffff80029879fe
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002987a06
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff80029879fe	pushq	%rbp
+ffffff80029879ff	movq	%rsp, %rbp
+ffffff8002987a02	xorl	%eax, %eax
+ffffff8002987a04	popq	%rbp
+ffffff8002987a05	retq
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkKDPPoller14disablePollingEj
+METHOD_ADDRESS=0xffffff8002987a06
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002987a0e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff8002987a06	pushq	%rbp
+ffffff8002987a07	movq	%rsp, %rbp
+ffffff8002987a0a	xorl	%eax, %eax
+ffffff8002987a0c	popq	%rbp
+ffffff8002987a0d	retq
+
+METHOD_SYMBOL=__ZN26IOSkywalkEthernetInterface6enableEj
+METHOD_ADDRESS=0xffffff8002988af8
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002988b7e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=42
+ffffff8002988af8	pushq	%rbp
+ffffff8002988af9	movq	%rsp, %rbp
+ffffff8002988afc	pushq	%r15
+ffffff8002988afe	pushq	%r14
+ffffff8002988b00	pushq	%rbx
+ffffff8002988b01	pushq	%rax
+ffffff8002988b02	movq	%rdi, %rbx
+ffffff8002988b05	movq	(%rdi), %rax
+ffffff8002988b08	callq	*0x8f8(%rax)
+CONTROL_FLOW=0xffffff8002988b08 callq	*0x8f8(%rax)
+ffffff8002988b0e	testq	%rax, %rax
+ffffff8002988b11	je	0xffffff8002988b6a
+ffffff8002988b13	movq	%rax, %r15
+ffffff8002988b16	leaq	__ZTV25IOSkywalkNetworkInterface(%rip), %rax ## vtable for IOSkywalkNetworkInterface
+ffffff8002988b1d	movq	%rbx, %rdi
+ffffff8002988b20	movl	$0x1, %esi
+ffffff8002988b25	callq	*0x860(%rax)
+CONTROL_FLOW=0xffffff8002988b25 callq	*0x860(%rax)
+ffffff8002988b2b	movl	%eax, %r14d
+ffffff8002988b2e	testl	%eax, %eax
+ffffff8002988b30	jne	0xffffff8002988b70
+ffffff8002988b32	movq	%rbx, %rdi
+ffffff8002988b35	movq	%r15, %rsi
+ffffff8002988b38	movl	$0x1, %edx
+ffffff8002988b3d	callq	__ZN26IOSkywalkEthernetInterface15ioctl_multicastEP7__ifnetb ## IOSkywalkEthernetInterface::ioctl_multicast(__ifnet*, bool)
+CONTROL_FLOW=0xffffff8002988b3d callq	__ZN26IOSkywalkEthernetInterface15ioctl_multicastEP7__ifnetb ## IOSkywalkEthernetInterface::ioctl_multicast(__ifnet*, bool)
+ffffff8002988b42	movq	0x108(%rbx), %rax
+ffffff8002988b49	xorl	%r14d, %r14d
+ffffff8002988b4c	testb	$0x1, 0x1d(%rax)
+ffffff8002988b50	je	0xffffff8002988b70
+ffffff8002988b52	movq	(%rbx), %rax
+ffffff8002988b55	xorl	%r14d, %r14d
+ffffff8002988b58	movq	%rbx, %rdi
+ffffff8002988b5b	movl	$0x1, %esi
+ffffff8002988b60	xorl	%edx, %edx
+ffffff8002988b62	callq	*0xa90(%rax)
+CONTROL_FLOW=0xffffff8002988b62 callq	*0xa90(%rax)
+ffffff8002988b68	jmp	0xffffff8002988b70
+CONTROL_FLOW=0xffffff8002988b68 jmp	0xffffff8002988b70
+ffffff8002988b6a	movl	$0xe00002d8, %r14d              ## imm = 0xE00002D8
+ffffff8002988b70	movl	%r14d, %eax
+ffffff8002988b73	addq	$0x8, %rsp
+ffffff8002988b77	popq	%rbx
+ffffff8002988b78	popq	%r14
+ffffff8002988b7a	popq	%r15
+ffffff8002988b7c	popq	%rbp
+ffffff8002988b7d	retq
+
+METHOD_SYMBOL=__ZN26IOSkywalkEthernetInterface24setPromiscuousModeEnableEbj
+METHOD_ADDRESS=0xffffff8002988b7e
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002988b8a
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff8002988b7e	pushq	%rbp
+ffffff8002988b7f	movq	%rsp, %rbp
+ffffff8002988b82	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff8002988b87	popq	%rbp
+ffffff8002988b88	retq
+ffffff8002988b89	nop
+
+METHOD_SYMBOL=__ZN26IOSkywalkEthernetInterface25setAllMulticastModeEnableEb
+METHOD_ADDRESS=0xffffff8002988c68
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002988c74
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff8002988c68	pushq	%rbp
+ffffff8002988c69	movq	%rsp, %rbp
+ffffff8002988c6c	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff8002988c71	popq	%rbp
+ffffff8002988c72	retq
+ffffff8002988c73	nop
+
+METHOD_SYMBOL=__ZN26IOSkywalkEthernetInterface17enableNetworkWakeEj
+METHOD_ADDRESS=0xffffff8002989726
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029897c4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=49
+ffffff8002989726	pushq	%rbp
+ffffff8002989727	movq	%rsp, %rbp
+ffffff800298972a	pushq	%r14
+ffffff800298972c	pushq	%rbx
+ffffff800298972d	movl	%esi, %ebx
+ffffff800298972f	movq	%rdi, %r14
+ffffff8002989732	movq	0xf8(%rdi), %rdi
+ffffff8002989739	testq	%rdi, %rdi
+ffffff800298973c	je	0xffffff8002989793
+ffffff800298973e	movq	(%rdi), %rax
+ffffff8002989741	callq	*0x2e0(%rax)
+CONTROL_FLOW=0xffffff8002989741 callq	*0x2e0(%rax)
+ffffff8002989747	testq	%rax, %rax
+ffffff800298974a	je	0xffffff80029897b9
+ffffff800298974c	movq	0x108(%r14), %rcx
+ffffff8002989753	movq	(%rcx), %rcx
+ffffff8002989756	movzwl	0x10c(%rcx), %edx
+ffffff800298975d	movw	%dx, 0x8(%rax)
+ffffff8002989761	movl	0x108(%rcx), %ecx
+ffffff8002989767	movl	%ecx, 0x4(%rax)
+ffffff800298976a	movb	0xa(%rax), %cl
+ffffff800298976d	andb	$-0x41, %cl
+ffffff8002989770	movl	%ebx, %edx
+ffffff8002989772	shlb	$0x6, %dl
+ffffff8002989775	andb	$0x40, %dl
+ffffff8002989778	orb	%cl, %dl
+ffffff800298977a	movb	%dl, 0xa(%rax)
+ffffff800298977d	leaq	__ZTV25IOSkywalkNetworkInterface(%rip), %rax ## vtable for IOSkywalkNetworkInterface
+ffffff8002989784	movq	%r14, %rdi
+ffffff8002989787	movl	%ebx, %esi
+ffffff8002989789	callq	*0x970(%rax)
+CONTROL_FLOW=0xffffff8002989789 callq	*0x970(%rax)
+ffffff800298978f	xorl	%eax, %eax
+ffffff8002989791	jmp	0xffffff80029897be
+CONTROL_FLOW=0xffffff8002989791 jmp	0xffffff80029897be
+ffffff8002989793	movl	$0x50, %esi
+ffffff8002989798	movq	%r14, %rdi
+ffffff800298979b	callq	__ZN26IOSkywalkEthernetInterface12initNicProxyEm ## IOSkywalkEthernetInterface::initNicProxy(unsigned long)
+CONTROL_FLOW=0xffffff800298979b callq	__ZN26IOSkywalkEthernetInterface12initNicProxyEm ## IOSkywalkEthernetInterface::initNicProxy(unsigned long)
+ffffff80029897a0	movl	%eax, %ecx
+ffffff80029897a2	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff80029897a7	testl	%ecx, %ecx
+ffffff80029897a9	jne	0xffffff80029897be
+ffffff80029897ab	movq	0xf8(%r14), %rdi
+ffffff80029897b2	testq	%rdi, %rdi
+ffffff80029897b5	jne	0xffffff800298973e
+ffffff80029897b7	jmp	0xffffff80029897be
+CONTROL_FLOW=0xffffff80029897b7 jmp	0xffffff80029897be
+ffffff80029897b9	movl	$0xe00002bd, %eax               ## imm = 0xE00002BD
+ffffff80029897be	popq	%rbx
+ffffff80029897bf	popq	%r14
+ffffff80029897c1	popq	%rbp
+ffffff80029897c2	retq
+ffffff80029897c3	nop
+
+METHOD_SYMBOL=__ZN26IOSkywalkTxCompletionQueue6enableEv
+METHOD_ADDRESS=0xffffff8002989fca
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002989ff6
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=14
+ffffff8002989fca	pushq	%rbp
+ffffff8002989fcb	movq	%rsp, %rbp
+ffffff8002989fce	pushq	%rbx
+ffffff8002989fcf	pushq	%rax
+ffffff8002989fd0	movq	%rdi, %rbx
+ffffff8002989fd3	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff8002989fd3 callq	0xffffff8000afb010
+ffffff8002989fd8	leaq	__ZTV20IOSkywalkPacketQueue(%rip), %rax ## vtable for IOSkywalkPacketQueue
+ffffff8002989fdf	movq	%rbx, %rdi
+ffffff8002989fe2	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002989fe2 callq	*0x160(%rax)
+ffffff8002989fe8	movq	%rbx, %rdi
+ffffff8002989feb	addq	$0x8, %rsp
+ffffff8002989fef	popq	%rbx
+ffffff8002989ff0	popq	%rbp
+ffffff8002989ff1	jmp	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff8002989ff1 jmp	0xffffff8000afafd0
+
+METHOD_SYMBOL=__ZN26IOSkywalkTxCompletionQueue7disableEv
+METHOD_ADDRESS=0xffffff8002989ff6
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298a03c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=25
+ffffff8002989ff6	pushq	%rbp
+ffffff8002989ff7	movq	%rsp, %rbp
+ffffff8002989ffa	pushq	%rbx
+ffffff8002989ffb	pushq	%rax
+ffffff8002989ffc	movq	%rdi, %rbx
+ffffff8002989fff	cmpq	$0x0, 0x30(%rdi)
+ffffff800298a004	je	0xffffff800298a00e
+ffffff800298a006	movq	%rbx, %rdi
+ffffff800298a009	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff800298a009 callq	0xffffff8000afb010
+ffffff800298a00e	leaq	__ZTV20IOSkywalkPacketQueue(%rip), %rax ## vtable for IOSkywalkPacketQueue
+ffffff800298a015	movq	%rbx, %rdi
+ffffff800298a018	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff800298a018 callq	*0x168(%rax)
+ffffff800298a01e	cmpq	$0x0, 0x30(%rbx)
+ffffff800298a023	je	0xffffff800298a033
+ffffff800298a025	movq	%rbx, %rdi
+ffffff800298a028	addq	$0x8, %rsp
+ffffff800298a02c	popq	%rbx
+ffffff800298a02d	popq	%rbp
+ffffff800298a02e	jmp	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff800298a02e jmp	0xffffff8000afafd0
+ffffff800298a033	addq	$0x8, %rsp
+ffffff800298a037	popq	%rbx
+ffffff800298a038	popq	%rbp
+ffffff800298a039	retq
+ffffff800298a03a	nop
+ffffff800298a03b	nop
+
+METHOD_SYMBOL=__ZN17IOSkywalkQueueSet9setEnableEb
+METHOD_ADDRESS=0xffffff800298aea0
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298aeec
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=27
+ffffff800298aea0	cmpq	$0x0, 0x58(%rdi)
+ffffff800298aea5	je	0xffffff800298aee9
+ffffff800298aea7	pushq	%rbp
+ffffff800298aea8	movq	%rsp, %rbp
+ffffff800298aeab	pushq	%r15
+ffffff800298aead	pushq	%r14
+ffffff800298aeaf	pushq	%rbx
+ffffff800298aeb0	pushq	%rax
+ffffff800298aeb1	movq	%rdi, %rbx
+ffffff800298aeb4	xorb	$0x1, %sil
+ffffff800298aeb8	movzbl	%sil, %eax
+ffffff800298aebc	leaq	0x150(,%rax,8), %r14
+ffffff800298aec4	xorl	%r15d, %r15d
+ffffff800298aec7	movq	0x18(%rbx), %rax
+ffffff800298aecb	movq	(%rax,%r15,8), %rdi
+ffffff800298aecf	movq	(%rdi), %rax
+ffffff800298aed2	callq	*(%rax,%r14)
+CONTROL_FLOW=0xffffff800298aed2 callq	*(%rax,%r14)
+ffffff800298aed6	incq	%r15
+ffffff800298aed9	cmpq	0x58(%rbx), %r15
+ffffff800298aedd	jb	0xffffff800298aec7
+ffffff800298aedf	addq	$0x8, %rsp
+ffffff800298aee3	popq	%rbx
+ffffff800298aee4	popq	%r14
+ffffff800298aee6	popq	%r15
+ffffff800298aee8	popq	%rbp
+ffffff800298aee9	xorl	%eax, %eax
+ffffff800298aeeb	retq
+
+METHOD_SYMBOL=__ZN21IOSkywalkPacketPoller6enableEv
+METHOD_ADDRESS=0xffffff800298b462
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298b474
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff800298b462	pushq	%rbp
+ffffff800298b463	movq	%rsp, %rbp
+ffffff800298b466	movq	0x1bc7b(%rip), %rax
+ffffff800298b46d	popq	%rbp
+ffffff800298b46e	jmpq	*0x160(%rax)
+CONTROL_FLOW=0xffffff800298b46e jmpq	*0x160(%rax)
+
+METHOD_SYMBOL=__ZN21IOSkywalkPacketPoller7disableEv
+METHOD_ADDRESS=0xffffff800298b474
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298b4f8
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=33
+ffffff800298b474	pushq	%rbp
+ffffff800298b475	movq	%rsp, %rbp
+ffffff800298b478	pushq	%rbx
+ffffff800298b479	pushq	%rax
+ffffff800298b47a	movq	%rdi, %rbx
+ffffff800298b47d	cmpq	$0x0, 0x30(%rdi)
+ffffff800298b482	je	0xffffff800298b4d6
+ffffff800298b484	movq	%rbx, %rdi
+ffffff800298b487	callq	0xffffff8000afb010
+CONTROL_FLOW=0xffffff800298b487 callq	0xffffff8000afb010
+ffffff800298b48c	cmpb	$0x1, 0x128(%rbx)
+ffffff800298b493	je	0xffffff800298b4f3
+ffffff800298b495	cmpb	$0x1, 0x12a(%rbx)
+ffffff800298b49c	jne	0xffffff800298b4be
+ffffff800298b49e	movb	$0x0, 0x12a(%rbx)
+ffffff800298b4a5	movq	0x70(%rbx), %rdi
+ffffff800298b4a9	movq	0x88(%rbx), %rcx
+ffffff800298b4b0	movq	%rbx, %rsi
+ffffff800298b4b3	movl	$0x1, %edx
+ffffff800298b4b8	callq	*0x80(%rbx)
+CONTROL_FLOW=0xffffff800298b4b8 callq	*0x80(%rbx)
+ffffff800298b4be	xorl	%eax, %eax
+ffffff800298b4c0	movl	%eax, 0xf8(%rbx)
+ffffff800298b4c6	movl	%eax, 0x108(%rbx)
+ffffff800298b4cc	movq	%rbx, %rdi
+ffffff800298b4cf	callq	0xffffff8000afafd0
+CONTROL_FLOW=0xffffff800298b4cf callq	0xffffff8000afafd0
+ffffff800298b4d4	jmp	0xffffff800298b4dd
+CONTROL_FLOW=0xffffff800298b4d4 jmp	0xffffff800298b4dd
+ffffff800298b4d6	movb	$0x0, 0x12a(%rbx)
+ffffff800298b4dd	movq	0x1bc04(%rip), %rax
+ffffff800298b4e4	movq	%rbx, %rdi
+ffffff800298b4e7	addq	$0x8, %rsp
+ffffff800298b4eb	popq	%rbx
+ffffff800298b4ec	popq	%rbp
+ffffff800298b4ed	jmpq	*0x168(%rax)
+CONTROL_FLOW=0xffffff800298b4ed jmpq	*0x168(%rax)
+ffffff800298b4f3	callq	__ZN21IOSkywalkPacketPoller7disableEv.cold.1 ## IOSkywalkPacketPoller::disable() (.cold.1)
+CONTROL_FLOW=0xffffff800298b4f3 callq	__ZN21IOSkywalkPacketPoller7disableEv.cold.1 ## IOSkywalkPacketPoller::disable() (.cold.1)
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet16disableAllQueuesEv
+METHOD_ADDRESS=0xffffff800298c74c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298c87c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=88
+ffffff800298c74c	pushq	%rbp
+ffffff800298c74d	movq	%rsp, %rbp
+ffffff800298c750	pushq	%r15
+ffffff800298c752	pushq	%r14
+ffffff800298c754	pushq	%r13
+ffffff800298c756	pushq	%r12
+ffffff800298c758	pushq	%rbx
+ffffff800298c759	subq	$0x28, %rsp
+ffffff800298c75d	callq	__ZN25IOSkywalkNetworkInterface15getLogicalLinksEv ## IOSkywalkNetworkInterface::getLogicalLinks()
+CONTROL_FLOW=0xffffff800298c75d callq	__ZN25IOSkywalkNetworkInterface15getLogicalLinksEv ## IOSkywalkNetworkInterface::getLogicalLinks()
+ffffff800298c762	testq	%rax, %rax
+ffffff800298c765	je	0xffffff800298c86d
+ffffff800298c76b	movq	%rax, %rbx
+ffffff800298c76e	movq	(%rax), %rax
+ffffff800298c771	movq	%rbx, %rdi
+ffffff800298c774	callq	*0x130(%rax)
+CONTROL_FLOW=0xffffff800298c774 callq	*0x130(%rax)
+ffffff800298c77a	testl	%eax, %eax
+ffffff800298c77c	je	0xffffff800298c86d
+ffffff800298c782	leaq	__ZN20IOSkywalkLogicalLink9metaClassE(%rip), %rax ## IOSkywalkLogicalLink::metaClass
+ffffff800298c789	movq	(%rax), %rax
+ffffff800298c78c	movq	%rax, -0x30(%rbp)
+ffffff800298c790	leaq	__ZN24IOUserNetworkPacketQueue9metaClassE(%rip), %rax ## IOUserNetworkPacketQueue::metaClass
+ffffff800298c797	movq	(%rax), %r15
+ffffff800298c79a	leaq	__ZN30IOUserNetworkPacketQueueCompat9metaClassE(%rip), %rax ## IOUserNetworkPacketQueueCompat::metaClass
+ffffff800298c7a1	movq	(%rax), %rax
+ffffff800298c7a4	movq	%rax, -0x50(%rbp)
+ffffff800298c7a8	xorl	%r14d, %r14d
+ffffff800298c7ab	movq	%rbx, -0x38(%rbp)
+ffffff800298c7af	movq	(%rbx), %rax
+ffffff800298c7b2	movq	%rbx, %rdi
+ffffff800298c7b5	movq	%r14, -0x40(%rbp)
+ffffff800298c7b9	movl	%r14d, %esi
+ffffff800298c7bc	callq	*0x1f8(%rax)
+CONTROL_FLOW=0xffffff800298c7bc callq	*0x1f8(%rax)
+ffffff800298c7c2	movq	%rax, %rdi
+ffffff800298c7c5	movq	-0x30(%rbp), %rsi
+ffffff800298c7c9	callq	0xffffff8000a49ab0
+CONTROL_FLOW=0xffffff800298c7c9 callq	0xffffff8000a49ab0
+ffffff800298c7ce	cmpq	$0x0, 0x28(%rax)
+ffffff800298c7d3	je	0xffffff800298c84d
+ffffff800298c7d5	xorl	%ebx, %ebx
+ffffff800298c7d7	movq	%rax, -0x48(%rbp)
+ffffff800298c7db	movq	%rax, %rdi
+ffffff800298c7de	movq	%rbx, %rsi
+ffffff800298c7e1	callq	__ZN20IOSkywalkLogicalLink11getQueueSetEm ## IOSkywalkLogicalLink::getQueueSet(unsigned long)
+CONTROL_FLOW=0xffffff800298c7e1 callq	__ZN20IOSkywalkLogicalLink11getQueueSetEm ## IOSkywalkLogicalLink::getQueueSet(unsigned long)
+ffffff800298c7e6	cmpq	$0x0, 0x58(%rax)
+ffffff800298c7eb	je	0xffffff800298c841
+ffffff800298c7ed	movq	%rax, %r13
+ffffff800298c7f0	movl	$0x1, %r14d
+ffffff800298c7f6	xorl	%r12d, %r12d
+ffffff800298c7f9	movq	0x18(%r13), %rax
+ffffff800298c7fd	movq	(%rax,%r12,8), %rdi
+ffffff800298c801	movq	%r15, %rsi
+ffffff800298c804	callq	0xffffff8000a49ab0
+CONTROL_FLOW=0xffffff800298c804 callq	0xffffff8000a49ab0
+ffffff800298c809	testq	%rax, %rax
+ffffff800298c80c	jne	0xffffff800298c829
+ffffff800298c80e	cmpq	%r12, 0x58(%r13)
+ffffff800298c812	jbe	0xffffff800298c81e
+ffffff800298c814	movq	0x18(%r13), %rax
+ffffff800298c818	movq	(%rax,%r12,8), %rdi
+ffffff800298c81c	jmp	0xffffff800298c820
+CONTROL_FLOW=0xffffff800298c81c jmp	0xffffff800298c820
+ffffff800298c81e	xorl	%edi, %edi
+ffffff800298c820	movq	-0x50(%rbp), %rsi
+ffffff800298c824	callq	0xffffff8000a49ab0
+CONTROL_FLOW=0xffffff800298c824 callq	0xffffff8000a49ab0
+ffffff800298c829	movq	(%rax), %rcx
+ffffff800298c82c	movq	%rax, %rdi
+ffffff800298c82f	callq	*0x158(%rcx)
+CONTROL_FLOW=0xffffff800298c82f callq	*0x158(%rcx)
+ffffff800298c835	movl	%r14d, %r12d
+ffffff800298c838	incl	%r14d
+ffffff800298c83b	cmpq	%r12, 0x58(%r13)
+ffffff800298c83f	ja	0xffffff800298c7f9
+ffffff800298c841	incl	%ebx
+ffffff800298c843	movq	-0x48(%rbp), %rax
+ffffff800298c847	cmpq	%rbx, 0x28(%rax)
+ffffff800298c84b	ja	0xffffff800298c7db
+ffffff800298c84d	movq	-0x40(%rbp), %r14
+ffffff800298c851	incl	%r14d
+ffffff800298c854	movq	-0x38(%rbp), %rbx
+ffffff800298c858	movq	(%rbx), %rax
+ffffff800298c85b	movq	%rbx, %rdi
+ffffff800298c85e	callq	*0x130(%rax)
+CONTROL_FLOW=0xffffff800298c85e callq	*0x130(%rax)
+ffffff800298c864	cmpl	%eax, %r14d
+ffffff800298c867	jb	0xffffff800298c7af
+ffffff800298c86d	addq	$0x28, %rsp
+ffffff800298c871	popq	%rbx
+ffffff800298c872	popq	%r12
+ffffff800298c874	popq	%r13
+ffffff800298c876	popq	%r14
+ffffff800298c878	popq	%r15
+ffffff800298c87a	popq	%rbp
+ffffff800298c87b	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet18setInterfaceEnableEb
+METHOD_ADDRESS=0xffffff800298c87c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298c8dc
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=36
+ffffff800298c87c	pushq	%rbp
+ffffff800298c87d	movq	%rsp, %rbp
+ffffff800298c880	pushq	%r15
+ffffff800298c882	pushq	%r14
+ffffff800298c884	pushq	%rbx
+ffffff800298c885	pushq	%rax
+ffffff800298c886	movl	%esi, %r15d
+ffffff800298c889	movq	%rdi, %rbx
+ffffff800298c88c	movl	%r15d, %eax
+ffffff800298c88f	xorb	$0x1, %al
+ffffff800298c891	movzbl	%al, %esi
+ffffff800298c894	callq	__ZN21IOUserNetworkEthernet13setQueuesBusyEb ## IOUserNetworkEthernet::setQueuesBusy(bool)
+CONTROL_FLOW=0xffffff800298c894 callq	__ZN21IOUserNetworkEthernet13setQueuesBusyEb ## IOUserNetworkEthernet::setQueuesBusy(bool)
+ffffff800298c899	movq	%rbx, %rdi
+ffffff800298c89c	movl	%r15d, %esi
+ffffff800298c89f	xorl	%edx, %edx
+ffffff800298c8a1	callq	__ZN21IOUserNetworkEthernet19_SetInterfaceEnableEbPFiP15OSMetaClassBase5IORPCE ## IOUserNetworkEthernet::_SetInterfaceEnable(bool, int (*)(OSMetaClassBase*, IORPC))
+CONTROL_FLOW=0xffffff800298c8a1 callq	__ZN21IOUserNetworkEthernet19_SetInterfaceEnableEbPFiP15OSMetaClassBase5IORPCE ## IOUserNetworkEthernet::_SetInterfaceEnable(bool, int (*)(OSMetaClassBase*, IORPC))
+ffffff800298c8a6	movl	%eax, %r14d
+ffffff800298c8a9	testl	%eax, %eax
+ffffff800298c8ab	sete	%al
+ffffff800298c8ae	testb	%al, %r15b
+ffffff800298c8b1	jne	0xffffff800298c8cd
+ffffff800298c8b3	movq	%rbx, %rdi
+ffffff800298c8b6	cmpl	$0xe00002d7, %r14d              ## imm = 0xE00002D7
+ffffff800298c8bd	jne	0xffffff800298c8c6
+ffffff800298c8bf	callq	__ZN21IOUserNetworkEthernet16disableAllQueuesEv ## IOUserNetworkEthernet::disableAllQueues()
+CONTROL_FLOW=0xffffff800298c8bf callq	__ZN21IOUserNetworkEthernet16disableAllQueuesEv ## IOUserNetworkEthernet::disableAllQueues()
+ffffff800298c8c4	jmp	0xffffff800298c8cd
+CONTROL_FLOW=0xffffff800298c8c4 jmp	0xffffff800298c8cd
+ffffff800298c8c6	xorl	%esi, %esi
+ffffff800298c8c8	callq	__ZN21IOUserNetworkEthernet13setQueuesBusyEb ## IOUserNetworkEthernet::setQueuesBusy(bool)
+CONTROL_FLOW=0xffffff800298c8c8 callq	__ZN21IOUserNetworkEthernet13setQueuesBusyEb ## IOUserNetworkEthernet::setQueuesBusy(bool)
+ffffff800298c8cd	movl	%r14d, %eax
+ffffff800298c8d0	addq	$0x8, %rsp
+ffffff800298c8d4	popq	%rbx
+ffffff800298c8d5	popq	%r14
+ffffff800298c8d7	popq	%r15
+ffffff800298c8d9	popq	%rbp
+ffffff800298c8da	retq
+ffffff800298c8db	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet24setPromiscuousModeEnableEbj
+METHOD_ADDRESS=0xffffff800298c8dc
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298c8e8
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff800298c8dc	pushq	%rbp
+ffffff800298c8dd	movq	%rsp, %rbp
+ffffff800298c8e0	xorl	%edx, %edx
+ffffff800298c8e2	popq	%rbp
+ffffff800298c8e3	jmp	__ZN21IOUserNetworkEthernet25_SetPromiscuousModeEnableEbPFiP15OSMetaClassBase5IORPCE ## IOUserNetworkEthernet::_SetPromiscuousModeEnable(bool, int (*)(OSMetaClassBase*, IORPC))
+CONTROL_FLOW=0xffffff800298c8e3 jmp	__ZN21IOUserNetworkEthernet25_SetPromiscuousModeEnableEbPFiP15OSMetaClassBase5IORPCE ## IOUserNetworkEthernet::_SetPromiscuousModeEnable(bool, int (*)(OSMetaClassBase*, IORPC))
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet25setAllMulticastModeEnableEb
+METHOD_ADDRESS=0xffffff800298c8e8
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298c8f4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff800298c8e8	pushq	%rbp
+ffffff800298c8e9	movq	%rsp, %rbp
+ffffff800298c8ec	xorl	%edx, %edx
+ffffff800298c8ee	popq	%rbp
+ffffff800298c8ef	jmp	__ZN21IOUserNetworkEthernet26_SetAllMulticastModeEnableEbPFiP15OSMetaClassBase5IORPCE ## IOUserNetworkEthernet::_SetAllMulticastModeEnable(bool, int (*)(OSMetaClassBase*, IORPC))
+CONTROL_FLOW=0xffffff800298c8ef jmp	__ZN21IOUserNetworkEthernet26_SetAllMulticastModeEnableEbPFiP15OSMetaClassBase5IORPCE ## IOUserNetworkEthernet::_SetAllMulticastModeEnable(bool, int (*)(OSMetaClassBase*, IORPC))
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet24_SetInterfaceEnable_ImplEb
+METHOD_ADDRESS=0xffffff800298d59a
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298d5a6
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff800298d59a	pushq	%rbp
+ffffff800298d59b	movq	%rsp, %rbp
+ffffff800298d59e	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff800298d5a3	popq	%rbp
+ffffff800298d5a4	retq
+ffffff800298d5a5	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet30_SetPromiscuousModeEnable_ImplEb
+METHOD_ADDRESS=0xffffff800298d5a6
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298d5b2
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff800298d5a6	pushq	%rbp
+ffffff800298d5a7	movq	%rsp, %rbp
+ffffff800298d5aa	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff800298d5af	popq	%rbp
+ffffff800298d5b0	retq
+ffffff800298d5b1	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet31_SetAllMulticastModeEnable_ImplEb
+METHOD_ADDRESS=0xffffff800298d5b2
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298d5be
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff800298d5b2	pushq	%rbp
+ffffff800298d5b3	movq	%rsp, %rbp
+ffffff800298d5b6	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff800298d5bb	popq	%rbp
+ffffff800298d5bc	retq
+ffffff800298d5bd	nop
+
+METHOD_SYMBOL=__ZN24IOUserNetworkLogicalLink15_SetEnable_ImplEb
+METHOD_ADDRESS=0xffffff800298db3a
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298db4c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=7
+ffffff800298db3a	pushq	%rbp
+ffffff800298db3b	movq	%rsp, %rbp
+ffffff800298db3e	movq	(%rdi), %rax
+ffffff800298db41	movq	0x118(%rax), %rax
+ffffff800298db48	popq	%rbp
+ffffff800298db49	jmpq	*%rax
+CONTROL_FLOW=0xffffff800298db49 jmpq	*%rax
+ffffff800298db4b	nop
+
+METHOD_SYMBOL=__ZN24IOUserNetworkPacketQueue14SetEnable_ImplEb
+METHOD_ADDRESS=0xffffff800298e7da
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298e7e6
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=6
+ffffff800298e7da	pushq	%rbp
+ffffff800298e7db	movq	%rsp, %rbp
+ffffff800298e7de	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+ffffff800298e7e3	popq	%rbp
+ffffff800298e7e4	retq
+ffffff800298e7e5	nop
+
+METHOD_SYMBOL=__ZN24IOUserNetworkPacketQueue15_SetEnable_ImplEb
+METHOD_ADDRESS=0xffffff800298e7e6
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298e7f8
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=7
+ffffff800298e7e6	pushq	%rbp
+ffffff800298e7e7	movq	%rsp, %rbp
+ffffff800298e7ea	movq	(%rdi), %rax
+ffffff800298e7ed	movq	0x2b8(%rax), %rax
+ffffff800298e7f4	popq	%rbp
+ffffff800298e7f5	jmpq	*%rax
+CONTROL_FLOW=0xffffff800298e7f5 jmpq	*%rax
+ffffff800298e7f7	nop
+
+METHOD_SYMBOL=__ZN24IOUserNetworkPacketQueue9setEnableEb
+METHOD_ADDRESS=0xffffff800298e7f8
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298e860
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=36
+ffffff800298e7f8	pushq	%rbp
+ffffff800298e7f9	movq	%rsp, %rbp
+ffffff800298e7fc	pushq	%rbx
+ffffff800298e7fd	pushq	%rax
+ffffff800298e7fe	movq	%rdi, %rbx
+ffffff800298e801	testl	%esi, %esi
+ffffff800298e803	je	0xffffff800298e831
+ffffff800298e805	movl	$0xe00002d8, %eax               ## imm = 0xE00002D8
+ffffff800298e80a	cmpb	$0x1, 0xcc(%rbx)
+ffffff800298e811	jne	0xffffff800298e858
+ffffff800298e813	movq	(%rbx), %rax
+ffffff800298e816	movq	%rbx, %rdi
+ffffff800298e819	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff800298e819 callq	*0x160(%rax)
+ffffff800298e81f	movl	%eax, %ecx
+ffffff800298e821	movl	$0x150, %edx                    ## imm = 0x150
+ffffff800298e826	movl	$0xe00002c2, %eax               ## imm = 0xE00002C2
+ffffff800298e82b	testb	%cl, %cl
+ffffff800298e82d	je	0xffffff800298e84d
+ffffff800298e82f	jmp	0xffffff800298e858
+CONTROL_FLOW=0xffffff800298e82f jmp	0xffffff800298e858
+ffffff800298e831	movq	(%rbx), %rax
+ffffff800298e834	movq	%rbx, %rdi
+ffffff800298e837	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff800298e837 callq	*0x160(%rax)
+ffffff800298e83d	movl	%eax, %ecx
+ffffff800298e83f	movl	$0xe00002c2, %eax               ## imm = 0xE00002C2
+ffffff800298e844	movl	$0x158, %edx                    ## imm = 0x158
+ffffff800298e849	testb	%cl, %cl
+ffffff800298e84b	je	0xffffff800298e858
+ffffff800298e84d	movq	(%rbx), %rax
+ffffff800298e850	movq	%rbx, %rdi
+ffffff800298e853	callq	*(%rax,%rdx)
+CONTROL_FLOW=0xffffff800298e853 callq	*(%rax,%rdx)
+ffffff800298e856	xorl	%eax, %eax
+ffffff800298e858	addq	$0x8, %rsp
+ffffff800298e85c	popq	%rbx
+ffffff800298e85d	popq	%rbp
+ffffff800298e85e	retq
+ffffff800298e85f	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkTxSubmissionQueue6enableEv
+METHOD_ADDRESS=0xffffff800298ee2c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298ee74
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=19
+ffffff800298ee2c	pushq	%rbp
+ffffff800298ee2d	movq	%rsp, %rbp
+ffffff800298ee30	pushq	%rbx
+ffffff800298ee31	pushq	%rax
+ffffff800298ee32	movq	%rdi, %rbx
+ffffff800298ee35	movq	0xe0(%rdi), %rdi
+ffffff800298ee3c	callq	0xffffff8000ab71b0
+CONTROL_FLOW=0xffffff800298ee3c callq	0xffffff8000ab71b0
+ffffff800298ee41	movq	0x140(%rbx), %rdi
+ffffff800298ee48	movq	(%rdi), %rax
+ffffff800298ee4b	callq	*0x150(%rax)
+CONTROL_FLOW=0xffffff800298ee4b callq	*0x150(%rax)
+ffffff800298ee51	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff800298ee58	movq	%rbx, %rdi
+ffffff800298ee5b	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff800298ee5b callq	*0x160(%rax)
+ffffff800298ee61	movq	0xe0(%rbx), %rdi
+ffffff800298ee68	addq	$0x8, %rsp
+ffffff800298ee6c	popq	%rbx
+ffffff800298ee6d	popq	%rbp
+ffffff800298ee6e	jmp	0xffffff8000ab7240
+CONTROL_FLOW=0xffffff800298ee6e jmp	0xffffff8000ab7240
+ffffff800298ee73	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkTxSubmissionQueue7disableEv
+METHOD_ADDRESS=0xffffff800298ee74
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800298eee0
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=27
+ffffff800298ee74	pushq	%rbp
+ffffff800298ee75	movq	%rsp, %rbp
+ffffff800298ee78	pushq	%rbx
+ffffff800298ee79	pushq	%rax
+ffffff800298ee7a	movq	%rdi, %rbx
+ffffff800298ee7d	movq	0xe0(%rdi), %rdi
+ffffff800298ee84	callq	0xffffff8000ab71b0
+CONTROL_FLOW=0xffffff800298ee84 callq	0xffffff8000ab71b0
+ffffff800298ee89	movq	0x140(%rbx), %rdi
+ffffff800298ee90	movq	(%rdi), %rax
+ffffff800298ee93	callq	*0x218(%rax)
+CONTROL_FLOW=0xffffff800298ee93 callq	*0x218(%rax)
+ffffff800298ee99	xorl	%eax, %eax
+ffffff800298ee9b	xchgb	%al, 0x158(%rbx)
+ffffff800298eea1	movq	0x140(%rbx), %rdi
+ffffff800298eea8	movq	(%rdi), %rax
+ffffff800298eeab	callq	*0x158(%rax)
+CONTROL_FLOW=0xffffff800298eeab callq	*0x158(%rax)
+ffffff800298eeb1	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff800298eeb8	movq	%rbx, %rdi
+ffffff800298eebb	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff800298eebb callq	*0x168(%rax)
+ffffff800298eec1	movq	(%rbx), %rax
+ffffff800298eec4	movq	%rbx, %rdi
+ffffff800298eec7	callq	*0x2c0(%rax)
+CONTROL_FLOW=0xffffff800298eec7 callq	*0x2c0(%rax)
+ffffff800298eecd	movq	0xe0(%rbx), %rdi
+ffffff800298eed4	addq	$0x8, %rsp
+ffffff800298eed8	popq	%rbx
+ffffff800298eed9	popq	%rbp
+ffffff800298eeda	jmp	0xffffff8000ab7240
+CONTROL_FLOW=0xffffff800298eeda jmp	0xffffff8000ab7240
+ffffff800298eedf	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkTxCompletionQueue6enableEv
+METHOD_ADDRESS=0xffffff80029902d6
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002990308
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=15
+ffffff80029902d6	pushq	%rbp
+ffffff80029902d7	movq	%rsp, %rbp
+ffffff80029902da	pushq	%rbx
+ffffff80029902db	pushq	%rax
+ffffff80029902dc	movq	%rdi, %rbx
+ffffff80029902df	movq	0x108(%rdi), %rdi
+ffffff80029902e6	movq	(%rdi), %rax
+ffffff80029902e9	movq	%rbx, %rsi
+ffffff80029902ec	callq	*0x140(%rax)
+CONTROL_FLOW=0xffffff80029902ec callq	*0x140(%rax)
+ffffff80029902f2	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff80029902f9	movq	%rbx, %rdi
+ffffff80029902fc	addq	$0x8, %rsp
+ffffff8002990300	popq	%rbx
+ffffff8002990301	popq	%rbp
+ffffff8002990302	jmpq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002990302 jmpq	*0x160(%rax)
+
+METHOD_SYMBOL=__ZN30IOUserNetworkTxCompletionQueue7disableEv
+METHOD_ADDRESS=0xffffff8002990308
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002990352
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=25
+ffffff8002990308	pushq	%rbp
+ffffff8002990309	movq	%rsp, %rbp
+ffffff800299030c	pushq	%rbx
+ffffff800299030d	pushq	%rax
+ffffff800299030e	movq	%rdi, %rbx
+ffffff8002990311	movq	(%rdi), %rax
+ffffff8002990314	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002990314 callq	*0x160(%rax)
+ffffff800299031a	testb	%al, %al
+ffffff800299031c	je	0xffffff800299034a
+ffffff800299031e	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff8002990325	movq	%rbx, %rdi
+ffffff8002990328	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002990328 callq	*0x168(%rax)
+ffffff800299032e	movq	0x108(%rbx), %rdi
+ffffff8002990335	movq	(%rdi), %rax
+ffffff8002990338	movq	0x148(%rax), %rax
+ffffff800299033f	movq	%rbx, %rsi
+ffffff8002990342	addq	$0x8, %rsp
+ffffff8002990346	popq	%rbx
+ffffff8002990347	popq	%rbp
+ffffff8002990348	jmpq	*%rax
+CONTROL_FLOW=0xffffff8002990348 jmpq	*%rax
+ffffff800299034a	addq	$0x8, %rsp
+ffffff800299034e	popq	%rbx
+ffffff800299034f	popq	%rbp
+ffffff8002990350	retq
+ffffff8002990351	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkRxCompletionQueue6enableEv
+METHOD_ADDRESS=0xffffff8002990a62
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002990a94
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=15
+ffffff8002990a62	pushq	%rbp
+ffffff8002990a63	movq	%rsp, %rbp
+ffffff8002990a66	pushq	%rbx
+ffffff8002990a67	pushq	%rax
+ffffff8002990a68	movq	%rdi, %rbx
+ffffff8002990a6b	movq	0x108(%rdi), %rdi
+ffffff8002990a72	movq	(%rdi), %rax
+ffffff8002990a75	movq	%rbx, %rsi
+ffffff8002990a78	callq	*0x140(%rax)
+CONTROL_FLOW=0xffffff8002990a78 callq	*0x140(%rax)
+ffffff8002990a7e	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff8002990a85	movq	%rbx, %rdi
+ffffff8002990a88	addq	$0x8, %rsp
+ffffff8002990a8c	popq	%rbx
+ffffff8002990a8d	popq	%rbp
+ffffff8002990a8e	jmpq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002990a8e jmpq	*0x160(%rax)
+
+METHOD_SYMBOL=__ZN30IOUserNetworkRxCompletionQueue7disableEv
+METHOD_ADDRESS=0xffffff8002990a94
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002990ade
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=25
+ffffff8002990a94	pushq	%rbp
+ffffff8002990a95	movq	%rsp, %rbp
+ffffff8002990a98	pushq	%rbx
+ffffff8002990a99	pushq	%rax
+ffffff8002990a9a	movq	%rdi, %rbx
+ffffff8002990a9d	movq	(%rdi), %rax
+ffffff8002990aa0	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002990aa0 callq	*0x160(%rax)
+ffffff8002990aa6	testb	%al, %al
+ffffff8002990aa8	je	0xffffff8002990ad6
+ffffff8002990aaa	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff8002990ab1	movq	%rbx, %rdi
+ffffff8002990ab4	callq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002990ab4 callq	*0x168(%rax)
+ffffff8002990aba	movq	0x108(%rbx), %rdi
+ffffff8002990ac1	movq	(%rdi), %rax
+ffffff8002990ac4	movq	0x148(%rax), %rax
+ffffff8002990acb	movq	%rbx, %rsi
+ffffff8002990ace	addq	$0x8, %rsp
+ffffff8002990ad2	popq	%rbx
+ffffff8002990ad3	popq	%rbp
+ffffff8002990ad4	jmpq	*%rax
+CONTROL_FLOW=0xffffff8002990ad4 jmpq	*%rax
+ffffff8002990ad6	addq	$0x8, %rsp
+ffffff8002990ada	popq	%rbx
+ffffff8002990adb	popq	%rbp
+ffffff8002990adc	retq
+ffffff8002990add	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkRxSubmissionQueue6enableEv
+METHOD_ADDRESS=0xffffff8002991428
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299144c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=12
+ffffff8002991428	pushq	%rbp
+ffffff8002991429	movq	%rsp, %rbp
+ffffff800299142c	pushq	%rbx
+ffffff800299142d	pushq	%rax
+ffffff800299142e	movq	%rdi, %rbx
+ffffff8002991431	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff8002991438	callq	*0x160(%rax)
+CONTROL_FLOW=0xffffff8002991438 callq	*0x160(%rax)
+ffffff800299143e	movq	%rbx, %rdi
+ffffff8002991441	addq	$0x8, %rsp
+ffffff8002991445	popq	%rbx
+ffffff8002991446	popq	%rbp
+ffffff8002991447	jmp	__ZN30IOUserNetworkRxSubmissionQueue15replenishQueuesEv ## IOUserNetworkRxSubmissionQueue::replenishQueues()
+CONTROL_FLOW=0xffffff8002991447 jmp	__ZN30IOUserNetworkRxSubmissionQueue15replenishQueuesEv ## IOUserNetworkRxSubmissionQueue::replenishQueues()
+
+METHOD_SYMBOL=__ZN30IOUserNetworkRxSubmissionQueue7disableEv
+METHOD_ADDRESS=0xffffff8002991786
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002991798
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff8002991786	pushq	%rbp
+ffffff8002991787	movq	%rsp, %rbp
+ffffff800299178a	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff8002991791	popq	%rbp
+ffffff8002991792	jmpq	*0x168(%rax)
+CONTROL_FLOW=0xffffff8002991792 jmpq	*0x168(%rax)
+
+METHOD_SYMBOL=__ZN30IOUserNetworkRxSubmissionQueue15_SetEnable_ImplEb
+METHOD_ADDRESS=0xffffff8002991c46
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002991c58
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=5
+ffffff8002991c46	pushq	%rbp
+ffffff8002991c47	movq	%rsp, %rbp
+ffffff8002991c4a	leaq	__ZTV24IOUserNetworkPacketQueue(%rip), %rax ## vtable for IOUserNetworkPacketQueue
+ffffff8002991c51	popq	%rbp
+ffffff8002991c52	jmpq	*0x2c8(%rax)
+CONTROL_FLOW=0xffffff8002991c52 jmpq	*0x2c8(%rax)
+
+METHOD_SYMBOL=__ZN21IOUserNetworkQueueSet15_SetEnable_ImplEb
+METHOD_ADDRESS=0xffffff8002991f4c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002991f5e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=7
+ffffff8002991f4c	pushq	%rbp
+ffffff8002991f4d	movq	%rsp, %rbp
+ffffff8002991f50	movq	(%rdi), %rax
+ffffff8002991f53	movq	0x118(%rax), %rax
+ffffff8002991f5a	popq	%rbp
+ffffff8002991f5b	jmpq	*%rax
+CONTROL_FLOW=0xffffff8002991f5b jmpq	*%rax
+ffffff8002991f5d	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkPacketQueueCompat17_SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff8002992112
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299218a
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff8002992112	pushq	%rbp
+ffffff8002992113	movq	%rsp, %rbp
+ffffff8002992116	pushq	%rbx
+ffffff8002992117	pushq	%rax
+ffffff8002992118	movq	0x10(%rbp), %rdx
+ffffff800299211c	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002992121	cmpl	$0x1, 0x20(%rdx)
+ffffff8002992125	jne	0xffffff8002992182
+ffffff8002992127	movq	0x28(%rbp), %rdx
+ffffff800299212b	cmpq	$0x1, 0x10(%rdx)
+ffffff8002992130	jne	0xffffff8002992182
+ffffff8002992132	movq	%rsi, %rcx
+ffffff8002992135	leaq	0x10(%rbp), %rsi
+ffffff8002992139	cmpl	$0x5c, 0x10(%rsi)
+ffffff800299213d	jb	0xffffff8002992182
+ffffff800299213f	cmpl	$0x3c, 0x14(%rsi)
+ffffff8002992143	jb	0xffffff8002992182
+ffffff8002992145	movq	0x18(%rbp), %rbx
+ffffff8002992149	movzbl	0x20(%rdx), %esi
+ffffff800299214d	callq	*%rcx
+CONTROL_FLOW=0xffffff800299214d callq	*%rcx
+ffffff800299214f	testl	%eax, %eax
+ffffff8002992151	jne	0xffffff8002992182
+ffffff8002992153	movabsq	$-0x280c76622eda241a, %rax      ## imm = 0xD7F3899DD125DBE6
+ffffff800299215d	movq	%rax, 0x24(%rbx)
+ffffff8002992161	movq	$0x8, 0x2c(%rbx)
+ffffff8002992169	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff8002992171	movl	$0x3c, 0x4(%rbx)
+ffffff8002992178	movq	$0x0, 0x34(%rbx)
+ffffff8002992180	xorl	%eax, %eax
+ffffff8002992182	addq	$0x8, %rsp
+ffffff8002992186	popq	%rbx
+ffffff8002992187	popq	%rbp
+ffffff8002992188	retq
+ffffff8002992189	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkPacketQueueCompat16SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff800299218a
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002992202
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff800299218a	pushq	%rbp
+ffffff800299218b	movq	%rsp, %rbp
+ffffff800299218e	pushq	%rbx
+ffffff800299218f	pushq	%rax
+ffffff8002992190	movq	0x10(%rbp), %rdx
+ffffff8002992194	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002992199	cmpl	$0x1, 0x20(%rdx)
+ffffff800299219d	jne	0xffffff80029921fa
+ffffff800299219f	movq	0x28(%rbp), %rdx
+ffffff80029921a3	cmpq	$0x1, 0x10(%rdx)
+ffffff80029921a8	jne	0xffffff80029921fa
+ffffff80029921aa	movq	%rsi, %rcx
+ffffff80029921ad	leaq	0x10(%rbp), %rsi
+ffffff80029921b1	cmpl	$0x5c, 0x10(%rsi)
+ffffff80029921b5	jb	0xffffff80029921fa
+ffffff80029921b7	cmpl	$0x3c, 0x14(%rsi)
+ffffff80029921bb	jb	0xffffff80029921fa
+ffffff80029921bd	movq	0x18(%rbp), %rbx
+ffffff80029921c1	movzbl	0x20(%rdx), %esi
+ffffff80029921c5	callq	*%rcx
+CONTROL_FLOW=0xffffff80029921c5 callq	*%rcx
+ffffff80029921c7	testl	%eax, %eax
+ffffff80029921c9	jne	0xffffff80029921fa
+ffffff80029921cb	movabsq	$-0x73888f1ee4a2d28c, %rax      ## imm = 0x8C7770E11B5D2D74
+ffffff80029921d5	movq	%rax, 0x24(%rbx)
+ffffff80029921d9	movq	$0x8, 0x2c(%rbx)
+ffffff80029921e1	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff80029921e9	movl	$0x3c, 0x4(%rbx)
+ffffff80029921f0	movq	$0x0, 0x34(%rbx)
+ffffff80029921f8	xorl	%eax, %eax
+ffffff80029921fa	addq	$0x8, %rsp
+ffffff80029921fe	popq	%rbx
+ffffff80029921ff	popq	%rbp
+ffffff8002992200	retq
+ffffff8002992201	nop
+
+METHOD_SYMBOL=__ZN30IOUserNetworkPacketQueueCompat10_SetEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff80029922e8
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299242e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff80029922e8	pushq	%rbp
+ffffff80029922e9	movq	%rsp, %rbp
+ffffff80029922ec	pushq	%rbx
+ffffff80029922ed	subq	$0xa8, %rsp
+ffffff80029922f4	movabsq	$-0x280c76622eda241a, %rbx      ## imm = 0xD7F3899DD125DBE6
+ffffff80029922fe	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff8002992308	leaq	-0x74(%rbp), %rax
+ffffff800299230c	movq	%rcx, 0x40(%rax)
+ffffff8002992310	movq	%rcx, 0x38(%rax)
+ffffff8002992314	movq	%rcx, 0x30(%rax)
+ffffff8002992318	movq	%rcx, 0x28(%rax)
+ffffff800299231c	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff8002992323	xorl	%ecx, %ecx
+ffffff8002992325	movq	%rcx, -0x1c(%rax)
+ffffff8002992329	movq	%rcx, -0x34(%rax)
+ffffff800299232d	movq	%rcx, 0x4(%rax)
+ffffff8002992331	movq	%rcx, 0xc(%rax)
+ffffff8002992335	movq	%rcx, -0x2c(%rax)
+ffffff8002992339	movq	%rcx, -0x24(%rax)
+ffffff800299233d	movq	%rcx, -0x14(%rax)
+ffffff8002992341	movq	%rcx, -0xc(%rax)
+ffffff8002992345	movq	%rcx, -0x4(%rax)
+ffffff8002992349	movq	%rcx, 0x14(%rax)
+ffffff800299234d	movq	%rcx, 0x1c(%rax)
+ffffff8002992351	movl	$0x0, 0x24(%rax)
+ffffff8002992358	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff800299235f	movl	$0x5c, -0x30(%rax)
+ffffff8002992366	movq	$0x80, 0x8(%rax)
+ffffff800299236e	movq	%rbx, (%rax)
+ffffff8002992371	movq	%rdi, 0x18(%rax)
+ffffff8002992375	movq	$0x1, 0x10(%rax)
+ffffff800299237d	movl	$0x1, -0x14(%rax)
+ffffff8002992384	movb	%sil, 0x20(%rax)
+ffffff8002992388	leaq	-0xa8(%rbp), %rcx
+ffffff800299238f	testq	%rdx, %rdx
+ffffff8002992392	je	0xffffff80029923c3
+ffffff8002992394	movq	%rcx, -0x28(%rbp)
+ffffff8002992398	movq	%rcx, -0x20(%rbp)
+ffffff800299239c	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029923a6	movq	%rcx, -0x18(%rbp)
+ffffff80029923aa	movq	%rax, -0x10(%rbp)
+ffffff80029923ae	movq	-0x18(%rbp), %rcx
+ffffff80029923b2	movq	-0x28(%rbp), %rsi
+ffffff80029923b6	movq	-0x20(%rbp), %r8
+ffffff80029923ba	pushq	%rax
+ffffff80029923bb	pushq	%rcx
+ffffff80029923bc	pushq	%r8
+ffffff80029923be	pushq	%rsi
+ffffff80029923bf	callq	*%rdx
+CONTROL_FLOW=0xffffff80029923bf callq	*%rdx
+ffffff80029923c1	jmp	0xffffff80029923f2
+CONTROL_FLOW=0xffffff80029923c1 jmp	0xffffff80029923f2
+ffffff80029923c3	movq	%rcx, -0x28(%rbp)
+ffffff80029923c7	movq	%rcx, -0x20(%rbp)
+ffffff80029923cb	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029923d5	movq	%rcx, -0x18(%rbp)
+ffffff80029923d9	movq	%rax, -0x10(%rbp)
+ffffff80029923dd	movq	-0x18(%rbp), %rcx
+ffffff80029923e1	movq	-0x28(%rbp), %rdx
+ffffff80029923e5	movq	-0x20(%rbp), %rsi
+ffffff80029923e9	pushq	%rax
+ffffff80029923ea	pushq	%rcx
+ffffff80029923eb	pushq	%rsi
+ffffff80029923ec	pushq	%rdx
+ffffff80029923ed	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff80029923ed callq	0xffffff8000b58410
+ffffff80029923f2	addq	$0x20, %rsp
+ffffff80029923f6	testl	%eax, %eax
+ffffff80029923f8	jne	0xffffff8002992424
+ffffff80029923fa	cmpl	$0x3c, -0xa4(%rbp)
+ffffff8002992401	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002992406	jne	0xffffff8002992424
+ffffff8002992408	cmpq	%rbx, -0x84(%rbp)
+ffffff800299240f	jne	0xffffff8002992424
+ffffff8002992411	cmpl	$0x0, -0x88(%rbp)
+ffffff8002992418	jne	0xffffff8002992424
+ffffff800299241a	xorl	%ecx, %ecx
+ffffff800299241c	cmpq	$0x0, -0x74(%rbp)
+ffffff8002992421	cmovel	%ecx, %eax
+ffffff8002992424	addq	$0xa8, %rsp
+ffffff800299242b	popq	%rbx
+ffffff800299242c	popq	%rbp
+ffffff800299242d	retq
+
+METHOD_SYMBOL=__ZN30IOUserNetworkPacketQueueCompat9SetEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff800299242e
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002992574
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff800299242e	pushq	%rbp
+ffffff800299242f	movq	%rsp, %rbp
+ffffff8002992432	pushq	%rbx
+ffffff8002992433	subq	$0xa8, %rsp
+ffffff800299243a	movabsq	$-0x73888f1ee4a2d28c, %rbx      ## imm = 0x8C7770E11B5D2D74
+ffffff8002992444	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff800299244e	leaq	-0x74(%rbp), %rax
+ffffff8002992452	movq	%rcx, 0x40(%rax)
+ffffff8002992456	movq	%rcx, 0x38(%rax)
+ffffff800299245a	movq	%rcx, 0x30(%rax)
+ffffff800299245e	movq	%rcx, 0x28(%rax)
+ffffff8002992462	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff8002992469	xorl	%ecx, %ecx
+ffffff800299246b	movq	%rcx, -0x1c(%rax)
+ffffff800299246f	movq	%rcx, -0x34(%rax)
+ffffff8002992473	movq	%rcx, 0x4(%rax)
+ffffff8002992477	movq	%rcx, 0xc(%rax)
+ffffff800299247b	movq	%rcx, -0x2c(%rax)
+ffffff800299247f	movq	%rcx, -0x24(%rax)
+ffffff8002992483	movq	%rcx, -0x14(%rax)
+ffffff8002992487	movq	%rcx, -0xc(%rax)
+ffffff800299248b	movq	%rcx, -0x4(%rax)
+ffffff800299248f	movq	%rcx, 0x14(%rax)
+ffffff8002992493	movq	%rcx, 0x1c(%rax)
+ffffff8002992497	movl	$0x0, 0x24(%rax)
+ffffff800299249e	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff80029924a5	movl	$0x5c, -0x30(%rax)
+ffffff80029924ac	movq	$0x80, 0x8(%rax)
+ffffff80029924b4	movq	%rbx, (%rax)
+ffffff80029924b7	movq	%rdi, 0x18(%rax)
+ffffff80029924bb	movq	$0x1, 0x10(%rax)
+ffffff80029924c3	movl	$0x1, -0x14(%rax)
+ffffff80029924ca	movb	%sil, 0x20(%rax)
+ffffff80029924ce	leaq	-0xa8(%rbp), %rcx
+ffffff80029924d5	testq	%rdx, %rdx
+ffffff80029924d8	je	0xffffff8002992509
+ffffff80029924da	movq	%rcx, -0x28(%rbp)
+ffffff80029924de	movq	%rcx, -0x20(%rbp)
+ffffff80029924e2	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029924ec	movq	%rcx, -0x18(%rbp)
+ffffff80029924f0	movq	%rax, -0x10(%rbp)
+ffffff80029924f4	movq	-0x18(%rbp), %rcx
+ffffff80029924f8	movq	-0x28(%rbp), %rsi
+ffffff80029924fc	movq	-0x20(%rbp), %r8
+ffffff8002992500	pushq	%rax
+ffffff8002992501	pushq	%rcx
+ffffff8002992502	pushq	%r8
+ffffff8002992504	pushq	%rsi
+ffffff8002992505	callq	*%rdx
+CONTROL_FLOW=0xffffff8002992505 callq	*%rdx
+ffffff8002992507	jmp	0xffffff8002992538
+CONTROL_FLOW=0xffffff8002992507 jmp	0xffffff8002992538
+ffffff8002992509	movq	%rcx, -0x28(%rbp)
+ffffff800299250d	movq	%rcx, -0x20(%rbp)
+ffffff8002992511	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299251b	movq	%rcx, -0x18(%rbp)
+ffffff800299251f	movq	%rax, -0x10(%rbp)
+ffffff8002992523	movq	-0x18(%rbp), %rcx
+ffffff8002992527	movq	-0x28(%rbp), %rdx
+ffffff800299252b	movq	-0x20(%rbp), %rsi
+ffffff800299252f	pushq	%rax
+ffffff8002992530	pushq	%rcx
+ffffff8002992531	pushq	%rsi
+ffffff8002992532	pushq	%rdx
+ffffff8002992533	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff8002992533 callq	0xffffff8000b58410
+ffffff8002992538	addq	$0x20, %rsp
+ffffff800299253c	testl	%eax, %eax
+ffffff800299253e	jne	0xffffff800299256a
+ffffff8002992540	cmpl	$0x3c, -0xa4(%rbp)
+ffffff8002992547	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299254c	jne	0xffffff800299256a
+ffffff800299254e	cmpq	%rbx, -0x84(%rbp)
+ffffff8002992555	jne	0xffffff800299256a
+ffffff8002992557	cmpl	$0x0, -0x88(%rbp)
+ffffff800299255e	jne	0xffffff800299256a
+ffffff8002992560	xorl	%ecx, %ecx
+ffffff8002992562	cmpq	$0x0, -0x74(%rbp)
+ffffff8002992567	cmovel	%ecx, %eax
+ffffff800299256a	addq	$0xa8, %rsp
+ffffff8002992571	popq	%rbx
+ffffff8002992572	popq	%rbp
+ffffff8002992573	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet33_SetAllMulticastModeEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff8002995976
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029959ee
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff8002995976	pushq	%rbp
+ffffff8002995977	movq	%rsp, %rbp
+ffffff800299597a	pushq	%rbx
+ffffff800299597b	pushq	%rax
+ffffff800299597c	movq	0x10(%rbp), %rdx
+ffffff8002995980	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002995985	cmpl	$0x1, 0x20(%rdx)
+ffffff8002995989	jne	0xffffff80029959e6
+ffffff800299598b	movq	0x28(%rbp), %rdx
+ffffff800299598f	cmpq	$0x1, 0x10(%rdx)
+ffffff8002995994	jne	0xffffff80029959e6
+ffffff8002995996	movq	%rsi, %rcx
+ffffff8002995999	leaq	0x10(%rbp), %rsi
+ffffff800299599d	cmpl	$0x5c, 0x10(%rsi)
+ffffff80029959a1	jb	0xffffff80029959e6
+ffffff80029959a3	cmpl	$0x3c, 0x14(%rsi)
+ffffff80029959a7	jb	0xffffff80029959e6
+ffffff80029959a9	movq	0x18(%rbp), %rbx
+ffffff80029959ad	movzbl	0x20(%rdx), %esi
+ffffff80029959b1	callq	*%rcx
+CONTROL_FLOW=0xffffff80029959b1 callq	*%rcx
+ffffff80029959b3	testl	%eax, %eax
+ffffff80029959b5	jne	0xffffff80029959e6
+ffffff80029959b7	movabsq	$-0x41e766e1a3278e6e, %rax      ## imm = 0xBE18991E5CD87192
+ffffff80029959c1	movq	%rax, 0x24(%rbx)
+ffffff80029959c5	movq	$0x8, 0x2c(%rbx)
+ffffff80029959cd	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff80029959d5	movl	$0x3c, 0x4(%rbx)
+ffffff80029959dc	movq	$0x0, 0x34(%rbx)
+ffffff80029959e4	xorl	%eax, %eax
+ffffff80029959e6	addq	$0x8, %rsp
+ffffff80029959ea	popq	%rbx
+ffffff80029959eb	popq	%rbp
+ffffff80029959ec	retq
+ffffff80029959ed	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet32_SetPromiscuousModeEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff80029959ee
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002995a66
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff80029959ee	pushq	%rbp
+ffffff80029959ef	movq	%rsp, %rbp
+ffffff80029959f2	pushq	%rbx
+ffffff80029959f3	pushq	%rax
+ffffff80029959f4	movq	0x10(%rbp), %rdx
+ffffff80029959f8	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff80029959fd	cmpl	$0x1, 0x20(%rdx)
+ffffff8002995a01	jne	0xffffff8002995a5e
+ffffff8002995a03	movq	0x28(%rbp), %rdx
+ffffff8002995a07	cmpq	$0x1, 0x10(%rdx)
+ffffff8002995a0c	jne	0xffffff8002995a5e
+ffffff8002995a0e	movq	%rsi, %rcx
+ffffff8002995a11	leaq	0x10(%rbp), %rsi
+ffffff8002995a15	cmpl	$0x5c, 0x10(%rsi)
+ffffff8002995a19	jb	0xffffff8002995a5e
+ffffff8002995a1b	cmpl	$0x3c, 0x14(%rsi)
+ffffff8002995a1f	jb	0xffffff8002995a5e
+ffffff8002995a21	movq	0x18(%rbp), %rbx
+ffffff8002995a25	movzbl	0x20(%rdx), %esi
+ffffff8002995a29	callq	*%rcx
+CONTROL_FLOW=0xffffff8002995a29 callq	*%rcx
+ffffff8002995a2b	testl	%eax, %eax
+ffffff8002995a2d	jne	0xffffff8002995a5e
+ffffff8002995a2f	movabsq	$-0x780715bc3900abad, %rax      ## imm = 0x87F8EA43C6FF5453
+ffffff8002995a39	movq	%rax, 0x24(%rbx)
+ffffff8002995a3d	movq	$0x8, 0x2c(%rbx)
+ffffff8002995a45	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff8002995a4d	movl	$0x3c, 0x4(%rbx)
+ffffff8002995a54	movq	$0x0, 0x34(%rbx)
+ffffff8002995a5c	xorl	%eax, %eax
+ffffff8002995a5e	addq	$0x8, %rsp
+ffffff8002995a62	popq	%rbx
+ffffff8002995a63	popq	%rbp
+ffffff8002995a64	retq
+ffffff8002995a65	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet26_SetInterfaceEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff8002995a66
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002995ade
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff8002995a66	pushq	%rbp
+ffffff8002995a67	movq	%rsp, %rbp
+ffffff8002995a6a	pushq	%rbx
+ffffff8002995a6b	pushq	%rax
+ffffff8002995a6c	movq	0x10(%rbp), %rdx
+ffffff8002995a70	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002995a75	cmpl	$0x1, 0x20(%rdx)
+ffffff8002995a79	jne	0xffffff8002995ad6
+ffffff8002995a7b	movq	0x28(%rbp), %rdx
+ffffff8002995a7f	cmpq	$0x1, 0x10(%rdx)
+ffffff8002995a84	jne	0xffffff8002995ad6
+ffffff8002995a86	movq	%rsi, %rcx
+ffffff8002995a89	leaq	0x10(%rbp), %rsi
+ffffff8002995a8d	cmpl	$0x5c, 0x10(%rsi)
+ffffff8002995a91	jb	0xffffff8002995ad6
+ffffff8002995a93	cmpl	$0x3c, 0x14(%rsi)
+ffffff8002995a97	jb	0xffffff8002995ad6
+ffffff8002995a99	movq	0x18(%rbp), %rbx
+ffffff8002995a9d	movzbl	0x20(%rdx), %esi
+ffffff8002995aa1	callq	*%rcx
+CONTROL_FLOW=0xffffff8002995aa1 callq	*%rcx
+ffffff8002995aa3	testl	%eax, %eax
+ffffff8002995aa5	jne	0xffffff8002995ad6
+ffffff8002995aa7	movabsq	$-0x56a096c12652918d, %rax      ## imm = 0xA95F693ED9AD6E73
+ffffff8002995ab1	movq	%rax, 0x24(%rbx)
+ffffff8002995ab5	movq	$0x8, 0x2c(%rbx)
+ffffff8002995abd	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff8002995ac5	movl	$0x3c, 0x4(%rbx)
+ffffff8002995acc	movq	$0x0, 0x34(%rbx)
+ffffff8002995ad4	xorl	%eax, %eax
+ffffff8002995ad6	addq	$0x8, %rsp
+ffffff8002995ada	popq	%rbx
+ffffff8002995adb	popq	%rbp
+ffffff8002995adc	retq
+ffffff8002995add	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet26_SetAllMulticastModeEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff8002997d72
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002997eb8
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff8002997d72	pushq	%rbp
+ffffff8002997d73	movq	%rsp, %rbp
+ffffff8002997d76	pushq	%rbx
+ffffff8002997d77	subq	$0xa8, %rsp
+ffffff8002997d7e	movabsq	$-0x41e766e1a3278e6e, %rbx      ## imm = 0xBE18991E5CD87192
+ffffff8002997d88	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff8002997d92	leaq	-0x74(%rbp), %rax
+ffffff8002997d96	movq	%rcx, 0x40(%rax)
+ffffff8002997d9a	movq	%rcx, 0x38(%rax)
+ffffff8002997d9e	movq	%rcx, 0x30(%rax)
+ffffff8002997da2	movq	%rcx, 0x28(%rax)
+ffffff8002997da6	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff8002997dad	xorl	%ecx, %ecx
+ffffff8002997daf	movq	%rcx, -0x1c(%rax)
+ffffff8002997db3	movq	%rcx, -0x34(%rax)
+ffffff8002997db7	movq	%rcx, 0x4(%rax)
+ffffff8002997dbb	movq	%rcx, 0xc(%rax)
+ffffff8002997dbf	movq	%rcx, -0x2c(%rax)
+ffffff8002997dc3	movq	%rcx, -0x24(%rax)
+ffffff8002997dc7	movq	%rcx, -0x14(%rax)
+ffffff8002997dcb	movq	%rcx, -0xc(%rax)
+ffffff8002997dcf	movq	%rcx, -0x4(%rax)
+ffffff8002997dd3	movq	%rcx, 0x14(%rax)
+ffffff8002997dd7	movq	%rcx, 0x1c(%rax)
+ffffff8002997ddb	movl	$0x0, 0x24(%rax)
+ffffff8002997de2	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff8002997de9	movl	$0x5c, -0x30(%rax)
+ffffff8002997df0	movq	$0x80, 0x8(%rax)
+ffffff8002997df8	movq	%rbx, (%rax)
+ffffff8002997dfb	movq	%rdi, 0x18(%rax)
+ffffff8002997dff	movq	$0x1, 0x10(%rax)
+ffffff8002997e07	movl	$0x1, -0x14(%rax)
+ffffff8002997e0e	movb	%sil, 0x20(%rax)
+ffffff8002997e12	leaq	-0xa8(%rbp), %rcx
+ffffff8002997e19	testq	%rdx, %rdx
+ffffff8002997e1c	je	0xffffff8002997e4d
+ffffff8002997e1e	movq	%rcx, -0x28(%rbp)
+ffffff8002997e22	movq	%rcx, -0x20(%rbp)
+ffffff8002997e26	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff8002997e30	movq	%rcx, -0x18(%rbp)
+ffffff8002997e34	movq	%rax, -0x10(%rbp)
+ffffff8002997e38	movq	-0x18(%rbp), %rcx
+ffffff8002997e3c	movq	-0x28(%rbp), %rsi
+ffffff8002997e40	movq	-0x20(%rbp), %r8
+ffffff8002997e44	pushq	%rax
+ffffff8002997e45	pushq	%rcx
+ffffff8002997e46	pushq	%r8
+ffffff8002997e48	pushq	%rsi
+ffffff8002997e49	callq	*%rdx
+CONTROL_FLOW=0xffffff8002997e49 callq	*%rdx
+ffffff8002997e4b	jmp	0xffffff8002997e7c
+CONTROL_FLOW=0xffffff8002997e4b jmp	0xffffff8002997e7c
+ffffff8002997e4d	movq	%rcx, -0x28(%rbp)
+ffffff8002997e51	movq	%rcx, -0x20(%rbp)
+ffffff8002997e55	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff8002997e5f	movq	%rcx, -0x18(%rbp)
+ffffff8002997e63	movq	%rax, -0x10(%rbp)
+ffffff8002997e67	movq	-0x18(%rbp), %rcx
+ffffff8002997e6b	movq	-0x28(%rbp), %rdx
+ffffff8002997e6f	movq	-0x20(%rbp), %rsi
+ffffff8002997e73	pushq	%rax
+ffffff8002997e74	pushq	%rcx
+ffffff8002997e75	pushq	%rsi
+ffffff8002997e76	pushq	%rdx
+ffffff8002997e77	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff8002997e77 callq	0xffffff8000b58410
+ffffff8002997e7c	addq	$0x20, %rsp
+ffffff8002997e80	testl	%eax, %eax
+ffffff8002997e82	jne	0xffffff8002997eae
+ffffff8002997e84	cmpl	$0x3c, -0xa4(%rbp)
+ffffff8002997e8b	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002997e90	jne	0xffffff8002997eae
+ffffff8002997e92	cmpq	%rbx, -0x84(%rbp)
+ffffff8002997e99	jne	0xffffff8002997eae
+ffffff8002997e9b	cmpl	$0x0, -0x88(%rbp)
+ffffff8002997ea2	jne	0xffffff8002997eae
+ffffff8002997ea4	xorl	%ecx, %ecx
+ffffff8002997ea6	cmpq	$0x0, -0x74(%rbp)
+ffffff8002997eab	cmovel	%ecx, %eax
+ffffff8002997eae	addq	$0xa8, %rsp
+ffffff8002997eb5	popq	%rbx
+ffffff8002997eb6	popq	%rbp
+ffffff8002997eb7	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet25_SetPromiscuousModeEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff8002997eb8
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002997ffe
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff8002997eb8	pushq	%rbp
+ffffff8002997eb9	movq	%rsp, %rbp
+ffffff8002997ebc	pushq	%rbx
+ffffff8002997ebd	subq	$0xa8, %rsp
+ffffff8002997ec4	movabsq	$-0x780715bc3900abad, %rbx      ## imm = 0x87F8EA43C6FF5453
+ffffff8002997ece	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff8002997ed8	leaq	-0x74(%rbp), %rax
+ffffff8002997edc	movq	%rcx, 0x40(%rax)
+ffffff8002997ee0	movq	%rcx, 0x38(%rax)
+ffffff8002997ee4	movq	%rcx, 0x30(%rax)
+ffffff8002997ee8	movq	%rcx, 0x28(%rax)
+ffffff8002997eec	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff8002997ef3	xorl	%ecx, %ecx
+ffffff8002997ef5	movq	%rcx, -0x1c(%rax)
+ffffff8002997ef9	movq	%rcx, -0x34(%rax)
+ffffff8002997efd	movq	%rcx, 0x4(%rax)
+ffffff8002997f01	movq	%rcx, 0xc(%rax)
+ffffff8002997f05	movq	%rcx, -0x2c(%rax)
+ffffff8002997f09	movq	%rcx, -0x24(%rax)
+ffffff8002997f0d	movq	%rcx, -0x14(%rax)
+ffffff8002997f11	movq	%rcx, -0xc(%rax)
+ffffff8002997f15	movq	%rcx, -0x4(%rax)
+ffffff8002997f19	movq	%rcx, 0x14(%rax)
+ffffff8002997f1d	movq	%rcx, 0x1c(%rax)
+ffffff8002997f21	movl	$0x0, 0x24(%rax)
+ffffff8002997f28	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff8002997f2f	movl	$0x5c, -0x30(%rax)
+ffffff8002997f36	movq	$0x80, 0x8(%rax)
+ffffff8002997f3e	movq	%rbx, (%rax)
+ffffff8002997f41	movq	%rdi, 0x18(%rax)
+ffffff8002997f45	movq	$0x1, 0x10(%rax)
+ffffff8002997f4d	movl	$0x1, -0x14(%rax)
+ffffff8002997f54	movb	%sil, 0x20(%rax)
+ffffff8002997f58	leaq	-0xa8(%rbp), %rcx
+ffffff8002997f5f	testq	%rdx, %rdx
+ffffff8002997f62	je	0xffffff8002997f93
+ffffff8002997f64	movq	%rcx, -0x28(%rbp)
+ffffff8002997f68	movq	%rcx, -0x20(%rbp)
+ffffff8002997f6c	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff8002997f76	movq	%rcx, -0x18(%rbp)
+ffffff8002997f7a	movq	%rax, -0x10(%rbp)
+ffffff8002997f7e	movq	-0x18(%rbp), %rcx
+ffffff8002997f82	movq	-0x28(%rbp), %rsi
+ffffff8002997f86	movq	-0x20(%rbp), %r8
+ffffff8002997f8a	pushq	%rax
+ffffff8002997f8b	pushq	%rcx
+ffffff8002997f8c	pushq	%r8
+ffffff8002997f8e	pushq	%rsi
+ffffff8002997f8f	callq	*%rdx
+CONTROL_FLOW=0xffffff8002997f8f callq	*%rdx
+ffffff8002997f91	jmp	0xffffff8002997fc2
+CONTROL_FLOW=0xffffff8002997f91 jmp	0xffffff8002997fc2
+ffffff8002997f93	movq	%rcx, -0x28(%rbp)
+ffffff8002997f97	movq	%rcx, -0x20(%rbp)
+ffffff8002997f9b	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff8002997fa5	movq	%rcx, -0x18(%rbp)
+ffffff8002997fa9	movq	%rax, -0x10(%rbp)
+ffffff8002997fad	movq	-0x18(%rbp), %rcx
+ffffff8002997fb1	movq	-0x28(%rbp), %rdx
+ffffff8002997fb5	movq	-0x20(%rbp), %rsi
+ffffff8002997fb9	pushq	%rax
+ffffff8002997fba	pushq	%rcx
+ffffff8002997fbb	pushq	%rsi
+ffffff8002997fbc	pushq	%rdx
+ffffff8002997fbd	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff8002997fbd callq	0xffffff8000b58410
+ffffff8002997fc2	addq	$0x20, %rsp
+ffffff8002997fc6	testl	%eax, %eax
+ffffff8002997fc8	jne	0xffffff8002997ff4
+ffffff8002997fca	cmpl	$0x3c, -0xa4(%rbp)
+ffffff8002997fd1	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002997fd6	jne	0xffffff8002997ff4
+ffffff8002997fd8	cmpq	%rbx, -0x84(%rbp)
+ffffff8002997fdf	jne	0xffffff8002997ff4
+ffffff8002997fe1	cmpl	$0x0, -0x88(%rbp)
+ffffff8002997fe8	jne	0xffffff8002997ff4
+ffffff8002997fea	xorl	%ecx, %ecx
+ffffff8002997fec	cmpq	$0x0, -0x74(%rbp)
+ffffff8002997ff1	cmovel	%ecx, %eax
+ffffff8002997ff4	addq	$0xa8, %rsp
+ffffff8002997ffb	popq	%rbx
+ffffff8002997ffc	popq	%rbp
+ffffff8002997ffd	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet19_SetInterfaceEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff8002997ffe
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002998144
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff8002997ffe	pushq	%rbp
+ffffff8002997fff	movq	%rsp, %rbp
+ffffff8002998002	pushq	%rbx
+ffffff8002998003	subq	$0xa8, %rsp
+ffffff800299800a	movabsq	$-0x56a096c12652918d, %rbx      ## imm = 0xA95F693ED9AD6E73
+ffffff8002998014	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff800299801e	leaq	-0x74(%rbp), %rax
+ffffff8002998022	movq	%rcx, 0x40(%rax)
+ffffff8002998026	movq	%rcx, 0x38(%rax)
+ffffff800299802a	movq	%rcx, 0x30(%rax)
+ffffff800299802e	movq	%rcx, 0x28(%rax)
+ffffff8002998032	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff8002998039	xorl	%ecx, %ecx
+ffffff800299803b	movq	%rcx, -0x1c(%rax)
+ffffff800299803f	movq	%rcx, -0x34(%rax)
+ffffff8002998043	movq	%rcx, 0x4(%rax)
+ffffff8002998047	movq	%rcx, 0xc(%rax)
+ffffff800299804b	movq	%rcx, -0x2c(%rax)
+ffffff800299804f	movq	%rcx, -0x24(%rax)
+ffffff8002998053	movq	%rcx, -0x14(%rax)
+ffffff8002998057	movq	%rcx, -0xc(%rax)
+ffffff800299805b	movq	%rcx, -0x4(%rax)
+ffffff800299805f	movq	%rcx, 0x14(%rax)
+ffffff8002998063	movq	%rcx, 0x1c(%rax)
+ffffff8002998067	movl	$0x0, 0x24(%rax)
+ffffff800299806e	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff8002998075	movl	$0x5c, -0x30(%rax)
+ffffff800299807c	movq	$0x80, 0x8(%rax)
+ffffff8002998084	movq	%rbx, (%rax)
+ffffff8002998087	movq	%rdi, 0x18(%rax)
+ffffff800299808b	movq	$0x1, 0x10(%rax)
+ffffff8002998093	movl	$0x1, -0x14(%rax)
+ffffff800299809a	movb	%sil, 0x20(%rax)
+ffffff800299809e	leaq	-0xa8(%rbp), %rcx
+ffffff80029980a5	testq	%rdx, %rdx
+ffffff80029980a8	je	0xffffff80029980d9
+ffffff80029980aa	movq	%rcx, -0x28(%rbp)
+ffffff80029980ae	movq	%rcx, -0x20(%rbp)
+ffffff80029980b2	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029980bc	movq	%rcx, -0x18(%rbp)
+ffffff80029980c0	movq	%rax, -0x10(%rbp)
+ffffff80029980c4	movq	-0x18(%rbp), %rcx
+ffffff80029980c8	movq	-0x28(%rbp), %rsi
+ffffff80029980cc	movq	-0x20(%rbp), %r8
+ffffff80029980d0	pushq	%rax
+ffffff80029980d1	pushq	%rcx
+ffffff80029980d2	pushq	%r8
+ffffff80029980d4	pushq	%rsi
+ffffff80029980d5	callq	*%rdx
+CONTROL_FLOW=0xffffff80029980d5 callq	*%rdx
+ffffff80029980d7	jmp	0xffffff8002998108
+CONTROL_FLOW=0xffffff80029980d7 jmp	0xffffff8002998108
+ffffff80029980d9	movq	%rcx, -0x28(%rbp)
+ffffff80029980dd	movq	%rcx, -0x20(%rbp)
+ffffff80029980e1	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029980eb	movq	%rcx, -0x18(%rbp)
+ffffff80029980ef	movq	%rax, -0x10(%rbp)
+ffffff80029980f3	movq	-0x18(%rbp), %rcx
+ffffff80029980f7	movq	-0x28(%rbp), %rdx
+ffffff80029980fb	movq	-0x20(%rbp), %rsi
+ffffff80029980ff	pushq	%rax
+ffffff8002998100	pushq	%rcx
+ffffff8002998101	pushq	%rsi
+ffffff8002998102	pushq	%rdx
+ffffff8002998103	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff8002998103 callq	0xffffff8000b58410
+ffffff8002998108	addq	$0x20, %rsp
+ffffff800299810c	testl	%eax, %eax
+ffffff800299810e	jne	0xffffff800299813a
+ffffff8002998110	cmpl	$0x3c, -0xa4(%rbp)
+ffffff8002998117	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299811c	jne	0xffffff800299813a
+ffffff800299811e	cmpq	%rbx, -0x84(%rbp)
+ffffff8002998125	jne	0xffffff800299813a
+ffffff8002998127	cmpl	$0x0, -0x88(%rbp)
+ffffff800299812e	jne	0xffffff800299813a
+ffffff8002998130	xorl	%ecx, %ecx
+ffffff8002998132	cmpq	$0x0, -0x74(%rbp)
+ffffff8002998137	cmovel	%ecx, %eax
+ffffff800299813a	addq	$0xa8, %rsp
+ffffff8002998141	popq	%rbx
+ffffff8002998142	popq	%rbp
+ffffff8002998143	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet18SetInterfaceEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff8002998f18
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299905e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff8002998f18	pushq	%rbp
+ffffff8002998f19	movq	%rsp, %rbp
+ffffff8002998f1c	pushq	%rbx
+ffffff8002998f1d	subq	$0xa8, %rsp
+ffffff8002998f24	movabsq	$-0xbde5627f065e026, %rbx       ## imm = 0xF421A9D80F9A1FDA
+ffffff8002998f2e	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff8002998f38	leaq	-0x74(%rbp), %rax
+ffffff8002998f3c	movq	%rcx, 0x40(%rax)
+ffffff8002998f40	movq	%rcx, 0x38(%rax)
+ffffff8002998f44	movq	%rcx, 0x30(%rax)
+ffffff8002998f48	movq	%rcx, 0x28(%rax)
+ffffff8002998f4c	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff8002998f53	xorl	%ecx, %ecx
+ffffff8002998f55	movq	%rcx, -0x1c(%rax)
+ffffff8002998f59	movq	%rcx, -0x34(%rax)
+ffffff8002998f5d	movq	%rcx, 0x4(%rax)
+ffffff8002998f61	movq	%rcx, 0xc(%rax)
+ffffff8002998f65	movq	%rcx, -0x2c(%rax)
+ffffff8002998f69	movq	%rcx, -0x24(%rax)
+ffffff8002998f6d	movq	%rcx, -0x14(%rax)
+ffffff8002998f71	movq	%rcx, -0xc(%rax)
+ffffff8002998f75	movq	%rcx, -0x4(%rax)
+ffffff8002998f79	movq	%rcx, 0x14(%rax)
+ffffff8002998f7d	movq	%rcx, 0x1c(%rax)
+ffffff8002998f81	movl	$0x0, 0x24(%rax)
+ffffff8002998f88	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff8002998f8f	movl	$0x5c, -0x30(%rax)
+ffffff8002998f96	movq	$0x80, 0x8(%rax)
+ffffff8002998f9e	movq	%rbx, (%rax)
+ffffff8002998fa1	movq	%rdi, 0x18(%rax)
+ffffff8002998fa5	movq	$0x1, 0x10(%rax)
+ffffff8002998fad	movl	$0x1, -0x14(%rax)
+ffffff8002998fb4	movb	%sil, 0x20(%rax)
+ffffff8002998fb8	leaq	-0xa8(%rbp), %rcx
+ffffff8002998fbf	testq	%rdx, %rdx
+ffffff8002998fc2	je	0xffffff8002998ff3
+ffffff8002998fc4	movq	%rcx, -0x28(%rbp)
+ffffff8002998fc8	movq	%rcx, -0x20(%rbp)
+ffffff8002998fcc	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff8002998fd6	movq	%rcx, -0x18(%rbp)
+ffffff8002998fda	movq	%rax, -0x10(%rbp)
+ffffff8002998fde	movq	-0x18(%rbp), %rcx
+ffffff8002998fe2	movq	-0x28(%rbp), %rsi
+ffffff8002998fe6	movq	-0x20(%rbp), %r8
+ffffff8002998fea	pushq	%rax
+ffffff8002998feb	pushq	%rcx
+ffffff8002998fec	pushq	%r8
+ffffff8002998fee	pushq	%rsi
+ffffff8002998fef	callq	*%rdx
+CONTROL_FLOW=0xffffff8002998fef callq	*%rdx
+ffffff8002998ff1	jmp	0xffffff8002999022
+CONTROL_FLOW=0xffffff8002998ff1 jmp	0xffffff8002999022
+ffffff8002998ff3	movq	%rcx, -0x28(%rbp)
+ffffff8002998ff7	movq	%rcx, -0x20(%rbp)
+ffffff8002998ffb	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff8002999005	movq	%rcx, -0x18(%rbp)
+ffffff8002999009	movq	%rax, -0x10(%rbp)
+ffffff800299900d	movq	-0x18(%rbp), %rcx
+ffffff8002999011	movq	-0x28(%rbp), %rdx
+ffffff8002999015	movq	-0x20(%rbp), %rsi
+ffffff8002999019	pushq	%rax
+ffffff800299901a	pushq	%rcx
+ffffff800299901b	pushq	%rsi
+ffffff800299901c	pushq	%rdx
+ffffff800299901d	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff800299901d callq	0xffffff8000b58410
+ffffff8002999022	addq	$0x20, %rsp
+ffffff8002999026	testl	%eax, %eax
+ffffff8002999028	jne	0xffffff8002999054
+ffffff800299902a	cmpl	$0x3c, -0xa4(%rbp)
+ffffff8002999031	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002999036	jne	0xffffff8002999054
+ffffff8002999038	cmpq	%rbx, -0x84(%rbp)
+ffffff800299903f	jne	0xffffff8002999054
+ffffff8002999041	cmpl	$0x0, -0x88(%rbp)
+ffffff8002999048	jne	0xffffff8002999054
+ffffff800299904a	xorl	%ecx, %ecx
+ffffff800299904c	cmpq	$0x0, -0x74(%rbp)
+ffffff8002999051	cmovel	%ecx, %eax
+ffffff8002999054	addq	$0xa8, %rsp
+ffffff800299905b	popq	%rbx
+ffffff800299905c	popq	%rbp
+ffffff800299905d	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet24SetPromiscuousModeEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff800299905e
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029991a4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff800299905e	pushq	%rbp
+ffffff800299905f	movq	%rsp, %rbp
+ffffff8002999062	pushq	%rbx
+ffffff8002999063	subq	$0xa8, %rsp
+ffffff800299906a	movabsq	$-0x1f8d033d9309c654, %rbx      ## imm = 0xE072FCC26CF639AC
+ffffff8002999074	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff800299907e	leaq	-0x74(%rbp), %rax
+ffffff8002999082	movq	%rcx, 0x40(%rax)
+ffffff8002999086	movq	%rcx, 0x38(%rax)
+ffffff800299908a	movq	%rcx, 0x30(%rax)
+ffffff800299908e	movq	%rcx, 0x28(%rax)
+ffffff8002999092	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff8002999099	xorl	%ecx, %ecx
+ffffff800299909b	movq	%rcx, -0x1c(%rax)
+ffffff800299909f	movq	%rcx, -0x34(%rax)
+ffffff80029990a3	movq	%rcx, 0x4(%rax)
+ffffff80029990a7	movq	%rcx, 0xc(%rax)
+ffffff80029990ab	movq	%rcx, -0x2c(%rax)
+ffffff80029990af	movq	%rcx, -0x24(%rax)
+ffffff80029990b3	movq	%rcx, -0x14(%rax)
+ffffff80029990b7	movq	%rcx, -0xc(%rax)
+ffffff80029990bb	movq	%rcx, -0x4(%rax)
+ffffff80029990bf	movq	%rcx, 0x14(%rax)
+ffffff80029990c3	movq	%rcx, 0x1c(%rax)
+ffffff80029990c7	movl	$0x0, 0x24(%rax)
+ffffff80029990ce	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff80029990d5	movl	$0x5c, -0x30(%rax)
+ffffff80029990dc	movq	$0x80, 0x8(%rax)
+ffffff80029990e4	movq	%rbx, (%rax)
+ffffff80029990e7	movq	%rdi, 0x18(%rax)
+ffffff80029990eb	movq	$0x1, 0x10(%rax)
+ffffff80029990f3	movl	$0x1, -0x14(%rax)
+ffffff80029990fa	movb	%sil, 0x20(%rax)
+ffffff80029990fe	leaq	-0xa8(%rbp), %rcx
+ffffff8002999105	testq	%rdx, %rdx
+ffffff8002999108	je	0xffffff8002999139
+ffffff800299910a	movq	%rcx, -0x28(%rbp)
+ffffff800299910e	movq	%rcx, -0x20(%rbp)
+ffffff8002999112	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299911c	movq	%rcx, -0x18(%rbp)
+ffffff8002999120	movq	%rax, -0x10(%rbp)
+ffffff8002999124	movq	-0x18(%rbp), %rcx
+ffffff8002999128	movq	-0x28(%rbp), %rsi
+ffffff800299912c	movq	-0x20(%rbp), %r8
+ffffff8002999130	pushq	%rax
+ffffff8002999131	pushq	%rcx
+ffffff8002999132	pushq	%r8
+ffffff8002999134	pushq	%rsi
+ffffff8002999135	callq	*%rdx
+CONTROL_FLOW=0xffffff8002999135 callq	*%rdx
+ffffff8002999137	jmp	0xffffff8002999168
+CONTROL_FLOW=0xffffff8002999137 jmp	0xffffff8002999168
+ffffff8002999139	movq	%rcx, -0x28(%rbp)
+ffffff800299913d	movq	%rcx, -0x20(%rbp)
+ffffff8002999141	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299914b	movq	%rcx, -0x18(%rbp)
+ffffff800299914f	movq	%rax, -0x10(%rbp)
+ffffff8002999153	movq	-0x18(%rbp), %rcx
+ffffff8002999157	movq	-0x28(%rbp), %rdx
+ffffff800299915b	movq	-0x20(%rbp), %rsi
+ffffff800299915f	pushq	%rax
+ffffff8002999160	pushq	%rcx
+ffffff8002999161	pushq	%rsi
+ffffff8002999162	pushq	%rdx
+ffffff8002999163	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff8002999163 callq	0xffffff8000b58410
+ffffff8002999168	addq	$0x20, %rsp
+ffffff800299916c	testl	%eax, %eax
+ffffff800299916e	jne	0xffffff800299919a
+ffffff8002999170	cmpl	$0x3c, -0xa4(%rbp)
+ffffff8002999177	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299917c	jne	0xffffff800299919a
+ffffff800299917e	cmpq	%rbx, -0x84(%rbp)
+ffffff8002999185	jne	0xffffff800299919a
+ffffff8002999187	cmpl	$0x0, -0x88(%rbp)
+ffffff800299918e	jne	0xffffff800299919a
+ffffff8002999190	xorl	%ecx, %ecx
+ffffff8002999192	cmpq	$0x0, -0x74(%rbp)
+ffffff8002999197	cmovel	%ecx, %eax
+ffffff800299919a	addq	$0xa8, %rsp
+ffffff80029991a1	popq	%rbx
+ffffff80029991a2	popq	%rbp
+ffffff80029991a3	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet25SetAllMulticastModeEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff8002999300
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002999446
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff8002999300	pushq	%rbp
+ffffff8002999301	movq	%rsp, %rbp
+ffffff8002999304	pushq	%rbx
+ffffff8002999305	subq	$0xa8, %rsp
+ffffff800299930c	movabsq	$-0x1fbd57868d9eeddb, %rbx      ## imm = 0xE042A87972611225
+ffffff8002999316	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff8002999320	leaq	-0x74(%rbp), %rax
+ffffff8002999324	movq	%rcx, 0x40(%rax)
+ffffff8002999328	movq	%rcx, 0x38(%rax)
+ffffff800299932c	movq	%rcx, 0x30(%rax)
+ffffff8002999330	movq	%rcx, 0x28(%rax)
+ffffff8002999334	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff800299933b	xorl	%ecx, %ecx
+ffffff800299933d	movq	%rcx, -0x1c(%rax)
+ffffff8002999341	movq	%rcx, -0x34(%rax)
+ffffff8002999345	movq	%rcx, 0x4(%rax)
+ffffff8002999349	movq	%rcx, 0xc(%rax)
+ffffff800299934d	movq	%rcx, -0x2c(%rax)
+ffffff8002999351	movq	%rcx, -0x24(%rax)
+ffffff8002999355	movq	%rcx, -0x14(%rax)
+ffffff8002999359	movq	%rcx, -0xc(%rax)
+ffffff800299935d	movq	%rcx, -0x4(%rax)
+ffffff8002999361	movq	%rcx, 0x14(%rax)
+ffffff8002999365	movq	%rcx, 0x1c(%rax)
+ffffff8002999369	movl	$0x0, 0x24(%rax)
+ffffff8002999370	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff8002999377	movl	$0x5c, -0x30(%rax)
+ffffff800299937e	movq	$0x80, 0x8(%rax)
+ffffff8002999386	movq	%rbx, (%rax)
+ffffff8002999389	movq	%rdi, 0x18(%rax)
+ffffff800299938d	movq	$0x1, 0x10(%rax)
+ffffff8002999395	movl	$0x1, -0x14(%rax)
+ffffff800299939c	movb	%sil, 0x20(%rax)
+ffffff80029993a0	leaq	-0xa8(%rbp), %rcx
+ffffff80029993a7	testq	%rdx, %rdx
+ffffff80029993aa	je	0xffffff80029993db
+ffffff80029993ac	movq	%rcx, -0x28(%rbp)
+ffffff80029993b0	movq	%rcx, -0x20(%rbp)
+ffffff80029993b4	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029993be	movq	%rcx, -0x18(%rbp)
+ffffff80029993c2	movq	%rax, -0x10(%rbp)
+ffffff80029993c6	movq	-0x18(%rbp), %rcx
+ffffff80029993ca	movq	-0x28(%rbp), %rsi
+ffffff80029993ce	movq	-0x20(%rbp), %r8
+ffffff80029993d2	pushq	%rax
+ffffff80029993d3	pushq	%rcx
+ffffff80029993d4	pushq	%r8
+ffffff80029993d6	pushq	%rsi
+ffffff80029993d7	callq	*%rdx
+CONTROL_FLOW=0xffffff80029993d7 callq	*%rdx
+ffffff80029993d9	jmp	0xffffff800299940a
+CONTROL_FLOW=0xffffff80029993d9 jmp	0xffffff800299940a
+ffffff80029993db	movq	%rcx, -0x28(%rbp)
+ffffff80029993df	movq	%rcx, -0x20(%rbp)
+ffffff80029993e3	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029993ed	movq	%rcx, -0x18(%rbp)
+ffffff80029993f1	movq	%rax, -0x10(%rbp)
+ffffff80029993f5	movq	-0x18(%rbp), %rcx
+ffffff80029993f9	movq	-0x28(%rbp), %rdx
+ffffff80029993fd	movq	-0x20(%rbp), %rsi
+ffffff8002999401	pushq	%rax
+ffffff8002999402	pushq	%rcx
+ffffff8002999403	pushq	%rsi
+ffffff8002999404	pushq	%rdx
+ffffff8002999405	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff8002999405 callq	0xffffff8000b58410
+ffffff800299940a	addq	$0x20, %rsp
+ffffff800299940e	testl	%eax, %eax
+ffffff8002999410	jne	0xffffff800299943c
+ffffff8002999412	cmpl	$0x3c, -0xa4(%rbp)
+ffffff8002999419	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299941e	jne	0xffffff800299943c
+ffffff8002999420	cmpq	%rbx, -0x84(%rbp)
+ffffff8002999427	jne	0xffffff800299943c
+ffffff8002999429	cmpl	$0x0, -0x88(%rbp)
+ffffff8002999430	jne	0xffffff800299943c
+ffffff8002999432	xorl	%ecx, %ecx
+ffffff8002999434	cmpq	$0x0, -0x74(%rbp)
+ffffff8002999439	cmovel	%ecx, %eax
+ffffff800299943c	addq	$0xa8, %rsp
+ffffff8002999443	popq	%rbx
+ffffff8002999444	popq	%rbp
+ffffff8002999445	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet26SetWakeOnMagicPacketEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff800299958c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029996d2
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff800299958c	pushq	%rbp
+ffffff800299958d	movq	%rsp, %rbp
+ffffff8002999590	pushq	%rbx
+ffffff8002999591	subq	$0xa8, %rsp
+ffffff8002999598	movabsq	$-0x4dc11fdd78fa046b, %rbx      ## imm = 0xB23EE0228705FB95
+ffffff80029995a2	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff80029995ac	leaq	-0x74(%rbp), %rax
+ffffff80029995b0	movq	%rcx, 0x40(%rax)
+ffffff80029995b4	movq	%rcx, 0x38(%rax)
+ffffff80029995b8	movq	%rcx, 0x30(%rax)
+ffffff80029995bc	movq	%rcx, 0x28(%rax)
+ffffff80029995c0	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff80029995c7	xorl	%ecx, %ecx
+ffffff80029995c9	movq	%rcx, -0x1c(%rax)
+ffffff80029995cd	movq	%rcx, -0x34(%rax)
+ffffff80029995d1	movq	%rcx, 0x4(%rax)
+ffffff80029995d5	movq	%rcx, 0xc(%rax)
+ffffff80029995d9	movq	%rcx, -0x2c(%rax)
+ffffff80029995dd	movq	%rcx, -0x24(%rax)
+ffffff80029995e1	movq	%rcx, -0x14(%rax)
+ffffff80029995e5	movq	%rcx, -0xc(%rax)
+ffffff80029995e9	movq	%rcx, -0x4(%rax)
+ffffff80029995ed	movq	%rcx, 0x14(%rax)
+ffffff80029995f1	movq	%rcx, 0x1c(%rax)
+ffffff80029995f5	movl	$0x0, 0x24(%rax)
+ffffff80029995fc	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff8002999603	movl	$0x5c, -0x30(%rax)
+ffffff800299960a	movq	$0x80, 0x8(%rax)
+ffffff8002999612	movq	%rbx, (%rax)
+ffffff8002999615	movq	%rdi, 0x18(%rax)
+ffffff8002999619	movq	$0x1, 0x10(%rax)
+ffffff8002999621	movl	$0x1, -0x14(%rax)
+ffffff8002999628	movb	%sil, 0x20(%rax)
+ffffff800299962c	leaq	-0xa8(%rbp), %rcx
+ffffff8002999633	testq	%rdx, %rdx
+ffffff8002999636	je	0xffffff8002999667
+ffffff8002999638	movq	%rcx, -0x28(%rbp)
+ffffff800299963c	movq	%rcx, -0x20(%rbp)
+ffffff8002999640	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299964a	movq	%rcx, -0x18(%rbp)
+ffffff800299964e	movq	%rax, -0x10(%rbp)
+ffffff8002999652	movq	-0x18(%rbp), %rcx
+ffffff8002999656	movq	-0x28(%rbp), %rsi
+ffffff800299965a	movq	-0x20(%rbp), %r8
+ffffff800299965e	pushq	%rax
+ffffff800299965f	pushq	%rcx
+ffffff8002999660	pushq	%r8
+ffffff8002999662	pushq	%rsi
+ffffff8002999663	callq	*%rdx
+CONTROL_FLOW=0xffffff8002999663 callq	*%rdx
+ffffff8002999665	jmp	0xffffff8002999696
+CONTROL_FLOW=0xffffff8002999665 jmp	0xffffff8002999696
+ffffff8002999667	movq	%rcx, -0x28(%rbp)
+ffffff800299966b	movq	%rcx, -0x20(%rbp)
+ffffff800299966f	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff8002999679	movq	%rcx, -0x18(%rbp)
+ffffff800299967d	movq	%rax, -0x10(%rbp)
+ffffff8002999681	movq	-0x18(%rbp), %rcx
+ffffff8002999685	movq	-0x28(%rbp), %rdx
+ffffff8002999689	movq	-0x20(%rbp), %rsi
+ffffff800299968d	pushq	%rax
+ffffff800299968e	pushq	%rcx
+ffffff800299968f	pushq	%rsi
+ffffff8002999690	pushq	%rdx
+ffffff8002999691	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff8002999691 callq	0xffffff8000b58410
+ffffff8002999696	addq	$0x20, %rsp
+ffffff800299969a	testl	%eax, %eax
+ffffff800299969c	jne	0xffffff80029996c8
+ffffff800299969e	cmpl	$0x3c, -0xa4(%rbp)
+ffffff80029996a5	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff80029996aa	jne	0xffffff80029996c8
+ffffff80029996ac	cmpq	%rbx, -0x84(%rbp)
+ffffff80029996b3	jne	0xffffff80029996c8
+ffffff80029996b5	cmpl	$0x0, -0x88(%rbp)
+ffffff80029996bc	jne	0xffffff80029996c8
+ffffff80029996be	xorl	%ecx, %ecx
+ffffff80029996c0	cmpq	$0x0, -0x74(%rbp)
+ffffff80029996c5	cmovel	%ecx, %eax
+ffffff80029996c8	addq	$0xa8, %rsp
+ffffff80029996cf	popq	%rbx
+ffffff80029996d0	popq	%rbp
+ffffff80029996d1	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet25SetInterfaceEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff8002999d3c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002999db4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff8002999d3c	pushq	%rbp
+ffffff8002999d3d	movq	%rsp, %rbp
+ffffff8002999d40	pushq	%rbx
+ffffff8002999d41	pushq	%rax
+ffffff8002999d42	movq	0x10(%rbp), %rdx
+ffffff8002999d46	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002999d4b	cmpl	$0x1, 0x20(%rdx)
+ffffff8002999d4f	jne	0xffffff8002999dac
+ffffff8002999d51	movq	0x28(%rbp), %rdx
+ffffff8002999d55	cmpq	$0x1, 0x10(%rdx)
+ffffff8002999d5a	jne	0xffffff8002999dac
+ffffff8002999d5c	movq	%rsi, %rcx
+ffffff8002999d5f	leaq	0x10(%rbp), %rsi
+ffffff8002999d63	cmpl	$0x5c, 0x10(%rsi)
+ffffff8002999d67	jb	0xffffff8002999dac
+ffffff8002999d69	cmpl	$0x3c, 0x14(%rsi)
+ffffff8002999d6d	jb	0xffffff8002999dac
+ffffff8002999d6f	movq	0x18(%rbp), %rbx
+ffffff8002999d73	movzbl	0x20(%rdx), %esi
+ffffff8002999d77	callq	*%rcx
+CONTROL_FLOW=0xffffff8002999d77 callq	*%rcx
+ffffff8002999d79	testl	%eax, %eax
+ffffff8002999d7b	jne	0xffffff8002999dac
+ffffff8002999d7d	movabsq	$-0xbde5627f065e026, %rax       ## imm = 0xF421A9D80F9A1FDA
+ffffff8002999d87	movq	%rax, 0x24(%rbx)
+ffffff8002999d8b	movq	$0x8, 0x2c(%rbx)
+ffffff8002999d93	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff8002999d9b	movl	$0x3c, 0x4(%rbx)
+ffffff8002999da2	movq	$0x0, 0x34(%rbx)
+ffffff8002999daa	xorl	%eax, %eax
+ffffff8002999dac	addq	$0x8, %rsp
+ffffff8002999db0	popq	%rbx
+ffffff8002999db1	popq	%rbp
+ffffff8002999db2	retq
+ffffff8002999db3	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet31SetPromiscuousModeEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff8002999db4
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002999e2c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff8002999db4	pushq	%rbp
+ffffff8002999db5	movq	%rsp, %rbp
+ffffff8002999db8	pushq	%rbx
+ffffff8002999db9	pushq	%rax
+ffffff8002999dba	movq	0x10(%rbp), %rdx
+ffffff8002999dbe	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002999dc3	cmpl	$0x1, 0x20(%rdx)
+ffffff8002999dc7	jne	0xffffff8002999e24
+ffffff8002999dc9	movq	0x28(%rbp), %rdx
+ffffff8002999dcd	cmpq	$0x1, 0x10(%rdx)
+ffffff8002999dd2	jne	0xffffff8002999e24
+ffffff8002999dd4	movq	%rsi, %rcx
+ffffff8002999dd7	leaq	0x10(%rbp), %rsi
+ffffff8002999ddb	cmpl	$0x5c, 0x10(%rsi)
+ffffff8002999ddf	jb	0xffffff8002999e24
+ffffff8002999de1	cmpl	$0x3c, 0x14(%rsi)
+ffffff8002999de5	jb	0xffffff8002999e24
+ffffff8002999de7	movq	0x18(%rbp), %rbx
+ffffff8002999deb	movzbl	0x20(%rdx), %esi
+ffffff8002999def	callq	*%rcx
+CONTROL_FLOW=0xffffff8002999def callq	*%rcx
+ffffff8002999df1	testl	%eax, %eax
+ffffff8002999df3	jne	0xffffff8002999e24
+ffffff8002999df5	movabsq	$-0x1f8d033d9309c654, %rax      ## imm = 0xE072FCC26CF639AC
+ffffff8002999dff	movq	%rax, 0x24(%rbx)
+ffffff8002999e03	movq	$0x8, 0x2c(%rbx)
+ffffff8002999e0b	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff8002999e13	movl	$0x3c, 0x4(%rbx)
+ffffff8002999e1a	movq	$0x0, 0x34(%rbx)
+ffffff8002999e22	xorl	%eax, %eax
+ffffff8002999e24	addq	$0x8, %rsp
+ffffff8002999e28	popq	%rbx
+ffffff8002999e29	popq	%rbp
+ffffff8002999e2a	retq
+ffffff8002999e2b	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet32SetAllMulticastModeEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff8002999ea6
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff8002999f1e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff8002999ea6	pushq	%rbp
+ffffff8002999ea7	movq	%rsp, %rbp
+ffffff8002999eaa	pushq	%rbx
+ffffff8002999eab	pushq	%rax
+ffffff8002999eac	movq	0x10(%rbp), %rdx
+ffffff8002999eb0	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002999eb5	cmpl	$0x1, 0x20(%rdx)
+ffffff8002999eb9	jne	0xffffff8002999f16
+ffffff8002999ebb	movq	0x28(%rbp), %rdx
+ffffff8002999ebf	cmpq	$0x1, 0x10(%rdx)
+ffffff8002999ec4	jne	0xffffff8002999f16
+ffffff8002999ec6	movq	%rsi, %rcx
+ffffff8002999ec9	leaq	0x10(%rbp), %rsi
+ffffff8002999ecd	cmpl	$0x5c, 0x10(%rsi)
+ffffff8002999ed1	jb	0xffffff8002999f16
+ffffff8002999ed3	cmpl	$0x3c, 0x14(%rsi)
+ffffff8002999ed7	jb	0xffffff8002999f16
+ffffff8002999ed9	movq	0x18(%rbp), %rbx
+ffffff8002999edd	movzbl	0x20(%rdx), %esi
+ffffff8002999ee1	callq	*%rcx
+CONTROL_FLOW=0xffffff8002999ee1 callq	*%rcx
+ffffff8002999ee3	testl	%eax, %eax
+ffffff8002999ee5	jne	0xffffff8002999f16
+ffffff8002999ee7	movabsq	$-0x1fbd57868d9eeddb, %rax      ## imm = 0xE042A87972611225
+ffffff8002999ef1	movq	%rax, 0x24(%rbx)
+ffffff8002999ef5	movq	$0x8, 0x2c(%rbx)
+ffffff8002999efd	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff8002999f05	movl	$0x3c, 0x4(%rbx)
+ffffff8002999f0c	movq	$0x0, 0x34(%rbx)
+ffffff8002999f14	xorl	%eax, %eax
+ffffff8002999f16	addq	$0x8, %rsp
+ffffff8002999f1a	popq	%rbx
+ffffff8002999f1b	popq	%rbp
+ffffff8002999f1c	retq
+ffffff8002999f1d	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkEthernet33SetWakeOnMagicPacketEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff8002999f94
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299a00c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff8002999f94	pushq	%rbp
+ffffff8002999f95	movq	%rsp, %rbp
+ffffff8002999f98	pushq	%rbx
+ffffff8002999f99	pushq	%rax
+ffffff8002999f9a	movq	0x10(%rbp), %rdx
+ffffff8002999f9e	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff8002999fa3	cmpl	$0x1, 0x20(%rdx)
+ffffff8002999fa7	jne	0xffffff800299a004
+ffffff8002999fa9	movq	0x28(%rbp), %rdx
+ffffff8002999fad	cmpq	$0x1, 0x10(%rdx)
+ffffff8002999fb2	jne	0xffffff800299a004
+ffffff8002999fb4	movq	%rsi, %rcx
+ffffff8002999fb7	leaq	0x10(%rbp), %rsi
+ffffff8002999fbb	cmpl	$0x5c, 0x10(%rsi)
+ffffff8002999fbf	jb	0xffffff800299a004
+ffffff8002999fc1	cmpl	$0x3c, 0x14(%rsi)
+ffffff8002999fc5	jb	0xffffff800299a004
+ffffff8002999fc7	movq	0x18(%rbp), %rbx
+ffffff8002999fcb	movzbl	0x20(%rdx), %esi
+ffffff8002999fcf	callq	*%rcx
+CONTROL_FLOW=0xffffff8002999fcf callq	*%rcx
+ffffff8002999fd1	testl	%eax, %eax
+ffffff8002999fd3	jne	0xffffff800299a004
+ffffff8002999fd5	movabsq	$-0x4dc11fdd78fa046b, %rax      ## imm = 0xB23EE0228705FB95
+ffffff8002999fdf	movq	%rax, 0x24(%rbx)
+ffffff8002999fe3	movq	$0x8, 0x2c(%rbx)
+ffffff8002999feb	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff8002999ff3	movl	$0x3c, 0x4(%rbx)
+ffffff8002999ffa	movq	$0x0, 0x34(%rbx)
+ffffff800299a002	xorl	%eax, %eax
+ffffff800299a004	addq	$0x8, %rsp
+ffffff800299a008	popq	%rbx
+ffffff800299a009	popq	%rbp
+ffffff800299a00a	retq
+ffffff800299a00b	nop
+
+METHOD_SYMBOL=__ZN17IOUserNetworkWLAN31_ReportInterfaceAdvisory_InvokeE5IORPCP15OSMetaClassBasePFiS2_PK24ifnet_interface_advisoryE
+METHOD_ADDRESS=0xffffff800299b962
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299b9dc
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=33
+ffffff800299b962	pushq	%rbp
+ffffff800299b963	movq	%rsp, %rbp
+ffffff800299b966	pushq	%rbx
+ffffff800299b967	pushq	%rax
+ffffff800299b968	movq	0x10(%rbp), %rdx
+ffffff800299b96c	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299b971	cmpl	$0x1, 0x20(%rdx)
+ffffff800299b975	jne	0xffffff800299b9d5
+ffffff800299b977	movq	%rsi, %rcx
+ffffff800299b97a	movq	0x28(%rbp), %rsi
+ffffff800299b97e	cmpq	$0x1, 0x10(%rsi)
+ffffff800299b983	jne	0xffffff800299b9d5
+ffffff800299b985	leaq	0x10(%rbp), %rdx
+ffffff800299b989	cmpl	$0xb4, 0x10(%rdx)
+ffffff800299b990	jb	0xffffff800299b9d5
+ffffff800299b992	cmpl	$0x3c, 0x14(%rdx)
+ffffff800299b996	jb	0xffffff800299b9d5
+ffffff800299b998	movq	0x18(%rbp), %rbx
+ffffff800299b99c	addq	$0x20, %rsi
+ffffff800299b9a0	callq	*%rcx
+CONTROL_FLOW=0xffffff800299b9a0 callq	*%rcx
+ffffff800299b9a2	testl	%eax, %eax
+ffffff800299b9a4	jne	0xffffff800299b9d5
+ffffff800299b9a6	movabsq	$-0x5f05bcd05a2a4c53, %rax      ## imm = 0xA0FA432FA5D5B3AD
+ffffff800299b9b0	movq	%rax, 0x24(%rbx)
+ffffff800299b9b4	movq	$0x8, 0x2c(%rbx)
+ffffff800299b9bc	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff800299b9c4	movl	$0x3c, 0x4(%rbx)
+ffffff800299b9cb	movq	$0x0, 0x34(%rbx)
+ffffff800299b9d3	xorl	%eax, %eax
+ffffff800299b9d5	addq	$0x8, %rsp
+ffffff800299b9d9	popq	%rbx
+ffffff800299b9da	popq	%rbp
+ffffff800299b9db	retq
+
+METHOD_SYMBOL=__ZN17IOUserNetworkWLAN31_InterfaceAdvisoryEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff800299b9dc
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299ba54
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff800299b9dc	pushq	%rbp
+ffffff800299b9dd	movq	%rsp, %rbp
+ffffff800299b9e0	pushq	%rbx
+ffffff800299b9e1	pushq	%rax
+ffffff800299b9e2	movq	0x10(%rbp), %rdx
+ffffff800299b9e6	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299b9eb	cmpl	$0x1, 0x20(%rdx)
+ffffff800299b9ef	jne	0xffffff800299ba4c
+ffffff800299b9f1	movq	0x28(%rbp), %rdx
+ffffff800299b9f5	cmpq	$0x1, 0x10(%rdx)
+ffffff800299b9fa	jne	0xffffff800299ba4c
+ffffff800299b9fc	movq	%rsi, %rcx
+ffffff800299b9ff	leaq	0x10(%rbp), %rsi
+ffffff800299ba03	cmpl	$0x5c, 0x10(%rsi)
+ffffff800299ba07	jb	0xffffff800299ba4c
+ffffff800299ba09	cmpl	$0x3c, 0x14(%rsi)
+ffffff800299ba0d	jb	0xffffff800299ba4c
+ffffff800299ba0f	movq	0x18(%rbp), %rbx
+ffffff800299ba13	movzbl	0x20(%rdx), %esi
+ffffff800299ba17	callq	*%rcx
+CONTROL_FLOW=0xffffff800299ba17 callq	*%rcx
+ffffff800299ba19	testl	%eax, %eax
+ffffff800299ba1b	jne	0xffffff800299ba4c
+ffffff800299ba1d	movabsq	$-0x787ce743375293ed, %rax      ## imm = 0x878318BCC8AD6C13
+ffffff800299ba27	movq	%rax, 0x24(%rbx)
+ffffff800299ba2b	movq	$0x8, 0x2c(%rbx)
+ffffff800299ba33	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff800299ba3b	movl	$0x3c, 0x4(%rbx)
+ffffff800299ba42	movq	$0x0, 0x34(%rbx)
+ffffff800299ba4a	xorl	%eax, %eax
+ffffff800299ba4c	addq	$0x8, %rsp
+ffffff800299ba50	popq	%rbx
+ffffff800299ba51	popq	%rbp
+ffffff800299ba52	retq
+ffffff800299ba53	nop
+
+METHOD_SYMBOL=__ZN17IOUserNetworkWLAN24_ReportInterfaceAdvisoryEPK24ifnet_interface_advisoryPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff800299ce72
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299cfa2
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=74
+ffffff800299ce72	pushq	%rbp
+ffffff800299ce73	movq	%rsp, %rbp
+ffffff800299ce76	pushq	%rbx
+ffffff800299ce77	subq	$0xd8, %rsp
+ffffff800299ce7e	movq	%rdi, %rax
+ffffff800299ce81	movabsq	$-0x5f05bcd05a2a4c53, %rbx      ## imm = 0xA0FA432FA5D5B3AD
+ffffff800299ce8b	xorl	%ecx, %ecx
+ffffff800299ce8d	leaq	-0xac(%rbp), %r8
+ffffff800299ce94	movq	%rcx, -0x1c(%r8)
+ffffff800299ce98	movq	%rcx, -0x34(%r8)
+ffffff800299ce9c	movq	%rcx, -0x14(%r8)
+ffffff800299cea0	movq	%rcx, -0xc(%r8)
+ffffff800299cea4	movq	%rcx, -0x24(%r8)
+ffffff800299cea8	movq	%rcx, -0x2c(%r8)
+ffffff800299ceac	movl	$0x0, -0x4(%r8)
+ffffff800299ceb4	movl	$0x4da2b68c, -0x18(%r8)         ## imm = 0x4DA2B68C
+ffffff800299cebc	movl	$0xb4, -0x30(%r8)
+ffffff800299cec4	movq	$0x80, 0x8(%r8)
+ffffff800299cecc	movq	%rbx, (%r8)
+ffffff800299cecf	movq	%rdi, 0x18(%r8)
+ffffff800299ced3	movq	$0x1, 0x10(%r8)
+ffffff800299cedb	movl	$0x1, -0x14(%r8)
+ffffff800299cee3	leaq	-0x8c(%rbp), %rdi
+ffffff800299ceea	movl	$0x18, %ecx
+ffffff800299ceef	rep		movsl	(%rsi), %es:(%rdi)
+ffffff800299cef1	leaq	-0xe0(%rbp), %rcx
+ffffff800299cef8	testq	%rdx, %rdx
+ffffff800299cefb	je	0xffffff800299cf30
+ffffff800299cefd	movq	%rcx, -0x28(%rbp)
+ffffff800299cf01	movq	%rcx, -0x20(%rbp)
+ffffff800299cf05	movabsq	$0x80000000b4, %rcx             ## imm = 0x80000000B4
+ffffff800299cf0f	movq	%rcx, -0x18(%rbp)
+ffffff800299cf13	movq	%r8, -0x10(%rbp)
+ffffff800299cf17	movq	-0x18(%rbp), %rcx
+ffffff800299cf1b	movq	-0x28(%rbp), %rsi
+ffffff800299cf1f	movq	-0x20(%rbp), %r9
+ffffff800299cf23	movq	%rax, %rdi
+ffffff800299cf26	pushq	%r8
+ffffff800299cf28	pushq	%rcx
+ffffff800299cf29	pushq	%r9
+ffffff800299cf2b	pushq	%rsi
+ffffff800299cf2c	callq	*%rdx
+CONTROL_FLOW=0xffffff800299cf2c callq	*%rdx
+ffffff800299cf2e	jmp	0xffffff800299cf63
+CONTROL_FLOW=0xffffff800299cf2e jmp	0xffffff800299cf63
+ffffff800299cf30	movq	%rcx, -0x28(%rbp)
+ffffff800299cf34	movq	%rcx, -0x20(%rbp)
+ffffff800299cf38	movabsq	$0x80000000b4, %rcx             ## imm = 0x80000000B4
+ffffff800299cf42	movq	%rcx, -0x18(%rbp)
+ffffff800299cf46	movq	%r8, -0x10(%rbp)
+ffffff800299cf4a	movq	-0x18(%rbp), %rcx
+ffffff800299cf4e	movq	-0x28(%rbp), %rdx
+ffffff800299cf52	movq	-0x20(%rbp), %rsi
+ffffff800299cf56	movq	%rax, %rdi
+ffffff800299cf59	pushq	%r8
+ffffff800299cf5b	pushq	%rcx
+ffffff800299cf5c	pushq	%rsi
+ffffff800299cf5d	pushq	%rdx
+ffffff800299cf5e	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff800299cf5e callq	0xffffff8000b58410
+ffffff800299cf63	addq	$0x20, %rsp
+ffffff800299cf67	testl	%eax, %eax
+ffffff800299cf69	jne	0xffffff800299cf98
+ffffff800299cf6b	cmpl	$0x3c, -0xdc(%rbp)
+ffffff800299cf72	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299cf77	jne	0xffffff800299cf98
+ffffff800299cf79	cmpq	%rbx, -0xbc(%rbp)
+ffffff800299cf80	jne	0xffffff800299cf98
+ffffff800299cf82	cmpl	$0x0, -0xc0(%rbp)
+ffffff800299cf89	jne	0xffffff800299cf98
+ffffff800299cf8b	xorl	%ecx, %ecx
+ffffff800299cf8d	cmpq	$0x0, -0xac(%rbp)
+ffffff800299cf95	cmovel	%ecx, %eax
+ffffff800299cf98	addq	$0xd8, %rsp
+ffffff800299cf9f	popq	%rbx
+ffffff800299cfa0	popq	%rbp
+ffffff800299cfa1	retq
+
+METHOD_SYMBOL=__ZN17IOUserNetworkWLAN24_InterfaceAdvisoryEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff800299cfa2
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299d0e8
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff800299cfa2	pushq	%rbp
+ffffff800299cfa3	movq	%rsp, %rbp
+ffffff800299cfa6	pushq	%rbx
+ffffff800299cfa7	subq	$0xa8, %rsp
+ffffff800299cfae	movabsq	$-0x787ce743375293ed, %rbx      ## imm = 0x878318BCC8AD6C13
+ffffff800299cfb8	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff800299cfc2	leaq	-0x74(%rbp), %rax
+ffffff800299cfc6	movq	%rcx, 0x40(%rax)
+ffffff800299cfca	movq	%rcx, 0x38(%rax)
+ffffff800299cfce	movq	%rcx, 0x30(%rax)
+ffffff800299cfd2	movq	%rcx, 0x28(%rax)
+ffffff800299cfd6	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff800299cfdd	xorl	%ecx, %ecx
+ffffff800299cfdf	movq	%rcx, -0x1c(%rax)
+ffffff800299cfe3	movq	%rcx, -0x34(%rax)
+ffffff800299cfe7	movq	%rcx, 0x4(%rax)
+ffffff800299cfeb	movq	%rcx, 0xc(%rax)
+ffffff800299cfef	movq	%rcx, -0x2c(%rax)
+ffffff800299cff3	movq	%rcx, -0x24(%rax)
+ffffff800299cff7	movq	%rcx, -0x14(%rax)
+ffffff800299cffb	movq	%rcx, -0xc(%rax)
+ffffff800299cfff	movq	%rcx, -0x4(%rax)
+ffffff800299d003	movq	%rcx, 0x14(%rax)
+ffffff800299d007	movq	%rcx, 0x1c(%rax)
+ffffff800299d00b	movl	$0x0, 0x24(%rax)
+ffffff800299d012	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff800299d019	movl	$0x5c, -0x30(%rax)
+ffffff800299d020	movq	$0x80, 0x8(%rax)
+ffffff800299d028	movq	%rbx, (%rax)
+ffffff800299d02b	movq	%rdi, 0x18(%rax)
+ffffff800299d02f	movq	$0x1, 0x10(%rax)
+ffffff800299d037	movl	$0x1, -0x14(%rax)
+ffffff800299d03e	movb	%sil, 0x20(%rax)
+ffffff800299d042	leaq	-0xa8(%rbp), %rcx
+ffffff800299d049	testq	%rdx, %rdx
+ffffff800299d04c	je	0xffffff800299d07d
+ffffff800299d04e	movq	%rcx, -0x28(%rbp)
+ffffff800299d052	movq	%rcx, -0x20(%rbp)
+ffffff800299d056	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299d060	movq	%rcx, -0x18(%rbp)
+ffffff800299d064	movq	%rax, -0x10(%rbp)
+ffffff800299d068	movq	-0x18(%rbp), %rcx
+ffffff800299d06c	movq	-0x28(%rbp), %rsi
+ffffff800299d070	movq	-0x20(%rbp), %r8
+ffffff800299d074	pushq	%rax
+ffffff800299d075	pushq	%rcx
+ffffff800299d076	pushq	%r8
+ffffff800299d078	pushq	%rsi
+ffffff800299d079	callq	*%rdx
+CONTROL_FLOW=0xffffff800299d079 callq	*%rdx
+ffffff800299d07b	jmp	0xffffff800299d0ac
+CONTROL_FLOW=0xffffff800299d07b jmp	0xffffff800299d0ac
+ffffff800299d07d	movq	%rcx, -0x28(%rbp)
+ffffff800299d081	movq	%rcx, -0x20(%rbp)
+ffffff800299d085	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299d08f	movq	%rcx, -0x18(%rbp)
+ffffff800299d093	movq	%rax, -0x10(%rbp)
+ffffff800299d097	movq	-0x18(%rbp), %rcx
+ffffff800299d09b	movq	-0x28(%rbp), %rdx
+ffffff800299d09f	movq	-0x20(%rbp), %rsi
+ffffff800299d0a3	pushq	%rax
+ffffff800299d0a4	pushq	%rcx
+ffffff800299d0a5	pushq	%rsi
+ffffff800299d0a6	pushq	%rdx
+ffffff800299d0a7	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff800299d0a7 callq	0xffffff8000b58410
+ffffff800299d0ac	addq	$0x20, %rsp
+ffffff800299d0b0	testl	%eax, %eax
+ffffff800299d0b2	jne	0xffffff800299d0de
+ffffff800299d0b4	cmpl	$0x3c, -0xa4(%rbp)
+ffffff800299d0bb	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299d0c0	jne	0xffffff800299d0de
+ffffff800299d0c2	cmpq	%rbx, -0x84(%rbp)
+ffffff800299d0c9	jne	0xffffff800299d0de
+ffffff800299d0cb	cmpl	$0x0, -0x88(%rbp)
+ffffff800299d0d2	jne	0xffffff800299d0de
+ffffff800299d0d4	xorl	%ecx, %ecx
+ffffff800299d0d6	cmpq	$0x0, -0x74(%rbp)
+ffffff800299d0db	cmovel	%ecx, %eax
+ffffff800299d0de	addq	$0xa8, %rsp
+ffffff800299d0e5	popq	%rbx
+ffffff800299d0e6	popq	%rbp
+ffffff800299d0e7	retq
+
+METHOD_SYMBOL=__ZN24IOUserNetworkPacketQueue17_SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff800299d272
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299d2ea
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff800299d272	pushq	%rbp
+ffffff800299d273	movq	%rsp, %rbp
+ffffff800299d276	pushq	%rbx
+ffffff800299d277	pushq	%rax
+ffffff800299d278	movq	0x10(%rbp), %rdx
+ffffff800299d27c	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299d281	cmpl	$0x1, 0x20(%rdx)
+ffffff800299d285	jne	0xffffff800299d2e2
+ffffff800299d287	movq	0x28(%rbp), %rdx
+ffffff800299d28b	cmpq	$0x1, 0x10(%rdx)
+ffffff800299d290	jne	0xffffff800299d2e2
+ffffff800299d292	movq	%rsi, %rcx
+ffffff800299d295	leaq	0x10(%rbp), %rsi
+ffffff800299d299	cmpl	$0x5c, 0x10(%rsi)
+ffffff800299d29d	jb	0xffffff800299d2e2
+ffffff800299d29f	cmpl	$0x3c, 0x14(%rsi)
+ffffff800299d2a3	jb	0xffffff800299d2e2
+ffffff800299d2a5	movq	0x18(%rbp), %rbx
+ffffff800299d2a9	movzbl	0x20(%rdx), %esi
+ffffff800299d2ad	callq	*%rcx
+CONTROL_FLOW=0xffffff800299d2ad callq	*%rcx
+ffffff800299d2af	testl	%eax, %eax
+ffffff800299d2b1	jne	0xffffff800299d2e2
+ffffff800299d2b3	movabsq	$-0x280c76622eda241a, %rax      ## imm = 0xD7F3899DD125DBE6
+ffffff800299d2bd	movq	%rax, 0x24(%rbx)
+ffffff800299d2c1	movq	$0x8, 0x2c(%rbx)
+ffffff800299d2c9	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff800299d2d1	movl	$0x3c, 0x4(%rbx)
+ffffff800299d2d8	movq	$0x0, 0x34(%rbx)
+ffffff800299d2e0	xorl	%eax, %eax
+ffffff800299d2e2	addq	$0x8, %rsp
+ffffff800299d2e6	popq	%rbx
+ffffff800299d2e7	popq	%rbp
+ffffff800299d2e8	retq
+ffffff800299d2e9	nop
+
+METHOD_SYMBOL=__ZN24IOUserNetworkPacketQueue16SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff800299d2ea
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299d362
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff800299d2ea	pushq	%rbp
+ffffff800299d2eb	movq	%rsp, %rbp
+ffffff800299d2ee	pushq	%rbx
+ffffff800299d2ef	pushq	%rax
+ffffff800299d2f0	movq	0x10(%rbp), %rdx
+ffffff800299d2f4	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299d2f9	cmpl	$0x1, 0x20(%rdx)
+ffffff800299d2fd	jne	0xffffff800299d35a
+ffffff800299d2ff	movq	0x28(%rbp), %rdx
+ffffff800299d303	cmpq	$0x1, 0x10(%rdx)
+ffffff800299d308	jne	0xffffff800299d35a
+ffffff800299d30a	movq	%rsi, %rcx
+ffffff800299d30d	leaq	0x10(%rbp), %rsi
+ffffff800299d311	cmpl	$0x5c, 0x10(%rsi)
+ffffff800299d315	jb	0xffffff800299d35a
+ffffff800299d317	cmpl	$0x3c, 0x14(%rsi)
+ffffff800299d31b	jb	0xffffff800299d35a
+ffffff800299d31d	movq	0x18(%rbp), %rbx
+ffffff800299d321	movzbl	0x20(%rdx), %esi
+ffffff800299d325	callq	*%rcx
+CONTROL_FLOW=0xffffff800299d325 callq	*%rcx
+ffffff800299d327	testl	%eax, %eax
+ffffff800299d329	jne	0xffffff800299d35a
+ffffff800299d32b	movabsq	$-0x73888f1ee4a2d28c, %rax      ## imm = 0x8C7770E11B5D2D74
+ffffff800299d335	movq	%rax, 0x24(%rbx)
+ffffff800299d339	movq	$0x8, 0x2c(%rbx)
+ffffff800299d341	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff800299d349	movl	$0x3c, 0x4(%rbx)
+ffffff800299d350	movq	$0x0, 0x34(%rbx)
+ffffff800299d358	xorl	%eax, %eax
+ffffff800299d35a	addq	$0x8, %rsp
+ffffff800299d35e	popq	%rbx
+ffffff800299d35f	popq	%rbp
+ffffff800299d360	retq
+ffffff800299d361	nop
+
+METHOD_SYMBOL=__ZN24IOUserNetworkPacketQueue10_SetEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff800299d448
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299d58e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff800299d448	pushq	%rbp
+ffffff800299d449	movq	%rsp, %rbp
+ffffff800299d44c	pushq	%rbx
+ffffff800299d44d	subq	$0xa8, %rsp
+ffffff800299d454	movabsq	$-0x280c76622eda241a, %rbx      ## imm = 0xD7F3899DD125DBE6
+ffffff800299d45e	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff800299d468	leaq	-0x74(%rbp), %rax
+ffffff800299d46c	movq	%rcx, 0x40(%rax)
+ffffff800299d470	movq	%rcx, 0x38(%rax)
+ffffff800299d474	movq	%rcx, 0x30(%rax)
+ffffff800299d478	movq	%rcx, 0x28(%rax)
+ffffff800299d47c	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff800299d483	xorl	%ecx, %ecx
+ffffff800299d485	movq	%rcx, -0x1c(%rax)
+ffffff800299d489	movq	%rcx, -0x34(%rax)
+ffffff800299d48d	movq	%rcx, 0x4(%rax)
+ffffff800299d491	movq	%rcx, 0xc(%rax)
+ffffff800299d495	movq	%rcx, -0x2c(%rax)
+ffffff800299d499	movq	%rcx, -0x24(%rax)
+ffffff800299d49d	movq	%rcx, -0x14(%rax)
+ffffff800299d4a1	movq	%rcx, -0xc(%rax)
+ffffff800299d4a5	movq	%rcx, -0x4(%rax)
+ffffff800299d4a9	movq	%rcx, 0x14(%rax)
+ffffff800299d4ad	movq	%rcx, 0x1c(%rax)
+ffffff800299d4b1	movl	$0x0, 0x24(%rax)
+ffffff800299d4b8	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff800299d4bf	movl	$0x5c, -0x30(%rax)
+ffffff800299d4c6	movq	$0x80, 0x8(%rax)
+ffffff800299d4ce	movq	%rbx, (%rax)
+ffffff800299d4d1	movq	%rdi, 0x18(%rax)
+ffffff800299d4d5	movq	$0x1, 0x10(%rax)
+ffffff800299d4dd	movl	$0x1, -0x14(%rax)
+ffffff800299d4e4	movb	%sil, 0x20(%rax)
+ffffff800299d4e8	leaq	-0xa8(%rbp), %rcx
+ffffff800299d4ef	testq	%rdx, %rdx
+ffffff800299d4f2	je	0xffffff800299d523
+ffffff800299d4f4	movq	%rcx, -0x28(%rbp)
+ffffff800299d4f8	movq	%rcx, -0x20(%rbp)
+ffffff800299d4fc	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299d506	movq	%rcx, -0x18(%rbp)
+ffffff800299d50a	movq	%rax, -0x10(%rbp)
+ffffff800299d50e	movq	-0x18(%rbp), %rcx
+ffffff800299d512	movq	-0x28(%rbp), %rsi
+ffffff800299d516	movq	-0x20(%rbp), %r8
+ffffff800299d51a	pushq	%rax
+ffffff800299d51b	pushq	%rcx
+ffffff800299d51c	pushq	%r8
+ffffff800299d51e	pushq	%rsi
+ffffff800299d51f	callq	*%rdx
+CONTROL_FLOW=0xffffff800299d51f callq	*%rdx
+ffffff800299d521	jmp	0xffffff800299d552
+CONTROL_FLOW=0xffffff800299d521 jmp	0xffffff800299d552
+ffffff800299d523	movq	%rcx, -0x28(%rbp)
+ffffff800299d527	movq	%rcx, -0x20(%rbp)
+ffffff800299d52b	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299d535	movq	%rcx, -0x18(%rbp)
+ffffff800299d539	movq	%rax, -0x10(%rbp)
+ffffff800299d53d	movq	-0x18(%rbp), %rcx
+ffffff800299d541	movq	-0x28(%rbp), %rdx
+ffffff800299d545	movq	-0x20(%rbp), %rsi
+ffffff800299d549	pushq	%rax
+ffffff800299d54a	pushq	%rcx
+ffffff800299d54b	pushq	%rsi
+ffffff800299d54c	pushq	%rdx
+ffffff800299d54d	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff800299d54d callq	0xffffff8000b58410
+ffffff800299d552	addq	$0x20, %rsp
+ffffff800299d556	testl	%eax, %eax
+ffffff800299d558	jne	0xffffff800299d584
+ffffff800299d55a	cmpl	$0x3c, -0xa4(%rbp)
+ffffff800299d561	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299d566	jne	0xffffff800299d584
+ffffff800299d568	cmpq	%rbx, -0x84(%rbp)
+ffffff800299d56f	jne	0xffffff800299d584
+ffffff800299d571	cmpl	$0x0, -0x88(%rbp)
+ffffff800299d578	jne	0xffffff800299d584
+ffffff800299d57a	xorl	%ecx, %ecx
+ffffff800299d57c	cmpq	$0x0, -0x74(%rbp)
+ffffff800299d581	cmovel	%ecx, %eax
+ffffff800299d584	addq	$0xa8, %rsp
+ffffff800299d58b	popq	%rbx
+ffffff800299d58c	popq	%rbp
+ffffff800299d58d	retq
+
+METHOD_SYMBOL=__ZN24IOUserNetworkPacketQueue9SetEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff800299d58e
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff800299d6d4
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff800299d58e	pushq	%rbp
+ffffff800299d58f	movq	%rsp, %rbp
+ffffff800299d592	pushq	%rbx
+ffffff800299d593	subq	$0xa8, %rsp
+ffffff800299d59a	movabsq	$-0x73888f1ee4a2d28c, %rbx      ## imm = 0x8C7770E11B5D2D74
+ffffff800299d5a4	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff800299d5ae	leaq	-0x74(%rbp), %rax
+ffffff800299d5b2	movq	%rcx, 0x40(%rax)
+ffffff800299d5b6	movq	%rcx, 0x38(%rax)
+ffffff800299d5ba	movq	%rcx, 0x30(%rax)
+ffffff800299d5be	movq	%rcx, 0x28(%rax)
+ffffff800299d5c2	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff800299d5c9	xorl	%ecx, %ecx
+ffffff800299d5cb	movq	%rcx, -0x1c(%rax)
+ffffff800299d5cf	movq	%rcx, -0x34(%rax)
+ffffff800299d5d3	movq	%rcx, 0x4(%rax)
+ffffff800299d5d7	movq	%rcx, 0xc(%rax)
+ffffff800299d5db	movq	%rcx, -0x2c(%rax)
+ffffff800299d5df	movq	%rcx, -0x24(%rax)
+ffffff800299d5e3	movq	%rcx, -0x14(%rax)
+ffffff800299d5e7	movq	%rcx, -0xc(%rax)
+ffffff800299d5eb	movq	%rcx, -0x4(%rax)
+ffffff800299d5ef	movq	%rcx, 0x14(%rax)
+ffffff800299d5f3	movq	%rcx, 0x1c(%rax)
+ffffff800299d5f7	movl	$0x0, 0x24(%rax)
+ffffff800299d5fe	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff800299d605	movl	$0x5c, -0x30(%rax)
+ffffff800299d60c	movq	$0x80, 0x8(%rax)
+ffffff800299d614	movq	%rbx, (%rax)
+ffffff800299d617	movq	%rdi, 0x18(%rax)
+ffffff800299d61b	movq	$0x1, 0x10(%rax)
+ffffff800299d623	movl	$0x1, -0x14(%rax)
+ffffff800299d62a	movb	%sil, 0x20(%rax)
+ffffff800299d62e	leaq	-0xa8(%rbp), %rcx
+ffffff800299d635	testq	%rdx, %rdx
+ffffff800299d638	je	0xffffff800299d669
+ffffff800299d63a	movq	%rcx, -0x28(%rbp)
+ffffff800299d63e	movq	%rcx, -0x20(%rbp)
+ffffff800299d642	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299d64c	movq	%rcx, -0x18(%rbp)
+ffffff800299d650	movq	%rax, -0x10(%rbp)
+ffffff800299d654	movq	-0x18(%rbp), %rcx
+ffffff800299d658	movq	-0x28(%rbp), %rsi
+ffffff800299d65c	movq	-0x20(%rbp), %r8
+ffffff800299d660	pushq	%rax
+ffffff800299d661	pushq	%rcx
+ffffff800299d662	pushq	%r8
+ffffff800299d664	pushq	%rsi
+ffffff800299d665	callq	*%rdx
+CONTROL_FLOW=0xffffff800299d665 callq	*%rdx
+ffffff800299d667	jmp	0xffffff800299d698
+CONTROL_FLOW=0xffffff800299d667 jmp	0xffffff800299d698
+ffffff800299d669	movq	%rcx, -0x28(%rbp)
+ffffff800299d66d	movq	%rcx, -0x20(%rbp)
+ffffff800299d671	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff800299d67b	movq	%rcx, -0x18(%rbp)
+ffffff800299d67f	movq	%rax, -0x10(%rbp)
+ffffff800299d683	movq	-0x18(%rbp), %rcx
+ffffff800299d687	movq	-0x28(%rbp), %rdx
+ffffff800299d68b	movq	-0x20(%rbp), %rsi
+ffffff800299d68f	pushq	%rax
+ffffff800299d690	pushq	%rcx
+ffffff800299d691	pushq	%rsi
+ffffff800299d692	pushq	%rdx
+ffffff800299d693	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff800299d693 callq	0xffffff8000b58410
+ffffff800299d698	addq	$0x20, %rsp
+ffffff800299d69c	testl	%eax, %eax
+ffffff800299d69e	jne	0xffffff800299d6ca
+ffffff800299d6a0	cmpl	$0x3c, -0xa4(%rbp)
+ffffff800299d6a7	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff800299d6ac	jne	0xffffff800299d6ca
+ffffff800299d6ae	cmpq	%rbx, -0x84(%rbp)
+ffffff800299d6b5	jne	0xffffff800299d6ca
+ffffff800299d6b7	cmpl	$0x0, -0x88(%rbp)
+ffffff800299d6be	jne	0xffffff800299d6ca
+ffffff800299d6c0	xorl	%ecx, %ecx
+ffffff800299d6c2	cmpq	$0x0, -0x74(%rbp)
+ffffff800299d6c7	cmovel	%ecx, %eax
+ffffff800299d6ca	addq	$0xa8, %rsp
+ffffff800299d6d1	popq	%rbx
+ffffff800299d6d2	popq	%rbp
+ffffff800299d6d3	retq
+
+METHOD_SYMBOL=__ZN24IOUserNetworkLogicalLink17_SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff80029a00fe
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029a0176
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff80029a00fe	pushq	%rbp
+ffffff80029a00ff	movq	%rsp, %rbp
+ffffff80029a0102	pushq	%rbx
+ffffff80029a0103	pushq	%rax
+ffffff80029a0104	movq	0x10(%rbp), %rdx
+ffffff80029a0108	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff80029a010d	cmpl	$0x1, 0x20(%rdx)
+ffffff80029a0111	jne	0xffffff80029a016e
+ffffff80029a0113	movq	0x28(%rbp), %rdx
+ffffff80029a0117	cmpq	$0x1, 0x10(%rdx)
+ffffff80029a011c	jne	0xffffff80029a016e
+ffffff80029a011e	movq	%rsi, %rcx
+ffffff80029a0121	leaq	0x10(%rbp), %rsi
+ffffff80029a0125	cmpl	$0x5c, 0x10(%rsi)
+ffffff80029a0129	jb	0xffffff80029a016e
+ffffff80029a012b	cmpl	$0x3c, 0x14(%rsi)
+ffffff80029a012f	jb	0xffffff80029a016e
+ffffff80029a0131	movq	0x18(%rbp), %rbx
+ffffff80029a0135	movzbl	0x20(%rdx), %esi
+ffffff80029a0139	callq	*%rcx
+CONTROL_FLOW=0xffffff80029a0139 callq	*%rcx
+ffffff80029a013b	testl	%eax, %eax
+ffffff80029a013d	jne	0xffffff80029a016e
+ffffff80029a013f	movabsq	$-0x1fd25d828f09ec5c, %rax      ## imm = 0xE02DA27D70F613A4
+ffffff80029a0149	movq	%rax, 0x24(%rbx)
+ffffff80029a014d	movq	$0x8, 0x2c(%rbx)
+ffffff80029a0155	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff80029a015d	movl	$0x3c, 0x4(%rbx)
+ffffff80029a0164	movq	$0x0, 0x34(%rbx)
+ffffff80029a016c	xorl	%eax, %eax
+ffffff80029a016e	addq	$0x8, %rsp
+ffffff80029a0172	popq	%rbx
+ffffff80029a0173	popq	%rbp
+ffffff80029a0174	retq
+ffffff80029a0175	nop
+
+METHOD_SYMBOL=__ZN24IOUserNetworkLogicalLink10_SetEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff80029a03ac
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029a04f2
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff80029a03ac	pushq	%rbp
+ffffff80029a03ad	movq	%rsp, %rbp
+ffffff80029a03b0	pushq	%rbx
+ffffff80029a03b1	subq	$0xa8, %rsp
+ffffff80029a03b8	movabsq	$-0x1fd25d828f09ec5c, %rbx      ## imm = 0xE02DA27D70F613A4
+ffffff80029a03c2	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff80029a03cc	leaq	-0x74(%rbp), %rax
+ffffff80029a03d0	movq	%rcx, 0x40(%rax)
+ffffff80029a03d4	movq	%rcx, 0x38(%rax)
+ffffff80029a03d8	movq	%rcx, 0x30(%rax)
+ffffff80029a03dc	movq	%rcx, 0x28(%rax)
+ffffff80029a03e0	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff80029a03e7	xorl	%ecx, %ecx
+ffffff80029a03e9	movq	%rcx, -0x1c(%rax)
+ffffff80029a03ed	movq	%rcx, -0x34(%rax)
+ffffff80029a03f1	movq	%rcx, 0x4(%rax)
+ffffff80029a03f5	movq	%rcx, 0xc(%rax)
+ffffff80029a03f9	movq	%rcx, -0x2c(%rax)
+ffffff80029a03fd	movq	%rcx, -0x24(%rax)
+ffffff80029a0401	movq	%rcx, -0x14(%rax)
+ffffff80029a0405	movq	%rcx, -0xc(%rax)
+ffffff80029a0409	movq	%rcx, -0x4(%rax)
+ffffff80029a040d	movq	%rcx, 0x14(%rax)
+ffffff80029a0411	movq	%rcx, 0x1c(%rax)
+ffffff80029a0415	movl	$0x0, 0x24(%rax)
+ffffff80029a041c	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff80029a0423	movl	$0x5c, -0x30(%rax)
+ffffff80029a042a	movq	$0x80, 0x8(%rax)
+ffffff80029a0432	movq	%rbx, (%rax)
+ffffff80029a0435	movq	%rdi, 0x18(%rax)
+ffffff80029a0439	movq	$0x1, 0x10(%rax)
+ffffff80029a0441	movl	$0x1, -0x14(%rax)
+ffffff80029a0448	movb	%sil, 0x20(%rax)
+ffffff80029a044c	leaq	-0xa8(%rbp), %rcx
+ffffff80029a0453	testq	%rdx, %rdx
+ffffff80029a0456	je	0xffffff80029a0487
+ffffff80029a0458	movq	%rcx, -0x28(%rbp)
+ffffff80029a045c	movq	%rcx, -0x20(%rbp)
+ffffff80029a0460	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029a046a	movq	%rcx, -0x18(%rbp)
+ffffff80029a046e	movq	%rax, -0x10(%rbp)
+ffffff80029a0472	movq	-0x18(%rbp), %rcx
+ffffff80029a0476	movq	-0x28(%rbp), %rsi
+ffffff80029a047a	movq	-0x20(%rbp), %r8
+ffffff80029a047e	pushq	%rax
+ffffff80029a047f	pushq	%rcx
+ffffff80029a0480	pushq	%r8
+ffffff80029a0482	pushq	%rsi
+ffffff80029a0483	callq	*%rdx
+CONTROL_FLOW=0xffffff80029a0483 callq	*%rdx
+ffffff80029a0485	jmp	0xffffff80029a04b6
+CONTROL_FLOW=0xffffff80029a0485 jmp	0xffffff80029a04b6
+ffffff80029a0487	movq	%rcx, -0x28(%rbp)
+ffffff80029a048b	movq	%rcx, -0x20(%rbp)
+ffffff80029a048f	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029a0499	movq	%rcx, -0x18(%rbp)
+ffffff80029a049d	movq	%rax, -0x10(%rbp)
+ffffff80029a04a1	movq	-0x18(%rbp), %rcx
+ffffff80029a04a5	movq	-0x28(%rbp), %rdx
+ffffff80029a04a9	movq	-0x20(%rbp), %rsi
+ffffff80029a04ad	pushq	%rax
+ffffff80029a04ae	pushq	%rcx
+ffffff80029a04af	pushq	%rsi
+ffffff80029a04b0	pushq	%rdx
+ffffff80029a04b1	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff80029a04b1 callq	0xffffff8000b58410
+ffffff80029a04b6	addq	$0x20, %rsp
+ffffff80029a04ba	testl	%eax, %eax
+ffffff80029a04bc	jne	0xffffff80029a04e8
+ffffff80029a04be	cmpl	$0x3c, -0xa4(%rbp)
+ffffff80029a04c5	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff80029a04ca	jne	0xffffff80029a04e8
+ffffff80029a04cc	cmpq	%rbx, -0x84(%rbp)
+ffffff80029a04d3	jne	0xffffff80029a04e8
+ffffff80029a04d5	cmpl	$0x0, -0x88(%rbp)
+ffffff80029a04dc	jne	0xffffff80029a04e8
+ffffff80029a04de	xorl	%ecx, %ecx
+ffffff80029a04e0	cmpq	$0x0, -0x74(%rbp)
+ffffff80029a04e5	cmovel	%ecx, %eax
+ffffff80029a04e8	addq	$0xa8, %rsp
+ffffff80029a04ef	popq	%rbx
+ffffff80029a04f0	popq	%rbp
+ffffff80029a04f1	retq
+
+METHOD_SYMBOL=__ZN21IOUserNetworkQueueSet17_SetEnable_InvokeE5IORPCP15OSMetaClassBasePFiS2_bE
+METHOD_ADDRESS=0xffffff80029a06f0
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029a0768
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff80029a06f0	pushq	%rbp
+ffffff80029a06f1	movq	%rsp, %rbp
+ffffff80029a06f4	pushq	%rbx
+ffffff80029a06f5	pushq	%rax
+ffffff80029a06f6	movq	0x10(%rbp), %rdx
+ffffff80029a06fa	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff80029a06ff	cmpl	$0x1, 0x20(%rdx)
+ffffff80029a0703	jne	0xffffff80029a0760
+ffffff80029a0705	movq	0x28(%rbp), %rdx
+ffffff80029a0709	cmpq	$0x1, 0x10(%rdx)
+ffffff80029a070e	jne	0xffffff80029a0760
+ffffff80029a0710	movq	%rsi, %rcx
+ffffff80029a0713	leaq	0x10(%rbp), %rsi
+ffffff80029a0717	cmpl	$0x5c, 0x10(%rsi)
+ffffff80029a071b	jb	0xffffff80029a0760
+ffffff80029a071d	cmpl	$0x3c, 0x14(%rsi)
+ffffff80029a0721	jb	0xffffff80029a0760
+ffffff80029a0723	movq	0x18(%rbp), %rbx
+ffffff80029a0727	movzbl	0x20(%rdx), %esi
+ffffff80029a072b	callq	*%rcx
+CONTROL_FLOW=0xffffff80029a072b callq	*%rcx
+ffffff80029a072d	testl	%eax, %eax
+ffffff80029a072f	jne	0xffffff80029a0760
+ffffff80029a0731	movabsq	$-0x6df351c09eb8755, %rax       ## imm = 0xF920CAE3F61478AB
+ffffff80029a073b	movq	%rax, 0x24(%rbx)
+ffffff80029a073f	movq	$0x8, 0x2c(%rbx)
+ffffff80029a0747	movq	$0x4da2b68d, 0x1c(%rbx)         ## imm = 0x4DA2B68D
+ffffff80029a074f	movl	$0x3c, 0x4(%rbx)
+ffffff80029a0756	movq	$0x0, 0x34(%rbx)
+ffffff80029a075e	xorl	%eax, %eax
+ffffff80029a0760	addq	$0x8, %rsp
+ffffff80029a0764	popq	%rbx
+ffffff80029a0765	popq	%rbp
+ffffff80029a0766	retq
+ffffff80029a0767	nop
+
+METHOD_SYMBOL=__ZN21IOUserNetworkQueueSet10_SetEnableEbPFiP15OSMetaClassBase5IORPCE
+METHOD_ADDRESS=0xffffff80029a09ba
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029a0b00
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=80
+ffffff80029a09ba	pushq	%rbp
+ffffff80029a09bb	movq	%rsp, %rbp
+ffffff80029a09be	pushq	%rbx
+ffffff80029a09bf	subq	$0xa8, %rsp
+ffffff80029a09c6	movabsq	$-0x6df351c09eb8755, %rbx       ## imm = 0xF920CAE3F61478AB
+ffffff80029a09d0	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff80029a09da	leaq	-0x74(%rbp), %rax
+ffffff80029a09de	movq	%rcx, 0x40(%rax)
+ffffff80029a09e2	movq	%rcx, 0x38(%rax)
+ffffff80029a09e6	movq	%rcx, 0x30(%rax)
+ffffff80029a09ea	movq	%rcx, 0x28(%rax)
+ffffff80029a09ee	movl	$0xaaaaaaaa, 0x48(%rax)         ## imm = 0xAAAAAAAA
+ffffff80029a09f5	xorl	%ecx, %ecx
+ffffff80029a09f7	movq	%rcx, -0x1c(%rax)
+ffffff80029a09fb	movq	%rcx, -0x34(%rax)
+ffffff80029a09ff	movq	%rcx, 0x4(%rax)
+ffffff80029a0a03	movq	%rcx, 0xc(%rax)
+ffffff80029a0a07	movq	%rcx, -0x2c(%rax)
+ffffff80029a0a0b	movq	%rcx, -0x24(%rax)
+ffffff80029a0a0f	movq	%rcx, -0x14(%rax)
+ffffff80029a0a13	movq	%rcx, -0xc(%rax)
+ffffff80029a0a17	movq	%rcx, -0x4(%rax)
+ffffff80029a0a1b	movq	%rcx, 0x14(%rax)
+ffffff80029a0a1f	movq	%rcx, 0x1c(%rax)
+ffffff80029a0a23	movl	$0x0, 0x24(%rax)
+ffffff80029a0a2a	movl	$0x4da2b68c, -0x18(%rax)        ## imm = 0x4DA2B68C
+ffffff80029a0a31	movl	$0x5c, -0x30(%rax)
+ffffff80029a0a38	movq	$0x80, 0x8(%rax)
+ffffff80029a0a40	movq	%rbx, (%rax)
+ffffff80029a0a43	movq	%rdi, 0x18(%rax)
+ffffff80029a0a47	movq	$0x1, 0x10(%rax)
+ffffff80029a0a4f	movl	$0x1, -0x14(%rax)
+ffffff80029a0a56	movb	%sil, 0x20(%rax)
+ffffff80029a0a5a	leaq	-0xa8(%rbp), %rcx
+ffffff80029a0a61	testq	%rdx, %rdx
+ffffff80029a0a64	je	0xffffff80029a0a95
+ffffff80029a0a66	movq	%rcx, -0x28(%rbp)
+ffffff80029a0a6a	movq	%rcx, -0x20(%rbp)
+ffffff80029a0a6e	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029a0a78	movq	%rcx, -0x18(%rbp)
+ffffff80029a0a7c	movq	%rax, -0x10(%rbp)
+ffffff80029a0a80	movq	-0x18(%rbp), %rcx
+ffffff80029a0a84	movq	-0x28(%rbp), %rsi
+ffffff80029a0a88	movq	-0x20(%rbp), %r8
+ffffff80029a0a8c	pushq	%rax
+ffffff80029a0a8d	pushq	%rcx
+ffffff80029a0a8e	pushq	%r8
+ffffff80029a0a90	pushq	%rsi
+ffffff80029a0a91	callq	*%rdx
+CONTROL_FLOW=0xffffff80029a0a91 callq	*%rdx
+ffffff80029a0a93	jmp	0xffffff80029a0ac4
+CONTROL_FLOW=0xffffff80029a0a93 jmp	0xffffff80029a0ac4
+ffffff80029a0a95	movq	%rcx, -0x28(%rbp)
+ffffff80029a0a99	movq	%rcx, -0x20(%rbp)
+ffffff80029a0a9d	movabsq	$0x800000005c, %rcx             ## imm = 0x800000005C
+ffffff80029a0aa7	movq	%rcx, -0x18(%rbp)
+ffffff80029a0aab	movq	%rax, -0x10(%rbp)
+ffffff80029a0aaf	movq	-0x18(%rbp), %rcx
+ffffff80029a0ab3	movq	-0x28(%rbp), %rdx
+ffffff80029a0ab7	movq	-0x20(%rbp), %rsi
+ffffff80029a0abb	pushq	%rax
+ffffff80029a0abc	pushq	%rcx
+ffffff80029a0abd	pushq	%rsi
+ffffff80029a0abe	pushq	%rdx
+ffffff80029a0abf	callq	0xffffff8000b58410
+CONTROL_FLOW=0xffffff80029a0abf callq	0xffffff8000b58410
+ffffff80029a0ac4	addq	$0x20, %rsp
+ffffff80029a0ac8	testl	%eax, %eax
+ffffff80029a0aca	jne	0xffffff80029a0af6
+ffffff80029a0acc	cmpl	$0x3c, -0xa4(%rbp)
+ffffff80029a0ad3	movl	$0xe00002bf, %eax               ## imm = 0xE00002BF
+ffffff80029a0ad8	jne	0xffffff80029a0af6
+ffffff80029a0ada	cmpq	%rbx, -0x84(%rbp)
+ffffff80029a0ae1	jne	0xffffff80029a0af6
+ffffff80029a0ae3	cmpl	$0x0, -0x88(%rbp)
+ffffff80029a0aea	jne	0xffffff80029a0af6
+ffffff80029a0aec	xorl	%ecx, %ecx
+ffffff80029a0aee	cmpq	$0x0, -0x74(%rbp)
+ffffff80029a0af3	cmovel	%ecx, %eax
+ffffff80029a0af6	addq	$0xa8, %rsp
+ffffff80029a0afd	popq	%rbx
+ffffff80029a0afe	popq	%rbp
+ffffff80029a0aff	retq
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkBSDClient21adjustInterfaceEnableEv.cold.1
+METHOD_ADDRESS=0xffffff80029a0f09
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029a0f27
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=7
+ffffff80029a0f09	pushq	%rbp
+ffffff80029a0f0a	movq	%rsp, %rbp
+ffffff80029a0f0d	leaq	0x44a1(%rip), %rdi              ## literal pool for: "\"IOSkywalkNetworkBSDClient: not on work loop\" @%s:%d"
+ffffff80029a0f14	leaq	0x44cf(%rip), %rsi              ## literal pool for: "IOSkywalkNetworkBSDClient.cpp"
+ffffff80029a0f1b	movl	$0x2e6, %edx                    ## imm = 0x2E6
+ffffff80029a0f20	xorl	%eax, %eax
+ffffff80029a0f22	callq	0xffffff8000bd073c
+CONTROL_FLOW=0xffffff80029a0f22 callq	0xffffff8000bd073c
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkBSDClient15enableInterfaceEP25IOSkywalkNetworkInterface.cold.1
+METHOD_ADDRESS=0xffffff80029a0f27
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029a0f45
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=7
+ffffff80029a0f27	pushq	%rbp
+ffffff80029a0f28	movq	%rsp, %rbp
+ffffff80029a0f2b	leaq	0x4483(%rip), %rdi              ## literal pool for: "\"IOSkywalkNetworkBSDClient: not on work loop\" @%s:%d"
+ffffff80029a0f32	leaq	0x44b1(%rip), %rsi              ## literal pool for: "IOSkywalkNetworkBSDClient.cpp"
+ffffff80029a0f39	movl	$0x3f2, %edx                    ## imm = 0x3F2
+ffffff80029a0f3e	xorl	%eax, %eax
+ffffff80029a0f40	callq	0xffffff8000bd073c
+CONTROL_FLOW=0xffffff80029a0f40 callq	0xffffff8000bd073c
+
+METHOD_SYMBOL=__ZN25IOSkywalkNetworkBSDClient16disableInterfaceEP25IOSkywalkNetworkInterface.cold.1
+METHOD_ADDRESS=0xffffff80029a0f45
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029a0f63
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=7
+ffffff80029a0f45	pushq	%rbp
+ffffff80029a0f46	movq	%rsp, %rbp
+ffffff80029a0f49	leaq	0x4465(%rip), %rdi              ## literal pool for: "\"IOSkywalkNetworkBSDClient: not on work loop\" @%s:%d"
+ffffff80029a0f50	leaq	0x4493(%rip), %rsi              ## literal pool for: "IOSkywalkNetworkBSDClient.cpp"
+ffffff80029a0f57	movl	$0x409, %edx                    ## imm = 0x409
+ffffff80029a0f5c	xorl	%eax, %eax
+ffffff80029a0f5e	callq	0xffffff8000bd073c
+CONTROL_FLOW=0xffffff80029a0f5e callq	0xffffff8000bd073c
+
+METHOD_SYMBOL=__ZN21IOSkywalkPacketPoller7disableEv.cold.1
+METHOD_ADDRESS=0xffffff80029a4012
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029a403e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=21
+ffffff80029a4012	pushq	%rbp
+ffffff80029a4013	movq	%rsp, %rbp
+ffffff80029a4016	leaq	0x2538(%rip), %rdi              ## literal pool for: "\"poller disabled from callback\" @%s:%d"
+ffffff80029a401d	leaq	0x2558(%rip), %rsi              ## literal pool for: "IOSkywalkPacketPoller.cpp"
+ffffff80029a4024	movl	$0x98, %edx
+ffffff80029a4029	xorl	%eax, %eax
+ffffff80029a402b	callq	0xffffff8000bd073c
+CONTROL_FLOW=0xffffff80029a402b callq	0xffffff8000bd073c
+ffffff80029a4030	nop
+ffffff80029a4031	nop
+ffffff80029a4032	nop
+ffffff80029a4033	nop
+ffffff80029a4034	nop
+ffffff80029a4035	nop
+ffffff80029a4036	nop
+ffffff80029a4037	nop
+ffffff80029a4038	nop
+ffffff80029a4039	nop
+ffffff80029a403a	nop
+ffffff80029a403b	nop
+ffffff80029a403c	nop
+ffffff80029a403d	nop
+
+METHOD_SYMBOL=_gIOSkywalkPollEnable
+METHOD_ADDRESS=0xffffff80029b6708
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029b670c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=NOT_VERIFIED
+
+METHOD_SYMBOL=_gIOSkywalkBTFixEnable
+METHOD_ADDRESS=0xffffff80029b6724
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029b6728
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=NOT_VERIFIED
+
+METHOD_SYMBOL=_gIOSkywalkABFSEnable
+METHOD_ADDRESS=0xffffff80029b680c
+METHOD_OWNER=com.apple.iokit.IOSkywalkFamily
+METHOD_END_BOUND=0xffffff80029b6810
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=NOT_VERIFIED
+STAGE139_DISASSEMBLED_METHOD_COUNT=102
+STAGE139_DISASSEMBLY_POLICY=EXACT_SYMBOL_START_AND_NEXT_SYMBOL_BOUND
+STAGE139_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE139_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE139 ==========
