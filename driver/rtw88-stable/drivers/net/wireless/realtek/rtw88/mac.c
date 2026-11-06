@@ -1092,6 +1092,61 @@ void rtw_mac_flush_queues(struct rtw_dev *rtwdev, u32 queues, bool drop)
 	rtw_mac_flush_prio_queues(rtwdev, prio_queues, drop);
 }
 
+/* Fail-closed queue drain used before retiring a hardware CAM key. The legacy
+ * void flush remains unchanged for ordinary mac80211 flush callbacks, but a
+ * key-removal caller must know whether all firmware priority pages returned. */
+static bool __rtw_mac_flush_prio_queue_sync(struct rtw_dev *rtwdev,
+                                            u32 prio_queue, bool drop)
+{
+	const struct rtw_chip_info *chip = rtwdev->chip;
+	const struct rtw_prioq_addr *addr;
+	bool wsize;
+	u16 avail_page, rsvd_page;
+	int i;
+
+	if (prio_queue >= RTW_DMA_MAPPING_MAX)
+		return false;
+
+	addr = &chip->prioq_addrs->prio[prio_queue];
+	wsize = chip->prioq_addrs->wsize;
+
+	/* High-uplink loads can take close to two seconds to retire a full FIFO.
+	 * A timeout is a hard failure for key retirement: never clear a CAM slot
+	 * while firmware may still have descriptors referencing it. */
+	for (i = 0; i < 100; i++) {
+		rsvd_page = wsize ? rtw_read16(rtwdev, addr->rsvd) :
+				     rtw_read8(rtwdev, addr->rsvd);
+		avail_page = wsize ? rtw_read16(rtwdev, addr->avail) :
+				      rtw_read8(rtwdev, addr->avail);
+		if (rsvd_page == avail_page)
+			return true;
+		msleep(20);
+	}
+
+	if (!drop)
+		rtw_dbg(rtwdev, RTW_DBG_UNEXP,
+			"timed out to synchronously flush queue %d\\n", prio_queue);
+	return false;
+}
+
+bool rtw_mac_flush_queues_sync(struct rtw_dev *rtwdev, u32 queues, bool drop)
+{
+	u32 prio_queues = 0;
+	u32 q;
+
+	if (queues == BIT(rtwdev->hw->queues) - 1 || !rtwdev->fifo.rqpn)
+		prio_queues = BIT(RTW_DMA_MAPPING_MAX) - 1;
+	else
+		prio_queues = get_priority_queues(rtwdev, queues);
+
+	for (q = 0; q < RTW_DMA_MAPPING_MAX; q++) {
+		if ((prio_queues & BIT(q)) &&
+		    !__rtw_mac_flush_prio_queue_sync(rtwdev, q, drop))
+			return false;
+	}
+	return true;
+}
+
 static int txdma_queue_mapping(struct rtw_dev *rtwdev)
 {
 	const struct rtw_chip_info *chip = rtwdev->chip;
