@@ -1,0 +1,35 @@
+PROJECT_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+PROJECT_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+LOCAL_CHANGES=192
+===== PCI_BACKEND =====
+PASS: ABI-neutral PCI/MMIO/DMA owner, exclusive compat lease, rollback and compile-only isolation
+PCI_BACKEND=PASS
+===== RESOURCE_TRANSACTION =====
+PASS: all nine queue/pool acquisitions are journaled and committed only when complete
+PASS: partial and committed teardown pop resources in reverse order
+PASS: registration and packet callbacks remain fail-closed
+RESOURCE_TRANSACTION=PASS
+===== ABI_SURFACE =====
+PASS: 191 pure protocol selectors covered; 24H32 interface sizes asserted; native interface object remains compile-only
+ABI_SURFACE=PASS
+===== CONTROLLER_LIFECYCLE_CURRENT_SOURCE_CONTRACT =====
+PASS: actual releaseNativeResources signature recognized
+PASS: teardown sequence and failure quarantine verified
+CONTROLLER_LIFECYCLE_CURRENT_SOURCE_CONTRACT=PASS
+===== WCL_SKB_FREE_RETIRE_STACK_TEST_COMPILE =====
+WCL_SKB_FREE_RETIRE_STACK_TEST_COMPILE=PASS
+===== WCL_SKB_FREE_RETIRE_STACK_TEST_EXECUTE =====
+WCL_SKB_FREE_RETIRE_STACK_TEST_EXECUTE=PASS
+===== WCL_THREAD_CALL_LIFECYCLE_MODEL_TEST_COMPILE =====
+WCL_THREAD_CALL_LIFECYCLE_MODEL_TEST_COMPILE=PASS
+===== WCL_THREAD_CALL_LIFECYCLE_MODEL_TEST_EXECUTE =====
+WCL_THREAD_CALL_LIFECYCLE_MODEL_TEST_EXECUTE=PASS
+test-wcl-controller-primary-attachment-stage121.py=SKIPPED (not present in this checkout)
+test-wcl-link-state-publication-stage124.py=SKIPPED (not present in this checkout)
+test-wcl-native-wifi-menu-readiness-stage125.py=SKIPPED (not present in this checkout)
+FOUNDATION_TESTS_PASSED=8
+FOUNDATION_TESTS_FAILED=0
+FOUNDATION_TESTS_SKIPPED=3
+SOURCE_WORKTREE_MODIFIED=NO
+OPENCORE_MODIFIED=NO
+SIGNING_INSTALL_LOAD=NOT_RUN
