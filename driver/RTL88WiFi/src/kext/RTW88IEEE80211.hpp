@@ -428,6 +428,7 @@ private:
     IOWorkLoop         *_wl           = nullptr;
     RTW88TxStateGate    _txStateGate;
     volatile bool       _dataTxBlocked = true;
+    volatile bool       _stopping = false;
     IOCommandGate      *_gate         = nullptr;
     IOTimerEventSource *_timer        = nullptr;
     IOLock             *_lock         = nullptr;
