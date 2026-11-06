@@ -319,7 +319,7 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
      * LogicalLink using Apple's own implementation. */
     status = queues->beginRegistrationTransaction();
     if (status != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: queue registration transaction refused: 0x%08x\\n",
+        IOLog("rtl88wifi-wcl: queue registration transaction refused: 0x%08x\n",
               status);
         (void)shutdownForController();
         return false;
@@ -337,9 +337,9 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
             queues->abortRegistrationTransaction();
         if (abortStatus != kIOReturnSuccess) {
             (void)queues->abortRegistrationTransaction(true);
-            IOLog("rtl88wifi-wcl: failed registration could not return to idle; queue owner quarantined\\n");
+            IOLog("rtl88wifi-wcl: failed registration could not return to idle; queue owner quarantined\n");
         }
-        IOLog("rtl88wifi-wcl: 24H32 registerInfraEthernetInterface failed: 0x%08x\\n",
+        IOLog("rtl88wifi-wcl: 24H32 registerInfraEthernetInterface failed: 0x%08x\n",
               status);
         (void)shutdownForController();
         return false;
@@ -355,10 +355,10 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
             (void)queues->abortRegistrationTransaction();
         } else {
             (void)queues->abortRegistrationTransaction(true);
-            IOLog("rtl88wifi-wcl: registration commit failed and Apple rollback failed (0x%08x); queue owner quarantined\\n",
+            IOLog("rtl88wifi-wcl: registration commit failed and Apple rollback failed (0x%08x); queue owner quarantined\n",
                   rollbackStatus);
         }
-        IOLog("rtl88wifi-wcl: registration transaction commit failed: 0x%08x\\n",
+        IOLog("rtl88wifi-wcl: registration transaction commit failed: 0x%08x\n",
               commitStatus);
         (void)shutdownForController();
         return false;
@@ -412,9 +412,9 @@ IOReturn RTW88WCLInfraInterface::shutdownForController()
                     queues->abortDeregistrationTransaction();
                 if (restoreStatus != kIOReturnSuccess) {
                     (void)queues->abortDeregistrationTransaction(true);
-                    IOLog("rtl88wifi-wcl: failed deregistration could not restore registered state; queue owner quarantined\\n");
+                    IOLog("rtl88wifi-wcl: failed deregistration could not restore registered state; queue owner quarantined\n");
                 }
-                IOLog("rtl88wifi-wcl: Skywalk Ethernet deregistration failed: 0x%08x; retaining queues\\n",
+                IOLog("rtl88wifi-wcl: Skywalk Ethernet deregistration failed: 0x%08x; retaining queues\n",
                       status);
                 return status;
             }
@@ -422,7 +422,7 @@ IOReturn RTW88WCLInfraInterface::shutdownForController()
             status = queues->finishDeregistrationTransaction();
             if (status != kIOReturnSuccess) {
                 (void)queues->abortDeregistrationTransaction(true);
-                IOLog("rtl88wifi-wcl: deregistration completed but local transaction could not commit; queue owner quarantined\\n");
+                IOLog("rtl88wifi-wcl: deregistration completed but local transaction could not commit; queue owner quarantined\n");
                 return status;
             }
             _registered = false;
