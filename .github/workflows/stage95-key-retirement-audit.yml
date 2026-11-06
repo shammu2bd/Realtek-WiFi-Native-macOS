@@ -1,0 +1,37 @@
+name: Stage95 key-retirement audit
+
+on:
+  push:
+    branches:
+      - work/stage91-tx-submission-callback-v1
+    paths:
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/**'
+      - 'tests/test-wcl-stage95-key-retirement.py'
+      - 'tools/run-stage95-key-retirement-audit.sh'
+      - '.github/workflows/stage95-key-retirement-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  read-only-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out audit branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/stage91-tx-submission-callback-v1
+
+      - name: Show Python version
+        run: python3 --version
+
+      - name: Run combined Stage95 read-only audit
+        run: bash tools/run-stage95-key-retirement-audit.sh | tee stage95-audit-result.txt
+
+      - name: Upload Stage95 audit result
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage95-key-retirement-audit-result
+          path: stage95-audit-result.txt
