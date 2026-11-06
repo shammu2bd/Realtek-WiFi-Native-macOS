@@ -1,0 +1,28 @@
+name: Stage97 independent CAM and TXQ audit
+on:
+  push:
+    branches:
+      - work/stage91-tx-submission-callback-v1
+    paths:
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/**'
+      - 'tests/test-wcl-stage97-independent-audit.py'
+      - 'tools/run-stage97-independent-audit.sh'
+      - '.github/workflows/stage97-independent-audit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  independent-source-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/stage91-tx-submission-callback-v1
+      - name: Run Stage97 source audit
+        run: bash tools/run-stage97-independent-audit.sh | tee stage97-result.txt
+      - name: Upload Stage97 audit result
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage97-independent-audit
+          path: stage97-result.txt
