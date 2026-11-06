@@ -56,7 +56,7 @@ assert builder.index("matchesApple24H32Template(") < builder.index("_registratio
 # keep the PCI interrupt gate closed until the interface registration commits.
 controller = CONTROLLER.read_text()
 queues = QUEUES.read_text()
-infra_code = re.sub(r"/\\*.*?\\*/|//[^\\n]*", "", infra_cpp, flags=re.S)
+infra_code = re.sub(r"/\*.*?\*/|//[^\n]*", "", infra_cpp, flags=re.S)
 start_start = infra_code.index("bool RTW88WCLInfraInterface::start(")
 start_end = infra_code.index("IOReturn RTW88WCLInfraInterface::shutdownForController(", start_start)
 start_code = infra_code[start_start:start_end]
