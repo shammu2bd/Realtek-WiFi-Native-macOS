@@ -324,8 +324,10 @@ def main():
     emit_block("REALTEK IOREGISTRY MATCHES", "\n".join(io_matches), 100)
     native_ioreg = any(re.search(r"RTL88WiFiNative|RTW88WCL", x, re.I) for x in io_matches)
     realtek_pci_hint = any(re.search(r"RTL8821|10ec|c821", x, re.I) for x in io_matches)
-    emit("STAGE111_NATIVE_IOREGISTRY_SERVICE_MATCH=" + ("YES" if native_ioreg else ("NO_MATCH" if io_rc == 0 else "UNKNOWN")))
-    emit("STAGE111_REALTEK_PCI_IOREGISTRY_HINT=" + ("YES" if realtek_pci_hint else ("NO_MATCH" if io_rc == 0 else "UNKNOWN")))
+    native_ioreg_state = "YES" if native_ioreg else ("NO_MATCH" if io_rc == 0 else "UNKNOWN")
+    realtek_pci_state = "YES" if realtek_pci_hint else ("NO_MATCH" if io_rc == 0 else "UNKNOWN")
+    emit("STAGE111_NATIVE_IOREGISTRY_SERVICE_MATCH=" + native_ioreg_state)
+    emit("STAGE111_REALTEK_PCI_IOREGISTRY_HINT=" + realtek_pci_state)
     if io_rc == 0:
         mark("PASS", "IORegistry read completed without altering device state")
     else:
@@ -379,8 +381,8 @@ def main():
     emit("STAGE111_LILU_RUNTIME_LOADED=" + runtime_lilu)
     emit("STAGE111_NATIVE_BUNDLE_ID_RUNTIME_LOADED=" + runtime_native)
     emit("STAGE111_ANY_REALTEK_DRIVER_RUNTIME_LOADED=" + runtime_realtek)
-    emit("STAGE111_NATIVE_IOREGISTRY_SERVICE_MATCH=" + ("YES" if native_ioreg else "NO_MATCH"))
-    emit("STAGE111_REALTEK_PCI_IOREGISTRY_HINT=" + ("YES" if realtek_pci_hint else "NO_MATCH"))
+    emit("STAGE111_NATIVE_IOREGISTRY_SERVICE_MATCH=" + native_ioreg_state)
+    emit("STAGE111_REALTEK_PCI_IOREGISTRY_HINT=" + realtek_pci_state)
     emit("STAGE111_LIVE_AMFI_OVERRIDE_TOKEN_PRESENT=" + str(live_amfi_override))
     emit("STAGE111_LIVE_AMFIPASS_BETA_FLAG_PRESENT=" + str("-amfipassbeta" in [x.lower() for x in live_tokens]))
     emit("STAGE111_SIP_STATE=" + sip)
