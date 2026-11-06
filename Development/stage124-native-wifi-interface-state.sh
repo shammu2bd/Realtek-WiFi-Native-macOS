@@ -126,7 +126,7 @@ if result.returncode:
     print(result.stderr.strip())
     sys.exit(result.returncode)
 response = json.loads(result.stdout)
-expected = hashlib.sha1(f"blob {len(data)}\\0".encode("ascii") + data).hexdigest()
+expected = hashlib.sha1(f"blob {len(data)}\0".encode("ascii") + data).hexdigest()
 actual = response.get("content", {}).get("sha")
 if actual != expected:
     print("STAGE124_UPLOAD=VERIFY_REQUIRED")
