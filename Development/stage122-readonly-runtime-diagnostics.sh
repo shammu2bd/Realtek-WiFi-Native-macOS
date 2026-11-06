@@ -34,6 +34,15 @@ echo "STAGE122_OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=
 echo "STAGE122_INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN REBOOT=NOT_RUN"
 echo
 
+echo "----- 0. Static read-only contract and shell syntax -----"
+if python3 tests/test-stage122-readonly-runtime-diagnostics.py; then
+  echo "STAGE122_STATIC_CONTRACT=PASS"
+else
+  echo "STAGE122_STATIC_CONTRACT=FAIL"
+  exit 1
+fi
+echo
+
 echo "----- 1. Host identity -----"
 sw_vers 2>&1
 echo "SW_VERS_EXIT=$?"
@@ -189,7 +198,7 @@ else
   RUNTIME_INTERPRETATION="INCOMPLETE_OR_NOT_OBSERVED"
 fi
 echo "STAGE122_RUNTIME_INTERPRETATION=$RUNTIME_INTERPRETATION"
-echo "STAGE122_COLLECTOR_RESULT=PASS"
+echo "STAGE122_DIAGNOSTIC_COLLECTION=COMPLETE"
 echo "STAGE122_PRIMARY_INTERFACE_GETTER_VERIFIED=$ATTACH_STATE"
 echo "STAGE122_DETACH_GETTER_VERIFIED=$DETACH_STATE"
 echo "STAGE122_NATIVE_KEXT_STATE=$NATIVE_KEXT_STATE"
@@ -206,7 +215,8 @@ echo "STAGE122_DETAIL_LOG=$LOG"
 echo "============================================================"
  
 # Publish only this report and its canonical checkpoint; no source or system
-# configuration files are touched.
+# configuration files are touched. From here, publication failures are fatal.
+set -e
 git add -f "$LOG"
 git -c core.whitespace=-trailing-space diff --cached --check
 git commit -m "Stage122: publish read-only native interface runtime diagnostics"
@@ -217,7 +227,7 @@ git rebase FETCH_HEAD
 cat >> Development/output.log <<EOF
 
 ========== STAGE122 READ-ONLY RUNTIME DIAGNOSTICS ==========
-STAGE122_COLLECTOR_RESULT=PASS
+STAGE122_DIAGNOSTIC_COLLECTION=COMPLETE
 STAGE122_RUNTIME_INTERPRETATION=$RUNTIME_INTERPRETATION
 STAGE122_PRIMARY_INTERFACE_GETTER_VERIFIED=$ATTACH_STATE
 STAGE122_DETACH_GETTER_VERIFIED=$DETACH_STATE
