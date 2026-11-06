@@ -1653,3 +1653,17 @@ NATIVE_QUEUE_ACTIVATION=BLOCKED
 PR4_MERGE=BLOCKED
 KNOWN_GOOD_LEGACY_KEXT_AND_EVERYDAY_EFI=UNCHANGED
 ========== END STAGE97 ==========
+
+========== STAGE98 NATIVE BUILD GRAPH / TX CALLBACK AUDIT ==========
+STAGE98_SOURCE_HEAD=3cf34caa5074d30bda3a7312f33a3b06e0501b43
+STAGE98_REPORT=Development/Logs/stage98-native-build-lock-audit-20261106.md
+STAGE98_FIX=NATIVE_ALL_OBJS now includes WCL24H32_TX_COMPLETION_WORK_OBJ; native-compile-only compiles complete object graph without link/bundle/sign/install/load; NATIVE_CORE_OBJS depfiles tracked.
+STAGE98_LOCK_REVIEW=macOS ieee80211_wake_queue shim is a no-op; PCI TX completion invokes tx_status synchronously under irq_lock; rtw88_skb_tx_completion_report internal lock/callback behavior remains open.
+STAGE98_ACTIONS_RUN=42155869887
+STAGE98_STATIC_CHECKS=9_PASS_0_FAIL
+STAGE98_RESULT=PASS_STATIC_AUDIT_WITH_OPEN_RUNTIME_REVIEW
+STAGE98_TARGET_MAC_COMPILE_ONLY=NOT_RUN
+STAGE98_LOCK_ORDER_RUNTIME_PROOF=OPEN
+STAGE98_NATIVE_ACTIVATION=BLOCKED
+STAGE98_INSTALL=NOT_RUN | LOAD=NOT_RUN | HARDWARE_TX_RX=NOT_RUN | EFI_OPENCORE_SIP_NVRAM=UNCHANGED
+===============================================================
