@@ -739,7 +739,7 @@ static void __pci_flush_queue(struct rtw_dev *rtwdev, u8 pci_q, bool drop)
 		return;
 	if (!drop)
 		rtw_dbg(rtwdev, RTW_DBG_UNEXP,
-			"timed out to flush pci tx ring[%d]\\n", pci_q);
+			"timed out to flush pci tx ring[%d]\n", pci_q);
 }
 
 static void __rtw_pci_flush_queues(struct rtw_dev *rtwdev, u32 pci_queues,
@@ -798,7 +798,7 @@ static bool rtw_pci_flush_queues_sync(struct rtw_dev *rtwdev, u32 queues, bool d
 		if ((pci_queues & BIT(q)) && !__pci_flush_queue_sync(rtwdev, q)) {
 			if (!drop)
 				rtw_dbg(rtwdev, RTW_DBG_UNEXP,
-					"synchronous PCI TX drain failed queue[%d]\\n", q);
+					"synchronous PCI TX drain failed queue[%d]\n", q);
 			return false;
 		}
 	}
