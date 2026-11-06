@@ -24,8 +24,10 @@ bool RTW88WCLSkywalkTxAdapter::init()
     _radio = nullptr;
     _txPool = nullptr;
     _tickets.reset();
+    rtw88_mpsc_bounded_queue_init(&_retiredCompletionTokens);
     _backendCompletionCallbacksInFlight = 0;
     _retiredCompletionTokenCount = 0;
+    _retiredCompletionTokenRejectedCount = 0;
     _completionNotifier = nullptr;
     _completionNotifierContext = nullptr;
     return true;
@@ -280,36 +282,37 @@ void RTW88WCLSkywalkTxAdapter::retireCompletionToken(
     if (!token)
         return;
 
-    /* Count before publishing so teardown cannot pass through the short
-     * interval between allocation retirement and the lock-free stack push. */
+    /* Count before publication. Queue-full is fail-closed: keep the count
+     * elevated and quarantine the token rather than freeing it in callback
+     * context or allowing teardown to release its callback owner.
+     */
     __atomic_add_fetch(&_retiredCompletionTokenCount, 1U, __ATOMIC_ACQ_REL);
-    _retiredCompletionTokens.push(token);
+    if (!rtw88_mpsc_bounded_queue_enqueue(&_retiredCompletionTokens, token))
+        __atomic_add_fetch(&_retiredCompletionTokenRejectedCount, 1U,
+                           __ATOMIC_RELAXED);
 }
 
 void RTW88WCLSkywalkTxAdapter::reapDeferredCompletionTokens()
 {
-    /* Called only by the worker's deferred thread-call callback. Detach before
-     * invoking kfree(), because IOFree may block and is forbidden in the
-     * backend completion callback / TX report lock path. */
-    struct rtw88_skb_tx_completion_token *token =
-        _retiredCompletionTokens.takeAll();
-    while (token) {
-        struct rtw88_skb_tx_completion_token *next = token->deferred_next;
+    /* Single consumer: the worker thread call, or passive teardown only after
+     * that call has been joined. */
+    struct rtw88_skb_tx_completion_token *token;
+    while ((token = static_cast<struct rtw88_skb_tx_completion_token *>(
+                rtw88_mpsc_bounded_queue_dequeue(&_retiredCompletionTokens))) != nullptr) {
         kfree(token);
         __atomic_sub_fetch(&_retiredCompletionTokenCount, 1U, __ATOMIC_RELEASE);
-        token = next;
     }
 }
 
 bool RTW88WCLSkywalkTxAdapter::hasReapableCompletionTokens() const
 {
-    return !_retiredCompletionTokens.empty();
+    return !rtw88_mpsc_bounded_queue_empty(&_retiredCompletionTokens);
 }
 
 bool RTW88WCLSkywalkTxAdapter::hasRetiredCompletionTokens() const
 {
     return __atomic_load_n(&_retiredCompletionTokenCount, __ATOMIC_ACQUIRE) != 0 ||
-           !_retiredCompletionTokens.empty();
+           !rtw88_mpsc_bounded_queue_empty(&_retiredCompletionTokens);
 }
 
 extern "C" void rtw88_wcl_defer_skb_tx_completion_token(
