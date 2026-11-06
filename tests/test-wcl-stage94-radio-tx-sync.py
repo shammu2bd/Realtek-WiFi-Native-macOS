@@ -193,12 +193,10 @@ check("KEY_AND_STATION_WRITER_BARRIERS",
       "installKeyUnderMutation" in cpp,
       "key clearing/replacement and station retirement wait for TX readers to drain")
 check("REPLACEMENT_KEY_DRAIN_BEFORE_REUSE",
-      install_under.find("_hw->ops->set_key(") <
-      install_under.find("_hw->ops->set_key(",
-                         install_under.find("_hw->ops->set_key(") + 1) and
       install_under.find("DISABLE_KEY") < install_under.find("SET_KEY") and
       install_under.find("oldKey") < install_under.find("IOFree(oldKey") and
-      "attempting old-key restore" in install_under,
+      "attempting old-key restore" in install_under and
+      "oldKey->hw_key_idx" in install_under,
       "old CAM slot is synchronously retired before reuse; failed replacement attempts restore the previous key")
 clear_keys = function(cpp, "void RTW88IEEE80211::clearKeys()")
 check("CLEAR_KEYS_RETAINS_UNRETIRED_OBJECTS",
@@ -206,6 +204,38 @@ check("CLEAR_KEYS_RETAINS_UNRETIRED_OBJECTS",
       "retaining PTK object" in clear_keys and
       "retaining GTK object" in clear_keys,
       "key objects are not freed when CAM retirement fails")
+
+# The PCI and firmware queue-drain contracts are part of key lifetime safety.
+pci_ring_flush = function(pci, "static bool __pci_flush_queue_sync(")
+pci_all_flush = function(pci, "static bool rtw_pci_flush_queues_sync(")
+mac_all_flush = function(mac, "bool rtw_mac_flush_queues_sync(")
+hci_all_flush = function(hci, "static inline bool rtw_hci_flush_all_queues_sync(")
+set_key = function(mac80211, "static int rtw_ops_set_key(")
+check("PCI_RING_DRAIN_REPORTS_TIMEOUT",
+      "cur_rp == ring->r.wp" in pci_ring_flush and
+      "return true;" in pci_ring_flush and "return false;" in pci_ring_flush and
+      "__pci_flush_queue_sync(rtwdev, q)" in pci_all_flush,
+      "PCI drain succeeds only when hardware consumer reaches software producer; timeout is false")
+check("MAC_FIRMWARE_FIFO_DRAIN_REPORTS_TIMEOUT",
+      "rsvd_page == avail_page" in mac_all_flush and
+      "return true;" in mac_all_flush and "return false;" in mac_all_flush,
+      "firmware priority FIFO page return is explicitly checked")
+check("HCI_SYNC_FLUSH_MISSING_CALLBACK_FAILS_CLOSED",
+      "!rtwdev->hci.ops->flush_queues_sync" in hci_all_flush and
+      "return false;" in hci_all_flush,
+      "a transport without a result-bearing flush contract cannot retire a key")
+check("CAM_REMOVAL_REQUIRES_ALL_DRAINS",
+      "flush_work(&rtwdev->tx_work)" in set_key and
+      "rtw_hci_flush_all_queues_sync(rtwdev, false)" in set_key and
+      "rtw_mac_flush_all_queues_sync(rtwdev, false)" in set_key and
+      set_key.find("if (!hci_drained || !mac_drained)") <
+      set_key.find("rtw_sec_clear_cam(rtwdev, sec, key->hw_key_idx)") and
+      "ret = -ETIMEDOUT" in set_key,
+      "CAM key is cleared only after queued work, PCI DMA and firmware FIFO drains confirm success")
+check("DISABLE_USES_ASSIGNED_CAM_INDEX",
+      "if (cmd == DISABLE_KEY)" in set_key and
+      "hw_key_idx = key->hw_key_idx;" in set_key,
+      "pairwise key retirement does not require another free CAM slot")
 
 
 # BA active+TID is a single atomic word; BA mutation paths drain WMM readers.
