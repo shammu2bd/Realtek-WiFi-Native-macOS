@@ -414,7 +414,7 @@ void RTW88PCIDevice::debugTimerFired(IOTimerEventSource *src)
 
 void RTW88PCIDevice::stop(IOService *provider)
 {
-    IOLog("rtw88: RTW88PCIDevice::stop\\n");
+    IOLog("rtw88: RTW88PCIDevice::stop\n");
     if (!teardown())
         return; /* retain service/resources if the compat reaper cannot drain */
     super::stop(provider);
@@ -423,7 +423,7 @@ void RTW88PCIDevice::stop(IOService *provider)
 void RTW88PCIDevice::free()
 {
     if (_compatInitialized || _teardownQuarantined) {
-        IOLog("rtw88: quarantining PCI service; compat runtime still owns deferred TX state\\n");
+        IOLog("rtw88: quarantining PCI service; compat runtime still owns deferred TX state\n");
         return;
     }
     if (_compatPciDev) { IOFree(_compatPciDev, sizeof(*_compatPciDev)); _compatPciDev = nullptr; }
@@ -462,7 +462,7 @@ bool RTW88PCIDevice::teardown()
     if (_compatInitialized) {
         if (!rtw88_compat_exit()) {
             _teardownQuarantined = true;
-            IOLog("rtw88: compat deferred TX reaper failed to drain; retaining PCI/DMA resources\\n");
+            IOLog("rtw88: compat deferred TX reaper failed to drain; retaining PCI/DMA resources\n");
             return false;
         }
         _compatInitialized = false;
