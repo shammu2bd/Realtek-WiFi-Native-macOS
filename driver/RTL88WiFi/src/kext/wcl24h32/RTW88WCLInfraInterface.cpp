@@ -274,8 +274,11 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
         return false;
 
     RTW88WCLSkywalkQueues *queues = _controller->skywalkQueues();
-    if (!queues->queuesAllocated() || !queues->registrationQueuesValid())
+    if (!queues->queuesAllocated())
         return false;
+
+    /* Full queue-role validation is performed after beginRegistrationTransaction
+     * pins the owner, immediately before Apple's registration call. */
 
     /* Apple 24H32 IO80211InfraInterface::start establishes the private
      * registration-ready state at interface expansion offset +0x3c60 and
