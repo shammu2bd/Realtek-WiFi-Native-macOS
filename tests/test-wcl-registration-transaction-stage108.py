@@ -1,0 +1,115 @@
+#!/usr/bin/env python3
+"""Stage108 source contract for transactional 24H32 Skywalk registration."""
+from pathlib import Path
+import re
+
+ROOT = Path(__file__).resolve().parents[1]
+KEXT = ROOT / "driver/RTL88WiFi/src/kext/wcl24h32"
+
+def uncomment(source: str) -> str:
+    source = re.sub(r"/\*.*?\*/", "", source, flags=re.S)
+    return re.sub(r"//[^\n]*", "", source)
+
+queues_h = (KEXT / "RTW88WCLSkywalkQueues.hpp").read_text()
+queues_cpp_raw = (KEXT / "RTW88WCLSkywalkQueues.cpp").read_text()
+queues_cpp = uncomment(queues_cpp_raw)
+infra_h = (KEXT / "RTW88WCLInfraInterface.hpp").read_text()
+infra_cpp_raw = (KEXT / "RTW88WCLInfraInterface.cpp").read_text()
+infra_cpp = uncomment(infra_cpp_raw)
+controller_cpp_raw = (KEXT / "RTW88WCLController.cpp").read_text()
+controller_cpp = uncomment(controller_cpp_raw)
+transaction = (KEXT / "RTW88WCLRegistrationTransaction.hpp").read_text()
+abi = (KEXT / "RTW88WCL24H32InterfaceABI.hpp").read_text()
+
+# Transaction state is lock-free, explicit, and has no accidental recovery
+# from a quarantined owner.
+for token in (
+    "kUnregistered = 0", "kRegistering = 1", "kRegistered = 2",
+    "kDeregistering = 3", "kQuarantined = 4",
+    "beginRegistration()", "commitRegistration()", "abortRegistration()",
+    "beginDeregistration()", "commitDeregistration()", "abortDeregistration()",
+    "__atomic_compare_exchange_n", "void quarantine()",
+    "bool ownsQueues() const",
+):
+    assert token in transaction, f"missing transaction state contract: {token}"
+assert "return state() != State::kUnregistered;" in transaction
+
+# Queue owner exposes seven stable entries, four WMM TX queues followed by
+# one queue for each remaining QueueSet role.
+assert "kRegistrationQueueCount = 7" in queues_h
+assert "IOSkywalkPacketQueue *_registrationQueues[kRegistrationQueueCount]" in queues_h
+assert "_registrationQueues[i] = _txSubmissionQueues[i]" in queues_cpp
+assert "_registrationQueues[4] = _txCompletion" in queues_cpp
+assert "_registrationQueues[5] = _rxSubmission" in queues_cpp
+assert "_registrationQueues[6] = _rxCompletion" in queues_cpp
+assert all(value in queues_cpp for value in ("1, 1, 1, 1, 2, 3, 4"))
+
+# Only the evidence-backed first UInt32 role result is interpreted. Do not
+# model undocumented pool/capacity fields in the 16-byte performCommand buffer.
+valid_start = queues_cpp.index("bool RTW88WCLSkywalkQueues::registrationQueuesValid()")
+valid_end = queues_cpp.index("IOReturn RTW88WCLSkywalkQueues::beginRegistrationTransaction()", valid_start)
+valid = queues_cpp[valid_start:valid_end]
+assert "alignas(8) UInt8 descriptor[16]" in valid
+assert "memcpy(&queueType, descriptor, sizeof(queueType))" in valid
+assert "queueType != expectedTypes[i]" in valid
+assert "QueueDescriptor24H32" not in valid
+assert "descriptor.capacity" not in valid
+assert "descriptor.pool" not in valid
+assert "queue != expectedQueue" in valid
+
+# Registration transaction protects queue/pool lifetime from preflight through
+# Apple registration and while Skywalk owns the QueueSet.
+for token in (
+    "beginRegistrationTransaction()", "commitRegistrationTransaction()",
+    "abortRegistrationTransaction(bool quarantine = false)",
+    "beginDeregistrationTransaction()", "finishDeregistrationTransaction()",
+    "abortDeregistrationTransaction(bool quarantine = false)",
+    "registrationOwnsQueues()",
+):
+    assert token in queues_h, f"missing queue-owner transaction API: {token}"
+assert "if (_registrationTransaction.ownsQueues())" in queues_cpp
+assert "if (_registrationTransaction.ownsQueues() ||" in queues_cpp
+assert "_registrationTransaction.isRegistered()" in queues_cpp
+
+# Verify API declaration and interface transaction ordering against the
+# audited 24H32 callable ABI; private QueueSet/LogicalLink payloads stay opaque.
+assert re.search(r"IOReturn registerInfraEthernetInterface\s*\(", abi)
+assert re.search(r"IOReturn deregisterEthernetInterface\(unsigned int\)", abi)
+start_begin = infra_cpp.index("queues->beginRegistrationTransaction()")
+start_call = infra_cpp.index("registerInfraEthernetInterface(", start_begin)
+start_commit = infra_cpp.index("queues->commitRegistrationTransaction()", start_call)
+start_mark = infra_cpp.index("_registered = true;", start_commit)
+assert start_begin < start_call < start_commit < start_mark
+assert "queues->registrationQueueArray()" in infra_cpp
+assert "queues->registrationQueueCount()" in infra_cpp
+assert "queues->txPacketPool(), queues->rxPacketPool()" in infra_cpp
+assert "queues->abortRegistrationTransaction()" in infra_cpp
+assert "deregisterEthernetInterface(0)" in infra_cpp[start_commit:start_mark]
+assert "IOSkywalkQueueSet::createWithQueues" not in infra_cpp
+assert "IOSkywalkLogicalLinkInfo" not in infra_cpp
+
+# Stop path: close packet admission, begin deregistration, call Apple's
+# deregistration wrapper, restore Registered on failure, and only then release
+# the local registration pin.
+shutdown_start = infra_cpp.index("IOReturn RTW88WCLInfraInterface::shutdownForController()")
+shutdown_end = infra_cpp.index("void RTW88WCLInfraInterface::stop(", shutdown_start)
+shutdown = infra_cpp[shutdown_start:shutdown_end]
+assert shutdown.index("quiescePacketPath()") < shutdown.index("beginDeregistrationTransaction()")
+assert shutdown.index("beginDeregistrationTransaction()") < shutdown.index("deregisterEthernetInterface(0)")
+assert shutdown.index("deregisterEthernetInterface(0)") < shutdown.index("finishDeregistrationTransaction()")
+assert "abortDeregistrationTransaction()" in shutdown
+assert "registrationQuarantined()" in shutdown
+assert "clearRegistrationInfo();" in shutdown
+
+# Controller start deliberately remains fail-closed: Stage108 implements the
+# transaction method, not end-to-end interface construction or radio activation.
+assert "refusing publication until Skywalk datapath is ready" in controller_cpp_raw
+assert "goto fail;" in controller_cpp
+assert "_infraInterface" not in controller_cpp
+assert "_radioStarted = true" not in controller_cpp
+assert "radio->start()" not in controller_cpp
+
+print("PASS: 24H32 registration uses the audited Apple infra wrapper and stable seven-queue vector")
+print("PASS: atomic begin/commit/abort and deregistration retry/quarantine states guard queue ownership")
+print("PASS: opaque descriptor tail and private QueueSet/LogicalLink layouts are not guessed")
+print("PASS: controller/radio activation remains fail-closed for later datapath stages")
