@@ -220,7 +220,21 @@ PY
     if [ "$APPLE_SECURE_BOOT" = "Disabled" ]; then pass "SecureBootModel Disabled; this avoids the documented Apple Secure Boot unsigned-kext restriction"; else warn "SecureBootModel is not Disabled; OpenCore docs state unsigned kexts cannot be used under Apple Secure Boot"; fi
     if [ "$SKYWALK_BLOCK" = "True" ]; then fail "Kernel->Block actively blocks IOSkywalkFamily required by native candidate"; else pass "no enabled IOSkywalkFamily block detected"; fi
     if [ "$VAULT" = "Optional" ]; then pass "OpenCore Vault is Optional"; elif [ "$VAULT" = "Secure" ]; then warn "OpenCore Vault=Secure; EFI changes require a valid updated vault"; else warn "Vault policy missing or unrecognized"; fi
-    if [ "$NATIVE_ENTRY" = "FOUND" ] && [ "$NATIVE_ADD_COUNT" = "1" ] && grep -q '^NATIVE_KERNEL_ADD_ENABLED=True
+    if [ "$NATIVE_ENTRY" = "FOUND" ] && [ "$NATIVE_ADD_COUNT" = "1" ] && grep -q "^NATIVE_KERNEL_ADD_ENABLED=True$" "$TMP/config-inspection.txt"; then
+      pass "exactly one enabled native Kernel->Add entry found"
+    else
+      fail "native Kernel->Add entry is missing, disabled, or duplicated"
+    fi
+    if [ "$NATIVE_HASH_MATCH" = "True" ]; then
+      pass "USB EFI native executable SHA matches audited Stage103/105 candidate"
+    else
+      fail "USB EFI native executable is missing or differs from audited candidate"
+    fi
+    if [ "$LEGACY_ENTRIES" = "0" ]; then
+      pass "no separate legacy RTL88 Wi-Fi kext entry found"
+    else
+      fail "legacy RTL88 Wi-Fi entry may conflict with native bundle identifier"
+    fi
   else CONFIG_RESULT=PARSE_FAILED; fail "could not parse selected OpenCore config or native Info.plist"; fi
 else
   if [ "$CONFIG_SOURCE" = "NOT_FOUND" ]; then warn "no mounted EFI config found; mount the intended EFI manually, then rerun"; else warn "multiple mounted EFI configs found; rerun with OPENCORE_CONFIG set to the active boot config"; fi
