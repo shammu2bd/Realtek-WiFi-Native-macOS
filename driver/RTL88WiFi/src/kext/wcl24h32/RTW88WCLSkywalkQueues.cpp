@@ -387,7 +387,8 @@ IOReturn RTW88WCLSkywalkQueues::beginRegistrationTransaction()
     if (!_registrationTransaction.beginRegistration())
         return kIOReturnBusy;
     if (!registrationQueuesValid()) {
-        (void)_registrationTransaction.abortRegistration();
+        if (!_registrationTransaction.abortRegistration())
+            _registrationTransaction.quarantine();
         return kIOReturnNotReady;
     }
     return kIOReturnSuccess;
