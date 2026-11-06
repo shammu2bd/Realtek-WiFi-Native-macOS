@@ -151,6 +151,8 @@ int  rtw88_compat_init(void);
 bool rtw88_compat_exit(void);
 /* Close TX-status callback admission and wait for full dispatch completion. */
 void rtw88_compat_quiesce_tx_status(void);
+/* Close skb-free admission, join every XNU reaper invocation and final-drain. */
+bool rtw88_compat_quiesce_skb_free_reaper(void);
 /* Transfer skb ownership to deferred reaper; false means fail-closed quarantine. */
 bool rtw88_defer_skb_free(struct sk_buff *skb);
 
