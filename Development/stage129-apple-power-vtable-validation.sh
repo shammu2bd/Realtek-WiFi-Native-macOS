@@ -157,7 +157,7 @@ for line in pathlib.Path(dump).read_text(errors="replace").splitlines():
  m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):\s*(.*)$",line)
  if not m: continue
  site=int(m.group(1),16); asm=m.group(2)
- if site==int(known_callsite,16) and (sky in asm or re.search(r"0x?"+known_target,asm,re.I)):
+ if site==int(known_callsite,16) and (sky in asm or re.search(r"(?:0x)?"+known_target,asm,re.I)):
   known=True; print("STAGE129_KNOWN_STAGE126_CALLSITE=FOUND"); print("KNOWN_CALLER="+current); print("  "+line.strip())
  if not re.search(r"\bcall(?:q|l)?\b",asm): continue
  am=re.search(r"\bcall(?:q|l)?\s+\*?(?:0x)?([0-9a-fA-F]{8,})",asm)
