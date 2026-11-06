@@ -26,10 +26,10 @@ BIN="$BUNDLE/Contents/MacOS/RTL88WiFiNative"
 PLIST="$BUNDLE/Contents/Info.plist"
 ZIP="driver/RTL88WiFi/build/out/RTL88WiFiNative-24H32-unsigned.zip"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
-LOG_REL="Development/Logs/stage105-native-symbol-abi-audit-\${STAMP}.log"
+LOG_REL="Development/Logs/stage105-native-symbol-abi-audit-${STAMP}.log"
 mkdir -p Development/Logs || exit 2
 LOG="$ROOT/$LOG_REL"
-TMP="$(mktemp -d "\${TMPDIR:-/tmp}/stage105.XXXXXX")" || exit 2
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/stage105.XXXXXX")" || exit 2
 cleanup() { rm -rf "$TMP"; }
 trap cleanup EXIT
 exec > >(tee "$LOG") 2>&1
@@ -44,13 +44,13 @@ capture() {
   "$@" > "$TMP/$name.txt" 2>&1
   rc=$?
   printf '%s\n' "$rc" > "$TMP/$name.rc"
-  echo "COMMAND_\${name}_EXIT=$rc"
+  echo "COMMAND_${name}_EXIT=$rc"
   return 0
 }
 get_rc() { [ -f "$TMP/$1.rc" ] && cat "$TMP/$1.rc" || echo 999; }
 excerpt() {
-  echo "----- $1 (first \${2:-100} lines) -----"
-  if [ -f "$TMP/$1.txt" ]; then sed -n "1,\${2:-100}p" "$TMP/$1.txt"; else echo "NO_CAPTURE"; fi
+  echo "----- $1 (first ${2:-100} lines) -----"
+  if [ -f "$TMP/$1.txt" ]; then sed -n "1,${2:-100}p" "$TMP/$1.txt"; else echo "NO_CAPTURE"; fi
   echo "----- END $1 -----"
 }
 
@@ -232,7 +232,7 @@ if [ -f "$TMP/codesign-verify.txt" ]; then
 fi
 echo "STAGE105_SIGNING_STATE=$SIGNING_STATE"
 
-if git cat-file -e "\${BUILD_COMMIT}^{commit}" 2>/dev/null &&
+if git cat-file -e "${BUILD_COMMIT}^{commit}" 2>/dev/null &&
    git merge-base --is-ancestor "$BUILD_COMMIT" HEAD &&
    git diff --quiet "$BUILD_COMMIT" HEAD -- driver/RTL88WiFi driver/rtw88-stable; then
   pass "Stage103 build source remains unchanged through current HEAD"
