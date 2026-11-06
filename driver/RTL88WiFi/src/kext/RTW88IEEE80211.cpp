@@ -4346,6 +4346,7 @@ IOReturn RTW88IEEE80211::cmdInstallExternalKey(bool pairwise, uint8_t keyidx, ui
     struct ieee80211_key_conf **slot = pairwise ? &_ptkConf : &_gtkConf;
     if (!installKeyUnderMutation(slot, pairwise, keyidx, cipher, key, key_len,
                                  &mutation)) {
+        __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
         mutation.finish();
         return kIOReturnUnsupported;
     }
@@ -4665,6 +4666,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
                 WLAN_CIPHER_SUITE_TKIP : WLAN_CIPHER_SUITE_CCMP;
             if (!installKeyUnderMutation(&_gtkConf, false, gtk_idx,
                                          groupCipher, gtk, gtk_len, &mutation)) {
+                __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
                 IOLog("rtw88: group key install failed idx=%u len=%u\n",
                       gtk_idx, gtk_len);
                 return;
@@ -4710,6 +4712,9 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             memcpy(_anonce, data + 17, 32);
             _snonceValid = true;
             _handshakePending = true;
+            /* A fresh M1 can be either initial association or rekey. Close
+             * ordinary IP TX until the matching M3/GTK commit and M4 handoff. */
+            __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
             derivePTK(_pmk, _anonce, _snonce, _macAddr, _targetBSS.bssid, _ptk);
             memcpy(_replayCtr, data + 9, 8);
             memcpy(replayCopy, _replayCtr, sizeof(replayCopy));
