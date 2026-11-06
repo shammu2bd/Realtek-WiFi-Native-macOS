@@ -70,6 +70,13 @@ for token in (
 assert "if (_registrationTransaction.ownsQueues())" in queues_cpp
 assert "if (_registrationTransaction.ownsQueues() ||" in queues_cpp
 assert "_registrationTransaction.isRegistered()" in queues_cpp
+begin_method = queues_cpp.index("IOReturn RTW88WCLSkywalkQueues::beginRegistrationTransaction()")
+begin_end = queues_cpp.index("IOReturn RTW88WCLSkywalkQueues::commitRegistrationTransaction()", begin_method)
+begin_code = queues_cpp[begin_method:begin_end]
+assert begin_code.index("beginRegistration()") < begin_code.index("queuesAllocated()")
+assert begin_code.index("queuesAllocated()") < begin_code.index("registrationQueuesValid()")
+assert "!_registrationTransaction.abortRegistration()" in begin_code
+assert "_registrationTransaction.quarantine()" in begin_code
 
 # Verify API declaration and interface transaction ordering against the
 # audited 24H32 callable ABI; private QueueSet/LogicalLink payloads stay opaque.
