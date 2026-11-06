@@ -113,7 +113,7 @@ def dump(addr,name,tag,limit=0x2200,all_body=False):
   print("METHOD_NOT_VERIFIED TAG=%s SYMBOL=%s"%(tag,name));return
  print("\nMETHOD_TAG=%s SYMBOL=%s ADDRESS=0x%x END=0x%x INSTRUCTIONS=%d"%(tag,name,addr,end,len(ins)))
  for i,(a,raw,asm) in enumerate(ins):
-  if all_body or i<16 or re.search(r"\b(call|jmp|je|jne|j[a-z]+|ret)\b|WorkQueue|workQueue|0xc58|0xc68|0x88|0x98|0xa0|0x10\\(",asm,re.I):
+  if all_body or i<16 or re.search(r"\b(call|jmp|je|jne|j[a-z]+|ret)\b|WorkQueue|workQueue|0xc58|0xc68|0x88|0x98|0xa0|0x10\(",asm,re.I):
    print(raw)
    if re.search(r"\b(call|jmp|je|jne|j[a-z]+|ret)\b",asm):print("CONTROL_FLOW=0x%x %s"%(a,asm))
 # Core construction/factory methods and all meaningful WorkQueue APIs.
