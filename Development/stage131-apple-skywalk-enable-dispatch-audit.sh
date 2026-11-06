@@ -2,6 +2,7 @@
 # Stage131: read-only Apple 24H32 Skywalk enable/disable dispatch audit.
 # No driver edits/build/sign/install/load/unload/hardware/OC/EFI/SIP/NVRAM/reboot.
 set -euo pipefail
+REPO="shammu2bd/Realtek-WiFi-Native-macOS"
 PIN="8e95c4ec87ed99e3732354f32ad9eed45b7607e7bc7034f32ff7437e0c6ec878"
 ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
 if [[ -z "$ROOT" ]]; then echo "ERROR: run inside existing project checkout"; exit 2; fi
