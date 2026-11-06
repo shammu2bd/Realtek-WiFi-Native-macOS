@@ -1602,7 +1602,7 @@ void RTW88IEEE80211::processRxMgmt(struct sk_buff *skb)
             }
             const bool lostLinkDuringConnectedScan =
                 (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
-                 __atomic_store_n(&_scanReturnState, = RTW88_STATE_CONNECTED), __ATOMIC_RELEASE);
+                 __atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED
             clearKeys();
             rxBaTeardownAll();
             if (lostLinkDuringConnectedScan) {
