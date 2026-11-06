@@ -292,25 +292,30 @@ IOReturn RTW88WCLController::releaseNativeResources()
         }
     }
 
-    /* Stage91 TX callbacks are admitted only while the adapter is bound.
-     * Quiesce that admission after RTW88 has stopped and the PCI/DMA fence is
-     * down, then detach the retained callback context before releasing queues.
-     * Stage92 will add the deferred completion drain; if a ticket is still
-     * outstanding this returns BUSY and all owners remain alive. */
+    /* RTW88 and the PCI interrupt/DMA producer are stopped. Close and join
+     * the entire TX-status callback before draining its deferred skb frees;
+     * kfree_skb may itself retire a WCL completion token, so the completion
+     * worker must remain alive during this final generic skb drain.
+     */
+    if (_pciBackend) {
+        rtw88_compat_quiesce_tx_status();
+        if (!rtw88_compat_quiesce_skb_free_reaper()) {
+            IOLog("rtl88wifi-wcl: generic deferred skb reaper did not drain; retaining owners\\n");
+            return kIOReturnBusy;
+        }
+    }
+
+    /* The generic skb drain may publish final WCL tokens/completions. Only
+     * now can adapter unbind prove every ticket and backend callback returned.
+     */
     if (_txAdapter) {
         const IOReturn txUnbindStatus = _txAdapter->unbind();
         if (txUnbindStatus != kIOReturnSuccess) {
-            IOLog("rtl88wifi-wcl: TX adapter completion drain deferred: 0x%08x\n",
+            IOLog("rtl88wifi-wcl: TX adapter completion drain deferred: 0x%08x\\n",
                   txUnbindStatus);
             return txUnbindStatus;
         }
     }
-
-    /* unbind() waits ticket completion, but the enclosing mac80211 status
-     * callback still has to return after publishing completion and enqueueing
-     * skb reclamation. Join the full compat callback before releasing worker. */
-    if (_pciBackend)
-        rtw88_compat_quiesce_tx_status();
 
     /* Remove the notifier/event source only after the callback quiescence
      * proof, while the completion queue owner is still retained. */
