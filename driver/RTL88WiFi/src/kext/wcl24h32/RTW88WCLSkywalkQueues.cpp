@@ -457,6 +457,29 @@ UInt32 RTW88WCLSkywalkQueues::enqueueRXPacketForNetworking(
     return _rxCompletion->enqueuePacketsForNetworking(packets, 1, 0);
 }
 
+IOReturn RTW88WCLSkywalkQueues::requestTXSubmissionDequeue()
+{
+    if (!_registrationTransaction.isRegistered())
+        return kIOReturnNotReady;
+
+    IOReturn firstError = kIOReturnSuccess;
+    for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
+        IOSkywalkTxSubmissionQueue *queue = _txSubmissionQueues[i];
+        if (!queue)
+            return kIOReturnNotReady;
+
+        /* requestDequeue is the SDK-declared producer wake path. Skywalk
+         * performs the gated queue callback asynchronously; its action still
+         * returns only the accepted packet prefix. Busy means a dequeue is
+         * already pending and is not a lost wakeup. */
+        const IOReturn status = queue->requestDequeue(this, 0);
+        if (status != kIOReturnSuccess && status != kIOReturnBusy &&
+            firstError == kIOReturnSuccess)
+            firstError = status;
+    }
+    return firstError;
+}
+
 bool RTW88WCLSkywalkQueues::ownsTXSubmissionQueue(
     const IOSkywalkTxSubmissionQueue *queue) const
 {
