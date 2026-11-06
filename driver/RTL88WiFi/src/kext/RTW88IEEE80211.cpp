@@ -1024,56 +1024,85 @@ fail_probe:
 void RTW88IEEE80211::stop()
 {
     IOLog("rtw88: IEEE80211 stop\n");
+    __atomic_store_n(&_stopping, true, __ATOMIC_RELEASE);
     __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
     cancelAuthentication();
     _manualScanAbort = true;
     if (_manualScanTC) thread_call_cancel_wait(_manualScanTC);
     if (_connectTC) thread_call_cancel_wait(_connectTC);
-    if (_reorderTimer) { _reorderTimer->cancelTimeout(); _reorderTimer->disable(); }
+    if (_reorderTimer) {
+        _reorderTimer->cancelTimeout();
+        _reorderTimer->disable();
+    }
     if (_timer)
         _timer->cancelTimeout();
 
-    if ((__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED ||
-         (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
-          __atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED)) && _powered)
+    const RTW88State state = __atomic_load_n(&_state, __ATOMIC_ACQUIRE);
+    const RTW88State scanReturn =
+        __atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE);
+    if ((state == RTW88_STATE_CONNECTED ||
+         (state == RTW88_STATE_SCANNING &&
+          scanReturn == RTW88_STATE_CONNECTED)) &&
+        __atomic_load_n(&_powered, __ATOMIC_ACQUIRE)) {
         doDisconnect();
-    else {
+    } else {
         clearKeys();
         releaseSta();
     }
 
-    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING && _hw && _hw->ops && _hw->ops->cancel_hw_scan)
+    if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) == RTW88_STATE_SCANNING &&
+        _hw && _hw->ops && _hw->ops->cancel_hw_scan)
         _hw->ops->cancel_hw_scan(_hw, _vif);
 
-    /* Close admission for every remaining TX kind (management and AWDL too)
-     * before VIF removal, hardware stop, or release of PCI/backend context. */
-    auto mutation = beginTxStateMutation();
-    if (_vif && _hw && _hw->ops) {
-        rtw88_unregister_vif();
-        if (_hw->ops->remove_interface)
-            _hw->ops->remove_interface(_hw, _vif);
-        IOFree(_vif, _vifAllocSize);
-        _vifAllocSize = 0;
-        _vif = nullptr;
-    } else if (_vif) {
-        rtw88_unregister_vif();
-        IOFree(_vif, _vifAllocSize);
-        _vifAllocSize = 0;
-        _vif = nullptr;
+    /* powerOff closes admission and sets _powered=false while holding the
+     * writer, then calls ops->stop outside it. RTW88 may synchronously drain
+     * NAPI/RX workers; those callbacks must be free to acquire the radio gate
+     * and observe the powered-off state rather than deadlock behind teardown. */
+    powerOff();
+
+    struct ieee80211_hw *hw = nullptr;
+    struct ieee80211_vif *vif = nullptr;
+    size_t vifSize = 0;
+    {
+        auto mutation = beginTxStateMutation();
+        hw = _hw;
+        vif = _vif;
+        vifSize = _vifAllocSize;
+        if (vif)
+            rtw88_unregister_vif();
+        mutation.finish();
     }
 
-    if (_powered && _hw && _hw->ops && _hw->ops->stop)
-        _hw->ops->stop(_hw, false);
-    __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
+    /* Interface removal and PCI removal can wait for driver work. They run
+     * with TX admission open but _powered=false, so every TX entry point
+     * short-circuits before dereferencing these objects. */
+    if (hw && vif && hw->ops && hw->ops->remove_interface)
+        hw->ops->remove_interface(hw, vif);
+    if (vif)
+        IOFree(vif, vifSize);
 
-    if (_pcidev) rtw_pci_remove(_pcidev);
-    _rtwdev = nullptr;
-    _hw     = nullptr;
-    __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
-    __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
-    __atomic_store_n(&_scanReturnState, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
-    _scanPartial = false;
-    mutation.finish();
+    {
+        auto mutation = beginTxStateMutation();
+        if (_vif == vif) {
+            _vif = nullptr;
+            _vifAllocSize = 0;
+        }
+        mutation.finish();
+    }
+
+    if (_pcidev)
+        rtw_pci_remove(_pcidev);
+
+    {
+        auto mutation = beginTxStateMutation();
+        _rtwdev = nullptr;
+        _hw = nullptr;
+        __atomic_store_n(&_state, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
+        __atomic_store_n(&_associatedVisible, false, __ATOMIC_RELEASE);
+        __atomic_store_n(&_scanReturnState, RTW88_STATE_IDLE, __ATOMIC_RELEASE);
+        _scanPartial = false;
+        mutation.finish();
+    }
 }
 
 IOReturn RTW88IEEE80211::setReceiveMulticast(bool active)
@@ -1366,31 +1395,56 @@ IOReturn RTW88IEEE80211::setAWDLChannel(uint16_t channel)
 IOReturn RTW88IEEE80211::powerOn()
 {
     IOLog("rtw88: IEEE80211 powerOn\n");
-    auto mutation = beginTxStateMutation();
-    if (_powered) {
+    struct ieee80211_hw *hw = nullptr;
+    struct ieee80211_vif *vif = nullptr;
+    {
+        auto mutation = beginTxStateMutation();
+        if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE)) {
+            mutation.finish();
+            return kIOReturnNotReady;
+        }
+        if (__atomic_load_n(&_powered, __ATOMIC_ACQUIRE)) {
+            mutation.finish();
+            return kIOReturnSuccess;
+        }
+        hw = _hw;
+        vif = _vif;
+        if (!hw || !hw->ops || !hw->ops->start || !vif) {
+            mutation.finish();
+            return kIOReturnNotReady;
+        }
         mutation.finish();
-        return kIOReturnSuccess;
     }
-    if (!_hw || !_hw->ops || !_hw->ops->start) {
-        mutation.finish();
-        return kIOReturnNotReady;
-    }
-    int ret = _hw->ops->start(_hw);
+
+    /* TX remains closed while firmware/core start may schedule or flush RX
+     * work. Do not hold the radio writer across driver lifecycle callbacks. */
+    int ret = hw->ops->start(hw);
     if (ret) {
         IOLog("rtw88: rtw_core_start failed: %d\n", ret);
-        mutation.finish();
         return kIOReturnError;
     }
-    __atomic_store_n(&_powered, true, __ATOMIC_RELEASE);
-    _awdlPreparedChannel = 0;
-    _awdlOffChannel = false;
-    mutation.finish();
 
-    if (rtw88_restore_interface(_hw, _vif) != 0) {
+    {
+        auto mutation = beginTxStateMutation();
+        if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+            _hw != hw || _vif != vif) {
+            mutation.finish();
+            if (hw->ops->stop)
+                hw->ops->stop(hw, false);
+            return kIOReturnNotReady;
+        }
+        _awdlPreparedChannel = 0;
+        _awdlOffChannel = false;
+        __atomic_store_n(&_powered, true, __ATOMIC_RELEASE);
+        mutation.finish();
+    }
+
+    if (rtw88_restore_interface(hw, vif) != 0) {
         powerOff();
         return kIOReturnError;
     }
-    IOReturn filterResult = _awdlReceiveMode ? setAWDLReceiveMode(true) : setReceiveMulticast(_receiveMulticast);
+    IOReturn filterResult = _awdlReceiveMode ?
+        setAWDLReceiveMode(true) : setReceiveMulticast(_receiveMulticast);
     if (filterResult != kIOReturnSuccess)
         powerOff();
     return filterResult;
@@ -1400,17 +1454,23 @@ void RTW88IEEE80211::powerOff()
 {
     IOLog("rtw88: IEEE80211 powerOff\n");
     __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
-    auto mutation = beginTxStateMutation();
-    if (!_powered) {
+    struct ieee80211_hw *hw = nullptr;
+    bool wasPowered = false;
+    {
+        auto mutation = beginTxStateMutation();
+        wasPowered = __atomic_load_n(&_powered, __ATOMIC_ACQUIRE);
+        hw = _hw;
+        __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
+        _awdlPreparedChannel = 0;
+        _awdlOffChannel = false;
         mutation.finish();
-        return;
     }
-    if (_hw && _hw->ops && _hw->ops->stop)
-        _hw->ops->stop(_hw, false);
-    __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
-    _awdlPreparedChannel = 0;
-    _awdlOffChannel = false;
-    mutation.finish();
+
+    /* The reader drain above means no TX callback can still be inside
+     * ops->tx(). The powered=false fast path lets late callers return safely.
+     * Stop may drain the RX workqueue, so it must not run under the writer. */
+    if (wasPowered && hw && hw->ops && hw->ops->stop)
+        hw->ops->stop(hw, false);
 }
 
 /*  Interrupt dispatch                                                  */
@@ -4404,7 +4464,9 @@ void RTW88IEEE80211::doDisconnect()
 
 void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
 {
-    if (!data || len < 99 || data[1] != 3)
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+        __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+        !data || len < 99 || data[1] != 3)
         return;
 
     uint16_t eapol_body_len = (uint16_t)((data[2] << 8) | data[3]);
@@ -5096,7 +5158,8 @@ bool RTW88IEEE80211::txNullFunc(
 bool RTW88IEEE80211::txProbeRequest()
 {
     auto txLease = _txStateGate.tryEnterTransmit();
-    if (!txLease || !_hw || !_hw->ops || !_hw->ops->tx)
+    if (!txLease || !__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+        !_hw || !_hw->ops || !_hw->ops->tx)
         return false;
 
     uint8_t frame[128] = {};
