@@ -264,6 +264,8 @@ private:
     bool scanResultMatches(const RTW88BSS &bss) const;
     void publishScanResults(IOReturn status);
     bool prepareRegistrationInfo(const ether_addr &address);
+    IOReturn attachControllerInterface();
+    IOReturn detachControllerInterface();
     void clearRegistrationInfo();
     void postConnectionComplete(uint16_t status, uint16_t reason,
                                 IOReturn driverStatus);
@@ -283,6 +285,7 @@ private:
     bool _connectNotified = false;
     bool _stopping = false;
     bool _baseStarted = false;
+    bool _controllerAttached = false;
     bool _registered = false;
 
     /* Opaque 24H32 payload storage remains resident until the interface has
