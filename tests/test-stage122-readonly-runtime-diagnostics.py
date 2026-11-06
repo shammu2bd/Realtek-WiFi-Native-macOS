@@ -8,12 +8,18 @@ import subprocess
 runner_path = Path("Development/stage122-readonly-runtime-diagnostics.sh")
 source_path = Path("driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp")
 controller_path = Path("driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp")
+wrapper_path = Path("Development/stage122-run-and-upload.sh")
+pin_path = Path("Development/stage122-readonly-runtime-diagnostics.pin")
 
 assert runner_path.is_file(), "Stage122 runner is missing"
 assert source_path.is_file(), "Stage121 interface source is missing"
 assert controller_path.is_file(), "Stage121 controller source is missing"
+assert wrapper_path.is_file(), "Stage122 automatic upload wrapper is missing"
+assert pin_path.is_file(), "Stage122 runner pin is missing"
 
 runner = runner_path.read_text(encoding="utf-8")
+wrapper = wrapper_path.read_text(encoding="utf-8")
+pin = pin_path.read_text(encoding="utf-8")
 interface_source = source_path.read_text(encoding="utf-8")
 controller_source = controller_path.read_text(encoding="utf-8")
 
@@ -73,6 +79,28 @@ assert "PRIMARY_INTERFACE_GETTER_VERIFIED" in runner
 assert "NOT_OBSERVED" in runner
 assert "STAGE122_DIAGNOSTIC_COLLECTION" in runner
 assert "git push origin" in runner
+
+assert 'EXPECTED_BRANCH="work/stage122-primary-interface-runtime-diagnostics"' in wrapper
+assert 'bash "$RUNNER"' in wrapper
+assert 'git fetch origin "$EXPECTED_BRANCH"' in wrapper
+assert "STAGE122_AUTO_UPLOAD=PASS" in wrapper
+pin_match = re.search(r"^STAGE122_RUNNER_GIT_BLOB_SHA1=([0-9a-f]{40})$", pin, re.MULTILINE)
+assert pin_match, "Pinned runner Git blob SHA-1 is missing"
+hash_result = subprocess.run(
+    ["git", "hash-object", str(runner_path)],
+    capture_output=True,
+    text=True,
+    check=True,
+)
+assert hash_result.stdout.strip() == pin_match.group(1), "Runner pin mismatch"
+
+wrapper_syntax = subprocess.run(
+    ["bash", "-n", str(wrapper_path)],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+assert wrapper_syntax.returncode == 0, wrapper_syntax.stderr
 
 print("STAGE122_SOURCE_CONTRACT=PASS")
 print("STAGE122_READ_ONLY_BOUNDARY=PASS")
