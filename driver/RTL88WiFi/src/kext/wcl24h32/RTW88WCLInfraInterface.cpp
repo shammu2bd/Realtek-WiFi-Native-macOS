@@ -153,6 +153,7 @@ bool RTW88WCLInfraInterface::init()
     _connectNotified = false;
     _stopping = false;
     _baseStarted = false;
+    _controllerAttached = false;
     _registered = false;
     return true;
 }
@@ -171,6 +172,7 @@ bool RTW88WCLInfraInterface::init(IOService *provider, ether_addr *address)
 
     clearRegistrationInfo();
     _baseStarted = false;
+    _controllerAttached = false;
     _registered = false;
     return true;
 }
@@ -267,6 +269,71 @@ bool RTW88WCLInfraInterface::prepareRegistrationInfo(const ether_addr &address)
     return true;
 }
 
+IOReturn RTW88WCLInfraInterface::attachControllerInterface()
+{
+    if (!_controller)
+        return kIOReturnNotReady;
+
+    IO80211SkywalkInterface *primary =
+        _controller->getPrimarySkywalkInterface();
+    if (primary == this) {
+        _controllerAttached = true;
+        return kIOReturnSuccess;
+    }
+    if (primary) {
+        IOLog("rtl88wifi-wcl: controller already owns a different primary Skywalk interface (%p)\\n",
+              primary);
+        return kIOReturnBusy;
+    }
+
+    /* Stage120 24H32 disassembly confirms this private Apple method takes the
+     * Skywalk interface as OSObject* and the controller as IOService*. Apple's
+     * createSkywalkInterface call path passes its controller as argument two.
+     * Its bool return only proves the dynamic cast; the getter must also return
+     * this exact object before registration may proceed. */
+    if (!_controller->attachInterface(this, _controller)) {
+        IOLog("rtl88wifi-wcl: Apple controller attachInterface rejected native infra interface\\n");
+        return kIOReturnNotReady;
+    }
+
+    primary = _controller->getPrimarySkywalkInterface();
+    if (primary != this) {
+        IOLog("rtl88wifi-wcl: Apple attachInterface returned without publishing this primary interface (primary=%p self=%p)\\n",
+              primary, this);
+        return kIOReturnNotReady;
+    }
+
+    _controllerAttached = true;
+    IOLog("rtl88wifi-wcl: Apple primary Skywalk interface attached and getter-verified\\n");
+    return kIOReturnSuccess;
+}
+
+IOReturn RTW88WCLInfraInterface::detachControllerInterface()
+{
+    if (!_controller)
+        return _controllerAttached ? kIOReturnNotReady : kIOReturnSuccess;
+
+    IO80211SkywalkInterface *primary =
+        _controller->getPrimarySkywalkInterface();
+    if (primary != this) {
+        /* Do not clear a primary interface owned by another instance. */
+        _controllerAttached = false;
+        return kIOReturnSuccess;
+    }
+
+    /* Keep the primary pointer through Apple's base stop; this helper is
+     * called only after that stop and successful Skywalk deregistration. */
+    _controller->detachInterface(this, false);
+    if (_controller->getPrimarySkywalkInterface() == this) {
+        IOLog("rtl88wifi-wcl: Apple detachInterface did not clear the primary pointer; retaining interface owner\\n");
+        return kIOReturnBusy;
+    }
+
+    _controllerAttached = false;
+    IOLog("rtl88wifi-wcl: Apple primary Skywalk interface detached and getter-verified\\n");
+    return kIOReturnSuccess;
+}
+
 bool RTW88WCLInfraInterface::start(IOService *provider)
 {
     if (!provider || provider != _controller || _baseStarted || _registered ||
@@ -292,7 +359,18 @@ bool RTW88WCLInfraInterface::start(IOService *provider)
     _baseStarted = true;
     _stopping = false;
 
-    IOReturn status = attachRadio(_controller->radioBackend());
+    /* The Apple base start has initialized the 24H32 interface role. Attach
+     * through IO80211Controller's separate Skywalk-primary API before queue
+     * registration, then verify the stored pointer through Apple's getter. */
+    IOReturn status = attachControllerInterface();
+    if (status != kIOReturnSuccess) {
+        IOLog("rtl88wifi-wcl: native interface could not become controller primary (0x%08x)\\n",
+              status);
+        (void)shutdownForController();
+        return false;
+    }
+
+    status = attachRadio(_controller->radioBackend());
     if (status != kIOReturnSuccess) {
         IOLog("rtl88wifi-wcl: radio bridge attach failed: 0x%08x\n", status);
         (void)shutdownForController();
@@ -447,6 +525,13 @@ IOReturn RTW88WCLInfraInterface::shutdownForController()
         super::stop(_controller);
         _baseStarted = false;
     }
+
+    /* Controller primary ownership is retired after Apple's base stop and
+     * only after deregisterEthernetInterface plus local transaction commit. */
+    const IOReturn primaryDetachStatus = detachControllerInterface();
+    if (primaryDetachStatus != kIOReturnSuccess)
+        return primaryDetachStatus;
+
     _stopping = true;
     return kIOReturnSuccess;
 }
