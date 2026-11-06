@@ -66,6 +66,7 @@ public:
     void reapDeferredCompletionTokens();
     bool hasReapableCompletionTokens() const;
     bool hasRetiredCompletionTokens() const;
+    bool hasBackendCompletionCallbacksInFlight() const;
     IOReturn setCompletionNotifier(CompletionNotify notify, void *context);
     void clearCompletionNotifier(void *context);
     void free() override;
