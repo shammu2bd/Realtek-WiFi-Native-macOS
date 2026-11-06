@@ -92,3 +92,27 @@ compile is claimed.
 - Target 24H32 compile: failed on the previous revision; post-fix rerun pending.
 - TX completion reporter internals and runtime lock-order proof: open.
 - Native activation, install/load and PR #4 merge: blocked.
+
+## Verified Stage98 target compile and regression results
+
+Target-Mac compile-only log:
+Development/Logs/stage98-final-compile-20261106T034120Z.log
+
+- macOS Sequoia 15.8.1 (24H32), Intel x86_64; Xcode 16.4.
+- Shell command exit status: 0.
+- Build marker: NATIVE_COMPILE_ONLY=PASS (objects only; no link/sign/install/load).
+- The final make invocation rebuilt RTW88IEEE80211.cpp and emitted 22 warnings, 0 errors. Other object prerequisites were already current from earlier Stage98 compile attempts. This is a successful incremental object-only target, not yet a clean-from-empty build-directory compile.
+
+GitHub Actions:
+- Stage98 static audit run 42158234359: success, 13 checks passed, 0 failed. Lock review remains open for completion-reporter internals and target runtime.
+- Stage94 compatibility/integration run 42158279149: success, 39 checks passed, 0 blockers. The Stage94 test had stale case-sensitive _txBAState expectations after the source was corrected to the declared _txBaState; the test-only expectations were corrected.
+
+## Remaining gate
+
+A clean target-Mac object-only build is still recommended: make clean removes only this Makefile's build/ directory, followed by make native-compile-only. No link, bundle, signing, installation, loading or hardware activation is required for that check.
+
+Still open:
+- Trace the internal locking and possible callback re-entry in rtw88_skb_tx_completion_report().
+- Verify actual target macOS lock ordering/runtime behavior; source checks are not a deadlock proof.
+- No full kext link, signing, install/load, RTL8821CE hardware TX/RX or throughput test has been performed.
+- Native activation and PR #4 merge remain blocked.
