@@ -67,7 +67,15 @@ If any drain or join fails, cleanup returns busy/false and retains owners rather
 - Portable producer shutdown model: **12 producers** raced the close gate; the join returned only after accepted producers had left, and subsequent admission was rejected.
 - [Stage99 token-queue audit run 42166532642](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42166532642): success; **25 assertions passed, 0 failed**, plus 12-producer bounded MPSC token-queue stress.
 - [Stage94 radio synchronization run 42166532656](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42166532656): success; **39 checks passed, 0 blockers**.
-- The commits after the Stage102 test run only rename/update the Stage99 test runner/workflow/test file; GitHub compare confirms no Stage102 production source was changed after the green Stage102 run.
+- The initial target-Mac clean dual-object build was subsequently attempted from source commit `f0ce12ca9b1265bda583f9443f42d6e4baba5d52` on Sequoia 15.8.1 (24H32) / Xcode 16.4. The build failed at `rtw88_compat.c:1340`: a diagnostic string contained a raw source newline, producing an unterminated string and `expected expression`.
+- Corrected the diagnostic to use an escaped newline in commit `51ec80ac018328469613337ba7175642f55a9e0a`. Added a regression assertion in `tests/test-stage102-xnu-thread-call-lifecycle.py` to reject this exact malformed form; the final regression-test commit is `b6e7b9913f5781f38a5159cc5b7d7325b6c445f0`.
+- The post-fix static/portable suite and target-Mac clean dual-object compile have **not yet been rerun**. The original 31-check Stage102 Actions pass therefore predates the diagnostic fix and does not validate the amended test/source pair.
+
+## Build failure and correction
+
+The published clean-build log is `Development/Logs/stage102-clean-dual-object-compile-20261106T051059Z.log`. It records exit status 2 and one compiler error: `rtw88_compat.c:1340:29: error: expected expression`, preceded by `missing terminating '"' character`. The compiler stopped while building `build/compat/rtw88_compat.o`; the other displayed warnings are nonfatal and are not the cause of the failure.
+
+The source and regression-test corrections are committed, but Actions verification and a fresh target-Mac clean dual-object build remain pending. No compile pass is claimed.
 
 ## Still open — no runtime claim
 
