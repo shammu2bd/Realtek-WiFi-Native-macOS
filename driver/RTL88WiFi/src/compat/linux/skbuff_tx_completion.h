@@ -4,8 +4,9 @@
  * The token is separately allocated from the skb. A racing kfree_skb() may
  * reclaim the skb immediately after another thread claims the token, so no
  * callback state may remain embedded in the skb after the atomic claim.
- * Callbacks may run from TX completion or arbitrary free/teardown context;
- * they must be non-blocking and must not call Skywalk directly.
+ * The release hook and callback may run from TX completion or arbitrary
+ * free/teardown context. Both must be non-blocking and must not call Skywalk;
+ * the release hook may only enqueue the detached token for deferred freeing.
  */
 #ifndef _RTW88_COMPAT_SKBUFF_TX_COMPLETION_H
 #define _RTW88_COMPAT_SKBUFF_TX_COMPLETION_H
