@@ -823,8 +823,10 @@ bool RTW88IEEE80211::installKey(struct ieee80211_key_conf **slot, bool pairwise,
                                 const uint8_t *tk, uint8_t tk_len)
 {
     auto mutation = beginTxStateMutation();
-    return installKeyUnderMutation(slot, pairwise, keyidx, cipher, tk, tk_len,
-                                   &mutation);
+    const bool installed = installKeyUnderMutation(
+        slot, pairwise, keyidx, cipher, tk, tk_len, &mutation);
+    mutation.finish();
+    return installed;
 }
 
 bool RTW88IEEE80211::installKeyUnderMutation(
@@ -832,8 +834,11 @@ bool RTW88IEEE80211::installKeyUnderMutation(
     uint8_t keyidx, uint32_t cipher, const uint8_t *tk, uint8_t tk_len,
     RTW88TxStateGate::MutationLease *mutation)
 {
-    (void)mutation;
-    if (!_hw || !_hw->ops || !_hw->ops->set_key || !slot || !tk || tk_len == 0 || tk_len > 32)
+    if (!mutation || !*mutation || !mutation->ready() ||
+        !__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+        __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+        !_hw || !_hw->ops || !_hw->ops->set_key ||
+        !slot || !tk || tk_len == 0 || tk_len > 32)
         return false;
     if (cipher != WLAN_CIPHER_SUITE_CCMP && cipher != WLAN_CIPHER_SUITE_TKIP)
         return false;
@@ -842,18 +847,17 @@ bool RTW88IEEE80211::installKeyUnderMutation(
     if (cipher == WLAN_CIPHER_SUITE_TKIP && tk_len != 32)
         return false;
 
-    if (*slot && (*slot)->cipher == cipher && (*slot)->keyidx == keyidx &&
-        (*slot)->keylen == tk_len && memcmp((*slot)->key, tk, tk_len) == 0) {
+    struct ieee80211_key_conf *oldKey = *slot;
+    if (oldKey && oldKey->cipher == cipher && oldKey->keyidx == keyidx &&
+        oldKey->keylen == tk_len && memcmp(oldKey->key, tk, tk_len) == 0) {
         IOLog("rtw88: key reuse %s idx=%u; preserving packet numbers\n",
               pairwise ? "PTK" : "GTK", keyidx);
         return true;
     }
-    if (*slot) {
-        _hw->ops->set_key(_hw, DISABLE_KEY, _vif, pairwise ? _sta : nullptr, *slot);
-        IOFree(*slot, sizeof(**slot));
-        *slot = nullptr;
-    }
 
+    /* Stage and program the candidate before retiring the working key. A
+     * failed SET_KEY leaves the previous software/hardware key object intact.
+     * The writer lease excludes every WMM submitter during this handoff. */
     struct ieee80211_key_conf *key =
         (struct ieee80211_key_conf *)IOMallocZero(sizeof(*key));
     if (!key)
@@ -867,15 +871,32 @@ bool RTW88IEEE80211::installKeyUnderMutation(
     key->icv_len = (cipher == WLAN_CIPHER_SUITE_TKIP) ? 4 : 8;
     memcpy(key->key, tk, tk_len);
 
-    int ret = _hw->ops->set_key(_hw, SET_KEY, _vif, pairwise ? _sta : nullptr, key);
+    int ret = _hw->ops->set_key(_hw, SET_KEY, _vif,
+                                pairwise ? _sta : nullptr, key);
     if (ret) {
-        IOLog("rtw88: failed to install %s %s key ret=%d\n",
+        IOLog("rtw88: failed to install %s %s key ret=%d; previous key retained\n",
               pairwise ? "pairwise" : "group", rtw88CipherName(cipher), ret);
         IOFree(key, sizeof(*key));
         return false;
     }
 
+    /* Only disable the old hardware slot when the new key was assigned a
+     * distinct slot. DISABLE_KEY on a reused index would disable the new key. */
+    if (oldKey &&
+        (oldKey->keyidx != key->keyidx ||
+         oldKey->hw_key_idx != key->hw_key_idx)) {
+        int disableRet = _hw->ops->set_key(
+            _hw, DISABLE_KEY, _vif, pairwise ? _sta : nullptr, oldKey);
+        if (disableRet)
+            IOLog("rtw88: old %s key slot disable failed ret=%d old_hw_idx=%u new_hw_idx=%u\n",
+                  pairwise ? "PTK" : "GTK", disableRet,
+                  oldKey->hw_key_idx, key->hw_key_idx);
+    }
+
     *slot = key;
+    if (oldKey)
+        IOFree(oldKey, sizeof(*oldKey));
+
     /* CCMP packet numbers are never reset here: this includes rekeys. */
     IOLog("rtw88: installed %s %s key idx=%u hw_idx=%u\n",
           pairwise ? "pairwise" : "group", rtw88CipherName(cipher),
