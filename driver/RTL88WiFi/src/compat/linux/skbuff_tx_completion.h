@@ -34,9 +34,6 @@ struct rtw88_skb_tx_completion_token {
     void *context;
     void *cookie;
 
-    /* Intrusive link used by the native WCL deferred token reaper. The
-     * release hook may only enqueue this node; it must not free it. */
-    struct rtw88_skb_tx_completion_token *deferred_next;
 };
 
 /* This one pointer is the only completion state stored inside struct sk_buff. */
