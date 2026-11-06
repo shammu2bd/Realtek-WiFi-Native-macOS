@@ -10,7 +10,7 @@ trap 'rm -f "$TMP_BIN"' EXIT
 
 echo "===== STAGE99 BOUNDED MPSC TOKEN RETIREMENT STRESS ====="
 "$CXX" -std=c++17 -O2 -pthread -Wall -Wextra -Werror \
-    tests/wcl_tx_completion_retire_list_test.cpp -o "$TMP_BIN"
+    tests/wcl_tx_completion_bounded_queue_test.cpp -o "$TMP_BIN"
 "$TMP_BIN"
 echo "PASS: 12-producer MPSC retirement stress and exactly-once consumption"
 
