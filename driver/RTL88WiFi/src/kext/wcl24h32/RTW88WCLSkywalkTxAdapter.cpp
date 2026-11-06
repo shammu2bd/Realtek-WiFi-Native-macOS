@@ -9,6 +9,11 @@
 #include <libkern/c++/OSMetaClass.h>
 #include <sys/kpi_mbuf.h>
 
+extern "C" {
+#include "../../compat/linux/slab.h"
+#include "../../compat/linux/skbuff_tx_completion.h"
+}
+
 #define super OSObject
 OSDefineMetaClassAndStructors(RTW88WCLSkywalkTxAdapter, OSObject)
 
@@ -20,6 +25,7 @@ bool RTW88WCLSkywalkTxAdapter::init()
     _txPool = nullptr;
     _tickets.reset();
     _backendCompletionCallbacksInFlight = 0;
+    _retiredCompletionTokenCount = 0;
     _completionNotifier = nullptr;
     _completionNotifierContext = nullptr;
     return true;
@@ -77,7 +83,8 @@ IOReturn RTW88WCLSkywalkTxAdapter::unbind()
      * queue-owner references until all tickets are free and every backend
      * completion callback has returned from its notifier thunk. */
     if (_tickets.hasOutstanding() ||
-        __atomic_load_n(&_backendCompletionCallbacksInFlight, __ATOMIC_ACQUIRE) != 0)
+        __atomic_load_n(&_backendCompletionCallbacksInFlight, __ATOMIC_ACQUIRE) != 0 ||
+        hasRetiredCompletionTokens())
         return kIOReturnBusy;
 
     if (_submissionGate.isUnbound()) {
@@ -264,6 +271,54 @@ uint32_t RTW88WCLSkywalkTxAdapter::readyCompletionCount() const
     return _tickets.completedCount();
 }
 
+void RTW88WCLSkywalkTxAdapter::retireCompletionToken(
+    struct rtw88_skb_tx_completion_token *token)
+{
+    if (!token)
+        return;
+
+    /* Count before publishing so teardown cannot pass through the short
+     * interval between allocation retirement and the lock-free stack push. */
+    __atomic_add_fetch(&_retiredCompletionTokenCount, 1U, __ATOMIC_ACQ_REL);
+    _retiredCompletionTokens.push(token);
+}
+
+void RTW88WCLSkywalkTxAdapter::reapDeferredCompletionTokens()
+{
+    /* Called only by the worker's deferred thread-call callback. Detach before
+     * invoking kfree(), because IOFree may block and is forbidden in the
+     * backend completion callback / TX report lock path. */
+    struct rtw88_skb_tx_completion_token *token =
+        _retiredCompletionTokens.takeAll();
+    while (token) {
+        struct rtw88_skb_tx_completion_token *next = token->deferred_next;
+        kfree(token);
+        __atomic_sub_fetch(&_retiredCompletionTokenCount, 1U, __ATOMIC_RELEASE);
+        token = next;
+    }
+}
+
+bool RTW88WCLSkywalkTxAdapter::hasReapableCompletionTokens() const
+{
+    return !_retiredCompletionTokens.empty();
+}
+
+bool RTW88WCLSkywalkTxAdapter::hasRetiredCompletionTokens() const
+{
+    return __atomic_load_n(&_retiredCompletionTokenCount, __ATOMIC_ACQUIRE) != 0 ||
+           !_retiredCompletionTokens.empty();
+}
+
+extern "C" void rtw88_wcl_defer_skb_tx_completion_token(
+    void *context, void *token)
+{
+    auto *adapter = static_cast<RTW88WCLSkywalkTxAdapter *>(context);
+    if (adapter && token) {
+        adapter->retireCompletionToken(
+            static_cast<struct rtw88_skb_tx_completion_token *>(token));
+    }
+}
+
 IOReturn RTW88WCLSkywalkTxAdapter::setCompletionNotifier(
     CompletionNotify notify, void *context)
 {
@@ -294,7 +349,7 @@ void RTW88WCLSkywalkTxAdapter::free()
 {
     const IOReturn status = unbind();
     if (status != kIOReturnSuccess || !_submissionGate.isUnbound() ||
-        _tickets.hasOutstanding()) {
+        _tickets.hasOutstanding() || hasRetiredCompletionTokens()) {
         IOLog("rtl88wifi-wcl: TX adapter free deferred; submission or completion ownership remains\n");
         /* Retained callbacks/tickets may still reference this adapter and its
          * radio/pool. Quarantine it instead of destroying live callback state. */
