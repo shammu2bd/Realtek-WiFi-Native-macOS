@@ -53,9 +53,12 @@ SOURCE_COMMIT="$(git rev-parse HEAD)"
     [[ -n "$SYMBOL" ]] || continue
     COUNT=$((COUNT+1))
     echo "===== SYMBOL $SYMBOL ====="
-    DUMP="$("$OBJDUMP" --macho --dis-symname="$SYMBOL" "$KC" 2>&1 || true)"
-    if printf "%s\n" "$DUMP" | grep -Fq "$SYMBOL"; then
-      if printf "%s\n" "$DUMP" | grep -Eq "__start:|__stop:|IO80211TimeSyncPeer"; then
+    DUMP="$("$OBJDUMP" --macho --disassemble-symbols="$SYMBOL" "$KC" 2>&1 || true)"
+    if printf "%s\n" "$DUMP" | grep -Eqi 'unknown argument|unknown option|error:'; then
+      echo "STAGE126_SYMBOL_DISASSEMBLY=TOOL_OPTION_ERROR"
+      printf "%s\n" "$DUMP" | head -12
+    elif printf "%s\n" "$DUMP" | grep -Fq "$SYMBOL"; then
+      if ! printf "%s\n" "$DUMP" | grep -Eq "^[[:space:]]*[0-9a-f]+[[:space:]]+<$SYMBOL>:"; then
         echo "STAGE126_SYMBOL_DISASSEMBLY=NOT_ISOLATED"
         printf "%s\n" "$DUMP" | head -35
       else
@@ -76,6 +79,7 @@ SOURCE_COMMIT="$(git rev-parse HEAD)"
   printf "%s\n" "$NM_LIST" | grep -E 'IO80211Controller.*(getPOWER|setPOWER)' || true
   echo
   echo "STAGE126_POWER_CALL_GRAPH=REVIEW_REQUIRED"
+  echo "STAGE126_DISASSEMBLY_TOOL_OPTION=--disassemble-symbols"
   echo "STAGE126_DRIVER_SOURCE_MODIFIED=NO"
   echo "STAGE126_BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN"
   echo "STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN"
