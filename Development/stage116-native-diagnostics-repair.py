@@ -301,7 +301,7 @@ def main():
 
     # -r asks ioreg to return the matched node and its subtree, not the whole root tree.
     pci_rc, pci = run(["ioreg", "-p", "IOService", "-n", "pci10ec,c821", "-r", "-l", "-w0"], 20)
-    pci_match = bool(pci_rc == 0 and re.search(r"pci10ec,c821\s+<class\s+IOPCIDevice", pci, re.I))
+    pci_match = bool(pci_rc == 0 and re.search(r"pci10ec,c821(?:@[^\s]+)?\s+<class\s+IOPCIDevice", pci, re.I))
     emit("IOREG_RTL8821CE_NODE_QUERY_EXIT=" + str(pci_rc))
     block("IOREG_RTL8821CE_NODE", pci, 35, 520)
     emit("IOREG_RTL8821CE_NODE_MATCH=" + str(pci_match))
@@ -354,8 +354,8 @@ def main():
         diagnosis = "EFI_NATIVE_EXECUTABLE_DIFFERS_FROM_STAGE113_VALIDATED_BINARY"
     elif native_loaded:
         diagnosis = "NATIVE_KEXT_PRESENT_BUT_CONTROLLER_MATCH_REQUIRES_REVIEW"
-    elif km_diag_rc == 0 and re.search(r"invalid ownership|bad code signature|authenticating extension failed", km_diag, re.I):
-        diagnosis = "KMUTIL_DIAGNOSTIC_FLAGS_OWNERSHIP_OR_AUTHENTICATION_REVIEW_REQUIRED"
+    elif re.search(r"invalid ownership|bad code signature|authenticating extension failed|code object is not signed|not signed", km_diag, re.I):
+        diagnosis = "KMUTIL_DIAGNOSTIC_REPORTS_AUTH_OR_OWNERSHIP_ISSUE_OPENCORE_CAUSALITY_UNPROVEN"
     elif km_diag_rc not in (0, 1):
         diagnosis = "KMUTIL_DIAGNOSTICS_NOT_COMPLETED_OTHER_CAUSE_UNRESOLVED"
     elif signature_state == "UNSIGNED":
