@@ -81,7 +81,7 @@ for start,name in sorted(targets):
  stop=min(next_addr,start+0x600)
  selected=[]
  for line in lines:
-  m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):\s*(.*)$",line)
+  m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):?\s+(.*)$",line)
   if not m: continue
   a=int(m.group(1),16)
   if start<=a<stop: selected.append((a,line.strip(),m.group(2)))
@@ -105,7 +105,7 @@ import pathlib,re,sys
 target=0xffffff80022dc483
 found=[]
 for line in pathlib.Path(sys.argv[1]).read_text(errors="replace").splitlines():
- m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):\s*(.*)$",line)
+ m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):?\s+(.*)$",line)
  if m and int(m.group(1),16)==target: found.append(line.strip())
 print("STAGE130_STAGE126_CALLSITE_0xffffff80022dc483="+("FOUND" if found else "NOT_FOUND"))
 for line in found: print("KNOWN_CALLSITE_LINE="+line)
