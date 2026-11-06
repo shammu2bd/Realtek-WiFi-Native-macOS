@@ -1,0 +1,28 @@
+========== STAGE124 NATIVE WIFI INTERFACE STATE ==========
+STAGE124_SOURCE_COMMIT=ddaff278269c5e2825c0f312c3bce2e429745fb8
+STAGE124_TARGET=macOS_15.8.1_24H32_x86_64
+STAGE124_SCOPE=CONNECTED_BSSID_CACHE_AND_NATIVE_INTERFACE_CONTROL_PLANE
+STAGE124_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE124_OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+
+----- Stage124 current-AP/link-state source contract -----
+Traceback (most recent call last):
+  File "/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-wcl-link-state-publication-stage124.py", line 52, in <module>
+    events = body_between(
+        infra,
+        "void RTW88WCLInfraInterface::handleRTW88WCLRadioEvent",
+        "bool RTW88WCLInfraInterface::scanResultMatches",
+    )
+  File "/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-wcl-link-state-publication-stage124.py", line 19, in body_between
+    finish = source.index(end, start)
+ValueError: substring not found
+
+STAGE124_RESULT=FAIL
+STAGE124_EXIT=1
+STAGE124_SOURCE_COMMIT=ddaff278269c5e2825c0f312c3bce2e429745fb8
+STAGE124_CONNECTED_BSSID_CACHE=IMPLEMENTED
+STAGE124_RUNTIME_INTERFACE_PUBLICATION=NOT_TESTED
+STAGE124_WIFI_MENU=NOT_VERIFIED_DRIVER_NOT_LOADED
+STAGE124_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN HARDWARE_TEST=NOT_RUN
+STAGE124_OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+========== END STAGE124 ==========
