@@ -4335,7 +4335,9 @@ IOReturn RTW88IEEE80211::cmdInstallExternalKey(bool pairwise, uint8_t keyidx, ui
         return kIOReturnBadArgument;
 
     auto mutation = beginTxStateMutation();
-    if (!_externalSupplicant || !_wpa2 || !associatedVisible() ||
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+        __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+        !_externalSupplicant || !_wpa2 || !associatedVisible() ||
         (pairwise && !_sta)) {
         mutation.finish();
         return kIOReturnNotReady;
@@ -4612,6 +4614,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
              * installation is complete. */
             auto mutation = beginTxStateMutation();
             if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+                __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
                 __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED ||
                 !__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE) || _handshakePending || !_ptkConf) {
                 IOLog("rtw88: group M1 dropped: no established PTK state=%d\n",
@@ -4693,6 +4696,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
              * tied to this exact SNonce/PTK/replay snapshot. */
             auto mutation = beginTxStateMutation();
             if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+                __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
                 (_snonceValid && memcmp(data + 9, _replayCtr, 8) < 0) ||
                 (__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE) &&
                  memcmp(data + 9, _installedM3ReplayCtr, 8) <= 0)) {
@@ -4734,6 +4738,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
              * No TX caller can see a mixed PTK/GTK generation. */
             auto mutation = beginTxStateMutation();
             if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+                __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
                 !_snonceValid || memcmp(data + 17, _anonce, 32) != 0 ||
                 memcmp(data + 9, _replayCtr, 8) < 0 ||
                 (!_handshakePending && !__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE))) {
@@ -4821,6 +4826,11 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
 
         {
             auto mutation = beginTxStateMutation();
+            if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+                !__atomic_load_n(&_powered, __ATOMIC_ACQUIRE)) {
+                mutation.finish();
+                return;
+            }
             __atomic_store_n(&_associatedVisible, true, __ATOMIC_RELEASE);
             __atomic_store_n(&_state, RTW88_STATE_CONNECTED, __ATOMIC_RELEASE);
             __atomic_store_n(&_dataTxBlocked, false, __ATOMIC_RELEASE);
@@ -5275,6 +5285,7 @@ bool RTW88IEEE80211::txProbeRequest()
 {
     auto txLease = _txStateGate.tryEnterTransmit();
     if (!txLease || !__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+        __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
         !_hw || !_hw->ops || !_hw->ops->tx)
         return false;
 
@@ -5321,7 +5332,8 @@ bool RTW88IEEE80211::txAWDLDataFrame(mbuf_t m)
 {
     auto txLease = _txStateGate.tryEnterTransmit();
     if (!txLease) { if (m) mbuf_freem(m); return false; }
-    if (!m || !_powered || !_awdlReceiveMode ||
+    if (!m || !__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+        __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) || !_awdlReceiveMode ||
         (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_IDLE && __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED) ||
         !_hw || !_hw->ops || !_hw->ops->tx || !_vif ||
         !_hw->conf.chandef.chan || !_awdlChannel ||
@@ -5528,7 +5540,9 @@ bool RTW88IEEE80211::txDataFrame(mbuf_t m,
         return false;
     }
 
-    if (!m || !_powered || !_hw || !_hw->ops || !_hw->ops->tx ||
+    if (!m || !__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+        __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+        !_hw || !_hw->ops || !_hw->ops->tx ||
         !_vif || !_sta || !associatedVisible() ||
         accessCategory >= IEEE80211_NUM_ACS || tid > 7) {
         if (m) mbuf_freem(m);
