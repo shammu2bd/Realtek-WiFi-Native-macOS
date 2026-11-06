@@ -21,6 +21,7 @@ WORKER_CPP = (WCL / "RTW88WCLTxCompletionWorkQueue.cpp").read_text()
 WORKER_HPP = (WCL / "RTW88WCLTxCompletionWorkQueue.hpp").read_text()
 CONTROLLER_CPP = (WCL / "RTW88WCLController.cpp").read_text()
 RETIRE_LIST = (WCL / "RTW88WCLCompletionTokenRetireList.hpp").read_text()
+MAKE = (ROOT / "driver/RTL88WiFi/Makefile").read_text()
 
 
 def body(src, marker):
@@ -109,9 +110,10 @@ check("TOKEN_RETIRED_BEFORE_BACKEND_CALLBACK",
       "report copies callback inputs, queues token retirement, then calls backend completion")
 
 check("IRQ_CONTEXT_RELEASE_HOOK_DOES_NOT_FREE",
-      "rtw88_wcl_defer_skb_tx_completion_token(completion->context, token)" in radio_release and
-      "kfree(" not in radio_release and "IOFree(" not in radio_release,
-      "release hook performs only the adapter's bounded deferred-retirement publication")
+      "__atomic_load_n(&g_rtw88TxCompletionTokenRetireHook" in radio_release and
+      "hook(completion->context, token)" in radio_release and
+      "kfree(token)" not in radio_release and "IOFree(" not in radio_release,
+      "release hook performs only an atomic hook lookup and bounded retire callback")
 
 check("LOCK_FREE_MPSC_RETIRE_STACK",
       "node->deferred_next = head;" in RETIRE_LIST and
@@ -137,6 +139,24 @@ check("C_BRIDGE_RETURNS_TOKEN_TO_OWNING_ADAPTER",
       "adapter->retireCompletionToken(" in bridge and
       "completion->context" in radio_release,
       "token's retained adapter context receives the retirement node")
+
+check("LEGACY_AIRPORT_RADIO_OBJECT_HAS_NO_WCL_LINK_DEPENDENCY",
+      "$(KEXT_SRC)/RTW88IEEE80211.cpp" in MAKE and
+      "rtw88_wcl_defer_skb_tx_completion_token" not in RADIO_CPP and
+      "rtw88_set_skb_tx_completion_token_releaser" in RADIO_CPP,
+      "shared radio TU uses a registered hook, so the legacy Airport link needs no WCL adapter symbol")
+
+check("NATIVE_WORKER_REGISTERS_RELEASER_AFTER_SETUP",
+      worker_init.find("setCompletionNotifier(") <
+      worker_init.find("rtw88_set_skb_tx_completion_token_releaser(") and
+      "rtw88_wcl_defer_skb_tx_completion_token" in WORKER_CPP,
+      "only the native worker installs the WCL retire callback before TX activation")
+
+check("WORKER_CLEARS_RELEASER_AFTER_REAPER_QUIESCENCE",
+      worker_stop.find("thread_call_free(_tokenReapCall)") <
+      worker_stop.find("rtw88_set_skb_tx_completion_token_releaser(nullptr)") <
+      worker_stop.find("_adapter->release()"),
+      "release hook is cleared only after the deferred reaper is stopped and before adapter release")
 
 check("UNBIND_WAITS_TICKETS_CALLBACKS_AND_RETIRED_TOKENS",
       "_tickets.hasOutstanding()" in adapter_unbind and
