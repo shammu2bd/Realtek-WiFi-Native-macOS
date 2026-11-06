@@ -86,7 +86,7 @@ if len(data) > 700_000:
             out.append(line); kept += 1
     out.append("STAGE126_UPLOAD_COMPACTED=YES")
     out.append("STAGE126_FULL_REPORT_BYTES="+str(len(full)))
-    data=("\\n".join(out)+"\\n").encode()
+    data=("\n".join(out)+"\n").encode()
     compacted=True
 if len(data) > 850_000:
     raise SystemExit("STAGE126_UPLOAD=TOO_LARGE_AFTER_COMPACTION bytes="+str(len(data)))
