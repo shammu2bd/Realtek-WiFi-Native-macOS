@@ -41,6 +41,7 @@ int  rtw_regd_set_country(struct rtw_dev *rtwdev, const char alpha2[2]);
 
 /* Exported from the compat layer for hooking */
 void rtw88_set_hw_callbacks(struct rtw88_hw_callbacks *cbs, void *kext_hw);
+void rtw88_wcl_defer_skb_tx_completion_token(void *context, void *token);
 
 /* chip hw_spec structs — driver_data for rtw_pci_probe */
 extern const struct rtw_chip_info rtw8822b_hw_spec;
@@ -49,11 +50,17 @@ extern const struct rtw_chip_info rtw8821c_hw_spec;
 
 } /* extern "C" */
 
-/* Completion tokens are allocated with the compat slab allocator and must be
- * released with its matching kfree() wrapper. */
+/* Completion-token release runs in the same context as TX status/free.
+ * It must only publish the detached token onto the adapter's lock-free retire
+ * list; the deferred WCL thread-call reaper performs the potentially blocking
+ * kfree()/IOFree operation after the completion callback has left driver locks. */
 static void rtw88_release_skb_tx_completion_token(void *token)
 {
-    kfree(token);
+    if (!token)
+        return;
+    auto *completion =
+        static_cast<struct rtw88_skb_tx_completion_token *>(token);
+    rtw88_wcl_defer_skb_tx_completion_token(completion->context, token);
 }
 
 #define IOLog rtw88_candidate_log
