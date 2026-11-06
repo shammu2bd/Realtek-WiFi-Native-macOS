@@ -760,7 +760,7 @@ void RTW88IEEE80211::clearKeys()
      * re-install/reassociation is avoidable and unsafe if stale TX survives. */
     _rxCcmpIvSkipLogged = false;
     _snonceValid = false;
-    _m3KeysInstalled = false;
+    __atomic_store_n(&_m3KeysInstalled, false, __ATOMIC_RELEASE);
     _handshakePending = false;
     memset(_anonce, 0, sizeof(_anonce));
     memset(_snonce, 0, sizeof(_snonce));
@@ -2089,7 +2089,8 @@ void RTW88IEEE80211::deliverDataFrame(struct sk_buff *skb)
     /* Once the pairwise key is installed only EAPOL may arrive in the
      * clear (mac80211 ieee80211_drop_unencrypted). The EAPOL exception is
      * applied below, after the LLC/SNAP header is parsed. */
-    bool keyed = _m3KeysInstalled || _externalPTKInstalled;
+    bool keyed = __atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE) ||
+                 __atomic_load_n(&_externalPTKInstalled, __ATOMIC_ACQUIRE);
 
     bool amsdu = false;
     if (ieee80211_is_data_qos(hdr->frame_control))
@@ -3174,36 +3175,64 @@ void RTW88IEEE80211::applyAssocRsnOverride(bool externalSupplicant, bool havePmk
  * from the RX path, the timer and the connect worker. */
 bool RTW88IEEE80211::retryOtherBss(const char *stage)
 {
-    if (authenticationCancelled() || !_powered) return false;
+    if (authenticationCancelled() || !__atomic_load_n(&_powered, __ATOMIC_ACQUIRE))
+        return false;
 
     const uint64_t now = rtw88JoinNowUS();
-    uint8_t failed[6];
-    memcpy(failed, _targetBSS.bssid, 6);
-    const int privacy = (_targetBSS.capabilities & 0x10) ? 1 : 0;
+    uint8_t failed[6] = {};
+    RTW88BSS selected = {};
+    bool found = false;
+    bool externalSupplicant = false;
+    bool pmkProvided = false;
+    bool hasPassword = false;
 
+    /* Do not let a TX reader or another join observe a partially published
+     * target BSS / RSN override. Take the gate before the BSS list lock; never
+     * wait for the gate while holding _bssLock. */
+    auto mutation = beginTxStateMutation();
+    if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+        authenticationCancelled()) {
+        mutation.finish();
+        return false;
+    }
+
+    memcpy(failed, _targetBSS.bssid, sizeof(failed));
+    const int privacy = (_targetBSS.capabilities & 0x10) ? 1 : 0;
     IOLockLock(_bssLock);
     _joinFail.note(failed, now, RTW88Join::kFailHoldUS);
     RTW88BSS *cand = nullptr;
     if (_joinTried.count < RTW88Join::kMaxNodesPerJoin)
-        cand = selectBssLocked(_targetBSS.ssid, _targetBSS.ssid_len, nullptr, true, privacy);
-    if (!cand || !_joinTried.add(cand->bssid)) {
-        IOLockUnlock(_bssLock);
-        return false;
+        cand = selectBssLocked(_targetBSS.ssid, _targetBSS.ssid_len,
+                               nullptr, true, privacy);
+    if (cand && _joinTried.add(cand->bssid)) {
+        memcpy(&selected, cand, sizeof(selected));
+        selected.next = nullptr;
+        found = true;
     }
-    memcpy(&_targetBSS, cand, sizeof(_targetBSS));
     IOLockUnlock(_bssLock);
 
+    if (!found) {
+        mutation.finish();
+        return false;
+    }
+
+    memcpy(&_targetBSS, &selected, sizeof(_targetBSS));
     _curBssTim = false;
-    _rssi = (_targetBSS.rssi < 0 && _targetBSS.rssi >= -127) ? _targetBSS.rssi : -100;
+    _rssi = (selected.rssi < 0 && selected.rssi >= -127) ? selected.rssi : -100;
     _authAttempts = 0;
-    applyAssocRsnOverride(_externalSupplicant, _pmkProvided, _password[0] != 0);
+    externalSupplicant = _externalSupplicant;
+    pmkProvided = _pmkProvided;
+    hasPassword = _password[0] != 0;
+    applyAssocRsnOverride(externalSupplicant, pmkProvided, hasPassword);
+    const RTW88BSS published = _targetBSS;
+    mutation.finish();
 
     IOLog("rtw88: join stage=%s failed on %02x:%02x:%02x:%02x:%02x:%02x -- trying "
           "%02x:%02x:%02x:%02x:%02x:%02x ch=%u rssi=%d\n", stage,
           failed[0], failed[1], failed[2], failed[3], failed[4], failed[5],
-          _targetBSS.bssid[0], _targetBSS.bssid[1], _targetBSS.bssid[2],
-          _targetBSS.bssid[3], _targetBSS.bssid[4], _targetBSS.bssid[5],
-          _targetBSS.channel, (int)_targetBSS.rssi);
+          published.bssid[0], published.bssid[1], published.bssid[2],
+          published.bssid[3], published.bssid[4], published.bssid[5],
+          published.channel, (int)published.rssi);
 
     if (_timer) _timer->cancelTimeout();
     setRadioState(RTW88_STATE_AUTHENTICATING);
@@ -4404,8 +4433,9 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
              * WMM submissions out until G1 has been authenticated and GTK
              * installation is complete. */
             auto mutation = beginTxStateMutation();
-            if (__atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED ||
-                !_m3KeysInstalled || _handshakePending || !_ptkConf) {
+            if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+                __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED ||
+                !__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE) || _handshakePending || !_ptkConf) {
                 IOLog("rtw88: group M1 dropped: no established PTK state=%d\n",
                       (int)__atomic_load_n(&_state, __ATOMIC_ACQUIRE));
                 return;
@@ -4484,8 +4514,9 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
              * submitters are excluded. The downgraded lease below keeps M2
              * tied to this exact SNonce/PTK/replay snapshot. */
             auto mutation = beginTxStateMutation();
-            if ((_snonceValid && memcmp(data + 9, _replayCtr, 8) < 0) ||
-                (_m3KeysInstalled &&
+            if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+                (_snonceValid && memcmp(data + 9, _replayCtr, 8) < 0) ||
+                (__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE) &&
                  memcmp(data + 9, _installedM3ReplayCtr, 8) <= 0)) {
                 IOLog("rtw88: stale M1 dropped\n");
                 return;
@@ -4501,7 +4532,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             memcpy(_replayCtr, data + 9, 8);
             memcpy(replayCopy, _replayCtr, sizeof(replayCopy));
             __atomic_store_n(&_state, RTW88_STATE_HANDSHAKING, __ATOMIC_RELEASE);
-            IOLog("rtw88: M1 fresh=%d rekey=%d\n", fresh, _m3KeysInstalled);
+            IOLog("rtw88: M1 fresh=%d rekey=%d\n", fresh, __atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE));
             txLease = mutation.downgrade();
         }
 
@@ -4524,9 +4555,10 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
              * hardware keys while the writer side owns the entire key state.
              * No TX caller can see a mixed PTK/GTK generation. */
             auto mutation = beginTxStateMutation();
-            if (!_snonceValid || memcmp(data + 17, _anonce, 32) != 0 ||
+            if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
+                !_snonceValid || memcmp(data + 17, _anonce, 32) != 0 ||
                 memcmp(data + 9, _replayCtr, 8) < 0 ||
-                (!_handshakePending && !_m3KeysInstalled)) {
+                (!_handshakePending && !__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE))) {
                 IOLog("rtw88: M3 dropped: nonce/replay/handshake mismatch\n");
                 return;
             }
@@ -4566,7 +4598,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
                     IOLog("rtw88: no GTK KDE found in M3 key data\n");
             }
 
-            duplicate = _m3KeysInstalled && !_handshakePending;
+            duplicate = __atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE) && !_handshakePending;
             if (duplicate &&
                 (!_ptkConf || memcmp(_ptkConf->key, _ptk + 32, 16) != 0 ||
                  (gtk_len && (!_gtkConf || _gtkConf->keyidx != gtk_idx ||
@@ -4595,7 +4627,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
 
             memcpy(_replayCtr, data + 9, 8);
             memcpy(_installedM3ReplayCtr, _replayCtr, 8);
-            _m3KeysInstalled = true;
+            __atomic_store_n(&_m3KeysInstalled, true, __ATOMIC_RELEASE);
             _handshakePending = false;
             memcpy(replayCopy, _replayCtr, sizeof(replayCopy));
             txLease = mutation.downgrade();
