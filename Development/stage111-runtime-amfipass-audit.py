@@ -303,6 +303,8 @@ def main():
     emit("LIVE_AMFIPASS_BETA_FLAG_PRESENT=" + str("-amfipassbeta" in [x.lower() for x in live_tokens]))
     if boot_rc == 0:
         mark("PASS", "live kern.bootargs read without modifying NVRAM")
+        if live_amfi_override:
+            mark("WARN", "live boot arguments contain an explicit AMFI override token")
     else:
         mark("WARN", "live kern.bootargs could not be read")
 
