@@ -1,0 +1,2813 @@
+========== STAGE162 POSTOFFICE FIELD XREF AND TIMER EVENT-SOURCE AUDIT ==========
+STAGE162_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE162_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE162_WORKTREE_STATUS_ENTRIES=198
+STAGE162_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE162_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE162_STAGE161_REPORT_SHA=cc528f8f4a0ae16134e1ef893856ae3b54abfcdb
+STAGE162_SCOPE=READ_ONLY_POSTOFFICE_CONTROLLER_EXPANSION_XREFS_AND_TIMER_EVENT_SOURCE_QUEUE_OWNERSHIP
+STAGE162_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE162_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+FILESSET_CARVE=PASS OWNER=com.apple.iokit.IO80211Family
+FILESSET_CARVE=PASS OWNER=com.apple.kernel
+
+CONTROLLER_EXPANSION_FULL_TEXT_SCAN_RETURN_CODE=0
+CONTROLLER_EXPANSION_B08_XREF_COUNT=151
+B08_XREF_CONTEXT ffffff8002112af6	leaq	0x2aa7ab(%rip), %rax
+B08_XREF_CONTEXT ffffff8002112afd	movq	%rax, (%rbx)
+B08_XREF_CONTEXT ffffff8002112b00	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff8002112b04	popq	%rbx
+B08_XREF_CONTEXT ffffff8002112b05	popq	%rbp
+B08_XREF_CONTEXT ffffff8002112b06	retq
+B08_XREF_CONTEXT ffffff8002112b07	nop
+B08_XREF_CONTEXT __ZN13WCLGASManagerC1EPK11OSMetaClass:
+B08_XREF_CONTEXT ffffff8002112b08	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002112b09	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002112b0c	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002112b0d	pushq	%rax
+B08_XREF_CONTEXT ffffff8002112b0e	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff8002112b11	callq	0xffffff8000a4c000
+B08_XREF_CONTEXT ffffff8002112b16	leaq	0x2aa78b(%rip), %rax
+B08_XREF_CONTEXT ffffff8002117af0	testb	%al, %al
+B08_XREF_CONTEXT ffffff8002117af2	jne	0xffffff8002117b71
+B08_XREF_CONTEXT ffffff8002117af4	movq	(%rcx), %rdi
+B08_XREF_CONTEXT ffffff8002117af7	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002117afa	movq	%r12, %rsi
+B08_XREF_CONTEXT ffffff8002117afd	callq	*0x1a8(%rax)
+B08_XREF_CONTEXT ffffff8002117b03	testq	%r12, %r12
+B08_XREF_CONTEXT ffffff8002117b06	je	0xffffff8002117b2b
+B08_XREF_CONTEXT ffffff8002117b08	movq	(%r12), %rax
+B08_XREF_CONTEXT ffffff8002117b0c	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff8002117b0f	callq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff8002117b12	jmp	0xffffff8002117b2b
+B08_XREF_CONTEXT ffffff8002117b14	movq	0x8(%rcx), %rdi
+B08_XREF_CONTEXT ffffff8002117b18	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff8002117b1b	je	0xffffff8002117b2b
+B08_XREF_CONTEXT ffffff8002120279	pushq	%rax
+B08_XREF_CONTEXT ffffff800212027a	movl	%esi, %ebx
+B08_XREF_CONTEXT ffffff800212027c	cmpl	$0xb, %esi
+B08_XREF_CONTEXT ffffff800212027f	jge	0xffffff80021202bb
+B08_XREF_CONTEXT ffffff8002120281	movq	0x10(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002120285	movl	%ebx, %ecx
+B08_XREF_CONTEXT ffffff8002120287	leaq	(%rcx,%rcx,2), %rcx
+B08_XREF_CONTEXT ffffff800212028b	movq	0x10(%rdx), %rsi
+B08_XREF_CONTEXT ffffff800212028f	movq	%rsi, 0xb08(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff8002120297	movq	(%rdx), %rsi
+B08_XREF_CONTEXT ffffff800212029a	movq	0x8(%rdx), %rdx
+B08_XREF_CONTEXT ffffff800212029e	movq	%rdx, 0xb00(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff80021202a6	movq	%rsi, 0xaf8(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff80021202ae	cmpl	$0xb, %ebx
+B08_XREF_CONTEXT ffffff80021202b1	setl	%al
+B08_XREF_CONTEXT ffffff80021220f0	cmpl	$0xb, %esi
+B08_XREF_CONTEXT ffffff80021220f3	jge	0xffffff80021221a8
+B08_XREF_CONTEXT ffffff80021220f9	movq	0x8(%rax), %rax
+B08_XREF_CONTEXT ffffff80021220fd	movq	0x10(%rax), %rax
+B08_XREF_CONTEXT ffffff8002122101	leaq	(%rsi,%rsi,2), %rcx
+B08_XREF_CONTEXT ffffff8002122105	movq	%rbx, 0xaf8(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff800212210d	movq	$0x0, 0xb00(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff8002122119	movabsq	$-0x5555555555555556, %rdx      ## imm = 0xAAAAAAAAAAAAAAAA
+B08_XREF_CONTEXT ffffff8002122123	movq	%rdx, 0xb08(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff800212212b	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff800212212f	cmpq	$0x0, 0x10(%rax)
+B08_XREF_CONTEXT ffffff8002122134	je	0xffffff8002122169
+B08_XREF_CONTEXT ffffff8002122136	cmpq	$0x0, 0x18(%rax)
+B08_XREF_CONTEXT ffffff800212213b	je	0xffffff8002122169
+B08_XREF_CONTEXT ffffff800212213d	xorl	%r14d, %r14d
+B08_XREF_CONTEXT ffffff800212223b	cmpl	$0xb, %esi
+B08_XREF_CONTEXT ffffff800212223e	jge	0xffffff80021222f4
+B08_XREF_CONTEXT ffffff8002122244	movq	0x10(%rax), %rax
+B08_XREF_CONTEXT ffffff8002122248	leaq	(%rsi,%rsi,2), %rcx
+B08_XREF_CONTEXT ffffff800212224c	movq	%rbx, 0xaf8(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff8002122254	leaq	__ZN13WCLFsmManager21bulletinBoardCallbackEP8OSObject25WCLBulletinBoardManagerIdR20bulletinBoardMessagePv(%rip), %rdx ## WCLFsmManager::bulletinBoardCallback(OSObject*, WCLBulletinBoardManagerId, bulletinBoardMessage&, void*)
+B08_XREF_CONTEXT ffffff800212225b	movq	%rdx, 0xb00(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff8002122263	movabsq	$-0x5555555555555556, %rdx      ## imm = 0xAAAAAAAAAAAAAAAA
+B08_XREF_CONTEXT ffffff800212226d	movq	%rdx, 0xb08(%rax,%rcx,8)
+B08_XREF_CONTEXT ffffff8002122275	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002122279	cmpq	$0x0, 0x20(%rax)
+B08_XREF_CONTEXT ffffff800212227e	je	0xffffff80021222e5
+B08_XREF_CONTEXT ffffff8002122280	movb	$0x1, %r15b
+B08_XREF_CONTEXT ffffff8002122283	cmpq	$0x0, 0x10(%rax)
+B08_XREF_CONTEXT ffffff8002122288	je	0xffffff80021222c0
+B08_XREF_CONTEXT ffffff8002124aea	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002124aeb	subq	$0x28, %rsp
+B08_XREF_CONTEXT ffffff8002124aef	movq	%rsi, %rbx
+B08_XREF_CONTEXT ffffff8002124af2	movq	%rdi, %r14
+B08_XREF_CONTEXT ffffff8002124af5	movq	0x20(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002124af9	leaq	0x78(%rax), %r9
+B08_XREF_CONTEXT ffffff8002124afd	movq	0x78(%rax), %r15
+B08_XREF_CONTEXT ffffff8002124b01	movq	0x80(%rax), %r13
+B08_XREF_CONTEXT ffffff8002124b08	movq	0x88(%rax), %r12
+B08_XREF_CONTEXT ffffff8002124b0f	movq	0x90(%rax), %rcx
+B08_XREF_CONTEXT ffffff8002124b16	movq	%rcx, -0x30(%rbp)
+B08_XREF_CONTEXT ffffff8002124b1a	movq	0x98(%rax), %rcx
+B08_XREF_CONTEXT ffffff8002124b21	movq	%rcx, -0x38(%rbp)
+B08_XREF_CONTEXT ffffff8002124b25	movq	0xa0(%rax), %rcx
+B08_XREF_CONTEXT ffffff8002124b2c	movq	%rcx, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff8002127af5	popq	%rbx
+B08_XREF_CONTEXT ffffff8002127af6	popq	%r12
+B08_XREF_CONTEXT ffffff8002127af8	popq	%r13
+B08_XREF_CONTEXT ffffff8002127afa	popq	%r14
+B08_XREF_CONTEXT ffffff8002127afc	popq	%r15
+B08_XREF_CONTEXT ffffff8002127afe	popq	%rbp
+B08_XREF_CONTEXT ffffff8002127aff	jmp	__ZN13WCLNetManager9set6GModeE23apple80211_6G_mode_flag ## WCLNetManager::set6GMode(apple80211_6G_mode_flag)
+B08_XREF_CONTEXT ffffff8002127b04	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff8002127b08	popq	%rbx
+B08_XREF_CONTEXT ffffff8002127b09	popq	%r12
+B08_XREF_CONTEXT ffffff8002127b0b	popq	%r13
+B08_XREF_CONTEXT ffffff8002127b0d	popq	%r14
+B08_XREF_CONTEXT ffffff8002127b0f	popq	%r15
+B08_XREF_CONTEXT ffffff8002127b11	popq	%rbp
+B08_XREF_CONTEXT ffffff8002127b12	retq
+B08_XREF_CONTEXT ffffff8002129af2	callq	0xffffff8000a49940
+B08_XREF_CONTEXT ffffff8002129af7	leaq	0x2993b2(%rip), %rax
+B08_XREF_CONTEXT ffffff8002129afe	movq	%rax, (%rbx)
+B08_XREF_CONTEXT ffffff8002129b01	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff8002129b05	popq	%rbx
+B08_XREF_CONTEXT ffffff8002129b06	popq	%rbp
+B08_XREF_CONTEXT ffffff8002129b07	retq
+B08_XREF_CONTEXT __ZNK11IO80211Glue9MetaClass5allocEv:
+B08_XREF_CONTEXT ffffff8002129b08	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002129b09	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002129b0c	pushq	%r14
+B08_XREF_CONTEXT ffffff8002129b0e	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002129b0f	leaq	__ZL15IO80211Glue_ktv(%rip), %rdi ## IO80211Glue_ktv
+B08_XREF_CONTEXT ffffff8002129b16	movl	$0x20, %esi
+B08_XREF_CONTEXT ffffff8002129b1b	callq	0xffffff8000a4be90
+B08_XREF_CONTEXT ffffff800212acca	movq	0x10(%rsi), %rcx
+B08_XREF_CONTEXT ffffff800212acce	pushq	%rbp
+B08_XREF_CONTEXT ffffff800212accf	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800212acd2	movq	0x18(%rdi), %rdx
+B08_XREF_CONTEXT ffffff800212acd6	movq	(%rdx), %rax
+B08_XREF_CONTEXT ffffff800212acd9	movq	0x8(%rdx), %rdi
+B08_XREF_CONTEXT ffffff800212acdd	movl	(%rsi), %edx
+B08_XREF_CONTEXT ffffff800212acdf	movq	0x120(%rdi), %rsi
+B08_XREF_CONTEXT ffffff800212ace6	movq	0xb08(%rsi), %rdi
+B08_XREF_CONTEXT ffffff800212aced	movq	(%rdi), %r10
+B08_XREF_CONTEXT ffffff800212acf0	movq	%rax, %rsi
+B08_XREF_CONTEXT ffffff800212acf3	xorl	%r9d, %r9d
+B08_XREF_CONTEXT ffffff800212acf6	callq	*0x120(%r10)
+B08_XREF_CONTEXT ffffff800212acfd	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff800212acff	popq	%rbp
+B08_XREF_CONTEXT ffffff800212baf1	testq	%r13, %r13
+B08_XREF_CONTEXT ffffff800212baf4	je	0xffffff800212bafc
+B08_XREF_CONTEXT ffffff800212baf6	movb	$0x0, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff800212bafa	jmp	0xffffff800212bb06
+B08_XREF_CONTEXT ffffff800212bafc	movl	%ebx, %eax
+B08_XREF_CONTEXT ffffff800212bafe	andl	$0x1f, %eax
+B08_XREF_CONTEXT ffffff800212bb01	movb	$0x0, -0x60(%rbp,%rax)
+B08_XREF_CONTEXT ffffff800212bb06	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff800212bb08	testq	%r8, %r8
+B08_XREF_CONTEXT ffffff800212bb0b	je	0xffffff800212bb4b
+B08_XREF_CONTEXT ffffff800212bb0d	cmpl	$0xfc7, %r14d                   ## imm = 0xFC7
+B08_XREF_CONTEXT ffffff800212bb14	ja	0xffffff800212bb4b
+B08_XREF_CONTEXT ffffff800212bb16	movl	%r14d, %edi
+B08_XREF_CONTEXT ffffff800212bb19	addq	%r8, %rdi
+B08_XREF_CONTEXT ffffff800212bb1c	movl	$0xfc9, %r15d                   ## imm = 0xFC9
+B08_XREF_CONTEXT ffffff800212eae4	movq	0x10(%rbx), %rax
+B08_XREF_CONTEXT ffffff800212eae8	movq	(%rax), %rdi
+B08_XREF_CONTEXT ffffff800212eaeb	leaq	0x1ff4f5(%rip), %rsi            ## literal pool for: "[ik] %s@%d:Probably No.\n"
+B08_XREF_CONTEXT ffffff800212eaf2	leaq	0x1ff534(%rip), %rdx            ## literal pool for: "isLikelyAlpineBMWNetwork"
+B08_XREF_CONTEXT ffffff800212eaf9	xorl	%r14d, %r14d
+B08_XREF_CONTEXT ffffff800212eafc	movl	$0x285, %ecx                    ## imm = 0x285
+B08_XREF_CONTEXT ffffff800212eb01	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff800212eb03	callq	0xffffff80031d252e
+B08_XREF_CONTEXT ffffff800212eb08	jmp	0xffffff800212ea55
+B08_XREF_CONTEXT ffffff800212eb0d	movq	(%r8), %rdi
+B08_XREF_CONTEXT ffffff800212eb10	addq	$0x1d5, %r8                     ## imm = 0x1D5
+B08_XREF_CONTEXT ffffff800212eb17	leaq	0x1ff551(%rip), %rsi            ## literal pool for: "[ik] %s@%d:Apple device model %s\n"
+B08_XREF_CONTEXT ffffff800212eb1e	leaq	0x1ff508(%rip), %rdx            ## literal pool for: "isLikelyAlpineBMWNetwork"
+B08_XREF_CONTEXT ffffff800212eb25	movl	$0x27e, %ecx                    ## imm = 0x27E
+B08_XREF_CONTEXT ffffff800212eb2a	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002131af6	popq	%rbp
+B08_XREF_CONTEXT ffffff8002131af7	retq
+B08_XREF_CONTEXT __ZN16IO80211BSSBeacon9setHiddenEb:
+B08_XREF_CONTEXT ffffff8002131af8	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002131af9	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002131afc	movq	0x10(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002131b00	movb	%sil, 0x2ca(%rax)
+B08_XREF_CONTEXT ffffff8002131b07	popq	%rbp
+B08_XREF_CONTEXT ffffff8002131b08	retq
+B08_XREF_CONTEXT ffffff8002131b09	nop
+B08_XREF_CONTEXT __ZNK16IO80211BSSBeacon8isHiddenEv:
+B08_XREF_CONTEXT ffffff8002131b0a	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002131b0b	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002131b0e	movq	0x10(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002131b12	movb	0x2ca(%rax), %al
+B08_XREF_CONTEXT ffffff8002134aed	pushq	%r12
+B08_XREF_CONTEXT ffffff8002134aef	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002134af0	subq	$0x28, %rsp
+B08_XREF_CONTEXT ffffff8002134af4	movq	%rsi, %rax
+B08_XREF_CONTEXT ffffff8002134af7	movq	%rdi, %r14
+B08_XREF_CONTEXT ffffff8002134afa	movq	0x287617(%rip), %rcx
+B08_XREF_CONTEXT ffffff8002134b01	movq	(%rcx), %rcx
+B08_XREF_CONTEXT ffffff8002134b04	movq	%rcx, -0x30(%rbp)
+B08_XREF_CONTEXT ffffff8002134b08	movq	0x20(%rdi), %r12
+B08_XREF_CONTEXT ffffff8002134b0c	leaq	__ZN16WCLJoinCandidate10gMetaClassE(%rip), %rsi ## WCLJoinCandidate::gMetaClass
+B08_XREF_CONTEXT ffffff8002134b13	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff8002134b16	callq	0xffffff8000a49ab0
+B08_XREF_CONTEXT ffffff8002134b1b	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff8002134b1e	je	0xffffff8002134c8b
+B08_XREF_CONTEXT ffffff8002134b24	movq	%rax, %rbx
+B08_XREF_CONTEXT ffffff8002137ae9	jb	0xffffff8002137b4d
+B08_XREF_CONTEXT ffffff8002137aeb	movq	0x20(%r12), %rax
+B08_XREF_CONTEXT ffffff8002137af0	movq	0x78(%rax), %rdi
+B08_XREF_CONTEXT ffffff8002137af4	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff8002137af7	je	0xffffff8002137b4f
+B08_XREF_CONTEXT ffffff8002137af9	movl	$0x40, %edx
+B08_XREF_CONTEXT ffffff8002137afe	movl	$0x4, %esi
+B08_XREF_CONTEXT ffffff8002137b03	callq	0xffffff80031d4256
+B08_XREF_CONTEXT ffffff8002137b08	testb	%al, %al
+B08_XREF_CONTEXT ffffff8002137b0a	je	0xffffff8002137b4f
+B08_XREF_CONTEXT ffffff8002137b0c	movq	0x20(%r12), %rax
+B08_XREF_CONTEXT ffffff8002137b11	movq	0x78(%rax), %rdi
+B08_XREF_CONTEXT ffffff8002137b15	movq	0x20(%r14), %rax
+B08_XREF_CONTEXT ffffff8002137b19	movq	0x8(%rax), %rax
+B08_XREF_CONTEXT ffffff8002137b1d	movq	0x18(%rax), %rax
+B08_XREF_CONTEXT ffffff8002141aed	popq	%r14
+B08_XREF_CONTEXT ffffff8002141aef	popq	%rbp
+B08_XREF_CONTEXT ffffff8002141af0	jmp	0xffffff80031d29ca
+B08_XREF_CONTEXT ffffff8002141af5	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002141af8	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002141afb	callq	*0x118(%rax)
+B08_XREF_CONTEXT ffffff8002141b01	movq	%rax, %r14
+B08_XREF_CONTEXT ffffff8002141b04	movq	0x10(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002141b08	movq	0x88(%rax), %rdi
+B08_XREF_CONTEXT ffffff8002141b0f	callq	0xffffff800048cb00
+B08_XREF_CONTEXT ffffff8002141b14	movq	0x10(%rbx), %rcx
+B08_XREF_CONTEXT ffffff8002141b18	movl	0x10(%rcx), %ecx
+B08_XREF_CONTEXT ffffff8002141b1b	shll	$0x2, %ecx
+B08_XREF_CONTEXT ffffff8002141b1e	leal	(%rcx,%rcx,4), %ecx
+B08_XREF_CONTEXT ffffff8002141b21	movl	%ecx, (%rsp)
+B08_XREF_CONTEXT ffffff8002143af8	popq	%rbp
+B08_XREF_CONTEXT ffffff8002143af9	retq
+B08_XREF_CONTEXT __ZN14WCLRoamManager15initWithOptionsEP13WCLControllerP16WCLBulletinBoard:
+B08_XREF_CONTEXT ffffff8002143afa	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002143afb	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002143afe	pushq	%r14
+B08_XREF_CONTEXT ffffff8002143b00	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002143b01	subq	$0x80, %rsp
+B08_XREF_CONTEXT ffffff8002143b08	movq	%rsi, %r14
+B08_XREF_CONTEXT ffffff8002143b0b	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff8002143b0e	movq	0x278603(%rip), %rax
+B08_XREF_CONTEXT ffffff8002143b15	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002143b18	movq	%rax, -0x18(%rbp)
+B08_XREF_CONTEXT ffffff8002143b1c	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002143b1e	movq	%rax, -0x20(%rbp)
+B08_XREF_CONTEXT ffffff8002146ae8	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff8002146aeb	movq	%r12, %rsi
+B08_XREF_CONTEXT ffffff8002146aee	callq	0xffffff8000a4c000
+B08_XREF_CONTEXT ffffff8002146af3	leaq	0x28044e(%rip), %rax
+B08_XREF_CONTEXT ffffff8002146afa	movq	%rax, (%rbx)
+B08_XREF_CONTEXT ffffff8002146afd	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff8002146b00	callq	0xffffff8000a4a700
+B08_XREF_CONTEXT ffffff8002146b05	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002146b08	movq	%r15, %rsi
+B08_XREF_CONTEXT ffffff8002146b0b	movq	%r14, %rdx
+B08_XREF_CONTEXT ffffff8002146b0e	callq	__ZN24IO80211AWDLMulticastPeer25initWithAddressAndManagerEPKhP22IO80211AWDLPeerManager ## IO80211AWDLMulticastPeer::initWithAddressAndManager(unsigned char const*, IO80211AWDLPeerManager*)
+B08_XREF_CONTEXT ffffff8002146b13	testb	%al, %al
+B08_XREF_CONTEXT ffffff8002146b15	je	0xffffff8002146b27
+B08_XREF_CONTEXT ffffff8002146b17	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002146b1b	movl	$0x1388, 0xe0(%rax)             ## imm = 0x1388
+B08_XREF_CONTEXT ffffff800214bad8	pushq	-0xc0(%rbp)
+B08_XREF_CONTEXT ffffff800214bade	pushq	-0xc8(%rbp)
+B08_XREF_CONTEXT ffffff800214bae4	pushq	-0xd0(%rbp)
+B08_XREF_CONTEXT ffffff800214baea	pushq	-0xd8(%rbp)
+B08_XREF_CONTEXT ffffff800214baf0	pushq	-0xe0(%rbp)
+B08_XREF_CONTEXT ffffff800214baf6	pushq	-0xe8(%rbp)
+B08_XREF_CONTEXT ffffff800214bafc	pushq	-0xf0(%rbp)
+B08_XREF_CONTEXT ffffff800214bb02	pushq	-0xf8(%rbp)
+B08_XREF_CONTEXT ffffff800214bb08	pushq	-0x78(%rbp)
+B08_XREF_CONTEXT ffffff800214bb0b	pushq	-0x80(%rbp)
+B08_XREF_CONTEXT ffffff800214bb0e	pushq	-0x88(%rbp)
+B08_XREF_CONTEXT ffffff800214bb14	pushq	-0x58(%rbp)
+B08_XREF_CONTEXT ffffff800214bb17	pushq	-0x60(%rbp)
+B08_XREF_CONTEXT ffffff800214bb1a	pushq	-0x68(%rbp)
+B08_XREF_CONTEXT ffffff800214bb1d	pushq	-0x70(%rbp)
+B08_XREF_CONTEXT ffffff800214cad0	movq	%rax, -0x188(%rbp)
+B08_XREF_CONTEXT ffffff800214cad7	movl	0xb8(%r13), %eax
+B08_XREF_CONTEXT ffffff800214cade	movq	%rax, -0x180(%rbp)
+B08_XREF_CONTEXT ffffff800214cae5	movl	0xbc(%r13), %eax
+B08_XREF_CONTEXT ffffff800214caec	movq	%rax, -0x178(%rbp)
+B08_XREF_CONTEXT ffffff800214caf3	movl	0xc0(%r13), %eax
+B08_XREF_CONTEXT ffffff800214cafa	movq	%rax, -0x170(%rbp)
+B08_XREF_CONTEXT ffffff800214cb01	movl	0xc4(%r13), %eax
+B08_XREF_CONTEXT ffffff800214cb08	movq	%rax, -0x168(%rbp)
+B08_XREF_CONTEXT ffffff800214cb0f	movl	0xc8(%r13), %eax
+B08_XREF_CONTEXT ffffff800214cb16	movq	%rax, -0x160(%rbp)
+B08_XREF_CONTEXT ffffff800214cb1d	movl	0xcc(%r13), %eax
+B08_XREF_CONTEXT ffffff800214cb24	movq	%rax, -0x158(%rbp)
+B08_XREF_CONTEXT ffffff800214cb2b	movl	0xd0(%r13), %eax
+B08_XREF_CONTEXT ffffff800214cb32	movq	%rax, -0x150(%rbp)
+B08_XREF_CONTEXT ffffff800214daeb	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff800214daee	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff800214daf1	callq	*0x38(%rax)
+B08_XREF_CONTEXT ffffff800214daf4	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff800214daf7	callq	0xffffff8000a4a150
+B08_XREF_CONTEXT ffffff800214dafc	leaq	0x1e88f0(%rip), %rsi            ## literal pool for: "%s::%s Invalid DataPathTLV\n"
+B08_XREF_CONTEXT ffffff800214db03	jmp	0xffffff800214db1d
+B08_XREF_CONTEXT ffffff800214db05	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff800214db08	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff800214db0b	callq	*0x38(%rax)
+B08_XREF_CONTEXT ffffff800214db0e	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff800214db11	callq	0xffffff8000a4a150
+B08_XREF_CONTEXT ffffff800214db16	leaq	0x1e8913(%rip), %rsi            ## literal pool for: "%s::%s Invalid Unicast Options\n"
+B08_XREF_CONTEXT ffffff800214db1d	leaq	0x1e88eb(%rip), %rdx            ## literal pool for: "getUnicastOptionsFromDataPathTLV"
+B08_XREF_CONTEXT ffffff800214db24	xorl	%r14d, %r14d
+B08_XREF_CONTEXT ffffff8002150add	movq	%rax, 0x6c(%r15)
+B08_XREF_CONTEXT ffffff8002150ae1	movq	%rax, 0x64(%r15)
+B08_XREF_CONTEXT ffffff8002150ae5	movq	%rax, 0x5c(%r15)
+B08_XREF_CONTEXT ffffff8002150ae9	movq	-0xe0(%rbp), %r12
+B08_XREF_CONTEXT ffffff8002150af0	movq	0x20(%r12), %rax
+B08_XREF_CONTEXT ffffff8002150af5	movzwl	0x586(%rax), %ecx
+B08_XREF_CONTEXT ffffff8002150afc	movw	%cx, 0x5e(%r15)
+B08_XREF_CONTEXT ffffff8002150b01	movw	$0x1, 0x5c(%r15)
+B08_XREF_CONTEXT ffffff8002150b08	movq	0x58a(%rax), %rcx
+B08_XREF_CONTEXT ffffff8002150b0f	movq	0x592(%rax), %rdx
+B08_XREF_CONTEXT ffffff8002150b16	movq	0x59a(%rax), %rsi
+B08_XREF_CONTEXT ffffff8002150b1d	movq	0x5a2(%rax), %rax
+B08_XREF_CONTEXT ffffff8002150b24	movq	%rax, 0x78(%r15)
+B08_XREF_CONTEXT ffffff8002150b28	movq	%rsi, 0x70(%r15)
+B08_XREF_CONTEXT ffffff8002150b2c	movq	%rdx, 0x68(%r15)
+B08_XREF_CONTEXT ffffff800215fae1	leaq	0x1dc554(%rip), %rcx            ## literal pool for: "initWithInterface"
+B08_XREF_CONTEXT ffffff800215fae8	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff800215faeb	movq	%rax, %rdx
+B08_XREF_CONTEXT ffffff800215faee	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff800215faf0	callq	__ZN18IO80211PeerManager8logDebugEPKcz ## IO80211PeerManager::logDebug(char const*, ...)
+B08_XREF_CONTEXT ffffff800215faf5	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff800215faf9	movl	$0x6, 0x6e8(%rax)
+B08_XREF_CONTEXT ffffff800215fb03	movl	$0xc2b9, %esi                   ## imm = 0xC2B9
+B08_XREF_CONTEXT ffffff800215fb08	addq	0x20(%rbx), %rsi
+B08_XREF_CONTEXT ffffff800215fb0c	leaq	0x1dcce4(%rip), %rdi            ## literal pool for: "dis_assist_disc_timer"
+B08_XREF_CONTEXT ffffff800215fb13	movl	$0x1, %edx
+B08_XREF_CONTEXT ffffff800215fb18	callq	0xffffff8000b92970
+B08_XREF_CONTEXT ffffff800215fb1d	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff800215fb1f	je	0xffffff800215fb7a
+B08_XREF_CONTEXT ffffff800215fb21	movq	0x20(%rbx), %rax
+B08_XREF_CONTEXT ffffff800216aada	movq	%rcx, -0x80(%rbp)
+B08_XREF_CONTEXT ffffff800216aade	movq	%rcx, -0x88(%rbp)
+B08_XREF_CONTEXT ffffff800216aae5	movq	%rcx, -0x90(%rbp)
+B08_XREF_CONTEXT ffffff800216aaec	movq	%rax, -0x98(%rbp)
+B08_XREF_CONTEXT ffffff800216aaf3	movl	0x3b8ac(%rbx), %eax
+B08_XREF_CONTEXT ffffff800216aaf9	movl	%eax, -0x78(%rbp)
+B08_XREF_CONTEXT ffffff800216aafc	leaq	0x1d1727(%rip), %rdi            ## literal pool for: "awdl_bonjour_offload"
+B08_XREF_CONTEXT ffffff800216ab03	movl	$0x80, %esi
+B08_XREF_CONTEXT ffffff800216ab08	callq	0xffffff80004ee8f0
+B08_XREF_CONTEXT ffffff800216ab0d	movq	%rax, %r12
+B08_XREF_CONTEXT ffffff800216ab10	movl	$0x80, %esi
+B08_XREF_CONTEXT ffffff800216ab15	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff800216ab18	callq	0xffffff80004ee8f0
+B08_XREF_CONTEXT ffffff800216ab1d	cmpq	%rax, %r12
+B08_XREF_CONTEXT ffffff800216ab20	jne	0xffffff800216ab47
+B08_XREF_CONTEXT ffffff800216c7df	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff800216c7e2	callq	0xffffff80004ee8d0
+B08_XREF_CONTEXT ffffff800216c7e7	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff800216c7ea	movq	%r15, %rsi
+B08_XREF_CONTEXT ffffff800216c7ed	movq	%rax, %rdx
+B08_XREF_CONTEXT ffffff800216c7f0	callq	0xffffff80004ee960
+B08_XREF_CONTEXT ffffff800216c7f5	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff800216c7f7	je	0xffffff800216e72a
+B08_XREF_CONTEXT ffffff800216c7fd	leaq	0x1d1b08(%rip), %rdi            ## literal pool for: "assistedDiscoveryInRetroModeEnabled"
+B08_XREF_CONTEXT ffffff800216c804	movl	$0x80, %esi
+B08_XREF_CONTEXT ffffff800216c809	callq	0xffffff80004ee8f0
+B08_XREF_CONTEXT ffffff800216c80e	movq	%rax, %r12
+B08_XREF_CONTEXT ffffff800216c811	movl	$0x80, %esi
+B08_XREF_CONTEXT ffffff800216c816	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff800216c819	callq	0xffffff80004ee8f0
+B08_XREF_CONTEXT ffffff8002170aeb	movl	%r15d, %ecx
+B08_XREF_CONTEXT ffffff8002170aee	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002170af0	callq	__ZN18IO80211PeerManager8logDebugEPKcz ## IO80211PeerManager::logDebug(char const*, ...)
+B08_XREF_CONTEXT ffffff8002170af5	movq	-0x58(%rbp), %r8
+B08_XREF_CONTEXT ffffff8002170af9	movq	%r8, %rdi
+B08_XREF_CONTEXT ffffff8002170afc	movl	%r15d, %esi
+B08_XREF_CONTEXT ffffff8002170aff	callq	__ZN22IO80211AWDLPeerManager11setAFTXModeE28apple80211_awdl_af_tx_type_t ## IO80211AWDLPeerManager::setAFTXMode(apple80211_awdl_af_tx_type_t)
+B08_XREF_CONTEXT ffffff8002170b04	movq	-0x58(%rbp), %rdi
+B08_XREF_CONTEXT ffffff8002170b08	movq	0x20(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002170b0c	movl	0x6a08(%rax), %eax
+B08_XREF_CONTEXT ffffff8002170b12	cmpl	%eax, -0x80(%rbp)
+B08_XREF_CONTEXT ffffff8002170b15	movl	-0x68(%rbp), %esi
+B08_XREF_CONTEXT ffffff8002170b18	je	0xffffff8002170ba4
+B08_XREF_CONTEXT ffffff8002170b1e	movl	%esi, %r13d
+B08_XREF_CONTEXT ffffff8002170b21	xorl	%ecx, %ecx
+B08_XREF_CONTEXT ffffff8002174af7	popq	%r14
+B08_XREF_CONTEXT ffffff8002174af9	popq	%rbp
+B08_XREF_CONTEXT ffffff8002174afa	retq
+B08_XREF_CONTEXT ffffff8002174afb	callq	0xffffff8000383150
+B08_XREF_CONTEXT __ZN22IO80211AWDLPeerManager22isAwdlRecoveryRequiredEv:
+B08_XREF_CONTEXT ffffff8002174b00	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002174b01	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002174b04	movq	0x20(%rdi), %rcx
+B08_XREF_CONTEXT ffffff8002174b08	movb	$0x1, %al
+B08_XREF_CONTEXT ffffff8002174b0a	cmpl	$0x0, 0x41b4(%rcx)
+B08_XREF_CONTEXT ffffff8002174b11	jne	0xffffff8002174b30
+B08_XREF_CONTEXT ffffff8002174b13	movl	0x4108(%rcx), %edx
+B08_XREF_CONTEXT ffffff8002174b19	testl	%edx, %edx
+B08_XREF_CONTEXT ffffff8002174b1b	setne	%sil
+B08_XREF_CONTEXT ffffff8002174b1f	cmpl	$0x7, %edx
+B08_XREF_CONTEXT ffffff8002175ae9	je	0xffffff8002175c3c
+B08_XREF_CONTEXT ffffff8002175aef	movq	0x20(%r15), %rcx
+B08_XREF_CONTEXT ffffff8002175af3	testb	$0x2, 0x3ee8(%rcx)
+B08_XREF_CONTEXT ffffff8002175afa	jne	0xffffff8002175b68
+B08_XREF_CONTEXT ffffff8002175afc	movq	(%r15), %rax
+B08_XREF_CONTEXT ffffff8002175aff	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff8002175b02	callq	*0x38(%rax)
+B08_XREF_CONTEXT ffffff8002175b05	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff8002175b08	callq	0xffffff8000a4a150
+B08_XREF_CONTEXT ffffff8002175b0d	leaq	0x1c9863(%rip), %rdx            ## literal pool for: "%s::%s Starting infra monitoring timer\n"
+B08_XREF_CONTEXT ffffff8002175b14	leaq	0x1c958d(%rip), %r8             ## literal pool for: "interfaceStateChange"
+B08_XREF_CONTEXT ffffff8002175b1b	movl	$0x800000, %esi                 ## imm = 0x800000
+B08_XREF_CONTEXT ffffff8002175b20	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff8002175b23	movq	%rax, %rcx
+B08_XREF_CONTEXT ffffff8002175b26	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff800217bae0	callq	*0x120(%rax)
+B08_XREF_CONTEXT ffffff800217bae6	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff800217baea	movq	0x20(%rbx), %rcx
+B08_XREF_CONTEXT ffffff800217baee	movq	0x710(%rax), %rdi
+B08_XREF_CONTEXT ffffff800217baf5	movl	0x6a14(%rcx), %esi
+B08_XREF_CONTEXT ffffff800217bafb	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff800217bafe	callq	*0x1d0(%rax)
+B08_XREF_CONTEXT ffffff800217bb04	movq	0x20(%rbx), %r12
+B08_XREF_CONTEXT ffffff800217bb08	cmpb	$0x0, 0x2843(%r12)
+B08_XREF_CONTEXT ffffff800217bb11	je	0xffffff800217bb1a
+B08_XREF_CONTEXT ffffff800217bb13	testb	%r15b, %r15b
+B08_XREF_CONTEXT ffffff800217bb16	jne	0xffffff800217bb56
+B08_XREF_CONTEXT ffffff800217bb18	jmp	0xffffff800217bb5e
+B08_XREF_CONTEXT ffffff800217bb1a	cmpb	$0x1, 0x3fa9(%r12)
+B08_XREF_CONTEXT ffffff800217bb23	jne	0xffffff800217bb5e
+B08_XREF_CONTEXT ffffff8002183adb	callq	__ZN22IO80211AWDLPeerManager31updateActionFrameReasonRTGStateEv ## IO80211AWDLPeerManager::updateActionFrameReasonRTGState()
+B08_XREF_CONTEXT ffffff8002183ae0	leaq	0x1d5976(%rip), %rdx            ## literal pool for: "%s[%d] : clearing custom preferred channel\n"
+B08_XREF_CONTEXT ffffff8002183ae7	leaq	0x1d56d7(%rip), %rcx            ## literal pool for: "removePeerFromRealTimeGroup"
+B08_XREF_CONTEXT ffffff8002183aee	movq	%r13, %rdi
+B08_XREF_CONTEXT ffffff8002183af1	movabsq	$0x800000200000000, %rsi        ## imm = 0x800000200000000
+B08_XREF_CONTEXT ffffff8002183afb	movl	$0x8506, %r8d                   ## imm = 0x8506
+B08_XREF_CONTEXT ffffff8002183b01	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002183b03	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff8002183b08	movq	%r13, %rdi
+B08_XREF_CONTEXT ffffff8002183b0b	xorl	%esi, %esi
+B08_XREF_CONTEXT ffffff8002183b0d	xorl	%edx, %edx
+B08_XREF_CONTEXT ffffff8002183b0f	xorl	%ecx, %ecx
+B08_XREF_CONTEXT ffffff8002183b11	callq	__ZN22IO80211AWDLPeerManager42configureAWDLRTGPeerreferredChannelToNANRTEb18apple80211_channel ## IO80211AWDLPeerManager::configureAWDLRTGPeerreferredChannelToNANRT(bool, apple80211_channel)
+B08_XREF_CONTEXT ffffff8002183b16	movq	%r13, %rdi
+B08_XREF_CONTEXT ffffff8002183b19	xorl	%esi, %esi
+B08_XREF_CONTEXT ffffff8002184af6	retq
+B08_XREF_CONTEXT ffffff8002184af7	nop
+B08_XREF_CONTEXT __ZN22IO80211AWDLPeerManager42increaseRssiThresholdForSingleStreamDeviceEv:
+B08_XREF_CONTEXT ffffff8002184af8	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002184af9	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002184afc	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002184afd	subq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff8002184b01	movq	0x237610(%rip), %rax
+B08_XREF_CONTEXT ffffff8002184b08	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002184b0b	movq	%rax, -0x10(%rbp)
+B08_XREF_CONTEXT ffffff8002184b0f	movq	0x20(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002184b13	cmpb	$0x1, 0x2f6(%rax)
+B08_XREF_CONTEXT ffffff8002184b1a	jne	0xffffff8002184b50
+B08_XREF_CONTEXT ffffff8002184b1c	movq	%rdi, %rdx
+B08_XREF_CONTEXT ffffff8002184b1f	leaq	-0x14(%rbp), %rbx
+B08_XREF_CONTEXT ffffff8002190ae6	cmpb	$-0x7f, %al
+B08_XREF_CONTEXT ffffff8002190ae8	ja	0xffffff8002190bad
+B08_XREF_CONTEXT ffffff8002190aee	movq	0x20(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002190af2	movl	-0x48(%rbp), %ecx
+B08_XREF_CONTEXT ffffff8002190af5	movl	%ecx, 0x1cc(%rax)
+B08_XREF_CONTEXT ffffff8002190afb	movq	-0x50(%rbp), %rcx
+B08_XREF_CONTEXT ffffff8002190aff	jmp	0xffffff8002190ba1
+B08_XREF_CONTEXT ffffff8002190b04	leal	-0x1(%r15), %ecx
+B08_XREF_CONTEXT ffffff8002190b08	cmpb	$0xd, %cl
+B08_XREF_CONTEXT ffffff8002190b0b	ja	0xffffff8002190b44
+B08_XREF_CONTEXT ffffff8002190b0d	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002190b0f	jne	0xffffff8002190b44
+B08_XREF_CONTEXT ffffff8002190b11	movl	$0x22, %edx
+B08_XREF_CONTEXT ffffff8002190b16	testb	%r11b, -0x68(%rbp)
+B08_XREF_CONTEXT ffffff8002190b1a	jne	0xffffff8002190bad
+B08_XREF_CONTEXT ffffff8002191ae5	jmp	0xffffff8002191bf9
+B08_XREF_CONTEXT ffffff8002191aea	movq	0x29c(%rdi), %r15
+B08_XREF_CONTEXT ffffff8002191af1	shrq	$0x20, %r15
+B08_XREF_CONTEXT ffffff8002191af5	cmpq	%r15, %r14
+B08_XREF_CONTEXT ffffff8002191af8	jne	0xffffff8002191b14
+B08_XREF_CONTEXT ffffff8002191afa	movl	0x98c(%rcx), %edx
+B08_XREF_CONTEXT ffffff8002191b00	movl	0x2a4(%rdi), %esi
+B08_XREF_CONTEXT ffffff8002191b06	xorl	%edx, %esi
+B08_XREF_CONTEXT ffffff8002191b08	testl	$0x2018, %esi                   ## imm = 0x2018
+B08_XREF_CONTEXT ffffff8002191b0e	je	0xffffff8002191c8c
+B08_XREF_CONTEXT ffffff8002191b14	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002191b17	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002191b1a	callq	*0x38(%rax)
+B08_XREF_CONTEXT ffffff8002191b1d	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff8002191b20	callq	0xffffff8000a4a150
+B08_XREF_CONTEXT ffffff80021955ea	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80021955ed	movl	$0x3105, %r8d                   ## imm = 0x3105
+B08_XREF_CONTEXT ffffff80021955f3	movl	%ebx, %r9d
+B08_XREF_CONTEXT ffffff80021955f6	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021955f8	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff80021955fd	jmp	0xffffff8002195609
+B08_XREF_CONTEXT ffffff80021955ff	movq	0x20(%r14), %rax
+B08_XREF_CONTEXT ffffff8002195603	movb	%bl, 0x7e91(%rax)
+B08_XREF_CONTEXT ffffff8002195609	movq	0x226b08(%rip), %rax
+B08_XREF_CONTEXT ffffff8002195610	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002195613	cmpq	-0x18(%rbp), %rax
+B08_XREF_CONTEXT ffffff8002195617	jne	0xffffff8002195622
+B08_XREF_CONTEXT ffffff8002195619	addq	$0x30, %rsp
+B08_XREF_CONTEXT ffffff800219561d	popq	%rbx
+B08_XREF_CONTEXT ffffff800219561e	popq	%r14
+B08_XREF_CONTEXT ffffff8002195af8	jne	0xffffff8002195b17
+B08_XREF_CONTEXT ffffff8002195afa	movl	%r14d, %eax
+B08_XREF_CONTEXT ffffff8002195afd	addq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff8002195b01	popq	%rbx
+B08_XREF_CONTEXT ffffff8002195b02	popq	%r14
+B08_XREF_CONTEXT ffffff8002195b04	popq	%r15
+B08_XREF_CONTEXT ffffff8002195b06	popq	%rbp
+B08_XREF_CONTEXT ffffff8002195b07	retq
+B08_XREF_CONTEXT ffffff8002195b08	movl	$0x13, %r14d
+B08_XREF_CONTEXT ffffff8002195b0e	leaq	0x1af712(%rip), %r15            ## literal pool for: "%s::%s ERROR: Unable to set Coex Protection, could not get P2P Supervisor\n"
+B08_XREF_CONTEXT ffffff8002195b15	jmp	0xffffff8002195ab3
+B08_XREF_CONTEXT ffffff8002195b17	callq	0xffffff8000383150
+B08_XREF_CONTEXT __ZN22IO80211AWDLPeerManager8setIOCTLEjjPv:
+B08_XREF_CONTEXT ffffff8002195b1c	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002195b1d	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002196af1	jne	0xffffff8002196b18
+B08_XREF_CONTEXT ffffff8002196af3	addq	$0x20, %rsp
+B08_XREF_CONTEXT ffffff8002196af7	popq	%rbx
+B08_XREF_CONTEXT ffffff8002196af8	popq	%r14
+B08_XREF_CONTEXT ffffff8002196afa	popq	%rbp
+B08_XREF_CONTEXT ffffff8002196afb	retq
+B08_XREF_CONTEXT ffffff8002196afc	movl	0x25dbfe(%rip), %eax
+B08_XREF_CONTEXT ffffff8002196b02	movl	%eax, 0x98c(%rcx)
+B08_XREF_CONTEXT ffffff8002196b08	movq	__ZL13_zeroChanInfo(%rip), %rax ## _zeroChanInfo
+B08_XREF_CONTEXT ffffff8002196b0f	movq	%rax, 0x984(%rcx)
+B08_XREF_CONTEXT ffffff8002196b16	jmp	0xffffff8002196ae3
+B08_XREF_CONTEXT ffffff8002196b18	callq	0xffffff8000383150
+B08_XREF_CONTEXT ffffff8002196b1d	nop
+B08_XREF_CONTEXT __ZN22IO80211AWDLPeerManager14setAirPlayPeerEP15IO80211AWDLPeer:
+B08_XREF_CONTEXT ffffff8002196b1e	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002198ae2	movq	%r12, 0xcb61(%rax)
+B08_XREF_CONTEXT ffffff8002198ae9	movq	%r12, 0xcb69(%rax)
+B08_XREF_CONTEXT ffffff8002198af0	movq	%r12, 0xcb71(%rax)
+B08_XREF_CONTEXT ffffff8002198af7	movq	0x20(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002198afb	cmpb	$0x0, 0x41c9(%rax)
+B08_XREF_CONTEXT ffffff8002198b02	je	0xffffff8002198b14
+B08_XREF_CONTEXT ffffff8002198b04	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002198b07	popq	%rbx
+B08_XREF_CONTEXT ffffff8002198b08	popq	%r12
+B08_XREF_CONTEXT ffffff8002198b0a	popq	%r14
+B08_XREF_CONTEXT ffffff8002198b0c	popq	%r15
+B08_XREF_CONTEXT ffffff8002198b0e	popq	%rbp
+B08_XREF_CONTEXT ffffff8002198b0f	jmp	__ZN22IO80211AWDLPeerManager39bssSteeringScanLookForLegacyDoneHandlerEv ## IO80211AWDLPeerManager::bssSteeringScanLookForLegacyDoneHandler()
+B08_XREF_CONTEXT ffffff8002198b14	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002198b17	popq	%rbx
+B08_XREF_CONTEXT ffffff800219caea	callq	__ZN21IO80211NANPeerManager28setNANCustomPreferredChannelEP22apple80211_nan_channel ## IO80211NANPeerManager::setNANCustomPreferredChannel(apple80211_nan_channel*)
+B08_XREF_CONTEXT ffffff800219caef	movzbl	(%r15), %eax
+B08_XREF_CONTEXT ffffff800219caf3	movq	0x20(%rbx), %rcx
+B08_XREF_CONTEXT ffffff800219caf7	movl	%eax, 0xca74(%rcx)
+B08_XREF_CONTEXT ffffff800219cafd	jmp	0xffffff800219c8fd
+B08_XREF_CONTEXT ffffff800219cb02	callq	0xffffff8000383150
+B08_XREF_CONTEXT ffffff800219cb07	nop
+B08_XREF_CONTEXT __ZN22IO80211AWDLPeerManager24handleEnsembleTrafficRegEP15IO80211AWDLPeerP41apple80211_awdl_peer_traffic_registration11rtgPeerTypeb:
+B08_XREF_CONTEXT ffffff800219cb08	pushq	%rbp
+B08_XREF_CONTEXT ffffff800219cb09	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800219cb0c	pushq	%r15
+B08_XREF_CONTEXT ffffff800219cb0e	pushq	%r14
+B08_XREF_CONTEXT ffffff800219cb10	pushq	%r13
+B08_XREF_CONTEXT ffffff800219cb12	pushq	%r12
+B08_XREF_CONTEXT ffffff800219cb14	pushq	%rbx
+B08_XREF_CONTEXT ffffff800219eafd	popq	%rbp
+B08_XREF_CONTEXT ffffff800219eafe	retq
+B08_XREF_CONTEXT ffffff800219eaff	nop
+B08_XREF_CONTEXT __ZN22IO80211AWDLPeerManager15setSideCarStateEP15IO80211AWDLPeer:
+B08_XREF_CONTEXT ffffff800219eb00	pushq	%rbp
+B08_XREF_CONTEXT ffffff800219eb01	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800219eb04	pushq	%r15
+B08_XREF_CONTEXT ffffff800219eb06	pushq	%r14
+B08_XREF_CONTEXT ffffff800219eb08	pushq	%r13
+B08_XREF_CONTEXT ffffff800219eb0a	pushq	%r12
+B08_XREF_CONTEXT ffffff800219eb0c	pushq	%rbx
+B08_XREF_CONTEXT ffffff800219eb0d	subq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff800219eb11	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff800219eb14	movq	0x21d5fd(%rip), %rax
+B08_XREF_CONTEXT ffffff800219eb1b	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff80021a0ae1	callq	0xffffff8000a79660
+B08_XREF_CONTEXT ffffff80021a0ae6	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80021a0ae9	je	0xffffff80021a1138
+B08_XREF_CONTEXT ffffff80021a0aef	movq	%rax, -0x68(%rbp)
+B08_XREF_CONTEXT ffffff80021a0af3	movzwl	0x18a(%r15), %edi
+B08_XREF_CONTEXT ffffff80021a0afb	movl	$0x10, %esi
+B08_XREF_CONTEXT ffffff80021a0b00	callq	0xffffff8000a74480
+B08_XREF_CONTEXT ffffff80021a0b05	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80021a0b08	je	0xffffff80021a115c
+B08_XREF_CONTEXT ffffff80021a0b0e	movq	(%r14), %r8
+B08_XREF_CONTEXT ffffff80021a0b11	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80021a0b14	movq	-0x68(%rbp), %rsi
+B08_XREF_CONTEXT ffffff80021a0b18	movq	%rax, -0x60(%rbp)
+B08_XREF_CONTEXT ffffff80021a0b1c	movq	%rax, %rdx
+B08_XREF_CONTEXT ffffff80021a0b1f	callq	*0x1c8(%r8)
+B08_XREF_CONTEXT ffffff80021a5af6	je	0xffffff80021a5b0e
+B08_XREF_CONTEXT ffffff80021a5af8	movq	%r14, %rsi
+B08_XREF_CONTEXT ffffff80021a5afb	addq	$0x28, %rsp
+B08_XREF_CONTEXT ffffff80021a5aff	popq	%rbx
+B08_XREF_CONTEXT ffffff80021a5b00	popq	%r12
+B08_XREF_CONTEXT ffffff80021a5b02	popq	%r13
+B08_XREF_CONTEXT ffffff80021a5b04	popq	%r14
+B08_XREF_CONTEXT ffffff80021a5b06	popq	%r15
+B08_XREF_CONTEXT ffffff80021a5b08	popq	%rbp
+B08_XREF_CONTEXT ffffff80021a5b09	jmp	__ZN26IO80211RealTimePeerManager7txStartEP31apple80211_traffic_registration ## IO80211RealTimePeerManager::txStart(apple80211_traffic_registration*)
+B08_XREF_CONTEXT ffffff80021a5b0e	movq	%r14, %rsi
+B08_XREF_CONTEXT ffffff80021a5b11	addq	$0x28, %rsp
+B08_XREF_CONTEXT ffffff80021a5b15	popq	%rbx
+B08_XREF_CONTEXT ffffff80021a5b16	popq	%r12
+B08_XREF_CONTEXT ffffff80021a5b18	popq	%r13
+B08_XREF_CONTEXT ffffff80021a6ae2	subq	%rbx, %rax
+B08_XREF_CONTEXT ffffff80021a6ae5	leaq	-0x38(%rbp), %r14
+B08_XREF_CONTEXT ffffff80021a6ae9	movq	$0x0, (%r14)
+B08_XREF_CONTEXT ffffff80021a6af0	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff80021a6af3	movq	%r14, %rsi
+B08_XREF_CONTEXT ffffff80021a6af6	callq	0xffffff8000536d80
+B08_XREF_CONTEXT ffffff80021a6afb	movabsq	$0x431bde82d7b634db, %rax       ## imm = 0x431BDE82D7B634DB
+B08_XREF_CONTEXT ffffff80021a6b05	mulq	(%r14)
+B08_XREF_CONTEXT ffffff80021a6b08	shrq	$0x12, %rdx
+B08_XREF_CONTEXT ffffff80021a6b0c	cmpl	$0xbb9, %edx                    ## imm = 0xBB9
+B08_XREF_CONTEXT ffffff80021a6b12	jb	0xffffff80021a6c91
+B08_XREF_CONTEXT ffffff80021a6b18	callq	0xffffff8000536cc0
+B08_XREF_CONTEXT ffffff80021a6b1d	movq	%rax, %rbx
+B08_XREF_CONTEXT ffffff80021a6b20	movq	%r15, -0x48(%rbp)
+B08_XREF_CONTEXT ffffff80021a6b24	leaq	-0x40(%rbp), %r15
+B08_XREF_CONTEXT ffffff80021a7ae7	jmp	0xffffff80021a793d
+B08_XREF_CONTEXT ffffff80021a7aec	movq	0xc8b0(%rcx), %r12
+B08_XREF_CONTEXT ffffff80021a7af3	testq	%r12, %r12
+B08_XREF_CONTEXT ffffff80021a7af6	je	0xffffff80021a7b5b
+B08_XREF_CONTEXT ffffff80021a7af8	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff80021a7afb	movq	%r13, %rsi
+B08_XREF_CONTEXT ffffff80021a7afe	callq	__ZN18IO80211PeerManager10modifyChIDEy ## IO80211PeerManager::modifyChID(unsigned long long)
+B08_XREF_CONTEXT ffffff80021a7b03	movl	$0x1, %edx
+B08_XREF_CONTEXT ffffff80021a7b08	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff80021a7b0b	movq	%rax, %rsi
+B08_XREF_CONTEXT ffffff80021a7b0e	callq	0xffffff8000b48bd0
+B08_XREF_CONTEXT ffffff80021a7b13	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021a7b15	je	0xffffff80021a7b5b
+B08_XREF_CONTEXT ffffff80021a7b17	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff80021a7b1a	movq	0x18(%rbx), %rcx
+B08_XREF_CONTEXT ffffff80021aaae0	leaq	0x1a214a(%rip), %rdx            ## literal pool for: "%s:%d skipping buildServiceParamTlv, tlv %u exceeds threshold %u\n"
+B08_XREF_CONTEXT ffffff80021aaae7	leaq	0x1a2185(%rip), %rcx            ## literal pool for: "buildServiceParamTlv"
+B08_XREF_CONTEXT ffffff80021aaaee	xorl	%ebx, %ebx
+B08_XREF_CONTEXT ffffff80021aaaf0	movl	$0x1000000, %esi                ## imm = 0x1000000
+B08_XREF_CONTEXT ffffff80021aaaf5	movl	$0x51b6, %r8d                   ## imm = 0x51B6
+B08_XREF_CONTEXT ffffff80021aaafb	movl	$0x2c, %r9d
+B08_XREF_CONTEXT ffffff80021aab01	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021aab03	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff80021aab08	jmp	0xffffff80021aab71
+B08_XREF_CONTEXT ffffff80021aab0a	movl	$0x0, 0x8(%rsi)
+B08_XREF_CONTEXT ffffff80021aab11	movq	$0x0, 0x1(%rsi)
+B08_XREF_CONTEXT ffffff80021aab19	movb	$0x6, (%rsi)
+B08_XREF_CONTEXT ffffff80021aab1c	xorl	%ecx, %ecx
+B08_XREF_CONTEXT ffffff80021aab1e	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021aab20	movq	0x20(%rdi), %rdx
+B08_XREF_CONTEXT ffffff80021abae7	jne	0xffffff80021abb4f
+B08_XREF_CONTEXT ffffff80021abae9	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff80021abaec	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff80021abaef	callq	*0x38(%rax)
+B08_XREF_CONTEXT ffffff80021abaf2	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff80021abaf5	callq	0xffffff8000a4a150
+B08_XREF_CONTEXT ffffff80021abafa	leaq	0x1a29f1(%rip), %rsi            ## literal pool for: "%s::%s Deletion of all services requested (discoveryd/wifip2pd crash)\n"
+B08_XREF_CONTEXT ffffff80021abb01	leaq	0x1a2a31(%rip), %rcx            ## literal pool for: "updateLocalRequests"
+B08_XREF_CONTEXT ffffff80021abb08	xorl	%r13d, %r13d
+B08_XREF_CONTEXT ffffff80021abb0b	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff80021abb0e	movq	%rax, %rdx
+B08_XREF_CONTEXT ffffff80021abb11	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021abb13	callq	__ZN18IO80211PeerManager8logDebugEPKcz ## IO80211PeerManager::logDebug(char const*, ...)
+B08_XREF_CONTEXT ffffff80021abb18	movq	0x20(%rbx), %rax
+B08_XREF_CONTEXT ffffff80021abb1c	movq	0x7ea8(%rax), %rdi
+B08_XREF_CONTEXT ffffff80021adaf1	callq	__ZN22IO80211AWDLPeerManager17isValidChanSeqTlvERK19IO80211BufferCursor ## IO80211AWDLPeerManager::isValidChanSeqTlv(IO80211BufferCursor const&)
+B08_XREF_CONTEXT ffffff80021adaf6	testb	%al, %al
+B08_XREF_CONTEXT ffffff80021adaf8	je	0xffffff80021adac6
+B08_XREF_CONTEXT ffffff80021adafa	movzbl	0x3(%rbx), %ecx
+B08_XREF_CONTEXT ffffff80021adafe	testq	%rcx, %rcx
+B08_XREF_CONTEXT ffffff80021adb01	je	0xffffff80021adac6
+B08_XREF_CONTEXT ffffff80021adb03	decq	%rcx
+B08_XREF_CONTEXT ffffff80021adb06	xorl	%edx, %edx
+B08_XREF_CONTEXT ffffff80021adb08	movb	0x9(%rbx,%rdx,2), %al
+B08_XREF_CONTEXT ffffff80021adb0c	cmpb	$0xf, %al
+B08_XREF_CONTEXT ffffff80021adb0e	setae	%al
+B08_XREF_CONTEXT ffffff80021adb11	jae	0xffffff80021adac8
+B08_XREF_CONTEXT ffffff80021adb13	leaq	0x1(%rdx), %rsi
+B08_XREF_CONTEXT ffffff80021adb17	cmpq	%rdx, %rcx
+B08_XREF_CONTEXT ffffff80021adb1a	movq	%rsi, %rdx
+B08_XREF_CONTEXT ffffff80021aeae7	je	0xffffff80021aeb57
+B08_XREF_CONTEXT ffffff80021aeae9	subq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff80021aeaed	leaq	0x19ef06(%rip), %rdx            ## literal pool for: "%s[%d] : WARNING: Peer changed channel after CSA to %d, My Channel %d\n"
+B08_XREF_CONTEXT ffffff80021aeaf4	leaq	0x19eee5(%rip), %rcx            ## literal pool for: "cachedPeerHasChangedInfra"
+B08_XREF_CONTEXT ffffff80021aeafb	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff80021aeafe	movl	$0x55e0, %r8d                   ## imm = 0x55E0
+B08_XREF_CONTEXT ffffff80021aeb04	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021aeb06	pushq	%r10
+B08_XREF_CONTEXT ffffff80021aeb08	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff80021aeb0d	addq	$0x10, %rsp
+B08_XREF_CONTEXT ffffff80021aeb11	jmp	0xffffff80021aeb64
+B08_XREF_CONTEXT ffffff80021aeb13	leaq	_.str.1344(%rip), %rsi          ## literal pool for: "%s: ERROR: Invalid input parameter ( IO80211Peer )\n"
+B08_XREF_CONTEXT ffffff80021aeb1a	leaq	0x19eebf(%rip), %rdx            ## literal pool for: "cachedPeerHasChangedInfra"
+B08_XREF_CONTEXT ffffff80021aeb21	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff80021aeb24	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021afae3	movq	%rax, %r8
+B08_XREF_CONTEXT ffffff80021afae6	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021afae8	callq	__ZN18IO80211PeerManager8logDebugEPKcz ## IO80211PeerManager::logDebug(char const*, ...)
+B08_XREF_CONTEXT ffffff80021afaed	jmp	0xffffff80021afc48
+B08_XREF_CONTEXT ffffff80021afaf2	movzwl	0xc(%r14), %eax
+B08_XREF_CONTEXT ffffff80021afaf7	rolw	$0x8, %ax
+B08_XREF_CONTEXT ffffff80021afafb	movabsq	$0x400000000, %rsi              ## imm = 0x400000000
+B08_XREF_CONTEXT ffffff80021afb05	movzwl	%ax, %eax
+B08_XREF_CONTEXT ffffff80021afb08	movq	%rax, -0x30(%rbp)
+B08_XREF_CONTEXT ffffff80021afb0c	movq	0x20(%r15), %rax
+B08_XREF_CONTEXT ffffff80021afb10	movb	0x4296(%rax), %al
+B08_XREF_CONTEXT ffffff80021afb16	movb	%al, 0x16(%r14)
+B08_XREF_CONTEXT ffffff80021afb1a	movq	0x20(%r15), %rax
+B08_XREF_CONTEXT ffffff80021afb1e	movb	0x4290(%rax), %al
+B08_XREF_CONTEXT ffffff80021afb24	movb	%al, 0x17(%r14)
+B08_XREF_CONTEXT ffffff80021b5af1	movl	%eax, %ebx
+B08_XREF_CONTEXT ffffff80021b5af3	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021b5af5	je	0xffffff80021b5b28
+B08_XREF_CONTEXT ffffff80021b5af7	movq	(%r14), %rax
+B08_XREF_CONTEXT ffffff80021b5afa	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80021b5afd	callq	*0x38(%rax)
+B08_XREF_CONTEXT ffffff80021b5b00	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff80021b5b03	callq	0xffffff8000a4a150
+B08_XREF_CONTEXT ffffff80021b5b08	leaq	_.str.1593(%rip), %rsi          ## literal pool for: "%s::%s can't set AWDL OUI ret=%d\n"
+B08_XREF_CONTEXT ffffff80021b5b0f	leaq	___FUNCTION__._ZN22IO80211AWDLPeerManager10setAwdlOUIEP19apple80211_awdl_oui(%rip), %rcx ## literal pool for: "setAwdlOUI"
+B08_XREF_CONTEXT ffffff80021b5b16	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80021b5b19	movq	%rax, %rdx
+B08_XREF_CONTEXT ffffff80021b5b1c	movl	%ebx, %r8d
+B08_XREF_CONTEXT ffffff80021b5b1f	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021b5b21	callq	__ZN18IO80211PeerManager8logDebugEPKcz ## IO80211PeerManager::logDebug(char const*, ...)
+B08_XREF_CONTEXT ffffff80021b6185	movq	0x8bf8(%rcx), %rax
+B08_XREF_CONTEXT ffffff80021b618c	movq	%rax, 0xaf0(%r14,%rdx)
+B08_XREF_CONTEXT ffffff80021b6194	movb	$0x0, 0xae9(%r14,%rdx)
+B08_XREF_CONTEXT ffffff80021b619d	movq	0x8bd0(%rcx), %rax
+B08_XREF_CONTEXT ffffff80021b61a4	movq	0x8bd8(%rcx), %rsi
+B08_XREF_CONTEXT ffffff80021b61ab	movq	0x8be0(%rcx), %rdi
+B08_XREF_CONTEXT ffffff80021b61b2	movq	0x8be8(%rcx), %rcx
+B08_XREF_CONTEXT ffffff80021b61b9	movq	%rcx, 0xb10(%r14,%rdx)
+B08_XREF_CONTEXT ffffff80021b61c1	movq	%rdi, 0xb08(%r14,%rdx)
+B08_XREF_CONTEXT ffffff80021b61c9	movq	%rsi, 0xb00(%r14,%rdx)
+B08_XREF_CONTEXT ffffff80021b61d1	movq	%rax, 0xaf8(%r14,%rdx)
+B08_XREF_CONTEXT ffffff80021b61d9	movq	0x20(%rbx), %rcx
+B08_XREF_CONTEXT ffffff80021b61dd	movq	0x1e0(%rcx), %rax
+B08_XREF_CONTEXT ffffff80021b61e4	movq	0x10(%rax), %rax
+B08_XREF_CONTEXT ffffff80021b61e8	movq	0x298(%rax), %rdi
+B08_XREF_CONTEXT ffffff80021b8ae2	leaq	_.str.1660(%rip), %rdx          ## literal pool for: "IO80211AWDLPeerManager::%s[%d] miBitmap to val 0x%x (previously 0x%x)\n"
+B08_XREF_CONTEXT ffffff80021b8ae9	leaq	___FUNCTION__._ZN22IO80211AWDLPeerManager15setAwdlMiBitmapEP25apple80211_awdl_mi_bitmap(%rip), %rcx ## literal pool for: "setAwdlMiBitmap"
+B08_XREF_CONTEXT ffffff80021b8af0	movl	$0x20, %esi
+B08_XREF_CONTEXT ffffff80021b8af5	movl	$0x6d41, %r8d                   ## imm = 0x6D41
+B08_XREF_CONTEXT ffffff80021b8afb	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021b8afd	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff80021b8b02	movl	0x4(%rbx), %esi
+B08_XREF_CONTEXT ffffff80021b8b05	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80021b8b08	xorl	%edx, %edx
+B08_XREF_CONTEXT ffffff80021b8b0a	movl	$0x1, %ecx
+B08_XREF_CONTEXT ffffff80021b8b0f	callq	__ZN22IO80211AWDLPeerManager14adjustMiBitmapEjbj ## IO80211AWDLPeerManager::adjustMiBitmap(unsigned int, bool, unsigned int)
+B08_XREF_CONTEXT ffffff80021b8b14	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021b8b16	addq	$0x10, %rsp
+B08_XREF_CONTEXT ffffff80021b8b1a	popq	%rbx
+B08_XREF_CONTEXT ffffff80021b8b1b	popq	%r14
+B08_XREF_CONTEXT ffffff80021baad3	leaq	0x17af0d(%rip), %r13            ## literal pool for: "\033[1;30;48m"
+B08_XREF_CONTEXT ffffff80021baada	movq	%r13, %rdx
+B08_XREF_CONTEXT ffffff80021baadd	cmoveq	%r12, %rdx
+B08_XREF_CONTEXT ffffff80021baae1	movzbl	0xc406(%rax), %ecx
+B08_XREF_CONTEXT ffffff80021baae8	movzbl	0xc407(%rax), %r8d
+B08_XREF_CONTEXT ffffff80021baaf0	movzbl	0xc408(%rax), %r9d
+B08_XREF_CONTEXT ffffff80021baaf8	movzbl	0xc409(%rax), %r10d
+B08_XREF_CONTEXT ffffff80021bab00	movzbl	0xc40a(%rax), %r11d
+B08_XREF_CONTEXT ffffff80021bab08	movzbl	0xc40b(%rax), %ebx
+B08_XREF_CONTEXT ffffff80021bab0f	subq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff80021bab13	leaq	0x19897d(%rip), %rsi            ## literal pool for: "%s          RTG is active (rtgID: %02X:%02X:%02X:%02X:%02X:%02X)\n"
+B08_XREF_CONTEXT ffffff80021bab1a	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff80021bab1d	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021bab1f	pushq	%rbx
+B08_XREF_CONTEXT ffffff80021bab20	pushq	%r11
+B08_XREF_CONTEXT ffffff80021bdae4	je	0xffffff80021bdb1b
+B08_XREF_CONTEXT ffffff80021bdae6	movq	0x20(%r15), %rbx
+B08_XREF_CONTEXT ffffff80021bdaea	leaq	0xb918(%rbx), %rdi
+B08_XREF_CONTEXT ffffff80021bdaf1	callq	0xffffff80004ee8d0
+B08_XREF_CONTEXT ffffff80021bdaf6	movl	%eax, %ecx
+B08_XREF_CONTEXT ffffff80021bdaf8	leaq	(%rbx,%rcx), %rdi
+B08_XREF_CONTEXT ffffff80021bdafc	addq	$0xb918, %rdi                   ## imm = 0xB918
+B08_XREF_CONTEXT ffffff80021bdb03	movl	$0x400, %esi                    ## imm = 0x400
+B08_XREF_CONTEXT ffffff80021bdb08	subl	%eax, %esi
+B08_XREF_CONTEXT ffffff80021bdb0a	leaq	0x197a86(%rip), %rdx            ## literal pool for: "txExpired=%llu"
+B08_XREF_CONTEXT ffffff80021bdb11	movq	%r12, %rcx
+B08_XREF_CONTEXT ffffff80021bdb14	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021bdb16	callq	0xffffff8000939da0
+B08_XREF_CONTEXT ffffff80021bdb1b	movq	-0xf0(%rbp), %r13
+B08_XREF_CONTEXT ffffff80021bdb22	testq	%r13, %r13
+B08_XREF_CONTEXT ffffff80021beae6	movq	-0x38(%rbp), %rcx
+B08_XREF_CONTEXT ffffff80021beaea	movb	$0x0, (%rcx,%rax)
+B08_XREF_CONTEXT ffffff80021beaee	leaq	0x193c81(%rip), %rdx            ## literal pool for: "%s\n"
+B08_XREF_CONTEXT ffffff80021beaf5	xorl	%r15d, %r15d
+B08_XREF_CONTEXT ffffff80021beaf8	movl	$0x80000000, %esi               ## imm = 0x80000000
+B08_XREF_CONTEXT ffffff80021beafd	movq	-0x80(%rbp), %rdi
+B08_XREF_CONTEXT ffffff80021beb01	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021beb03	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff80021beb08	movl	$0x0, %r11d
+B08_XREF_CONTEXT ffffff80021beb0e	movl	$0x0, %r9d
+B08_XREF_CONTEXT ffffff80021beb14	movl	$0x0, %r10d
+B08_XREF_CONTEXT ffffff80021beb1a	movl	$0x0, %r12d
+B08_XREF_CONTEXT ffffff80021beb20	movl	$0x0, %r13d
+B08_XREF_CONTEXT ffffff80021beb26	movq	-0x78(%rbp), %rax
+B08_XREF_CONTEXT ffffff80021beb2a	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80021bfae1	divsd	%xmm0, %xmm2
+B08_XREF_CONTEXT ffffff80021bfae5	movapd	%xmm2, -0x60(%rbp)
+B08_XREF_CONTEXT ffffff80021bfaea	movapd	-0x60(%rbp), %xmm2
+B08_XREF_CONTEXT ffffff80021bfaef	cvttsd2si	%xmm2, %rax
+B08_XREF_CONTEXT ffffff80021bfaf4	movsd	0x1557a4(%rip), %xmm1
+B08_XREF_CONTEXT ffffff80021bfafc	subsd	%xmm1, %xmm2
+B08_XREF_CONTEXT ffffff80021bfb00	cvttsd2si	%xmm2, %rcx
+B08_XREF_CONTEXT ffffff80021bfb05	movq	%rax, %r8
+B08_XREF_CONTEXT ffffff80021bfb08	sarq	$0x3f, %r8
+B08_XREF_CONTEXT ffffff80021bfb0c	andq	%rcx, %r8
+B08_XREF_CONTEXT ffffff80021bfb0f	orq	%rax, %r8
+B08_XREF_CONTEXT ffffff80021bfb12	movapd	-0x50(%rbp), %xmm0
+B08_XREF_CONTEXT ffffff80021bfb17	cvttsd2si	%xmm0, %rax
+B08_XREF_CONTEXT ffffff80021bfb1c	subsd	%xmm1, %xmm0
+B08_XREF_CONTEXT ffffff80021bfb20	cvttsd2si	%xmm0, %rdx
+B08_XREF_CONTEXT ffffff80021caaf7	popq	%rbp
+B08_XREF_CONTEXT ffffff80021caaf8	retq
+B08_XREF_CONTEXT ffffff80021caaf9	nop
+B08_XREF_CONTEXT __ZN22IO80211AWDLPeerManager23isHighThruputModeActiveEv:
+B08_XREF_CONTEXT ffffff80021caafa	pushq	%rbp
+B08_XREF_CONTEXT ffffff80021caafb	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80021caafe	movq	0x20(%rdi), %rax
+B08_XREF_CONTEXT ffffff80021cab02	movb	0x3f38(%rax), %al
+B08_XREF_CONTEXT ffffff80021cab08	popq	%rbp
+B08_XREF_CONTEXT ffffff80021cab09	retq
+B08_XREF_CONTEXT __ZN22IO80211AWDLPeerManager21isDataPathUMIDisabledEv:
+B08_XREF_CONTEXT ffffff80021cab0a	pushq	%rbp
+B08_XREF_CONTEXT ffffff80021cab0b	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80021cab0e	movq	0x20(%rdi), %rax
+B08_XREF_CONTEXT ffffff80021cab12	movb	0x7ff4(%rax), %al
+B08_XREF_CONTEXT ffffff80021d0af7	shll	%cl, %edi
+B08_XREF_CONTEXT ffffff80021d0af9	notl	%edi
+B08_XREF_CONTEXT ffffff80021d0afb	movl	%eax, %ecx
+B08_XREF_CONTEXT ffffff80021d0afd	andl	%edi, %ecx
+B08_XREF_CONTEXT ffffff80021d0aff	subl	%ecx, %eax
+B08_XREF_CONTEXT ffffff80021d0b01	addl	%r8d, %ecx
+B08_XREF_CONTEXT ffffff80021d0b04	andl	%edi, %ecx
+B08_XREF_CONTEXT ffffff80021d0b06	addl	%eax, %ecx
+B08_XREF_CONTEXT ffffff80021d0b08	movb	0x4(%rsi), %al
+B08_XREF_CONTEXT ffffff80021d0b0b	movb	%al, 0x4(%rdx)
+B08_XREF_CONTEXT ffffff80021d0b0e	movl	(%rsi), %eax
+B08_XREF_CONTEXT ffffff80021d0b10	movl	%eax, (%rdx)
+B08_XREF_CONTEXT ffffff80021d0b12	movb	%cl, 0x5(%rdx)
+B08_XREF_CONTEXT ffffff80021d0b15	popq	%rbp
+B08_XREF_CONTEXT ffffff80021d0b16	retq
+B08_XREF_CONTEXT ffffff80021d2ae5	leaq	0x80(%rax), %r8
+B08_XREF_CONTEXT ffffff80021d2aec	testb	%sil, %sil
+B08_XREF_CONTEXT ffffff80021d2aef	cmovneq	%rdx, %rcx
+B08_XREF_CONTEXT ffffff80021d2af3	cmoveq	%rdi, %r8
+B08_XREF_CONTEXT ffffff80021d2af7	movzbl	%r9b, %edx
+B08_XREF_CONTEXT ffffff80021d2afb	incl	(%rcx,%rdx,4)
+B08_XREF_CONTEXT ffffff80021d2afe	incl	(%r8)
+B08_XREF_CONTEXT ffffff80021d2b01	movb	$0x0, 0x10c(%rax)
+B08_XREF_CONTEXT ffffff80021d2b08	callq	0xffffff8000536cc0
+B08_XREF_CONTEXT ffffff80021d2b0d	movq	0x10(%rbx), %rcx
+B08_XREF_CONTEXT ffffff80021d2b11	movq	%rax, 0x110(%rcx)
+B08_XREF_CONTEXT ffffff80021d2b18	popq	%rbx
+B08_XREF_CONTEXT ffffff80021d2b19	popq	%r14
+B08_XREF_CONTEXT ffffff80021d2b1b	popq	%rbp
+B08_XREF_CONTEXT ffffff80021d2b1c	retq
+B08_XREF_CONTEXT ffffff80021d5ada	movl	%r14d, -0x8c(%rbp)
+B08_XREF_CONTEXT ffffff80021d5ae1	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff80021d5ae5	movq	0x20(%rax,%r13,8), %rdi
+B08_XREF_CONTEXT ffffff80021d5aea	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff80021d5aed	je	0xffffff80021d5c28
+B08_XREF_CONTEXT ffffff80021d5af3	movl	%r14d, -0x88(%rbp)
+B08_XREF_CONTEXT ffffff80021d5afa	movl	%r13d, -0x84(%rbp)
+B08_XREF_CONTEXT ffffff80021d5b01	leaq	__ZL12_flushQueuesP8OSObjectP22IO80211QueueDescriptorPvP13mapExtraParam(%rip), %rsi ## _flushQueues(OSObject*, IO80211QueueDescriptor*, void*, mapExtraParam*)
+B08_XREF_CONTEXT ffffff80021d5b08	movq	%rbx, %rdx
+B08_XREF_CONTEXT ffffff80021d5b0b	movq	%r15, %rcx
+B08_XREF_CONTEXT ffffff80021d5b0e	leaq	-0x80(%rbp), %r8
+B08_XREF_CONTEXT ffffff80021d5b12	movl	$0xffffffff, %r9d               ## imm = 0xFFFFFFFF
+B08_XREF_CONTEXT ffffff80021d5b18	callq	__ZN19IO80211CommandQueue7lockMapEPF9MapActionP8OSObjectP22IO80211QueueDescriptorPvP13mapExtraParamES2_S5_S7_j ## IO80211CommandQueue::lockMap(MapAction (*)(OSObject*, IO80211QueueDescriptor*, void*, mapExtraParam*), OSObject*, void*, mapExtraParam*, unsigned int)
+B08_XREF_CONTEXT ffffff80021d5b1d	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff80021d5b21	movq	0x20(%rax,%r13,8), %rcx
+B08_XREF_CONTEXT ffffff80021dbc65	movl	$0x4e2, %ecx                    ## imm = 0x4E2
+B08_XREF_CONTEXT ffffff80021dbc6a	jmp	0xffffff80021dbc05
+B08_XREF_CONTEXT ffffff80021dbc6c	testq	%r15, %r15
+B08_XREF_CONTEXT ffffff80021dbc6f	je	0xffffff80021dbc89
+B08_XREF_CONTEXT ffffff80021dbc71	movq	(%r15), %rax
+B08_XREF_CONTEXT ffffff80021dbc74	leaq	__ZL13bcast_address(%rip), %rsi ## bcast_address
+B08_XREF_CONTEXT ffffff80021dbc7b	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff80021dbc7e	movq	%rbx, %rdx
+B08_XREF_CONTEXT ffffff80021dbc81	callq	*0xb08(%rax)
+B08_XREF_CONTEXT ffffff80021dbc87	jmp	0xffffff80021dbc98
+B08_XREF_CONTEXT ffffff80021dbc89	leaq	__ZL13bcast_address(%rip), %rdi ## bcast_address
+B08_XREF_CONTEXT ffffff80021dbc90	movq	%rbx, %rsi
+B08_XREF_CONTEXT ffffff80021dbc93	callq	__ZN11IO80211Peer21withAddressAndManagerEPKhP18IO80211PeerManager ## IO80211Peer::withAddressAndManager(unsigned char const*, IO80211PeerManager*)
+B08_XREF_CONTEXT ffffff80021dbc98	movq	0x18(%rbx), %rcx
+B08_XREF_CONTEXT ffffff80021dbc9c	movq	%rax, 0x520(%rcx)
+B08_XREF_CONTEXT ffffff80021dbcff	cmpq	$0x0, 0x548(%rcx)
+B08_XREF_CONTEXT ffffff80021dbd07	je	0xffffff80021dbd99
+B08_XREF_CONTEXT ffffff80021dbd0d	testq	%r15, %r15
+B08_XREF_CONTEXT ffffff80021dbd10	je	0xffffff80021dbea9
+B08_XREF_CONTEXT ffffff80021dbd16	movq	(%r15), %rax
+B08_XREF_CONTEXT ffffff80021dbd19	leaq	_null_address(%rip), %rsi
+B08_XREF_CONTEXT ffffff80021dbd20	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff80021dbd23	movq	%rbx, %rdx
+B08_XREF_CONTEXT ffffff80021dbd26	callq	*0xb08(%rax)
+B08_XREF_CONTEXT ffffff80021dbd2c	movq	0x18(%rbx), %rcx
+B08_XREF_CONTEXT ffffff80021dbd30	movq	%rax, 0x528(%rcx)
+B08_XREF_CONTEXT ffffff80021dbd37	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80021dbd3a	je	0xffffff80021dbee3
+B08_XREF_CONTEXT ffffff80021dbd40	movq	0x18(%rax), %rcx
+B08_XREF_CONTEXT ffffff80021dbd44	movb	$0x1, %dl
+B08_XREF_CONTEXT ffffff80021ddae4	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80021ddae7	je	0xffffff80021ddaf6
+B08_XREF_CONTEXT ffffff80021ddae9	movq	(%rax), %rcx
+B08_XREF_CONTEXT ffffff80021ddaec	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff80021ddaef	callq	*0x28(%rcx)
+B08_XREF_CONTEXT ffffff80021ddaf2	movq	0x18(%rbx), %rdi
+B08_XREF_CONTEXT ffffff80021ddaf6	movq	$0x0, 0x750(%rdi)
+B08_XREF_CONTEXT ffffff80021ddb01	movq	0x748(%rdi), %rax
+B08_XREF_CONTEXT ffffff80021ddb08	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80021ddb0b	je	0xffffff80021ddb32
+B08_XREF_CONTEXT ffffff80021ddb0d	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff80021ddb10	callq	__ZN19IO80211CommandQueue5flushEv ## IO80211CommandQueue::flush()
+B08_XREF_CONTEXT ffffff80021ddb15	movq	0x18(%rbx), %rdi
+B08_XREF_CONTEXT ffffff80021ddb19	movq	0x748(%rdi), %rax
+B08_XREF_CONTEXT ffffff80021ddb20	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80021dfae4	movq	%rax, %rdx
+B08_XREF_CONTEXT ffffff80021dfae7	callq	0xffffff80004ee960
+B08_XREF_CONTEXT ffffff80021dfaec	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021dfaee	je	0xffffff80021e041b
+B08_XREF_CONTEXT ffffff80021dfaf4	leaq	0x182421(%rip), %rdi            ## literal pool for: "awdlDynamicCountryOff"
+B08_XREF_CONTEXT ffffff80021dfafb	movl	$0x80, %esi
+B08_XREF_CONTEXT ffffff80021dfb00	callq	0xffffff80004ee8f0
+B08_XREF_CONTEXT ffffff80021dfb05	movq	%rax, %r12
+B08_XREF_CONTEXT ffffff80021dfb08	movl	$0x80, %esi
+B08_XREF_CONTEXT ffffff80021dfb0d	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff80021dfb10	callq	0xffffff80004ee8f0
+B08_XREF_CONTEXT ffffff80021dfb15	cmpq	%rax, %r12
+B08_XREF_CONTEXT ffffff80021dfb18	jne	0xffffff80021dfb3f
+B08_XREF_CONTEXT ffffff80021dfb1a	leaq	0x1823fb(%rip), %r12            ## literal pool for: "awdlDynamicCountryOff"
+B08_XREF_CONTEXT ffffff80021dfb21	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff80021e2932	retq
+B08_XREF_CONTEXT ffffff80021e2933	movq	0x518(%rax), %r15
+B08_XREF_CONTEXT ffffff80021e293a	movq	(%r14), %rax
+B08_XREF_CONTEXT ffffff80021e293d	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80021e2940	callq	*0x38(%rax)
+B08_XREF_CONTEXT ffffff80021e2943	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff80021e2946	callq	0xffffff8000a4a150
+B08_XREF_CONTEXT ffffff80021e294b	leaq	0x181abe(%rip), %rsi            ## literal pool for: "%s::%s(%d) getBSDName() not yet available, neither virtIf nor _skywalkInterface\n"
+B08_XREF_CONTEXT ffffff80021e2952	leaq	0x181b08(%rip), %rcx            ## literal pool for: "modifyChID"
+B08_XREF_CONTEXT ffffff80021e2959	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff80021e295c	movq	%rax, %rdx
+B08_XREF_CONTEXT ffffff80021e295f	movl	$0x17ed, %r8d                   ## imm = 0x17ED
+B08_XREF_CONTEXT ffffff80021e2965	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021e2967	callq	__ZN17IO80211Controller8logDebugEPKcz ## IO80211Controller::logDebug(char const*, ...)
+B08_XREF_CONTEXT ffffff80021e296c	jmp	0xffffff80021e28ba
+B08_XREF_CONTEXT ffffff80021e3ae7	movq	0x520(%rax), %rcx
+B08_XREF_CONTEXT ffffff80021e3aee	testq	%rcx, %rcx
+B08_XREF_CONTEXT ffffff80021e3af1	je	0xffffff80021e3b0c
+B08_XREF_CONTEXT ffffff80021e3af3	movq	0x18(%rcx), %rcx
+B08_XREF_CONTEXT ffffff80021e3af7	movq	0x4c0(%rcx), %rdi
+B08_XREF_CONTEXT ffffff80021e3afe	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff80021e3b01	je	0xffffff80021e3b0c
+B08_XREF_CONTEXT ffffff80021e3b03	callq	__ZN18IO80211PeerMonitor17printPerACTxStatsEv ## IO80211PeerMonitor::printPerACTxStats()
+B08_XREF_CONTEXT ffffff80021e3b08	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff80021e3b0c	movq	0x548(%rax), %rcx
+B08_XREF_CONTEXT ffffff80021e3b13	movq	0x110(%rcx), %rcx
+B08_XREF_CONTEXT ffffff80021e3b1a	cmpl	$0x1, 0x58(%rcx)
+B08_XREF_CONTEXT ffffff80021e3b1e	jne	0xffffff80021e3b35
+B08_XREF_CONTEXT ffffff80021e3b20	movq	0xb28(%rax), %rdi
+B08_XREF_CONTEXT ffffff80021e3b27	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff80021e4ae4	movq	%rsi, %rdi
+B08_XREF_CONTEXT ffffff80021e4ae7	movl	%eax, %esi
+B08_XREF_CONTEXT ffffff80021e4ae9	xorl	%edx, %edx
+B08_XREF_CONTEXT ffffff80021e4aeb	callq	*0x1c8(%rcx)
+B08_XREF_CONTEXT ffffff80021e4af1	jmp	0xffffff80021e4b24
+B08_XREF_CONTEXT ffffff80021e4af3	leaq	_.str.18(%rip), %rdx            ## literal pool for: "%s::%s[%u] Error: Assert failure\n"
+B08_XREF_CONTEXT ffffff80021e4afa	leaq	_.str.19(%rip), %rcx            ## literal pool for: "/AppleInternal/Library/BuildRoots/4~CW9mugA6gpmKPwyaAeCNWSZRmRlk6mvK_U3N5n0/Library/Caches/com.apple.xbs/Sources/IO80211_kexts/IO80211Family/IO80211PeerManager.cpp"
+B08_XREF_CONTEXT ffffff80021e4b01	leaq	0x1814c5(%rip), %r8             ## literal pool for: "_updateNumHostPackets"
+B08_XREF_CONTEXT ffffff80021e4b08	movabsq	$0x800000000000000, %rsi        ## imm = 0x800000000000000
+B08_XREF_CONTEXT ffffff80021e4b12	movl	$0xe99, %r9d                    ## imm = 0xE99
+B08_XREF_CONTEXT ffffff80021e4b18	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021e4b1a	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff80021e4b1f	movl	$0x1, %ebx
+B08_XREF_CONTEXT ffffff80021e4b24	movl	%ebx, %eax
+B08_XREF_CONTEXT ffffff80021e4b26	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff80021e8add	leaq	_.str.212(%rip), %rdx           ## literal pool for: "IO80211PeerManager:%s:%06u, lockDataPath failed\n"
+B08_XREF_CONTEXT ffffff80021e8ae4	leaq	___FUNCTION__._ZN18IO80211PeerManager30getOldestPeerWaitingToBeCachedEv(%rip), %rcx ## literal pool for: "getOldestPeerWaitingToBeCached"
+B08_XREF_CONTEXT ffffff80021e8aeb	xorl	%r15d, %r15d
+B08_XREF_CONTEXT ffffff80021e8aee	movabsq	$0x800000000000000, %rsi        ## imm = 0x800000000000000
+B08_XREF_CONTEXT ffffff80021e8af8	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff80021e8afb	movl	$0x15af, %r8d                   ## imm = 0x15AF
+B08_XREF_CONTEXT ffffff80021e8b01	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80021e8b03	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff80021e8b08	jmp	0xffffff80021e8b4f
+B08_XREF_CONTEXT ffffff80021e8b0a	xorl	%r15d, %r15d
+B08_XREF_CONTEXT ffffff80021e8b0d	jmp	0xffffff80021e8b3d
+B08_XREF_CONTEXT ffffff80021e8b0f	leaq	_.str.312(%rip), %rdx           ## literal pool for: "%s[%d] : Null Peer, database is out of sync, count %+1\n"
+B08_XREF_CONTEXT ffffff80021e8b16	leaq	___FUNCTION__._ZN18IO80211PeerManager30getOldestPeerWaitingToBeCachedEv(%rip), %rcx ## literal pool for: "getOldestPeerWaitingToBeCached"
+B08_XREF_CONTEXT ffffff80021e8b1d	movabsq	$0x800000000000000, %rsi        ## imm = 0x800000000000000
+B08_XREF_CONTEXT ffffff80021e8b27	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff80021f6af2	movq	(%r14), %rax
+B08_XREF_CONTEXT ffffff80021f6af5	movq	0xeb0(%rax), %rax
+B08_XREF_CONTEXT ffffff80021f6afc	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80021f6aff	movq	%rbx, %rsi
+B08_XREF_CONTEXT ffffff80021f6b02	popq	%rbx
+B08_XREF_CONTEXT ffffff80021f6b03	popq	%r14
+B08_XREF_CONTEXT ffffff80021f6b05	popq	%rbp
+B08_XREF_CONTEXT ffffff80021f6b06	jmpq	*%rax
+B08_XREF_CONTEXT ffffff80021f6b08	movl	$0xe082280e, %eax               ## imm = 0xE082280E
+B08_XREF_CONTEXT ffffff80021f6b0d	jmp	0xffffff80021f6ad9
+B08_XREF_CONTEXT __Z18apple80211getNOISEP23IO80211SkywalkInterfaceP21apple80211_noise_data:
+B08_XREF_CONTEXT ffffff80021f6b0f	pushq	%rbp
+B08_XREF_CONTEXT ffffff80021f6b10	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80021f6b13	pushq	%r14
+B08_XREF_CONTEXT ffffff80021f6b15	pushq	%rbx
+B08_XREF_CONTEXT ffffff80021f9af0	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80021f9af3	je	0xffffff80021f9b0b
+B08_XREF_CONTEXT ffffff80021f9af5	movq	(%r14), %rax
+B08_XREF_CONTEXT ffffff80021f9af8	movq	0x1070(%rax), %rax
+B08_XREF_CONTEXT ffffff80021f9aff	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80021f9b02	movq	%rbx, %rsi
+B08_XREF_CONTEXT ffffff80021f9b05	popq	%rbx
+B08_XREF_CONTEXT ffffff80021f9b06	popq	%r14
+B08_XREF_CONTEXT ffffff80021f9b08	popq	%rbp
+B08_XREF_CONTEXT ffffff80021f9b09	jmpq	*%rax
+B08_XREF_CONTEXT ffffff80021f9b0b	movl	$0xe082280e, %eax               ## imm = 0xE082280E
+B08_XREF_CONTEXT ffffff80021f9b10	jmp	0xffffff80021f9adc
+B08_XREF_CONTEXT __Z39apple80211getDYNAMIC_RSSI_WINDOW_CONFIGP23IO80211SkywalkInterfaceP37apple80211_dynamic_rssi_window_config:
+B08_XREF_CONTEXT ffffff80021f9b12	pushq	%rbp
+B08_XREF_CONTEXT ffffff80021f9b13	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002200aef	pushq	%r14
+B08_XREF_CONTEXT ffffff8002200af1	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002200af2	movq	%rsi, %rbx
+B08_XREF_CONTEXT ffffff8002200af5	movq	%rdi, %r14
+B08_XREF_CONTEXT ffffff8002200af8	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002200afb	movl	$0x1fc, %esi                    ## imm = 0x1FC
+B08_XREF_CONTEXT ffffff8002200b00	callq	*0xcc0(%rax)
+B08_XREF_CONTEXT ffffff8002200b06	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002200b08	je	0xffffff8002200b0f
+B08_XREF_CONTEXT ffffff8002200b0a	popq	%rbx
+B08_XREF_CONTEXT ffffff8002200b0b	popq	%r14
+B08_XREF_CONTEXT ffffff8002200b0d	popq	%rbp
+B08_XREF_CONTEXT ffffff8002200b0e	retq
+B08_XREF_CONTEXT ffffff8002200b0f	leaq	__ZN18IO80211SapProtocol10gMetaClassE(%rip), %rsi ## IO80211SapProtocol::gMetaClass
+B08_XREF_CONTEXT ffffff8002200b16	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff8002209af0	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002209af1	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002209af4	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002209af5	pushq	%rax
+B08_XREF_CONTEXT ffffff8002209af6	movq	0x20(%rdi), %rbx
+B08_XREF_CONTEXT ffffff8002209afa	movq	0x200(%rbx), %rdi
+B08_XREF_CONTEXT ffffff8002209b01	callq	__ZN17IO80211BssManager9isEAPJoinEv ## IO80211BssManager::isEAPJoin()
+B08_XREF_CONTEXT ffffff8002209b06	testb	%al, %al
+B08_XREF_CONTEXT ffffff8002209b08	movl	$0x59d8, %ecx                   ## imm = 0x59D8
+B08_XREF_CONTEXT ffffff8002209b0d	movl	$0x4268, %eax                   ## imm = 0x4268
+B08_XREF_CONTEXT ffffff8002209b12	cmovnel	%ecx, %eax
+B08_XREF_CONTEXT ffffff8002209b15	cmpb	$0x1, 0x2(%rbx)
+B08_XREF_CONTEXT ffffff8002209b19	jne	0xffffff8002209b1e
+B08_XREF_CONTEXT ffffff8002209b1b	movl	0xc(%rbx), %eax
+B08_XREF_CONTEXT ffffff8002209b1e	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff8002211ae9	movl	$0x16, %eax
+B08_XREF_CONTEXT ffffff8002211aee	cmpl	$0x80a, 0x18(%rdx)              ## imm = 0x80A
+B08_XREF_CONTEXT ffffff8002211af5	jne	0xffffff8002211b5d
+B08_XREF_CONTEXT ffffff8002211af7	movq	0x20(%rdx), %rbx
+B08_XREF_CONTEXT ffffff8002211afb	testq	%rbx, %rbx
+B08_XREF_CONTEXT ffffff8002211afe	je	0xffffff8002211b5d
+B08_XREF_CONTEXT ffffff8002211b00	movl	$0x2d, %eax
+B08_XREF_CONTEXT ffffff8002211b05	testq	%rsi, %rsi
+B08_XREF_CONTEXT ffffff8002211b08	je	0xffffff8002211b5d
+B08_XREF_CONTEXT ffffff8002211b0a	movq	0x110(%rsi), %rcx
+B08_XREF_CONTEXT ffffff8002211b11	movq	0x28(%rcx), %rdi
+B08_XREF_CONTEXT ffffff8002211b15	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff8002211b18	je	0xffffff8002211b5d
+B08_XREF_CONTEXT ffffff8002211b1a	leaq	__ZN21IO80211NANPeerManager10gMetaClassE(%rip), %rsi ## IO80211NANPeerManager::gMetaClass
+B08_XREF_CONTEXT ffffff8002211b21	callq	0xffffff8000a49ab0
+B08_XREF_CONTEXT ffffff8002212af2	addq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff8002212af6	popq	%rbx
+B08_XREF_CONTEXT ffffff8002212af7	popq	%r14
+B08_XREF_CONTEXT ffffff8002212af9	popq	%r15
+B08_XREF_CONTEXT ffffff8002212afb	popq	%rbp
+B08_XREF_CONTEXT ffffff8002212afc	jmp	__Z24apple80211getMIMO_STATUSP23IO80211SkywalkInterfaceP22apple80211_mimo_status ## apple80211getMIMO_STATUS(IO80211SkywalkInterface*, apple80211_mimo_status*)
+B08_XREF_CONTEXT ffffff8002212b01	movl	$0x66, %eax
+B08_XREF_CONTEXT ffffff8002212b06	jmp	0xffffff8002212ac1
+B08_XREF_CONTEXT ffffff8002212b08	callq	0xffffff8000383150
+B08_XREF_CONTEXT __ZL10getCUR_PMKP17IO80211ControllerP23IO80211SkywalkInterfaceP13apple80211req:
+B08_XREF_CONTEXT ffffff8002212b0d	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002212b0e	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002212b11	pushq	%r15
+B08_XREF_CONTEXT ffffff8002212b13	pushq	%r14
+B08_XREF_CONTEXT ffffff8002212b15	pushq	%rbx
+B08_XREF_CONTEXT ffffff800221cae9	movq	0x20(%rax), %rcx
+B08_XREF_CONTEXT ffffff800221caed	movl	$0x10, %eax
+B08_XREF_CONTEXT ffffff800221caf2	cmpb	$0x0, 0x26(%rcx)
+B08_XREF_CONTEXT ffffff800221caf6	je	0xffffff800221cb14
+B08_XREF_CONTEXT ffffff800221caf8	cmpl	$0x0, 0x35c(%rcx)
+B08_XREF_CONTEXT ffffff800221caff	jne	0xffffff800221cb14
+B08_XREF_CONTEXT ffffff800221cb01	movq	%rbx, %rsi
+B08_XREF_CONTEXT ffffff800221cb04	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff800221cb08	popq	%rbx
+B08_XREF_CONTEXT ffffff800221cb09	popq	%rbp
+B08_XREF_CONTEXT ffffff800221cb0a	jmp	__ZN21IO80211NANPeerManager22setNANFollowupTransmitEP38apple80211_nan_follow_up_transmit_data ## IO80211NANPeerManager::setNANFollowupTransmit(apple80211_nan_follow_up_transmit_data*)
+B08_XREF_CONTEXT ffffff800221cb0f	movl	$0x13, %eax
+B08_XREF_CONTEXT ffffff800221cb14	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff800221cb18	popq	%rbx
+B08_XREF_CONTEXT ffffff800221cb19	popq	%rbp
+B08_XREF_CONTEXT ffffff800221eaf4	jne	0xffffff800221eb2d
+B08_XREF_CONTEXT ffffff800221eaf6	addq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff800221eafa	popq	%rbx
+B08_XREF_CONTEXT ffffff800221eafb	popq	%r14
+B08_XREF_CONTEXT ffffff800221eafd	popq	%r15
+B08_XREF_CONTEXT ffffff800221eaff	popq	%rbp
+B08_XREF_CONTEXT ffffff800221eb00	retq
+B08_XREF_CONTEXT ffffff800221eb01	movq	0x19d610(%rip), %rax
+B08_XREF_CONTEXT ffffff800221eb08	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff800221eb0b	cmpq	-0x20(%rbp), %rax
+B08_XREF_CONTEXT ffffff800221eb0f	jne	0xffffff800221eb2d
+B08_XREF_CONTEXT ffffff800221eb11	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff800221eb14	movq	%r14, %rsi
+B08_XREF_CONTEXT ffffff800221eb17	addq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff800221eb1b	popq	%rbx
+B08_XREF_CONTEXT ffffff800221fae4	movq	%rsi, %rbx
+B08_XREF_CONTEXT ffffff800221fae7	movq	0x110(%rsi), %rax
+B08_XREF_CONTEXT ffffff800221faee	movq	0xd8(%rax), %rdi
+B08_XREF_CONTEXT ffffff800221faf5	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff800221faf8	je	0xffffff800221fb45
+B08_XREF_CONTEXT ffffff800221fafa	leaq	-0x21(%rbp), %r15
+B08_XREF_CONTEXT ffffff800221fafe	movb	$0x0, (%r15)
+B08_XREF_CONTEXT ffffff800221fb02	movl	$0x1, %r8d
+B08_XREF_CONTEXT ffffff800221fb08	movl	$0x802869c8, %esi               ## imm = 0x802869C8
+B08_XREF_CONTEXT ffffff800221fb0d	movl	$0x1e3, %edx                    ## imm = 0x1E3
+B08_XREF_CONTEXT ffffff800221fb12	movq	%r14, %rcx
+B08_XREF_CONTEXT ffffff800221fb15	movq	%r15, %r9
+B08_XREF_CONTEXT ffffff800221fb18	callq	__ZN11IO80211Glue13sendIOUCToWclEjjPvmRb ## IO80211Glue::sendIOUCToWcl(unsigned int, unsigned int, void*, unsigned long, bool&)
+B08_XREF_CONTEXT ffffff800221fb1d	cmpb	$0x1, (%r15)
+B08_XREF_CONTEXT ffffff800221fb21	jne	0xffffff800221fb45
+B08_XREF_CONTEXT ffffff8002221aee	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002221af1	pushq	%r15
+B08_XREF_CONTEXT ffffff8002221af3	pushq	%r14
+B08_XREF_CONTEXT ffffff8002221af5	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002221af6	subq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff8002221afa	movq	0x19a617(%rip), %rax
+B08_XREF_CONTEXT ffffff8002221b01	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002221b04	movq	%rax, -0x20(%rbp)
+B08_XREF_CONTEXT ffffff8002221b08	testq	%rsi, %rsi
+B08_XREF_CONTEXT ffffff8002221b0b	je	0xffffff8002221bab
+B08_XREF_CONTEXT ffffff8002221b11	cmpl	$0x28, 0x18(%rdx)
+B08_XREF_CONTEXT ffffff8002221b15	movl	$0x16, %eax
+B08_XREF_CONTEXT ffffff8002221b1a	jne	0xffffff8002221b6b
+B08_XREF_CONTEXT ffffff8002221b1c	movq	0x20(%rdx), %r14
+B08_XREF_CONTEXT ffffff8002221b20	testq	%r14, %r14
+B08_XREF_CONTEXT ffffff8002222c81	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002222c83	callq	0xffffff8000ab6560
+B08_XREF_CONTEXT ffffff8002222c88	movq	0x120(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002222c8f	movl	$0x0, 0x4c0(%rax)
+B08_XREF_CONTEXT ffffff8002222c99	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002222c9c	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002222c9f	callq	*0xdc0(%rax)
+B08_XREF_CONTEXT ffffff8002222ca5	movq	0x120(%rbx), %rcx
+B08_XREF_CONTEXT ffffff8002222cac	movq	%rax, 0xb08(%rcx)
+B08_XREF_CONTEXT ffffff8002222cb3	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff8002222cb6	je	0xffffff8002222db7
+B08_XREF_CONTEXT ffffff8002222cbc	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002222cbf	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002222cc2	callq	*0xc68(%rax)
+B08_XREF_CONTEXT ffffff8002222cc8	leaq	__ZN17IO80211Controller28handleIOReporterLegendIsCalmEP18IO80211TimerSource(%rip), %rcx ## IO80211Controller::handleIOReporterLegendIsCalm(IO80211TimerSource*)
+B08_XREF_CONTEXT ffffff8002225afc	popq	%rbp
+B08_XREF_CONTEXT ffffff8002225afd	retq
+B08_XREF_CONTEXT __ZN17IO80211Controller11getSSIDDataEP20apple80211_ssid_data:
+B08_XREF_CONTEXT ffffff8002225afe	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002225aff	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002225b02	pushq	%r15
+B08_XREF_CONTEXT ffffff8002225b04	pushq	%r14
+B08_XREF_CONTEXT ffffff8002225b06	pushq	%r13
+B08_XREF_CONTEXT ffffff8002225b08	pushq	%r12
+B08_XREF_CONTEXT ffffff8002225b0a	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002225b0b	subq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff8002225b0f	movq	%rsi, %rbx
+B08_XREF_CONTEXT ffffff8002225b12	movq	%rdi, %r14
+B08_XREF_CONTEXT ffffff8002225b15	movq	0x1965fc(%rip), %rax
+B08_XREF_CONTEXT ffffff8002225b1c	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002228ae0	movq	%rdx, -0xd8(%rbp)
+B08_XREF_CONTEXT ffffff8002228ae7	testq	%rdx, %rdx
+B08_XREF_CONTEXT ffffff8002228aea	sete	-0x62(%rbp)
+B08_XREF_CONTEXT ffffff8002228aee	movl	$0x4ec, %esi                    ## imm = 0x4EC
+B08_XREF_CONTEXT ffffff8002228af3	addq	0x120(%r13), %rsi
+B08_XREF_CONTEXT ffffff8002228afa	xorl	%edi, %edi
+B08_XREF_CONTEXT ffffff8002228afc	callq	0xffffff8000a48c10
+B08_XREF_CONTEXT ffffff8002228b01	movq	0x193658(%rip), %rbx
+B08_XREF_CONTEXT ffffff8002228b08	testb	$0x1, (%rbx)
+B08_XREF_CONTEXT ffffff8002228b0b	je	0xffffff8002228b23
+B08_XREF_CONTEXT ffffff8002228b0d	movl	$0x617800d, %edi                ## imm = 0x617800D
+B08_XREF_CONTEXT ffffff8002228b12	xorl	%esi, %esi
+B08_XREF_CONTEXT ffffff8002228b14	xorl	%edx, %edx
+B08_XREF_CONTEXT ffffff8002228b16	xorl	%ecx, %ecx
+B08_XREF_CONTEXT ffffff8002228b18	xorl	%r8d, %r8d
+B08_XREF_CONTEXT ffffff8002229af4	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002229af5	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002229af8	pushq	%r15
+B08_XREF_CONTEXT ffffff8002229afa	pushq	%r14
+B08_XREF_CONTEXT ffffff8002229afc	pushq	%r13
+B08_XREF_CONTEXT ffffff8002229afe	pushq	%r12
+B08_XREF_CONTEXT ffffff8002229b00	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002229b01	subq	$0xd8, %rsp
+B08_XREF_CONTEXT ffffff8002229b08	movq	%r8, -0xc0(%rbp)
+B08_XREF_CONTEXT ffffff8002229b0f	movq	%rcx, -0xb8(%rbp)
+B08_XREF_CONTEXT ffffff8002229b16	movq	%rsi, %r15
+B08_XREF_CONTEXT ffffff8002229b19	movq	%rdi, %r13
+B08_XREF_CONTEXT ffffff8002229b1c	movq	0x1925f5(%rip), %rax
+B08_XREF_CONTEXT ffffff8002229b23	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002229b26	movq	%rax, -0x30(%rbp)
+B08_XREF_CONTEXT ffffff800222b330	movq	0x120(%rdi), %rax
+B08_XREF_CONTEXT ffffff800222b337	movb	%sil, 0x388(%rax)
+B08_XREF_CONTEXT ffffff800222b33e	popq	%rbp
+B08_XREF_CONTEXT ffffff800222b33f	retq
+B08_XREF_CONTEXT __ZN17IO80211Controller11postMessageEP23IO80211SkywalkInterfacejPvmb:
+B08_XREF_CONTEXT ffffff800222b340	pushq	%rbp
+B08_XREF_CONTEXT ffffff800222b341	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800222b344	movq	0x120(%rdi), %rax
+B08_XREF_CONTEXT ffffff800222b34b	movq	0xb08(%rax), %rdi
+B08_XREF_CONTEXT ffffff800222b352	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff800222b355	movq	0x120(%rax), %rax
+B08_XREF_CONTEXT ffffff800222b35c	popq	%rbp
+B08_XREF_CONTEXT ffffff800222b35d	jmpq	*%rax
+B08_XREF_CONTEXT ffffff800222b35f	nop
+B08_XREF_CONTEXT __ZN17IO80211Controller15postMessageSyncEP23IO80211SkywalkInterfacejPvmb:
+B08_XREF_CONTEXT ffffff800222b545	callq	*0xc68(%rax)
+B08_XREF_CONTEXT ffffff800222b54b	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff800222b54e	popq	%rbp
+B08_XREF_CONTEXT ffffff800222b54f	jmp	__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue ## IO80211PostOffice::allocWithParams(IO80211WorkQueue*)
+B08_XREF_CONTEXT __ZN17IO80211Controller13getPostOfficeEv:
+B08_XREF_CONTEXT ffffff800222b554	pushq	%rbp
+B08_XREF_CONTEXT ffffff800222b555	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800222b558	movq	0x120(%rdi), %rax
+B08_XREF_CONTEXT ffffff800222b55f	movq	0xb08(%rax), %rax
+B08_XREF_CONTEXT ffffff800222b566	popq	%rbp
+B08_XREF_CONTEXT ffffff800222b567	retq
+B08_XREF_CONTEXT __ZN17IO80211Controller18getPLATFORM_CONFIGEP23IO80211SkywalkInterfaceP26apple80211_platform_config:
+B08_XREF_CONTEXT ffffff800222b568	pushq	%rbp
+B08_XREF_CONTEXT ffffff800222b569	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800222b56c	movl	$0xe00002c7, %eax               ## imm = 0xE00002C7
+B08_XREF_CONTEXT ffffff800222bae7	xorl	%r8d, %r8d
+B08_XREF_CONTEXT ffffff800222baea	callq	0xffffff8000b8fbc0
+B08_XREF_CONTEXT ffffff800222baef	movq	%r13, %rdi
+B08_XREF_CONTEXT ffffff800222baf2	movq	-0x48(%rbp), %rsi
+B08_XREF_CONTEXT ffffff800222baf6	callq	0xffffff8000ab6290
+B08_XREF_CONTEXT ffffff800222bafb	movq	0x190646(%rip), %rax
+B08_XREF_CONTEXT ffffff800222bb02	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff800222bb05	movq	(%rax), %rdx
+B08_XREF_CONTEXT ffffff800222bb08	leaq	0x141282(%rip), %rsi            ## literal pool for: "IO80211WokeSystem"
+B08_XREF_CONTEXT ffffff800222bb0f	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff800222bb12	callq	__Z17setPropertyHelperP9IOServicePKcPK8OSObject ## setPropertyHelper(IOService*, char const*, OSObject const*)
+B08_XREF_CONTEXT ffffff800222bb17	movq	(%r14), %rax
+B08_XREF_CONTEXT ffffff800222bb1a	xorl	%ebx, %ebx
+B08_XREF_CONTEXT ffffff800222bb1c	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff800222bb1f	callq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff800222faea	movl	$0x1, %r12d
+B08_XREF_CONTEXT ffffff800222faf0	movq	0x10(%rbx), %rax
+B08_XREF_CONTEXT ffffff800222faf4	movq	(%rax), %rdi
+B08_XREF_CONTEXT ffffff800222faf7	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff800222fafa	je	0xffffff800222fb04
+B08_XREF_CONTEXT ffffff800222fafc	movq	%r15, %rsi
+B08_XREF_CONTEXT ffffff800222faff	callq	__ZN22IO80211AWDLPeerManager26notifyPeerRemovedFromCacheEP15IO80211AWDLPeer ## IO80211AWDLPeerManager::notifyPeerRemovedFromCache(IO80211AWDLPeer*)
+B08_XREF_CONTEXT ffffff800222fb04	movq	0x18(%r15), %rax
+B08_XREF_CONTEXT ffffff800222fb08	movq	$0x0, 0x258(%rax)
+B08_XREF_CONTEXT ffffff800222fb13	movb	$0x0, 0x250(%rax)
+B08_XREF_CONTEXT ffffff800222fb1a	movq	(%r15), %rax
+B08_XREF_CONTEXT ffffff800222fb1d	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff800222fb20	callq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff800222fb23	movq	__ZL17_fwCachedPeerList(%rip), %rdi ## _fwCachedPeerList
+B08_XREF_CONTEXT ffffff800222fb2a	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002230af1	cmpq	-0x30(%rbp), %rax
+B08_XREF_CONTEXT ffffff8002230af5	jne	0xffffff8002230b88
+B08_XREF_CONTEXT ffffff8002230afb	movl	%ebx, %eax
+B08_XREF_CONTEXT ffffff8002230afd	addq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff8002230b01	popq	%rbx
+B08_XREF_CONTEXT ffffff8002230b02	popq	%r12
+B08_XREF_CONTEXT ffffff8002230b04	popq	%r13
+B08_XREF_CONTEXT ffffff8002230b06	popq	%r14
+B08_XREF_CONTEXT ffffff8002230b08	popq	%r15
+B08_XREF_CONTEXT ffffff8002230b0a	popq	%rbp
+B08_XREF_CONTEXT ffffff8002230b0b	retq
+B08_XREF_CONTEXT ffffff8002230b0c	movl	-0x34(%rbp), %r13d
+B08_XREF_CONTEXT ffffff8002230b10	testl	$0x101, %r13d                   ## imm = 0x101
+B08_XREF_CONTEXT ffffff8002230b17	je	0xffffff8002230a84
+B08_XREF_CONTEXT ffffff8002230b1d	movq	(%r14), %rax
+B08_XREF_CONTEXT ffffff8002232aeb	callq	__ZN16WCLJoinCandidate10withBeaconEP12WCLBSSBeacon ## WCLJoinCandidate::withBeacon(WCLBSSBeacon*)
+B08_XREF_CONTEXT ffffff8002232af0	movq	%rax, %rbx
+B08_XREF_CONTEXT ffffff8002232af3	movq	0x10(%r14), %rax
+B08_XREF_CONTEXT ffffff8002232af7	movq	0x18(%rax), %rdi
+B08_XREF_CONTEXT ffffff8002232afb	movq	%rbx, %rsi
+B08_XREF_CONTEXT ffffff8002232afe	callq	__ZN12IO80211Queue12queueEnqueueEP8OSObject ## IO80211Queue::queueEnqueue(OSObject*)
+B08_XREF_CONTEXT ffffff8002232b03	testq	%rbx, %rbx
+B08_XREF_CONTEXT ffffff8002232b06	je	0xffffff8002232b15
+B08_XREF_CONTEXT ffffff8002232b08	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002232b0b	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002232b0e	popq	%rbx
+B08_XREF_CONTEXT ffffff8002232b0f	popq	%r14
+B08_XREF_CONTEXT ffffff8002232b11	popq	%rbp
+B08_XREF_CONTEXT ffffff8002232b12	jmpq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff8002232b15	popq	%rbx
+B08_XREF_CONTEXT ffffff8002233ae6	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002233ae9	callq	__ZN21IO80211LQMCrashTracer17initLQMRingBufferEv ## IO80211LQMCrashTracer::initLQMRingBuffer()
+B08_XREF_CONTEXT ffffff8002233aee	testb	%al, %al
+B08_XREF_CONTEXT ffffff8002233af0	je	0xffffff8002233bcc
+B08_XREF_CONTEXT ffffff8002233af6	movq	0x10(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002233afa	movq	$0x0, 0x40(%rax)
+B08_XREF_CONTEXT ffffff8002233b02	movq	(%rax), %rdi
+B08_XREF_CONTEXT ffffff8002233b05	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002233b08	callq	*0xc68(%rax)
+B08_XREF_CONTEXT ffffff8002233b0e	movq	0x10(%rbx), %rcx
+B08_XREF_CONTEXT ffffff8002233b12	movq	%rax, 0x8(%rcx)
+B08_XREF_CONTEXT ffffff8002233b16	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff8002233b19	je	0xffffff8002233b9a
+B08_XREF_CONTEXT ffffff8002233b1b	movq	(%rax), %rcx
+B08_XREF_CONTEXT ffffff8002233b1e	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff8002235aec	jmp	0xffffff8002235b0f
+B08_XREF_CONTEXT ffffff8002235aee	movq	0x10(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002235af2	cmpl	$0x0, 0x10(%rax)
+B08_XREF_CONTEXT ffffff8002235af6	je	0xffffff8002235b47
+B08_XREF_CONTEXT ffffff8002235af8	movq	0x186619(%rip), %rax
+B08_XREF_CONTEXT ffffff8002235aff	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002235b02	cmpq	-0x30(%rbp), %rax
+B08_XREF_CONTEXT ffffff8002235b06	jne	0xffffff8002235b6a
+B08_XREF_CONTEXT ffffff8002235b08	leaq	0x13aae5(%rip), %rdi            ## literal pool for: "LQM-WIFI-CT: Fail to recordDPSSymptomsInput"
+B08_XREF_CONTEXT ffffff8002235b0f	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002235b11	addq	$0x28, %rsp
+B08_XREF_CONTEXT ffffff8002235b15	popq	%rbx
+B08_XREF_CONTEXT ffffff8002235b16	popq	%r12
+B08_XREF_CONTEXT ffffff8002235b18	popq	%r13
+B08_XREF_CONTEXT ffffff8002235b1a	popq	%r14
+B08_XREF_CONTEXT ffffff8002237aea	movq	%rax, %r15
+B08_XREF_CONTEXT ffffff8002237aed	movl	%edx, %r12d
+B08_XREF_CONTEXT ffffff8002237af0	jmp	0xffffff8002237af6
+B08_XREF_CONTEXT ffffff8002237af2	movl	-0x44(%rbp), %r12d
+B08_XREF_CONTEXT ffffff8002237af6	movl	$0x52, (%r15)
+B08_XREF_CONTEXT ffffff8002237afd	mfence
+B08_XREF_CONTEXT ffffff8002237b00	movq	0x10(%r14), %rcx
+B08_XREF_CONTEXT ffffff8002237b04	movq	0x40(%rcx), %rsi
+B08_XREF_CONTEXT ffffff8002237b08	addl	%edi, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff8002237b0b	movl	-0x40(%rbp), %eax
+B08_XREF_CONTEXT ffffff8002237b0e	xorl	%edx, %edx
+B08_XREF_CONTEXT ffffff8002237b10	divq	%rsi
+B08_XREF_CONTEXT ffffff8002237b13	movl	%edx, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff8002237b16	movl	%edx, 0x58(%rcx)
+B08_XREF_CONTEXT ffffff8002237b19	movq	(%rcx), %rdi
+B08_XREF_CONTEXT ffffff8002239af2	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002239af6	movb	$0x0, 0xb1c(%rax)
+B08_XREF_CONTEXT ffffff8002239afd	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff8002239b01	popq	%rbx
+B08_XREF_CONTEXT ffffff8002239b02	popq	%r14
+B08_XREF_CONTEXT ffffff8002239b04	popq	%r15
+B08_XREF_CONTEXT ffffff8002239b06	popq	%rbp
+B08_XREF_CONTEXT ffffff8002239b07	retq
+B08_XREF_CONTEXT ffffff8002239b08	leaq	0x137aa8(%rip), %rdx            ## literal pool for: "%s ERROR: Failed to set default gateway address for infra relay support\n"
+B08_XREF_CONTEXT ffffff8002239b0f	leaq	0x137aea(%rip), %rcx            ## literal pool for: "setInfraRelayGatewayMacAddress"
+B08_XREF_CONTEXT ffffff8002239b16	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002239b19	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002239b1b	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff8002239b1f	popq	%rbx
+B08_XREF_CONTEXT ffffff8002239b20	popq	%r14
+B08_XREF_CONTEXT ffffff800223fafb	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff800223fb00	movl	%ebx, %eax
+B08_XREF_CONTEXT ffffff800223fb02	popq	%rbx
+B08_XREF_CONTEXT ffffff800223fb03	popq	%r14
+B08_XREF_CONTEXT ffffff800223fb05	popq	%rbp
+B08_XREF_CONTEXT ffffff800223fb06	retq
+B08_XREF_CONTEXT ffffff800223fb07	nop
+B08_XREF_CONTEXT __ZN21IO80211NANPeerManager14setNANMaxPeersEP23apple80211_nan_maxpeers:
+B08_XREF_CONTEXT ffffff800223fb08	pushq	%rbp
+B08_XREF_CONTEXT ffffff800223fb09	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800223fb0c	pushq	%r15
+B08_XREF_CONTEXT ffffff800223fb0e	pushq	%r14
+B08_XREF_CONTEXT ffffff800223fb10	pushq	%rbx
+B08_XREF_CONTEXT ffffff800223fb11	pushq	%rax
+B08_XREF_CONTEXT ffffff800223fb12	movq	%rsi, %r15
+B08_XREF_CONTEXT ffffff8002243c45	leaq	-0x90(%rbp), %rdx
+B08_XREF_CONTEXT ffffff8002243c4c	movq	%rbx, %rsi
+B08_XREF_CONTEXT ffffff8002243c4f	callq	__ZN30IO80211NANRadioResourceManager22printPreferredChannelsEP24apple80211_debug_commandP12userPrintCtx ## IO80211NANRadioResourceManager::printPreferredChannels(apple80211_debug_command*, userPrintCtx*)
+B08_XREF_CONTEXT ffffff8002243c54	jmp	0xffffff8002243c83
+B08_XREF_CONTEXT ffffff8002243c56	cmpq	$0x0, 0x3bdd8(%rbx)
+B08_XREF_CONTEXT ffffff8002243c5e	je	0xffffff8002243c83
+B08_XREF_CONTEXT ffffff8002243c60	cmpq	$0x0, -0x78(%rbp)
+B08_XREF_CONTEXT ffffff8002243c65	je	0xffffff8002243c83
+B08_XREF_CONTEXT ffffff8002243c67	leaq	0x10eb08(%rip), %rsi            ## literal pool for: "%s\n"
+B08_XREF_CONTEXT ffffff8002243c6e	leaq	0x131b50(%rip), %rdx            ## literal pool for: "print_pref_chan"
+B08_XREF_CONTEXT ffffff8002243c75	leaq	-0x90(%rbp), %rdi
+B08_XREF_CONTEXT ffffff8002243c7c	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002243c7e	callq	__Z10_userPrintP12userPrintCtxPKcz ## _userPrint(userPrintCtx*, char const*, ...)
+B08_XREF_CONTEXT ffffff8002243c83	cmpb	$0x0, (%r15)
+B08_XREF_CONTEXT ffffff8002243c87	je	0xffffff8002243d13
+B08_XREF_CONTEXT ffffff8002245ae2	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002245ae5	callq	__ZN14IO80211NANPeer34llwMetricsCountCommonSlotsWithPeerEv ## IO80211NANPeer::llwMetricsCountCommonSlotsWithPeer()
+B08_XREF_CONTEXT ffffff8002245aea	movabsq	$-0x5555555555555556, %rax      ## imm = 0xAAAAAAAAAAAAAAAA
+B08_XREF_CONTEXT ffffff8002245af4	leaq	-0x50(%rbp), %rsi
+B08_XREF_CONTEXT ffffff8002245af8	movq	%rax, (%rsi)
+B08_XREF_CONTEXT ffffff8002245afb	movq	%rax, 0x8(%rsi)
+B08_XREF_CONTEXT ffffff8002245aff	movw	$0xaaaa, 0x10(%rsi)             ## imm = 0xAAAA
+B08_XREF_CONTEXT ffffff8002245b05	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002245b08	movl	$0x1, %edx
+B08_XREF_CONTEXT ffffff8002245b0d	movl	$0x3, %ecx
+B08_XREF_CONTEXT ffffff8002245b12	movl	$0x6, %r8d
+B08_XREF_CONTEXT ffffff8002245b18	callq	__ZN14IO80211NANPeer19getPreferredChannelEP22apple80211_nan_channel22radio_schedule_band_idhh ## IO80211NANPeer::getPreferredChannel(apple80211_nan_channel*, radio_schedule_band_id, unsigned char, unsigned char)
+B08_XREF_CONTEXT ffffff8002245b1d	testb	%al, %al
+B08_XREF_CONTEXT ffffff8002245b1f	movq	0x20(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002245b23	setne	0x270(%rax)
+B08_XREF_CONTEXT ffffff800224bae6	callq	0xffffff80004ee960
+B08_XREF_CONTEXT ffffff800224baeb	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff800224baed	je	0xffffff800224bc3b
+B08_XREF_CONTEXT ffffff800224baf3	leaq	0x109c18(%rip), %r15            ## literal pool for: "txDataRate"
+B08_XREF_CONTEXT ffffff800224bafa	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff800224bafd	callq	0xffffff80004ee8d0
+B08_XREF_CONTEXT ffffff800224bb02	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff800224bb05	movq	%r15, %rsi
+B08_XREF_CONTEXT ffffff800224bb08	movq	%rax, %rdx
+B08_XREF_CONTEXT ffffff800224bb0b	callq	0xffffff80004ee960
+B08_XREF_CONTEXT ffffff800224bb10	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff800224bb12	je	0xffffff800224bc3b
+B08_XREF_CONTEXT ffffff800224bb18	leaq	0x109bfe(%rip), %r15            ## literal pool for: "txCCA"
+B08_XREF_CONTEXT ffffff800224bb1f	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff800224bb22	callq	0xffffff80004ee8d0
+B08_XREF_CONTEXT ffffff800224cae8	movl	%eax, %eax
+B08_XREF_CONTEXT ffffff800224caea	movq	-0x40(%rbp), %r12
+B08_XREF_CONTEXT ffffff800224caee	movb	$0x0, (%r12,%rax)
+B08_XREF_CONTEXT ffffff800224caf3	leaq	0x105c7c(%rip), %rdx            ## literal pool for: "%s\n"
+B08_XREF_CONTEXT ffffff800224cafa	movl	$0x80000000, %esi               ## imm = 0x80000000
+B08_XREF_CONTEXT ffffff800224caff	movq	-0x50(%rbp), %rdi
+B08_XREF_CONTEXT ffffff800224cb03	movq	%r12, %rcx
+B08_XREF_CONTEXT ffffff800224cb06	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff800224cb08	callq	__ZN11IO80211Peer8logDebugEyPKcz ## IO80211Peer::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff800224cb0d	movl	$0x400, %r14d                   ## imm = 0x400
+B08_XREF_CONTEXT ffffff800224cb13	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff800224cb16	movq	%r14, %rsi
+B08_XREF_CONTEXT ffffff800224cb19	addq	$0x68, %rsp
+B08_XREF_CONTEXT ffffff800224cb1d	popq	%rbx
+B08_XREF_CONTEXT ffffff800224cb1e	popq	%r12
+B08_XREF_CONTEXT ffffff8002253aed	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002253af0	popq	%rbp
+B08_XREF_CONTEXT ffffff8002253af1	jmp	0xffffff8000a4a040
+B08_XREF_CONTEXT __GLOBAL__sub_I_IO80211WorkSource.cpp:
+B08_XREF_CONTEXT ffffff8002253af6	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002253af7	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002253afa	leaq	__ZN17IO80211WorkSource10gMetaClassE(%rip), %rdi ## IO80211WorkSource::gMetaClass
+B08_XREF_CONTEXT ffffff8002253b01	leaq	0x1260ba(%rip), %rsi            ## literal pool for: "IO80211WorkSource"
+B08_XREF_CONTEXT ffffff8002253b08	movq	0x168521(%rip), %rdx
+B08_XREF_CONTEXT ffffff8002253b0f	movl	$0x48, %ecx
+B08_XREF_CONTEXT ffffff8002253b14	callq	0xffffff8000a49940
+B08_XREF_CONTEXT ffffff8002253b19	leaq	0x17dff8(%rip), %rax
+B08_XREF_CONTEXT ffffff8002253b20	movq	%rax, __ZN17IO80211WorkSource10gMetaClassE(%rip) ## IO80211WorkSource::gMetaClass
+B08_XREF_CONTEXT ffffff8002253b27	popq	%rbp
+B08_XREF_CONTEXT ffffff8002253b28	retq
+B08_XREF_CONTEXT ffffff8002256ae8	addq	$0x80, %rsp
+B08_XREF_CONTEXT ffffff8002256aef	movq	0x10(%r14), %rax
+B08_XREF_CONTEXT ffffff8002256af3	movl	0x13(%rbx), %ecx
+B08_XREF_CONTEXT ffffff8002256af6	movzwl	0x17(%rbx), %edx
+B08_XREF_CONTEXT ffffff8002256afa	movw	%dx, 0x1e(%rax)
+B08_XREF_CONTEXT ffffff8002256afe	movl	%ecx, 0x1a(%rax)
+B08_XREF_CONTEXT ffffff8002256b01	movb	0x19(%rbx), %al
+B08_XREF_CONTEXT ffffff8002256b04	movq	0x10(%r14), %rcx
+B08_XREF_CONTEXT ffffff8002256b08	movb	%al, 0x20(%rcx)
+B08_XREF_CONTEXT ffffff8002256b0b	movb	0x1a(%rbx), %al
+B08_XREF_CONTEXT ffffff8002256b0e	movb	%al, 0x21(%rcx)
+B08_XREF_CONTEXT ffffff8002256b11	movl	0x13(%rbx), %eax
+B08_XREF_CONTEXT ffffff8002256b14	movzwl	0x17(%rbx), %edx
+B08_XREF_CONTEXT ffffff8002256b18	movw	%dx, 0x1076(%rcx)
+B08_XREF_CONTEXT ffffff8002256b1f	movl	%eax, 0x1072(%rcx)
+B08_XREF_CONTEXT ffffff800225daeb	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff800225daed	callq	__ZN20IO80211P2PSupervisor8logDebugEyPKcz ## IO80211P2PSupervisor::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff800225daf2	cmpl	%r14d, %r15d
+B08_XREF_CONTEXT ffffff800225daf5	setb	%al
+B08_XREF_CONTEXT ffffff800225daf8	movq	0x15e619(%rip), %rcx
+B08_XREF_CONTEXT ffffff800225daff	movq	(%rcx), %rcx
+B08_XREF_CONTEXT ffffff800225db02	cmpq	-0x20(%rbp), %rcx
+B08_XREF_CONTEXT ffffff800225db06	jne	0xffffff800225db13
+B08_XREF_CONTEXT ffffff800225db08	addq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff800225db0c	popq	%rbx
+B08_XREF_CONTEXT ffffff800225db0d	popq	%r14
+B08_XREF_CONTEXT ffffff800225db0f	popq	%r15
+B08_XREF_CONTEXT ffffff800225db11	popq	%rbp
+B08_XREF_CONTEXT ffffff800225db12	retq
+B08_XREF_CONTEXT ffffff800225db13	callq	0xffffff8000383150
+B08_XREF_CONTEXT ffffff800225faea	pushq	%rbx
+B08_XREF_CONTEXT ffffff800225faeb	subq	$0x40, %rsp
+B08_XREF_CONTEXT ffffff800225faef	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff800225faf2	movq	0x15c61f(%rip), %rax
+B08_XREF_CONTEXT ffffff800225faf9	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff800225fafc	movq	%rax, -0x18(%rbp)
+B08_XREF_CONTEXT ffffff800225fb00	movq	0x10(%rdi), %rax
+B08_XREF_CONTEXT ffffff800225fb04	movq	0x10(%rax), %rdi
+B08_XREF_CONTEXT ffffff800225fb08	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff800225fb0b	je	0xffffff800225fb1f
+B08_XREF_CONTEXT ffffff800225fb0d	movl	$0x1, %esi
+B08_XREF_CONTEXT ffffff800225fb12	callq	0xffffff80031d421c
+B08_XREF_CONTEXT ffffff800225fb17	testb	%al, %al
+B08_XREF_CONTEXT ffffff800225fb19	jne	0xffffff800225fcca
+B08_XREF_CONTEXT ffffff800225fb1f	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002264ae8	movq	0x110(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002264aef	cmpb	$0x0, 0xa0(%rax)
+B08_XREF_CONTEXT ffffff8002264af6	je	0xffffff8002264b00
+B08_XREF_CONTEXT ffffff8002264af8	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002264afb	callq	0xffffff8000aeb600
+B08_XREF_CONTEXT ffffff8002264b00	movq	%r14, %rax
+B08_XREF_CONTEXT ffffff8002264b03	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff8002264b07	popq	%rbx
+B08_XREF_CONTEXT ffffff8002264b08	popq	%r14
+B08_XREF_CONTEXT ffffff8002264b0a	popq	%r15
+B08_XREF_CONTEXT ffffff8002264b0c	popq	%rbp
+B08_XREF_CONTEXT ffffff8002264b0d	retq
+B08_XREF_CONTEXT __ZN23IO80211SkywalkInterface20getP2PSkywalkPeerMgrEv:
+B08_XREF_CONTEXT ffffff8002264b0e	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002264b0f	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002266828	callq	0xffffff80031d421c
+B08_XREF_CONTEXT ffffff800226682d	testb	%al, %al
+B08_XREF_CONTEXT ffffff800226682f	jne	0xffffff8002266920
+B08_XREF_CONTEXT ffffff8002266835	cmpw	$0x0, 0x2c(%r14)
+B08_XREF_CONTEXT ffffff800226683b	je	0xffffff80022668e3
+B08_XREF_CONTEXT ffffff8002266841	movq	0x10(%rbx), %rcx
+B08_XREF_CONTEXT ffffff8002266845	leaq	(%r15,%r14), %r13
+B08_XREF_CONTEXT ffffff8002266849	addq	$0x30, %r13
+B08_XREF_CONTEXT ffffff800226684d	leaq	0x118b08(%rip), %r12            ## literal pool for: "parseTCPKeepalivePorts"
+B08_XREF_CONTEXT ffffff8002266854	xorl	%r15d, %r15d
+B08_XREF_CONTEXT ffffff8002266857	cmpw	$0x100, 0x210(%rcx)             ## imm = 0x100
+B08_XREF_CONTEXT ffffff8002266860	movq	0x8(%rcx), %rdi
+B08_XREF_CONTEXT ffffff8002266864	jae	0xffffff80022668d0
+B08_XREF_CONTEXT ffffff8002266866	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff8002266869	je	0xffffff800226687d
+B08_XREF_CONTEXT ffffff8002266ae2	movzwl	0x34(%rcx), %eax
+B08_XREF_CONTEXT ffffff8002266ae6	imull	$0x3e8, %eax, %eax              ## imm = 0x3E8
+B08_XREF_CONTEXT ffffff8002266aec	movl	%eax, 0x8(%r13,%r14)
+B08_XREF_CONTEXT ffffff8002266af1	movl	%eax, 0x4(%r13,%r14)
+B08_XREF_CONTEXT ffffff8002266af6	movl	0x8(%rbx), %eax
+B08_XREF_CONTEXT ffffff8002266af9	movzwl	0xc(%rbx), %ecx
+B08_XREF_CONTEXT ffffff8002266afd	movw	%cx, 0x44(%r13,%r14)
+B08_XREF_CONTEXT ffffff8002266b03	movl	%eax, 0x40(%r13,%r14)
+B08_XREF_CONTEXT ffffff8002266b08	movq	-0x88(%rbp), %rcx
+B08_XREF_CONTEXT ffffff8002266b0f	movl	(%rcx), %eax
+B08_XREF_CONTEXT ffffff8002266b11	movzwl	0x4(%rcx), %ecx
+B08_XREF_CONTEXT ffffff8002266b15	movw	%cx, 0x3e(%r13,%r14)
+B08_XREF_CONTEXT ffffff8002266b1b	movl	%eax, 0x3a(%r13,%r14)
+B08_XREF_CONTEXT ffffff8002266b20	movq	0x10(%rdx), %r13
+B08_XREF_CONTEXT ffffff8002266b24	incw	0x32e(%r13)
+B08_XREF_CONTEXT ffffff800226dafb	retq
+B08_XREF_CONTEXT ffffff800226dafc	xorl	%edi, %edi
+B08_XREF_CONTEXT ffffff800226dafe	jmp	0xffffff800226dabe
+B08_XREF_CONTEXT __ZN30IO80211NANRadioResourceManager31prepareSDBPotentialAvailabilityEv:
+B08_XREF_CONTEXT ffffff800226db00	pushq	%rbp
+B08_XREF_CONTEXT ffffff800226db01	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800226db04	pushq	%r15
+B08_XREF_CONTEXT ffffff800226db06	pushq	%r14
+B08_XREF_CONTEXT ffffff800226db08	pushq	%r13
+B08_XREF_CONTEXT ffffff800226db0a	pushq	%r12
+B08_XREF_CONTEXT ffffff800226db0c	pushq	%rbx
+B08_XREF_CONTEXT ffffff800226db0d	subq	$0x58, %rsp
+B08_XREF_CONTEXT ffffff800226db11	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff800226db14	movq	0x14e5fd(%rip), %rax
+B08_XREF_CONTEXT ffffff800226db1b	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff800226faf0	pushq	%rbx
+B08_XREF_CONTEXT ffffff800226faf1	pushq	%rax
+B08_XREF_CONTEXT ffffff800226faf2	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff800226faf5	movq	0x10(%rdi), %rdi
+B08_XREF_CONTEXT ffffff800226faf9	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff800226fafc	je	0xffffff800226fb27
+B08_XREF_CONTEXT ffffff800226fafe	movl	$0x130, %esi                    ## imm = 0x130
+B08_XREF_CONTEXT ffffff800226fb03	movl	$0x130, %ecx                    ## imm = 0x130
+B08_XREF_CONTEXT ffffff800226fb08	xorl	%edx, %edx
+B08_XREF_CONTEXT ffffff800226fb0a	callq	0xffffff8000454290
+B08_XREF_CONTEXT ffffff800226fb0f	movq	0x10(%rbx), %rsi
+B08_XREF_CONTEXT ffffff800226fb13	movq	$0x0, 0x10(%rbx)
+B08_XREF_CONTEXT ffffff800226fb1b	leaq	__ZZN25IO80211NANDiscoveryEngine4freeEvE20kalloc_type_view_103(%rip), %rdi ## IO80211NANDiscoveryEngine::free()::kalloc_type_view_103
+B08_XREF_CONTEXT ffffff800226fb22	callq	0xffffff8000ab5a60
+B08_XREF_CONTEXT ffffff800226fb27	movq	0x14c5e2(%rip), %rax
+B08_XREF_CONTEXT ffffff8002274aea	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff8002274aed	callq	*0x200(%rax)
+B08_XREF_CONTEXT ffffff8002274af3	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002274af6	callq	__ZN25IO80211NANDataPathSession10getPeerNmiEv ## IO80211NANDataPathSession::getPeerNmi()
+B08_XREF_CONTEXT ffffff8002274afb	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff8002274afe	je	0xffffff8002274b11
+B08_XREF_CONTEXT ffffff8002274b00	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002274b03	callq	__ZN25IO80211NANDataPathSession10getPeerNmiEv ## IO80211NANDataPathSession::getPeerNmi()
+B08_XREF_CONTEXT ffffff8002274b08	movq	(%rax), %rcx
+B08_XREF_CONTEXT ffffff8002274b0b	movq	%rax, %rdi
+B08_XREF_CONTEXT ffffff8002274b0e	callq	*0x28(%rcx)
+B08_XREF_CONTEXT ffffff8002274b11	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002274b14	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002274b17	callq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff8002274b1a	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002278ae9	movb	0x2(%rdi), %r10b
+B08_XREF_CONTEXT ffffff8002278aed	movb	%r10b, 0x2(%rcx)
+B08_XREF_CONTEXT ffffff8002278af1	movw	%r9w, (%rcx)
+B08_XREF_CONTEXT ffffff8002278af5	testq	%rsi, %rsi
+B08_XREF_CONTEXT ffffff8002278af8	je	0xffffff8002279376
+B08_XREF_CONTEXT ffffff8002278afe	movb	%r8b, (%rdi)
+B08_XREF_CONTEXT ffffff8002278b01	decq	%rax
+B08_XREF_CONTEXT ffffff8002278b04	addq	$-0x3, %rcx
+B08_XREF_CONTEXT ffffff8002278b08	addq	$0x3, %rdx
+B08_XREF_CONTEXT ffffff8002278b0c	testb	%al, %al
+B08_XREF_CONTEXT ffffff8002278b0e	jne	0xffffff8002278ab4
+B08_XREF_CONTEXT ffffff8002278b10	movl	-0x90(%rbp), %eax
+B08_XREF_CONTEXT ffffff8002278b16	andb	-0x98(%rbp), %al
+B08_XREF_CONTEXT ffffff8002278b1c	testb	$0x1, %al
+B08_XREF_CONTEXT ffffff8002278b1e	je	0xffffff8002278b34
+B08_XREF_CONTEXT ffffff800227faf6	leaq	0x15831b(%rip), %rax
+B08_XREF_CONTEXT ffffff800227fafd	movq	%rax, (%rbx)
+B08_XREF_CONTEXT ffffff800227fb00	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff800227fb04	popq	%rbx
+B08_XREF_CONTEXT ffffff800227fb05	popq	%rbp
+B08_XREF_CONTEXT ffffff800227fb06	retq
+B08_XREF_CONTEXT ffffff800227fb07	nop
+B08_XREF_CONTEXT __ZN27IO80211NANDataPathInitiatorC1EPK11OSMetaClass:
+B08_XREF_CONTEXT ffffff800227fb08	pushq	%rbp
+B08_XREF_CONTEXT ffffff800227fb09	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800227fb0c	pushq	%rbx
+B08_XREF_CONTEXT ffffff800227fb0d	pushq	%rax
+B08_XREF_CONTEXT ffffff800227fb0e	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff800227fb11	callq	0xffffff8000a4c000
+B08_XREF_CONTEXT ffffff800227fb16	leaq	0x1582fb(%rip), %rax
+B08_XREF_CONTEXT ffffff8002280ae9	movzbl	0x1(%rax), %eax
+B08_XREF_CONTEXT ffffff8002280aed	movq	%rax, -0x38(%rbp)
+B08_XREF_CONTEXT ffffff8002280af1	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002280af4	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002280af7	callq	*0x160(%rax)
+B08_XREF_CONTEXT ffffff8002280afd	xorl	%r12d, %r12d
+B08_XREF_CONTEXT ffffff8002280b00	movl	$0x0, %ecx
+B08_XREF_CONTEXT ffffff8002280b05	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff8002280b08	je	0xffffff8002280b1a
+B08_XREF_CONTEXT ffffff8002280b0a	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002280b0d	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002280b10	callq	*0x160(%rax)
+B08_XREF_CONTEXT ffffff8002280b16	movzbl	0x2(%rax), %ecx
+B08_XREF_CONTEXT ffffff8002280b1a	movq	%rcx, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff8002280b1e	movq	%r13, -0x58(%rbp)
+B08_XREF_CONTEXT ffffff8002285aec	je	0xffffff8002285afb
+B08_XREF_CONTEXT ffffff8002285aee	movl	%eax, %r14d
+B08_XREF_CONTEXT ffffff8002285af1	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002285af4	callq	__ZN20WCLBCNMuteMitigation38handleBeaconLossEventOnDebounceTimeoutEv ## WCLBCNMuteMitigation::handleBeaconLossEventOnDebounceTimeout()
+B08_XREF_CONTEXT ffffff8002285af9	jmp	0xffffff8002285afe
+B08_XREF_CONTEXT ffffff8002285afb	xorl	%r14d, %r14d
+B08_XREF_CONTEXT ffffff8002285afe	movq	0x136613(%rip), %rax
+B08_XREF_CONTEXT ffffff8002285b05	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002285b08	cmpq	-0x18(%rbp), %rax
+B08_XREF_CONTEXT ffffff8002285b0c	jne	0xffffff8002285b4c
+B08_XREF_CONTEXT ffffff8002285b0e	movl	%r14d, %eax
+B08_XREF_CONTEXT ffffff8002285b11	addq	$0x40, %rsp
+B08_XREF_CONTEXT ffffff8002285b15	popq	%rbx
+B08_XREF_CONTEXT ffffff8002285b16	popq	%r14
+B08_XREF_CONTEXT ffffff8002285b18	popq	%rbp
+B08_XREF_CONTEXT ffffff8002286ae1	leaq	0x1026bb(%rip), %rsi            ## literal pool for: "IO80211SapProtocol"
+B08_XREF_CONTEXT ffffff8002286ae8	leaq	__ZN23IO80211VirtualInterface10gMetaClassE(%rip), %rdx ## IO80211VirtualInterface::gMetaClass
+B08_XREF_CONTEXT ffffff8002286aef	movl	$0x120, %ecx                    ## imm = 0x120
+B08_XREF_CONTEXT ffffff8002286af4	callq	0xffffff8000a49940
+B08_XREF_CONTEXT ffffff8002286af9	leaq	0x152d68(%rip), %rax
+B08_XREF_CONTEXT ffffff8002286b00	movq	%rax, (%rbx)
+B08_XREF_CONTEXT ffffff8002286b03	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff8002286b07	popq	%rbx
+B08_XREF_CONTEXT ffffff8002286b08	popq	%rbp
+B08_XREF_CONTEXT ffffff8002286b09	retq
+B08_XREF_CONTEXT __ZN18IO80211SapProtocol9MetaClassD1Ev:
+B08_XREF_CONTEXT ffffff8002286b0a	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002286b0b	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002286b0e	popq	%rbp
+B08_XREF_CONTEXT ffffff8002286b0f	jmp	0xffffff8000a4a040
+B08_XREF_CONTEXT ffffff8002287af4	movq	0x18(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002287af8	movl	0x118(%rax), %eax
+B08_XREF_CONTEXT ffffff8002287afe	popq	%rbp
+B08_XREF_CONTEXT ffffff8002287aff	retq
+B08_XREF_CONTEXT __ZN27IO80211NANServiceDescriptor9setNANttlEj:
+B08_XREF_CONTEXT ffffff8002287b00	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002287b01	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002287b04	movq	0x18(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002287b08	movl	%esi, 0x118(%rax)
+B08_XREF_CONTEXT ffffff8002287b0e	popq	%rbp
+B08_XREF_CONTEXT ffffff8002287b0f	retq
+B08_XREF_CONTEXT __ZN27IO80211NANServiceDescriptor17getNANServiceInfoEv:
+B08_XREF_CONTEXT ffffff8002287b10	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002287b11	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002287b14	movq	0x18(%rdi), %rax
+B08_XREF_CONTEXT ffffff800228aadc	jmp	0xffffff800228ac79
+B08_XREF_CONTEXT ffffff800228aae1	imulq	$0x156, %r12, %rax              ## imm = 0x156
+B08_XREF_CONTEXT ffffff800228aae8	leaq	(%rcx,%rax), %rsi
+B08_XREF_CONTEXT ffffff800228aaec	addq	$0x2f0, %rsi                    ## imm = 0x2F0
+B08_XREF_CONTEXT ffffff800228aaf3	leaq	(%rcx,%rax), %rdx
+B08_XREF_CONTEXT ffffff800228aaf7	addq	$0x362, %rdx                    ## imm = 0x362
+B08_XREF_CONTEXT ffffff800228aafe	addq	%rax, %rcx
+B08_XREF_CONTEXT ffffff800228ab01	addq	$0x3d4, %rcx                    ## imm = 0x3D4
+B08_XREF_CONTEXT ffffff800228ab08	movq	-0x30(%rbp), %r15
+B08_XREF_CONTEXT ffffff800228ab0c	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff800228ab0f	callq	__ZN18IO80211RoamProfile19applyRoamingProfileEP24ExtendedRoamParametersV1S1_S1_ ## IO80211RoamProfile::applyRoamingProfile(ExtendedRoamParametersV1*, ExtendedRoamParametersV1*, ExtendedRoamParametersV1*)
+B08_XREF_CONTEXT ffffff800228ab14	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff800228ab16	je	0xffffff800228a2e4
+B08_XREF_CONTEXT ffffff800228ab1c	movq	0x10(%rbx), %rax
+B08_XREF_CONTEXT ffffff800228ab20	movq	0x1078(%rax), %rdi
+B08_XREF_CONTEXT ffffff800228caec	cmpl	$0x6, %esi
+B08_XREF_CONTEXT ffffff800228caef	ja	0xffffff800228cb00
+B08_XREF_CONTEXT ffffff800228caf1	movl	%esi, %eax
+B08_XREF_CONTEXT ffffff800228caf3	leaq	0x14d86e(%rip), %rcx
+B08_XREF_CONTEXT ffffff800228cafa	movq	(%rcx,%rax,8), %rax
+B08_XREF_CONTEXT ffffff800228cafe	jmp	0xffffff800228cb07
+B08_XREF_CONTEXT ffffff800228cb00	leaq	_.str.17(%rip), %rax            ## literal pool for: "Unknown"
+B08_XREF_CONTEXT ffffff800228cb07	popq	%rbp
+B08_XREF_CONTEXT ffffff800228cb08	retq
+B08_XREF_CONTEXT ffffff800228cb09	nop
+B08_XREF_CONTEXT __ZN25IO80211P2PDFSProxyManager15stringForEntityE40apple80211_disallow_dfs_monitor_entities:
+B08_XREF_CONTEXT ffffff800228cb0a	pushq	%rbp
+B08_XREF_CONTEXT ffffff800228cb0b	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff800228cb0e	cmpl	$0x2, %esi
+B08_XREF_CONTEXT ffffff800228cb11	ja	0xffffff800228cb22
+B08_XREF_CONTEXT ffffff8002290ae9	movq	0x20(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002290aed	movq	0x10(%rax), %rdi
+B08_XREF_CONTEXT ffffff8002290af1	callq	__ZN13WCLBGScanCore29configureBGScanPowerOnProfileEv ## WCLBGScanCore::configureBGScanPowerOnProfile()
+B08_XREF_CONTEXT ffffff8002290af6	movq	0x20(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002290afa	movq	0x8(%rax), %rcx
+B08_XREF_CONTEXT ffffff8002290afe	movq	0x10(%rcx), %rcx
+B08_XREF_CONTEXT ffffff8002290b02	cmpb	$0x3, 0x10(%rcx)
+B08_XREF_CONTEXT ffffff8002290b06	ja	0xffffff8002290b15
+B08_XREF_CONTEXT ffffff8002290b08	movq	(%rax), %rcx
+B08_XREF_CONTEXT ffffff8002290b0b	movq	0x10(%rcx), %rcx
+B08_XREF_CONTEXT ffffff8002290b0f	cmpb	$0x7, 0x10(%rcx)
+B08_XREF_CONTEXT ffffff8002290b13	jne	0xffffff8002290b48
+B08_XREF_CONTEXT ffffff8002290b15	movq	0x10(%rax), %rdi
+B08_XREF_CONTEXT ffffff8002290b19	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002290b1c	callq	*0x170(%rax)
+B08_XREF_CONTEXT ffffff8002291ae2	movq	%rdi, 0x4d(%rcx)
+B08_XREF_CONTEXT ffffff8002291ae6	movq	%rsi, 0x45(%rcx)
+B08_XREF_CONTEXT ffffff8002291aea	movq	%rdx, 0x3d(%rcx)
+B08_XREF_CONTEXT ffffff8002291aee	movq	%rax, 0x35(%rcx)
+B08_XREF_CONTEXT ffffff8002291af2	movq	0x20(%r15), %rax
+B08_XREF_CONTEXT ffffff8002291af6	movq	0x15b6(%r14), %rcx
+B08_XREF_CONTEXT ffffff8002291afd	movq	0x15be(%r14), %rdx
+B08_XREF_CONTEXT ffffff8002291b04	movq	%rcx, 0x55(%rax)
+B08_XREF_CONTEXT ffffff8002291b08	movq	%rdx, 0x5d(%rax)
+B08_XREF_CONTEXT ffffff8002291b0c	movq	0x20(%r15), %rax
+B08_XREF_CONTEXT ffffff8002291b10	movq	0xda5(%r14), %rcx
+B08_XREF_CONTEXT ffffff8002291b17	movq	%rcx, 0x66(%rax)
+B08_XREF_CONTEXT ffffff8002291b1b	movq	0x20(%r15), %rax
+B08_XREF_CONTEXT ffffff8002291b1f	movzwl	0x15b4(%r14), %ecx
+B08_XREF_CONTEXT ffffff8002291b27	movl	0x15b0(%r14), %edx
+B08_XREF_CONTEXT ffffff8002292add	leaq	_.str.21(%rip), %rsi            ## literal pool for: "/AppleInternal/Library/BuildRoots/4~CW9mugA6gpmKPwyaAeCNWSZRmRlk6mvK_U3N5n0/Library/Caches/com.apple.xbs/Sources/IO80211_kexts/IO80211Family/NAN/ServiceManager/IO80211NANServiceDescriptor.cpp"
+B08_XREF_CONTEXT ffffff8002292ae4	leaq	___FUNCTION__._ZN27IO80211NANServiceDescriptor17getNmiPeerManagerEv(%rip), %rdx ## literal pool for: "getNmiPeerManager"
+B08_XREF_CONTEXT ffffff8002292aeb	movl	$0x175, %ecx                    ## imm = 0x175
+B08_XREF_CONTEXT ffffff8002292af0	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002292af2	callq	0xffffff8000ab6560
+B08_XREF_CONTEXT ffffff8002292af7	leaq	0xfa499(%rip), %rdx             ## literal pool for: "%s[%d] : ERROR: apple80211_nan_publish_data_t AutoreleasedBuffer Allocation failure\n"
+B08_XREF_CONTEXT ffffff8002292afe	leaq	0xf9145(%rip), %rcx             ## literal pool for: "restoreServiceDescriptor"
+B08_XREF_CONTEXT ffffff8002292b05	xorl	%r12d, %r12d
+B08_XREF_CONTEXT ffffff8002292b08	movq	%r15, %rdi
+B08_XREF_CONTEXT ffffff8002292b0b	movq	%r14, %rsi
+B08_XREF_CONTEXT ffffff8002292b0e	movl	$0x212, %r8d                    ## imm = 0x212
+B08_XREF_CONTEXT ffffff8002292b14	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002292b16	callq	__ZN18IO80211PeerManager8logDebugEyPKcz ## IO80211PeerManager::logDebug(unsigned long long, char const*, ...)
+B08_XREF_CONTEXT ffffff8002292b1b	movl	$0xe00002bd, %r15d              ## imm = 0xE00002BD
+B08_XREF_CONTEXT ffffff8002292b21	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002295aed	pushq	%r12
+B08_XREF_CONTEXT ffffff8002295aef	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002295af0	subq	$0x30, %rsp
+B08_XREF_CONTEXT ffffff8002295af4	movq	0x12661d(%rip), %rax
+B08_XREF_CONTEXT ffffff8002295afb	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002295afe	movq	%rax, -0x28(%rbp)
+B08_XREF_CONTEXT ffffff8002295b02	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002295b04	movq	%rax, -0x38(%rbp)
+B08_XREF_CONTEXT ffffff8002295b08	movq	%rax, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff8002295b0c	movq	%rax, -0x48(%rbp)
+B08_XREF_CONTEXT ffffff8002295b10	movl	$0x0, -0x30(%rbp)
+B08_XREF_CONTEXT ffffff8002295b17	cmpl	$0x1c, 0x18(%rdx)
+B08_XREF_CONTEXT ffffff8002295b1b	jne	0xffffff8002295bc7
+B08_XREF_CONTEXT ffffff8002295b21	movq	%rdx, %r14
+B08_XREF_CONTEXT ffffff8002295b24	movq	%rsi, %r15
+B08_XREF_CONTEXT ffffff8002296ae8	movq	0x20(%r14), %rdx
+B08_XREF_CONTEXT ffffff8002296aec	leaq	-0x38(%rbp), %rsi
+B08_XREF_CONTEXT ffffff8002296af0	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff8002296af3	callq	__ZN17IO80211Controller7copyOutEPKvym ## IO80211Controller::copyOut(void const*, unsigned long long, unsigned long)
+B08_XREF_CONTEXT ffffff8002296af8	movq	0x125619(%rip), %rcx
+B08_XREF_CONTEXT ffffff8002296aff	movq	(%rcx), %rcx
+B08_XREF_CONTEXT ffffff8002296b02	cmpq	-0x28(%rbp), %rcx
+B08_XREF_CONTEXT ffffff8002296b06	jne	0xffffff8002296b1c
+B08_XREF_CONTEXT ffffff8002296b08	addq	$0x20, %rsp
+B08_XREF_CONTEXT ffffff8002296b0c	popq	%rbx
+B08_XREF_CONTEXT ffffff8002296b0d	popq	%r12
+B08_XREF_CONTEXT ffffff8002296b0f	popq	%r14
+B08_XREF_CONTEXT ffffff8002296b11	popq	%r15
+B08_XREF_CONTEXT ffffff8002296b13	popq	%rbp
+B08_XREF_CONTEXT ffffff8002296b14	retq
+B08_XREF_CONTEXT ffffff8002297ae5	movq	0xd8(%rax), %rdi
+B08_XREF_CONTEXT ffffff8002297aec	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff8002297aef	je	0xffffff8002297b2c
+B08_XREF_CONTEXT ffffff8002297af1	movq	%r14, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff8002297af5	leaq	-0x31(%rbp), %r14
+B08_XREF_CONTEXT ffffff8002297af9	movb	$0x0, (%r14)
+B08_XREF_CONTEXT ffffff8002297afd	movl	$0x19004, %r8d                  ## imm = 0x19004
+B08_XREF_CONTEXT ffffff8002297b03	movl	$0xc02869c9, %esi               ## imm = 0xC02869C9
+B08_XREF_CONTEXT ffffff8002297b08	movl	$0x153, %edx                    ## imm = 0x153
+B08_XREF_CONTEXT ffffff8002297b0d	movq	%rbx, %rcx
+B08_XREF_CONTEXT ffffff8002297b10	movq	%r14, %r9
+B08_XREF_CONTEXT ffffff8002297b13	callq	__ZN11IO80211Glue13sendIOUCToWclEjjPvmRb ## IO80211Glue::sendIOUCToWcl(unsigned int, unsigned int, void*, unsigned long, bool&)
+B08_XREF_CONTEXT ffffff8002297b18	cmpb	$0x1, (%r14)
+B08_XREF_CONTEXT ffffff8002297b1c	movq	-0x40(%rbp), %r14
+B08_XREF_CONTEXT ffffff8002297b20	jne	0xffffff8002297b2c
+B08_XREF_CONTEXT ffffff800229aadb	cmpw	$0x0, 0x2(%rsi)
+B08_XREF_CONTEXT ffffff800229aae0	leaq	_.str.22(%rip), %rcx            ## literal pool for: "v4"
+B08_XREF_CONTEXT ffffff800229aae7	leaq	_.str.21(%rip), %rbx            ## literal pool for: "v6"
+B08_XREF_CONTEXT ffffff800229aaee	cmoveq	%rcx, %rbx
+B08_XREF_CONTEXT ffffff800229aaf2	cmpw	$0x0, (%rsi)
+B08_XREF_CONTEXT ffffff800229aaf6	leaq	_.str.24(%rip), %rcx            ## literal pool for: "received"
+B08_XREF_CONTEXT ffffff800229aafd	leaq	_.str.23(%rip), %r13            ## literal pool for: "timedout"
+B08_XREF_CONTEXT ffffff800229ab04	cmoveq	%rcx, %r13
+B08_XREF_CONTEXT ffffff800229ab08	movq	(%rax), %rcx
+B08_XREF_CONTEXT ffffff800229ab0b	movq	%rcx, -0x48(%rbp)
+B08_XREF_CONTEXT ffffff800229ab0f	movq	0x10(%rax), %r15
+B08_XREF_CONTEXT ffffff800229ab13	callq	0xffffff8000536cc0
+B08_XREF_CONTEXT ffffff800229ab18	subq	%r15, %rax
+B08_XREF_CONTEXT ffffff800229ab1b	leaq	-0x38(%rbp), %r15
+B08_XREF_CONTEXT ffffff800229ab1f	movq	$0x0, (%r15)
+B08_XREF_CONTEXT ffffff800229fae1	movq	0x2a80(%rbx), %rdx
+B08_XREF_CONTEXT ffffff800229fae8	andl	$0x1, %edx
+B08_XREF_CONTEXT ffffff800229faeb	movabsq	$0x53636e466c426c6b, %r15       ## imm = 0x53636E466C426C6B
+B08_XREF_CONTEXT ffffff800229faf5	movq	%r13, %rdi
+B08_XREF_CONTEXT ffffff800229faf8	movq	%r15, %rsi
+B08_XREF_CONTEXT ffffff800229fafb	callq	0xffffff8000b48bd0
+B08_XREF_CONTEXT ffffff800229fb00	movq	0x10(%r14), %rax
+B08_XREF_CONTEXT ffffff800229fb04	movq	0x58(%rax), %r13
+B08_XREF_CONTEXT ffffff800229fb08	leaq	-0x34(%rbp), %rdi
+B08_XREF_CONTEXT ffffff800229fb0c	movl	$0xaaaaaaaa, (%rdi)             ## imm = 0xAAAAAAAA
+B08_XREF_CONTEXT ffffff800229fb12	leaq	0xef3db(%rip), %rdx             ## literal pool for: "%03d"
+B08_XREF_CONTEXT ffffff800229fb19	movl	$0x4, %esi
+B08_XREF_CONTEXT ffffff800229fb1e	xorl	%ecx, %ecx
+B08_XREF_CONTEXT ffffff800229fb20	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff800229fb22	callq	0xffffff8000939da0
+B08_XREF_CONTEXT ffffff80022a5af0	jne	0xffffff80022a5a34
+B08_XREF_CONTEXT ffffff80022a5af6	movq	(%r14), %rax
+B08_XREF_CONTEXT ffffff80022a5af9	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80022a5afc	callq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff80022a5aff	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022a5b01	addq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff80022a5b05	popq	%rbx
+B08_XREF_CONTEXT ffffff80022a5b06	popq	%r12
+B08_XREF_CONTEXT ffffff80022a5b08	popq	%r13
+B08_XREF_CONTEXT ffffff80022a5b0a	popq	%r14
+B08_XREF_CONTEXT ffffff80022a5b0c	popq	%r15
+B08_XREF_CONTEXT ffffff80022a5b0e	popq	%rbp
+B08_XREF_CONTEXT ffffff80022a5b0f	retq
+B08_XREF_CONTEXT __ZN23IO80211VirtualInterface20ioctl_internal_gatedEPvS0_S0_S0_S0_:
+B08_XREF_CONTEXT ffffff80022a5b10	pushq	%rbp
+B08_XREF_CONTEXT ffffff80022acadf	movq	%rax, -0x48(%rbp)
+B08_XREF_CONTEXT ffffff80022acae3	movzbl	0x1f(%r12), %eax
+B08_XREF_CONTEXT ffffff80022acae9	movq	%rax, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff80022acaed	movl	$0xff, %eax
+B08_XREF_CONTEXT ffffff80022acaf2	andl	%eax, %r10d
+B08_XREF_CONTEXT ffffff80022acaf5	movzbl	0x15(%r12), %esi
+B08_XREF_CONTEXT ffffff80022acafb	movq	%rsi, -0x88(%rbp)
+B08_XREF_CONTEXT ffffff80022acb02	movzbl	0x16(%r12), %esi
+B08_XREF_CONTEXT ffffff80022acb08	movq	%rsi, -0x80(%rbp)
+B08_XREF_CONTEXT ffffff80022acb0c	movzbl	0x17(%r12), %esi
+B08_XREF_CONTEXT ffffff80022acb12	movq	%rsi, -0x78(%rbp)
+B08_XREF_CONTEXT ffffff80022acb16	andl	%eax, %r11d
+B08_XREF_CONTEXT ffffff80022acb19	movzbl	0x19(%r12), %eax
+B08_XREF_CONTEXT ffffff80022acb1f	movq	%rax, -0x70(%rbp)
+B08_XREF_CONTEXT ffffff80022acb23	movzwl	0x44(%r12), %eax
+B08_XREF_CONTEXT ffffff80022b1ae9	popq	%rbp
+B08_XREF_CONTEXT ffffff80022b1aea	retq
+B08_XREF_CONTEXT ffffff80022b1aeb	movq	0x18(%rbx), %rax
+B08_XREF_CONTEXT ffffff80022b1aef	movq	(%rax), %rdi
+B08_XREF_CONTEXT ffffff80022b1af2	leaq	_.str.53(%rip), %rsi            ## literal pool for: "[ik] %s@%d:%s: LQM Noise Floor Stats input arg is NULL\n"
+B08_XREF_CONTEXT ffffff80022b1af9	leaq	___FUNCTION__._ZN14IO80211LQMData24handleNFStatisticsReportEPK31apple80211_lqm_noisefloor_stats(%rip), %rdx ## literal pool for: "handleNFStatisticsReport"
+B08_XREF_CONTEXT ffffff80022b1b00	movl	$0x300, %ecx                    ## imm = 0x300
+B08_XREF_CONTEXT ffffff80022b1b05	movq	%rdx, %r8
+B08_XREF_CONTEXT ffffff80022b1b08	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022b1b0a	callq	0xffffff80031d252e
+B08_XREF_CONTEXT ffffff80022b1b0f	jmp	0xffffff80022b1adf
+B08_XREF_CONTEXT ffffff80022b1b11	nop
+B08_XREF_CONTEXT __ZN14IO80211LQMData26handleRSSIStatisticsReportEPK25apple80211_lqm_rssi_stats:
+B08_XREF_CONTEXT ffffff80022b1b12	pushq	%rbp
+B08_XREF_CONTEXT ffffff80022b1b13	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80022b2af0	popq	%rbp
+B08_XREF_CONTEXT ffffff80022b2af1	jmpq	*0xa0(%rax)
+B08_XREF_CONTEXT ffffff80022b2af7	movq	%rdi, %rax
+B08_XREF_CONTEXT ffffff80022b2afa	ud1l	0xbffd(%eax), %eax
+B08_XREF_CONTEXT ffffff80022b2b02	ud2
+B08_XREF_CONTEXT __ZN17IO80211PostOffice9MetaClassD0Ev:
+B08_XREF_CONTEXT ffffff80022b2b04	pushq	%rbp
+B08_XREF_CONTEXT ffffff80022b2b05	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80022b2b08	popq	%rbp
+B08_XREF_CONTEXT ffffff80022b2b09	jmp	0xffffff8000a4a040
+B08_XREF_CONTEXT __GLOBAL__sub_I_IO80211PostOffice.cpp:
+B08_XREF_CONTEXT ffffff80022b2b0e	pushq	%rbp
+B08_XREF_CONTEXT ffffff80022b2b0f	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80022b2b12	leaq	__ZN17IO80211PostOffice10gMetaClassE(%rip), %rdi ## IO80211PostOffice::gMetaClass
+B08_XREF_CONTEXT ffffff80022b2b19	leaq	0xe19ac(%rip), %rsi             ## literal pool for: "IO80211PostOffice"
+B08_XREF_CONTEXT ffffff80022b4afd	popq	%rbp
+B08_XREF_CONTEXT ffffff80022b4afe	retq
+B08_XREF_CONTEXT ffffff80022b4aff	nop
+B08_XREF_CONTEXT __ZN16LogManagerDevice21withDeviceNameAndLockEPKcP7_IOLockji:
+B08_XREF_CONTEXT ffffff80022b4b00	pushq	%rbp
+B08_XREF_CONTEXT ffffff80022b4b01	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80022b4b04	pushq	%r15
+B08_XREF_CONTEXT ffffff80022b4b06	pushq	%r14
+B08_XREF_CONTEXT ffffff80022b4b08	pushq	%r13
+B08_XREF_CONTEXT ffffff80022b4b0a	pushq	%r12
+B08_XREF_CONTEXT ffffff80022b4b0c	pushq	%rbx
+B08_XREF_CONTEXT ffffff80022b4b0d	pushq	%rax
+B08_XREF_CONTEXT ffffff80022b4b0e	movl	%ecx, -0x2c(%rbp)
+B08_XREF_CONTEXT ffffff80022b4b11	movl	%edx, %r15d
+B08_XREF_CONTEXT ffffff80022b4b14	movq	%rsi, %r12
+B08_XREF_CONTEXT ffffff80022b7af0	pushq	%r14
+B08_XREF_CONTEXT ffffff80022b7af2	pushq	%r13
+B08_XREF_CONTEXT ffffff80022b7af4	pushq	%r12
+B08_XREF_CONTEXT ffffff80022b7af6	pushq	%rbx
+B08_XREF_CONTEXT ffffff80022b7af7	subq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff80022b7afb	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff80022b7afe	movq	0x104613(%rip), %rax
+B08_XREF_CONTEXT ffffff80022b7b05	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff80022b7b08	movq	%rax, -0x30(%rbp)
+B08_XREF_CONTEXT ffffff80022b7b0c	movq	0x10(%rdi), %rax
+B08_XREF_CONTEXT ffffff80022b7b10	movq	0x68(%rax), %r14
+B08_XREF_CONTEXT ffffff80022b7b14	testq	%r14, %r14
+B08_XREF_CONTEXT ffffff80022b7b17	je	0xffffff80022b7b88
+B08_XREF_CONTEXT ffffff80022b7b19	leaq	-0x38(%rbp), %r15
+B08_XREF_CONTEXT ffffff80022b7b1d	movabsq	$0x431bde82d7b634db, %r12       ## imm = 0x431BDE82D7B634DB
+B08_XREF_CONTEXT ffffff80022b9af5	pushq	%r12
+B08_XREF_CONTEXT ffffff80022b9af7	pushq	%rbx
+B08_XREF_CONTEXT ffffff80022b9af8	pushq	-0x60(%rbp)
+B08_XREF_CONTEXT ffffff80022b9afb	pushq	-0x68(%rbp)
+B08_XREF_CONTEXT ffffff80022b9afe	pushq	-0x70(%rbp)
+B08_XREF_CONTEXT ffffff80022b9b01	pushq	-0x80(%rbp)
+B08_XREF_CONTEXT ffffff80022b9b04	pushq	%r15
+B08_XREF_CONTEXT ffffff80022b9b06	pushq	%r10
+B08_XREF_CONTEXT ffffff80022b9b08	pushq	-0x78(%rbp)
+B08_XREF_CONTEXT ffffff80022b9b0b	pushq	-0x58(%rbp)
+B08_XREF_CONTEXT ffffff80022b9b0e	callq	0xffffff8000ab6560
+B08_XREF_CONTEXT ffffff80022b9b13	addq	$0x60, %rsp
+B08_XREF_CONTEXT ffffff80022b9b17	movzwl	0x54(%r13), %edx
+B08_XREF_CONTEXT ffffff80022b9b1c	jmp	0xffffff80022b9b74
+B08_XREF_CONTEXT ffffff80022b9b1e	testb	$0xc, %cl
+B08_XREF_CONTEXT ffffff80022bdb4f	jmp	0xffffff80022bdb62
+B08_XREF_CONTEXT ffffff80022bdb51	xorl	%r10d, %r10d
+B08_XREF_CONTEXT ffffff80022bdb54	xorl	%r9d, %r9d
+B08_XREF_CONTEXT ffffff80022bdb57	xorl	%ecx, %ecx
+B08_XREF_CONTEXT ffffff80022bdb59	xorl	%r8d, %r8d
+B08_XREF_CONTEXT ffffff80022bdb5c	xorl	%r11d, %r11d
+B08_XREF_CONTEXT ffffff80022bdb5f	xorl	%r12d, %r12d
+B08_XREF_CONTEXT ffffff80022bdb62	subq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff80022bdb66	leaq	0xd8b08(%rip), %rdi             ## literal pool for: "%s: Received UMI Type 0x%0x From Peer:%02X:%02X:%02X:%02X:%02X:%02X\n\n"
+B08_XREF_CONTEXT ffffff80022bdb6d	leaq	0xd8b47(%rip), %rsi             ## literal pool for: "_processRangingUMI"
+B08_XREF_CONTEXT ffffff80022bdb74	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022bdb76	pushq	%r12
+B08_XREF_CONTEXT ffffff80022bdb78	pushq	%r10
+B08_XREF_CONTEXT ffffff80022bdb7a	pushq	%r11
+B08_XREF_CONTEXT ffffff80022bdb7c	callq	0xffffff8000ab6560
+B08_XREF_CONTEXT ffffff80022c0af6	setne	%al
+B08_XREF_CONTEXT ffffff80022c0af9	testl	%ecx, %ecx
+B08_XREF_CONTEXT ffffff80022c0afb	sete	%sil
+B08_XREF_CONTEXT ffffff80022c0aff	orb	%al, %sil
+B08_XREF_CONTEXT ffffff80022c0b02	je	0xffffff80022c0b07
+B08_XREF_CONTEXT ffffff80022c0b04	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022c0b06	retq
+B08_XREF_CONTEXT ffffff80022c0b07	pushq	%rbp
+B08_XREF_CONTEXT ffffff80022c0b08	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80022c0b0b	cmpl	$0x10, %ecx
+B08_XREF_CONTEXT ffffff80022c0b0e	movl	$0x10, %eax
+B08_XREF_CONTEXT ffffff80022c0b13	cmovbl	%ecx, %eax
+B08_XREF_CONTEXT ffffff80022c0b16	movq	0x20(%rdi), %rcx
+B08_XREF_CONTEXT ffffff80022c0b1a	shlq	$0x2, %rax
+B08_XREF_CONTEXT ffffff80022c0b1e	leaq	(%rax,%rax,2), %rsi
+B08_XREF_CONTEXT ffffff80022ccaea	movl	$0x6b, %edx
+B08_XREF_CONTEXT ffffff80022ccaef	movq	%r14, %r9
+B08_XREF_CONTEXT ffffff80022ccaf2	callq	__ZN11IO80211Glue13sendIOUCToWclEjjPvmRb ## IO80211Glue::sendIOUCToWcl(unsigned int, unsigned int, void*, unsigned long, bool&)
+B08_XREF_CONTEXT ffffff80022ccaf7	cmpb	$0x1, (%r14)
+B08_XREF_CONTEXT ffffff80022ccafb	jne	0xffffff80022ccb04
+B08_XREF_CONTEXT ffffff80022ccafd	cmpl	$0xe082280f, %eax               ## imm = 0xE082280F
+B08_XREF_CONTEXT ffffff80022ccb02	jne	0xffffff80022ccb10
+B08_XREF_CONTEXT ffffff80022ccb04	leaq	-0x30(%rbp), %rsi
+B08_XREF_CONTEXT ffffff80022ccb08	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff80022ccb0b	callq	__Z17apple80211setROAMP23IO80211SkywalkInterfaceP24apple80211_sta_roam_data ## apple80211setROAM(IO80211SkywalkInterface*, apple80211_sta_roam_data*)
+B08_XREF_CONTEXT ffffff80022ccb10	movq	0xef601(%rip), %rcx
+B08_XREF_CONTEXT ffffff80022ccb17	movq	(%rcx), %rcx
+B08_XREF_CONTEXT ffffff80022ccb1a	cmpq	-0x18(%rbp), %rcx
+B08_XREF_CONTEXT ffffff80022ccb1e	jne	0xffffff80022ccb29
+B08_XREF_CONTEXT ffffff80022ccb20	addq	$0x30, %rsp
+B08_XREF_CONTEXT ffffff80022cfae1	movq	0xec638(%rip), %rsi
+B08_XREF_CONTEXT ffffff80022cfae8	leaq	__ZZN19IO80211LinkRecovery31initWithMacAddressAndControllerE10ether_addrP17IO80211ControllerbP21IO80211LQMCrashTracerE11_os_log_fmt_8(%rip), %rcx ## IO80211LinkRecovery::initWithMacAddressAndController(ether_addr, IO80211Controller*, bool, IO80211LQMCrashTracer*)::_os_log_fmt
+B08_XREF_CONTEXT ffffff80022cfaef	xorl	%edx, %edx
+B08_XREF_CONTEXT ffffff80022cfaf1	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022cfaf3	callq	0xffffff8000a85d00
+B08_XREF_CONTEXT ffffff80022cfaf8	leaq	0xc90d6(%rip), %rdi             ## literal pool for: "wlan.lqm.unusable"
+B08_XREF_CONTEXT ffffff80022cfaff	leaq	-0x7c(%rbp), %rsi
+B08_XREF_CONTEXT ffffff80022cfb03	movl	$0x4, %edx
+B08_XREF_CONTEXT ffffff80022cfb08	callq	0xffffff8000b92970
+B08_XREF_CONTEXT ffffff80022cfb0d	testl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022cfb0f	je	0xffffff80022cfb33
+B08_XREF_CONTEXT ffffff80022cfb11	movl	-0x7c(%rbp), %r8d
+B08_XREF_CONTEXT ffffff80022cfb15	leaq	-0x1bfb1c(%rip), %rdi
+B08_XREF_CONTEXT ffffff80022cfb1c	movq	0xec5fd(%rip), %rsi
+B08_XREF_CONTEXT ffffff80022cfb23	leaq	__ZZN19IO80211LinkRecovery31initWithMacAddressAndControllerE10ether_addrP17IO80211ControllerbP21IO80211LQMCrashTracerE11_os_log_fmt_9(%rip), %rcx ## IO80211LinkRecovery::initWithMacAddressAndController(ether_addr, IO80211Controller*, bool, IO80211LQMCrashTracer*)::_os_log_fmt
+B08_XREF_CONTEXT ffffff80022d2ae4	shrl	$0xe, %ecx
+B08_XREF_CONTEXT ffffff80022d2ae7	movl	$0x3fc, %esi                    ## imm = 0x3FC
+B08_XREF_CONTEXT ffffff80022d2aec	andl	%esi, %ecx
+B08_XREF_CONTEXT ffffff80022d2aee	leaq	__ZL3Td1(%rip), %r10            ## Td1
+B08_XREF_CONTEXT ffffff80022d2af5	movl	(%rcx,%r10), %esi
+B08_XREF_CONTEXT ffffff80022d2af9	leaq	__ZL3Td0(%rip), %rcx            ## Td0
+B08_XREF_CONTEXT ffffff80022d2b00	xorl	(%rcx,%r8,4), %esi
+B08_XREF_CONTEXT ffffff80022d2b04	shrl	$0x8, %r9d
+B08_XREF_CONTEXT ffffff80022d2b08	andl	%eax, %r9d
+B08_XREF_CONTEXT ffffff80022d2b0b	xorl	(%r15,%r9,4), %esi
+B08_XREF_CONTEXT ffffff80022d2b0f	xorl	0x80(%rdi), %r14d
+B08_XREF_CONTEXT ffffff80022d2b16	andl	%eax, %r11d
+B08_XREF_CONTEXT ffffff80022d2b19	xorl	(%rbx,%r11,4), %esi
+B08_XREF_CONTEXT ffffff80022d2b1d	xorl	0x8c(%rdi), %esi
+B08_XREF_CONTEXT ffffff80022d2b23	movl	%r14d, %r8d
+B08_XREF_CONTEXT ffffff80022d6ae7	movq	-0x68(%rbp), %rdi
+B08_XREF_CONTEXT ffffff80022d6aeb	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff80022d6aee	movl	-0x2c(%rbp), %ebx
+B08_XREF_CONTEXT ffffff80022d6af1	je	0xffffff80022d6db0
+B08_XREF_CONTEXT ffffff80022d6af7	movl	(%r12), %esi
+B08_XREF_CONTEXT ffffff80022d6afb	callq	__ZN19IO80211LinkRecovery21recordLinkProbeResultEi ## IO80211LinkRecovery::recordLinkProbeResult(int)
+B08_XREF_CONTEXT ffffff80022d6b00	jmp	0xffffff80022d6db0
+B08_XREF_CONTEXT ffffff80022d6b05	testq	%r12, %r12
+B08_XREF_CONTEXT ffffff80022d6b08	je	0xffffff80022d6dad
+B08_XREF_CONTEXT ffffff80022d6b0e	movq	-0x50(%rbp), %rdi
+B08_XREF_CONTEXT ffffff80022d6b12	testq	%rdi, %rdi
+B08_XREF_CONTEXT ffffff80022d6b15	movl	-0x2c(%rbp), %ebx
+B08_XREF_CONTEXT ffffff80022d6b18	je	0xffffff80022d6db0
+B08_XREF_CONTEXT ffffff80022d6b1e	movq	(%r12), %rsi
+B08_XREF_CONTEXT ffffff80022d6b22	callq	__ZN25IO80211LinkQualityMonitor19recordSymptomsInputEy ## IO80211LinkQualityMonitor::recordSymptomsInput(unsigned long long)
+B08_XREF_CONTEXT ffffff80022deae6	movq	%r14, %rdx
+B08_XREF_CONTEXT ffffff80022deae9	callq	0xffffff8000101080
+B08_XREF_CONTEXT ffffff80022deaee	addq	$0x10, %rbx
+B08_XREF_CONTEXT ffffff80022deaf2	cmpq	$0x90, %rbx
+B08_XREF_CONTEXT ffffff80022deaf9	movq	-0x40(%rbp), %r14
+B08_XREF_CONTEXT ffffff80022deafd	jne	0xffffff80022deab3
+B08_XREF_CONTEXT ffffff80022deaff	movq	-0x38(%rbp), %rax
+B08_XREF_CONTEXT ffffff80022deb03	movq	%rax, 0x18(%r12)
+B08_XREF_CONTEXT ffffff80022deb08	movq	-0x30(%rbp), %rdi
+B08_XREF_CONTEXT ffffff80022deb0c	movq	%r12, %rsi
+B08_XREF_CONTEXT ffffff80022deb0f	callq	__ZN16IO80211QueueCall22addEntryToQueueAndCallEP7QCEntry ## IO80211QueueCall::addEntryToQueueAndCall(QCEntry*)
+B08_XREF_CONTEXT ffffff80022deb14	xorl	%r12d, %r12d
+B08_XREF_CONTEXT ffffff80022deb17	jmp	0xffffff80022deb5c
+B08_XREF_CONTEXT ffffff80022deb19	leaq	0xbcf21(%rip), %rsi             ## literal pool for: "kev_post_msg: Null event message\n"
+B08_XREF_CONTEXT ffffff80022deb20	movq	%rbx, %rdi
+B08_XREF_CONTEXT ffffff80022e4ae3	movq	0x170(%rax), %r12
+B08_XREF_CONTEXT ffffff80022e4aea	leaq	-0x33(%r15), %rsi
+B08_XREF_CONTEXT ffffff80022e4aee	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80022e4af1	callq	__ZN23IO80211InterfaceMonitor10modifyChIDEy ## IO80211InterfaceMonitor::modifyChID(unsigned long long)
+B08_XREF_CONTEXT ffffff80022e4af6	leaq	0xb9023(%rip), %rdx             ## literal pool for: "Expected Peak Latency"
+B08_XREF_CONTEXT ffffff80022e4afd	movq	%r12, %rdi
+B08_XREF_CONTEXT ffffff80022e4b00	movq	%rax, %rsi
+B08_XREF_CONTEXT ffffff80022e4b03	callq	0xffffff8000b47e10
+B08_XREF_CONTEXT ffffff80022e4b08	movq	0x10(%r14), %rax
+B08_XREF_CONTEXT ffffff80022e4b0c	movq	(%rax), %rdi
+B08_XREF_CONTEXT ffffff80022e4b0f	movl	$0x8010, %esi                   ## imm = 0x8010
+B08_XREF_CONTEXT ffffff80022e4b14	movl	$0x9, %edx
+B08_XREF_CONTEXT ffffff80022e4b19	movabsq	$0x101000000000000, %rcx        ## imm = 0x101000000000000
+B08_XREF_CONTEXT ffffff80022e4b23	callq	0xffffff8000b49fa0
+B08_XREF_CONTEXT ffffff80022e4b28	movq	0x10(%r14), %rcx
+B08_XREF_CONTEXT ffffff80022ecae6	movl	0x124(%rbx), %edx
+B08_XREF_CONTEXT ffffff80022ecaec	movq	%r13, %rdi
+B08_XREF_CONTEXT ffffff80022ecaef	movq	%rax, %rsi
+B08_XREF_CONTEXT ffffff80022ecaf2	callq	0xffffff8000b48bd0
+B08_XREF_CONTEXT ffffff80022ecaf7	movq	0x10(%r14), %rax
+B08_XREF_CONTEXT ffffff80022ecafb	movq	0x100(%rax), %r13
+B08_XREF_CONTEXT ffffff80022ecb02	movq	%r14, %rdi
+B08_XREF_CONTEXT ffffff80022ecb05	movq	%r15, %rsi
+B08_XREF_CONTEXT ffffff80022ecb08	callq	__ZN23IO80211InterfaceMonitor10modifyChIDEy ## IO80211InterfaceMonitor::modifyChID(unsigned long long)
+B08_XREF_CONTEXT ffffff80022ecb0d	movl	0x134(%rbx), %edx
+B08_XREF_CONTEXT ffffff80022ecb13	movq	%r13, %rdi
+B08_XREF_CONTEXT ffffff80022ecb16	movq	%rax, %rsi
+B08_XREF_CONTEXT ffffff80022ecb19	callq	0xffffff8000b48bd0
+B08_XREF_CONTEXT ffffff80022ecb1e	movq	0x10(%r14), %rax
+B08_XREF_CONTEXT ffffff80022ecb22	movq	0xf8(%rax), %r13
+B08_XREF_CONTEXT ffffff80022f0afc	popq	%rbp
+B08_XREF_CONTEXT ffffff80022f0afd	retq
+B08_XREF_CONTEXT __ZN18IO80211PeerMonitor14isRealTimePeerEv:
+B08_XREF_CONTEXT ffffff80022f0afe	pushq	%rbp
+B08_XREF_CONTEXT ffffff80022f0aff	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80022f0b02	pushq	%r14
+B08_XREF_CONTEXT ffffff80022f0b04	pushq	%rbx
+B08_XREF_CONTEXT ffffff80022f0b05	movq	%rdi, %rbx
+B08_XREF_CONTEXT ffffff80022f0b08	movq	0x10(%rdi), %rax
+B08_XREF_CONTEXT ffffff80022f0b0c	movq	0x8(%rax), %rdi
+B08_XREF_CONTEXT ffffff80022f0b10	leaq	__ZN15IO80211AWDLPeer10gMetaClassE(%rip), %rsi ## IO80211AWDLPeer::gMetaClass
+B08_XREF_CONTEXT ffffff80022f0b17	callq	0xffffff8000a49ab0
+B08_XREF_CONTEXT ffffff80022f0b1c	testq	%rax, %rax
+B08_XREF_CONTEXT ffffff80022f0b1f	je	0xffffff80022f0b46
+B08_XREF_CONTEXT ffffff80022f0b21	movq	0x20(%rax), %rax
+B08_XREF_CONTEXT ffffff80022f8499	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022f849b	callq	0xffffff8000ab6560
+B08_XREF_CONTEXT ffffff80022f84a0	addq	$0x8, %r15
+B08_XREF_CONTEXT ffffff80022f84a4	addq	$0x3, %r12
+B08_XREF_CONTEXT ffffff80022f84a8	cmpq	$0xc, %r12
+B08_XREF_CONTEXT ffffff80022f84ac	jne	0xffffff80022f8463
+B08_XREF_CONTEXT ffffff80022f84ae	movq	0x10(%rbx), %rax
+B08_XREF_CONTEXT ffffff80022f84b2	xorl	%ecx, %ecx
+B08_XREF_CONTEXT ffffff80022f84b4	movq	%rcx, 0xb08(%rax)
+B08_XREF_CONTEXT ffffff80022f84bb	movq	%rcx, 0xb00(%rax)
+B08_XREF_CONTEXT ffffff80022f84c2	movq	%rcx, 0xaf8(%rax)
+B08_XREF_CONTEXT ffffff80022f84c9	movq	%rcx, 0xaf0(%rax)
+B08_XREF_CONTEXT ffffff80022f84d0	movq	%rcx, 0xae8(%rax)
+B08_XREF_CONTEXT ffffff80022f84d7	movq	%rcx, 0xae0(%rax)
+B08_XREF_CONTEXT ffffff80022f84de	movq	%rcx, 0xad8(%rax)
+B08_XREF_CONTEXT ffffff80022faae2	subq	%r13, %r12
+B08_XREF_CONTEXT ffffff80022faae5	movzbl	%cl, %eax
+B08_XREF_CONTEXT ffffff80022faae8	movzwl	(%r15,%rax,2), %ebx
+B08_XREF_CONTEXT ffffff80022faaed	movl	%ebx, %edi
+B08_XREF_CONTEXT ffffff80022faaef	callq	__Z25ChanSpecGetPrimaryChannel18AppleChannelSpec_t ## ChanSpecGetPrimaryChannel(AppleChannelSpec_t)
+B08_XREF_CONTEXT ffffff80022faaf4	cmpl	$0xc000, %ebx                   ## imm = 0xC000
+B08_XREF_CONTEXT ffffff80022faafa	leaq	0xa7f53(%rip), %r10             ## literal pool for: "6G"
+B08_XREF_CONTEXT ffffff80022fab01	leaq	0x6f7c5(%rip), %rcx             ## literal pool for: "5G"
+B08_XREF_CONTEXT ffffff80022fab08	cmovaeq	%rcx, %r10
+B08_XREF_CONTEXT ffffff80022fab0c	movzbl	%al, %r11d
+B08_XREF_CONTEXT ffffff80022fab10	cmpl	$0x4000, %ebx                   ## imm = 0x4000
+B08_XREF_CONTEXT ffffff80022fab16	leaq	0x6f7ad(%rip), %rax             ## literal pool for: "2G"
+B08_XREF_CONTEXT ffffff80022fab1d	cmovbq	%rax, %r10
+B08_XREF_CONTEXT ffffff80022fab21	movq	-0x38(%rbp), %rdi
+B08_XREF_CONTEXT ffffff80022fab25	movl	$0x1, %esi
+B08_XREF_CONTEXT ffffff80022fbaf6	callq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff80022fbaf9	xorl	%ebx, %ebx
+B08_XREF_CONTEXT ffffff80022fbafb	movq	%rbx, %rax
+B08_XREF_CONTEXT ffffff80022fbafe	addq	$0x8, %rsp
+B08_XREF_CONTEXT ffffff80022fbb02	popq	%rbx
+B08_XREF_CONTEXT ffffff80022fbb03	popq	%r14
+B08_XREF_CONTEXT ffffff80022fbb05	popq	%r15
+B08_XREF_CONTEXT ffffff80022fbb07	popq	%rbp
+B08_XREF_CONTEXT ffffff80022fbb08	retq
+B08_XREF_CONTEXT ffffff80022fbb09	nop
+B08_XREF_CONTEXT __ZN21IO80211ScanCacheStore25initIO80211ScanCacheStoreER27IO80211ScanCacheStoreParams:
+B08_XREF_CONTEXT ffffff80022fbb0a	pushq	%rbp
+B08_XREF_CONTEXT ffffff80022fbb0b	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff80022fbb0e	pushq	%r14
+B08_XREF_CONTEXT ffffff80022fbb10	pushq	%rbx
+B08_XREF_CONTEXT ffffff80022fcae7	movq	%rbx, (%r11)
+B08_XREF_CONTEXT ffffff80022fcaea	movq	%r11, 0x8(%r11)
+B08_XREF_CONTEXT ffffff80022fcaee	movq	%r15, 0x10(%r11)
+B08_XREF_CONTEXT ffffff80022fcaf2	movb	%bl, 0x18(%r11)
+B08_XREF_CONTEXT ffffff80022fcaf6	leaq	-0xc8(%rbp), %r14
+B08_XREF_CONTEXT ffffff80022fcafd	movq	%rbx, (%r14)
+B08_XREF_CONTEXT ffffff80022fcb00	movq	%r14, 0x8(%r14)
+B08_XREF_CONTEXT ffffff80022fcb04	movq	%r15, 0x10(%r14)
+B08_XREF_CONTEXT ffffff80022fcb08	movl	$0x3, 0x18(%r14)
+B08_XREF_CONTEXT ffffff80022fcb10	cmpl	$0x1, %eax
+B08_XREF_CONTEXT ffffff80022fcb13	jne	0xffffff80022fcbd0
+B08_XREF_CONTEXT ffffff80022fcb19	movq	0xbf4e0(%rip), %rbx
+B08_XREF_CONTEXT ffffff80022fcb20	leaq	-0x120(%rbp), %rax
+B08_XREF_CONTEXT ffffff80022fcb27	movq	%rbx, (%rax)
+B08_XREF_CONTEXT ffffff80022fcb2a	movq	$0x42000000, 0x8(%rax)          ## imm = 0x42000000
+B08_XREF_CONTEXT ffffff80022feae5	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022feae7	callq	0xffffff8000a85d00
+B08_XREF_CONTEXT ffffff80022feaec	jmp	0xffffff80022fec1e
+B08_XREF_CONTEXT ffffff80022feaf1	cmpl	$0x0, 0x8c(%rax)
+B08_XREF_CONTEXT ffffff80022feaf8	je	0xffffff80022feb0c
+B08_XREF_CONTEXT ffffff80022feafa	leaq	0xad99f(%rip), %rdi             ## literal pool for: "LQM-WIFI: slow-wifi Invalid measurementTimeoutMS configuration"
+B08_XREF_CONTEXT ffffff80022feb01	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff80022feb03	callq	0xffffff8000ab6560
+B08_XREF_CONTEXT ffffff80022feb08	movq	0x10(%rbx), %rax
+B08_XREF_CONTEXT ffffff80022feb0c	cmpl	$0x0, 0x90(%rax)
+B08_XREF_CONTEXT ffffff80022feb13	je	0xffffff80022fec1b
+B08_XREF_CONTEXT ffffff80022feb19	leaq	-0x1eeb20(%rip), %rdi
+B08_XREF_CONTEXT ffffff80022feb20	movq	0xbd5f9(%rip), %rsi
+B08_XREF_CONTEXT ffffff80022feb27	leaq	__ZZN25IO80211LinkQualityMonitor26initWithProviderAndOptionsEP9IOServicePK7OptionsP19IO80211LinkRecoveryP21IO80211LQMCrashTracerE11_os_log_fmt__16_(%rip), %rcx ## IO80211LinkQualityMonitor::initWithProviderAndOptions(IOService*, Options const*, IO80211LinkRecovery*, IO80211LQMCrashTracer*)::_os_log_fmt
+B08_XREF_CONTEXT ffffff80022feb2e	xorl	%r15d, %r15d
+B08_XREF_CONTEXT ffffff8002300ae9	xorl	%esi, %esi
+B08_XREF_CONTEXT ffffff8002300aeb	xorl	%eax, %eax
+B08_XREF_CONTEXT ffffff8002300aed	movq	%rsi, -0x60(%rbp)
+B08_XREF_CONTEXT ffffff8002300af1	leaq	__ZL23k2GPhyRateMarginPercent(%rip), %rcx ## k2GPhyRateMarginPercent
+B08_XREF_CONTEXT ffffff8002300af8	testl	%edx, %edx
+B08_XREF_CONTEXT ffffff8002300afa	je	0xffffff8002300b03
+B08_XREF_CONTEXT ffffff8002300afc	leaq	__ZL23k5GPhyRateMarginPercent(%rip), %rcx ## k5GPhyRateMarginPercent
+B08_XREF_CONTEXT ffffff8002300b03	movzbl	(%rcx,%rax), %r13d
+B08_XREF_CONTEXT ffffff8002300b08	leaq	(%rax,%rax,8), %rcx
+B08_XREF_CONTEXT ffffff8002300b0c	leaq	(%rax,%rcx,4), %rbx
+B08_XREF_CONTEXT ffffff8002300b10	movq	-0x98(%rbp), %r10
+B08_XREF_CONTEXT ffffff8002300b17	movb	-0x68(%rbp), %al
+B08_XREF_CONTEXT ffffff8002300b1a	movb	%al, 0x1f(%r10,%rbx)
+B08_XREF_CONTEXT ffffff8002300b1f	movq	0x460(%rdi), %rsi
+B08_XREF_CONTEXT ffffff8002300b26	leaq	(,%rsi,4), %rax
+B08_XREF_CONTEXT ffffff8002301ad8	addq	$0x40, %rsp
+B08_XREF_CONTEXT ffffff8002301adc	movq	0x10(%r12), %r15
+B08_XREF_CONTEXT ffffff8002301ae1	cmpl	$0x0, 0x8c(%r15)
+B08_XREF_CONTEXT ffffff8002301ae9	je	0xffffff8002301baf
+B08_XREF_CONTEXT ffffff8002301aef	movq	0x468(%r15), %rsi
+B08_XREF_CONTEXT ffffff8002301af6	movq	0x150(%r15), %r10
+B08_XREF_CONTEXT ffffff8002301afd	movq	0x260(%r15), %rax
+B08_XREF_CONTEXT ffffff8002301b04	movq	%rax, -0x48(%rbp)
+B08_XREF_CONTEXT ffffff8002301b08	movq	0x3b0(%r15), %rcx
+B08_XREF_CONTEXT ffffff8002301b0f	movq	0x3b8(%r15), %r8
+B08_XREF_CONTEXT ffffff8002301b16	movq	0x3c0(%r15), %r9
+B08_XREF_CONTEXT ffffff8002301b1d	movq	0x408(%r15), %rax
+B08_XREF_CONTEXT ffffff8002301b24	movq	%rax, -0x30(%rbp)
+B08_XREF_CONTEXT ffffff8002301b28	movq	0x3c8(%r15), %rax
+B08_XREF_CONTEXT ffffff8002301b2f	movq	%rax, -0x40(%rbp)
+B08_XREF_CONTEXT ffffff8002305aea	callq	*0x1d0(%rax)
+B08_XREF_CONTEXT ffffff8002305af0	movq	0xb6621(%rip), %rax
+B08_XREF_CONTEXT ffffff8002305af7	movq	(%rax), %rax
+B08_XREF_CONTEXT ffffff8002305afa	cmpq	-0x20(%rbp), %rax
+B08_XREF_CONTEXT ffffff8002305afe	jne	0xffffff8002305b0e
+B08_XREF_CONTEXT ffffff8002305b00	movl	%r14d, %eax
+B08_XREF_CONTEXT ffffff8002305b03	addq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff8002305b07	popq	%rbx
+B08_XREF_CONTEXT ffffff8002305b08	popq	%r14
+B08_XREF_CONTEXT ffffff8002305b0a	popq	%r15
+B08_XREF_CONTEXT ffffff8002305b0c	popq	%rbp
+B08_XREF_CONTEXT ffffff8002305b0d	retq
+B08_XREF_CONTEXT ffffff8002305b0e	callq	0xffffff8000383150
+B08_XREF_CONTEXT ffffff8002305b13	nop
+B08_XREF_CONTEXT __ZN20IO80211P2PSupervisor18setNANHostElectionEb:
+B08_XREF_CONTEXT ffffff8002307ae5	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002307ae8	callq	*0x1c0(%rax)
+B08_XREF_CONTEXT ffffff8002307aee	movq	0x10(%r14), %rcx
+B08_XREF_CONTEXT ffffff8002307af2	testb	%al, %al
+B08_XREF_CONTEXT ffffff8002307af4	je	0xffffff8002307d01
+B08_XREF_CONTEXT ffffff8002307afa	movq	0x690(%rcx,%rbx), %rdi
+B08_XREF_CONTEXT ffffff8002307b02	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff8002307b05	callq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff8002307b08	movq	0x10(%r14), %rax
+B08_XREF_CONTEXT ffffff8002307b0c	movq	0x690(%rax,%rbx), %rdi
+B08_XREF_CONTEXT ffffff8002307b14	leaq	__ZL26kLQMRecoveryReasonReportId(%rip), %rcx ## kLQMRecoveryReasonReportId
+B08_XREF_CONTEXT ffffff8002307b1b	movq	(%rcx,%rbx,2), %rsi
+B08_XREF_CONTEXT ffffff8002307b1f	movabsq	$0x5a000000000000, %rax         ## imm = 0x5A000000000000
+B08_XREF_CONTEXT ffffff8002307b29	orq	%rax, %rsi
+B08_XREF_CONTEXT ffffff8002307b2c	movq	0x8(%rcx,%rbx,2), %rdx
+B08_XREF_CONTEXT ffffff800230caf6	jne	0xffffff800230cb0f
+B08_XREF_CONTEXT ffffff800230caf8	movl	%r14d, %eax
+B08_XREF_CONTEXT ffffff800230cafb	addq	$0x58, %rsp
+B08_XREF_CONTEXT ffffff800230caff	popq	%rbx
+B08_XREF_CONTEXT ffffff800230cb00	popq	%r12
+B08_XREF_CONTEXT ffffff800230cb02	popq	%r13
+B08_XREF_CONTEXT ffffff800230cb04	popq	%r14
+B08_XREF_CONTEXT ffffff800230cb06	popq	%r15
+B08_XREF_CONTEXT ffffff800230cb08	popq	%rbp
+B08_XREF_CONTEXT ffffff800230cb09	retq
+B08_XREF_CONTEXT ffffff800230cb0a	xorl	%r14d, %r14d
+B08_XREF_CONTEXT ffffff800230cb0d	jmp	0xffffff800230cae8
+B08_XREF_CONTEXT ffffff800230cb0f	callq	0xffffff8000383150
+B08_XREF_CONTEXT __ZN24IO80211ControllerMonitor20setChanNoiseFloorLTEE18apple80211_channeli:
+B08_XREF_CONTEXT ffffff800230cb14	pushq	%rbp
+B08_XREF_CONTEXT ffffff800230dae5	testq	%rsi, %rsi
+B08_XREF_CONTEXT ffffff800230dae8	je	0xffffff800230e5f2
+B08_XREF_CONTEXT ffffff800230daee	movq	0x10(%rax), %rdi
+B08_XREF_CONTEXT ffffff800230daf2	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff800230daf5	callq	*0x1c0(%rax)
+B08_XREF_CONTEXT ffffff800230dafb	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff800230dafe	movq	0x320(%rax), %rdi
+B08_XREF_CONTEXT ffffff800230db05	movq	(%rdi), %rax
+B08_XREF_CONTEXT ffffff800230db08	callq	*0x28(%rax)
+B08_XREF_CONTEXT ffffff800230db0b	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff800230db0e	movq	0x320(%rax), %rdi
+B08_XREF_CONTEXT ffffff800230db15	leaq	0xa2a53(%rip), %rdx             ## literal pool for: "PM Associated   Dur"
+B08_XREF_CONTEXT ffffff800230db1c	movq	%r15, %rsi
+B08_XREF_CONTEXT ffffff800230db1f	callq	0xffffff8000b47e10
+B08_XREF_CONTEXT ffffff800230db24	movq	(%rbx), %rax
+B08_XREF_CONTEXT ffffff8002310af5	jmp	0xffffff800230f5d2
+B08_XREF_CONTEXT ffffff8002310afa	callq	0xffffff8000383150
+B08_XREF_CONTEXT ffffff8002310aff	nop
+B08_XREF_CONTEXT __ZN24IO80211ControllerMonitor13setFrameStatsEP25apple80211_frame_counters:
+B08_XREF_CONTEXT ffffff8002310b00	pushq	%rbp
+B08_XREF_CONTEXT ffffff8002310b01	movq	%rsp, %rbp
+B08_XREF_CONTEXT ffffff8002310b04	pushq	%r15
+B08_XREF_CONTEXT ffffff8002310b06	pushq	%r14
+B08_XREF_CONTEXT ffffff8002310b08	pushq	%r13
+B08_XREF_CONTEXT ffffff8002310b0a	pushq	%r12
+B08_XREF_CONTEXT ffffff8002310b0c	pushq	%rbx
+B08_XREF_CONTEXT ffffff8002310b0d	subq	$0x18, %rsp
+B08_XREF_CONTEXT ffffff8002310b11	movq	%rsi, %rbx
+B08_XREF_CONTEXT ffffff8002310b14	movq	%rdi, %r14
+B08_XREF_CONTEXT ffffff8002310b17	testq	%rsi, %rsi
+CONTROLLER_EXPANSION_NEARBY_FIELD_B10_XREF_COUNT=191
+CONTROLLER_EXPANSION_NEARBY_FIELD_B00_XREF_COUNT=186
+CONTROLLER_EXPANSION_NEARBY_FIELD_AF8_XREF_COUNT=163
+CONTROLLER_EXPANSION_NEARBY_FIELD_B18_XREF_COUNT=173
+
+CLASS_METHOD_COUNT NAME=IO80211WorkQueue COUNT=37
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258e00 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassC1Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258e32 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassD1Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258e3c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC2EPK11OSMetaClass
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258e5c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC1EPK11OSMetaClass
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258e7c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD2Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258e86 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD1Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258e90 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD0Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258eb8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueuedlEPvm
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258ed0 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue12getMetaClassEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258ede OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassC2Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258f10 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue9MetaClass5allocEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258f58 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueuenwEm
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258f6c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC1Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258f9c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC2Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002258fcc OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9workQueueEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002259042 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19getDefaultWorkQueueEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002259050 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19setDefaultWorkQueueEPS_
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff800225905e OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue13addWorkSourceEP17IO80211WorkSource
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002259098 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue16removeWorkSourceEP17IO80211WorkSource
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022590d2 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue20enableAllWorkSourcesEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022590e4 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue21disableAllWorkSourcesEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022590f6 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9runActionEPFiP8OSObjectPvS2_S2_S2_ES1_S2_S2_S2_S2_
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002259108 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue14runActionBlockEU13block_pointerFivE
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002259112 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue12commandSleepEPvy
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002259188 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue13commandWakeupEPv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022591a0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue20deprecatedWakeupGateEPvb
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022591b2 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedSleepGateEPvj
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022591c4 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedSleepGateEPvyj
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022591d6 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue18deprecatedOpenGateEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022591e8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedCloseGateEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80022591fa OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue9getThreadEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002259202 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue19enableAllInterruptsEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff8002259208 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue20disableAllInterruptsEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff800225920e OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassD0Ev
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80023d3ca0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9metaClassE
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80023d3ca8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue10superClassE
+CLASS_RELEVANT_SYMBOL CLASS=IO80211WorkQueue ADDRESS=0xffffff80023f7cf0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue10gMetaClassE
+
+CLASS_METHOD_COUNT NAME=IO80211TimerSource COUNT=22
+CLASS_RELEVANT_SYMBOL CLASS=IO80211TimerSource ADDRESS=0xffffff8002145a54 OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211TimerSource4freeEv
+CLASS_RELEVANT_SYMBOL CLASS=IO80211TimerSource ADDRESS=0xffffff8002145a88 OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211TimerSource15allocWithParamsE26IO80211TimerSourcePriorityP8OSObjectP16IO80211WorkQueuePFvS2_PS_E
+CLASS_RELEVANT_SYMBOL CLASS=IO80211TimerSource ADDRESS=0xffffff8002145b16 OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211TimerSource15allocWithParamsEP8OSObjectP16IO80211WorkQueuePFvS1_PS_E
+CLASS_RELEVANT_SYMBOL CLASS=IO80211TimerSource ADDRESS=0xffffff8002145b2e OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211TimerSource4initE26IO80211TimerSourcePriorityP8OSObjectP16IO80211WorkQueuePFvS2_PS_E
+
+CLASS_METHOD_COUNT NAME=IO80211PostOffice COUNT=26
+CLASS_RELEVANT_SYMBOL CLASS=IO80211PostOffice ADDRESS=0xffffff80022b2712 OWNER=com.apple.iokit.IO80211Family NAME=__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue
+CLASS_RELEVANT_SYMBOL CLASS=IO80211PostOffice ADDRESS=0xffffff80022b2784 OWNER=com.apple.iokit.IO80211Family NAME=__ZN17IO80211PostOffice14initWithParamsEP16IO80211WorkQueue
+CLASS_RELEVANT_SYMBOL CLASS=IO80211PostOffice ADDRESS=0xffffff80022b2a56 OWNER=com.apple.iokit.IO80211Family NAME=__ZN17IO80211PostOffice4freeEv
+
+TARGET_SYMBOL TAG=TIMER_SOURCE_INIT NAME=__ZN18IO80211TimerSource4initE26IO80211TimerSourcePriorityP8OSObjectP16IO80211WorkQueuePFvS2_PS_E ADDRESS=0xffffff8002145b2e OWNER=com.apple.iokit.IO80211Family
+METHOD_TAG=TIMER_SOURCE_INIT SYMBOL=__ZN18IO80211TimerSource4initE26IO80211TimerSourcePriorityP8OSObjectP16IO80211WorkQueuePFvS2_PS_E ADDRESS=0xffffff8002145b2e INSTRUCTIONS=32
+ffffff8002145b2e	pushq	%rbp
+ffffff8002145b2f	movq	%rsp, %rbp
+ffffff8002145b32	pushq	%r14
+ffffff8002145b34	pushq	%rbx
+ffffff8002145b35	movq	%rcx, %rbx
+ffffff8002145b38	testq	%rcx, %rcx
+ffffff8002145b3b	sete	%al
+ffffff8002145b3e	testq	%r8, %r8
+ffffff8002145b41	sete	%cl
+ffffff8002145b44	orb	%al, %cl
+ffffff8002145b46	jne	0xffffff8002145b89
+ffffff8002145b48	movq	%rdi, %r14
+ffffff8002145b4b	testl	$0xfffffffd, %esi               ## imm = 0xFFFFFFFD
+ffffff8002145b51	movl	$0x1, %eax
+ffffff8002145b56	movl	$0xff, %esi
+ffffff8002145b5b	cmovel	%eax, %esi
+ffffff8002145b5e	movq	0x27657b(%rip), %rax
+ffffff8002145b65	movq	%r8, %rcx
+ffffff8002145b68	callq	*0x230(%rax)
+ffffff8002145b6e	testb	%al, %al
+ffffff8002145b70	je	0xffffff8002145b89
+ffffff8002145b72	movq	0x276547(%rip), %rax
+ffffff8002145b79	movq	%rbx, %rdi
+ffffff8002145b7c	movq	%r14, %rsi
+ffffff8002145b7f	callq	*0x150(%rax)
+ffffff8002145b85	movb	$0x1, %al
+ffffff8002145b87	jmp	0xffffff8002145b8b
+ffffff8002145b89	xorl	%eax, %eax
+ffffff8002145b8b	popq	%rbx
+ffffff8002145b8c	popq	%r14
+ffffff8002145b8e	popq	%rbp
+ffffff8002145b8f	retq
+
+TARGET_SYMBOL TAG=TIMER_SOURCE_FREE NAME=__ZN18IO80211TimerSource4freeEv ADDRESS=0xffffff8002145a54 OWNER=com.apple.iokit.IO80211Family
+METHOD_TAG=TIMER_SOURCE_FREE SYMBOL=__ZN18IO80211TimerSource4freeEv ADDRESS=0xffffff8002145a54 INSTRUCTIONS=17
+ffffff8002145a54	pushq	%rbp
+ffffff8002145a55	movq	%rsp, %rbp
+ffffff8002145a58	pushq	%rbx
+ffffff8002145a59	pushq	%rax
+ffffff8002145a5a	movq	%rdi, %rbx
+ffffff8002145a5d	movq	0x30(%rdi), %rdi
+ffffff8002145a61	testq	%rdi, %rdi
+ffffff8002145a64	je	0xffffff8002145a72
+ffffff8002145a66	movq	(%rdi), %rax
+ffffff8002145a69	movq	%rbx, %rsi
+ffffff8002145a6c	callq	*0x148(%rax)
+ffffff8002145a72	movq	0x276667(%rip), %rax
+ffffff8002145a79	movq	%rbx, %rdi
+ffffff8002145a7c	addq	$0x8, %rsp
+ffffff8002145a80	popq	%rbx
+ffffff8002145a81	popq	%rbp
+ffffff8002145a82	jmpq	*0xa0(%rax)
+
+TARGET_SYMBOL TAG=POSTOFFICE_INIT NAME=__ZN17IO80211PostOffice14initWithParamsEP16IO80211WorkQueue ADDRESS=0xffffff80022b2784 OWNER=com.apple.iokit.IO80211Family
+METHOD_TAG=POSTOFFICE_INIT SYMBOL=__ZN17IO80211PostOffice14initWithParamsEP16IO80211WorkQueue ADDRESS=0xffffff80022b2784 INSTRUCTIONS=37
+ffffff80022b2784	pushq	%rbp
+ffffff80022b2785	movq	%rsp, %rbp
+ffffff80022b2788	pushq	%r14
+ffffff80022b278a	pushq	%rbx
+ffffff80022b278b	movq	%rsi, %r14
+ffffff80022b278e	movq	%rdi, %rbx
+ffffff80022b2791	movq	0x109978(%rip), %rax
+ffffff80022b2798	callq	*0x98(%rax)
+ffffff80022b279e	testb	%al, %al
+ffffff80022b27a0	je	0xffffff80022b27f3
+ffffff80022b27a2	leaq	__ZZN17IO80211PostOffice14initWithParamsEP16IO80211WorkQueueE19kalloc_type_view_78(%rip), %rdi ## IO80211PostOffice::initWithParams(IO80211WorkQueue*)::kalloc_type_view_78
+ffffff80022b27a9	callq	0xffffff8000ab5930
+ffffff80022b27ae	movq	%rax, 0x10(%rbx)
+ffffff80022b27b2	testq	%rax, %rax
+ffffff80022b27b5	je	0xffffff80022b27f3
+ffffff80022b27b7	movq	%r14, 0x10(%rax)
+ffffff80022b27bb	testq	%r14, %r14
+ffffff80022b27be	je	0xffffff80022b27f3
+ffffff80022b27c0	leaq	__ZN17IO80211PostOffice19outForDeliveryTimerEP18IO80211TimerSource(%rip), %rcx ## IO80211PostOffice::outForDeliveryTimer(IO80211TimerSource*)
+ffffff80022b27c7	movl	$0x2, %edi
+ffffff80022b27cc	movq	%rbx, %rsi
+ffffff80022b27cf	movq	%r14, %rdx
+ffffff80022b27d2	callq	__ZN18IO80211TimerSource15allocWithParamsE26IO80211TimerSourcePriorityP8OSObjectP16IO80211WorkQueuePFvS2_PS_E ## IO80211TimerSource::allocWithParams(IO80211TimerSourcePriority, OSObject*, IO80211WorkQueue*, void (*)(OSObject*, IO80211TimerSource*))
+ffffff80022b27d7	movq	0x10(%rbx), %rcx
+ffffff80022b27db	movq	%rax, 0x18(%rcx)
+ffffff80022b27df	testq	%rax, %rax
+ffffff80022b27e2	je	0xffffff80022b27f3
+ffffff80022b27e4	movq	%rcx, (%rcx)
+ffffff80022b27e7	movq	%rcx, 0x8(%rcx)
+ffffff80022b27eb	movb	$0x1, 0x20(%rcx)
+ffffff80022b27ef	movb	$0x1, %al
+ffffff80022b27f1	jmp	0xffffff80022b27f5
+ffffff80022b27f3	xorl	%eax, %eax
+ffffff80022b27f5	popq	%rbx
+ffffff80022b27f6	popq	%r14
+ffffff80022b27f8	popq	%rbp
+ffffff80022b27f9	retq
+
+TARGET_SYMBOL TAG=POSTOFFICE_FREE NAME=__ZN17IO80211PostOffice4freeEv ADDRESS=0xffffff80022b2a56 OWNER=com.apple.iokit.IO80211Family
+METHOD_TAG=POSTOFFICE_FREE SYMBOL=__ZN17IO80211PostOffice4freeEv ADDRESS=0xffffff80022b2a56 INSTRUCTIONS=54
+ffffff80022b2a56	pushq	%rbp
+ffffff80022b2a57	movq	%rsp, %rbp
+ffffff80022b2a5a	pushq	%r15
+ffffff80022b2a5c	pushq	%r14
+ffffff80022b2a5e	pushq	%rbx
+ffffff80022b2a5f	pushq	%rax
+ffffff80022b2a60	movq	%rdi, %rbx
+ffffff80022b2a63	movq	0x10(%rdi), %r14
+ffffff80022b2a67	testq	%r14, %r14
+ffffff80022b2a6a	je	0xffffff80022b2add
+ffffff80022b2a6c	movq	(%r14), %rdi
+ffffff80022b2a6f	cmpq	%rdi, %r14
+ffffff80022b2a72	je	0xffffff80022b2ab0
+ffffff80022b2a74	xorl	%r15d, %r15d
+ffffff80022b2a77	movq	0x8(%rdi), %rax
+ffffff80022b2a7b	cmpq	%rdi, (%rax)
+ffffff80022b2a7e	jne	0xffffff80022b2af7
+ffffff80022b2a80	movq	(%rdi), %rax
+ffffff80022b2a83	cmpq	%rdi, 0x8(%rax)
+ffffff80022b2a87	jne	0xffffff80022b2af7
+ffffff80022b2a89	movq	%r14, 0x8(%rax)
+ffffff80022b2a8d	movq	%rax, (%r14)
+ffffff80022b2a90	movq	%r15, 0x8(%rdi)
+ffffff80022b2a94	movq	%r15, (%rdi)
+ffffff80022b2a97	movq	0x28(%rdi), %rsi
+ffffff80022b2a9b	addq	$0x38, %rsi
+ffffff80022b2a9f	callq	0xffffff8000ab6290
+ffffff80022b2aa4	movq	(%r14), %rdi
+ffffff80022b2aa7	cmpq	%rdi, %r14
+ffffff80022b2aaa	jne	0xffffff80022b2a77
+ffffff80022b2aac	movq	0x10(%rbx), %r14
+ffffff80022b2ab0	movq	0x18(%r14), %rdi
+ffffff80022b2ab4	testq	%rdi, %rdi
+ffffff80022b2ab7	je	0xffffff80022b2ac3
+ffffff80022b2ab9	movq	(%rdi), %rax
+ffffff80022b2abc	callq	*0x28(%rax)
+ffffff80022b2abf	movq	0x10(%rbx), %r14
+ffffff80022b2ac3	xorl	%eax, %eax
+ffffff80022b2ac5	movq	%rax, 0x18(%r14)
+ffffff80022b2ac9	movq	0x10(%rbx), %rsi
+ffffff80022b2acd	movq	%rax, 0x10(%rbx)
+ffffff80022b2ad1	leaq	__ZZN17IO80211PostOffice4freeEvE20kalloc_type_view_201(%rip), %rdi ## IO80211PostOffice::free()::kalloc_type_view_201
+ffffff80022b2ad8	callq	0xffffff8000ab5a60
+ffffff80022b2add	movq	0x10962c(%rip), %rax
+ffffff80022b2ae4	movq	%rbx, %rdi
+ffffff80022b2ae7	addq	$0x8, %rsp
+ffffff80022b2aeb	popq	%rbx
+ffffff80022b2aec	popq	%r14
+ffffff80022b2aee	popq	%r15
+ffffff80022b2af0	popq	%rbp
+ffffff80022b2af1	jmpq	*0xa0(%rax)
+ffffff80022b2af7	movq	%rdi, %rax
+ffffff80022b2afa	ud1l	0xbffd(%eax), %eax
+ffffff80022b2b02	ud2
+
+TARGET_SYMBOL TAG=CONTROLLER_STOP NAME=__ZN17IO80211Controller4stopEP9IOService ADDRESS=0xffffff8002223c02 OWNER=com.apple.iokit.IO80211Family
+METHOD_TAG=CONTROLLER_STOP SYMBOL=__ZN17IO80211Controller4stopEP9IOService ADDRESS=0xffffff8002223c02 INSTRUCTIONS=153
+ffffff8002223c02	pushq	%rbp
+ffffff8002223c03	movq	%rsp, %rbp
+ffffff8002223c06	pushq	%r15
+ffffff8002223c08	pushq	%r14
+ffffff8002223c0a	pushq	%rbx
+ffffff8002223c0b	pushq	%rax
+ffffff8002223c0c	movq	%rsi, %rbx
+ffffff8002223c0f	movq	%rdi, %r14
+ffffff8002223c12	movq	%rsi, %rdi
+ffffff8002223c15	callq	0xffffff800048cb00
+ffffff8002223c1a	movq	%rax, %r15
+ffffff8002223c1d	movq	%r14, %rdi
+ffffff8002223c20	callq	0xffffff800048cb00
+ffffff8002223c25	leaq	0x1478d0(%rip), %rdi            ## literal pool for: "IO80211Controller::stop[%u] ::stop( %p ) this[%p]\n"
+ffffff8002223c2c	movl	$0x34d, %esi                    ## imm = 0x34D
+ffffff8002223c31	movq	%r15, %rdx
+ffffff8002223c34	movq	%rax, %rcx
+ffffff8002223c37	xorl	%eax, %eax
+ffffff8002223c39	callq	0xffffff8000ab6560
+ffffff8002223c3e	movq	0x120(%r14), %rax
+ffffff8002223c45	movb	$0x0, 0xb38(%rax)
+ffffff8002223c4c	movq	0x360(%rax), %rdi
+ffffff8002223c53	testq	%rdi, %rdi
+ffffff8002223c56	je	0xffffff8002223c65
+ffffff8002223c58	movq	(%rdi), %rax
+ffffff8002223c5b	callq	*0x28(%rax)
+ffffff8002223c5e	movq	0x120(%r14), %rax
+ffffff8002223c65	movq	$0x0, 0x360(%rax)
+ffffff8002223c70	cmpq	$0x0, __ZN17IO80211Controller13gIO80211PlaneE(%rip) ## IO80211Controller::gIO80211Plane
+ffffff8002223c78	je	0xffffff8002223c9c
+ffffff8002223c7a	callq	0xffffff8000ac1670
+ffffff8002223c7f	movq	__ZN17IO80211Controller13gIO80211PlaneE(%rip), %rdx ## IO80211Controller::gIO80211Plane
+ffffff8002223c86	movq	(%r14), %rcx
+ffffff8002223c89	movq	%r14, %rdi
+ffffff8002223c8c	movq	%rax, %rsi
+ffffff8002223c8f	callq	*0x360(%rcx)
+ffffff8002223c95	movq	0x120(%r14), %rax
+ffffff8002223c9c	movq	0x30(%rax), %rdi
+ffffff8002223ca0	testq	%rdi, %rdi
+ffffff8002223ca3	je	0xffffff8002223cba
+ffffff8002223ca5	movq	(%rdi), %rax
+ffffff8002223ca8	callq	*0x28(%rax)
+ffffff8002223cab	movq	0x120(%r14), %rax
+ffffff8002223cb2	movq	$0x0, 0x30(%rax)
+ffffff8002223cba	movq	0x38(%rax), %rdi
+ffffff8002223cbe	testq	%rdi, %rdi
+ffffff8002223cc1	je	0xffffff8002223cd3
+ffffff8002223cc3	movq	(%rdi), %rax
+ffffff8002223cc6	callq	*0x870(%rax)
+ffffff8002223ccc	movq	0x120(%r14), %rax
+ffffff8002223cd3	movq	0x4c8(%rax), %rdi
+ffffff8002223cda	testq	%rdi, %rdi
+ffffff8002223cdd	je	0xffffff8002223cef
+ffffff8002223cdf	movq	(%rdi), %rax
+ffffff8002223ce2	callq	*0x870(%rax)
+ffffff8002223ce8	movq	0x120(%r14), %rax
+ffffff8002223cef	movq	0x38(%rax), %rdi
+ffffff8002223cf3	testq	%rdi, %rdi
+ffffff8002223cf6	je	0xffffff8002223d05
+ffffff8002223cf8	movq	(%rdi), %rax
+ffffff8002223cfb	callq	*0x28(%rax)
+ffffff8002223cfe	movq	0x120(%r14), %rax
+ffffff8002223d05	movq	$0x0, 0x38(%rax)
+ffffff8002223d0d	movq	0x4c8(%rax), %rdi
+ffffff8002223d14	testq	%rdi, %rdi
+ffffff8002223d17	je	0xffffff8002223d26
+ffffff8002223d19	movq	(%rdi), %rax
+ffffff8002223d1c	callq	*0x28(%rax)
+ffffff8002223d1f	movq	0x120(%r14), %rax
+ffffff8002223d26	movq	$0x0, 0x4c8(%rax)
+ffffff8002223d31	movq	0x58(%rax), %rdi
+ffffff8002223d35	testq	%rdi, %rdi
+ffffff8002223d38	je	0xffffff8002223d47
+ffffff8002223d3a	movq	(%rdi), %rax
+ffffff8002223d3d	callq	*0x28(%rax)
+ffffff8002223d40	movq	0x120(%r14), %rax
+ffffff8002223d47	xorl	%ecx, %ecx
+ffffff8002223d49	movq	%rcx, 0x58(%rax)
+ffffff8002223d4d	movq	%rcx, __ZL31_sIO80211ControllerGlobalLogger(%rip) ## _sIO80211ControllerGlobalLogger
+ffffff8002223d54	movq	0x40(%rax), %rdi
+ffffff8002223d58	testq	%rdi, %rdi
+ffffff8002223d5b	je	0xffffff8002223d6a
+ffffff8002223d5d	movq	(%rdi), %rax
+ffffff8002223d60	callq	*0x28(%rax)
+ffffff8002223d63	movq	0x120(%r14), %rax
+ffffff8002223d6a	movq	$0x0, 0x40(%rax)
+ffffff8002223d72	movq	0x48(%rax), %rdi
+ffffff8002223d76	testq	%rdi, %rdi
+ffffff8002223d79	je	0xffffff8002223d88
+ffffff8002223d7b	movq	(%rdi), %rax
+ffffff8002223d7e	callq	*0x28(%rax)
+ffffff8002223d81	movq	0x120(%r14), %rax
+ffffff8002223d88	movq	$0x0, 0x48(%rax)
+ffffff8002223d90	movq	0x50(%rax), %rdi
+ffffff8002223d94	testq	%rdi, %rdi
+ffffff8002223d97	je	0xffffff8002223da6
+ffffff8002223d99	movq	(%rdi), %rax
+ffffff8002223d9c	callq	*0x28(%rax)
+ffffff8002223d9f	movq	0x120(%r14), %rax
+ffffff8002223da6	movq	$0x0, 0x50(%rax)
+ffffff8002223dae	movq	0x4d0(%rax), %rdi
+ffffff8002223db5	testq	%rdi, %rdi
+ffffff8002223db8	je	0xffffff8002223dc7
+ffffff8002223dba	movq	(%rdi), %rax
+ffffff8002223dbd	callq	*0x28(%rax)
+ffffff8002223dc0	movq	0x120(%r14), %rax
+ffffff8002223dc7	movq	$0x0, 0x4d0(%rax)
+ffffff8002223dd2	movq	0x4f0(%rax), %rdi
+ffffff8002223dd9	testq	%rdi, %rdi
+ffffff8002223ddc	je	0xffffff8002223e29
+ffffff8002223dde	movq	(%rdi), %rax
+ffffff8002223de1	callq	*0x218(%rax)
+ffffff8002223de7	movq	0x120(%r14), %rax
+ffffff8002223dee	movq	0x4f0(%rax), %rdi
+ffffff8002223df5	movq	(%rdi), %rax
+ffffff8002223df8	callq	*0x158(%rax)
+ffffff8002223dfe	movq	0x120(%r14), %rax
+ffffff8002223e05	movq	0x4f0(%rax), %rdi
+ffffff8002223e0c	testq	%rdi, %rdi
+ffffff8002223e0f	je	0xffffff8002223e1e
+ffffff8002223e11	movq	(%rdi), %rax
+ffffff8002223e14	callq	*0x28(%rax)
+ffffff8002223e17	movq	0x120(%r14), %rax
+ffffff8002223e1e	movq	$0x0, 0x4f0(%rax)
+ffffff8002223e29	movl	$0x0, 0x4c0(%rax)
+ffffff8002223e33	movq	0xb18(%rax), %rax
+ffffff8002223e3a	testq	%rax, %rax
+ffffff8002223e3d	je	0xffffff8002223e50
+ffffff8002223e3f	movq	0x10(%rax), %rax
+ffffff8002223e43	movq	0x8(%rax), %rdi
+ffffff8002223e47	movq	(%rdi), %rax
+ffffff8002223e4a	callq	*0x218(%rax)
+ffffff8002223e50	movq	%rbx, %rdi
+ffffff8002223e53	callq	0xffffff800048cb00
+ffffff8002223e58	movq	%rax, %r15
+ffffff8002223e5b	movq	%r14, %rdi
+ffffff8002223e5e	callq	0xffffff800048cb00
+ffffff8002223e63	leaq	0x1476c5(%rip), %rdi            ## literal pool for: "IO80211Controller::stop[%u] super::stop( %p ) this[%p]\n"
+ffffff8002223e6a	movl	$0x395, %esi                    ## imm = 0x395
+ffffff8002223e6f	movq	%r15, %rdx
+ffffff8002223e72	movq	%rax, %rcx
+ffffff8002223e75	xorl	%eax, %eax
+ffffff8002223e77	callq	0xffffff8000ab6560
+ffffff8002223e7c	movq	0x19826d(%rip), %rax
+ffffff8002223e83	movq	%r14, %rdi
+ffffff8002223e86	movq	%rbx, %rsi
+ffffff8002223e89	addq	$0x8, %rsp
+ffffff8002223e8d	popq	%rbx
+ffffff8002223e8e	popq	%r14
+ffffff8002223e90	popq	%r15
+ffffff8002223e92	popq	%rbp
+ffffff8002223e93	jmpq	*0x5d8(%rax)
+ffffff8002223e99	nop
+
+TARGET_SYMBOL TAG=CONTROLLER_FREE NAME=__ZN17IO80211Controller4freeEv ADDRESS=0xffffff80022239f8 OWNER=com.apple.iokit.IO80211Family
+METHOD_TAG=CONTROLLER_FREE SYMBOL=__ZN17IO80211Controller4freeEv ADDRESS=0xffffff80022239f8 INSTRUCTIONS=116
+ffffff80022239f8	pushq	%rbp
+ffffff80022239f9	movq	%rsp, %rbp
+ffffff80022239fc	pushq	%r15
+ffffff80022239fe	pushq	%r14
+ffffff8002223a00	pushq	%r12
+ffffff8002223a02	pushq	%rbx
+ffffff8002223a03	movq	%rdi, %rbx
+ffffff8002223a06	leaq	0x147a6a(%rip), %rdi            ## literal pool for: "IO80211Controller::free start \n"
+ffffff8002223a0d	xorl	%eax, %eax
+ffffff8002223a0f	callq	0xffffff8000ab6560
+ffffff8002223a14	movq	0x120(%rbx), %rcx
+ffffff8002223a1b	testq	%rcx, %rcx
+ffffff8002223a1e	je	0xffffff8002223bd1
+ffffff8002223a24	movq	0x3b8(%rcx), %rdi
+ffffff8002223a2b	testq	%rdi, %rdi
+ffffff8002223a2e	je	0xffffff8002223a3d
+ffffff8002223a30	movq	(%rdi), %rax
+ffffff8002223a33	callq	*0x28(%rax)
+ffffff8002223a36	movq	0x120(%rbx), %rcx
+ffffff8002223a3d	movq	$0x0, 0x3b8(%rcx)
+ffffff8002223a48	movq	0x368(%rcx), %rdi
+ffffff8002223a4f	testq	%rdi, %rdi
+ffffff8002223a52	je	0xffffff8002223a61
+ffffff8002223a54	movq	(%rdi), %rax
+ffffff8002223a57	callq	*0x28(%rax)
+ffffff8002223a5a	movq	0x120(%rbx), %rcx
+ffffff8002223a61	movq	$0x0, 0x368(%rcx)
+ffffff8002223a6c	movq	0x3a0(%rcx), %rdi
+ffffff8002223a73	testq	%rdi, %rdi
+ffffff8002223a76	je	0xffffff8002223a93
+ffffff8002223a78	movq	(%rdi), %rax
+ffffff8002223a7b	callq	*0x118(%rax)
+ffffff8002223a81	movq	0x120(%rbx), %rcx
+ffffff8002223a88	movq	$0x0, 0x3a0(%rcx)
+ffffff8002223a93	leaq	0x4d8(%rcx), %rax
+ffffff8002223a9a	movq	0x4d8(%rcx), %r14
+ffffff8002223aa1	cmpq	%r14, %rax
+ffffff8002223aa4	je	0xffffff8002223b45
+ffffff8002223aaa	xorl	%r12d, %r12d
+ffffff8002223aad	leaq	__ZZN17IO80211Controller4freeEvE20kalloc_type_view_793(%rip), %r15 ## IO80211Controller::free()::kalloc_type_view_793
+ffffff8002223ab4	movq	(%r14), %rdx
+ffffff8002223ab7	addq	$0x4e0, %rcx                    ## imm = 0x4E0
+ffffff8002223abe	leaq	0x8(%rdx), %rsi
+ffffff8002223ac2	cmpq	%rax, %rdx
+ffffff8002223ac5	cmoveq	%rcx, %rsi
+ffffff8002223ac9	cmpq	%r14, (%rsi)
+ffffff8002223acc	jne	0xffffff8002223bf7
+ffffff8002223ad2	movq	0x8(%r14), %rcx
+ffffff8002223ad6	cmpq	%r14, (%rcx)
+ffffff8002223ad9	jne	0xffffff8002223bf7
+ffffff8002223adf	movq	%rcx, (%rsi)
+ffffff8002223ae2	movq	%rdx, (%rcx)
+ffffff8002223ae5	movq	%r12, (%r14)
+ffffff8002223ae8	movq	%r12, 0x8(%r14)
+ffffff8002223aec	movq	0x120(%rbx), %rax
+ffffff8002223af3	movl	0x4e8(%rax), %ecx
+ffffff8002223af9	testl	%ecx, %ecx
+ffffff8002223afb	je	0xffffff8002223b05
+ffffff8002223afd	decl	%ecx
+ffffff8002223aff	movl	%ecx, 0x4e8(%rax)
+ffffff8002223b05	movq	0x18(%r14), %rdi
+ffffff8002223b09	testq	%rdi, %rdi
+ffffff8002223b0c	je	0xffffff8002223b14
+ffffff8002223b0e	movq	(%rdi), %rax
+ffffff8002223b11	callq	*0x28(%rax)
+ffffff8002223b14	movq	$0x0, 0x18(%r14)
+ffffff8002223b1c	movq	%r15, %rdi
+ffffff8002223b1f	movq	%r14, %rsi
+ffffff8002223b22	callq	0xffffff8000ab5a60
+ffffff8002223b27	movq	0x120(%rbx), %rcx
+ffffff8002223b2e	leaq	0x4d8(%rcx), %rax
+ffffff8002223b35	movq	0x4d8(%rcx), %r14
+ffffff8002223b3c	cmpq	%r14, %rax
+ffffff8002223b3f	jne	0xffffff8002223ab4
+ffffff8002223b45	movq	0x9f8(%rcx), %rdi
+ffffff8002223b4c	testq	%rdi, %rdi
+ffffff8002223b4f	je	0xffffff8002223b5d
+ffffff8002223b51	callq	0xffffff8000ab6ee0
+ffffff8002223b56	movq	0x120(%rbx), %rcx
+ffffff8002223b5d	movq	0x8(%rcx), %rdi
+ffffff8002223b61	callq	0xffffff8000ab7160
+ffffff8002223b66	movq	0x120(%rbx), %rdi
+ffffff8002223b6d	testq	%rdi, %rdi
+ffffff8002223b70	je	0xffffff8002223bd1
+ffffff8002223b72	cmpb	$0x0, 0x398(%rdi)
+ffffff8002223b79	jne	0xffffff8002223ba2
+ffffff8002223b7b	movq	0x390(%rdi), %rax
+ffffff8002223b82	testq	%rax, %rax
+ffffff8002223b85	je	0xffffff8002223b97
+ffffff8002223b87	movq	(%rax), %rcx
+ffffff8002223b8a	movq	%rax, %rdi
+ffffff8002223b8d	callq	*0x28(%rcx)
+ffffff8002223b90	movq	0x120(%rbx), %rdi
+ffffff8002223b97	movq	$0x0, 0x390(%rdi)
+ffffff8002223ba2	movl	$0xb50, %esi                    ## imm = 0xB50
+ffffff8002223ba7	movl	$0xb50, %ecx                    ## imm = 0xB50
+ffffff8002223bac	xorl	%edx, %edx
+ffffff8002223bae	callq	0xffffff8000454290
+ffffff8002223bb3	movq	0x120(%rbx), %rsi
+ffffff8002223bba	movq	$0x0, 0x120(%rbx)
+ffffff8002223bc5	leaq	__ZZN17IO80211Controller4freeEvE20kalloc_type_view_827(%rip), %rdi ## IO80211Controller::free()::kalloc_type_view_827
+ffffff8002223bcc	callq	0xffffff8000ab5a60
+ffffff8002223bd1	movq	0x198518(%rip), %rax
+ffffff8002223bd8	movq	%rbx, %rdi
+ffffff8002223bdb	callq	*0xa0(%rax)
+ffffff8002223be1	leaq	0x1478f6(%rip), %rdi            ## literal pool for: "IO80211Controller::free end \n"
+ffffff8002223be8	xorl	%eax, %eax
+ffffff8002223bea	popq	%rbx
+ffffff8002223beb	popq	%r12
+ffffff8002223bed	popq	%r14
+ffffff8002223bef	popq	%r15
+ffffff8002223bf1	popq	%rbp
+ffffff8002223bf2	jmp	0xffffff8000ab6560
+ffffff8002223bf7	ud1l	0xbffd(%eax), %eax
+ffffff8002223bff	ud2
+ffffff8002223c01	nop
+
+TARGET_SYMBOL TAG=WORKLOOP_ADD_EVENT_SOURCE NAME=__ZN9IOWorkLoop14addEventSourceEP12IOEventSource ADDRESS=NOT_FOUND OWNER=UNKNOWN
+
+TARGET_SYMBOL TAG=WORKLOOP_REMOVE_EVENT_SOURCE NAME=__ZN9IOWorkLoop17removeEventSourceEP12IOEventSource ADDRESS=NOT_FOUND OWNER=UNKNOWN
+
+TARGET_SYMBOL TAG=EVENT_SOURCE_SET_WORKLOOP NAME=__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop ADDRESS=0xffffff8000afa9c0 OWNER=com.apple.kernel
+METHOD_TAG=EVENT_SOURCE_SET_WORKLOOP SYMBOL=__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop ADDRESS=0xffffff8000afa9c0 INSTRUCTIONS=17
+ffffff8000afa9c0	pushq	%rbp
+ffffff8000afa9c1	movq	%rsp, %rbp
+ffffff8000afa9c4	pushq	%r14
+ffffff8000afa9c6	pushq	%rbx
+ffffff8000afa9c7	movq	%rsi, %rbx
+ffffff8000afa9ca	movq	%rdi, %r14
+ffffff8000afa9cd	testq	%rsi, %rsi
+ffffff8000afa9d0	jne	0xffffff8000afa9de
+ffffff8000afa9d2	movq	(%r14), %rax
+ffffff8000afa9d5	movq	%r14, %rdi
+ffffff8000afa9d8	callq	*0x158(%rax)
+ffffff8000afa9de	movq	%rbx, 0x30(%r14)
+ffffff8000afa9e2	popq	%rbx
+ffffff8000afa9e3	popq	%r14
+ffffff8000afa9e5	popq	%rbp
+ffffff8000afa9e6	retq
+ffffff8000afa9e7	nopw	(%rax,%rax)
+
+TARGET_SYMBOL TAG=EVENT_SOURCE_FREE NAME=__ZN13IOEventSource4freeEv ADDRESS=0xffffff8000afa8d0 OWNER=com.apple.kernel
+METHOD_TAG=EVENT_SOURCE_FREE SYMBOL=__ZN13IOEventSource4freeEv ADDRESS=0xffffff8000afa8d0 INSTRUCTIONS=35
+ffffff8000afa8d0	pushq	%rbp
+ffffff8000afa8d1	movq	%rsp, %rbp
+ffffff8000afa8d4	pushq	%rbx
+ffffff8000afa8d5	pushq	%rax
+ffffff8000afa8d6	movq	%rdi, %rbx
+ffffff8000afa8d9	movq	0x40(%rdi), %rax
+ffffff8000afa8dd	testq	%rax, %rax
+ffffff8000afa8e0	je	0xffffff8000afa8ea
+ffffff8000afa8e2	movq	(%rax), %rdi
+ffffff8000afa8e5	callq	__ZN12IOStatistics21unregisterEventSourceEP20IOEventSourceCounter ## IOStatistics::unregisterEventSource(IOEventSourceCounter*)
+ffffff8000afa8ea	testb	$0x4, 0x2a(%rbx)
+ffffff8000afa8ee	je	0xffffff8000afa8fe
+ffffff8000afa8f0	movq	0x20(%rbx), %rdi
+ffffff8000afa8f4	testq	%rdi, %rdi
+ffffff8000afa8f7	je	0xffffff8000afa8fe
+ffffff8000afa8f9	callq	__Block_release
+ffffff8000afa8fe	movq	0x40(%rbx), %rsi
+ffffff8000afa902	testq	%rsi, %rsi
+ffffff8000afa905	je	0xffffff8000afa91b
+ffffff8000afa907	movq	$0x0, 0x40(%rbx)
+ffffff8000afa90f	leaq	-0x831ba6(%rip), %rdi
+ffffff8000afa916	callq	_kfree_type_impl
+ffffff8000afa91b	movq	(%rbx), %rax
+ffffff8000afa91e	movq	%rbx, %rdi
+ffffff8000afa921	callq	*0x38(%rax)
+ffffff8000afa924	testq	%rax, %rax
+ffffff8000afa927	je	0xffffff8000afa931
+ffffff8000afa929	movq	%rax, %rdi
+ffffff8000afa92c	callq	__ZNK11OSMetaClass18instanceDestructedEv ## OSMetaClass::instanceDestructed() const
+ffffff8000afa931	movq	(%rbx), %rax
+ffffff8000afa934	movq	%rbx, %rdi
+ffffff8000afa937	addq	$0x8, %rsp
+ffffff8000afa93b	popq	%rbx
+ffffff8000afa93c	popq	%rbp
+ffffff8000afa93d	jmpq	*0x8(%rax)
+
+STAGE162_INTERPRETATION=DO_NOT_INFER_POSTOFFICE_OWNER_OR_QUEUE_RETENTION_FROM_FIELD_STORAGE; REQUIRE_COMPLETE_XREF_AND_EVENT_SOURCE_LIFETIME_CHAIN
+STAGE162_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE162_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE162 ==========
