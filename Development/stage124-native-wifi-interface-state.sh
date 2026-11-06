@@ -31,7 +31,7 @@ fi
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 TMPROOT="${TMPDIR:-/tmp}"
-REPORT="$(mktemp "${TMPROOT%/}/stage124-native-wifi-interface-state-XXXXXX.log")"
+REPORT="$(mktemp "${TMPROOT%/}/stage124-native-wifi-interface-state-XXXXXX")"
 BUNDLE="driver/RTL88WiFi/build/out/RTL88WiFiNative.kext"
 BIN="$BUNDLE/Contents/MacOS/RTL88WiFiNative"
 PLIST="$BUNDLE/Contents/Info.plist"
