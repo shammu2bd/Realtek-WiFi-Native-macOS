@@ -1,0 +1,3204 @@
+========== STAGE158 APPLE PCIE BUS WORKQUEUE OWNERSHIP AUDIT ==========
+STAGE158_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE158_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE158_WORKTREE_STATUS_ENTRIES=198
+STAGE158_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE158_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE158_STAGE157_REPORT_SHA=46b7200ee8dc3107d3e1f1e3420afe3f53c18bb2
+STAGE158_SCOPE=READ_ONLY_PCIE_BUS_QUEUE_CREATION_STORAGE_AND_TEARDOWN
+STAGE158_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE158_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+FILESSET_CARVE=PASS OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+FILESSET_CARVE=PASS OWNER=com.apple.driver.AppleBCMWLANCoreMac
+FILESSET_CARVE=PASS OWNER=com.apple.iokit.IO80211Family
+
+CLASS_AUDIT NAME=AppleBCMWLANBusInterfacePCIe INSTANCE_SIZE=UNKNOWN VTABLE_WORDS=413 VTABLE_OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+VTABLE_SLOT CLASS=AppleBCMWLANBusInterfacePCIe OFFSET=0x860 WORD=270 RAW=0x4000000148e5c4 TARGET=0xffffff800158e5c4 OWNER=com.apple.driver.AppleBCMWLANCoreMac SYMBOL=__ZN24AppleBCMWLANBusInterface13needWorkQueueEv
+VTABLE_SLOT_OWNER_REVIEW CLASS=AppleBCMWLANBusInterfacePCIe OFFSET=0x860 EXPECTED=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac ACTUAL=com.apple.driver.AppleBCMWLANCoreMac
+VTABLE_SLOT CLASS=AppleBCMWLANBusInterfacePCIe OFFSET=0x868 WORD=271 RAW=0x400000013f75ac TARGET=0xffffff80014f75ac OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac SYMBOL=__ZNK28AppleBCMWLANBusInterfacePCIe12getWorkQueueEv
+VTABLE_SLOT CLASS=AppleBCMWLANBusInterfacePCIe OFFSET=0xc58 WORD=397 RAW=0x4000000140c364 TARGET=0xffffff800150c364 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe22createTransmitFlowRingEPP32AppleBCMWLANPCIeTransmitFlowRingR12PCIeRingInfoP8OSObjectR11BusFlowInfoPFjS6_P20AppleBCMWLANByteRingPvjEPFvS6_SA_iSB_Eht
+VTABLE_SLOT CLASS=AppleBCMWLANBusInterfacePCIe OFFSET=0xc68 WORD=399 RAW=0x400000013fe33e TARGET=0xffffff80014fe33e OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe21platformActionHandlerEjPv
+
+CLASS_AUDIT NAME=AppleBCMWLANPCIeDoorbell INSTANCE_SIZE=UNKNOWN VTABLE_WORDS=39 VTABLE_OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+VTABLE_SLOT CLASS=AppleBCMWLANPCIeDoorbell OFFSET=0x20 WORD=6 RAW=0x4000000094b5c0 TARGET=0xffffff8000a4b5c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject6retainEv
+VTABLE_SLOT_OWNER_REVIEW CLASS=AppleBCMWLANPCIeDoorbell OFFSET=0x20 EXPECTED=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac ACTUAL=com.apple.kernel
+VTABLE_SLOT CLASS=AppleBCMWLANPCIeDoorbell OFFSET=0x28 WORD=7 RAW=0x4000000094b5d0 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT_OWNER_REVIEW CLASS=AppleBCMWLANPCIeDoorbell OFFSET=0x28 EXPECTED=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac ACTUAL=com.apple.kernel
+VTABLE_SLOT_MISSING CLASS=AppleBCMWLANPCIeDoorbell OFFSET=0x860
+VTABLE_SLOT_MISSING CLASS=AppleBCMWLANPCIeDoorbell OFFSET=0x868
+
+CLASS_METHOD_COUNT NAME=AppleBCMWLANBusInterfacePCIe COUNT=310
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014eaa60 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe4initEP12OSDictionary
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014eac42 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe5startEP9IOService
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014ecb74 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe17initMRUFlowIdListEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014edcb4 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe23initPCIeDatapathStreamsEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014efa46 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe13deferredStartEP11thread_call
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014f577e OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe29freeTrapMiniDumpBufferTimeoutEP18IO80211TimerSource
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014f5a74 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe4stopEP9IOService
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014f5e5c OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe4freeEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014f5ec8 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe13freeResourcesEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014f75ac OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZNK28AppleBCMWLANBusInterfacePCIe12getWorkQueueEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80014f7f9e OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZNK28AppleBCMWLANBusInterfacePCIe17validateWorkQueueEPKcj
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150bb60 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe20createSubmissionRingEPP30AppleBCMWLANPCIeSubmissionRingPK12PCIeRingInfoP8OSObjectP16IO80211WorkQueuePFjS7_P20AppleBCMWLANByteRingPvjEPFvS7_SB_iSC_E
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150bd22 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe25enableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150be86 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe20createCompletionRingEPP30AppleBCMWLANPCIeCompletionRingPK12PCIeRingInfoP8OSObjectP16IO80211WorkQueuePFjS7_P20AppleBCMWLANByteRingPvjEPFvS7_SB_iSC_E
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150c04a OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe20enableCompletionRingEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150c07c OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe25enableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150c0f0 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe26disableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150c296 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe21disableCompletionRingEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150c2c8 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe26disableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150da12 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe12initRingInfoEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800150dcc2 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe17initTransmitFlowsEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001510372 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe11hitDoorbellEPKc
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015137de OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe31initialPowerStateForDomainStateEm
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe4initEP12OSDictionary ADDRESS=0xffffff80014eaa60 END=0xffffff80014eac42 INSTRUCTIONS=120
+ffffff80014eaa60	pushq	%rbp
+ffffff80014eaa61	movq	%rsp, %rbp
+ffffff80014eaa64	pushq	%r15
+ffffff80014eaa66	pushq	%r14
+ffffff80014eaa68	pushq	%rbx
+ffffff80014eaa69	subq	$0x18, %rsp
+ffffff80014eaa6d	movq	%rsi, %rbx
+ffffff80014eaa70	movq	%rdi, %r14
+ffffff80014eaa73	movq	0x52736(%rip), %rax
+ffffff80014eaa7a	movq	(%rax), %rax
+ffffff80014eaa7d	movq	%rax, -0x20(%rbp)
+ffffff80014eaa81	leaq	-0x28(%rbp), %r15
+ffffff80014eaa85	movq	$0x0, (%r15)
+ffffff80014eaa8c	callq	0xffffff80003cbf20
+ffffff80014eaa91	movq	%rax, %rdi
+ffffff80014eaa94	movq	%r15, %rsi
+ffffff80014eaa97	callq	0xffffff8000536d80
+ffffff80014eaa9c	movq	0x526c5(%rip), %rax
+ffffff80014eaaa9	callq	*0x258(%rax)
+ffffff80014eaaba	callq	0xffffff8000ab5930
+ffffff80014eaabf	movq	%rax, 0x90(%r14)
+ffffff80014eaad9	movq	%rcx, 0x5e0(%rax)
+ffffff80014eaae0	movq	%rcx, 0x5e8(%rax)
+ffffff80014eaae7	movq	-0x28(%rbp), %rsi
+ffffff80014eaaf0	callq	0xffffff800158ddd6
+ffffff80014eab02	callq	0xffffff800158ddea
+ffffff80014eab09	jmp	0xffffff80014eac20
+CONTROL_FLOW=0xffffff80014eab09 jmp	0xffffff80014eac20
+ffffff80014eab11	callq	0xffffff800227dc44
+ffffff80014eab16	leaq	0x42e30(%rip), %rdi             ## literal pool for: "%s::%s() super::init(dict) failed\n"
+ffffff80014eab1d	leaq	0x42e4c(%rip), %rdx             ## literal pool for: "init"
+ffffff80014eab2b	callq	0xffffff8000ab6560
+ffffff80014eab33	callq	0xffffff800048cb00
+ffffff80014eab40	callq	0xffffff800164bbbb
+ffffff80014eab48	movq	-0x28(%rbp), %r15
+ffffff80014eab75	leaq	-0x1bb7c(%rip), %rdi
+ffffff80014eab7c	movq	0x52635(%rip), %rsi
+ffffff80014eab9d	callq	0xffffff8000a85d00
+ffffff80014eaba6	jmp	0xffffff80014eac20
+CONTROL_FLOW=0xffffff80014eaba6 jmp	0xffffff80014eac20
+ffffff80014eabab	callq	0xffffff800048cb00
+ffffff80014eabb8	callq	0xffffff800164bbbb
+ffffff80014eabc0	movq	-0x28(%rbp), %r15
+ffffff80014eabed	leaq	-0x1bbf4(%rip), %rdi
+ffffff80014eabf4	movq	0x525bd(%rip), %rsi
+ffffff80014eac17	callq	0xffffff8000a85d00
+ffffff80014eac20	movq	0x52589(%rip), %rax
+ffffff80014eac2a	cmpq	-0x20(%rbp), %rax
+ffffff80014eac3c	retq
+ffffff80014eac3d	callq	0xffffff8000383150
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe5startEP9IOService ADDRESS=0xffffff80014eac42 END=0xffffff80014ec9f0 INSTRUCTIONS=1675
+ffffff80014eac42	pushq	%rbp
+ffffff80014eac43	movq	%rsp, %rbp
+ffffff80014eac46	pushq	%r15
+ffffff80014eac48	pushq	%r14
+ffffff80014eac4a	pushq	%r12
+ffffff80014eac4c	pushq	%rbx
+ffffff80014eac4d	subq	$0x20, %rsp
+ffffff80014eac51	movq	%rsi, %r14
+ffffff80014eac54	movq	%rdi, %rbx
+ffffff80014eac57	movq	0x52552(%rip), %rax
+ffffff80014eac5e	movq	(%rax), %rax
+ffffff80014eac61	movq	%rax, -0x28(%rbp)
+ffffff80014eac65	movl	$0x1, %esi
+ffffff80014eac6a	movl	$0x3, %edx
+ffffff80014eac6f	callq	0xffffff800158ddea
+ffffff80014eac74	callq	0xffffff8002258fcc
+ffffff80014eac79	movq	0x90(%rbx), %rcx
+ffffff80014eac80	movq	%rax, 0xdd0(%rcx)
+ffffff80014eac90	movq	0x524d1(%rip), %rax
+ffffff80014eac9d	callq	*0x5d0(%rax)
+ffffff80014eacb8	callq	*0x5d0(%rax)
+ffffff80014eacc6	leaq	-0x2c(%rbp), %rsi
+ffffff80014eacd0	movq	0x90(%rbx), %rax
+ffffff80014eacd9	movb	%cl, 0x14c2(%rax)
+ffffff80014eacdf	movb	%cl, 0xcc4(%rax)
+ffffff80014eace5	leaq	0x42bff(%rip), %rdi             ## literal pool for: "wlan.pcie.useOLYHALDriver"
+ffffff80014eacf1	callq	0xffffff8000b92970
+ffffff80014eacfd	callq	0xffffff800158c46a
+ffffff80014ead0a	callq	0xffffff800158c46a
+ffffff80014ead17	callq	0xffffff80031d421c
+ffffff80014ead24	leaq	-0x2c(%rbp), %rsi
+ffffff80014ead2b	movq	0x90(%rbx), %rax
+ffffff80014ead32	sete	0xcc4(%rax)
+ffffff80014ead39	leaq	0x42f9e(%rip), %rdi             ## literal pool for: "wlan.startdelay"
+ffffff80014ead45	callq	0xffffff8000b92970
+ffffff80014ead51	callq	0xffffff800158c46a
+ffffff80014ead5e	callq	0xffffff800158c46a
+ffffff80014ead6b	callq	0xffffff80031d421c
+ffffff80014ead78	imull	$0x3e8, -0x2c(%rbp), %edi       ## imm = 0x3E8
+ffffff80014ead7f	callq	0xffffff8000ab64f0
+ffffff80014ead87	callq	0xffffff800158c46a
+ffffff80014ead94	callq	0xffffff800158c46a
+ffffff80014eada1	callq	0xffffff80031d421c
+ffffff80014eadc3	leaq	0x4ed51(%rip), %rdi             ## literal pool for: "AppleOLYHAL"
+ffffff80014eadcc	callq	0xffffff8000b57720
+ffffff80014eade6	callq	0xffffff8000ad8290
+ffffff80014eadfe	jmp	0xffffff80014eae7c
+CONTROL_FLOW=0xffffff80014eadfe jmp	0xffffff80014eae7c
+ffffff80014eae00	leaq	0x42e3f(%rip), %rdi             ## literal pool for: "Failed to create workloop\n"
+ffffff80014eae0b	callq	0xffffff8000ab6560
+ffffff80014eae10	jmp	0xffffff80014ebfbc
+CONTROL_FLOW=0xffffff80014eae10 jmp	0xffffff80014ebfbc
+ffffff80014eae18	callq	0xffffff800227dc44
+ffffff80014eae1d	leaq	0x42e3d(%rip), %rdi             ## literal pool for: "%s::%s() super::start(provider) failed\n"
+ffffff80014eae24	jmp	0xffffff80014eae35
+CONTROL_FLOW=0xffffff80014eae24 jmp	0xffffff80014eae35
+ffffff80014eae29	callq	0xffffff800227dc44
+ffffff80014eae2e	leaq	0x42e5a(%rip), %rdi             ## literal pool for: "%s::%s() provider::open(this) failed\n"
+ffffff80014eae35	leaq	0x42e4d(%rip), %rdx             ## literal pool for: "start"
+ffffff80014eae43	callq	0xffffff8000ab6560
+ffffff80014eae48	jmp	0xffffff80014ebfbc
+CONTROL_FLOW=0xffffff80014eae48 jmp	0xffffff80014ebfbc
+ffffff80014eae4d	leaq	0x4ecd3(%rip), %rdi             ## literal pool for: "%s: failed to create matching dictionary\n"
+ffffff80014eae54	leaq	0x4ecf6(%rip), %rsi             ## literal pool for: "accessAppleOLYHAL"
+ffffff80014eae5d	callq	0xffffff8000ab6560
+ffffff80014eae62	jmp	0xffffff80014eaf1a
+CONTROL_FLOW=0xffffff80014eae62 jmp	0xffffff80014eaf1a
+ffffff80014eae67	leaq	0x4ecf5(%rip), %rdi             ## literal pool for: "%s: failed to find AppleOLYHAL service\n"
+ffffff80014eae6e	leaq	0x4ecdc(%rip), %rsi             ## literal pool for: "accessAppleOLYHAL"
+ffffff80014eae77	callq	0xffffff8000ab6560
+ffffff80014eae87	callq	*(%rcx,%rax)
+ffffff80014eae9a	leaq	-0x38(%rbp), %r12
+ffffff80014eaea9	callq	0xffffff8000b53f70
+ffffff80014eaeb6	callq	0xffffff8000a9c570
+ffffff80014eaec2	leaq	0x42e70(%rip), %rsi             ## literal pool for: "vendor-id"
+ffffff80014eaec9	callq	*0x1e8(%rax)
+ffffff80014eaed8	callq	0xffffff8000a9c9a0
+ffffff80014eaee9	callq	*0x28(%rax)
+ffffff80014eaeec	movq	$0x0, -0x38(%rbp)
+ffffff80014eaef4	movq	0x90(%rbx), %rax
+ffffff80014eaefb	cmpb	$0x1, 0xcc4(%rax)
+ffffff80014eaf07	callq	0xffffff8000b53f70
+ffffff80014eaf15	callq	*0x28(%rax)
+ffffff80014eaf18	jmp	0xffffff80014eaf44
+CONTROL_FLOW=0xffffff80014eaf18 jmp	0xffffff80014eaf44
+ffffff80014eaf1d	callq	0xffffff800158c46a
+ffffff80014eaf2a	callq	0xffffff800158c46a
+ffffff80014eaf37	callq	0xffffff80031d421c
+ffffff80014eaf44	movq	0x90(%rbx), %rax
+ffffff80014eaf4b	movb	$0x0, 0x1059(%rax)
+ffffff80014eaf52	leaq	0x42e39(%rip), %rdi             ## literal pool for: "wlan.wdt.disableLogging"
+ffffff80014eaf59	leaq	-0x2c(%rbp), %rsi
+ffffff80014eaf62	callq	0xffffff8000b92970
+ffffff80014eaf6e	callq	0xffffff800158c46a
+ffffff80014eaf7b	callq	0xffffff800158c46a
+ffffff80014eaf88	callq	0xffffff80031d421c
+ffffff80014eaf95	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eaf99	movq	0x90(%rbx), %rax
+ffffff80014eafa0	setne	0x1059(%rax)
+ffffff80014eafa7	leaq	0x42e24(%rip), %rdi             ## literal pool for: "wlan.pcie.enableDeepSleepSupport"
+ffffff80014eafae	leaq	-0x2c(%rbp), %rsi
+ffffff80014eafb7	callq	0xffffff8000b92970
+ffffff80014eafc3	callq	0xffffff800158c46a
+ffffff80014eafd0	callq	0xffffff800158c46a
+ffffff80014eafdd	callq	0xffffff80031d421c
+ffffff80014eafea	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eafee	movq	0x90(%rbx), %rax
+ffffff80014eaff5	setne	0xec4(%rax)
+ffffff80014eaffc	leaq	0x42e1a(%rip), %rdi             ## literal pool for: "wlan.pcie.debugworkQueuetimeout_ms"
+ffffff80014eb003	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb00c	callq	0xffffff8000b92970
+ffffff80014eb018	callq	0xffffff800158c46a
+ffffff80014eb025	callq	0xffffff800158c46a
+ffffff80014eb032	callq	0xffffff80031d421c
+ffffff80014eb03f	movl	-0x2c(%rbp), %eax
+ffffff80014eb042	movq	0x90(%rbx), %rcx
+ffffff80014eb049	movl	%eax, 0x105c(%rcx)
+ffffff80014eb04f	leaq	0x42e1d(%rip), %rdi             ## literal pool for: "wlan.pcie.delaystart_ms"
+ffffff80014eb056	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb05f	callq	0xffffff8000b92970
+ffffff80014eb06b	callq	0xffffff800158c46a
+ffffff80014eb078	callq	0xffffff800158c46a
+ffffff80014eb085	callq	0xffffff80031d421c
+ffffff80014eb092	movl	-0x2c(%rbp), %edi
+ffffff80014eb095	callq	0xffffff8000ab64f0
+ffffff80014eb09a	leaq	0x42e17(%rip), %rdi             ## literal pool for: "wlan.pcie.paniconaer"
+ffffff80014eb0a1	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb0aa	callq	0xffffff8000b92970
+ffffff80014eb0b3	movq	0x90(%rbx), %rax
+ffffff80014eb0ba	movb	$0x1, 0xf00(%rax)
+ffffff80014eb0c1	leaq	0x42e05(%rip), %rdi             ## literal pool for: "wlan.pcie.paniconcommitrings"
+ffffff80014eb0c8	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb0d1	callq	0xffffff8000b92970
+ffffff80014eb0d6	movq	0x90(%rbx), %rcx
+ffffff80014eb0e1	movb	$0x1, 0xf01(%rcx)
+ffffff80014eb0e8	movb	$0x0, 0xebd(%rcx)
+ffffff80014eb0ef	leaq	0x42df4(%rip), %rdi             ## literal pool for: "wlan.pcie.disablebootmsi"
+ffffff80014eb0f6	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb0ff	callq	0xffffff8000b92970
+ffffff80014eb104	movq	0x90(%rbx), %rcx
+ffffff80014eb10f	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb113	setne	0xebd(%rcx)
+ffffff80014eb11a	movb	$0x0, 0xebe(%rcx)
+ffffff80014eb121	leaq	0x42ddb(%rip), %rdi             ## literal pool for: "wlan.pcie.nolinkdownlogs"
+ffffff80014eb128	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb131	callq	0xffffff8000b92970
+ffffff80014eb13a	movq	0x90(%rbx), %rax
+ffffff80014eb141	movb	$0x1, 0xebe(%rax)
+ffffff80014eb148	callq	0xffffff80003cbf20
+ffffff80014eb14d	movq	0x90(%rbx), %rcx
+ffffff80014eb154	movq	%rax, 0x1018(%rcx)
+ffffff80014eb15b	leaq	0x42dba(%rip), %rdi             ## literal pool for: "%s(%d): fLastTimePowerOnTicks=%lld\n"
+ffffff80014eb162	leaq	0x42b20(%rip), %rsi             ## literal pool for: "start"
+ffffff80014eb173	callq	0xffffff8000ab6560
+ffffff80014eb178	movq	0x90(%rbx), %rax
+ffffff80014eb17f	movb	$0x0, 0xebf(%rax)
+ffffff80014eb186	leaq	0x42db3(%rip), %rdi             ## literal pool for: "wlan.pcie.enableptmsupport"
+ffffff80014eb18d	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb196	callq	0xffffff8000b92970
+ffffff80014eb1a2	callq	0xffffff800158c46a
+ffffff80014eb1af	callq	0xffffff800158c46a
+ffffff80014eb1bc	callq	0xffffff80031d421c
+ffffff80014eb1c9	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb1cd	movq	0x90(%rbx), %rax
+ffffff80014eb1d4	setne	0xebf(%rax)
+ffffff80014eb1db	jmp	0xffffff80014eb1e4
+CONTROL_FLOW=0xffffff80014eb1db jmp	0xffffff80014eb1e4
+ffffff80014eb1dd	movq	0x90(%rbx), %rax
+ffffff80014eb1e4	movb	$0x0, 0xec0(%rax)
+ffffff80014eb1eb	leaq	0x42d94(%rip), %rdi             ## literal pool for: "wlan.pcie.disablefatalerrorindication"
+ffffff80014eb1f2	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb1fb	callq	0xffffff8000b92970
+ffffff80014eb207	callq	0xffffff800158c46a
+ffffff80014eb214	callq	0xffffff800158c46a
+ffffff80014eb221	callq	0xffffff80031d421c
+ffffff80014eb22e	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb232	movq	0x90(%rbx), %rax
+ffffff80014eb239	setne	0xec0(%rax)
+ffffff80014eb240	jmp	0xffffff80014eb249
+CONTROL_FLOW=0xffffff80014eb240 jmp	0xffffff80014eb249
+ffffff80014eb242	movq	0x90(%rbx), %rax
+ffffff80014eb249	movb	$0x0, 0xec3(%rax)
+ffffff80014eb250	leaq	0x42d8b(%rip), %rdi             ## literal pool for: "wlan.pcie.paniconhostpollfwtrap"
+ffffff80014eb257	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb260	callq	0xffffff8000b92970
+ffffff80014eb265	movq	0x90(%rbx), %rcx
+ffffff80014eb270	movb	$0x1, 0xec3(%rcx)
+ffffff80014eb277	movb	$0x0, 0xec2(%rcx)
+ffffff80014eb27e	leaq	0x42d7d(%rip), %rdi             ## literal pool for: "wlan.pcie.disablehostinitiatedfwtrap"
+ffffff80014eb285	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb28e	callq	0xffffff8000b92970
+ffffff80014eb293	movq	0x90(%rbx), %rcx
+ffffff80014eb29e	movb	$0x1, 0xec2(%rcx)
+ffffff80014eb2af	movq	%rax, 0xef8(%rcx)
+ffffff80014eb2b6	leaq	0x42d6a(%rip), %rdi             ## literal pool for: "wlan.pcie.iokitmatch_ms"
+ffffff80014eb2bd	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb2c6	callq	0xffffff8000b92970
+ffffff80014eb2d2	callq	0xffffff800158c46a
+ffffff80014eb2df	callq	0xffffff800158c46a
+ffffff80014eb2ec	callq	0xffffff80031d421c
+ffffff80014eb2f9	imull	$0x3e8, -0x2c(%rbp), %eax       ## imm = 0x3E8
+ffffff80014eb307	movq	0x90(%rbx), %rax
+ffffff80014eb30e	movq	%rcx, 0xef8(%rax)
+ffffff80014eb315	jmp	0xffffff80014eb31e
+CONTROL_FLOW=0xffffff80014eb315 jmp	0xffffff80014eb31e
+ffffff80014eb317	movq	0x90(%rbx), %rax
+ffffff80014eb320	movb	%cl, 0xb44(%rax)
+ffffff80014eb326	movb	%cl, 0xec5(%rax)
+ffffff80014eb32c	leaq	0x42d34(%rip), %rdi             ## literal pool for: "wlan.pcie.DSdisabled"
+ffffff80014eb333	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb33c	callq	0xffffff8000b92970
+ffffff80014eb348	callq	0xffffff800158c46a
+ffffff80014eb355	callq	0xffffff800158c46a
+ffffff80014eb362	callq	0xffffff80031d421c
+ffffff80014eb36f	cmpl	$0x1, -0x2c(%rbp)
+ffffff80014eb373	movq	0x90(%rbx), %rax
+ffffff80014eb37a	setne	0xb44(%rax)
+ffffff80014eb381	leaq	0x42d18(%rip), %rdi             ## literal pool for: "wlan.factory"
+ffffff80014eb388	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb391	callq	0xffffff8000b92970
+ffffff80014eb39a	testb	$-0x80, -0x2c(%rbp)
+ffffff80014eb3a0	movq	0x90(%rbx), %rax
+ffffff80014eb3a7	cmpb	$0x1, 0xb44(%rax)
+ffffff80014eb3b0	movb	$0x0, 0xb44(%rax)
+ffffff80014eb3ba	callq	0xffffff800158c46a
+ffffff80014eb3c7	callq	0xffffff800158c46a
+ffffff80014eb3d4	callq	0xffffff80031d421c
+ffffff80014eb3e1	movq	0x90(%rbx), %rax
+ffffff80014eb3e8	movzbl	0xb44(%rax), %edx
+ffffff80014eb3ef	leaq	0x42ce5(%rip), %rsi             ## literal pool for: "wlan.pcie.DSState"
+ffffff80014eb3f9	callq	0xffffff800227db3b
+ffffff80014eb405	callq	0xffffff800158c46a
+ffffff80014eb412	callq	0xffffff800158c46a
+ffffff80014eb41f	callq	0xffffff80031d421c
+ffffff80014eb42c	leaq	0x42cf4(%rip), %rdi             ## literal pool for: "wlan.pcie.D0AckLogsdisabled"
+ffffff80014eb433	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb43c	callq	0xffffff8000b92970
+ffffff80014eb448	callq	0xffffff800158c46a
+ffffff80014eb455	callq	0xffffff800158c46a
+ffffff80014eb462	callq	0xffffff80031d421c
+ffffff80014eb46f	cmpl	$0x1, -0x2c(%rbp)
+ffffff80014eb473	movq	0x90(%rbx), %rsi
+ffffff80014eb47a	setne	0xec5(%rsi)
+ffffff80014eb481	jmp	0xffffff80014eb48a
+CONTROL_FLOW=0xffffff80014eb481 jmp	0xffffff80014eb48a
+ffffff80014eb483	movq	0x90(%rbx), %rsi
+ffffff80014eb491	leaq	0x42cd6(%rip), %rdi             ## literal pool for: "wlan.pcie.reset_ms"
+ffffff80014eb49d	callq	0xffffff8000b92970
+ffffff80014eb4a9	callq	0xffffff800158c46a
+ffffff80014eb4b6	callq	0xffffff800158c46a
+ffffff80014eb4c3	callq	0xffffff80031d421c
+ffffff80014eb4cf	callq	0xffffff800158c46a
+ffffff80014eb4d4	movq	0x90(%rbx), %rcx
+ffffff80014eb4db	movl	0xb30(%rcx), %r8d
+ffffff80014eb4e2	leaq	0x42c98(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Setting WLAN_REG_ON reset duration to %lu milliseconds\n"
+ffffff80014eb4e9	leaq	0x42799(%rip), %rdx             ## literal pool for: "start"
+ffffff80014eb4fa	callq	0xffffff80031d252e
+ffffff80014eb4ff	jmp	0xffffff80014eb512
+CONTROL_FLOW=0xffffff80014eb4ff jmp	0xffffff80014eb512
+ffffff80014eb501	movq	0x90(%rbx), %rax
+ffffff80014eb508	movl	$0x64, 0xb30(%rax)
+ffffff80014eb512	movq	0x90(%rbx), %rax
+ffffff80014eb519	movl	$0x100, 0xb50(%rax)             ## imm = 0x100
+ffffff80014eb523	leaq	0x42c9b(%rip), %rdi             ## literal pool for: "wlan.pcie.txdeq"
+ffffff80014eb52a	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb533	callq	0xffffff8000b92970
+ffffff80014eb53c	movl	-0x2c(%rbp), %eax
+ffffff80014eb549	movl	%ecx, -0x2c(%rbp)
+ffffff80014eb54f	callq	0xffffff800158c46a
+ffffff80014eb55c	callq	0xffffff800158c46a
+ffffff80014eb569	callq	0xffffff80031d421c
+ffffff80014eb576	movl	-0x2c(%rbp), %ecx
+ffffff80014eb579	movq	0x90(%rbx), %rax
+ffffff80014eb580	movl	%ecx, 0xb50(%rax)
+ffffff80014eb586	jmp	0xffffff80014eb58f
+CONTROL_FLOW=0xffffff80014eb586 jmp	0xffffff80014eb58f
+ffffff80014eb588	movq	0x90(%rbx), %rax
+ffffff80014eb58f	movl	$0x400, 0xb54(%rax)             ## imm = 0x400
+ffffff80014eb599	leaq	0x42c55(%rip), %rdi             ## literal pool for: "wlan.pcie.bounce"
+ffffff80014eb5a0	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb5a9	callq	0xffffff8000b92970
+ffffff80014eb5b2	movl	-0x2c(%rbp), %eax
+ffffff80014eb5b5	movq	0x90(%rbx), %rcx
+ffffff80014eb5bc	movl	%eax, 0xb54(%rcx)
+ffffff80014eb5c5	callq	0xffffff800158c46a
+ffffff80014eb5d2	callq	0xffffff800158c46a
+ffffff80014eb5df	callq	0xffffff80031d421c
+ffffff80014eb5ec	movq	0x90(%rbx), %rax
+ffffff80014eb5f3	movl	$0x400280, 0x11e4(%rax)         ## imm = 0x400280
+ffffff80014eb5fd	leaq	0x42c23(%rip), %rdi             ## literal pool for: "wlan.pcie.badrequest_readSocRAM"
+ffffff80014eb604	leaq	-0x2c(%rbp), %r15
+ffffff80014eb610	callq	0xffffff8000b92970
+ffffff80014eb615	movq	0x90(%rbx), %rax
+ffffff80014eb61c	movb	$0x1, 0xf02(%rax)
+ffffff80014eb623	movl	$0x7d0, 0x1220(%rax)            ## imm = 0x7D0
+ffffff80014eb62d	leaq	0x42c13(%rip), %rdi             ## literal pool for: "wlan.pcie.sleepBeforePanic"
+ffffff80014eb63c	callq	0xffffff8000b92970
+ffffff80014eb641	movq	0x90(%rbx), %rcx
+ffffff80014eb64c	movl	-0x2c(%rbp), %eax
+ffffff80014eb64f	movl	%eax, 0x1220(%rcx)
+ffffff80014eb655	movl	$0xa, 0x1224(%rcx)
+ffffff80014eb65f	leaq	0x42bfc(%rip), %rdi             ## literal pool for: "wlan.pcie.deviceWakeWaitBeforePanic"
+ffffff80014eb666	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb66f	callq	0xffffff8000b92970
+ffffff80014eb674	movq	0x90(%rbx), %rcx
+ffffff80014eb67f	movl	-0x2c(%rbp), %eax
+ffffff80014eb682	movl	%eax, 0x1224(%rcx)
+ffffff80014eb688	movb	$0x0, 0x1253(%rcx)
+ffffff80014eb68f	leaq	0x42bf0(%rip), %rdi             ## literal pool for: "wifibt.pcie.disableASPMWorkaround"
+ffffff80014eb696	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb69f	callq	0xffffff8000b92970
+ffffff80014eb6a8	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb6ac	movq	0x90(%rbx), %rax
+ffffff80014eb6b3	setne	0x1253(%rax)
+ffffff80014eb6bd	callq	0xffffff800158c46a
+ffffff80014eb6ca	callq	0xffffff800158c46a
+ffffff80014eb6d7	callq	0xffffff80031d421c
+ffffff80014eb6e4	movq	0x90(%rbx), %rax
+ffffff80014eb6eb	movb	$0x0, 0x1252(%rax)
+ffffff80014eb6f2	leaq	0x42bee(%rip), %rdi             ## literal pool for: "wlan.pcie.enableMFD3AckSoCRAM"
+ffffff80014eb6f9	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb702	callq	0xffffff8000b92970
+ffffff80014eb70b	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb70f	movq	0x90(%rbx), %rax
+ffffff80014eb716	setne	0x1252(%rax)
+ffffff80014eb720	callq	0xffffff800158c46a
+ffffff80014eb72d	callq	0xffffff800158c46a
+ffffff80014eb73a	callq	0xffffff80031d421c
+ffffff80014eb747	movq	0x90(%rbx), %rax
+ffffff80014eb74e	movb	$0x0, 0x124e(%rax)
+ffffff80014eb755	leaq	0x42be5(%rip), %rdi             ## literal pool for: "wlan.pcie.logCollectionOverride"
+ffffff80014eb75c	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb765	callq	0xffffff8000b92970
+ffffff80014eb76e	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb772	movq	0x90(%rbx), %rax
+ffffff80014eb779	setne	0x124e(%rax)
+ffffff80014eb783	callq	0xffffff800158c46a
+ffffff80014eb790	callq	0xffffff800158c46a
+ffffff80014eb79d	callq	0xffffff80031d421c
+ffffff80014eb7aa	movq	0x90(%rbx), %rax
+ffffff80014eb7b1	movb	$0x0, 0x124f(%rax)
+ffffff80014eb7b8	leaq	0x42be3(%rip), %rdi             ## literal pool for: "wlan.pcie.logCollectWLAPB"
+ffffff80014eb7bf	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb7c8	callq	0xffffff8000b92970
+ffffff80014eb7d1	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb7d5	movq	0x90(%rbx), %rax
+ffffff80014eb7dc	setne	0x124f(%rax)
+ffffff80014eb7e6	callq	0xffffff800158c46a
+ffffff80014eb7f3	callq	0xffffff800158c46a
+ffffff80014eb800	callq	0xffffff80031d421c
+ffffff80014eb80d	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb817	movq	0x90(%rbx), %rax
+ffffff80014eb81e	movb	$0x0, 0xec1(%rax)
+ffffff80014eb825	leaq	0x42bcd(%rip), %rdi             ## literal pool for: "wlan.pcie.tcmAccessWithTrapTimeout"
+ffffff80014eb831	callq	0xffffff8000b92970
+ffffff80014eb83d	callq	0xffffff800158c46a
+ffffff80014eb84a	callq	0xffffff800158c46a
+ffffff80014eb857	callq	0xffffff80031d421c
+ffffff80014eb864	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb868	movq	0x90(%rbx), %rax
+ffffff80014eb86f	setne	0xec1(%rax)
+ffffff80014eb876	jmp	0xffffff80014eb87f
+CONTROL_FLOW=0xffffff80014eb876 jmp	0xffffff80014eb87f
+ffffff80014eb878	movq	0x90(%rbx), %rax
+ffffff80014eb87f	movb	$0x0, 0x1251(%rax)
+ffffff80014eb886	leaq	0x42bc2(%rip), %rdi             ## literal pool for: "wifibt.pcie.panicOnPendingBackplaneErrors"
+ffffff80014eb88d	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb896	callq	0xffffff8000b92970
+ffffff80014eb89f	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eb8a3	movq	0x90(%rbx), %rax
+ffffff80014eb8aa	setne	0x1251(%rax)
+ffffff80014eb8b4	callq	0xffffff800158c46a
+ffffff80014eb8c1	callq	0xffffff800158c46a
+ffffff80014eb8ce	callq	0xffffff80031d421c
+ffffff80014eb8db	movq	0x90(%rbx), %rax
+ffffff80014eb8e2	movl	$0x0, 0x1228(%rax)
+ffffff80014eb8ec	leaq	0x42bc1(%rip), %rdi             ## literal pool for: "wlan.pcie.hmap-window-limit"
+ffffff80014eb8f3	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb8fc	callq	0xffffff8000b92970
+ffffff80014eb905	movl	-0x2c(%rbp), %eax
+ffffff80014eb908	movq	0x90(%rbx), %rcx
+ffffff80014eb90f	movl	%eax, 0x1228(%rcx)
+ffffff80014eb918	callq	0xffffff800158c46a
+ffffff80014eb925	callq	0xffffff800158c46a
+ffffff80014eb932	callq	0xffffff80031d421c
+ffffff80014eb93f	movq	0x90(%rbx), %rax
+ffffff80014eb946	movl	$0x0, 0x122c(%rax)
+ffffff80014eb950	leaq	0x42bb3(%rip), %rdi             ## literal pool for: "wlan.pcie.tcmAccessWithInactiveCore"
+ffffff80014eb957	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb960	callq	0xffffff8000b92970
+ffffff80014eb965	movq	0x90(%rbx), %rcx
+ffffff80014eb970	movl	-0x2c(%rbp), %eax
+ffffff80014eb973	movl	%eax, 0x122c(%rcx)
+ffffff80014eb979	movl	$0x64, 0x1294(%rcx)
+ffffff80014eb983	leaq	0x42ba4(%rip), %rdi             ## literal pool for: "wlan.pcie.perstdelay_ms"
+ffffff80014eb98a	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb993	callq	0xffffff8000b92970
+ffffff80014eb99f	callq	0xffffff800158c46a
+ffffff80014eb9ac	callq	0xffffff800158c46a
+ffffff80014eb9b9	callq	0xffffff80031d421c
+ffffff80014eb9c6	movl	-0x2c(%rbp), %ecx
+ffffff80014eb9c9	movq	0x90(%rbx), %rax
+ffffff80014eb9d0	movl	%ecx, 0x1294(%rax)
+ffffff80014eb9d6	jmp	0xffffff80014eb9df
+CONTROL_FLOW=0xffffff80014eb9d6 jmp	0xffffff80014eb9df
+ffffff80014eb9d8	movq	0x90(%rbx), %rax
+ffffff80014eb9df	movb	$0x0, 0x11ae(%rax)
+ffffff80014eb9e6	leaq	0x42b81(%rip), %rdi             ## literal pool for: "wlan.pcie.dumplogbtreset"
+ffffff80014eb9ed	leaq	-0x2c(%rbp), %rsi
+ffffff80014eb9f6	callq	0xffffff8000b92970
+ffffff80014eba02	callq	0xffffff800158c46a
+ffffff80014eba0f	callq	0xffffff800158c46a
+ffffff80014eba1c	callq	0xffffff80031d421c
+ffffff80014eba29	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eba2d	movq	0x90(%rbx), %rax
+ffffff80014eba34	setne	0x11ae(%rax)
+ffffff80014eba3b	jmp	0xffffff80014eba44
+CONTROL_FLOW=0xffffff80014eba3b jmp	0xffffff80014eba44
+ffffff80014eba3d	movq	0x90(%rbx), %rax
+ffffff80014eba44	movb	$0x1, 0xb18(%rax)
+ffffff80014eba4b	leaq	0x42b5e(%rip), %rdi             ## literal pool for: "wlan.pcie.detectsabotage"
+ffffff80014eba52	leaq	-0x2c(%rbp), %rsi
+ffffff80014eba5b	callq	0xffffff8000b92970
+ffffff80014eba67	callq	0xffffff800158c46a
+ffffff80014eba74	callq	0xffffff800158c46a
+ffffff80014eba81	callq	0xffffff80031d421c
+ffffff80014eba8e	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014eba92	movq	0x90(%rbx), %rax
+ffffff80014eba99	setne	0xb18(%rax)
+ffffff80014ebaa0	leaq	-0x38(%rbp), %rsi
+ffffff80014ebaaa	leaq	0x42b41(%rip), %rdi             ## literal pool for: "wlan.pcie.commitcoalesce"
+ffffff80014ebab6	callq	0xffffff8000b92970
+ffffff80014ebac2	callq	0xffffff800158c46a
+ffffff80014ebacf	callq	0xffffff800158c46a
+ffffff80014ebadc	callq	0xffffff80031d421c
+ffffff80014ebae9	leaq	-0x2c(%rbp), %rsi
+ffffff80014ebaf3	movq	0x90(%rbx), %rax
+ffffff80014ebafa	movb	$0x0, 0x1292(%rax)
+ffffff80014ebb01	leaq	0x42b2b(%rip), %rdi             ## literal pool for: "wlan.secureboot.darcheck"
+ffffff80014ebb0d	callq	0xffffff8000b92970
+ffffff80014ebb19	callq	0xffffff800158c46a
+ffffff80014ebb26	callq	0xffffff800158c46a
+ffffff80014ebb33	callq	0xffffff80031d421c
+ffffff80014ebb40	cmpl	$0x0, -0x2c(%rbp)
+ffffff80014ebb44	movq	0x90(%rbx), %rax
+ffffff80014ebb4b	setne	0x1292(%rax)
+ffffff80014ebb52	jmp	0xffffff80014ebb5b
+CONTROL_FLOW=0xffffff80014ebb52 jmp	0xffffff80014ebb5b
+ffffff80014ebb54	movq	0x90(%rbx), %rax
+ffffff80014ebb5b	movq	$0x1, 0x660(%rax)
+ffffff80014ebb66	movq	$0x5, 0x668(%rax)
+ffffff80014ebb71	movq	$0xa, 0x670(%rax)
+ffffff80014ebb7c	movq	$0x19, 0x678(%rax)
+ffffff80014ebb87	movq	$0x32, 0x680(%rax)
+ffffff80014ebb92	movq	$0x64, 0x688(%rax)
+ffffff80014ebb9d	movq	$0xc8, 0x690(%rax)
+ffffff80014ebba8	movq	$0x12c, 0x698(%rax)             ## imm = 0x12C
+ffffff80014ebbb3	movq	$0x190, 0x6a0(%rax)             ## imm = 0x190
+ffffff80014ebbbe	movq	$0x1f4, 0x6a8(%rax)             ## imm = 0x1F4
+ffffff80014ebbc9	movq	$0x2ee, 0x6b0(%rax)             ## imm = 0x2EE
+ffffff80014ebbd4	movq	$0x3e8, 0x6b8(%rax)             ## imm = 0x3E8
+ffffff80014ebbdf	movq	$-0x1, 0x6c0(%rax)
+ffffff80014ebbf4	movq	%rcx, 0xca8(%rax)
+ffffff80014ebc05	movq	%rcx, 0xcb0(%rax)
+ffffff80014ebc16	movq	%rcx, 0xcb8(%rax)
+ffffff80014ebc1d	movl	$0x280, 0xcc0(%rax)             ## imm = 0x280
+ffffff80014ebc31	movq	%rcx, 0xecc(%rax)
+ffffff80014ebc38	movq	0x51439(%rip), %rdi
+ffffff80014ebc49	callq	0xffffff80016e15d4
+ffffff80014ebc4e	movq	0x90(%rbx), %rcx
+ffffff80014ebc55	movq	%rax, 0xc28(%rcx)
+ffffff80014ebc5f	callq	0xffffff800158c46a
+ffffff80014ebc6c	callq	0xffffff800158c46a
+ffffff80014ebc79	callq	0xffffff80031d421c
+ffffff80014ebc86	leaq	-0x3c(%rbp), %rdx
+ffffff80014ebc8d	leaq	0x429fc(%rip), %rsi             ## literal pool for: "built-in"
+ffffff80014ebc9c	callq	0xffffff800227dba9
+ffffff80014ebca4	callq	0xffffff800158c46a
+ffffff80014ebcb1	callq	0xffffff800158c46a
+ffffff80014ebcbe	callq	0xffffff80031d421c
+ffffff80014ebccb	movq	0x90(%rbx), %rax
+ffffff80014ebcd2	cmpl	$0x0, 0x105c(%rax)
+ffffff80014ebcdb	callq	0xffffff8002258fcc
+ffffff80014ebce0	movq	0x90(%rbx), %rcx
+ffffff80014ebce7	movq	%rax, 0x1060(%rcx)
+ffffff80014ebd04	callq	0xffffff8002145b16
+ffffff80014ebd09	movq	0x90(%rbx), %rcx
+ffffff80014ebd10	movq	%rax, 0x1068(%rcx)
+ffffff80014ebd1d	callq	*0x150(%rcx)
+ffffff80014ebd23	movq	0x90(%rbx), %rax
+ffffff80014ebd2a	movq	0xdd0(%rax), %rsi
+ffffff80014ebd34	callq	0xffffff80021472cc
+ffffff80014ebd39	movq	0x90(%rbx), %rcx
+ffffff80014ebd40	movq	%rax, 0xdd8(%rcx)
+ffffff80014ebd50	leaq	0x5e0(%rcx), %rax
+ffffff80014ebd57	movq	%rax, 0x5e0(%rcx)
+ffffff80014ebd5e	movq	%rax, 0x5e8(%rcx)
+ffffff80014ebd65	callq	0xffffff8000ab6e70
+ffffff80014ebd6a	movq	0x90(%rbx), %rcx
+ffffff80014ebd71	movq	%rax, 0xb10(%rcx)
+ffffff80014ebd8f	callq	0xffffff8000afc410
+ffffff80014ebd94	movq	0x90(%rbx), %rcx
+ffffff80014ebd9b	movq	%rax, 0x808(%rcx)
+ffffff80014ebda2	movq	0xdd0(%rcx), %rdi
+ffffff80014ebdaf	callq	*0x140(%rcx)
+ffffff80014ebdb5	movq	0x90(%rbx), %rax
+ffffff80014ebdbc	movq	0x808(%rax), %rdi
+ffffff80014ebdc6	callq	*0x150(%rax)
+ffffff80014ebdcf	callq	__ZN28AppleBCMWLANBusInterfacePCIe17initMRUFlowIdListEv ## AppleBCMWLANBusInterfacePCIe::initMRUFlowIdList()
+ffffff80014ebde5	callq	__ZN37AppleBCMWLANPCIeLinkChangeEventSource13withCallbacksEP8OSObjectPFiS1_P11IOPCIDeviceES5_ ## AppleBCMWLANPCIeLinkChangeEventSource::withCallbacks(OSObject*, int (*)(OSObject*, IOPCIDevice*), int (*)(OSObject*, IOPCIDevice*))
+ffffff80014ebdea	movq	0x90(%rbx), %rcx
+ffffff80014ebdf1	movq	%rax, 0xcd8(%rcx)
+ffffff80014ebe01	movq	0xdd0(%rcx), %rdi
+ffffff80014ebe0e	callq	*0x140(%rcx)
+ffffff80014ebe14	callq	0xffffff80022c466e
+ffffff80014ebe19	movq	0x90(%rbx), %rcx
+ffffff80014ebe20	movq	%rax, 0x520(%rcx)
+ffffff80014ebe39	callq	*0xcc0(%rax)
+ffffff80014ebe57	callq	0xffffff800158d4ea
+ffffff80014ebe5f	callq	0xffffff800158c46a
+ffffff80014ebe70	callq	0xffffff800158c46a
+ffffff80014ebe7d	callq	0xffffff80031d421c
+ffffff80014ebe8d	callq	0xffffff800158c46a
+ffffff80014ebe92	leaq	0x428f6(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Failed to allocate IPC Descriptor queues!"
+ffffff80014ebe99	leaq	0x41de9(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ebeaa	jmp	0xffffff80014ec0c5
+CONTROL_FLOW=0xffffff80014ebeaa jmp	0xffffff80014ec0c5
+ffffff80014ebeb2	callq	0xffffff800158c46a
+ffffff80014ebebf	callq	0xffffff800158c46a
+ffffff80014ebecc	callq	0xffffff80031d421c
+ffffff80014ebee9	jmp	0xffffff80014ebfb5
+CONTROL_FLOW=0xffffff80014ebee9 jmp	0xffffff80014ebfb5
+ffffff80014ebef1	callq	0xffffff800158c46a
+ffffff80014ebefe	callq	0xffffff800158c46a
+ffffff80014ebf0b	callq	0xffffff80031d421c
+ffffff80014ebf28	jmp	0xffffff80014ebfb5
+CONTROL_FLOW=0xffffff80014ebf28 jmp	0xffffff80014ebfb5
+ffffff80014ebf30	callq	0xffffff800158c46a
+ffffff80014ebf3d	callq	0xffffff800158c46a
+ffffff80014ebf4a	callq	0xffffff80031d421c
+ffffff80014ebf67	jmp	0xffffff80014ebfb5
+CONTROL_FLOW=0xffffff80014ebf67 jmp	0xffffff80014ebfb5
+ffffff80014ebf6c	callq	0xffffff800158c46a
+ffffff80014ebf79	callq	0xffffff800158c46a
+ffffff80014ebf86	callq	0xffffff80031d421c
+ffffff80014ebfa3	jmp	0xffffff80014ebfb5
+CONTROL_FLOW=0xffffff80014ebfa3 jmp	0xffffff80014ebfb5
+ffffff80014ebfb5	callq	0xffffff800158d4ea
+ffffff80014ebfbc	movq	0x511ed(%rip), %rax
+ffffff80014ebfc6	cmpq	-0x28(%rbp), %rax
+ffffff80014ebfde	retq
+ffffff80014ebfe8	callq	*0xcb0(%rax)
+ffffff80014ec002	callq	0xffffff800158d4ea
+ffffff80014ec00a	callq	0xffffff800158c46a
+ffffff80014ec017	callq	0xffffff800158c46a
+ffffff80014ec024	callq	0xffffff80031d421c
+ffffff80014ec030	callq	0xffffff800158c46a
+ffffff80014ec035	leaq	0x42789(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Failed to allocate IPC pools!"
+ffffff80014ec03c	leaq	0x41c46(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec04d	jmp	0xffffff80014ec0c5
+CONTROL_FLOW=0xffffff80014ec04d jmp	0xffffff80014ec0c5
+ffffff80014ec058	callq	*0xcb8(%rax)
+ffffff80014ec072	callq	0xffffff800158d4ea
+ffffff80014ec07a	callq	0xffffff800158c46a
+ffffff80014ec08b	callq	0xffffff800158c46a
+ffffff80014ec098	callq	0xffffff80031d421c
+ffffff80014ec0a8	callq	0xffffff800158c46a
+ffffff80014ec0ad	leaq	0x42711(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Failed to allocate IPC pools!"
+ffffff80014ec0b4	leaq	0x41bce(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec0c7	callq	0xffffff80031d252e
+ffffff80014ec0cc	jmp	0xffffff80014ebfbc
+CONTROL_FLOW=0xffffff80014ec0cc jmp	0xffffff80014ebfbc
+ffffff80014ec0d4	callq	__ZN28AppleBCMWLANBusInterfacePCIe27createDestroyRequestTrackerEP9IOService ## AppleBCMWLANBusInterfacePCIe::createDestroyRequestTracker(IOService*)
+ffffff80014ec0e4	callq	__ZN28AppleBCMWLANBusInterfacePCIe15createReportersEv ## AppleBCMWLANBusInterfacePCIe::createReporters()
+ffffff80014ec0f4	callq	__ZN28AppleBCMWLANBusInterfacePCIe23initPCIeDatapathStreamsEv ## AppleBCMWLANBusInterfacePCIe::initPCIeDatapathStreams()
+ffffff80014ec0fc	movq	0xc20(%rax), %rdi
+ffffff80014ec106	callq	0xffffff8000433f10
+ffffff80014ec11d	callq	*0x20(%rax)
+ffffff80014ec126	callq	0xffffff8000434480
+ffffff80014ec136	callq	0xffffff800158c46a
+ffffff80014ec143	callq	0xffffff800158c46a
+ffffff80014ec150	callq	0xffffff80031d421c
+ffffff80014ec16d	callq	0xffffff800158d4ea
+ffffff80014ec175	callq	0xffffff8000434000
+ffffff80014ec180	callq	*0x28(%rax)
+ffffff80014ec183	jmp	0xffffff80014ebfba
+CONTROL_FLOW=0xffffff80014ec183 jmp	0xffffff80014ebfba
+ffffff80014ec188	callq	0xffffff800158c46a
+ffffff80014ec195	callq	0xffffff800158c46a
+ffffff80014ec1a2	callq	0xffffff80031d421c
+ffffff80014ec1bf	jmp	0xffffff80014ebfb5
+CONTROL_FLOW=0xffffff80014ec1bf jmp	0xffffff80014ebfb5
+ffffff80014ec1c7	callq	0xffffff800158c46a
+ffffff80014ec1d4	callq	0xffffff800158c46a
+ffffff80014ec1e1	callq	0xffffff80031d421c
+ffffff80014ec1fe	jmp	0xffffff80014ebfb5
+CONTROL_FLOW=0xffffff80014ec1fe jmp	0xffffff80014ebfb5
+ffffff80014ec203	movq	0x90(%rbx), %rax
+ffffff80014ec20a	movb	$0x0, 0x14c1(%rax)
+ffffff80014ec211	leaq	-0x3c(%rbp), %r14
+ffffff80014ec21c	movl	$0x1, 0xf48(%rax)
+ffffff80014ec230	callq	0xffffff8000a9da20
+ffffff80014ec23d	callq	0xffffff8000a9dbb0
+ffffff80014ec245	callq	0xffffff800158c46a
+ffffff80014ec252	callq	0xffffff800158c46a
+ffffff80014ec25f	callq	0xffffff80031d421c
+ffffff80014ec26c	movl	-0x3c(%rbp), %r9d
+ffffff80014ec270	leaq	-0x1d277(%rip), %rdi
+ffffff80014ec277	movq	0x50f3a(%rip), %rsi
+ffffff80014ec28f	callq	0xffffff8000a85d00
+ffffff80014ec296	jmp	0xffffff80014ebfbc
+CONTROL_FLOW=0xffffff80014ec296 jmp	0xffffff80014ebfbc
+ffffff80014ec29e	callq	0xffffff800158c46a
+ffffff80014ec2a3	movq	0x90(%rbx), %rcx
+ffffff80014ec2aa	leaq	0x41e19(%rip), %rdx             ## literal pool for: "ENABLED"
+ffffff80014ec2b1	leaq	0x41e1a(%rip), %r8              ## literal pool for: "DISABLED"
+ffffff80014ec2b8	cmpb	$0x0, 0xb44(%rcx)
+ffffff80014ec2c3	leaq	0x41de3(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Deep Sleep is %s\n"
+ffffff80014ec2ca	leaq	0x419b8(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec2db	callq	0xffffff80031d252e
+ffffff80014ec2e0	jmp	0xffffff80014eb3e1
+CONTROL_FLOW=0xffffff80014ec2e0 jmp	0xffffff80014eb3e1
+ffffff80014ec2e8	callq	0xffffff800158c46a
+ffffff80014ec2ed	leaq	0x42381(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Starting PCIe \n"
+ffffff80014ec2f4	leaq	0x4198e(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec305	callq	0xffffff80031d252e
+ffffff80014ec30a	jmp	0xffffff80014ebc86
+CONTROL_FLOW=0xffffff80014ec30a jmp	0xffffff80014ebc86
+ffffff80014ec312	callq	0xffffff800158c46a
+ffffff80014ec31d	callq	0xffffff800227dc44
+ffffff80014ec322	leaq	0x42370(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Setting '%s' 'built-in' property\n"
+ffffff80014ec329	leaq	0x41959(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec33d	callq	0xffffff80031d252e
+ffffff80014ec342	jmp	0xffffff80014ebccb
+CONTROL_FLOW=0xffffff80014ec342 jmp	0xffffff80014ebccb
+ffffff80014ec34a	callq	0xffffff800158c46a
+ffffff80014ec34f	movl	-0x2c(%rbp), %r8d
+ffffff80014ec353	leaq	0x4195b(%rip), %rsi             ## literal pool for: "[ik] %s@%d:wlan.pcie.useOLYHALDriver %d\n"
+ffffff80014ec35a	leaq	0x41928(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec36b	callq	0xffffff80031d2a6e
+ffffff80014ec370	jmp	0xffffff80014ead24
+CONTROL_FLOW=0xffffff80014ec370 jmp	0xffffff80014ead24
+ffffff80014ec378	callq	0xffffff800158c46a
+ffffff80014ec37d	movl	-0x2c(%rbp), %r8d
+ffffff80014ec381	leaq	0x41966(%rip), %rsi             ## literal pool for: "[ik] %s@%d:wlan.startdelay %d s\n"
+ffffff80014ec388	leaq	0x418fa(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec399	callq	0xffffff80031d252e
+ffffff80014ec39e	jmp	0xffffff80014ead78
+CONTROL_FLOW=0xffffff80014ec39e jmp	0xffffff80014ead78
+ffffff80014ec3a6	callq	0xffffff800158c46a
+ffffff80014ec3ab	movl	-0x2c(%rbp), %r8d
+ffffff80014ec3af	leaq	0x41959(%rip), %rsi             ## literal pool for: "[ik] %s@%d:wlan.startdelay %d s complete\n"
+ffffff80014ec3b6	leaq	0x418cc(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec3c7	callq	0xffffff80031d252e
+ffffff80014ec3cc	jmp	0xffffff80014eadae
+CONTROL_FLOW=0xffffff80014ec3cc jmp	0xffffff80014eadae
+ffffff80014ec3d4	callq	0xffffff800158c46a
+ffffff80014ec3d9	movl	-0x2c(%rbp), %r8d
+ffffff80014ec3dd	leaq	0x419c6(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.wdt.disableLogging %d\n"
+ffffff80014ec3e4	leaq	0x4189e(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec3f5	callq	0xffffff80031d2a6e
+ffffff80014ec3fa	jmp	0xffffff80014eaf95
+CONTROL_FLOW=0xffffff80014ec3fa jmp	0xffffff80014eaf95
+ffffff80014ec402	callq	0xffffff800158c46a
+ffffff80014ec407	movl	-0x2c(%rbp), %r8d
+ffffff80014ec40b	leaq	0x419e1(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.enableDeepSleep %d\n"
+ffffff80014ec412	leaq	0x41870(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec423	callq	0xffffff80031d2a6e
+ffffff80014ec428	jmp	0xffffff80014eafea
+CONTROL_FLOW=0xffffff80014ec428 jmp	0xffffff80014eafea
+ffffff80014ec430	callq	0xffffff800158c46a
+ffffff80014ec435	movl	-0x2c(%rbp), %r8d
+ffffff80014ec439	leaq	0x41a00(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.debugworkQueuetimeout_ms %d\n"
+ffffff80014ec440	leaq	0x41842(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec451	callq	0xffffff80031d2a6e
+ffffff80014ec456	jmp	0xffffff80014eb03f
+CONTROL_FLOW=0xffffff80014ec456 jmp	0xffffff80014eb03f
+ffffff80014ec45e	callq	0xffffff800158c46a
+ffffff80014ec463	movl	-0x2c(%rbp), %r8d
+ffffff80014ec467	leaq	0x41a1d(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Starting WiFi driver after %d ms\n"
+ffffff80014ec46e	leaq	0x41814(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec47f	callq	0xffffff80031d252e
+ffffff80014ec484	jmp	0xffffff80014eb092
+CONTROL_FLOW=0xffffff80014ec484 jmp	0xffffff80014eb092
+ffffff80014ec48c	callq	0xffffff800158c46a
+ffffff80014ec491	movl	-0x2c(%rbp), %r8d
+ffffff80014ec495	leaq	0x41abf(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.enableptmsupport %d\n"
+ffffff80014ec49c	leaq	0x417e6(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec4ad	callq	0xffffff80031d2a6e
+ffffff80014ec4b2	jmp	0xffffff80014eb1c9
+CONTROL_FLOW=0xffffff80014ec4b2 jmp	0xffffff80014eb1c9
+ffffff80014ec4ba	callq	0xffffff800158c46a
+ffffff80014ec4bf	movl	-0x2c(%rbp), %r8d
+ffffff80014ec4c3	leaq	0x41ae2(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.disablefatalerrorindication %d\n"
+ffffff80014ec4ca	leaq	0x417b8(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec4db	callq	0xffffff80031d2a6e
+ffffff80014ec4e0	jmp	0xffffff80014eb22e
+CONTROL_FLOW=0xffffff80014ec4e0 jmp	0xffffff80014eb22e
+ffffff80014ec4e8	callq	0xffffff800158c46a
+ffffff80014ec4ed	movl	-0x2c(%rbp), %r8d
+ffffff80014ec4f1	leaq	0x41b47(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.iokitmatch_ms %d\n"
+ffffff80014ec4f8	leaq	0x4178a(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec509	callq	0xffffff80031d2a6e
+ffffff80014ec50e	jmp	0xffffff80014eb2f9
+CONTROL_FLOW=0xffffff80014ec50e jmp	0xffffff80014eb2f9
+ffffff80014ec516	callq	0xffffff800158c46a
+ffffff80014ec51b	movl	-0x2c(%rbp), %r8d
+ffffff80014ec51f	leaq	0x41b56(%rip), %rsi             ## literal pool for: "[ik] %s@%d:wlan.pcie.DSdisabled %d\n"
+ffffff80014ec526	leaq	0x4175c(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec537	callq	0xffffff80031d252e
+ffffff80014ec53c	jmp	0xffffff80014eb36f
+CONTROL_FLOW=0xffffff80014ec53c jmp	0xffffff80014eb36f
+ffffff80014ec544	callq	0xffffff800158c46a
+ffffff80014ec549	movl	-0x2c(%rbp), %r8d
+ffffff80014ec54d	leaq	0x41bef(%rip), %rsi             ## literal pool for: "[ik] %s@%d:wlan.pcie.D0AckLogsdisabled %d\n"
+ffffff80014ec554	leaq	0x4172e(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec565	callq	0xffffff80031d252e
+ffffff80014ec56a	jmp	0xffffff80014eb46f
+CONTROL_FLOW=0xffffff80014ec56a jmp	0xffffff80014eb46f
+ffffff80014ec572	callq	0xffffff800158c46a
+ffffff80014ec577	movl	-0x2c(%rbp), %r8d
+ffffff80014ec57b	leaq	0x41c53(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.txdeq %d\n"
+ffffff80014ec582	leaq	0x41700(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec593	callq	0xffffff80031d2a6e
+ffffff80014ec598	jmp	0xffffff80014eb576
+CONTROL_FLOW=0xffffff80014ec598 jmp	0xffffff80014eb576
+ffffff80014ec5a0	callq	0xffffff800158c46a
+ffffff80014ec5a5	movl	-0x2c(%rbp), %r8d
+ffffff80014ec5a9	leaq	0x41c56(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.bounce %d\n"
+ffffff80014ec5b0	leaq	0x416d2(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec5c1	callq	0xffffff80031d2a6e
+ffffff80014ec5c6	jmp	0xffffff80014eb5ec
+CONTROL_FLOW=0xffffff80014ec5c6 jmp	0xffffff80014eb5ec
+ffffff80014ec5ce	callq	0xffffff800158c46a
+ffffff80014ec5d3	movq	0x90(%rbx), %rcx
+ffffff80014ec5da	movzbl	0x1253(%rcx), %r8d
+ffffff80014ec5e2	leaq	0x41cbf(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Disable MultiFunction ASPM Workaround override: %u\n"
+ffffff80014ec5e9	leaq	0x41699(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec5fa	callq	0xffffff80031d267e
+ffffff80014ec5ff	jmp	0xffffff80014eb6e4
+CONTROL_FLOW=0xffffff80014ec5ff jmp	0xffffff80014eb6e4
+ffffff80014ec607	callq	0xffffff800158c46a
+ffffff80014ec60c	movq	0x90(%rbx), %rcx
+ffffff80014ec613	movzbl	0x1252(%rcx), %r8d
+ffffff80014ec61b	leaq	0x41ce3(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Enable MultiFunction D3 collection override: %u\n"
+ffffff80014ec622	leaq	0x41660(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec633	callq	0xffffff80031d267e
+ffffff80014ec638	jmp	0xffffff80014eb747
+CONTROL_FLOW=0xffffff80014ec638 jmp	0xffffff80014eb747
+ffffff80014ec640	callq	0xffffff800158c46a
+ffffff80014ec645	movq	0x90(%rbx), %rcx
+ffffff80014ec64c	movzbl	0x124e(%rcx), %r8d
+ffffff80014ec654	leaq	0x41d06(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Enable log collection when upgrade to full reset: %u\n"
+ffffff80014ec65b	leaq	0x41627(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec66c	callq	0xffffff80031d252e
+ffffff80014ec671	jmp	0xffffff80014eb7aa
+CONTROL_FLOW=0xffffff80014ec671 jmp	0xffffff80014eb7aa
+ffffff80014ec679	callq	0xffffff800158c46a
+ffffff80014ec67e	movq	0x90(%rbx), %rcx
+ffffff80014ec685	movzbl	0x124f(%rcx), %r8d
+ffffff80014ec68d	leaq	0x41d28(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Enable log collection of WLAN APB registers : %u\n"
+ffffff80014ec694	leaq	0x415ee(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec6a5	callq	0xffffff80031d252e
+ffffff80014ec6aa	jmp	0xffffff80014eb80d
+CONTROL_FLOW=0xffffff80014ec6aa jmp	0xffffff80014eb80d
+ffffff80014ec6b2	callq	0xffffff800158c46a
+ffffff80014ec6b7	movl	-0x2c(%rbp), %r8d
+ffffff80014ec6bb	leaq	0x41d5a(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.tcmAccessWithTrapTimeout %d\n"
+ffffff80014ec6c2	leaq	0x415c0(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec6d3	callq	0xffffff80031d2a6e
+ffffff80014ec6d8	jmp	0xffffff80014eb864
+CONTROL_FLOW=0xffffff80014ec6d8 jmp	0xffffff80014eb864
+ffffff80014ec6e0	callq	0xffffff800158c46a
+ffffff80014ec6e5	movq	0x90(%rbx), %rcx
+ffffff80014ec6ec	movzbl	0x1251(%rcx), %r8d
+ffffff80014ec6f4	leaq	0x41d7e(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Panic on Pending Backplane Errors override: %u\n"
+ffffff80014ec6fb	leaq	0x41587(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec70c	callq	0xffffff80031d267e
+ffffff80014ec711	jmp	0xffffff80014eb8db
+CONTROL_FLOW=0xffffff80014ec711 jmp	0xffffff80014eb8db
+ffffff80014ec719	callq	0xffffff800158c46a
+ffffff80014ec71e	movq	0x90(%rbx), %rcx
+ffffff80014ec725	movl	0x1228(%rcx), %r8d
+ffffff80014ec72c	leaq	0x41d9d(%rip), %rsi             ## literal pool for: "[ik] %s@%d:PCIe HMAP window limit from boot config: %uMB\n"
+ffffff80014ec733	leaq	0x4154f(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec744	callq	0xffffff80031d252e
+ffffff80014ec749	jmp	0xffffff80014eb93f
+CONTROL_FLOW=0xffffff80014ec749 jmp	0xffffff80014eb93f
+ffffff80014ec751	callq	0xffffff800158c46a
+ffffff80014ec756	movl	-0x2c(%rbp), %r8d
+ffffff80014ec75a	leaq	0x41de5(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.perstdelay_ms %d\n"
+ffffff80014ec761	leaq	0x41521(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec772	callq	0xffffff80031d2a6e
+ffffff80014ec777	jmp	0xffffff80014eb9c6
+CONTROL_FLOW=0xffffff80014ec777 jmp	0xffffff80014eb9c6
+ffffff80014ec77f	callq	0xffffff800158c46a
+ffffff80014ec784	movl	-0x2c(%rbp), %r8d
+ffffff80014ec788	leaq	0x41df8(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.dumplogbtreset %d\n"
+ffffff80014ec78f	leaq	0x414f3(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec7a0	callq	0xffffff80031d2a6e
+ffffff80014ec7a5	jmp	0xffffff80014eba29
+CONTROL_FLOW=0xffffff80014ec7a5 jmp	0xffffff80014eba29
+ffffff80014ec7ad	callq	0xffffff800158c46a
+ffffff80014ec7b2	movl	-0x2c(%rbp), %r8d
+ffffff80014ec7b6	leaq	0x41e0c(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.pcie.detectsabotage %d\n"
+ffffff80014ec7bd	leaq	0x414c5(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec7ce	callq	0xffffff80031d2a6e
+ffffff80014ec7d3	jmp	0xffffff80014eba8e
+CONTROL_FLOW=0xffffff80014ec7d3 jmp	0xffffff80014eba8e
+ffffff80014ec7db	callq	0xffffff800158c46a
+ffffff80014ec7e0	movl	-0x38(%rbp), %r8d
+ffffff80014ec7e4	leaq	0x41e20(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Commit Coalescing time %dus\n"
+ffffff80014ec7eb	leaq	0x41497(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec7fc	callq	0xffffff80031d267e
+ffffff80014ec801	jmp	0xffffff80014ebae9
+CONTROL_FLOW=0xffffff80014ec801 jmp	0xffffff80014ebae9
+ffffff80014ec809	callq	0xffffff800158c46a
+ffffff80014ec80e	movl	-0x2c(%rbp), %r8d
+ffffff80014ec812	leaq	0x41e33(%rip), %rsi             ## literal pool for: "[ik] %s@%d: wlan.secureboot.darcheck %d\n"
+ffffff80014ec819	leaq	0x41469(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec82a	callq	0xffffff80031d267e
+ffffff80014ec82f	jmp	0xffffff80014ebb40
+CONTROL_FLOW=0xffffff80014ec82f jmp	0xffffff80014ebb40
+ffffff80014ec837	callq	0xffffff800158c46a
+ffffff80014ec83c	movq	0x90(%rbx), %rcx
+ffffff80014ec843	movzbl	0xb44(%rcx), %r8d
+ffffff80014ec84b	leaq	0x4189b(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to set wlan.pcie.DSState Property - %u\n"
+ffffff80014ec852	leaq	0x41430(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec863	callq	0xffffff80031d252e
+ffffff80014ec868	jmp	0xffffff80014eb42c
+CONTROL_FLOW=0xffffff80014ec868 jmp	0xffffff80014eb42c
+ffffff80014ec870	callq	0xffffff800158c46a
+ffffff80014ec875	leaq	0x414c7(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to get and set needed WiFi properties and platform provider\n"
+ffffff80014ec87c	leaq	0x41406(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec88d	callq	0xffffff80031d252e
+ffffff80014ec892	jmp	0xffffff80014eaf44
+CONTROL_FLOW=0xffffff80014ec892 jmp	0xffffff80014eaf44
+ffffff80014ec89a	callq	0xffffff800158c46a
+ffffff80014ec89f	leaq	0x41e4e(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create command gate\n"
+ffffff80014ec8a6	leaq	0x413dc(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec8b7	callq	0xffffff80031d267e
+ffffff80014ec8bc	jmp	0xffffff80014ebed9
+CONTROL_FLOW=0xffffff80014ec8bc jmp	0xffffff80014ebed9
+ffffff80014ec8c4	callq	0xffffff800158c46a
+ffffff80014ec8c9	leaq	0x41df7(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create debug workQueue\n"
+ffffff80014ec8d0	leaq	0x413b2(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec8e1	callq	0xffffff80031d267e
+ffffff80014ec8e6	jmp	0xffffff80014ebf18
+CONTROL_FLOW=0xffffff80014ec8e6 jmp	0xffffff80014ebf18
+ffffff80014ec8ee	callq	0xffffff800158c46a
+ffffff80014ec8f3	leaq	0x41e24(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to allocate pcie error handling lock\n"
+ffffff80014ec8fa	leaq	0x41388(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec90b	callq	0xffffff80031d267e
+ffffff80014ec910	jmp	0xffffff80014ebf57
+CONTROL_FLOW=0xffffff80014ec910 jmp	0xffffff80014ebf57
+ffffff80014ec918	callq	0xffffff800158c46a
+ffffff80014ec91d	leaq	0x41e32(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create link change signal handler!\n"
+ffffff80014ec924	leaq	0x4135e(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec935	callq	0xffffff80031d252e
+ffffff80014ec93a	jmp	0xffffff80014ebf93
+CONTROL_FLOW=0xffffff80014ec93a jmp	0xffffff80014ebf93
+ffffff80014ec93f	callq	0xffffff8000383150
+ffffff80014ec947	callq	0xffffff800158c46a
+ffffff80014ec94c	leaq	0x41e9c(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Failed to create IOReporters\n"
+ffffff80014ec953	leaq	0x4132f(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec964	callq	0xffffff80031d267e
+ffffff80014ec969	jmp	0xffffff80014ec1af
+CONTROL_FLOW=0xffffff80014ec969 jmp	0xffffff80014ec1af
+ffffff80014ec971	callq	0xffffff800158c46a
+ffffff80014ec976	leaq	0x41ed0(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Unable to start deferred worker thread\n"
+ffffff80014ec97d	leaq	0x41305(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec98e	callq	0xffffff80031d267e
+ffffff80014ec993	jmp	0xffffff80014ec15d
+CONTROL_FLOW=0xffffff80014ec993 jmp	0xffffff80014ec15d
+ffffff80014ec99b	callq	0xffffff800158c46a
+ffffff80014ec9a0	leaq	0x41e72(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Unable to create deferred worker thread\n"
+ffffff80014ec9a7	leaq	0x412db(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec9b8	callq	0xffffff80031d267e
+ffffff80014ec9bd	jmp	0xffffff80014ec1ee
+CONTROL_FLOW=0xffffff80014ec9bd jmp	0xffffff80014ec1ee
+ffffff80014ec9c5	callq	0xffffff800158c46a
+ffffff80014ec9ca	movl	-0x3c(%rbp), %r8d
+ffffff80014ec9ce	leaq	0x41eac(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Raised AdjustBusy(+1), GetBusyState() -> %u\n"
+ffffff80014ec9d5	leaq	0x412ad(%rip), %rdx             ## literal pool for: "start"
+ffffff80014ec9e6	callq	0xffffff80031d252e
+ffffff80014ec9eb	jmp	0xffffff80014ec26c
+CONTROL_FLOW=0xffffff80014ec9eb jmp	0xffffff80014ec26c
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe17initMRUFlowIdListEv ADDRESS=0xffffff80014ecb74 END=0xffffff80014ecc48 INSTRUCTIONS=51
+ffffff80014ecb74	pushq	%rbp
+ffffff80014ecb75	movq	%rsp, %rbp
+ffffff80014ecb78	pushq	%r14
+ffffff80014ecb7a	pushq	%rbx
+ffffff80014ecb7b	movq	%rdi, %rbx
+ffffff80014ecb7e	movq	0x90(%rdi), %rdi
+ffffff80014ecb85	movzwl	0x178(%rdi), %r14d
+ffffff80014ecb8d	addq	$0x750, %rdi                    ## imm = 0x750
+ffffff80014ecb94	movl	$0xb0, %esi
+ffffff80014ecb99	callq	0xffffff8000101100
+ffffff80014ecb9e	movq	0x90(%rbx), %rax
+ffffff80014ecba5	testq	%r14, %r14
+ffffff80014ecba8	je	0xffffff80014ecbf4
+CONTROL_FLOW=0xffffff80014ecba8 je	0xffffff80014ecbf4
+ffffff80014ecbaa	leal	-0x1(%r14), %ecx
+ffffff80014ecbae	leaq	-0x1(%r14), %rdx
+ffffff80014ecbb2	xorl	%esi, %esi
+ffffff80014ecbb6	leal	-0x1(%rdi), %r8d
+ffffff80014ecbc5	movb	%r8b, 0x751(%rax,%rdi,4)
+ffffff80014ecbcd	leaq	0x1(%rdi), %r8
+ffffff80014ecbda	movb	%r9b, 0x750(%rax,%rdi,4)
+ffffff80014ecbe2	movw	$0x0, 0x752(%rax,%rdi,4)
+ffffff80014ecbf4	movl	0x174(%rax), %ecx
+ffffff80014ecc03	movzbl	0x750(%rax,%rsi,4), %edi
+ffffff80014ecc0b	movzbl	0x751(%rax,%rsi,4), %r8d
+ffffff80014ecc14	movb	%dil, 0x750(%rax,%r8,4)
+ffffff80014ecc1c	movb	%r8b, 0x751(%rax,%rdi,4)
+ffffff80014ecc24	movb	%sil, 0x751(%rax,%rsi,4)
+ffffff80014ecc2c	movb	%sil, 0x750(%rax,%rsi,4)
+ffffff80014ecc3d	movb	%cl, 0x800(%rax)
+ffffff80014ecc47	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe23initPCIeDatapathStreamsEv ADDRESS=0xffffff80014edcb4 END=0xffffff80014edf1e INSTRUCTIONS=142
+ffffff80014edcb4	pushq	%rbp
+ffffff80014edcb5	movq	%rsp, %rbp
+ffffff80014edcb8	pushq	%r15
+ffffff80014edcba	pushq	%r14
+ffffff80014edcbc	pushq	%r12
+ffffff80014edcbe	pushq	%rbx
+ffffff80014edcbf	subq	$0x20, %rsp
+ffffff80014edcc3	movq	%rdi, %rbx
+ffffff80014edcc6	movq	0x4f4e3(%rip), %rax
+ffffff80014edccd	movq	(%rax), %rax
+ffffff80014edcd0	movq	%rax, -0x28(%rbp)
+ffffff80014edcd4	leaq	-0x30(%rbp), %r14
+ffffff80014edcd8	movq	$0x0, (%r14)
+ffffff80014edcdf	xorl	%esi, %esi
+ffffff80014edce1	movq	%r14, %rdx
+ffffff80014edce4	xorl	%ecx, %ecx
+ffffff80014edcec	callq	0xffffff800158de86
+ffffff80014edd02	callq	0xffffff8000ab5930
+ffffff80014edd19	movq	$-0x1, 0x8(%rax)
+ffffff80014edd23	movq	%rax, 0x18(%r14)
+ffffff80014edd27	movq	%rax, 0x20(%r14)
+ffffff80014edd2b	movb	$0x0, 0x58(%r14)
+ffffff80014edd30	movq	%rbx, 0x30(%r14)
+ffffff80014edd34	movq	%rax, 0x38(%r14)
+ffffff80014edd38	movw	$0x96, 0x150(%r14)
+ffffff80014edd42	callq	0xffffff800164b1f0
+ffffff80014edd4b	movl	$0x7f, 0x8(%r14)
+ffffff80014edd53	movq	$0x7, 0x18(%r14)
+ffffff80014edd65	leaq	0x1(%r12), %rax
+ffffff80014edd6a	leaq	-0x38(%rbp), %rdi
+ffffff80014edd76	callq	0xffffff8000a50070
+ffffff80014edd7b	movq	%rax, 0x148(%r14)
+ffffff80014edd82	movq	-0x30(%rbp), %rdi
+ffffff80014edd86	leaq	0x48e8d(%rip), %rsi             ## literal pool for: "requestiotxpcie"
+ffffff80014edd90	callq	0xffffff80031c0982
+ffffff80014edd95	movq	0x4f274(%rip), %rcx
+ffffff80014edda5	callq	0xffffff8000a49ab0
+ffffff80014eddaa	movq	0x90(%rbx), %rcx
+ffffff80014eddb1	movq	%rax, 0x1258(%rcx)
+ffffff80014eddb8	movq	0x148(%r14), %rdi
+ffffff80014eddc2	callq	*0x28(%rax)
+ffffff80014eddc5	callq	0xffffff800164b1f0
+ffffff80014eddce	movl	$0x7f, 0x8(%r14)
+ffffff80014eddd6	movq	$0x3, 0x18(%r14)
+ffffff80014eddde	leaq	0x6(%r12), %rax
+ffffff80014edde3	leaq	-0x38(%rbp), %rdi
+ffffff80014eddef	callq	0xffffff8000a50070
+ffffff80014eddf4	movq	%rax, 0x148(%r14)
+ffffff80014eddfb	movq	-0x30(%rbp), %rdi
+ffffff80014eddff	leaq	0x48e24(%rip), %rsi             ## literal pool for: "rxpacketpcie"
+ffffff80014ede09	callq	0xffffff80031c0982
+ffffff80014ede14	callq	0xffffff8000a49ab0
+ffffff80014ede19	movq	0x90(%rbx), %rcx
+ffffff80014ede20	movq	%rax, 0x1260(%rcx)
+ffffff80014ede27	movq	0x148(%r14), %rdi
+ffffff80014ede31	callq	*0x28(%rax)
+ffffff80014ede34	callq	0xffffff800164b1f0
+ffffff80014ede3d	movl	$0x7f, 0x8(%r14)
+ffffff80014ede45	movq	$0x2003, 0x18(%r14)             ## imm = 0x2003
+ffffff80014ede4d	leaq	-0x38(%rbp), %rdi
+ffffff80014ede59	callq	0xffffff8000a50070
+ffffff80014ede5e	movq	%rax, 0x148(%r14)
+ffffff80014ede65	movq	-0x30(%rbp), %rdi
+ffffff80014ede69	leaq	0x48dc7(%rip), %rsi             ## literal pool for: "driverstatepcie"
+ffffff80014ede73	callq	0xffffff80031c0982
+ffffff80014ede7e	callq	0xffffff8000a49ab0
+ffffff80014ede83	movq	0x90(%rbx), %rcx
+ffffff80014ede8a	movq	%rax, 0x1268(%rcx)
+ffffff80014ede91	movq	0x148(%r14), %rdi
+ffffff80014ede9b	callq	*0x28(%rax)
+ffffff80014edea8	callq	0xffffff8000ab5a60
+ffffff80014edead	jmp	0xffffff80014eded5
+CONTROL_FLOW=0xffffff80014edead jmp	0xffffff80014eded5
+ffffff80014edeb2	callq	0xffffff800158c46a
+ffffff80014edebf	callq	0xffffff800158c46a
+ffffff80014edecc	callq	0xffffff80031d421c
+ffffff80014eded5	movq	0x4f2d4(%rip), %rax
+ffffff80014ededf	cmpq	-0x28(%rbp), %rax
+ffffff80014edef1	retq
+ffffff80014edef5	callq	0xffffff800158c46a
+ffffff80014edefa	leaq	0x48dce(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to allocate memory\n"
+ffffff80014edf01	leaq	0x48ded(%rip), %rdx             ## literal pool for: "initPCIeDatapathStreams"
+ffffff80014edf12	callq	0xffffff80031d267e
+ffffff80014edf17	jmp	0xffffff80014eded5
+CONTROL_FLOW=0xffffff80014edf17 jmp	0xffffff80014eded5
+ffffff80014edf19	callq	0xffffff8000383150
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe13deferredStartEP11thread_call ADDRESS=0xffffff80014efa46 END=0xffffff80014f1048 INSTRUCTIONS=1277
+ffffff80014efa46	pushq	%rbp
+ffffff80014efa47	movq	%rsp, %rbp
+ffffff80014efa4a	pushq	%r15
+ffffff80014efa4c	pushq	%r14
+ffffff80014efa4e	pushq	%r13
+ffffff80014efa50	pushq	%r12
+ffffff80014efa52	pushq	%rbx
+ffffff80014efa53	subq	$0x68, %rsp
+ffffff80014efa57	movq	%rsi, %r14
+ffffff80014efa5a	movq	%rdi, %rbx
+ffffff80014efa5d	movq	0x4d74c(%rip), %rax
+ffffff80014efa64	movq	(%rax), %rax
+ffffff80014efa67	movq	%rax, -0x30(%rbp)
+ffffff80014efa6b	callq	0xffffff8000b53f70
+ffffff80014efa70	movq	%rax, %r13
+ffffff80014efa73	xorl	%eax, %eax
+ffffff80014efa75	movq	%rax, -0x38(%rbp)
+ffffff80014efa79	movq	%rax, -0x40(%rbp)
+ffffff80014efa7d	movq	%rax, -0x48(%rbp)
+ffffff80014efa81	movq	%rax, -0x50(%rbp)
+ffffff80014efa85	movq	%rax, -0x58(%rbp)
+ffffff80014efa8c	callq	0xffffff800158c46a
+ffffff80014efa99	callq	0xffffff800158c46a
+ffffff80014efaa6	callq	0xffffff80031d421c
+ffffff80014efab6	callq	0xffffff8000ad4820
+ffffff80014efac6	callq	0xffffff800158c46a
+ffffff80014efad3	callq	0xffffff800158c46a
+ffffff80014efae0	callq	0xffffff80031d421c
+ffffff80014efafe	leaq	0x4a016(%rip), %rdi             ## literal pool for: "AppleOLYHAL"
+ffffff80014efb07	callq	0xffffff8000b57720
+ffffff80014efb21	callq	0xffffff8000ad8290
+ffffff80014efb39	jmp	0xffffff80014efb6a
+CONTROL_FLOW=0xffffff80014efb39 jmp	0xffffff80014efb6a
+ffffff80014efb3b	leaq	0x49fe5(%rip), %rdi             ## literal pool for: "%s: failed to create matching dictionary\n"
+ffffff80014efb42	leaq	0x4a008(%rip), %rsi             ## literal pool for: "accessAppleOLYHAL"
+ffffff80014efb4b	callq	0xffffff8000ab6560
+ffffff80014efb50	jmp	0xffffff80014f0131
+CONTROL_FLOW=0xffffff80014efb50 jmp	0xffffff80014f0131
+ffffff80014efb55	leaq	0x4a007(%rip), %rdi             ## literal pool for: "%s: failed to find AppleOLYHAL service\n"
+ffffff80014efb5c	leaq	0x49fee(%rip), %rsi             ## literal pool for: "accessAppleOLYHAL"
+ffffff80014efb65	callq	0xffffff8000ab6560
+ffffff80014efb75	callq	*(%rcx,%rax)
+ffffff80014efb8b	callq	0xffffff8001b48b5e
+ffffff80014efb90	movq	0x90(%rbx), %rcx
+ffffff80014efb97	movq	%rax, 0x14b0(%rcx)
+ffffff80014efb9e	leaq	0x3f375(%rip), %rsi             ## literal pool for: "function-pcie_port_control"
+ffffff80014efba8	callq	0xffffff8001b48c04
+ffffff80014efbad	movq	0x90(%rbx), %rcx
+ffffff80014efbb4	movq	%rax, 0x14b8(%rcx)
+ffffff80014efbbb	cmpb	$0x1, 0xcc4(%rcx)
+ffffff80014efbca	callq	0xffffff8000b53f70
+ffffff80014efbd8	callq	*0x28(%rax)
+ffffff80014efbdb	movq	0x90(%rbx), %rax
+ffffff80014efbe2	cmpq	$0x0, 0x14b0(%rax)
+ffffff80014efbf0	movq	0x14b8(%rax), %rdi
+ffffff80014efc03	callq	*0x168(%rax)
+ffffff80014efc09	movq	0x90(%rbx), %rcx
+ffffff80014efc14	movb	$0x1, 0xebe(%rcx)
+ffffff80014efc1d	movl	%eax, 0xb30(%rcx)
+ffffff80014efc23	movl	%eax, 0x1294(%rcx)
+ffffff80014efc29	movq	0x14b8(%rcx), %rdi
+ffffff80014efc30	movzbl	0x11ae(%rcx), %esi
+ffffff80014efc37	callq	0xffffff8001b4e1f4
+ffffff80014efc3c	movq	0x90(%rbx), %rax
+ffffff80014efc43	movq	0x14b8(%rax), %rdi
+ffffff80014efc4d	leaq	__ZN28AppleBCMWLANBusInterfacePCIe28pciePortErrorHandlerCallbackEPv45AppleOLYHALPortInterfacePCIeErrorHandlerEventP6OSData(%rip), %rsi ## AppleBCMWLANBusInterfacePCIe::pciePortErrorHandlerCallback(void*, AppleOLYHALPortInterfacePCIeErrorHandlerEvent, OSData*)
+ffffff80014efc57	callq	*0x158(%rax)
+ffffff80014efc60	movq	0x90(%rbx), %rcx
+ffffff80014efc67	movq	0x14b8(%rcx), %rdi
+ffffff80014efc6e	movq	0xc68(%rax), %rdx
+ffffff80014efc7b	callq	*0x160(%rax)
+ffffff80014efc81	movq	0x90(%rbx), %rax
+ffffff80014efc88	movq	0x14b8(%rax), %rdi
+ffffff80014efc92	callq	*0x168(%rax)
+ffffff80014efca2	callq	*0x868(%rax)
+ffffff80014efcab	movq	0xc78(%rcx), %rdx
+ffffff80014efcb8	callq	0xffffff8002145b16
+ffffff80014efcbd	movq	0x90(%rbx), %rcx
+ffffff80014efcc4	movq	%rax, 0xe70(%rcx)
+ffffff80014efcd3	callq	0xffffff800158c46a
+ffffff80014efce0	callq	0xffffff800158c46a
+ffffff80014efced	callq	0xffffff80031d421c
+ffffff80014efd00	callq	*0x790(%rax)
+ffffff80014efd06	movq	0x90(%rbx), %rax
+ffffff80014efd0d	cmpl	$0x2, 0xb2c(%rax)
+ffffff80014efd16	movb	$0x1, 0x4d0(%rax)
+ffffff80014efd1d	movq	0x14b8(%rax), %rdi
+ffffff80014efd2c	callq	*0x130(%rax)
+ffffff80014efd32	leaq	0x3dbf3(%rip), %rdi             ## literal pool for: "IOPCIDevice"
+ffffff80014efd3b	callq	0xffffff8000b57720
+ffffff80014efd40	leaq	0x49e44(%rip), %rdi             ## literal pool for: "ARPT"
+ffffff80014efd4a	callq	0xffffff8000b57950
+ffffff80014efd52	movq	0x90(%rbx), %rax
+ffffff80014efd59	cmpb	$0x0, 0xcc4(%rax)
+ffffff80014efd69	callq	0xffffff800158c46a
+ffffff80014efd76	callq	0xffffff800158c46a
+ffffff80014efd83	callq	0xffffff80031d4234
+ffffff80014efd8c	movq	0x90(%rbx), %rax
+ffffff80014efd93	cmpq	$0x0, 0xc58(%rax)
+ffffff80014efda0	callq	0xffffff800158c46a
+ffffff80014efda8	callq	__ZN27AppleBCMWLANPCIeMMIOHistory10withLoggerEP11CCLogStream ## AppleBCMWLANPCIeMMIOHistory::withLogger(CCLogStream*)
+ffffff80014efdad	movq	0x90(%rbx), %rcx
+ffffff80014efdb4	movq	%rax, 0xc58(%rcx)
+ffffff80014efdbb	callq	0xffffff8000ad5ec0
+ffffff80014efdc0	movq	0x90(%rbx), %rcx
+ffffff80014efdc7	movq	%rax, 0x1288(%rcx)
+ffffff80014efdd7	movq	%r15, -0x88(%rbp)
+ffffff80014efde4	callq	*0x20(%rcx)
+ffffff80014efde7	movq	0x90(%rbx), %rax
+ffffff80014efdee	movq	0x1288(%rax), %rdi
+ffffff80014efdf8	callq	0xffffff8000aeaa40
+ffffff80014efe03	callq	0xffffff800158c46a
+ffffff80014efe19	callq	0xffffff800158c46a
+ffffff80014efe2b	callq	0xffffff80031d4256
+ffffff80014efe3b	callq	0xffffff800158c46a
+ffffff80014efe48	callq	0xffffff800158c46a
+ffffff80014efe55	callq	0xffffff80031d421c
+ffffff80014efe62	movq	%r12, -0x90(%rbp)
+ffffff80014efe6c	callq	0xffffff800158c46a
+ffffff80014efe79	callq	0xffffff800158c46a
+ffffff80014efe86	callq	0xffffff80031d421c
+ffffff80014efe93	movq	0x4d17e(%rip), %rax
+ffffff80014efea3	callq	0xffffff8000a49ab0
+ffffff80014efeb7	callq	0xffffff800158c46a
+ffffff80014efec4	callq	0xffffff800158c46a
+ffffff80014efed1	callq	0xffffff80031d421c
+ffffff80014efede	movq	0x90(%rbx), %rax
+ffffff80014efee5	movq	0xdd8(%rax), %rdi
+ffffff80014eff01	callq	*0x118(%rax)
+ffffff80014eff07	callq	0xffffff800164b278
+ffffff80014eff0c	movq	0x90(%rbx), %rcx
+ffffff80014eff13	movb	%al, 0xc48(%rcx)
+ffffff80014eff19	cmpb	$0x0, 0xcc4(%rcx)
+ffffff80014eff22	leaq	-0x80(%rbp), %rdx
+ffffff80014eff2c	movq	0xdd8(%rcx), %rdi
+ffffff80014eff45	callq	*0x118(%rax)
+ffffff80014eff4b	movq	0x90(%rbx), %rcx
+ffffff80014eff52	cmpq	$0x0, 0xce8(%rcx)
+ffffff80014eff60	leaq	-0x80(%rbp), %r15
+ffffff80014eff6a	callq	0xffffff800158e302
+ffffff80014eff6f	movq	0x20(%r15), %r15
+ffffff80014eff79	callq	*0x868(%rax)
+ffffff80014eff85	callq	0xffffff80031c6ca0
+ffffff80014eff93	callq	*0xa48(%rcx)
+ffffff80014eff99	leaq	__ZN28AppleBCMWLANBusInterfacePCIe17prepareFRCallbackEPK13CCFaultReport(%rip), %rax ## AppleBCMWLANBusInterfacePCIe::prepareFRCallback(CCFaultReport const*)
+ffffff80014effa0	leaq	-0x58(%rbp), %r15
+ffffff80014effa7	leaq	__ZN28AppleBCMWLANBusInterfacePCIe33collectImmediateFaultDataCallbackEP13CCFaultReport(%rip), %rax ## AppleBCMWLANBusInterfacePCIe::collectImmediateFaultDataCallback(CCFaultReport*)
+ffffff80014effae	movq	%rax, 0x8(%r15)
+ffffff80014effb2	leaq	__ZN28AppleBCMWLANBusInterfacePCIe32collectDeferredFaultDataCallbackEP13CCFaultReport(%rip), %rax ## AppleBCMWLANBusInterfacePCIe::collectDeferredFaultDataCallback(CCFaultReport*)
+ffffff80014effb9	movq	%rax, 0x10(%r15)
+ffffff80014effbd	leaq	__ZN28AppleBCMWLANBusInterfacePCIe27completeFaultReportCallbackEPK13CCFaultReport(%rip), %rax ## AppleBCMWLANBusInterfacePCIe::completeFaultReportCallback(CCFaultReport const*)
+ffffff80014effc4	movq	%rax, 0x18(%r15)
+ffffff80014effcb	movq	%r13, 0x20(%r15)
+ffffff80014effd2	callq	0xffffff800158de3e
+ffffff80014effda	callq	0xffffff800224e326
+ffffff80014effe8	callq	*0xa50(%rcx)
+ffffff80014efff1	callq	0xffffff800158de3e
+ffffff80014efffc	callq	0xffffff800227dc44
+ffffff80014f0012	callq	0xffffff80031c778e
+ffffff80014f001a	callq	0xffffff800158de3e
+ffffff80014f0025	callq	0xffffff800158de2c
+ffffff80014f0030	callq	0xffffff80031c76b0
+ffffff80014f0038	callq	0xffffff800158de3e
+ffffff80014f003d	leaq	0x3f1ff(%rip), %rsi             ## literal pool for: "com.apple.iokit.IO80211Family"
+ffffff80014f0047	callq	0xffffff80031c76b0
+ffffff80014f004f	callq	0xffffff800158de3e
+ffffff80014f0054	leaq	0x3f206(%rip), %rsi             ## literal pool for: "com.apple.driver.AppleMultiFunctionManager"
+ffffff80014f005e	callq	0xffffff80031c76b0
+ffffff80014f0066	callq	0xffffff800158de3e
+ffffff80014f006b	leaq	0x3f21a(%rip), %rsi             ## literal pool for: "com.apple.driver.AppleOLYHAL"
+ffffff80014f0075	callq	0xffffff80031c76b0
+ffffff80014f007a	movq	0x90(%rbx), %rax
+ffffff80014f0081	movq	%r13, 0x10c0(%rax)
+ffffff80014f0088	movl	$0x0, 0x10c8(%rax)
+ffffff80014f0092	movzbl	0xb44(%rax), %eax
+ffffff80014f00ab	callq	__ZN28AppleBCMWLANBusInterfacePCIe28changeDeepSleepStateSetClearEjhh ## AppleBCMWLANBusInterfacePCIe::changeDeepSleepStateSetClear(unsigned int, unsigned char, unsigned char)
+ffffff80014f00b0	movq	0x90(%rbx), %rcx
+ffffff80014f00b7	movw	$0x1, 0xf60(%rcx)
+ffffff80014f00c0	movq	0xd18(%rcx), %rax
+ffffff80014f00d0	movq	0x18(%rax), %rax
+ffffff80014f00d4	cmpb	$0x1, 0xd2(%rax)
+ffffff80014f00e9	callq	__ZN28AppleBCMWLANBusInterfacePCIe10modifyASPME29kAppleBCMWLANPCIeASPMCommands ## AppleBCMWLANBusInterfacePCIe::modifyASPM(kAppleBCMWLANPCIeASPMCommands)
+ffffff80014f00ee	movq	0x90(%rbx), %rax
+ffffff80014f00f5	movq	0xce8(%rax), %rdi
+ffffff80014f0104	callq	*0x8b0(%rax)
+ffffff80014f0112	callq	__ZN28AppleBCMWLANBusInterfacePCIe10modifyASPME29kAppleBCMWLANPCIeASPMCommands ## AppleBCMWLANBusInterfacePCIe::modifyASPM(kAppleBCMWLANPCIeASPMCommands)
+ffffff80014f0117	movq	0x90(%rbx), %rax
+ffffff80014f011e	movb	$0x1, 0x1254(%rax)
+ffffff80014f0125	movq	-0x90(%rbp), %r15
+ffffff80014f012c	jmp	0xffffff80014f06ae
+CONTROL_FLOW=0xffffff80014f012c jmp	0xffffff80014f06ae
+ffffff80014f0131	movq	0x90(%rbx), %rax
+ffffff80014f013a	movq	%rcx, 0x14b0(%rax)
+ffffff80014f0141	movq	%rcx, 0x14b8(%rax)
+ffffff80014f0148	jmp	0xffffff80014f014d
+CONTROL_FLOW=0xffffff80014f0148 jmp	0xffffff80014f014d
+ffffff80014f0150	callq	0xffffff800158c46a
+ffffff80014f015d	callq	0xffffff800158c46a
+ffffff80014f016a	callq	0xffffff80031d421c
+ffffff80014f0187	callq	0xffffff800158d4ea
+ffffff80014f0194	callq	*0x600(%rax)
+ffffff80014f01a0	callq	*0xc60(%rax)
+ffffff80014f01b4	addq	0x90(%rbx), %rdx
+ffffff80014f01c2	callq	0xffffff8000a48b50
+ffffff80014f01d9	callq	0xffffff8000a9da20
+ffffff80014f01de	leaq	-0x80(%rbp), %rsi
+ffffff80014f01ed	callq	0xffffff8000a9dbb0
+ffffff80014f01f5	callq	0xffffff800158c46a
+ffffff80014f0202	callq	0xffffff800158c46a
+ffffff80014f020f	callq	0xffffff80031d421c
+ffffff80014f021c	movl	-0x80(%rbp), %r9d
+ffffff80014f0220	leaq	-0x21227(%rip), %rdi
+ffffff80014f0227	movq	0x4cf8a(%rip), %rsi
+ffffff80014f022e	leaq	__ZZN28AppleBCMWLANBusInterfacePCIe13deferredStartEP11thread_callE11_os_log_fmt(%rip), %rcx ## AppleBCMWLANBusInterfacePCIe::deferredStart(thread_call*)::_os_log_fmt
+ffffff80014f023f	callq	0xffffff8000a85d00
+ffffff80014f0244	jmp	0xffffff80014f02b0
+CONTROL_FLOW=0xffffff80014f0244 jmp	0xffffff80014f02b0
+ffffff80014f0249	callq	0xffffff800158c46a
+ffffff80014f0256	callq	0xffffff800158c46a
+ffffff80014f0263	callq	0xffffff80031d421c
+ffffff80014f0270	leaq	-0x21277(%rip), %rdi
+ffffff80014f0277	movq	0x4cf3a(%rip), %rsi
+ffffff80014f027e	leaq	__ZZN28AppleBCMWLANBusInterfacePCIe13deferredStartEP11thread_callE11_os_log_fmt_0(%rip), %rcx ## AppleBCMWLANBusInterfacePCIe::deferredStart(thread_call*)::_os_log_fmt
+ffffff80014f028f	callq	0xffffff8000a85d00
+ffffff80014f0294	movq	0x90(%rbx), %rax
+ffffff80014f029b	movq	0xf40(%rax), %rdi
+ffffff80014f02aa	callq	*0x1d0(%rax)
+ffffff80014f02b3	callq	0xffffff8000434000
+ffffff80014f02be	callq	*0x28(%rax)
+ffffff80014f02c1	movq	0x4cee8(%rip), %rax
+ffffff80014f02cb	cmpq	-0x30(%rbp), %rax
+ffffff80014f02e3	retq
+ffffff80014f02e7	callq	0xffffff800158c46a
+ffffff80014f02f4	callq	0xffffff800158c46a
+ffffff80014f0301	callq	0xffffff80031d421c
+ffffff80014f031e	jmp	0xffffff80014f0187
+CONTROL_FLOW=0xffffff80014f031e jmp	0xffffff80014f0187
+ffffff80014f0326	callq	0xffffff800158c46a
+ffffff80014f033c	callq	0xffffff800158c46a
+ffffff80014f0349	callq	0xffffff80031d421c
+ffffff80014f0356	movq	0x4ce63(%rip), %rax
+ffffff80014f0373	callq	0xffffff8000ad8140
+ffffff80014f0378	movq	0x90(%rbx), %rcx
+ffffff80014f037f	movq	%rax, 0xcc8(%rcx)
+ffffff80014f038f	movq	0x4ce32(%rip), %rax
+ffffff80014f03ac	callq	0xffffff8000ad8140
+ffffff80014f03b1	movq	0x90(%rbx), %rcx
+ffffff80014f03b8	movq	%rax, 0xcd0(%rcx)
+ffffff80014f03cb	callq	0xffffff800158c46a
+ffffff80014f03e2	callq	0xffffff800158c46a
+ffffff80014f03ef	callq	0xffffff80031d421c
+ffffff80014f03ff	callq	0xffffff800158c46a
+ffffff80014f0404	leaq	0x3ec46(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create PCIe detach notifier\n"
+ffffff80014f040b	leaq	0x3eac4(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f041a	jmp	0xffffff80014f0e06
+CONTROL_FLOW=0xffffff80014f041a jmp	0xffffff80014f0e06
+ffffff80014f0422	callq	0xffffff800158c46a
+ffffff80014f042f	callq	0xffffff800158c46a
+ffffff80014f043c	callq	0xffffff80031d421c
+ffffff80014f0459	jmp	0xffffff80014f04cb
+CONTROL_FLOW=0xffffff80014f0459 jmp	0xffffff80014f04cb
+ffffff80014f0463	callq	0xffffff800158c46a
+ffffff80014f0470	callq	0xffffff80031d421c
+ffffff80014f048d	jmp	0xffffff80014f0187
+CONTROL_FLOW=0xffffff80014f048d jmp	0xffffff80014f0187
+ffffff80014f0495	movq	-0x88(%rbp), %r15
+ffffff80014f04a1	callq	0xffffff800158c46a
+ffffff80014f04ae	callq	0xffffff80031d421c
+ffffff80014f04cb	callq	0xffffff800158d4ea
+ffffff80014f04d8	callq	*0x600(%rax)
+ffffff80014f04de	jmp	0xffffff80014f0b24
+CONTROL_FLOW=0xffffff80014f04de jmp	0xffffff80014f0b24
+ffffff80014f04e6	callq	0xffffff800158c46a
+ffffff80014f04f9	callq	0xffffff800158c46a
+ffffff80014f0506	callq	0xffffff80031d421c
+ffffff80014f0521	callq	0xffffff800158d4ea
+ffffff80014f052e	callq	*0x600(%rax)
+ffffff80014f0534	jmp	0xffffff80014f0b2d
+CONTROL_FLOW=0xffffff80014f0534 jmp	0xffffff80014f0b2d
+ffffff80014f0539	leaq	0x3d3f8(%rip), %rsi             ## literal pool for: "IOACPIPlatformDevice"
+ffffff80014f0543	callq	0xffffff8000a49e40
+ffffff80014f054e	callq	0xffffff800158c46a
+ffffff80014f0564	callq	0xffffff800158c46a
+ffffff80014f0571	callq	0xffffff80031d421c
+ffffff80014f057e	movq	0x90(%rbx), %rax
+ffffff80014f0585	movq	0xef8(%rax), %rsi
+ffffff80014f058c	movq	-0x88(%rbp), %rdi
+ffffff80014f0593	callq	0xffffff8000ad8290
+ffffff80014f059e	callq	0xffffff8000a49ab0
+ffffff80014f05a9	callq	0xffffff800158c46a
+ffffff80014f05b6	callq	0xffffff800158c46a
+ffffff80014f05c3	callq	0xffffff80031d421c
+ffffff80014f05d0	movq	0x90(%rbx), %rax
+ffffff80014f05d7	movq	0xdd8(%rax), %rdi
+ffffff80014f05f3	callq	*0x118(%rax)
+ffffff80014f05fc	movq	-0x90(%rbp), %r15
+ffffff80014f0609	jmp	0xffffff80014f0a5b
+CONTROL_FLOW=0xffffff80014f0609 jmp	0xffffff80014f0a5b
+ffffff80014f060e	movq	0x14b8(%rcx), %rdi
+ffffff80014f0618	movq	-0x90(%rbp), %r15
+ffffff80014f0624	callq	*0x168(%rax)
+ffffff80014f062a	movq	0x90(%rbx), %rcx
+ffffff80014f0635	movq	0x14b8(%rcx), %rdi
+ffffff80014f063f	callq	*0x180(%rax)
+ffffff80014f0649	movq	0x90(%rbx), %rax
+ffffff80014f0650	movq	0xce8(%rax), %rdi
+ffffff80014f0657	jmp	0xffffff80014f06a0
+CONTROL_FLOW=0xffffff80014f0657 jmp	0xffffff80014f06a0
+ffffff80014f065c	callq	0xffffff800158c46a
+ffffff80014f0669	callq	0xffffff800158c46a
+ffffff80014f0676	callq	0xffffff80031d421c
+ffffff80014f0686	movq	-0x90(%rbp), %rsi
+ffffff80014f0694	jmp	0xffffff80014f0b0a
+CONTROL_FLOW=0xffffff80014f0694 jmp	0xffffff80014f0b0a
+ffffff80014f0699	movq	0xce8(%rcx), %rdi
+ffffff80014f06a8	callq	*0x8b0(%rax)
+ffffff80014f06ae	movq	0x90(%rbx), %rax
+ffffff80014f06b5	movq	0x14b0(%rax), %rdi
+ffffff80014f06c1	callq	*0x128(%rax)
+ffffff80014f06ce	callq	0xffffff800158c46a
+ffffff80014f06db	callq	0xffffff800158c46a
+ffffff80014f06e8	callq	0xffffff80031d421c
+ffffff80014f0701	callq	0xffffff8000b863c0
+ffffff80014f0706	movq	0x90(%rbx), %rcx
+ffffff80014f070d	movq	%rax, 0x6c8(%rcx)
+ffffff80014f0717	callq	0xffffff800158c46a
+ffffff80014f0724	callq	0xffffff800158c46a
+ffffff80014f0731	callq	0xffffff80031d421c
+ffffff80014f0749	callq	*0x5b0(%rax)
+ffffff80014f074f	movq	0x90(%rbx), %rax
+ffffff80014f0756	movb	$0x1, 0xcc5(%rax)
+ffffff80014f0760	callq	__ZN28AppleBCMWLANBusInterfacePCIe20createFirmwareLoggerEv ## AppleBCMWLANBusInterfacePCIe::createFirmwareLogger()
+ffffff80014f0770	callq	__ZN28AppleBCMWLANBusInterfacePCIe23createCrashTracerLoggerEv ## AppleBCMWLANBusInterfacePCIe::createCrashTracerLogger()
+ffffff80014f0783	callq	*0x868(%rax)
+ffffff80014f0796	callq	0xffffff8002145b16
+ffffff80014f079b	movq	0x90(%rbx), %rcx
+ffffff80014f07a2	movq	%rax, 0x1050(%rcx)
+ffffff80014f07b2	movb	$0x0, 0x1338(%rcx)
+ffffff80014f07b9	leaq	-0x80(%rbp), %r15
+ffffff80014f07ca	callq	*0x970(%rax)
+ffffff80014f07d0	leaq	0x3ebda(%rip), %rsi             ## literal pool for: "pcie-throttle-firmware-load"
+ffffff80014f07d7	leaq	0x3ebef(%rip), %r9              ## literal pool for: "IOService"
+ffffff80014f07ef	callq	0xffffff800227d710
+ffffff80014f07f6	movq	-0x88(%rbp), %r15
+ffffff80014f07ff	movq	-0x80(%rbp), %rdi
+ffffff80014f080d	callq	*0x180(%rax)
+ffffff80014f0816	movq	0x90(%rbx), %rax
+ffffff80014f081d	setne	0x1338(%rax)
+ffffff80014f0827	callq	0xffffff800158c46a
+ffffff80014f0834	callq	0xffffff800158c46a
+ffffff80014f0841	callq	0xffffff80031d421c
+ffffff80014f084e	movq	-0x80(%rbp), %rdi
+ffffff80014f085a	callq	*0x28(%rax)
+ffffff80014f085d	movq	$0x0, -0x80(%rbp)
+ffffff80014f0865	movq	0x90(%rbx), %rax
+ffffff80014f086c	movq	0x14b8(%rax), %rdi
+ffffff80014f087f	callq	*0x168(%rax)
+ffffff80014f088d	movq	0x90(%rbx), %rax
+ffffff80014f0894	cmpb	$0x0, 0xcc4(%rax)
+ffffff80014f089d	movq	0xce8(%rax), %rsi
+ffffff80014f08a4	movq	0x14b8(%rax), %rdi
+ffffff80014f08ae	callq	*0x190(%rax)
+ffffff80014f08b4	movq	0x90(%rbx), %rax
+ffffff80014f08bb	movq	0x14b8(%rax), %rdi
+ffffff80014f08c2	movq	0xce8(%rax), %rsi
+ffffff80014f08cc	callq	*0x198(%rax)
+ffffff80014f08d2	movq	0x90(%rbx), %rcx
+ffffff80014f08d9	movb	%al, 0xff7(%rcx)
+ffffff80014f08e7	movq	0xce8(%rcx), %rsi
+ffffff80014f08ee	movq	0x14b8(%rcx), %rdi
+ffffff80014f08f8	callq	*0x188(%rax)
+ffffff80014f08fe	movq	0x90(%rbx), %rcx
+ffffff80014f0905	movb	%al, 0xff9(%rcx)
+ffffff80014f0916	callq	0xffffff800158c46a
+ffffff80014f0923	callq	0xffffff800158c46a
+ffffff80014f0930	callq	0xffffff80031d421c
+ffffff80014f0943	callq	*0x868(%rax)
+ffffff80014f0956	callq	0xffffff8002145b16
+ffffff80014f095b	movq	0x90(%rbx), %rcx
+ffffff80014f0962	movq	%rax, 0xe60(%rcx)
+ffffff80014f0971	callq	0xffffff800158c46a
+ffffff80014f097e	callq	0xffffff800158c46a
+ffffff80014f098b	callq	0xffffff80031d421c
+ffffff80014f099b	movq	-0x90(%rbp), %rsi
+ffffff80014f09ac	callq	0xffffff800158d4ea
+ffffff80014f09b9	callq	*0x600(%rax)
+ffffff80014f09bf	movq	0x90(%rbx), %rcx
+ffffff80014f09c6	movq	-0x88(%rbp), %r15
+ffffff80014f09cd	movq	0xce8(%rcx), %rsi
+ffffff80014f09d4	movq	0x14b8(%rcx), %rdi
+ffffff80014f09de	callq	*0x1a0(%rax)
+ffffff80014f09e4	movq	0x90(%rbx), %rcx
+ffffff80014f09eb	movb	%al, 0xff8(%rcx)
+ffffff80014f09f1	jmp	0xffffff80014f0b24
+CONTROL_FLOW=0xffffff80014f09f1 jmp	0xffffff80014f0b24
+ffffff80014f09f6	callq	0xffffff800158c46a
+ffffff80014f0a03	callq	0xffffff800158c46a
+ffffff80014f0a10	callq	0xffffff80031d421c
+ffffff80014f0a2d	jmp	0xffffff80014f0b0a
+CONTROL_FLOW=0xffffff80014f0a2d jmp	0xffffff80014f0b0a
+ffffff80014f0a35	movq	-0x90(%rbp), %r15
+ffffff80014f0a41	callq	0xffffff800158c46a
+ffffff80014f0a4e	callq	0xffffff80031d421c
+ffffff80014f0a5e	callq	0xffffff800158c46a
+ffffff80014f0a6b	callq	0xffffff800158c46a
+ffffff80014f0a78	callq	0xffffff80031d421c
+ffffff80014f0a92	jmp	0xffffff80014f0b0a
+CONTROL_FLOW=0xffffff80014f0a92 jmp	0xffffff80014f0b0a
+ffffff80014f0a97	callq	0xffffff800158c46a
+ffffff80014f0aa4	callq	0xffffff800158c46a
+ffffff80014f0ab1	callq	0xffffff80031d421c
+ffffff80014f0ace	jmp	0xffffff80014f0b0a
+CONTROL_FLOW=0xffffff80014f0ace jmp	0xffffff80014f0b0a
+ffffff80014f0ad3	callq	0xffffff800158c46a
+ffffff80014f0ae0	callq	0xffffff800158c46a
+ffffff80014f0aed	callq	0xffffff80031d421c
+ffffff80014f0b0a	callq	0xffffff800158d4ea
+ffffff80014f0b17	callq	*0x600(%rax)
+ffffff80014f0b1d	movq	-0x88(%rbp), %r15
+ffffff80014f0b33	callq	*0x28(%rax)
+ffffff80014f0b36	jmp	0xffffff80014f019a
+CONTROL_FLOW=0xffffff80014f0b36 jmp	0xffffff80014f019a
+ffffff80014f0b3e	callq	0xffffff800158c46a
+ffffff80014f0b49	callq	0xffffff800048cb00
+ffffff80014f0b51	movq	0x90(%rbx), %rax
+ffffff80014f0b58	movq	0xce8(%rax), %rdi
+ffffff80014f0b5f	callq	0xffffff800048cb00
+ffffff80014f0b64	leaq	0x3e342(%rip), %rsi             ## literal pool for: "[ik] %s@%d:enter, this[%p] fPCIeBus[%p]\n"
+ffffff80014f0b6b	leaq	0x3e364(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0b82	callq	0xffffff80031d252e
+ffffff80014f0b87	jmp	0xffffff80014efab3
+CONTROL_FLOW=0xffffff80014f0b87 jmp	0xffffff80014efab3
+ffffff80014f0b8f	callq	0xffffff800158c46a
+ffffff80014f0b94	leaq	0x3e349(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Create Platform function and PERST# port \n"
+ffffff80014f0b9b	leaq	0x3e334(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0bac	callq	0xffffff80031d252e
+ffffff80014f0bb1	jmp	0xffffff80014efaed
+CONTROL_FLOW=0xffffff80014f0bb1 jmp	0xffffff80014efaed
+ffffff80014f0bb9	callq	0xffffff800158c46a
+ffffff80014f0bbe	leaq	0x3e8e4(%rip), %rsi             ## literal pool for: "[ik] %s@%d:deferd setting adjust busy timer, will stop when core register or timeout %u\n"
+ffffff80014f0bc5	leaq	0x3e30a(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0bdc	callq	0xffffff80031d252e
+ffffff80014f0be1	jmp	0xffffff80014f0270
+CONTROL_FLOW=0xffffff80014f0be1 jmp	0xffffff80014f0270
+ffffff80014f0be9	callq	0xffffff800158c46a
+ffffff80014f0bee	leaq	0x3e340(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to find platform function\n"
+ffffff80014f0bf5	leaq	0x3e2da(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0c06	callq	0xffffff80031d252e
+ffffff80014f0c0b	jmp	0xffffff80014f0177
+CONTROL_FLOW=0xffffff80014f0c0b jmp	0xffffff80014f0177
+ffffff80014f0c13	callq	0xffffff800158c46a
+ffffff80014f0c18	movl	-0x80(%rbp), %r8d
+ffffff80014f0c1c	leaq	0x3e84d(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Lowered AdjustBusy(-1), GetBusyState() -> %u\n"
+ffffff80014f0c23	leaq	0x3e2ac(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0c34	callq	0xffffff80031d252e
+ffffff80014f0c39	jmp	0xffffff80014f021c
+CONTROL_FLOW=0xffffff80014f0c39 jmp	0xffffff80014f021c
+ffffff80014f0c41	callq	0xffffff800158c46a
+ffffff80014f0c46	leaq	0x3e315(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to find function-pcieport_on function\n"
+ffffff80014f0c4d	leaq	0x3e282(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0c5e	callq	0xffffff80031d252e
+ffffff80014f0c63	jmp	0xffffff80014f030e
+CONTROL_FLOW=0xffffff80014f0c63 jmp	0xffffff80014f030e
+ffffff80014f0c6b	callq	0xffffff800158c46a
+ffffff80014f0c70	leaq	0x3e381(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Add notification listeners\n"
+ffffff80014f0c77	leaq	0x3e258(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0c88	callq	0xffffff80031d2a6e
+ffffff80014f0c8d	jmp	0xffffff80014f0356
+CONTROL_FLOW=0xffffff80014f0c8d jmp	0xffffff80014f0356
+ffffff80014f0c95	callq	0xffffff800158c46a
+ffffff80014f0c9a	leaq	0x3e439(%rip), %rdx             ## literal pool for: "[ik] %s@%d:Enumerate PCIe \n"
+ffffff80014f0ca1	leaq	0x3e22e(%rip), %rcx             ## literal pool for: "deferredStart"
+ffffff80014f0cb8	callq	0xffffff80031d25da
+ffffff80014f0cbd	jmp	0xffffff80014efe38
+CONTROL_FLOW=0xffffff80014f0cbd jmp	0xffffff80014efe38
+ffffff80014f0cc5	callq	0xffffff800158c46a
+ffffff80014f0cca	leaq	0x3e425(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Skipping reset on Mac... \n"
+ffffff80014f0cd1	leaq	0x3e1fe(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0ce2	callq	0xffffff80031d267e
+ffffff80014f0ce7	jmp	0xffffff80014efe62
+CONTROL_FLOW=0xffffff80014f0ce7 jmp	0xffffff80014efe62
+ffffff80014f0cef	callq	0xffffff800158c46a
+ffffff80014f0cf4	leaq	0x3e421(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Waiting for PCIe to enumerate\n"
+ffffff80014f0cfb	leaq	0x3e1d4(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0d0c	callq	0xffffff80031d252e
+ffffff80014f0d11	jmp	0xffffff80014efe93
+CONTROL_FLOW=0xffffff80014f0d11 jmp	0xffffff80014efe93
+ffffff80014f0d19	callq	0xffffff800158c46a
+ffffff80014f0d1e	leaq	0x3e35e(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to get PM Root Domain\n"
+ffffff80014f0d25	leaq	0x3e1aa(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0d36	callq	0xffffff80031d252e
+ffffff80014f0d3b	jmp	0xffffff80014f0449
+CONTROL_FLOW=0xffffff80014f0d3b jmp	0xffffff80014f0449
+ffffff80014f0d43	callq	0xffffff800158c46a
+ffffff80014f0d48	leaq	0x3e24c(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create external reset timer\n"
+ffffff80014f0d4f	leaq	0x3e180(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0d60	callq	0xffffff80031d252e
+ffffff80014f0d65	jmp	0xffffff80014efcfa
+CONTROL_FLOW=0xffffff80014f0d65 jmp	0xffffff80014efcfa
+ffffff80014f0d6d	callq	0xffffff800158c46a
+ffffff80014f0d72	leaq	0x3e254(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create matching dict\n"
+ffffff80014f0d79	leaq	0x3e156(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0d8a	callq	0xffffff80031d252e
+ffffff80014f0d8f	jmp	0xffffff80014f047d
+CONTROL_FLOW=0xffffff80014f0d8f jmp	0xffffff80014f047d
+ffffff80014f0d97	callq	0xffffff800158c46a
+ffffff80014f0d9c	leaq	0x3e3a3(%rip), %rsi             ## literal pool for: "[ik] %s@%d:IOPCIDevice is the provider\n"
+ffffff80014f0da3	leaq	0x3e12c(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0db4	callq	0xffffff80031d2a6e
+ffffff80014f0db9	jmp	0xffffff80014efede
+CONTROL_FLOW=0xffffff80014f0db9 jmp	0xffffff80014efede
+ffffff80014f0dc1	callq	0xffffff800158c46a
+ffffff80014f0dc6	leaq	0x3e2df(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to register PM Root Domain\n"
+ffffff80014f0dcd	leaq	0x3e102(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0dde	callq	0xffffff80031d252e
+ffffff80014f0de3	jmp	0xffffff80014f04bb
+CONTROL_FLOW=0xffffff80014f0de3 jmp	0xffffff80014f04bb
+ffffff80014f0deb	callq	0xffffff800158c46a
+ffffff80014f0df0	leaq	0x3e228(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create PCIe attach notifier\n"
+ffffff80014f0df7	leaq	0x3e0d8(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0e08	callq	0xffffff80031d252e
+ffffff80014f0e0d	jmp	0xffffff80014f0513
+CONTROL_FLOW=0xffffff80014f0e0d jmp	0xffffff80014f0513
+ffffff80014f0e15	callq	0xffffff800158c46a
+ffffff80014f0e1a	leaq	0x3e4c8(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Registering service\n"
+ffffff80014f0e21	leaq	0x3e0ae(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0e32	callq	0xffffff80031d252e
+ffffff80014f0e37	jmp	0xffffff80014f073e
+CONTROL_FLOW=0xffffff80014f0e37 jmp	0xffffff80014f073e
+ffffff80014f0e3f	callq	0xffffff800158c46a
+ffffff80014f0e44	leaq	0x3e3d6(%rip), %rsi             ## literal pool for: "[ik] %s@%d:PCIe Failed to attach\n"
+ffffff80014f0e4b	leaq	0x3e084(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0e5c	callq	0xffffff80031d252e
+ffffff80014f0e61	jmp	0xffffff80014f0683
+CONTROL_FLOW=0xffffff80014f0e61 jmp	0xffffff80014f0683
+ffffff80014f0e69	callq	0xffffff800158c46a
+ffffff80014f0e6e	leaq	0x3e495(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create firmware logger\n"
+ffffff80014f0e75	leaq	0x3e05a(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0e86	callq	0xffffff80031d252e
+ffffff80014f0e8b	jmp	0xffffff80014f0a1d
+CONTROL_FLOW=0xffffff80014f0e8b jmp	0xffffff80014f0a1d
+ffffff80014f0e93	callq	0xffffff800158c46a
+ffffff80014f0e98	leaq	0x3e2cf(%rip), %rsi             ## literal pool for: "[ik] %s@%d:IOACPIPlatformDevice is the provider\n"
+ffffff80014f0e9f	leaq	0x3e030(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0eb0	callq	0xffffff80031d2a6e
+ffffff80014f0eb5	jmp	0xffffff80014f057e
+CONTROL_FLOW=0xffffff80014f0eb5 jmp	0xffffff80014f057e
+ffffff80014f0ebd	callq	0xffffff800158c46a
+ffffff80014f0ec2	leaq	0x3e2d6(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Found 'ARPT' IOPCIDevice\n"
+ffffff80014f0ec9	leaq	0x3e006(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0eda	callq	0xffffff80031d2a6e
+ffffff80014f0edf	jmp	0xffffff80014f05d0
+CONTROL_FLOW=0xffffff80014f0edf jmp	0xffffff80014f05d0
+ffffff80014f0ee7	callq	0xffffff800158c46a
+ffffff80014f0eec	leaq	0x3e304(%rip), %rsi             ## literal pool for: "[ik] %s@%d:WLAN PCIe Failed to enumerate\n"
+ffffff80014f0ef3	leaq	0x3dfdc(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0f04	callq	0xffffff80031d252e
+ffffff80014f0f09	jmp	0xffffff80014f0a85
+CONTROL_FLOW=0xffffff80014f0f09 jmp	0xffffff80014f0a85
+ffffff80014f0f11	callq	0xffffff800158c46a
+ffffff80014f0f16	leaq	0x3e38c(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Creating registerPrioritySleepWakeInterest handler\n"
+ffffff80014f0f1d	leaq	0x3dfb2(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0f2e	callq	0xffffff80031d252e
+ffffff80014f0f33	jmp	0xffffff80014f06f5
+CONTROL_FLOW=0xffffff80014f0f33 jmp	0xffffff80014f06f5
+ffffff80014f0f3b	callq	0xffffff800158c46a
+ffffff80014f0f40	leaq	0x3e27d(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Error! Unexpected or Unknown provider!\n"
+ffffff80014f0f47	leaq	0x3df88(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0f58	callq	0xffffff80031d252e
+ffffff80014f0f5d	jmp	0xffffff80014f0a5b
+CONTROL_FLOW=0xffffff80014f0f5d jmp	0xffffff80014f0a5b
+ffffff80014f0f65	callq	0xffffff800158c46a
+ffffff80014f0f6a	leaq	0x3e3c6(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Failed to create crash tacer logger\n"
+ffffff80014f0f71	leaq	0x3df5e(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0f82	callq	0xffffff80031d252e
+ffffff80014f0f87	jmp	0xffffff80014f0abe
+CONTROL_FLOW=0xffffff80014f0f87 jmp	0xffffff80014f0abe
+ffffff80014f0f8c	callq	0xffffff8000383150
+ffffff80014f0f94	callq	0xffffff800158c46a
+ffffff80014f0f99	leaq	0x3e3c7(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Unable to create trap crashtracer mini dump buffer free timer\n"
+ffffff80014f0fa0	leaq	0x3df2f(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0fb1	callq	0xffffff80031d252e
+ffffff80014f0fb6	jmp	0xffffff80014f0afa
+CONTROL_FLOW=0xffffff80014f0fb6 jmp	0xffffff80014f0afa
+ffffff80014f0fbe	callq	0xffffff800158c46a
+ffffff80014f0fc3	movq	0x90(%rbx), %rcx
+ffffff80014f0fca	movzbl	0x1338(%rcx), %r8d
+ffffff80014f0fd2	leaq	0x3e3fe(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Setting wifi firmware download throttle %u\n"
+ffffff80014f0fd9	leaq	0x3def6(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f0fea	callq	0xffffff80031d252e
+ffffff80014f0fef	jmp	0xffffff80014f084e
+CONTROL_FLOW=0xffffff80014f0fef jmp	0xffffff80014f084e
+ffffff80014f0ff7	callq	0xffffff800158c46a
+ffffff80014f0ffc	leaq	0x3e40b(%rip), %rsi             ## literal pool for: "[ik] %s@%d:This platform needs PTM Workaround\n"
+ffffff80014f1003	leaq	0x3decc(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f1014	callq	0xffffff80031d252e
+ffffff80014f1019	jmp	0xffffff80014f093d
+CONTROL_FLOW=0xffffff80014f1019 jmp	0xffffff80014f093d
+ffffff80014f1021	callq	0xffffff800158c46a
+ffffff80014f1026	leaq	0x3e410(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Unable to create attach PTM ack timer\n"
+ffffff80014f102d	leaq	0x3dea2(%rip), %rdx             ## literal pool for: "deferredStart"
+ffffff80014f103e	callq	0xffffff80031d267e
+ffffff80014f1043	jmp	0xffffff80014f0998
+CONTROL_FLOW=0xffffff80014f1043 jmp	0xffffff80014f0998
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe29freeTrapMiniDumpBufferTimeoutEP18IO80211TimerSource ADDRESS=0xffffff80014f577e END=0xffffff80014f5818 INSTRUCTIONS=42
+ffffff80014f577e	pushq	%rbp
+ffffff80014f577f	movq	%rsp, %rbp
+ffffff80014f5782	pushq	%rbx
+ffffff80014f5783	pushq	%rax
+ffffff80014f5784	movq	0x90(%rdi), %rax
+ffffff80014f578b	cmpb	$0x1, 0x104c(%rax)
+ffffff80014f5792	jne	0xffffff80014f57e5
+CONTROL_FLOW=0xffffff80014f5792 jne	0xffffff80014f57e5
+ffffff80014f5794	movq	%rdi, %rbx
+ffffff80014f5797	movq	0x5f0(%rax), %rdi
+ffffff80014f579e	testq	%rdi, %rdi
+ffffff80014f57a1	je	0xffffff80014f57e5
+CONTROL_FLOW=0xffffff80014f57a1 je	0xffffff80014f57e5
+ffffff80014f57a3	movl	$0x19000, %esi                  ## imm = 0x19000
+ffffff80014f57a8	callq	0xffffff8000ab6290
+ffffff80014f57ad	movq	0x90(%rbx), %rax
+ffffff80014f57b4	movq	$0x0, 0x5f0(%rax)
+ffffff80014f57bf	movq	%rbx, %rdi
+ffffff80014f57c2	callq	0xffffff800158c46a
+ffffff80014f57cf	callq	0xffffff800158c46a
+ffffff80014f57dc	callq	0xffffff80031d421c
+ffffff80014f57eb	retq
+ffffff80014f57ef	callq	0xffffff800158c46a
+ffffff80014f57f4	leaq	0x42eb0(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Free fTrapMiniDumpBuffer\n"
+ffffff80014f57fb	leaq	0x42ece(%rip), %rdx             ## literal pool for: "freeTrapMiniDumpBufferTimeout"
+ffffff80014f5812	jmp	0xffffff80031d2a6e
+CONTROL_FLOW=0xffffff80014f5812 jmp	0xffffff80031d2a6e
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe4stopEP9IOService ADDRESS=0xffffff80014f5a74 END=0xffffff80014f5e5c INSTRUCTIONS=223
+ffffff80014f5a74	pushq	%rbp
+ffffff80014f5a75	movq	%rsp, %rbp
+ffffff80014f5a78	pushq	%r15
+ffffff80014f5a7a	pushq	%r14
+ffffff80014f5a7c	pushq	%r12
+ffffff80014f5a7e	pushq	%rbx
+ffffff80014f5a7f	movq	%rsi, %rbx
+ffffff80014f5a82	movq	%rdi, %r14
+ffffff80014f5a85	callq	0xffffff800158c46a
+ffffff80014f5a8a	testq	%rax, %rax
+ffffff80014f5a8d	je	0xffffff80014f5aac
+CONTROL_FLOW=0xffffff80014f5a8d je	0xffffff80014f5aac
+ffffff80014f5a8f	movq	%r14, %rdi
+ffffff80014f5a92	callq	0xffffff800158c46a
+ffffff80014f5a97	movq	%rax, %rdi
+ffffff80014f5a9a	movl	$0x1, %esi
+ffffff80014f5a9f	callq	0xffffff80031d421c
+ffffff80014f5aac	movq	0x90(%r14), %rax
+ffffff80014f5ab3	movq	0x1288(%rax), %rdi
+ffffff80014f5ac2	callq	0xffffff8000aeac00
+ffffff80014f5ac7	movq	0x90(%r14), %rax
+ffffff80014f5ace	movq	0x1288(%rax), %rdi
+ffffff80014f5add	callq	*0x28(%rax)
+ffffff80014f5ae0	movq	0x90(%r14), %rax
+ffffff80014f5ae7	movq	$0x0, 0x1288(%rax)
+ffffff80014f5af8	callq	*0x798(%rax)
+ffffff80014f5afe	movq	0x90(%r14), %rax
+ffffff80014f5b05	movq	0xfd0(%rax), %rdi
+ffffff80014f5b17	callq	*0x5c8(%rax)
+ffffff80014f5b1d	movq	0x90(%r14), %rax
+ffffff80014f5b24	movb	$0x0, 0xfd8(%rax)
+ffffff80014f5b2b	movq	$0x0, 0xfe0(%rax)
+ffffff80014f5b36	movq	0xf10(%rax), %rdi
+ffffff80014f5b45	callq	*0x870(%rax)
+ffffff80014f5b4b	movq	0x90(%r14), %rax
+ffffff80014f5b52	movq	0xf08(%rax), %rdi
+ffffff80014f5b61	callq	*0x28(%rax)
+ffffff80014f5b64	movq	0x90(%r14), %rax
+ffffff80014f5b6b	movq	$0x0, 0xf08(%rax)
+ffffff80014f5b76	movq	0xf10(%rax), %rdi
+ffffff80014f5b85	callq	*0x28(%rax)
+ffffff80014f5b88	movq	0x90(%r14), %rax
+ffffff80014f5b8f	movq	$0x0, 0xf10(%rax)
+ffffff80014f5b9a	movq	0xf20(%rax), %rdi
+ffffff80014f5ba9	callq	*0x870(%rax)
+ffffff80014f5baf	movq	0x90(%r14), %rax
+ffffff80014f5bb6	movq	0xf18(%rax), %rdi
+ffffff80014f5bc5	callq	*0x28(%rax)
+ffffff80014f5bc8	movq	0x90(%r14), %rax
+ffffff80014f5bcf	movq	$0x0, 0xf18(%rax)
+ffffff80014f5bda	movq	0xf20(%rax), %rdi
+ffffff80014f5be9	callq	*0x28(%rax)
+ffffff80014f5bec	movq	0x90(%r14), %rax
+ffffff80014f5bf3	movq	$0x0, 0xf20(%rax)
+ffffff80014f5bfe	movq	0x11b8(%rax), %rdi
+ffffff80014f5c0d	callq	*0x870(%rax)
+ffffff80014f5c13	movq	0x90(%r14), %rax
+ffffff80014f5c1a	movq	0x11b0(%rax), %rdi
+ffffff80014f5c29	callq	*0x28(%rax)
+ffffff80014f5c2c	movq	0x90(%r14), %rax
+ffffff80014f5c33	movq	$0x0, 0x11b0(%rax)
+ffffff80014f5c3e	movq	0x11b8(%rax), %rdi
+ffffff80014f5c4d	callq	*0x28(%rax)
+ffffff80014f5c50	movq	0x90(%r14), %rax
+ffffff80014f5c57	movq	$0x0, 0x11b8(%rax)
+ffffff80014f5c62	movq	0x11c8(%rax), %rdi
+ffffff80014f5c71	callq	*0x870(%rax)
+ffffff80014f5c77	movq	0x90(%r14), %rax
+ffffff80014f5c7e	movq	0x11c0(%rax), %rdi
+ffffff80014f5c8d	callq	*0x28(%rax)
+ffffff80014f5c90	movq	0x90(%r14), %rax
+ffffff80014f5c97	movq	$0x0, 0x11c0(%rax)
+ffffff80014f5ca2	movq	0x11c8(%rax), %rdi
+ffffff80014f5cb1	callq	*0x28(%rax)
+ffffff80014f5cb4	movq	0x90(%r14), %rax
+ffffff80014f5cbb	movq	$0x0, 0x11c8(%rax)
+ffffff80014f5cc6	movq	0xf30(%rax), %rdi
+ffffff80014f5cd5	callq	*0x870(%rax)
+ffffff80014f5cdb	movq	0x90(%r14), %rax
+ffffff80014f5ce2	movq	0xf28(%rax), %rdi
+ffffff80014f5cf1	callq	*0x28(%rax)
+ffffff80014f5cf4	movq	0x90(%r14), %rax
+ffffff80014f5cfb	movq	$0x0, 0xf28(%rax)
+ffffff80014f5d06	movq	0xf30(%rax), %rdi
+ffffff80014f5d15	callq	*0x28(%rax)
+ffffff80014f5d18	movq	0x90(%r14), %rax
+ffffff80014f5d1f	movq	$0x0, 0xf30(%rax)
+ffffff80014f5d2a	movq	0x1258(%rax), %rdi
+ffffff80014f5d39	callq	*0x28(%rax)
+ffffff80014f5d3c	movq	0x90(%r14), %rax
+ffffff80014f5d43	movq	$0x0, 0x1258(%rax)
+ffffff80014f5d4e	movq	0x1260(%rax), %rdi
+ffffff80014f5d5d	callq	*0x28(%rax)
+ffffff80014f5d60	movq	0x90(%r14), %rax
+ffffff80014f5d67	movq	$0x0, 0x1260(%rax)
+ffffff80014f5d72	movq	0x1268(%rax), %rdi
+ffffff80014f5d81	callq	*0x28(%rax)
+ffffff80014f5d84	movq	0x90(%r14), %rax
+ffffff80014f5d8b	movq	$0x0, 0x1268(%rax)
+ffffff80014f5d99	callq	0xffffff800158de50
+ffffff80014f5da6	callq	0xffffff800158de50
+ffffff80014f5db6	callq	*0x28(%rcx)
+ffffff80014f5dbc	callq	0xffffff800158de3e
+ffffff80014f5dc9	callq	0xffffff800158de3e
+ffffff80014f5dd7	callq	0xffffff80031c6a46
+ffffff80014f5de7	callq	*0x28(%rax)
+ffffff80014f5df5	callq	*0x5d8(%rax)
+ffffff80014f5dfb	movq	0x47366(%rip), %rax
+ffffff80014f5e10	jmpq	*0x5d8(%rax)
+CONTROL_FLOW=0xffffff80014f5e10 jmpq	*0x5d8(%rax)
+ffffff80014f5e19	callq	0xffffff800158c46a
+ffffff80014f5e24	callq	0xffffff800048cb00
+ffffff80014f5e2f	callq	0xffffff800048cb00
+ffffff80014f5e34	leaq	0x39745(%rip), %rsi             ## literal pool for: "[ik] %s@%d:::stop: stop( %p ) this[%p]\n"
+ffffff80014f5e3b	leaq	0x39766(%rip), %rdx             ## literal pool for: "stop"
+ffffff80014f5e52	callq	0xffffff80031d252e
+ffffff80014f5e57	jmp	0xffffff80014f5aac
+CONTROL_FLOW=0xffffff80014f5e57 jmp	0xffffff80014f5aac
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe4freeEv ADDRESS=0xffffff80014f5e5c END=0xffffff80014f5ec8 INSTRUCTIONS=26
+ffffff80014f5e5c	pushq	%rbp
+ffffff80014f5e5d	movq	%rsp, %rbp
+ffffff80014f5e60	pushq	%rbx
+ffffff80014f5e61	pushq	%rax
+ffffff80014f5e62	movq	%rdi, %rbx
+ffffff80014f5e65	cmpq	$0x0, 0x90(%rdi)
+ffffff80014f5e6d	je	0xffffff80014f5eb1
+CONTROL_FLOW=0xffffff80014f5e6d je	0xffffff80014f5eb1
+ffffff80014f5e6f	movq	(%rbx), %rax
+ffffff80014f5e72	movq	%rbx, %rdi
+ffffff80014f5e75	callq	*0xbb0(%rax)
+ffffff80014f5e7b	movq	0x90(%rbx), %rdi
+ffffff80014f5e82	movl	$0x1540, %esi                   ## imm = 0x1540
+ffffff80014f5e87	movl	$0x1540, %ecx                   ## imm = 0x1540
+ffffff80014f5e8c	xorl	%edx, %edx
+ffffff80014f5e8e	callq	0xffffff8000454290
+ffffff80014f5e93	movq	0x90(%rbx), %rsi
+ffffff80014f5e9a	movq	$0x0, 0x90(%rbx)
+ffffff80014f5eac	callq	0xffffff8000ab5a60
+ffffff80014f5eb1	movq	0x472b0(%rip), %rax
+ffffff80014f5ec1	jmpq	*0xa0(%rax)
+CONTROL_FLOW=0xffffff80014f5ec1 jmpq	*0xa0(%rax)
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe13freeResourcesEv ADDRESS=0xffffff80014f5ec8 END=0xffffff80014f6ad8 INSTRUCTIONS=635
+ffffff80014f5ec8	pushq	%rbp
+ffffff80014f5ec9	movq	%rsp, %rbp
+ffffff80014f5ecc	pushq	%r15
+ffffff80014f5ece	pushq	%r14
+ffffff80014f5ed0	pushq	%r12
+ffffff80014f5ed2	pushq	%rbx
+ffffff80014f5ed3	movq	%rdi, %rbx
+ffffff80014f5ed6	movq	0x90(%rdi), %rax
+ffffff80014f5edd	movq	0x1038(%rax), %rdi
+ffffff80014f5ee4	testq	%rdi, %rdi
+ffffff80014f5ee7	je	0xffffff80014f5f05
+CONTROL_FLOW=0xffffff80014f5ee7 je	0xffffff80014f5f05
+ffffff80014f5ee9	movl	$0x208, %esi                    ## imm = 0x208
+ffffff80014f5eee	callq	0xffffff8000ab6290
+ffffff80014f5ef3	movq	0x90(%rbx), %rax
+ffffff80014f5efa	movq	$0x0, 0x1038(%rax)
+ffffff80014f5f05	movq	0x1050(%rax), %rdi
+ffffff80014f5f14	callq	*0x158(%rax)
+ffffff80014f5f1a	movq	0x90(%rbx), %rax
+ffffff80014f5f21	movq	0x1050(%rax), %rdi
+ffffff80014f5f30	callq	*0x28(%rax)
+ffffff80014f5f33	movq	0x90(%rbx), %rax
+ffffff80014f5f3a	movq	$0x0, 0x1050(%rax)
+ffffff80014f5f45	movq	0x5f0(%rax), %rdi
+ffffff80014f5f53	cmpb	$0x0, 0x104c(%rax)
+ffffff80014f5f63	callq	0xffffff8000ab6290
+ffffff80014f5f68	movq	0x90(%rbx), %rax
+ffffff80014f5f6f	movq	$0x0, 0x5f0(%rax)
+ffffff80014f5f7d	callq	__ZN28AppleBCMWLANBusInterfacePCIe26destroyFirmwareIPCTrackersEv ## AppleBCMWLANBusInterfacePCIe::destroyFirmwareIPCTrackers()
+ffffff80014f5f85	callq	__ZN28AppleBCMWLANBusInterfacePCIe22destroyFirmwarePCIeIPCEv ## AppleBCMWLANBusInterfacePCIe::destroyFirmwarePCIeIPC()
+ffffff80014f5f8a	movq	0x90(%rbx), %rax
+ffffff80014f5f91	movq	0x11e8(%rax), %rdi
+ffffff80014f5fa0	callq	*0x28(%rax)
+ffffff80014f5fa3	movq	0x90(%rbx), %rax
+ffffff80014f5faa	movq	$0x0, 0x11e8(%rax)
+ffffff80014f5fb5	movq	0xc58(%rax), %rdi
+ffffff80014f5fc4	callq	*0x28(%rax)
+ffffff80014f5fc7	movq	0x90(%rbx), %rax
+ffffff80014f5fce	movq	$0x0, 0xc58(%rax)
+ffffff80014f5fd9	movq	0xcd0(%rax), %rdi
+ffffff80014f5fe8	callq	*0x118(%rax)
+ffffff80014f5fee	movq	0x90(%rbx), %rax
+ffffff80014f5ff5	movq	$0x0, 0xcd0(%rax)
+ffffff80014f6000	movq	0xcc8(%rax), %rdi
+ffffff80014f600f	callq	*0x118(%rax)
+ffffff80014f6015	movq	0x90(%rbx), %rax
+ffffff80014f601c	movq	$0x0, 0xcc8(%rax)
+ffffff80014f6027	movq	0xcd8(%rax), %rdi
+ffffff80014f6036	callq	*0x158(%rax)
+ffffff80014f603c	movq	0x90(%rbx), %rax
+ffffff80014f6043	movq	0xcd8(%rax), %rsi
+ffffff80014f604a	movq	0xdd0(%rax), %rdi
+ffffff80014f6054	callq	*0x148(%rax)
+ffffff80014f605a	movq	0x90(%rbx), %rax
+ffffff80014f6061	movq	0xcd8(%rax), %rdi
+ffffff80014f606b	callq	*0x28(%rax)
+ffffff80014f606e	movq	0x90(%rbx), %rax
+ffffff80014f6075	movq	$0x0, 0xcd8(%rax)
+ffffff80014f6080	movq	0x6c8(%rax), %rdi
+ffffff80014f608f	callq	*0x118(%rax)
+ffffff80014f6095	movq	0x90(%rbx), %rax
+ffffff80014f609c	movq	$0x0, 0x6c8(%rax)
+ffffff80014f60a7	cmpq	$0x0, 0xfd0(%rax)
+ffffff80014f60b4	callq	0xffffff800227dc44
+ffffff80014f60b9	leaq	-0x270c0(%rip), %rdi
+ffffff80014f60c0	movq	0x470f1(%rip), %rsi
+ffffff80014f60ce	leaq	0x394d8(%rip), %r9              ## literal pool for: "freeResources"
+ffffff80014f60dc	callq	0xffffff8000a85d00
+ffffff80014f60e1	movq	0x90(%rbx), %rax
+ffffff80014f60e8	movq	0xfd0(%rax), %rdi
+ffffff80014f60f1	callq	0xffffff8001574eae
+ffffff80014f60f6	movq	0x90(%rbx), %rax
+ffffff80014f60fd	movq	0xfd0(%rax), %rdi
+ffffff80014f610c	callq	*0x28(%rax)
+ffffff80014f610f	movq	0x90(%rbx), %rax
+ffffff80014f6116	movq	$0x0, 0xfd0(%rax)
+ffffff80014f6121	cmpq	$0x0, 0x14b8(%rax)
+ffffff80014f612e	callq	0xffffff800158c46a
+ffffff80014f613b	callq	0xffffff800158c46a
+ffffff80014f6148	callq	0xffffff80031d421c
+ffffff80014f6155	movq	0x90(%rbx), %rax
+ffffff80014f615c	movq	0x14b8(%rax), %rdi
+ffffff80014f616d	callq	*0x118(%rax)
+ffffff80014f6173	movq	0x90(%rbx), %rax
+ffffff80014f617a	movq	0xce8(%rax), %rdx
+ffffff80014f6186	movq	0xdd8(%rax), %rdi
+ffffff80014f619f	callq	*0x118(%rax)
+ffffff80014f61a5	movq	0x90(%rbx), %rax
+ffffff80014f61ac	cmpq	$0x0, 0x14b0(%rax)
+ffffff80014f61b9	callq	0xffffff800158c46a
+ffffff80014f61c6	callq	0xffffff800158c46a
+ffffff80014f61d3	callq	0xffffff80031d421c
+ffffff80014f61e0	movq	0x90(%rbx), %rax
+ffffff80014f61e7	movq	0x14b0(%rax), %rdi
+ffffff80014f61f3	callq	*0x120(%rax)
+ffffff80014f61f9	movq	0x90(%rbx), %rax
+ffffff80014f6200	movq	0x14b0(%rax), %rdi
+ffffff80014f620f	callq	*0x28(%rax)
+ffffff80014f6212	movq	0x90(%rbx), %rax
+ffffff80014f6219	movq	$0x0, 0x14b0(%rax)
+ffffff80014f6224	movq	0x14b8(%rax), %rdi
+ffffff80014f6233	callq	*0x28(%rax)
+ffffff80014f6236	movq	0x90(%rbx), %rax
+ffffff80014f623d	movq	$0x0, 0x14b8(%rax)
+ffffff80014f6248	movq	0x808(%rax), %rdi
+ffffff80014f6257	callq	*0x158(%rax)
+ffffff80014f6263	callq	*0x868(%rax)
+ffffff80014f6269	movq	0x90(%rbx), %rcx
+ffffff80014f6270	movq	0x808(%rcx), %rsi
+ffffff80014f627d	callq	*0x148(%rcx)
+ffffff80014f6283	movq	0x90(%rbx), %rax
+ffffff80014f628a	movq	0x808(%rax), %rdi
+ffffff80014f6299	callq	*0x28(%rax)
+ffffff80014f629c	movq	0x90(%rbx), %rax
+ffffff80014f62a3	movq	$0x0, 0x808(%rax)
+ffffff80014f62ae	leaq	0x5e0(%rax), %rcx
+ffffff80014f62b5	movq	0x5e0(%rax), %r14
+ffffff80014f62cb	movq	0x8(%r14), %rax
+ffffff80014f62db	cmpq	%r14, 0x8(%rax)
+ffffff80014f62e5	movq	%rcx, 0x8(%rax)
+ffffff80014f62ec	movq	%r12, 0x8(%r14)
+ffffff80014f62f3	movq	-0x8(%r14), %rdi
+ffffff80014f62ff	callq	*0x28(%rax)
+ffffff80014f6306	movq	$0x0, 0x8(%r14)
+ffffff80014f6314	callq	0xffffff8000ab5a60
+ffffff80014f6319	movq	0x90(%rbx), %rax
+ffffff80014f6320	leaq	0x5e0(%rax), %rcx
+ffffff80014f6327	movq	0x5e0(%rax), %r14
+ffffff80014f6333	movq	0xb10(%rax), %rdi
+ffffff80014f633f	callq	0xffffff8000ab6ee0
+ffffff80014f6344	movq	0x90(%rbx), %rax
+ffffff80014f634b	movq	$0x0, 0xb10(%rax)
+ffffff80014f6356	movq	0xe78(%rax), %rdi
+ffffff80014f6365	callq	*0x28(%rax)
+ffffff80014f6368	movq	0x90(%rbx), %rax
+ffffff80014f636f	movq	$0x0, 0xe78(%rax)
+ffffff80014f637a	movq	0xce0(%rax), %rdi
+ffffff80014f6389	callq	*0x158(%rax)
+ffffff80014f638f	movq	0x90(%rbx), %rax
+ffffff80014f6396	movq	0xce0(%rax), %rsi
+ffffff80014f639d	movq	0xdd0(%rax), %rdi
+ffffff80014f63a4	callq	0xffffff8002259098
+ffffff80014f63a9	movq	0x90(%rbx), %rax
+ffffff80014f63b0	movq	0xce0(%rax), %rdi
+ffffff80014f63bf	callq	*0x28(%rax)
+ffffff80014f63c2	movq	0x90(%rbx), %rax
+ffffff80014f63c9	movq	$0x0, 0xce0(%rax)
+ffffff80014f63d4	movq	0xe48(%rax), %rdi
+ffffff80014f63e3	callq	*0x158(%rax)
+ffffff80014f63e9	movq	0x90(%rbx), %rax
+ffffff80014f63f0	movq	0xe48(%rax), %rdi
+ffffff80014f63ff	callq	*0x28(%rax)
+ffffff80014f6402	movq	0x90(%rbx), %rax
+ffffff80014f6409	movq	$0x0, 0xe48(%rax)
+ffffff80014f6414	movq	0xe50(%rax), %rdi
+ffffff80014f6423	callq	*0x158(%rax)
+ffffff80014f6429	movq	0x90(%rbx), %rax
+ffffff80014f6430	movq	0xe50(%rax), %rdi
+ffffff80014f643f	callq	*0x28(%rax)
+ffffff80014f6442	movq	0x90(%rbx), %rax
+ffffff80014f6449	movq	$0x0, 0xe50(%rax)
+ffffff80014f6454	movq	0xe58(%rax), %rdi
+ffffff80014f6463	callq	*0x158(%rax)
+ffffff80014f6469	movq	0x90(%rbx), %rax
+ffffff80014f6470	movq	0xe58(%rax), %rdi
+ffffff80014f647f	callq	*0x28(%rax)
+ffffff80014f6482	movq	0x90(%rbx), %rax
+ffffff80014f6489	movq	$0x0, 0xe58(%rax)
+ffffff80014f6494	movq	0xe60(%rax), %rdi
+ffffff80014f64a3	callq	*0x158(%rax)
+ffffff80014f64a9	movq	0x90(%rbx), %rax
+ffffff80014f64b0	movq	0xe60(%rax), %rdi
+ffffff80014f64bf	callq	*0x28(%rax)
+ffffff80014f64c2	movq	0x90(%rbx), %rax
+ffffff80014f64c9	movq	$0x0, 0xe60(%rax)
+ffffff80014f64d4	movq	0xe70(%rax), %rdi
+ffffff80014f64e3	callq	*0x158(%rax)
+ffffff80014f64e9	movq	0x90(%rbx), %rax
+ffffff80014f64f0	movq	0xe70(%rax), %rdi
+ffffff80014f64ff	callq	*0x28(%rax)
+ffffff80014f6502	movq	0x90(%rbx), %rax
+ffffff80014f6509	movq	$0x0, 0xe70(%rax)
+ffffff80014f6514	movq	0x450(%rax), %rdi
+ffffff80014f6523	callq	*0x158(%rax)
+ffffff80014f6529	movq	0x90(%rbx), %rax
+ffffff80014f6530	movq	0x450(%rax), %rdi
+ffffff80014f653f	callq	*0x28(%rax)
+ffffff80014f6542	movq	0x90(%rbx), %rax
+ffffff80014f6549	movq	$0x0, 0x450(%rax)
+ffffff80014f6554	movq	0xf38(%rax), %rdi
+ffffff80014f6563	callq	*0x158(%rax)
+ffffff80014f6569	movq	0x90(%rbx), %rax
+ffffff80014f6570	movq	0xf38(%rax), %rdi
+ffffff80014f657f	callq	*0x28(%rax)
+ffffff80014f6582	movq	0x90(%rbx), %rax
+ffffff80014f6589	movq	$0x0, 0xf38(%rax)
+ffffff80014f6594	movq	0xf40(%rax), %rdi
+ffffff80014f65a3	callq	*0x158(%rax)
+ffffff80014f65a9	movq	0x90(%rbx), %rax
+ffffff80014f65b0	movq	0xf40(%rax), %rdi
+ffffff80014f65bf	callq	*0x28(%rax)
+ffffff80014f65c2	movq	0x90(%rbx), %rax
+ffffff80014f65c9	movq	$0x0, 0xf40(%rax)
+ffffff80014f65d4	movq	0x1230(%rax), %rdi
+ffffff80014f65e3	callq	*0x28(%rax)
+ffffff80014f65e6	movq	0x90(%rbx), %rax
+ffffff80014f65ed	movq	$0x0, 0x1230(%rax)
+ffffff80014f65f8	movq	0xe38(%rax), %rdi
+ffffff80014f6607	callq	*0x28(%rax)
+ffffff80014f660a	movq	0x90(%rbx), %rax
+ffffff80014f6611	movq	$0x0, 0xe38(%rax)
+ffffff80014f661c	movq	0xe30(%rax), %rdi
+ffffff80014f662b	callq	*0x28(%rax)
+ffffff80014f662e	movq	0x90(%rbx), %rax
+ffffff80014f6635	movq	$0x0, 0xe30(%rax)
+ffffff80014f6640	movq	0xe20(%rax), %rdi
+ffffff80014f664f	callq	*0x28(%rax)
+ffffff80014f6652	movq	0x90(%rbx), %rax
+ffffff80014f6659	movq	$0x0, 0xe20(%rax)
+ffffff80014f6664	movq	0x530(%rax), %rdi
+ffffff80014f6673	callq	*0x128(%rax)
+ffffff80014f6679	movq	0x90(%rbx), %rax
+ffffff80014f6680	movq	0x530(%rax), %rdi
+ffffff80014f668f	callq	*0x28(%rax)
+ffffff80014f6692	movq	0x90(%rbx), %rax
+ffffff80014f6699	movq	$0x0, 0x530(%rax)
+ffffff80014f66a4	movq	0xe28(%rax), %rdi
+ffffff80014f66b3	callq	*0x28(%rax)
+ffffff80014f66b6	movq	0x90(%rbx), %rax
+ffffff80014f66bd	movq	$0x0, 0xe28(%rax)
+ffffff80014f66c8	movq	0x538(%rax), %rdi
+ffffff80014f66d7	callq	*0x128(%rax)
+ffffff80014f66dd	movq	0x90(%rbx), %rax
+ffffff80014f66e4	movq	0x538(%rax), %rdi
+ffffff80014f66f3	callq	*0x28(%rax)
+ffffff80014f66f6	movq	0x90(%rbx), %rax
+ffffff80014f66fd	movq	$0x0, 0x538(%rax)
+ffffff80014f6708	movq	0xe40(%rax), %rdi
+ffffff80014f6717	callq	*0x28(%rax)
+ffffff80014f671a	movq	0x90(%rbx), %rax
+ffffff80014f6721	movq	$0x0, 0xe40(%rax)
+ffffff80014f672c	movq	0x440(%rax), %rdi
+ffffff80014f673b	callq	*0x28(%rax)
+ffffff80014f673e	movq	0x90(%rbx), %rax
+ffffff80014f6745	movq	$0x0, 0x440(%rax)
+ffffff80014f6750	movq	0x448(%rax), %rdi
+ffffff80014f675f	callq	*0x28(%rax)
+ffffff80014f6762	movq	0x90(%rbx), %rax
+ffffff80014f6769	movq	$0x0, 0x448(%rax)
+ffffff80014f6774	movq	0x458(%rax), %rdi
+ffffff80014f6783	callq	*0x28(%rax)
+ffffff80014f6786	movq	0x90(%rbx), %rax
+ffffff80014f678d	movq	$0x0, 0x458(%rax)
+ffffff80014f6798	movq	0x460(%rax), %rdi
+ffffff80014f67a7	callq	*0x28(%rax)
+ffffff80014f67aa	movq	0x90(%rbx), %rax
+ffffff80014f67b1	movq	$0x0, 0x460(%rax)
+ffffff80014f67bc	movq	0x468(%rax), %rdi
+ffffff80014f67cb	callq	*0x28(%rax)
+ffffff80014f67ce	movq	0x90(%rbx), %rax
+ffffff80014f67d5	movq	$0x0, 0x468(%rax)
+ffffff80014f67e0	movq	0x470(%rax), %rdi
+ffffff80014f67ef	callq	*0x28(%rax)
+ffffff80014f67f2	movq	0x90(%rbx), %rax
+ffffff80014f67f9	movq	$0x0, 0x470(%rax)
+ffffff80014f6804	movq	0xe10(%rax), %rdi
+ffffff80014f6813	callq	*0x28(%rax)
+ffffff80014f6816	movq	0x90(%rbx), %rax
+ffffff80014f681d	movq	$0x0, 0xe10(%rax)
+ffffff80014f6828	movq	0xe08(%rax), %rdi
+ffffff80014f6837	callq	*0x28(%rax)
+ffffff80014f683a	movq	0x90(%rbx), %rax
+ffffff80014f6841	movq	$0x0, 0xe08(%rax)
+ffffff80014f684c	movq	0xe00(%rax), %rdi
+ffffff80014f685b	callq	*0x28(%rax)
+ffffff80014f685e	movq	0x90(%rbx), %rax
+ffffff80014f6865	movq	$0x0, 0xe00(%rax)
+ffffff80014f6870	movq	0xdf8(%rax), %rdi
+ffffff80014f687f	callq	*0x28(%rax)
+ffffff80014f6882	movq	0x90(%rbx), %rax
+ffffff80014f6889	movq	$0x0, 0xdf8(%rax)
+ffffff80014f6894	movq	0xe18(%rax), %rdi
+ffffff80014f68a3	callq	*0x28(%rax)
+ffffff80014f68a6	movq	0x90(%rbx), %rax
+ffffff80014f68ad	movq	$0x0, 0xe18(%rax)
+ffffff80014f68bb	callq	0xffffff800158e1ca
+ffffff80014f68cb	callq	*0x28(%rcx)
+ffffff80014f68d1	callq	0xffffff800158e1a2
+ffffff80014f68e1	callq	*0x28(%rcx)
+ffffff80014f68e7	callq	0xffffff800158e21a
+ffffff80014f68f7	callq	*0x28(%rcx)
+ffffff80014f68fd	callq	0xffffff800158e27e
+ffffff80014f690d	callq	*0x28(%rcx)
+ffffff80014f6910	movq	0x90(%rbx), %rax
+ffffff80014f6917	movq	0xd40(%rax), %rdi
+ffffff80014f6926	callq	*0x28(%rax)
+ffffff80014f6929	movq	0x90(%rbx), %rax
+ffffff80014f6930	movq	$0x0, 0xd40(%rax)
+ffffff80014f693b	movq	0xd10(%rax), %rdi
+ffffff80014f694a	callq	*0x28(%rax)
+ffffff80014f694d	movq	0x90(%rbx), %rax
+ffffff80014f6954	movq	$0x0, 0xd10(%rax)
+ffffff80014f695f	movq	0xde8(%rax), %rdi
+ffffff80014f696e	callq	*0x28(%rax)
+ffffff80014f6971	movq	0x90(%rbx), %rax
+ffffff80014f6978	movq	$0x0, 0xde8(%rax)
+ffffff80014f6983	movq	0xde0(%rax), %rdi
+ffffff80014f6992	callq	*0x28(%rax)
+ffffff80014f6995	movq	0x90(%rbx), %rax
+ffffff80014f699c	movq	$0x0, 0xde0(%rax)
+ffffff80014f69a7	movq	0xdd8(%rax), %rdi
+ffffff80014f69b6	callq	*0x28(%rax)
+ffffff80014f69b9	movq	0x90(%rbx), %rax
+ffffff80014f69c0	movq	$0x0, 0xdd8(%rax)
+ffffff80014f69cb	movq	0xdd0(%rax), %rdi
+ffffff80014f69da	callq	*0x28(%rax)
+ffffff80014f69dd	movq	0x90(%rbx), %rax
+ffffff80014f69e4	movq	$0x0, 0xdd0(%rax)
+ffffff80014f69ef	movq	0x1068(%rax), %rdi
+ffffff80014f69fe	callq	*0x158(%rax)
+ffffff80014f6a04	movq	0x90(%rbx), %rax
+ffffff80014f6a0b	movq	0x1068(%rax), %rdi
+ffffff80014f6a1a	callq	*0x28(%rax)
+ffffff80014f6a1d	movq	0x90(%rbx), %rax
+ffffff80014f6a24	movq	$0x0, 0x1068(%rax)
+ffffff80014f6a2f	movq	0x1060(%rax), %rdi
+ffffff80014f6a3e	callq	*0x28(%rax)
+ffffff80014f6a41	movq	0x90(%rbx), %rax
+ffffff80014f6a48	movq	$0x0, 0x1060(%rax)
+ffffff80014f6a53	movq	0x4670e(%rip), %rax
+ffffff80014f6a65	jmpq	*0xbc0(%rax)
+CONTROL_FLOW=0xffffff80014f6a65 jmpq	*0xbc0(%rax)
+ffffff80014f6a6e	callq	0xffffff800158c46a
+ffffff80014f6a73	leaq	0x38b41(%rip), %rsi             ## literal pool for: "[ik] %s@%d:%d: portStatus = fPCIEPort->enable(false) \n"
+ffffff80014f6a7a	leaq	0x38b2c(%rip), %rdx             ## literal pool for: "freeResources"
+ffffff80014f6a91	callq	0xffffff80031d252e
+ffffff80014f6a96	jmp	0xffffff80014f6155
+CONTROL_FLOW=0xffffff80014f6a96 jmp	0xffffff80014f6155
+ffffff80014f6a9e	callq	0xffffff800158c46a
+ffffff80014f6aa3	leaq	0x38b48(%rip), %rsi             ## literal pool for: "[ik] %s@%d: Line:%d, setPowerEnable(false)\n"
+ffffff80014f6aaa	leaq	0x38afc(%rip), %rdx             ## literal pool for: "freeResources"
+ffffff80014f6ac1	callq	0xffffff80031d252e
+ffffff80014f6ac6	jmp	0xffffff80014f61e0
+CONTROL_FLOW=0xffffff80014f6ac6 jmp	0xffffff80014f61e0
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZNK28AppleBCMWLANBusInterfacePCIe12getWorkQueueEv ADDRESS=0xffffff80014f75ac END=0xffffff80014f75c0 INSTRUCTIONS=6
+ffffff80014f75ac	pushq	%rbp
+ffffff80014f75ad	movq	%rsp, %rbp
+ffffff80014f75b0	movq	0x90(%rdi), %rax
+ffffff80014f75b7	movq	0xdd0(%rax), %rax
+ffffff80014f75be	popq	%rbp
+ffffff80014f75bf	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZNK28AppleBCMWLANBusInterfacePCIe17validateWorkQueueEPKcj ADDRESS=0xffffff80014f7f9e END=0xffffff80014f7fa4 INSTRUCTIONS=4
+ffffff80014f7f9e	pushq	%rbp
+ffffff80014f7f9f	movq	%rsp, %rbp
+ffffff80014f7fa2	popq	%rbp
+ffffff80014f7fa3	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe20createSubmissionRingEPP30AppleBCMWLANPCIeSubmissionRingPK12PCIeRingInfoP8OSObjectP16IO80211WorkQueuePFjS7_P20AppleBCMWLANByteRingPvjEPFvS7_SB_iSC_E ADDRESS=0xffffff800150bb60 END=0xffffff800150bd22 INSTRUCTIONS=108
+ffffff800150bb60	pushq	%rbp
+ffffff800150bb61	movq	%rsp, %rbp
+ffffff800150bb64	pushq	%r15
+ffffff800150bb66	pushq	%r14
+ffffff800150bb68	pushq	%r13
+ffffff800150bb6a	pushq	%r12
+ffffff800150bb6c	pushq	%rbx
+ffffff800150bb6d	subq	$0x98, %rsp
+ffffff800150bb74	movq	%rcx, %r13
+ffffff800150bb77	movq	%rsi, %rbx
+ffffff800150bb7a	movq	0x3162f(%rip), %rax
+ffffff800150bb81	movq	(%rax), %rax
+ffffff800150bb84	movq	%rax, -0x30(%rbp)
+ffffff800150bb88	testq	%rsi, %rsi
+ffffff800150bb8b	sete	%al
+ffffff800150bb8e	testq	%rdx, %rdx
+ffffff800150bbb1	movq	%r8, -0xb8(%rbp)
+ffffff800150bbb8	movq	$0x0, -0x50(%rbp)
+ffffff800150bbc0	movq	0x38(%rdx), %rax
+ffffff800150bbc4	movq	%rax, -0x78(%rbp)
+ffffff800150bbc8	movq	0x30(%rdx), %rcx
+ffffff800150bbcc	movq	%rcx, -0x80(%rbp)
+ffffff800150bbd0	movq	0x28(%rdx), %rax
+ffffff800150bbd4	movq	%rax, -0x88(%rbp)
+ffffff800150bbdb	movq	0x20(%rdx), %rax
+ffffff800150bbdf	movq	%rax, -0x90(%rbp)
+ffffff800150bbe6	movq	0x18(%rdx), %rax
+ffffff800150bbea	movq	%rax, -0x98(%rbp)
+ffffff800150bbf1	movq	0x10(%rdx), %rax
+ffffff800150bbf5	movq	%rax, -0xa0(%rbp)
+ffffff800150bbff	movq	0x8(%rdx), %rdx
+ffffff800150bc03	movq	%rdx, -0xa8(%rbp)
+ffffff800150bc0a	movq	%rax, -0xb0(%rbp)
+ffffff800150bc11	movq	0x90(%rdi), %rax
+ffffff800150bc1d	movq	0xe78(%rax), %rcx
+ffffff800150bc24	movq	%rcx, -0x80(%rbp)
+ffffff800150bc28	movl	$0x3e8, -0x78(%rbp)             ## imm = 0x3E8
+ffffff800150bc2f	movq	0xd90(%rax), %rcx
+ffffff800150bc36	leaq	-0xb0(%rbp), %r14
+ffffff800150bc3d	movq	%rcx, 0x40(%r14)
+ffffff800150bc41	movq	0xd98(%rax), %rcx
+ffffff800150bc48	movq	%rcx, 0x48(%r14)
+ffffff800150bc4c	movq	0x60(%rax), %rcx
+ffffff800150bc50	movq	%rcx, 0x50(%r14)
+ffffff800150bc54	movq	0x98(%rax), %rcx
+ffffff800150bc5b	movq	%rcx, 0x58(%r14)
+ffffff800150bc5f	movq	0xdb0(%rax), %rcx
+ffffff800150bc66	movq	%rcx, 0x68(%r14)
+ffffff800150bc6a	movq	0xcf8(%rax), %rcx
+ffffff800150bc71	movq	%rcx, 0x78(%r14)
+ffffff800150bc75	movq	0xd00(%rax), %rax
+ffffff800150bc7c	movq	%rax, 0x70(%r14)
+ffffff800150bc83	callq	0xffffff800158c46a
+ffffff800150bc8e	movq	0x10(%rbp), %rdx
+ffffff800150bc98	callq	__ZN30AppleBCMWLANPCIeSubmissionRing11withOptionsEP8OSObjectPFjS1_P20AppleBCMWLANByteRingPvjEPFvS1_S3_iS4_ER20PCIeRingCreationInfoP11CCLogStream ## AppleBCMWLANPCIeSubmissionRing::withOptions(OSObject*, unsigned int (*)(OSObject*, AppleBCMWLANByteRing*, void*, unsigned int), void (*)(OSObject*, AppleBCMWLANByteRing*, int, void*), PCIeRingCreationInfo&, CCLogStream*)
+ffffff800150bca5	movq	0x90(%r15), %rax
+ffffff800150bcac	movq	0xc58(%rax), %rsi
+ffffff800150bcb6	callq	0xffffff8001570a1e
+ffffff800150bcbb	movq	-0xb8(%rbp), %rcx
+ffffff800150bcc7	movq	0x90(%r15), %rax
+ffffff800150bcce	movq	0xdd8(%rax), %rdi
+ffffff800150bcd8	leaq	__ZN28AppleBCMWLANBusInterfacePCIe25enableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue(%rip), %rsi ## AppleBCMWLANBusInterfacePCIe::enableSubmissionRingGated(AppleBCMWLANPCIeSubmissionRing*, IO80211WorkQueue*)
+ffffff800150bce8	callq	*0x118(%rax)
+ffffff800150bcf3	jmp	0xffffff800150bcfa
+CONTROL_FLOW=0xffffff800150bcf3 jmp	0xffffff800150bcfa
+ffffff800150bcfa	movq	0x314af(%rip), %rcx
+ffffff800150bd04	cmpq	-0x30(%rbp), %rcx
+ffffff800150bd1b	retq
+ffffff800150bd1c	callq	0xffffff8000383150
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe25enableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue ADDRESS=0xffffff800150bd22 END=0xffffff800150bd96 INSTRUCTIONS=31
+ffffff800150bd22	pushq	%rbp
+ffffff800150bd23	movq	%rsp, %rbp
+ffffff800150bd26	pushq	%r14
+ffffff800150bd28	pushq	%rbx
+ffffff800150bd29	movq	%rsi, %rbx
+ffffff800150bd2c	movq	%rdi, %r14
+ffffff800150bd2f	movq	(%rdx), %rax
+ffffff800150bd32	movq	%rdx, %rdi
+ffffff800150bd35	callq	*0x140(%rax)
+ffffff800150bd3b	movq	(%rbx), %rax
+ffffff800150bd3e	movq	%rbx, %rdi
+ffffff800150bd41	callq	*0x150(%rax)
+ffffff800150bd47	movq	0x90(%r14), %rcx
+ffffff800150bd4e	leaq	0x118(%rcx), %rax
+ffffff800150bd55	movq	0x120(%rcx), %rdx
+ffffff800150bd5c	cmpq	%rax, (%rdx)
+ffffff800150bd61	movq	0x60(%rbx), %rsi
+ffffff800150bd65	leaq	0xc8(%rsi), %rdi
+ffffff800150bd6c	movq	%rax, 0xc8(%rsi)
+ffffff800150bd73	movq	%rdx, 0xd0(%rsi)
+ffffff800150bd7d	movq	%rdi, 0x120(%rcx)
+ffffff800150bd8a	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe20createCompletionRingEPP30AppleBCMWLANPCIeCompletionRingPK12PCIeRingInfoP8OSObjectP16IO80211WorkQueuePFjS7_P20AppleBCMWLANByteRingPvjEPFvS7_SB_iSC_E ADDRESS=0xffffff800150be86 END=0xffffff800150c04a INSTRUCTIONS=107
+ffffff800150be86	pushq	%rbp
+ffffff800150be87	movq	%rsp, %rbp
+ffffff800150be8a	pushq	%r15
+ffffff800150be8c	pushq	%r14
+ffffff800150be8e	pushq	%r13
+ffffff800150be90	pushq	%r12
+ffffff800150be92	pushq	%rbx
+ffffff800150be93	subq	$0x98, %rsp
+ffffff800150be9a	movq	%rcx, %r13
+ffffff800150be9d	movq	%rsi, %rbx
+ffffff800150bea0	movq	0x31309(%rip), %rax
+ffffff800150bea7	movq	(%rax), %rax
+ffffff800150beaa	movq	%rax, -0x30(%rbp)
+ffffff800150beae	testq	%rsi, %rsi
+ffffff800150beb1	sete	%al
+ffffff800150beb4	testq	%rdx, %rdx
+ffffff800150bed7	movq	%r8, -0xb8(%rbp)
+ffffff800150bede	movq	$0x0, -0x50(%rbp)
+ffffff800150bee6	movq	0x38(%rdx), %rax
+ffffff800150beea	movq	%rax, -0x78(%rbp)
+ffffff800150beee	movq	0x30(%rdx), %rcx
+ffffff800150bef2	movq	%rcx, -0x80(%rbp)
+ffffff800150bef6	movq	0x28(%rdx), %rax
+ffffff800150befa	movq	%rax, -0x88(%rbp)
+ffffff800150bf01	movq	0x20(%rdx), %rax
+ffffff800150bf05	movq	%rax, -0x90(%rbp)
+ffffff800150bf0c	movq	0x18(%rdx), %rax
+ffffff800150bf10	movq	%rax, -0x98(%rbp)
+ffffff800150bf17	movq	0x10(%rdx), %rax
+ffffff800150bf1b	movq	%rax, -0xa0(%rbp)
+ffffff800150bf25	movq	0x8(%rdx), %rdx
+ffffff800150bf29	movq	%rdx, -0xa8(%rbp)
+ffffff800150bf30	movq	%rax, -0xb0(%rbp)
+ffffff800150bf37	movq	0x90(%rdi), %rax
+ffffff800150bf43	movq	0xe78(%rax), %rcx
+ffffff800150bf4a	movq	%rcx, -0x80(%rbp)
+ffffff800150bf4e	movl	$0x3e8, -0x78(%rbp)             ## imm = 0x3E8
+ffffff800150bf55	movq	0xda0(%rax), %rcx
+ffffff800150bf5c	leaq	-0xb0(%rbp), %r14
+ffffff800150bf63	movq	%rcx, 0x40(%r14)
+ffffff800150bf67	movq	0xda8(%rax), %rcx
+ffffff800150bf6e	movq	%rcx, 0x48(%r14)
+ffffff800150bf72	movq	0xd0(%rax), %rcx
+ffffff800150bf79	movq	%rcx, 0x50(%r14)
+ffffff800150bf7d	movq	0x108(%rax), %rcx
+ffffff800150bf84	movq	%rcx, 0x58(%r14)
+ffffff800150bf88	movq	0xdb0(%rax), %rcx
+ffffff800150bf8f	movq	%rcx, 0x68(%r14)
+ffffff800150bf93	movq	0xcf8(%rax), %rcx
+ffffff800150bf9a	movq	%rcx, 0x78(%r14)
+ffffff800150bf9e	movq	0xd00(%rax), %rax
+ffffff800150bfa5	movq	%rax, 0x70(%r14)
+ffffff800150bfac	callq	0xffffff800158c46a
+ffffff800150bfb7	movq	0x10(%rbp), %rdx
+ffffff800150bfc1	callq	__ZN30AppleBCMWLANPCIeCompletionRing11withOptionsEP8OSObjectPFjS1_P20AppleBCMWLANByteRingPvjEPFvS1_S3_iS4_ER20PCIeRingCreationInfoP11CCLogStream ## AppleBCMWLANPCIeCompletionRing::withOptions(OSObject*, unsigned int (*)(OSObject*, AppleBCMWLANByteRing*, void*, unsigned int), void (*)(OSObject*, AppleBCMWLANByteRing*, int, void*), PCIeRingCreationInfo&, CCLogStream*)
+ffffff800150bfce	movq	0x90(%r15), %rax
+ffffff800150bfd5	movq	0xc58(%rax), %rsi
+ffffff800150bfdf	callq	0xffffff8001570a1e
+ffffff800150bfe4	movq	-0xb8(%rbp), %rcx
+ffffff800150bff0	movq	0x90(%r15), %rax
+ffffff800150bff7	movq	0xdd8(%rax), %rdi
+ffffff800150c001	leaq	__ZN28AppleBCMWLANBusInterfacePCIe25enableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue(%rip), %rsi ## AppleBCMWLANBusInterfacePCIe::enableCompletionRingGated(AppleBCMWLANPCIeCompletionRing*, IO80211WorkQueue*)
+ffffff800150c011	callq	*0x118(%rax)
+ffffff800150c01c	jmp	0xffffff800150c023
+CONTROL_FLOW=0xffffff800150c01c jmp	0xffffff800150c023
+ffffff800150c023	movq	0x31186(%rip), %rcx
+ffffff800150c02d	cmpq	-0x30(%rbp), %rcx
+ffffff800150c044	retq
+ffffff800150c045	callq	0xffffff8000383150
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe20enableCompletionRingEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue ADDRESS=0xffffff800150c04a END=0xffffff800150c07c INSTRUCTIONS=13
+ffffff800150c04a	pushq	%rbp
+ffffff800150c04b	movq	%rsp, %rbp
+ffffff800150c04e	movq	%rdx, %rcx
+ffffff800150c051	movq	%rsi, %rdx
+ffffff800150c054	movq	0x90(%rdi), %rax
+ffffff800150c05b	movq	0xdd8(%rax), %rdi
+ffffff800150c062	movq	(%rdi), %rax
+ffffff800150c065	movq	0x118(%rax), %rax
+ffffff800150c06c	leaq	__ZN28AppleBCMWLANBusInterfacePCIe25enableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue(%rip), %rsi ## AppleBCMWLANBusInterfacePCIe::enableCompletionRingGated(AppleBCMWLANPCIeCompletionRing*, IO80211WorkQueue*)
+ffffff800150c073	xorl	%r8d, %r8d
+ffffff800150c076	xorl	%r9d, %r9d
+ffffff800150c079	popq	%rbp
+ffffff800150c07a	jmpq	*%rax
+CONTROL_FLOW=0xffffff800150c07a jmpq	*%rax
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe25enableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue ADDRESS=0xffffff800150c07c END=0xffffff800150c0f0 INSTRUCTIONS=31
+ffffff800150c07c	pushq	%rbp
+ffffff800150c07d	movq	%rsp, %rbp
+ffffff800150c080	pushq	%r14
+ffffff800150c082	pushq	%rbx
+ffffff800150c083	movq	%rsi, %rbx
+ffffff800150c086	movq	%rdi, %r14
+ffffff800150c089	movq	(%rdx), %rax
+ffffff800150c08c	movq	%rdx, %rdi
+ffffff800150c08f	callq	*0x140(%rax)
+ffffff800150c095	movq	(%rbx), %rax
+ffffff800150c098	movq	%rbx, %rdi
+ffffff800150c09b	callq	*0x150(%rax)
+ffffff800150c0a1	movq	0x90(%r14), %rcx
+ffffff800150c0a8	leaq	0x128(%rcx), %rax
+ffffff800150c0af	movq	0x130(%rcx), %rdx
+ffffff800150c0b6	cmpq	%rax, (%rdx)
+ffffff800150c0bb	movq	0x60(%rbx), %rsi
+ffffff800150c0bf	leaq	0xb8(%rsi), %rdi
+ffffff800150c0c6	movq	%rax, 0xb8(%rsi)
+ffffff800150c0cd	movq	%rdx, 0xc0(%rsi)
+ffffff800150c0d7	movq	%rdi, 0x130(%rcx)
+ffffff800150c0e4	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe26disableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue ADDRESS=0xffffff800150c0f0 END=0xffffff800150c18c INSTRUCTIONS=50
+ffffff800150c0f0	pushq	%rbp
+ffffff800150c0f1	movq	%rsp, %rbp
+ffffff800150c0f4	pushq	%r15
+ffffff800150c0f6	pushq	%r14
+ffffff800150c0f8	pushq	%rbx
+ffffff800150c0f9	pushq	%rax
+ffffff800150c0fa	testq	%rsi, %rsi
+ffffff800150c0fd	je	0xffffff800150c175
+CONTROL_FLOW=0xffffff800150c0fd je	0xffffff800150c175
+ffffff800150c0ff	movq	%rdx, %r14
+ffffff800150c102	movq	%rsi, %rbx
+ffffff800150c105	movq	%rdi, %r15
+ffffff800150c108	movq	(%rsi), %rax
+ffffff800150c10b	movq	%rsi, %rdi
+ffffff800150c10e	callq	*0x1b8(%rax)
+ffffff800150c114	testq	%rax, %rax
+ffffff800150c117	je	0xffffff800150c175
+CONTROL_FLOW=0xffffff800150c117 je	0xffffff800150c175
+ffffff800150c119	movq	0x90(%r15), %rdx
+ffffff800150c120	movq	0x118(%rdx), %rcx
+ffffff800150c139	cmpq	%rbx, -0x8(%rax)
+ffffff800150c13f	movq	0x8(%rax), %rdx
+ffffff800150c148	cmpq	%rax, 0x8(%rcx)
+ffffff800150c14e	movq	%rdx, 0x8(%rcx)
+ffffff800150c157	movq	%rcx, 0x8(%rax)
+ffffff800150c164	callq	*0x158(%rax)
+ffffff800150c170	callq	0xffffff8002259098
+ffffff800150c181	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe21disableCompletionRingEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue ADDRESS=0xffffff800150c296 END=0xffffff800150c2c8 INSTRUCTIONS=13
+ffffff800150c296	pushq	%rbp
+ffffff800150c297	movq	%rsp, %rbp
+ffffff800150c29a	movq	%rdx, %rcx
+ffffff800150c29d	movq	%rsi, %rdx
+ffffff800150c2a0	movq	0x90(%rdi), %rax
+ffffff800150c2a7	movq	0xdd8(%rax), %rdi
+ffffff800150c2ae	movq	(%rdi), %rax
+ffffff800150c2b1	movq	0x118(%rax), %rax
+ffffff800150c2b8	leaq	__ZN28AppleBCMWLANBusInterfacePCIe26disableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue(%rip), %rsi ## AppleBCMWLANBusInterfacePCIe::disableCompletionRingGated(AppleBCMWLANPCIeCompletionRing*, IO80211WorkQueue*)
+ffffff800150c2bf	xorl	%r8d, %r8d
+ffffff800150c2c2	xorl	%r9d, %r9d
+ffffff800150c2c5	popq	%rbp
+ffffff800150c2c6	jmpq	*%rax
+CONTROL_FLOW=0xffffff800150c2c6 jmpq	*%rax
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe26disableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue ADDRESS=0xffffff800150c2c8 END=0xffffff800150c364 INSTRUCTIONS=50
+ffffff800150c2c8	pushq	%rbp
+ffffff800150c2c9	movq	%rsp, %rbp
+ffffff800150c2cc	pushq	%r15
+ffffff800150c2ce	pushq	%r14
+ffffff800150c2d0	pushq	%rbx
+ffffff800150c2d1	pushq	%rax
+ffffff800150c2d2	testq	%rsi, %rsi
+ffffff800150c2d5	je	0xffffff800150c34d
+CONTROL_FLOW=0xffffff800150c2d5 je	0xffffff800150c34d
+ffffff800150c2d7	movq	%rdx, %r14
+ffffff800150c2da	movq	%rsi, %rbx
+ffffff800150c2dd	movq	%rdi, %r15
+ffffff800150c2e0	movq	(%rsi), %rax
+ffffff800150c2e3	movq	%rsi, %rdi
+ffffff800150c2e6	callq	*0x1b8(%rax)
+ffffff800150c2ec	testq	%rax, %rax
+ffffff800150c2ef	je	0xffffff800150c34d
+CONTROL_FLOW=0xffffff800150c2ef je	0xffffff800150c34d
+ffffff800150c2f1	movq	0x90(%r15), %rdx
+ffffff800150c2f8	movq	0x128(%rdx), %rcx
+ffffff800150c311	cmpq	%rbx, -0x8(%rax)
+ffffff800150c317	movq	0x8(%rax), %rdx
+ffffff800150c320	cmpq	%rax, 0x8(%rcx)
+ffffff800150c326	movq	%rdx, 0x8(%rcx)
+ffffff800150c32f	movq	%rcx, 0x8(%rax)
+ffffff800150c33c	callq	*0x158(%rax)
+ffffff800150c348	callq	0xffffff8002259098
+ffffff800150c359	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe12initRingInfoEv ADDRESS=0xffffff800150da12 END=0xffffff800150dcc2 INSTRUCTIONS=161
+ffffff800150da12	pushq	%rbp
+ffffff800150da13	movq	%rsp, %rbp
+ffffff800150da16	pushq	%rbx
+ffffff800150da17	pushq	%rax
+ffffff800150da18	movq	%rdi, %rbx
+ffffff800150da1b	movq	(%rdi), %rax
+ffffff800150da1e	leaq	0x25931(%rip), %rsi             ## literal pool for: "initRingInfo"
+ffffff800150da25	movl	$0x25d7, %edx                   ## imm = 0x25D7
+ffffff800150da2a	callq	*0xcc8(%rax)
+ffffff800150da30	movq	0x90(%rbx), %rax
+ffffff800150da37	movl	0xa0(%rax), %ecx
+ffffff800150da3d	movq	0xd80(%rax), %rdx
+ffffff800150da44	movl	%ecx, 0x14(%rdx)
+ffffff800150da47	movl	0xa4(%rax), %ecx
+ffffff800150da4d	movl	%ecx, 0x18(%rdx)
+ffffff800150da50	movl	0xd8(%rax), %ecx
+ffffff800150da56	movl	%ecx, 0x2c(%rdx)
+ffffff800150da59	movl	0xdc(%rax), %ecx
+ffffff800150da5f	movl	%ecx, 0x30(%rdx)
+ffffff800150da62	movl	0x68(%rax), %ecx
+ffffff800150da65	movl	%ecx, 0x1c(%rdx)
+ffffff800150da68	movl	0x6c(%rax), %ecx
+ffffff800150da6b	movl	%ecx, 0x20(%rdx)
+ffffff800150da6e	movl	0x110(%rax), %ecx
+ffffff800150da74	movl	%ecx, 0x24(%rdx)
+ffffff800150da77	movl	0x114(%rax), %eax
+ffffff800150da7d	movl	%eax, 0x28(%rdx)
+ffffff800150da83	callq	0xffffff800158c46a
+ffffff800150da90	callq	0xffffff800158c46a
+ffffff800150daa2	callq	0xffffff80031d4256
+ffffff800150dab2	callq	0xffffff800158c46a
+ffffff800150dabf	callq	0xffffff800158c46a
+ffffff800150dad1	callq	0xffffff80031d4256
+ffffff800150dae1	callq	0xffffff800158c46a
+ffffff800150daee	callq	0xffffff800158c46a
+ffffff800150db00	callq	0xffffff80031d4256
+ffffff800150db10	callq	0xffffff800158c46a
+ffffff800150db1d	callq	0xffffff800158c46a
+ffffff800150db2f	callq	0xffffff80031d4256
+ffffff800150db3f	callq	0xffffff800158c46a
+ffffff800150db4c	callq	0xffffff800158c46a
+ffffff800150db5e	callq	0xffffff80031d4256
+ffffff800150db71	retq
+ffffff800150db75	callq	0xffffff800158c46a
+ffffff800150db7a	leaq	0x257e2(%rip), %rdx             ## literal pool for: "[ik] %s@%d: ring_info initialization \n"
+ffffff800150db81	leaq	0x257ce(%rip), %rcx             ## literal pool for: "initRingInfo"
+ffffff800150db98	callq	0xffffff80031d25da
+ffffff800150db9d	jmp	0xffffff800150daaf
+CONTROL_FLOW=0xffffff800150db9d jmp	0xffffff800150daaf
+ffffff800150dba5	callq	0xffffff800158c46a
+ffffff800150dbaa	movq	0x90(%rbx), %rcx
+ffffff800150dbb1	movq	0xd80(%rcx), %rcx
+ffffff800150dbb8	movl	0x1c(%rcx), %r9d
+ffffff800150dbbc	movl	0x20(%rcx), %ecx
+ffffff800150dbc2	leaq	0x257c1(%rip), %rdx             ## literal pool for: "[ik] %s@%d: submission ring read index baseAddressLow : 0x%x, baseAddressHigh: 0x%x \n"
+ffffff800150dbc9	leaq	0x25786(%rip), %rcx             ## literal pool for: "initRingInfo"
+ffffff800150dbe0	callq	0xffffff80031d25da
+ffffff800150dbe5	jmp	0xffffff800150dade
+CONTROL_FLOW=0xffffff800150dbe5 jmp	0xffffff800150dade
+ffffff800150dbed	callq	0xffffff800158c46a
+ffffff800150dbf2	movq	0x90(%rbx), %rcx
+ffffff800150dbf9	movq	0xd80(%rcx), %rcx
+ffffff800150dc00	movl	0x14(%rcx), %r9d
+ffffff800150dc04	movl	0x18(%rcx), %ecx
+ffffff800150dc0a	leaq	0x257cf(%rip), %rdx             ## literal pool for: "[ik] %s@%d: submission ring write index baseAddressLow : 0x%x, baseAddressHigh: 0x%x \n"
+ffffff800150dc11	leaq	0x2573e(%rip), %rcx             ## literal pool for: "initRingInfo"
+ffffff800150dc28	callq	0xffffff80031d25da
+ffffff800150dc2d	jmp	0xffffff800150db0d
+CONTROL_FLOW=0xffffff800150dc2d jmp	0xffffff800150db0d
+ffffff800150dc35	callq	0xffffff800158c46a
+ffffff800150dc3a	movq	0x90(%rbx), %rcx
+ffffff800150dc41	movq	0xd80(%rcx), %rcx
+ffffff800150dc48	movl	0x2c(%rcx), %r9d
+ffffff800150dc4c	movl	0x30(%rcx), %ecx
+ffffff800150dc52	leaq	0x257de(%rip), %rdx             ## literal pool for: "[ik] %s@%d: completion ring read index baseAddressLow : 0x%x, baseAddressHigh: 0x%x \n"
+ffffff800150dc59	leaq	0x256f6(%rip), %rcx             ## literal pool for: "initRingInfo"
+ffffff800150dc70	callq	0xffffff80031d25da
+ffffff800150dc75	jmp	0xffffff800150db3c
+CONTROL_FLOW=0xffffff800150dc75 jmp	0xffffff800150db3c
+ffffff800150dc7d	callq	0xffffff800158c46a
+ffffff800150dc82	movq	0x90(%rbx), %rcx
+ffffff800150dc89	movq	0xd80(%rcx), %rcx
+ffffff800150dc90	movl	0x24(%rcx), %r9d
+ffffff800150dc94	movl	0x28(%rcx), %ecx
+ffffff800150dc9a	leaq	0x257ec(%rip), %rdx             ## literal pool for: "[ik] %s@%d: completion ring write index baseAddressLow : 0x%x, baseAddressHigh: 0x%x \n"
+ffffff800150dca1	leaq	0x256ae(%rip), %rcx             ## literal pool for: "initRingInfo"
+ffffff800150dcb8	callq	0xffffff80031d25da
+ffffff800150dcbd	jmp	0xffffff800150db6b
+CONTROL_FLOW=0xffffff800150dcbd jmp	0xffffff800150db6b
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe17initTransmitFlowsEv ADDRESS=0xffffff800150dcc2 END=0xffffff800150ddfe INSTRUCTIONS=81
+ffffff800150dcc2	pushq	%rbp
+ffffff800150dcc3	movq	%rsp, %rbp
+ffffff800150dcc6	pushq	%r15
+ffffff800150dcc8	pushq	%r14
+ffffff800150dcca	pushq	%r12
+ffffff800150dccc	pushq	%rbx
+ffffff800150dccd	movq	%rdi, %r15
+ffffff800150dcd0	movq	(%rdi), %rax
+ffffff800150dcd3	leaq	0x2580a(%rip), %rsi             ## literal pool for: "initTransmitFlows"
+ffffff800150dcda	movl	$0x2621, %edx                   ## imm = 0x2621
+ffffff800150dcdf	callq	*0xcc8(%rax)
+ffffff800150dce5	movq	0x90(%r15), %rax
+ffffff800150dcec	movq	0xd80(%rax), %rcx
+ffffff800150dcf3	movzwl	0x34(%rcx), %ebx
+ffffff800150dcf7	movzwl	0x36(%rcx), %r14d
+ffffff800150dcfc	movq	0xd78(%rax), %rcx
+ffffff800150dd03	movl	0x50(%rcx), %r12d
+ffffff800150dd37	movl	%ecx, 0x170(%rax)
+ffffff800150dd3d	movl	%esi, 0x174(%rax)
+ffffff800150dd45	movl	%esi, 0x178(%rax)
+ffffff800150dd4e	callq	0xffffff800158c46a
+ffffff800150dd5b	callq	0xffffff800158c46a
+ffffff800150dd68	callq	0xffffff80031d421c
+ffffff800150dd79	retq
+ffffff800150dd7d	callq	0xffffff800158c46a
+ffffff800150dd82	movq	0x90(%r15), %rcx
+ffffff800150dd89	movl	0x170(%rcx), %r8d
+ffffff800150dd90	movl	0x174(%rcx), %r9d
+ffffff800150dd97	movl	0x178(%rcx), %r10d
+ffffff800150dd9e	leaq	0x257a3(%rip), %rsi             ## literal pool for: "[ik] %s@%d:Flows: max=%u reserved=%u maxId=%u fwmax=%u fwmaxsub=%u fwbtlognomaxqincrease=%u\n"
+ffffff800150dda5	leaq	0x25738(%rip), %rdx             ## literal pool for: "initTransmitFlows"
+ffffff800150ddbd	callq	0xffffff80031d252e
+ffffff800150ddc6	jmp	0xffffff800150dd71
+CONTROL_FLOW=0xffffff800150ddc6 jmp	0xffffff800150dd71
+ffffff800150ddcb	callq	0xffffff800227dc44
+ffffff800150ddd4	leaq	0x2571b(%rip), %rdi             ## literal pool for: "\"%s::%s(): \" \"maxNbrOfDynamicSubmissionRings %u <= maxNbrOfTxFlowRings %u\" @%s:%d"
+ffffff800150dddb	leaq	0x25702(%rip), %rdx             ## literal pool for: "initTransmitFlows"
+ffffff800150dde2	leaq	0x21aab(%rip), %r9              ## literal pool for: "AppleBCMWLANBusInterfacePCIe.cpp"
+ffffff800150ddf9	callq	0xffffff8000bd073c
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe11hitDoorbellEPKc ADDRESS=0xffffff8001510372 END=0xffffff800151064c INSTRUCTIONS=171
+ffffff8001510372	pushq	%rbp
+ffffff8001510373	movq	%rsp, %rbp
+ffffff8001510376	pushq	%r15
+ffffff8001510378	pushq	%r14
+ffffff800151037a	pushq	%r12
+ffffff800151037c	pushq	%rbx
+ffffff800151037d	subq	$0x50, %rsp
+ffffff8001510381	movq	%rsi, %r14
+ffffff8001510384	movq	%rdi, %rbx
+ffffff8001510387	movq	0x2ce22(%rip), %rax
+ffffff800151038e	movq	(%rax), %rax
+ffffff8001510391	movq	%rax, -0x28(%rbp)
+ffffff8001510395	movq	(%rdi), %rax
+ffffff8001510398	leaq	0x26d95(%rip), %rsi             ## literal pool for: "hitDoorbell"
+ffffff800151039f	movl	$0x4232, %edx                   ## imm = 0x4232
+ffffff80015103a4	callq	*0xcc8(%rax)
+ffffff80015103aa	movq	0x90(%rbx), %rax
+ffffff80015103b1	cmpb	$0x0, 0xeba(%rax)
+ffffff80015103be	cmpq	$0x0, 0xdb0(%rax)
+ffffff80015103cc	cmpb	$0x1, 0x51a(%rax)
+ffffff80015103d9	movq	0x2cdf8(%rip), %r12
+ffffff80015103f8	callq	0xffffff80008b8e40
+ffffff80015103fd	movq	0x90(%rbx), %rax
+ffffff8001510404	cmpl	$0x2, 0xb2c(%rax)
+ffffff800151040d	cmpl	$0x8, 0x4c8(%rax)
+ffffff800151041a	callq	0xffffff80003cbf20
+ffffff8001510424	addq	0x90(%rbx), %rsi
+ffffff800151042e	callq	0xffffff8000536d80
+ffffff8001510433	movq	0x90(%rbx), %rcx
+ffffff800151043a	movq	0xb88(%rcx), %rax
+ffffff8001510455	movq	0xc58(%rcx), %rdi
+ffffff8001510465	movq	0xdb0(%rcx), %rcx
+ffffff800151047d	callq	__ZN27AppleBCMWLANPCIeMMIOHistory10recordMMIOEPKc12PCIeMMIOTypeyyh ## AppleBCMWLANPCIeMMIOHistory::recordMMIO(char const*, PCIeMMIOType, unsigned long long, unsigned long long, unsigned char)
+ffffff8001510485	movq	0x90(%rbx), %rdx
+ffffff800151048c	movq	0xdb0(%rdx), %rcx
+ffffff8001510496	movq	0xc58(%rdx), %rdi
+ffffff80015104b3	callq	__ZN27AppleBCMWLANPCIeMMIOHistory10recordMMIOEPKc12PCIeMMIOTypeyyh ## AppleBCMWLANPCIeMMIOHistory::recordMMIO(char const*, PCIeMMIOType, unsigned long long, unsigned long long, unsigned char)
+ffffff80015104b8	movq	0x90(%rbx), %rdx
+ffffff80015104bf	movq	0x1268(%rdx), %rdi
+ffffff80015104d4	callq	0xffffff80031d4234
+ffffff80015104d9	movq	0x90(%rbx), %rdx
+ffffff80015104e4	leaq	-0x4a(%rbp), %rdi
+ffffff80015104ea	movq	%rax, 0x18(%rdi)
+ffffff80015104ee	movq	%rax, 0x10(%rdi)
+ffffff80015104f2	movq	%rax, 0x8(%rdi)
+ffffff80015104f9	movw	$0x0, 0x20(%rdi)
+ffffff80015104ff	movw	$0x7a06, -0x14(%rdi)            ## imm = 0x7A06
+ffffff8001510505	movq	0xdb0(%rdx), %rax
+ffffff800151050f	movq	%rax, -0x12(%rdi)
+ffffff8001510513	movq	%rcx, -0xa(%rdi)
+ffffff8001510517	movw	$0x304, -0x2(%rdi)              ## imm = 0x304
+ffffff8001510525	callq	0xffffff80004ef150
+ffffff800151052a	movq	0x90(%rbx), %rax
+ffffff8001510531	movq	0x1268(%rax), %rdi
+ffffff8001510540	leaq	-0x5e(%rbp), %r9
+ffffff800151054d	callq	0xffffff80031d39c2
+ffffff8001510552	movq	0x90(%rbx), %rdx
+ffffff8001510559	incl	0x510(%rdx)
+ffffff8001510562	callq	0xffffff800158e156
+ffffff800151056a	callq	0xffffff8001682456
+ffffff8001510576	callq	0xffffff800158e04c
+ffffff8001510585	movq	0x90(%rbx), %rax
+ffffff800151058c	movq	0xb88(%rax), %rdx
+ffffff800151059f	callq	0xffffff80008b8e40
+ffffff80015105a4	movq	0x2cc05(%rip), %rax
+ffffff80015105ae	cmpq	-0x28(%rbp), %rax
+ffffff80015105c4	retq
+ffffff80015105d2	callq	__ZN28AppleBCMWLANBusInterfacePCIe16changeSleepStateE10PowerStatej ## AppleBCMWLANBusInterfacePCIe::changeSleepState(PowerState, unsigned int)
+ffffff80015105e2	callq	0xffffff800158c46a
+ffffff80015105ef	callq	0xffffff800158c46a
+ffffff80015105fc	callq	0xffffff80031d421c
+ffffff8001510608	callq	0xffffff800158c46a
+ffffff800151060d	movq	0x2cb9c(%rip), %rcx
+ffffff8001510617	cmpq	-0x28(%rbp), %rcx
+ffffff800151061d	leaq	0x26b1c(%rip), %rsi             ## literal pool for: "[ik] %s@%d:hitDoorbell: failed to change SleepState\n"
+ffffff8001510624	leaq	0x26b09(%rip), %rdx             ## literal pool for: "hitDoorbell"
+ffffff8001510641	jmp	0xffffff80031d267e
+CONTROL_FLOW=0xffffff8001510641 jmp	0xffffff80031d267e
+ffffff8001510646	callq	0xffffff8000383150
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe31initialPowerStateForDomainStateEm ADDRESS=0xffffff80015137de END=0xffffff800151384c INSTRUCTIONS=36
+ffffff80015137de	pushq	%rbp
+ffffff80015137df	movq	%rsp, %rbp
+ffffff80015137e2	pushq	%r14
+ffffff80015137e4	pushq	%rbx
+ffffff80015137e5	movq	%rsi, %rbx
+ffffff80015137e8	movq	%rdi, %r14
+ffffff80015137eb	callq	0xffffff800158c46a
+ffffff80015137f0	testq	%rax, %rax
+ffffff80015137f3	je	0xffffff800151380e
+CONTROL_FLOW=0xffffff80015137f3 je	0xffffff800151380e
+ffffff80015137f5	movq	%r14, %rdi
+ffffff80015137f8	callq	0xffffff800158c46a
+ffffff80015137fd	movq	%rax, %rdi
+ffffff8001513800	movl	$0x5, %esi
+ffffff8001513805	callq	0xffffff80031d421c
+ffffff800151380a	testb	%al, %al
+ffffff800151380c	jne	0xffffff8001513821
+CONTROL_FLOW=0xffffff800151380c jne	0xffffff8001513821
+ffffff8001513820	retq
+ffffff8001513824	callq	0xffffff800158c46a
+ffffff8001513829	leaq	0x22123(%rip), %rsi             ## literal pool for: "[ik] %s@%d:domainState: 0x%lx\n"
+ffffff8001513830	leaq	0x2213b(%rip), %rdx             ## literal pool for: "initialPowerStateForDomainState"
+ffffff8001513844	callq	0xffffff80031d2a6e
+ffffff8001513849	jmp	0xffffff800151380e
+CONTROL_FLOW=0xffffff8001513849 jmp	0xffffff800151380e
+
+CLASS_METHOD_COUNT NAME=AppleBCMWLANPCIeDoorbell COUNT=20
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001520462 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell9MetaClassD1Ev
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800152046c OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbellD1Ev
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001520476 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbellD0Ev
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800152049e OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZNK24AppleBCMWLANPCIeDoorbell12getMetaClassEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015204ac OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZNK24AppleBCMWLANPCIeDoorbell9MetaClass5allocEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015204f4 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell13withCallbacksEP28AppleBCMWLANBusInterfacePCIePFiP8OSObjectEP16IO80211WorkQueue
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015205f2 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell21handleCoalescingTimerEP18IO80211TimerSource
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001520710 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZNK24AppleBCMWLANPCIeDoorbell12getWorkQueueEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff800152071e OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell4freeEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015207e2 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell10cancelRingEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001520848 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell7ringNowEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001520858 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell4ringEjbm
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015209b4 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell12getDebugInfoEP33AppleBCMWLANPCIeDoorbellDebugInfo
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015209d8 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell12getScheduledEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015209e6 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell11getNextFireEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff80015209f4 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell19getScheduledDeltaUSEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001520a02 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell13getLastRingAtEv
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001520a10 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell20setRXPacketThresholdEm
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001520a22 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell9MetaClassD0Ev
+PCIE_RELEVANT_SYMBOL ADDRESS=0xffffff8001546818 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell10gMetaClassE
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell9MetaClassD1Ev ADDRESS=0xffffff8001520462 END=0xffffff800152046c INSTRUCTIONS=4
+ffffff8001520462	pushq	%rbp
+ffffff8001520463	movq	%rsp, %rbp
+ffffff8001520466	popq	%rbp
+ffffff8001520467	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff8001520467 jmp	0xffffff8000a4a040
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbellD1Ev ADDRESS=0xffffff800152046c END=0xffffff8001520476 INSTRUCTIONS=4
+ffffff800152046c	pushq	%rbp
+ffffff800152046d	movq	%rsp, %rbp
+ffffff8001520470	popq	%rbp
+ffffff8001520471	jmp	0xffffff8000a4bd70
+CONTROL_FLOW=0xffffff8001520471 jmp	0xffffff8000a4bd70
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbellD0Ev ADDRESS=0xffffff8001520476 END=0xffffff800152049e INSTRUCTIONS=13
+ffffff8001520476	pushq	%rbp
+ffffff8001520477	movq	%rsp, %rbp
+ffffff800152047a	pushq	%rbx
+ffffff800152047b	pushq	%rax
+ffffff800152047c	movq	%rdi, %rbx
+ffffff800152047f	callq	0xffffff8000a4bd70
+ffffff8001520484	leaq	__ZL28AppleBCMWLANPCIeDoorbell_ktv(%rip), %rdi ## AppleBCMWLANPCIeDoorbell_ktv
+ffffff800152048b	movl	$0x18, %edx
+ffffff8001520490	movq	%rbx, %rsi
+ffffff8001520493	addq	$0x8, %rsp
+ffffff8001520497	popq	%rbx
+ffffff8001520498	popq	%rbp
+ffffff8001520499	jmp	0xffffff8000a4bee0
+CONTROL_FLOW=0xffffff8001520499 jmp	0xffffff8000a4bee0
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZNK24AppleBCMWLANPCIeDoorbell12getMetaClassEv ADDRESS=0xffffff800152049e END=0xffffff80015204ac INSTRUCTIONS=6
+ffffff800152049e	pushq	%rbp
+ffffff800152049f	movq	%rsp, %rbp
+ffffff80015204a2	leaq	__ZN24AppleBCMWLANPCIeDoorbell10gMetaClassE(%rip), %rax ## AppleBCMWLANPCIeDoorbell::gMetaClass
+ffffff80015204a9	popq	%rbp
+ffffff80015204aa	retq
+ffffff80015204ab	nop
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZNK24AppleBCMWLANPCIeDoorbell9MetaClass5allocEv ADDRESS=0xffffff80015204ac END=0xffffff80015204f4 INSTRUCTIONS=22
+ffffff80015204ac	pushq	%rbp
+ffffff80015204ad	movq	%rsp, %rbp
+ffffff80015204b0	pushq	%r14
+ffffff80015204b2	pushq	%rbx
+ffffff80015204b3	leaq	__ZL28AppleBCMWLANPCIeDoorbell_ktv(%rip), %rdi ## AppleBCMWLANPCIeDoorbell_ktv
+ffffff80015204ba	movl	$0x18, %esi
+ffffff80015204bf	callq	0xffffff8000a4be90
+ffffff80015204c4	movq	%rax, %rbx
+ffffff80015204c7	leaq	__ZN24AppleBCMWLANPCIeDoorbell10gMetaClassE(%rip), %r14 ## AppleBCMWLANPCIeDoorbell::gMetaClass
+ffffff80015204ce	movq	%rax, %rdi
+ffffff80015204d1	movq	%r14, %rsi
+ffffff80015204d4	callq	0xffffff8000a4c000
+ffffff80015204d9	leaq	0x23830(%rip), %rax
+ffffff80015204e0	movq	%rax, (%rbx)
+ffffff80015204e3	movq	%r14, %rdi
+ffffff80015204e6	callq	0xffffff8000a4a700
+ffffff80015204f2	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell13withCallbacksEP28AppleBCMWLANBusInterfacePCIePFiP8OSObjectEP16IO80211WorkQueue ADDRESS=0xffffff80015204f4 END=0xffffff80015205f2 INSTRUCTIONS=75
+ffffff80015204f4	pushq	%rbp
+ffffff80015204f5	movq	%rsp, %rbp
+ffffff80015204f8	pushq	%r15
+ffffff80015204fa	pushq	%r14
+ffffff80015204fc	pushq	%r13
+ffffff80015204fe	pushq	%r12
+ffffff8001520500	pushq	%rbx
+ffffff8001520501	pushq	%rax
+ffffff8001520502	movq	%rdx, %r14
+ffffff8001520505	movq	%rsi, %r15
+ffffff8001520508	movq	%rdi, %r12
+ffffff800152050b	leaq	__ZL28AppleBCMWLANPCIeDoorbell_ktv(%rip), %rdi ## AppleBCMWLANPCIeDoorbell_ktv
+ffffff8001520512	movl	$0x18, %esi
+ffffff8001520517	callq	0xffffff8000a4be90
+ffffff800152051c	movq	%rax, %rbx
+ffffff800152051f	leaq	__ZN24AppleBCMWLANPCIeDoorbell10gMetaClassE(%rip), %r13 ## AppleBCMWLANPCIeDoorbell::gMetaClass
+ffffff800152052c	callq	0xffffff8000a4c000
+ffffff8001520531	leaq	0x237d8(%rip), %rax
+ffffff800152053e	callq	0xffffff8000a4a700
+ffffff8001520543	movq	0x1cc56(%rip), %rax
+ffffff800152054d	callq	*0x98(%rax)
+ffffff8001520567	leaq	__ZZN24AppleBCMWLANPCIeDoorbell17initWithCallbacksEP28AppleBCMWLANBusInterfacePCIePFiP8OSObjectEP16IO80211WorkQueueE19kalloc_type_view_88(%rip), %rdi ## AppleBCMWLANPCIeDoorbell::initWithCallbacks(AppleBCMWLANBusInterfacePCIe*, int (*)(OSObject*), IO80211WorkQueue*)::kalloc_type_view_88
+ffffff800152056e	callq	0xffffff8000ab5930
+ffffff8001520573	movq	%rax, 0x10(%rbx)
+ffffff800152057c	movq	%r12, 0x8(%rax)
+ffffff8001520587	callq	*0x20(%rax)
+ffffff800152058a	movq	0x10(%rbx), %rax
+ffffff800152058e	movq	%r15, 0x10(%rax)
+ffffff8001520592	movq	%r14, 0x18(%rax)
+ffffff800152059c	callq	*0x118(%rax)
+ffffff80015205a2	leaq	__ZN24AppleBCMWLANPCIeDoorbell21handleCoalescingTimerEP18IO80211TimerSource(%rip), %rdx ## AppleBCMWLANPCIeDoorbell::handleCoalescingTimer(IO80211TimerSource*)
+ffffff80015205af	callq	0xffffff8002145b16
+ffffff80015205b4	movq	0x10(%rbx), %rcx
+ffffff80015205c0	callq	0xffffff8000ab6e70
+ffffff80015205c5	movq	0x10(%rbx), %rcx
+ffffff80015205c9	movq	%rax, 0x218(%rcx)
+ffffff80015205db	callq	*0x28(%rax)
+ffffff80015205f1	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell21handleCoalescingTimerEP18IO80211TimerSource ADDRESS=0xffffff80015205f2 END=0xffffff8001520710 INSTRUCTIONS=70
+ffffff80015205f2	pushq	%rbp
+ffffff80015205f3	movq	%rsp, %rbp
+ffffff80015205f6	pushq	%r15
+ffffff80015205f8	pushq	%r14
+ffffff80015205fa	pushq	%r12
+ffffff80015205fc	pushq	%rbx
+ffffff80015205fd	subq	$0x10, %rsp
+ffffff8001520601	movq	%rdi, %rbx
+ffffff8001520604	movq	0x1cba5(%rip), %rax
+ffffff800152060b	movq	(%rax), %rax
+ffffff800152060e	movq	%rax, -0x28(%rbp)
+ffffff8001520612	callq	0xffffff80003cbf20
+ffffff8001520617	movq	0x10(%rbx), %rsi
+ffffff800152061b	addq	$0x50, %rsi
+ffffff800152061f	movq	%rax, %rdi
+ffffff8001520622	callq	0xffffff8000536d80
+ffffff8001520627	movq	0x10(%rbx), %rax
+ffffff800152062b	movq	0x8(%rax), %rdi
+ffffff800152062f	callq	*0x10(%rax)
+ffffff8001520635	movq	0x10(%rbx), %rax
+ffffff8001520639	movq	0x218(%rax), %rdi
+ffffff8001520640	callq	0xffffff800052f900
+ffffff8001520645	movq	0x10(%rbx), %rax
+ffffff8001520649	movw	$0x0, 0x20(%rax)
+ffffff8001520652	movl	%r15d, 0x30(%rax)
+ffffff8001520656	callq	0xffffff80003cbf20
+ffffff800152065b	movq	0x10(%rbx), %rsi
+ffffff8001520666	callq	0xffffff8000536d80
+ffffff800152066b	movq	0x10(%rbx), %rax
+ffffff800152066f	movq	0x38(%rax), %rcx
+ffffff8001520673	movq	%rcx, 0x58(%rax)
+ffffff800152068b	leaq	-0x30(%rbp), %r14
+ffffff8001520692	callq	0xffffff80003cbf20
+ffffff800152069d	callq	0xffffff8000536d80
+ffffff80015206a2	movq	0x10(%rbx), %rax
+ffffff80015206a6	movq	0x210(%rax), %rcx
+ffffff80015206b6	movl	%r15d, 0x90(%rax,%rdx,8)
+ffffff80015206be	movq	%rcx, 0x98(%rax,%rdx,8)
+ffffff80015206c6	movl	%r12d, 0x94(%rax,%rdx,8)
+ffffff80015206d1	movq	%rsi, 0xa0(%rax,%rdx,8)
+ffffff80015206dc	movq	%rcx, 0x210(%rax)
+ffffff80015206e3	movq	0x218(%rax), %rdi
+ffffff80015206ea	movq	0x1cabf(%rip), %rax
+ffffff80015206f4	cmpq	-0x28(%rbp), %rax
+ffffff8001520706	jmp	0xffffff800052fc50
+CONTROL_FLOW=0xffffff8001520706 jmp	0xffffff800052fc50
+ffffff800152070b	callq	0xffffff8000383150
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZNK24AppleBCMWLANPCIeDoorbell12getWorkQueueEv ADDRESS=0xffffff8001520710 END=0xffffff800152071e INSTRUCTIONS=6
+ffffff8001520710	pushq	%rbp
+ffffff8001520711	movq	%rsp, %rbp
+ffffff8001520714	movq	0x10(%rdi), %rax
+ffffff8001520718	movq	0x18(%rax), %rax
+ffffff800152071c	popq	%rbp
+ffffff800152071d	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell4freeEv ADDRESS=0xffffff800152071e END=0xffffff80015207e2 INSTRUCTIONS=53
+ffffff800152071e	pushq	%rbp
+ffffff800152071f	movq	%rsp, %rbp
+ffffff8001520722	pushq	%r14
+ffffff8001520724	pushq	%rbx
+ffffff8001520725	movq	%rdi, %rbx
+ffffff8001520728	movq	0x10(%rdi), %rdi
+ffffff800152072c	testq	%rdi, %rdi
+ffffff800152072f	je	0xffffff80015207ce
+CONTROL_FLOW=0xffffff800152072f je	0xffffff80015207ce
+ffffff8001520735	movq	0x218(%rdi), %rax
+ffffff800152073c	testq	%rax, %rax
+ffffff800152073f	je	0xffffff8001520758
+CONTROL_FLOW=0xffffff800152073f je	0xffffff8001520758
+ffffff8001520741	movq	%rax, %rdi
+ffffff8001520744	callq	0xffffff8000ab6ee0
+ffffff8001520749	movq	0x10(%rbx), %rdi
+ffffff800152074d	movq	$0x0, 0x218(%rdi)
+ffffff8001520758	movq	(%rdi), %rax
+ffffff8001520766	callq	*0x158(%rcx)
+ffffff800152076c	movq	0x10(%rbx), %rdi
+ffffff800152077e	callq	*0x28(%rcx)
+ffffff8001520781	movq	0x10(%rbx), %rdi
+ffffff800152078c	movq	0x8(%rdi), %rax
+ffffff800152079b	callq	*0x28(%rcx)
+ffffff800152079e	movq	0x10(%rbx), %rdi
+ffffff80015207a5	movq	%r14, 0x8(%rdi)
+ffffff80015207b5	callq	0xffffff8000454290
+ffffff80015207ba	movq	0x10(%rbx), %rsi
+ffffff80015207be	movq	%r14, 0x10(%rbx)
+ffffff80015207c2	leaq	__ZZN24AppleBCMWLANPCIeDoorbell4freeEvE20kalloc_type_view_135(%rip), %rdi ## AppleBCMWLANPCIeDoorbell::free()::kalloc_type_view_135
+ffffff80015207c9	callq	0xffffff8000ab5a60
+ffffff80015207ce	movq	0x1c9cb(%rip), %rax
+ffffff80015207dc	jmpq	*0xa0(%rax)
+CONTROL_FLOW=0xffffff80015207dc jmpq	*0xa0(%rax)
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell10cancelRingEv ADDRESS=0xffffff80015207e2 END=0xffffff8001520848 INSTRUCTIONS=27
+ffffff80015207e2	pushq	%rbp
+ffffff80015207e3	movq	%rsp, %rbp
+ffffff80015207e6	pushq	%rbx
+ffffff80015207e7	pushq	%rax
+ffffff80015207e8	movq	%rdi, %rbx
+ffffff80015207eb	movq	0x10(%rdi), %rax
+ffffff80015207ef	movq	0x218(%rax), %rdi
+ffffff80015207f6	callq	0xffffff800052f900
+ffffff80015207fb	movq	0x10(%rbx), %rax
+ffffff80015207ff	movw	$0x0, 0x20(%rax)
+ffffff8001520805	movl	$0x0, 0x30(%rax)
+ffffff800152080c	callq	0xffffff80003cbf20
+ffffff8001520811	movq	0x10(%rbx), %rsi
+ffffff8001520815	addq	$0x60, %rsi
+ffffff8001520819	movq	%rax, %rdi
+ffffff800152081c	callq	0xffffff8000536d80
+ffffff8001520821	movq	0x10(%rbx), %rax
+ffffff800152082b	callq	*0x218(%rax)
+ffffff8001520831	movq	0x10(%rbx), %rax
+ffffff8001520835	movq	0x218(%rax), %rdi
+ffffff8001520842	jmp	0xffffff800052fc50
+CONTROL_FLOW=0xffffff8001520842 jmp	0xffffff800052fc50
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell7ringNowEv ADDRESS=0xffffff8001520848 END=0xffffff8001520858 INSTRUCTIONS=6
+ffffff8001520848	pushq	%rbp
+ffffff8001520849	movq	%rsp, %rbp
+ffffff800152084c	movq	0x10(%rdi), %rax
+ffffff8001520850	movq	0x8(%rax), %rdi
+ffffff8001520854	popq	%rbp
+ffffff8001520855	jmpq	*0x10(%rax)
+CONTROL_FLOW=0xffffff8001520855 jmpq	*0x10(%rax)
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell4ringEjbm ADDRESS=0xffffff8001520858 END=0xffffff80015209b4 INSTRUCTIONS=90
+ffffff8001520858	pushq	%rbp
+ffffff8001520859	movq	%rsp, %rbp
+ffffff800152085c	pushq	%r15
+ffffff800152085e	pushq	%r14
+ffffff8001520860	pushq	%rbx
+ffffff8001520861	subq	$0x18, %rsp
+ffffff8001520865	movl	%esi, %r14d
+ffffff8001520868	movq	%rdi, %rbx
+ffffff800152086b	movq	0x1c93e(%rip), %rax
+ffffff8001520872	movq	(%rax), %rax
+ffffff8001520875	movq	%rax, -0x20(%rbp)
+ffffff8001520879	movq	0x10(%rdi), %rax
+ffffff800152087d	movq	0x218(%rax), %rdi
+ffffff8001520884	callq	0xffffff800052f900
+ffffff8001520889	movabsq	$-0x5555555555555556, %rax      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff8001520893	leaq	-0x28(%rbp), %r15
+ffffff800152089a	callq	0xffffff80003cbf20
+ffffff80015208a5	callq	0xffffff8000536d80
+ffffff80015208ad	movq	0x10(%rbx), %rsi
+ffffff80015208b1	movq	%rdx, 0x68(%rsi)
+ffffff80015208b5	movq	0x38(%rsi), %rcx
+ffffff80015208c5	leaq	___FUNCTION__._ZN24AppleBCMWLANPCIeDoorbell4ringEjbm(%rip), %rsi ## literal pool for: "ring"
+ffffff80015208ce	callq	0xffffff8000ab6560
+ffffff80015208d3	movq	-0x28(%rbp), %rdx
+ffffff80015208d7	movq	0x10(%rbx), %rsi
+ffffff80015208db	movq	%rdx, 0x38(%rsi)
+ffffff80015208e2	cmpb	$0x1, 0x21(%rsi)
+ffffff80015208e8	movq	%rdx, 0x88(%rsi)
+ffffff80015208ef	jmp	0xffffff8001520988
+CONTROL_FLOW=0xffffff80015208ef jmp	0xffffff8001520988
+ffffff8001520901	cmpb	$0x1, 0x20(%rsi)
+ffffff8001520907	cmpq	0x28(%rsi), %rax
+ffffff800152092a	movb	$0x1, 0x21(%rsi)
+ffffff8001520949	movl	%edx, 0x30(%rsi)
+ffffff8001520954	callq	*0x1d8(%rax)
+ffffff800152095a	movq	-0x28(%rbp), %rax
+ffffff8001520961	movq	0x10(%rbx), %rsi
+ffffff8001520965	movq	%r14, 0x28(%rsi)
+ffffff8001520969	movb	$0x1, 0x20(%rsi)
+ffffff800152096d	movq	%rax, 0x70(%rsi)
+ffffff8001520971	movl	0x30(%rsi), %eax
+ffffff800152097b	movq	%rax, 0x78(%rsi)
+ffffff800152097f	jmp	0xffffff8001520988
+CONTROL_FLOW=0xffffff800152097f jmp	0xffffff8001520988
+ffffff8001520981	movq	%rdx, 0x80(%rsi)
+ffffff8001520988	movq	0x218(%rsi), %rdi
+ffffff800152098f	callq	0xffffff800052fc50
+ffffff8001520994	movq	0x1c815(%rip), %rax
+ffffff800152099e	cmpq	-0x20(%rbp), %rax
+ffffff80015209ae	retq
+ffffff80015209af	callq	0xffffff8000383150
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell12getDebugInfoEP33AppleBCMWLANPCIeDoorbellDebugInfo ADDRESS=0xffffff80015209b4 END=0xffffff80015209d8 INSTRUCTIONS=13
+ffffff80015209b4	pushq	%rbp
+ffffff80015209b5	movq	%rsp, %rbp
+ffffff80015209b8	testq	%rsi, %rsi
+ffffff80015209bb	je	0xffffff80015209d6
+CONTROL_FLOW=0xffffff80015209bb je	0xffffff80015209d6
+ffffff80015209bd	movq	0x10(%rdi), %rax
+ffffff80015209c1	addq	$0x50, %rax
+ffffff80015209c5	movl	$0x1c0, %edx                    ## imm = 0x1C0
+ffffff80015209ca	movq	%rsi, %rdi
+ffffff80015209cd	movq	%rax, %rsi
+ffffff80015209d0	popq	%rbp
+ffffff80015209d1	jmp	0xffffff8000101080
+CONTROL_FLOW=0xffffff80015209d1 jmp	0xffffff8000101080
+ffffff80015209d6	popq	%rbp
+ffffff80015209d7	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell12getScheduledEv ADDRESS=0xffffff80015209d8 END=0xffffff80015209e6 INSTRUCTIONS=7
+ffffff80015209d8	pushq	%rbp
+ffffff80015209d9	movq	%rsp, %rbp
+ffffff80015209dc	movq	0x10(%rdi), %rax
+ffffff80015209e0	movb	0x20(%rax), %al
+ffffff80015209e3	popq	%rbp
+ffffff80015209e4	retq
+ffffff80015209e5	nop
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell11getNextFireEv ADDRESS=0xffffff80015209e6 END=0xffffff80015209f4 INSTRUCTIONS=6
+ffffff80015209e6	pushq	%rbp
+ffffff80015209e7	movq	%rsp, %rbp
+ffffff80015209ea	movq	0x10(%rdi), %rax
+ffffff80015209ee	movq	0x28(%rax), %rax
+ffffff80015209f2	popq	%rbp
+ffffff80015209f3	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell19getScheduledDeltaUSEv ADDRESS=0xffffff80015209f4 END=0xffffff8001520a02 INSTRUCTIONS=7
+ffffff80015209f4	pushq	%rbp
+ffffff80015209f5	movq	%rsp, %rbp
+ffffff80015209f8	movq	0x10(%rdi), %rax
+ffffff80015209fc	movl	0x30(%rax), %eax
+ffffff80015209ff	popq	%rbp
+ffffff8001520a00	retq
+ffffff8001520a01	nop
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell13getLastRingAtEv ADDRESS=0xffffff8001520a02 END=0xffffff8001520a10 INSTRUCTIONS=6
+ffffff8001520a02	pushq	%rbp
+ffffff8001520a03	movq	%rsp, %rbp
+ffffff8001520a06	movq	0x10(%rdi), %rax
+ffffff8001520a0a	movq	0x38(%rax), %rax
+ffffff8001520a0e	popq	%rbp
+ffffff8001520a0f	retq
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell20setRXPacketThresholdEm ADDRESS=0xffffff8001520a10 END=0xffffff8001520a22 INSTRUCTIONS=7
+ffffff8001520a10	pushq	%rbp
+ffffff8001520a11	movq	%rsp, %rbp
+ffffff8001520a14	movq	0x10(%rdi), %rax
+ffffff8001520a18	movq	%rsi, 0x228(%rax)
+ffffff8001520a1f	popq	%rbp
+ffffff8001520a20	retq
+ffffff8001520a21	nop
+
+METHOD_TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell9MetaClassD0Ev ADDRESS=0xffffff8001520a22 END=0xffffff8001520a2c INSTRUCTIONS=4
+ffffff8001520a22	pushq	%rbp
+ffffff8001520a23	movq	%rsp, %rbp
+ffffff8001520a26	popq	%rbp
+ffffff8001520a27	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff8001520a27 jmp	0xffffff8000a4a040
+METHOD_NOT_VERIFIED TAG=PCIE_QUEUE_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANPCIeDoorbell10gMetaClassE ADDRESS=0xffffff8001546818
+
+PCIE_BUNDLE_SYMBOL_COUNT=1907
+PCIE_QUEUE_SYMBOL_COUNT=52
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014d984e NAME=__ZN23AppleBCMWLANPCIeSkywalk27lowLatencyRingCreateTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014ec9f0 NAME=__ZN28AppleBCMWLANBusInterfacePCIe34secondaryInterruptExecutionTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014ee9ee NAME=__ZN28AppleBCMWLANBusInterfacePCIe17deleteFlowTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014eeb92 NAME=__ZN28AppleBCMWLANBusInterfacePCIe16attachBusTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014eec88 NAME=__ZN28AppleBCMWLANBusInterfacePCIe12d0AckTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014eedf0 NAME=__ZN28AppleBCMWLANBusInterfacePCIe21createFlowRingTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014eefce NAME=__ZN28AppleBCMWLANBusInterfacePCIe22createDebugRingTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014ef0bc NAME=__ZN28AppleBCMWLANBusInterfacePCIe16handleAdjustBusyEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014f577e NAME=__ZN28AppleBCMWLANBusInterfacePCIe29freeTrapMiniDumpBufferTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014f5818 NAME=__ZN28AppleBCMWLANBusInterfacePCIe13ptmAckTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014f75ac NAME=__ZNK28AppleBCMWLANBusInterfacePCIe12getWorkQueueEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014f7f9e NAME=__ZNK28AppleBCMWLANBusInterfacePCIe17validateWorkQueueEPKcj
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80014ff072 NAME=__ZN28AppleBCMWLANBusInterfacePCIe20externalResetTimeoutEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800150bb60 NAME=__ZN28AppleBCMWLANBusInterfacePCIe20createSubmissionRingEPP30AppleBCMWLANPCIeSubmissionRingPK12PCIeRingInfoP8OSObjectP16IO80211WorkQueuePFjS7_P20AppleBCMWLANByteRingPvjEPFvS7_SB_iSC_E
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800150bd22 NAME=__ZN28AppleBCMWLANBusInterfacePCIe25enableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800150be86 NAME=__ZN28AppleBCMWLANBusInterfacePCIe20createCompletionRingEPP30AppleBCMWLANPCIeCompletionRingPK12PCIeRingInfoP8OSObjectP16IO80211WorkQueuePFjS7_P20AppleBCMWLANByteRingPvjEPFvS7_SB_iSC_E
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800150c04a NAME=__ZN28AppleBCMWLANBusInterfacePCIe20enableCompletionRingEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800150c07c NAME=__ZN28AppleBCMWLANBusInterfacePCIe25enableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800150c0f0 NAME=__ZN28AppleBCMWLANBusInterfacePCIe26disableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800150c296 NAME=__ZN28AppleBCMWLANBusInterfacePCIe21disableCompletionRingEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800150c2c8 NAME=__ZN28AppleBCMWLANBusInterfacePCIe26disableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001510372 NAME=__ZN28AppleBCMWLANBusInterfacePCIe11hitDoorbellEPKc
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800151d4b4 NAME=__ZNK28AppleBCMWLANBusInterfacePCIe11getWorkLoopEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520462 NAME=__ZN24AppleBCMWLANPCIeDoorbell9MetaClassD1Ev
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800152046c NAME=__ZN24AppleBCMWLANPCIeDoorbellD1Ev
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520476 NAME=__ZN24AppleBCMWLANPCIeDoorbellD0Ev
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800152049e NAME=__ZNK24AppleBCMWLANPCIeDoorbell12getMetaClassEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015204ac NAME=__ZNK24AppleBCMWLANPCIeDoorbell9MetaClass5allocEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015204f4 NAME=__ZN24AppleBCMWLANPCIeDoorbell13withCallbacksEP28AppleBCMWLANBusInterfacePCIePFiP8OSObjectEP16IO80211WorkQueue
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015205f2 NAME=__ZN24AppleBCMWLANPCIeDoorbell21handleCoalescingTimerEP18IO80211TimerSource
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520710 NAME=__ZNK24AppleBCMWLANPCIeDoorbell12getWorkQueueEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800152071e NAME=__ZN24AppleBCMWLANPCIeDoorbell4freeEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015207e2 NAME=__ZN24AppleBCMWLANPCIeDoorbell10cancelRingEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520848 NAME=__ZN24AppleBCMWLANPCIeDoorbell7ringNowEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520858 NAME=__ZN24AppleBCMWLANPCIeDoorbell4ringEjbm
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015209b4 NAME=__ZN24AppleBCMWLANPCIeDoorbell12getDebugInfoEP33AppleBCMWLANPCIeDoorbellDebugInfo
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015209d8 NAME=__ZN24AppleBCMWLANPCIeDoorbell12getScheduledEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015209e6 NAME=__ZN24AppleBCMWLANPCIeDoorbell11getNextFireEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015209f4 NAME=__ZN24AppleBCMWLANPCIeDoorbell19getScheduledDeltaUSEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520a02 NAME=__ZN24AppleBCMWLANPCIeDoorbell13getLastRingAtEv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520a10 NAME=__ZN24AppleBCMWLANPCIeDoorbell20setRXPacketThresholdEm
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520a22 NAME=__ZN24AppleBCMWLANPCIeDoorbell9MetaClassD0Ev
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001520a2c NAME=__GLOBAL__sub_I_AppleBCMWLANPCIeDoorbell.cpp
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800153bb29 NAME=___FUNCTION__._ZN24AppleBCMWLANPCIeDoorbell4ringEjbm
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800153cf60 NAME=__ZZN28AppleBCMWLANBusInterfacePCIe16handleAdjustBusyEP18IO80211TimerSourceE11_os_log_fmt
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff800153cfb0 NAME=__ZZN28AppleBCMWLANBusInterfacePCIe16handleAdjustBusyEP18IO80211TimerSourceE11_os_log_fmt_0
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001543d00 NAME=__ZTV24AppleBCMWLANPCIeDoorbell
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001543e38 NAME=__ZTVN24AppleBCMWLANPCIeDoorbell9MetaClassE
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001546818 NAME=__ZN24AppleBCMWLANPCIeDoorbell10gMetaClassE
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff80015486c0 NAME=__ZL28AppleBCMWLANPCIeDoorbell_ktv
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001548700 NAME=__ZZN24AppleBCMWLANPCIeDoorbell17initWithCallbacksEP28AppleBCMWLANBusInterfacePCIePFiP8OSObjectEP16IO80211WorkQueueE19kalloc_type_view_88
+PCIE_QUEUE_SYMBOL ADDRESS=0xffffff8001548740 NAME=__ZZN24AppleBCMWLANPCIeDoorbell4freeEvE20kalloc_type_view_135
+CORE_CALLBACK_RECHECK NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv ADDRESS=0xffffff8001591f70 OWNER=com.apple.driver.AppleBCMWLANCoreMac
+CORE_CALLBACK_RECHECK NAME=__ZNK16AppleBCMWLANCore12getWorkQueueEv ADDRESS=0xffffff800159203c OWNER=com.apple.driver.AppleBCMWLANCoreMac
+
+STAGE158_INTERPRETATION=PCIE_PROVIDER_STATIC_ANALYSIS_ONLY; REQUIRE_EXPLICIT_QUEUE_OWNERSHIP_AND_LIFETIME_PROOF_BEFORE_DRIVER_CHANGES
+STAGE158_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE158_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE158 ==========
