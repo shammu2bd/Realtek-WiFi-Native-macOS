@@ -149,6 +149,7 @@ private:
     IOEthernetAddress       _macAddr;
     bool                    _enabled      = false;
     bool                    _initialized  = false;
+    bool                    _compatInitialized = false;
 
     /* TX flow control: set when outputPacket() stalls the gated queue because
      * the BE ring is nearly full; cleared when the IRQ completion path frees
