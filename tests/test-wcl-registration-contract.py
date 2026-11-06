@@ -63,10 +63,23 @@ assert "memcpy(&queueType, descriptor, sizeof(queueType))" in queues
 assert "descriptor.capacity" not in queues
 assert "descriptor.pool" not in queues
 
-# Preserve the current safety fence. Stage108 provides a transaction method;
-# it does not enable the controller, radio or unproven packet callbacks.
-assert "refusing publication until Skywalk datapath is ready" in controller
-assert "goto fail;" in controller
+# Controller integration probes the RTW88 core with the PCI interrupt
+# gate still closed, then registers/publishes the infra service, and only then
+# opens the PCI producer path. Teardown deregisters before queue destruction.
+controller_code = re.sub(r"/\*.*?\*/|//[^\n]*", "", controller, flags=re.S)
+controller_start = controller_code.index("bool RTW88WCLController::start(")
+controller_end = controller_code.index("void RTW88WCLController::stop(", controller_start)
+controller_start_code = controller_code[controller_start:controller_end]
+radio_probe = controller_start_code.index("_radio->start()")
+infra_start = controller_start_code.index("_infraInterface->start(this)")
+service_publish = controller_start_code.index("_infraInterface->registerService()")
+pci_enable = controller_start_code.index("_pciBackend->setRadioRunning(true)")
+assert radio_probe < infra_start < service_publish < pci_enable
+assert "_infraInterface->shutdownForController()" in controller_code
+release_start = controller_code.index("IOReturn RTW88WCLController::releaseNativeResources()")
+release_end = controller_code.index("void RTW88WCLController::free()", release_start)
+release_code = controller_code[release_start:release_end]
+assert release_code.index("_infraInterface->shutdownForController()") < release_code.index("_skywalkQueues->destroyQueues()")
 assert "return static_cast<UInt32>(0)" in queues
 
 link_objs = makefile.split("AIRPORT_ALL_OBJS :=", 1)[1].split("\n", 1)[0]
