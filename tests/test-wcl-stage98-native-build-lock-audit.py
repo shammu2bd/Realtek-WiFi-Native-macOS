@@ -81,7 +81,7 @@ worker = block(TX, "void __rtw_tx_work(")
 push = block(TX, "static int rtw_txq_push_skb(")
 check("TXQ_LOCK_COVERS_HCI_SUBMISSION",
       worker.find("spin_lock_bh(&rtwdev->txq_lock)") < worker.find("rtw_txq_push(") <
-      worker.find("spin_unlock_bh(&rtwdev->txq_lock)") and "rtw_hci_tx_write" in push,
+      worker.rfind("spin_unlock_bh(&rtwdev->txq_lock)") and "rtw_hci_tx_write" in push,
       "TXQ worker retains txq_lock while the HCI write path submits descriptors")
 pci_write = block(PCI, "static int rtw_pci_tx_write_data(")
 check("PCI_SUBMISSION_ACQUIRES_IRQ_LOCK",
