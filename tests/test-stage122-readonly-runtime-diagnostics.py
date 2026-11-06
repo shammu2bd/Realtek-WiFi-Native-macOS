@@ -71,7 +71,7 @@ assert syntax.returncode == 0, syntax.stderr
 
 assert "PRIMARY_INTERFACE_GETTER_VERIFIED" in runner
 assert "NOT_OBSERVED" in runner
-assert "STAGE122_COLLECTOR_RESULT" in runner
+assert "STAGE122_DIAGNOSTIC_COLLECTION" in runner
 assert "git push origin" in runner
 
 print("STAGE122_SOURCE_CONTRACT=PASS")
