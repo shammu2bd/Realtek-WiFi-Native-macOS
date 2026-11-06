@@ -1303,11 +1303,11 @@ bool rtw88_compat_exit(void)
         rtw88_skb_free_drain_batch();
         if (!rtw88_mpsc_bounded_queue_empty(&g_tx_skb_free_queue) ||
             __atomic_load_n(&g_tx_skb_free_outstanding, __ATOMIC_ACQUIRE) != 0) {
-            rtw88_candidate_log("rtw88: deferred TX skb queue did not drain; retaining compat runtime\\n");
+            rtw88_candidate_log("rtw88: deferred TX skb queue did not drain; retaining compat runtime\n");
             return false;
         }
         if (!thread_call_free(g_tx_skb_free_reaper_call)) {
-            rtw88_candidate_log("rtw88: deferred TX skb thread-call still active; retaining compat runtime\\n");
+            rtw88_candidate_log("rtw88: deferred TX skb thread-call still active; retaining compat runtime\n");
             return false;
         }
         g_tx_skb_free_reaper_call = NULL;
@@ -1316,7 +1316,7 @@ bool rtw88_compat_exit(void)
     const uint32_t rejected =
         __atomic_exchange_n(&g_tx_skb_free_rejected, 0U, __ATOMIC_ACQ_REL);
     if (rejected)
-        rtw88_candidate_log("rtw88: %u TX skb frees quarantined after callback/reaper closure\\n",
+        rtw88_candidate_log("rtw88: %u TX skb frees quarantined after callback/reaper closure\n",
                             rejected);
     if (work_state_lock) {
         IOLockFree(work_state_lock);
