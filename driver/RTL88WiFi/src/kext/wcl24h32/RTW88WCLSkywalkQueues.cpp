@@ -43,6 +43,8 @@ bool RTW88WCLSkywalkQueues::init()
     _txCompletion = nullptr;
     _rxSubmission = nullptr;
     _rxCompletion = nullptr;
+    bzero(_registrationQueues, sizeof(_registrationQueues));
+    _registered = false;
     _txAdapter = nullptr;
     _allocated = false;
     return true;
@@ -53,7 +55,8 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
     if (_allocated)
         return (_acquisitionJournal.isCommitted() && queuesAllocated())
                    ? kIOReturnSuccess : kIOReturnNotReady;
-    if (_txAdapter || _txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion)
+    if (_registered || _txAdapter || _txPool || _rxPool ||
+        _txCompletion || _rxSubmission || _rxCompletion)
         return kIOReturnBusy;
     for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
         if (_txSubmissionQueues[i])
@@ -177,11 +180,21 @@ IOReturn RTW88WCLSkywalkQueues::createQueues()
         goto no_memory;
     }
 
-    if (!txSubmissionQueuesValid() || !_acquisitionJournal.commit())
+    /* Owner-resident stable queue vector for the 24H32 registration ABI.
+     * QueueSet classifies queues using performCommand(0x10000), not pointer
+     * array position. */
+    for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i)
+        _registrationQueues[i] = _txSubmissionQueues[i];
+    _registrationQueues[4] = _txCompletion;
+    _registrationQueues[5] = _rxSubmission;
+    _registrationQueues[6] = _rxCompletion;
+
+    if (!txSubmissionQueuesValid() || !registrationQueuesValid() ||
+        !_acquisitionJournal.commit())
         goto no_memory;
 
     _allocated = true;
-    IOLog("rtl88wifi-wcl: allocated Skywalk pools and four WMM TX submission queues (not registered)\n");
+    IOLog("rtl88wifi-wcl: allocated and ABI-validated seven TX/RX registration queues\n");
     return kIOReturnSuccess;
 
 no_memory:
@@ -191,6 +204,13 @@ no_memory:
 
 void RTW88WCLSkywalkQueues::destroyQueues()
 {
+    /* Registered QueueSets own queue scheduling and packet lifetime. The
+     * interface must deregister before queue/pool callback context is freed. */
+    if (_registered) {
+        IOLog("rtl88wifi-wcl: Skywalk queues still registered; rollback deferred\n");
+        return;
+    }
+
     /* The adapter owns the TX pool and is retained as callback context by
      * this owner. Detach it only after admission is closed and its tickets are
      * drained; never roll back queue/pool resources underneath a live adapter. */
@@ -202,8 +222,10 @@ void RTW88WCLSkywalkQueues::destroyQueues()
     if (_acquisitionJournal.isEmpty()) {
         if (hasOutstandingResources())
             IOLog("rtl88wifi-wcl: empty acquisition journal still has live queue/pool pointers; retaining owner\n");
-        else
+        else {
+            bzero(_registrationQueues, sizeof(_registrationQueues));
             _allocated = false;
+        }
         return;
     }
 
@@ -225,6 +247,8 @@ void RTW88WCLSkywalkQueues::destroyQueues()
         IOLog("rtl88wifi-wcl: queue acquisition rollback incomplete; retaining owner state\n");
         return;
     }
+    bzero(_registrationQueues, sizeof(_registrationQueues));
+    _registered = false;
     _allocated = false;
 }
 
@@ -237,6 +261,7 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
         if (_rxCompletion) {
             _rxCompletion->release();
             _rxCompletion = nullptr;
+            _registrationQueues[6] = nullptr;
         } else {
             IOLog("rtl88wifi-wcl: rollback journal expected RX completion queue\n");
         }
@@ -245,6 +270,7 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
         if (_rxSubmission) {
             _rxSubmission->release();
             _rxSubmission = nullptr;
+            _registrationQueues[5] = nullptr;
         } else {
             IOLog("rtl88wifi-wcl: rollback journal expected RX submission queue\n");
         }
@@ -253,6 +279,7 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
         if (_txCompletion) {
             _txCompletion->release();
             _txCompletion = nullptr;
+            _registrationQueues[4] = nullptr;
         } else {
             IOLog("rtl88wifi-wcl: rollback journal expected TX completion queue\n");
         }
@@ -266,6 +293,7 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
         if (index < kTXSubmissionQueueCount && _txSubmissionQueues[index]) {
             _txSubmissionQueues[index]->release();
             _txSubmissionQueues[index] = nullptr;
+            _registrationQueues[index] = nullptr;
         } else {
             IOLog("rtl88wifi-wcl: rollback journal expected TX submission queue %u\n",
                   index);
@@ -296,7 +324,8 @@ void RTW88WCLSkywalkQueues::releaseAcquiredResource(
 
 bool RTW88WCLSkywalkQueues::hasOutstandingResources() const
 {
-    if (_txPool || _rxPool || _txCompletion || _rxSubmission || _rxCompletion || _txAdapter || !_txCallbackGate.isUnbound())
+    if (_registered || _txPool || _rxPool || _txCompletion || _rxSubmission ||
+        _rxCompletion || _txAdapter || !_txCallbackGate.isUnbound())
         return true;
     for (UInt32 i = 0; i < kTXSubmissionQueueCount; ++i) {
         if (_txSubmissionQueues[i])
@@ -317,6 +346,76 @@ bool RTW88WCLSkywalkQueues::txSubmissionQueuesValid() const
     }
     return RTW88WCLTXQueueContract::validate(
         entries, kTXSubmissionQueueCount);
+}
+
+bool RTW88WCLSkywalkQueues::registrationQueuesValid() const
+{
+    if (!_txPool || !_rxPool || !txSubmissionQueuesValid() ||
+        !_txCompletion || !_rxSubmission || !_rxCompletion)
+        return false;
+
+    struct alignas(8) QueueDescriptor24H32 {
+        UInt32 type;
+        UInt32 capacity;
+        IOSkywalkPacketBufferPool *pool;
+    };
+    static_assert(sizeof(QueueDescriptor24H32) == 0x10,
+                  "24H32 QueueSet descriptor must be 16 bytes");
+
+    const UInt32 expectedTypes[kRegistrationQueueCount] = {
+        1, 1, 1, 1, 2, 3, 4
+    };
+    for (UInt32 i = 0; i < kRegistrationQueueCount; ++i) {
+        IOSkywalkPacketQueue *queue = _registrationQueues[i];
+        if (!queue)
+            return false;
+        QueueDescriptor24H32 descriptor = {};
+        const IOReturn status =
+            queue->performCommand(0x10000, &descriptor, sizeof(descriptor));
+        if (status != kIOReturnSuccess ||
+            descriptor.type != expectedTypes[i])
+            return false;
+        IOSkywalkPacketBufferPool *expectedPool =
+            (i < kTXSubmissionQueueCount || i == 4) ? _txPool : _rxPool;
+        if (descriptor.pool != expectedPool)
+            return false;
+        if ((descriptor.type == 1 || descriptor.type == 4) &&
+            descriptor.capacity != queue->getCapacity())
+            return false;
+        if ((descriptor.type == 2 || descriptor.type == 3) &&
+            descriptor.capacity != 0)
+            return false;
+    }
+    return true;
+}
+
+IOReturn RTW88WCLSkywalkQueues::setRegistered(bool registered)
+{
+    if (registered == _registered)
+        return registered ? kIOReturnBusy : kIOReturnSuccess;
+    if (registered) {
+        if (!queuesAllocated() || !registrationQueuesValid())
+            return kIOReturnNotReady;
+        _registered = true;
+        return kIOReturnSuccess;
+    }
+    _registered = false;
+    return kIOReturnSuccess;
+}
+
+IOReturn RTW88WCLSkywalkQueues::enqueueRXPacketForNetworking(
+    IOSkywalkPacket *packet)
+{
+    if (!packet)
+        return kIOReturnBadArgument;
+    if (!_registered || !_rxCompletion || !_rxPool ||
+        packet->getPacketBufferPool() != _rxPool)
+        return kIOReturnNotReady;
+
+    const IOSkywalkPacket *packets[1] = { packet };
+    /* The 24H32 networking enqueue helper is the queue-to-stack handoff.
+     * Caller retains packet ownership unless the helper reports success. */
+    return _rxCompletion->enqueuePacketsForNetworking(packets, 1, 0);
 }
 
 bool RTW88WCLSkywalkQueues::ownsTXSubmissionQueue(
