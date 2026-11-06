@@ -1,11 +1,11 @@
 /* SPDX-License-Identifier: GPL-2.0-only
  * Sequoia Skywalk queue/pool resource owner.
  *
- * This owner acquires native queue objects and packet pools but does not
- * register them with IOSkywalkEthernetInterface. Four WMM TX submission
- * queues are held in a stable owner-resident array. Stage91 binds a retained
- * TX adapter to their action callback; completion and registration remain
- * fenced for later stages.
+ * This owner acquires native queue objects and packet pools, retains a stable
+ * seven-entry registration vector, and pins those resources through the
+ * 24H32 Apple interface registration/deregistration transaction. Four WMM TX
+ * submission queues are bound to a retained adapter; RX networking handoff
+ * is accepted only after the queue transaction commits.
  */
 #pragma once
 
