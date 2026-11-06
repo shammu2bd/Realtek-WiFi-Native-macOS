@@ -483,13 +483,14 @@ void rtw88_register_sta(struct ieee80211_vif *vif, struct ieee80211_sta *sta)
  * then leak rather than free it. */
 bool rtw88_unregister_sta(struct ieee80211_sta *sta)
 {
-    if (!sta || __atomic_load_n(&g_rtw88_sta, __ATOMIC_SEQ_CST) != sta)
-        return true;
-    __atomic_store_n(&g_rtw88_sta, (struct ieee80211_sta *)NULL, __ATOMIC_SEQ_CST);
-    g_rtw88_sta_vif = NULL;
+    if (sta && __atomic_load_n(&g_rtw88_sta, __ATOMIC_SEQ_CST) == sta) {
+        __atomic_store_n(&g_rtw88_sta, (struct ieee80211_sta *)NULL, __ATOMIC_SEQ_CST);
+        g_rtw88_sta_vif = NULL;
+    }
 
-    /* A poll on this thread has already finished its lookup for the frame
-     * that caused the disconnect; later lookups observe NULL. */
+    /* Even after the public station pointer was cleared by a previous timed
+     * out attempt, a poll may still have captured it locally. Always inspect
+     * the in-flight count before reporting the object safe to retire. */
     if (__atomic_load_n(&g_rtw88_rx_poll_thread, __ATOMIC_SEQ_CST) == current_thread())
         return true;
     for (int i = 0; i < 2000; i++) {
@@ -498,7 +499,7 @@ bool rtw88_unregister_sta(struct ieee80211_sta *sta)
         /* Callers are sleepable threads; sta_remove then takes rtwdev->mutex. */
         IOSleep(1);
     }
-    rtw88_candidate_log("rtw88: station unregister timed out waiting for RX poll; leaking station\n");
+    rtw88_candidate_log("rtw88: station unregister timed out waiting for RX poll; station must remain allocated\n");
     return false;
 }
 
