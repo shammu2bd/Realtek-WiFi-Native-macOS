@@ -191,7 +191,9 @@ def main():
                     label = (lowered + " " + bundle_id.lower())
                     is_amfi = "amfipass" in label
                     is_lilu = "lilu" in label
-                    is_native = ("rtl88wifinative" in lowered or bundle_id.lower() == NATIVE_ID)
+                    # Bundle ID is shared by legacy and native builds; identify this EFI
+                    # candidate by its explicit native bundle path, never by bundle ID.
+                    is_native = "rtl88wifinative" in lowered
                     is_realtek_other = ("rtl88wifi" in label or "airportrtw" in label) and not is_native
                     if not (is_amfi or is_lilu or is_native or is_realtek_other):
                         continue
