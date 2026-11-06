@@ -792,8 +792,8 @@ static bool rtw_pci_flush_queues_sync(struct rtw_dev *rtwdev, u32 queues, bool d
 	}
 
 	for (q = 0; q < RTK_MAX_TX_QUEUE_NUM; q++) {
-		if (q == RTW_TX_QUEUE_BCN || q == RTW_TX_QUEUE_H2C ||
-		    q == RTW_TX_QUEUE_HI0)
+		/* HI0 carries multicast/broadcast data and can reference GTK CAM. */
+		if (q == RTW_TX_QUEUE_BCN || q == RTW_TX_QUEUE_H2C)
 			continue;
 		if ((pci_queues & BIT(q)) && !__pci_flush_queue_sync(rtwdev, q)) {
 			if (!drop)
