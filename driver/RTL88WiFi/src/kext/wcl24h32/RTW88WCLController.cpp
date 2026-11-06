@@ -842,9 +842,3 @@ void RTW88WCLController::unbindRadioBackend()
     }
 }
 
-IOReturn RTW88WCLController::markSkywalkQueuesRegistered(bool registered)
-{
-    if (!_skywalkQueues)
-        return kIOReturnNotReady;
-    return _skywalkQueues->setRegistered(registered);
-}
