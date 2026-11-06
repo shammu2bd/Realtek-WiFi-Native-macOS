@@ -82,7 +82,10 @@ assert "_registrationTransaction.quarantine()" in begin_code
 # audited 24H32 callable ABI; private QueueSet/LogicalLink payloads stay opaque.
 assert re.search(r"IOReturn registerInfraEthernetInterface\s*\(", abi)
 assert re.search(r"IOReturn deregisterEthernetInterface\(unsigned int\)", abi)
-start_begin = infra_cpp.index("queues->beginRegistrationTransaction()")
+infra_start_method = infra_cpp.index("bool RTW88WCLInfraInterface::start(")
+start_begin = infra_cpp.index("queues->beginRegistrationTransaction()", infra_start_method)
+assert "registrationQueuesValid()" not in infra_cpp[infra_start_method:start_begin], \
+    "queue-role validation must run only after the owner transaction pins resources"
 start_call = infra_cpp.index("registerInfraEthernetInterface(", start_begin)
 start_commit = infra_cpp.index("queues->commitRegistrationTransaction()", start_call)
 start_mark = infra_cpp.index("_registered = true;", start_commit)
