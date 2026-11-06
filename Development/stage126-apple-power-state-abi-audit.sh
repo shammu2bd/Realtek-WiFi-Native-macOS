@@ -166,7 +166,7 @@ path,start_s,end_s=sys.argv[1:]
 start,end=int(start_s,16),int(end_s,16)
 out=[]
 for line in pathlib.Path(path).read_text(errors="replace").splitlines():
-    m=re.match(r"^\\s*(?:0x)?([0-9a-fA-F]{8,}):?\\s+",line)
+    m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):?\s+",line)
     if not m:
         continue
     addr=int(m.group(1),16)
