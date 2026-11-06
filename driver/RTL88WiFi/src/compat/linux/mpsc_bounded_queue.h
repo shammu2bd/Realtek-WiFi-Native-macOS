@@ -22,7 +22,7 @@ struct rtw88_mpsc_queue_slot {
 
 struct rtw88_mpsc_bounded_queue {
     volatile uint32_t enqueue_pos;
-    uint32_t dequeue_pos; /* single consumer only */
+    volatile uint32_t dequeue_pos; /* single consumer; atomic observers */
     struct rtw88_mpsc_queue_slot slots[RTW88_MPSC_QUEUE_CAPACITY];
 };
 
@@ -30,7 +30,7 @@ static inline void
 rtw88_mpsc_bounded_queue_init(struct rtw88_mpsc_bounded_queue *queue)
 {
     __atomic_store_n(&queue->enqueue_pos, 0U, __ATOMIC_RELAXED);
-    queue->dequeue_pos = 0U;
+    __atomic_store_n(&queue->dequeue_pos, 0U, __ATOMIC_RELAXED);
     for (uint32_t i = 0; i < RTW88_MPSC_QUEUE_CAPACITY; ++i) {
         queue->slots[i].value = 0;
         __atomic_store_n(&queue->slots[i].sequence, i, __ATOMIC_RELAXED);
@@ -77,7 +77,8 @@ rtw88_mpsc_bounded_queue_enqueue(struct rtw88_mpsc_bounded_queue *queue,
 static inline void *
 rtw88_mpsc_bounded_queue_dequeue(struct rtw88_mpsc_bounded_queue *queue)
 {
-    const uint32_t position = queue->dequeue_pos;
+    const uint32_t position =
+        __atomic_load_n(&queue->dequeue_pos, __ATOMIC_RELAXED);
     struct rtw88_mpsc_queue_slot *slot =
         &queue->slots[position & RTW88_MPSC_QUEUE_MASK];
     const uint32_t sequence =
@@ -92,7 +93,7 @@ rtw88_mpsc_bounded_queue_dequeue(struct rtw88_mpsc_bounded_queue *queue)
     __atomic_store_n(&slot->sequence,
                      position + RTW88_MPSC_QUEUE_CAPACITY,
                      __ATOMIC_RELEASE);
-    queue->dequeue_pos = position + 1U;
+    __atomic_store_n(&queue->dequeue_pos, position + 1U, __ATOMIC_RELEASE);
     return value;
 }
 
@@ -101,7 +102,7 @@ static inline bool
 rtw88_mpsc_bounded_queue_empty(const struct rtw88_mpsc_bounded_queue *queue)
 {
     return __atomic_load_n(&queue->enqueue_pos, __ATOMIC_ACQUIRE) ==
-           queue->dequeue_pos;
+           __atomic_load_n(&queue->dequeue_pos, __ATOMIC_ACQUIRE);
 }
 
 #endif /* _RTW88_MPSC_BOUNDED_QUEUE_H */
