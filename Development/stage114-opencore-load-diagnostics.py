@@ -332,6 +332,8 @@ def main():
 
     loaded_rc, loaded = run(["kmutil", "showloaded", "--show", "all", "--bundle-identifier", NATIVE_ID], 40)
     emit("KMUTIL_NATIVE_BUNDLE_QUERY_EXIT=" + str(loaded_rc))
+    loaded_match = bool(re.search(re.escape(NATIVE_ID), loaded, re.I))
+    emit("KMUTIL_NATIVE_BUNDLE_MATCH=" + str(loaded_match))
     block("KMUTIL_NATIVE_BUNDLE_QUERY", loaded, 30, 500)
     general_rc, general = run(["kmutil", "showloaded"], 40)
     relevant_loaded = [x for x in general.splitlines()
@@ -405,9 +407,9 @@ def main():
         diagnosis = "OPENCORE_NATIVE_KERNEL_ADD_ENTRY_MISSING_DISABLED_OR_DUPLICATED"
     elif not hash_match:
         diagnosis = "EFI_NATIVE_EXECUTABLE_DIFFERS_FROM_STAGE113_VALIDATED_BINARY"
-    elif loaded_rc == 0 and not loaded.strip() and code_sig_bad:
+    elif loaded_rc == 0 and not loaded_match and code_sig_bad:
         diagnosis = "NATIVE_NOT_LOADED_WITH_CODE_SIGNATURE_FAILURE_EVIDENCE"
-    elif loaded_rc == 0 and not loaded.strip():
+    elif loaded_rc == 0 and not loaded_match:
         diagnosis = "NATIVE_NOT_PRESENT_IN_LOADED_KEXT_QUERY; CAUSE_NOT_YET_PROVEN"
     elif controller == "NO_MATCH":
         diagnosis = "BUNDLE_QUERY_AND_IOREGISTRY_DISAGREE_OR_PERSONALITY_DID_NOT_ATTACH"
