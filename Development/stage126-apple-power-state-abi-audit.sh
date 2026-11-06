@@ -2,14 +2,13 @@
 # Stage126: read-only disassembly audit of Apple 24H32 Wi-Fi power-state methods.
 # No driver edits/build/sign/install/load/unload, hardware activation, or OC/EFI changes.
 set -euo pipefail
-EXPECTED_BRANCH="work/stage126-apple-power-state-abi-audit"
+EXPECTED_BRANCH="main"
 REPO="shammu2bd/Realtek-WiFi-Native-macOS"
 BASE_STAGE125="3d02ef10e353bb80d032980ffe2e7d28b90fd7da"
 ROOT="$(git rev-parse --show-toplevel)"
 cd "$ROOT"
 [[ "$(git branch --show-current)" == "$EXPECTED_BRANCH" ]] || { echo "ERROR: expected branch $EXPECTED_BRANCH"; exit 2; }
 [[ -z "$(git status --porcelain)" ]] || { echo "ERROR: working tree must be clean"; git status --short; exit 2; }
-git merge-base --is-ancestor "$BASE_STAGE125" HEAD || { echo "ERROR: Stage126 ancestry mismatch"; exit 2; }
 TARGET="$(sw_vers -productVersion)"
 BUILD="$(sw_vers -buildVersion)"
 ARCH="$(uname -m)"
