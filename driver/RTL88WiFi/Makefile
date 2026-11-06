@@ -486,7 +486,7 @@ NATIVE_CORE_OBJS := $(addprefix $(NATIVE_CORE_OBJ_DIR)/,RTW88IEEE80211.o RTW88Hw
 NATIVE_ALL_OBJS := $(DRIVER_OBJS) $(CHIP_OBJS) $(COMPAT_OBJS) $(FIRMWARE_OBJS) $(AIRPORT_KMOD_OBJ) $(NATIVE_CORE_OBJS) $(WCL24H32_CONTROLLER_OBJ) $(WCL24H32_INFRA_OBJ) $(WCL24H32_PCI_BACKEND_OBJ) $(WCL24H32_SKYWALK_QUEUES_OBJ) $(WCL24H32_TX_ADAPTER_OBJ) $(WCL24H32_TX_COMPLETION_WORK_OBJ) $(WCL24H32_RX_ADAPTER_OBJ)
 NATIVE_LDFLAGS := $(AIRPORT_LDFLAGS)
 
-.PHONY: rtl88wifi-native native-plist native-compile-only
+.PHONY: rtl88wifi-native native-plist native-compile-only airport-compile-only all-object-compile-only
 rtl88wifi-native: $(NATIVE_OUT_BIN)
 
 # Compile every object required by the isolated native target without invoking
@@ -494,6 +494,17 @@ rtl88wifi-native: $(NATIVE_OUT_BIN)
 # This is the supported target-Mac validation gate while activation is blocked.
 native-compile-only: $(NATIVE_ALL_OBJS)
 	@echo "NATIVE_COMPILE_ONLY=PASS (objects only; no link/sign/install/load)"
+
+# Compile the legacy Airport object graph without its linker/bundle recipe.
+# RTW88IEEE80211.cpp is intentionally shared by both frontends; this target
+# verifies it still compiles in the legacy include/flag configuration too.
+airport-compile-only: $(AIRPORT_ALL_OBJS)
+	@echo "AIRPORT_COMPILE_ONLY=PASS (objects only; no link/sign/install/load)"
+
+# Clean-build validation for both object graphs. This target does not link either
+# kext; it is a compile-only compatibility gate for the shared radio sources.
+all-object-compile-only: airport-compile-only native-compile-only
+	@echo "ALL_OBJECT_COMPILE_ONLY=PASS (legacy and native object graphs only)"
 
 # Resolve exact native Apple framework versions on the target 24H32 Mac. This
 # generated skeleton is kept under build/ and does not alter the legacy plist.
