@@ -1,0 +1,36 @@
+name: Stage96 key-retirement barrier regression
+on:
+  push:
+    branches:
+      - work/stage91-tx-submission-callback-v1
+    paths:
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/**'
+      - 'tests/test-wcl-stage96-key-retirement.py'
+      - 'tools/run-stage96-key-retirement-tests.sh'
+      - '.github/workflows/stage96-key-retirement.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/**'
+      - 'tests/test-wcl-stage96-key-retirement.py'
+      - 'tools/run-stage96-key-retirement-tests.sh'
+      - '.github/workflows/stage96-key-retirement.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  source-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/stage91-tx-submission-callback-v1
+      - name: Python syntax and combined Stage96 source regression
+        run: bash tools/run-stage96-key-retirement-tests.sh | tee stage96-key-retirement-result.txt
+      - name: Upload Stage96 result
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage96-key-retirement-result
+          path: stage96-key-retirement-result.txt
