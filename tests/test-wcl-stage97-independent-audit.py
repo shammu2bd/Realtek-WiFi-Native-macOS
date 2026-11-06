@@ -74,6 +74,11 @@ check("CAM_CLEAR_HAS_DEFENSIVE_BOUNDS",
       "hw_key_idx >= sec->total_cam_num" in clear_cam and
       clear_cam.find("return;") < clear_cam.find("cam = &sec->cam_table[hw_key_idx]"),
       "low-level CAM clearer guards array access independently")
+check("CAM_BOUNDS_DIAGNOSTICS_USE_COMPAT_DEVICE_LOGGER",
+      "dev_warn(rtwdev->dev" in write_cam and
+      "dev_warn(rtwdev->dev" in clear_cam and
+      "#define dev_warn(dev, fmt, ...)" in Path("driver/RTL88WiFi/src/compat/rtw88_compat.h").read_text(),
+      "CAM bounds guards use the declared macOS/Linux-compatible device logger")
 check("INLINE_VO_AND_QUEUED_WORK_SHARE_GATE",
       "if (txq->ac == IEEE80211_AC_VO)\n\t\t__rtw_tx_work(rtwdev);" in wake and
       "queue_work(rtwdev->tx_wq, &rtwdev->tx_work);" in wake and
