@@ -206,10 +206,11 @@ check("FIRMWARE_TX_REPORT_CALLBACK_IS_SYNCHRONOUS_UNDER_REPORT_LOCK",
 
 check("TOKEN_RELEASE_PRECEDES_TICKET_COMPLETION_SIGNAL",
       token_dispatch.find("release(token)") < token_dispatch.find("callback(context, cookie, transmitted)") and
-      backend_completion.find("TicketPool::complete(ticket, transmitted)") <
+      backend_completion.find("const bool ticketCompleted = TicketPool::complete(ticket, transmitted);") <
       backend_completion.find("notify(notifyContext);") and
+      "if (TicketPool::complete(ticket, transmitted))" not in backend_completion and
       "kfree(" not in backend_completion and "IOFree(" not in backend_completion,
-      "token is counted as retired before the ticket can wake the drain/teardown path")
+      "token is counted as retired before an unconditional worker wake, including the fail-closed ticket-error path")
 
 check("SKBUFF_FREE_REPORT_IS_EXACTLY_ONCE",
       "rtw88_skb_tx_completion_report(&skb->tx_completion, false)" in SKBUFF_H and
