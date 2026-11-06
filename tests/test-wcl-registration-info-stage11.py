@@ -52,8 +52,8 @@ assert builder.index("initRegistrationInfo(") < builder.index("applyAppleProduce
 assert builder.index("matchesApple24H32Template(") < builder.index("_registrationInfoPrepared = true;")
 
 # Stage 108 now uses the audited builder in a registration transaction.
-# This does not authorize controller attachment or radio start: the controller
-# retains its fail-closed publication barrier until later datapath stages pass.
+# The controller may probe the RTW88 core to obtain the eFuse MAC, but it must
+# keep the PCI interrupt gate closed until the interface registration commits.
 controller = CONTROLLER.read_text()
 queues = QUEUES.read_text()
 infra_code = re.sub(r"/\\*.*?\\*/|//[^\\n]*", "", infra_cpp, flags=re.S)
@@ -76,8 +76,18 @@ assert "deregisterEthernetInterface(0)" in shutdown_code
 assert "finishDeregistrationTransaction()" in shutdown_code
 assert "abortDeregistrationTransaction()" in shutdown_code
 
-assert "refusing publication until Skywalk datapath is ready" in controller
-assert "goto fail;" in controller
+controller_code = re.sub(r"/\*.*?\*/|//[^\n]*", "", controller, flags=re.S)
+controller_start = controller_code.index("bool RTW88WCLController::start(")
+controller_end = controller_code.index("void RTW88WCLController::stop(", controller_start)
+controller_start_code = controller_code[controller_start:controller_end]
+assert controller_start_code.index("_radio->start()") < controller_start_code.index("_infraInterface->start(this)")
+assert controller_start_code.index("_infraInterface->start(this)") < controller_start_code.index("_infraInterface->registerService()")
+assert controller_start_code.index("_infraInterface->registerService()") < controller_start_code.index("_pciBackend->setRadioRunning(true)")
+assert "_infraInterface->shutdownForController()" in controller_code
+release_start = controller_code.index("IOReturn RTW88WCLController::releaseNativeResources()")
+release_end = controller_code.index("void RTW88WCLController::free()", release_start)
+release_code = controller_code[release_start:release_end]
+assert release_code.index("_infraInterface->shutdownForController()") < release_code.index("_skywalkQueues->destroyQueues()")
 assert "RTW88WCLRegistrationTransaction::Transaction _registrationTransaction" in (KEXT / "RTW88WCLSkywalkQueues.hpp").read_text()
 assert "_registrationTransaction.ownsQueues()" in queues
 assert "setRegistered(bool registered)" not in queues
@@ -104,4 +114,4 @@ with tempfile.TemporaryDirectory(prefix="rtl88wcl-registration-") as tmp:
 print("PASS: RegistrationInfo buffer is 0x130 bytes and 8-byte aligned")
 print("PASS: builder follows initRegistrationInfo(option=1, size=0x130)")
 print("PASS: Stage108 registration/deregistration uses explicit queue-owner state")
-print("PASS: controller publication and radio startup remain fail-closed")
+print("PASS: controller registers and publishes the interface before PCI interrupt activation")
