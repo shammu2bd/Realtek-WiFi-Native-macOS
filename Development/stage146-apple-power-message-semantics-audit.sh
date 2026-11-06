@@ -48,6 +48,7 @@ kc=KC(sys.argv[1]); otool=sys.argv[2]; root=pathlib.Path(sys.argv[3])
 wanted={
  "__Z18apple80211getPOWERP23IO80211SkywalkInterfaceP21apple80211_power_data":"APPLE_GET_POWER",
  "__Z18apple80211setPOWERP23IO80211SkywalkInterfaceP21apple80211_power_data":"APPLE_SET_POWER",
+ "__ZL8setPOWERP17IO80211ControllerP23IO80211SkywalkInterfaceP13apple80211req":"SET_POWER_IOCTL_WRAPPER",
  "__ZN23IO80211SkywalkInterface11postMessageEjPvmb":"SKYWALK_POST_MESSAGE",
  "__ZN21IO80211InfraInterface11postMessageEjPvmb":"INFRA_POST_MESSAGE",
  "__ZN23IO80211SkywalkInterface19postMessageInternalEjPvmb":"SKYWALK_POST_MESSAGE_INTERNAL"
@@ -93,7 +94,7 @@ for owner,dest in paths.items():
   if not ins or ins[0][0]!=addr: print("METHOD_DISASSEMBLY=NOT_VERIFIED");continue
   print("METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED")
   print("INSTRUCTION_COUNT=%d"%len(ins))
-  if tag in ("APPLE_GET_POWER","APPLE_SET_POWER","SKYWALK_POST_MESSAGE","SKYWALK_POST_MESSAGE_INTERNAL"):
+  if tag in ("APPLE_GET_POWER","APPLE_SET_POWER","SET_POWER_IOCTL_WRAPPER","SKYWALK_POST_MESSAGE","SKYWALK_POST_MESSAGE_INTERNAL"):
    selected=ins
   else:
    # The Infra dispatcher is large. Retain entry, comparisons/branches, event calls, and tail.
@@ -106,7 +107,7 @@ for owner,dest in paths.items():
    seen=set();selected=[x for x in selected if not (x[0] in seen or seen.add(x[0]))]
   for a,raw,asm in selected:
    print(raw)
-   if tag=="APPLE_SET_POWER" and ("0xb10" in asm.lower() or re.search(r"\$0x1, %r[89]d",asm)):
+   if tag=="SET_POWER_IOCTL_WRAPPER" and ("0xb10" in asm.lower() or re.search(r"\$0x1, %r[89]d",asm)):
     print("POWER_POST_MESSAGE_ARGUMENT_TRACE=0x%x %s"%(a,asm))
    if re.search(r"\b(call|jmp)q?\b",asm):
     print("CONTROL_FLOW=0x%x %s"%(a,asm))
