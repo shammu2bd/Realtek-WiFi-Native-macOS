@@ -717,8 +717,17 @@ UInt32 RTW88WCLController::outputPacket(mbuf_t packet, void *param)
 
 void RTW88WCLController::rtw88WCLResumeTransmit()
 {
-    /* RTW88's internal TX queues resume independently. The future Skywalk
-     * submission queue will connect its wakeup here after ring registration. */
+    if (!_skywalkQueues || !_skywalkQueues->isRegistered())
+        return;
+
+    /* RTW88 calls this when its hardware/software TX queues can accept more
+     * work. Ask each registered WMM Skywalk queue to resume asynchronous
+     * dequeue; a busy result means that queue already has a wake pending. */
+    const IOReturn status = _skywalkQueues->requestTXSubmissionDequeue();
+    if (status != kIOReturnSuccess && status != kIOReturnBusy &&
+        status != kIOReturnNotReady)
+        IOLog("rtl88wifi-wcl: WMM TX dequeue resume request failed: 0x%08x\n",
+              status);
 }
 
 void RTW88WCLController::rtw88Event(RTW88Event event, void *data)
