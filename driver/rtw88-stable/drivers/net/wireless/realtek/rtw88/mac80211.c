@@ -590,7 +590,11 @@ static int rtw_ops_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 
 	rtw_leave_lps_deep(rtwdev);
 
-	if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE) {
+	if (cmd == DISABLE_KEY) {
+		/* Disable uses the already assigned slot; it must not need another
+		 * free CAM entry merely to retire an existing pairwise key. */
+		hw_key_idx = key->hw_key_idx;
+	} else if (key->flags & IEEE80211_KEY_FLAG_PAIRWISE) {
 		hw_key_idx = rtw_sec_get_free_cam(sec);
 	} else {
 		/* multiple interfaces? */
@@ -611,9 +615,10 @@ static int rtw_ops_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 				  hw_key_type, hw_key_idx);
 		break;
 	case DISABLE_KEY: {
-		/* Never clear a CAM slot unless both PCI DMA rings and firmware
-		 * priority queues explicitly report drained. The legacy void flush
-		 * callbacks only log timeouts and cannot protect key-slot reuse. */
+		/* Drain any queued mac80211 TXQ worker before observing the PCI rings.
+		 * The native WCL path submits directly through ops->tx, but this also
+		 * protects any internal wake_tx_queue work already admitted. */
+		flush_work(&rtwdev->tx_work);
 		bool hci_drained = rtw_hci_flush_all_queues_sync(rtwdev, false);
 		bool mac_drained = rtw_mac_flush_all_queues_sync(rtwdev, false);
 		if (!hci_drained || !mac_drained) {
@@ -629,7 +634,7 @@ static int rtw_ops_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 	}
 
 	/* download new cam settings for PG to backup */
-	if (rtw_get_lps_deep_mode(rtwdev) == LPS_DEEP_MODE_PG)
+	if (!ret && rtw_get_lps_deep_mode(rtwdev) == LPS_DEEP_MODE_PG)
 		rtw_fw_download_rsvd_page(rtwdev);
 
 out:
