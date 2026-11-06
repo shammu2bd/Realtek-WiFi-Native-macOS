@@ -52,7 +52,7 @@ require("setCurrentApAddress(nullptr);" in leave,
 events = body_between(
     infra,
     "void RTW88WCLInfraInterface::handleRTW88WCLRadioEvent",
-    "bool RTW88WCLInfraInterface::scanResultMatches",
+    "\\n#undef super",
 )
 require(events.count("setCurrentApAddress(nullptr);") >= 2,
         "deauth and disconnect paths must clear the current-AP cache")
