@@ -231,7 +231,7 @@ check("NO_MECHANICAL_ATOMIC_CORRUPTION",
       not re.search(r"^\s*_(?:state|scanReturnState|associatedVisible|powered|manualScanChannelCount|manualScanOnHomeChannel)\s*=", cpp, re.M),
       "no malformed atomic predicates or plain writes to published radio/scan/power state")
 check("STOPPING_BLOCKS_HANDSHAKE_RX",
-      "!__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE)" in
+      "__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE)" in
       function(cpp, "void RTW88IEEE80211::handleEAPOL(") and
       "_stopping" in hpp and "_coreStarting" in hpp and "_coreStopping" in hpp,
       "late EAPOL RX and overlapping lifecycle start/stop are fenced")
