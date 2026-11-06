@@ -1,0 +1,43 @@
+name: Stage102 XNU thread-call and completion-token lifecycle
+
+on:
+  push:
+    branches:
+      - work/stage91-tx-submission-callback-v1
+    paths:
+      - 'driver/RTL88WiFi/src/compat/rtw88_compat.c'
+      - 'driver/RTL88WiFi/src/compat/rtw88_compat.h'
+      - 'driver/RTL88WiFi/src/compat/linux/mpsc_bounded_queue.h'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp'
+      - 'tests/test-stage102-xnu-thread-call-lifecycle.py'
+      - 'tests/wcl_thread_call_lifecycle_model_test.cpp'
+      - 'tools/run-stage102-xnu-thread-call-lifecycle.sh'
+      - '.github/workflows/stage102-xnu-thread-call-lifecycle.yml'
+      - 'driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  xnu-thread-call-lifecycle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/stage91-tx-submission-callback-v1
+      - name: Run source proof and portable model
+        run: |
+          set -o pipefail
+          bash tools/run-stage102-xnu-thread-call-lifecycle.sh | tee stage102-result.txt
+      - name: Upload Stage102 result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage102-xnu-thread-call-lifecycle
+          path: stage102-result.txt
