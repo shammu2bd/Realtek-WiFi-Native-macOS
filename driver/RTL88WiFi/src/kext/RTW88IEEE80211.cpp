@@ -1424,6 +1424,15 @@ IOReturn RTW88IEEE80211::powerOn()
         return kIOReturnError;
     }
 
+    /* Restore hardware interface state while external TX still sees the
+     * published powered=false admission state. A failed restore is stopped
+     * before the radio can accept a packet. */
+    if (rtw88_restore_interface(hw, vif) != 0) {
+        if (hw->ops->stop)
+            hw->ops->stop(hw, false);
+        return kIOReturnError;
+    }
+
     {
         auto mutation = beginTxStateMutation();
         if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
@@ -1437,11 +1446,6 @@ IOReturn RTW88IEEE80211::powerOn()
         _awdlOffChannel = false;
         __atomic_store_n(&_powered, true, __ATOMIC_RELEASE);
         mutation.finish();
-    }
-
-    if (rtw88_restore_interface(hw, vif) != 0) {
-        powerOff();
-        return kIOReturnError;
     }
     IOReturn filterResult = _awdlReceiveMode ?
         setAWDLReceiveMode(true) : setReceiveMulticast(_receiveMulticast);
