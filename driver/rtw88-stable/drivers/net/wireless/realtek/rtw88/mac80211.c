@@ -601,8 +601,9 @@ static int rtw_ops_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 		hw_key_idx = key->keyidx;
 	}
 
-	if (hw_key_idx > sec->total_cam_num) {
-		ret = -ENOSPC;
+	if (hw_key_idx >= sec->total_cam_num ||
+	    hw_key_idx >= RTW_MAX_SEC_CAM_NUM) {
+		ret = cmd == DISABLE_KEY ? -EINVAL : -ENOSPC;
 		goto out;
 	}
 
