@@ -1,0 +1,1001 @@
+========== STAGE157 APPLE BUS WORKQUEUE CONTRACT AUDIT ==========
+STAGE157_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE157_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE157_WORKTREE_STATUS_ENTRIES=198
+STAGE157_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE157_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE157_STAGE156_REPORT_SHA=3f0b188f672f2c290787dad2c701bd48a0becb63
+STAGE157_SCOPE=READ_ONLY_BUS_CALLBACKS_WORKQUEUE_VTABLE_AND_LIFECYCLE
+STAGE157_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE157_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+
+CLASS_AUDIT NAME=AppleBCMWLANBusInterface INSTANCE_SIZE=144 VTABLE_WORDS=391 VTABLE_OWNER=com.apple.driver.AppleBCMWLANCoreMac
+VTABLE_SLOT CLASS=AppleBCMWLANBusInterface OFFSET=0x860 WORD=270 RAW=0x4000000148e5c4 TARGET=0xffffff800158e5c4 OWNER=com.apple.driver.AppleBCMWLANCoreMac SYMBOL=__ZN24AppleBCMWLANBusInterface13needWorkQueueEv
+VTABLE_SLOT CLASS=AppleBCMWLANBusInterface OFFSET=0x868 WORD=271 RAW=0x4000000148e5ec TARGET=0xffffff800158e5ec OWNER=com.apple.driver.AppleBCMWLANCoreMac SYMBOL=__ZNK24AppleBCMWLANBusInterface12getWorkQueueEv
+APPLE_BUS_METHOD_COUNT=181
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c178 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface9MetaClassC1Ev
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c1aa OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface9MetaClassD1Ev
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c1b4 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterfaceC2EPK11OSMetaClass
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c1d4 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterfaceD2Ev
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c1de OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterfaceD1Ev
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c1e4 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterfaceD0Ev
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c1f8 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface9MetaClassC2Ev
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c25e OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface4initEP12OSDictionary
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c2be OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface4freeEv
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c47c OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface9initDebugEv
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c69c OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface5startEP9IOService
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c894 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface4stopEP9IOService
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158c8bc OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface13freeResourcesEv
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158e5c4 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface13needWorkQueueEv
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158e5ec OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZNK24AppleBCMWLANBusInterface12getWorkQueueEv
+APPLE_BUS_RELEVANT_SYMBOL ADDRESS=0xffffff800158e606 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface9MetaClassD0Ev
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface9MetaClassC1Ev ADDRESS=0xffffff800158c178 END=0xffffff800158c1aa INSTRUCTIONS=15
+ffffff800158c178	pushq	%rbp
+ffffff800158c179	movq	%rsp, %rbp
+ffffff800158c17c	pushq	%rbx
+ffffff800158c17d	pushq	%rax
+ffffff800158c17e	movq	%rdi, %rbx
+ffffff800158c181	leaq	0x17dbb9(%rip), %rsi            ## literal pool for: "AppleBCMWLANBusInterface"
+ffffff800158c188	movq	0x1defd9(%rip), %rdx
+ffffff800158c18f	movl	$0x90, %ecx
+ffffff800158c194	callq	0xffffff8000a49940
+ffffff800158c199	leaq	0x1e9628(%rip), %rax
+ffffff800158c1a0	movq	%rax, (%rbx)
+ffffff800158c1a3	addq	$0x8, %rsp
+ffffff800158c1a9	retq
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface9MetaClassD1Ev ADDRESS=0xffffff800158c1aa END=0xffffff800158c1b4 INSTRUCTIONS=4
+ffffff800158c1aa	pushq	%rbp
+ffffff800158c1ab	movq	%rsp, %rbp
+ffffff800158c1ae	popq	%rbp
+ffffff800158c1af	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff800158c1af jmp	0xffffff8000a4a040
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterfaceC2EPK11OSMetaClass ADDRESS=0xffffff800158c1b4 END=0xffffff800158c1d4 INSTRUCTIONS=13
+ffffff800158c1b4	pushq	%rbp
+ffffff800158c1b5	movq	%rsp, %rbp
+ffffff800158c1b8	pushq	%rbx
+ffffff800158c1b9	pushq	%rax
+ffffff800158c1ba	movq	%rdi, %rbx
+ffffff800158c1bd	callq	0xffffff8000ad3170
+ffffff800158c1c2	leaq	0x1e89c7(%rip), %rax
+ffffff800158c1c9	movq	%rax, (%rbx)
+ffffff800158c1cc	addq	$0x8, %rsp
+ffffff800158c1d0	popq	%rbx
+ffffff800158c1d1	popq	%rbp
+ffffff800158c1d2	retq
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterfaceD2Ev ADDRESS=0xffffff800158c1d4 END=0xffffff800158c1de INSTRUCTIONS=4
+ffffff800158c1d4	pushq	%rbp
+ffffff800158c1d5	movq	%rsp, %rbp
+ffffff800158c1d8	popq	%rbp
+ffffff800158c1d9	jmp	0xffffff8000ad31b0
+CONTROL_FLOW=0xffffff800158c1d9 jmp	0xffffff8000ad31b0
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterfaceD1Ev ADDRESS=0xffffff800158c1de END=0xffffff800158c1e4 INSTRUCTIONS=3
+ffffff800158c1de	pushq	%rbp
+ffffff800158c1df	movq	%rsp, %rbp
+ffffff800158c1e2	ud2
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterfaceD0Ev ADDRESS=0xffffff800158c1e4 END=0xffffff800158c1ea INSTRUCTIONS=3
+ffffff800158c1e4	pushq	%rbp
+ffffff800158c1e5	movq	%rsp, %rbp
+ffffff800158c1e8	ud2
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface9MetaClassC2Ev ADDRESS=0xffffff800158c1f8 END=0xffffff800158c22a INSTRUCTIONS=15
+ffffff800158c1f8	pushq	%rbp
+ffffff800158c1f9	movq	%rsp, %rbp
+ffffff800158c1fc	pushq	%rbx
+ffffff800158c1fd	pushq	%rax
+ffffff800158c1fe	movq	%rdi, %rbx
+ffffff800158c201	leaq	0x17db39(%rip), %rsi            ## literal pool for: "AppleBCMWLANBusInterface"
+ffffff800158c208	movq	0x1def59(%rip), %rdx
+ffffff800158c20f	movl	$0x90, %ecx
+ffffff800158c214	callq	0xffffff8000a49940
+ffffff800158c219	leaq	0x1e95a8(%rip), %rax
+ffffff800158c220	movq	%rax, (%rbx)
+ffffff800158c223	addq	$0x8, %rsp
+ffffff800158c229	retq
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface4initEP12OSDictionary ADDRESS=0xffffff800158c25e END=0xffffff800158c2be INSTRUCTIONS=28
+ffffff800158c25e	pushq	%rbp
+ffffff800158c25f	movq	%rsp, %rbp
+ffffff800158c262	pushq	%rbx
+ffffff800158c263	pushq	%rax
+ffffff800158c264	movq	%rdi, %rbx
+ffffff800158c267	movq	0x1defb2(%rip), %rax
+ffffff800158c26e	callq	*0x258(%rax)
+ffffff800158c274	testb	%al, %al
+ffffff800158c276	je	0xffffff800158c293
+CONTROL_FLOW=0xffffff800158c276 je	0xffffff800158c293
+ffffff800158c278	leaq	__ZZN24AppleBCMWLANBusInterface4initEP12OSDictionaryE20kalloc_type_view_112(%rip), %rdi ## AppleBCMWLANBusInterface::init(OSDictionary*)::kalloc_type_view_112
+ffffff800158c27f	callq	0xffffff8000ab5930
+ffffff800158c284	movq	%rax, 0x88(%rbx)
+ffffff800158c291	jmp	0xffffff800158c2b5
+CONTROL_FLOW=0xffffff800158c291 jmp	0xffffff800158c2b5
+ffffff800158c296	callq	0xffffff800227dc44
+ffffff800158c2b0	callq	0xffffff8000ab6560
+ffffff800158c2bd	retq
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface4freeEv ADDRESS=0xffffff800158c2be END=0xffffff800158c318 INSTRUCTIONS=22
+ffffff800158c2be	pushq	%rbp
+ffffff800158c2bf	movq	%rsp, %rbp
+ffffff800158c2c2	pushq	%rbx
+ffffff800158c2c3	pushq	%rax
+ffffff800158c2c4	movq	%rdi, %rbx
+ffffff800158c2c7	movq	0x88(%rdi), %rdi
+ffffff800158c2ce	testq	%rdi, %rdi
+ffffff800158c2d1	je	0xffffff800158c302
+CONTROL_FLOW=0xffffff800158c2d1 je	0xffffff800158c302
+ffffff800158c2d3	movl	$0x2b0, %esi                    ## imm = 0x2B0
+ffffff800158c2d8	movl	$0x2b0, %ecx                    ## imm = 0x2B0
+ffffff800158c2dd	xorl	%edx, %edx
+ffffff800158c2df	callq	0xffffff8000454290
+ffffff800158c2fd	callq	0xffffff8000ab5a60
+ffffff800158c312	jmpq	*0xa0(%rax)
+CONTROL_FLOW=0xffffff800158c312 jmpq	*0xa0(%rax)
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface9initDebugEv ADDRESS=0xffffff800158c47c END=0xffffff800158c5a6 INSTRUCTIONS=70
+ffffff800158c47c	pushq	%rbp
+ffffff800158c47d	movq	%rsp, %rbp
+ffffff800158c480	pushq	%r15
+ffffff800158c482	pushq	%r14
+ffffff800158c484	pushq	%rbx
+ffffff800158c485	subq	$0x48, %rsp
+ffffff800158c489	movq	%rdi, %rbx
+ffffff800158c48c	movq	0x1ded95(%rip), %rax
+ffffff800158c493	movq	(%rax), %rax
+ffffff800158c496	movq	%rax, -0x20(%rbp)
+ffffff800158c49a	leaq	-0x60(%rbp), %r14
+ffffff800158c49e	movq	$0x0, (%r14)
+ffffff800158c4a5	callq	0xffffff8000b53f70
+ffffff800158c4c9	callq	0xffffff800227d710
+ffffff800158c50c	callq	0xffffff8000939da0
+ffffff800158c52a	leaq	__ZL16_captureCallbackPK8OSObjectPKcPK11CCTimestamp(%rip), %rcx ## _captureCallback(OSObject const*, char const*, CCTimestamp const*)
+ffffff800158c535	leaq	__ZL17_setFlagsCallbackPK8OSObjecty(%rip), %rcx ## _setFlagsCallback(OSObject const*, unsigned long long)
+ffffff800158c54d	callq	__ZN18AppleBCMWLANLogger20withDriverAndOptionsEP24AppleBCMWLANBusInterfaceP25AppleBCMWLANLoggerOptions ## AppleBCMWLANLogger::withDriverAndOptions(AppleBCMWLANBusInterface*, AppleBCMWLANLoggerOptions*)
+ffffff800158c586	retq
+ffffff800158c59c	callq	0xffffff8000bd073c
+ffffff800158c5a1	callq	0xffffff8000383150
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface5startEP9IOService ADDRESS=0xffffff800158c69c END=0xffffff800158c894 INSTRUCTIONS=119
+ffffff800158c69c	pushq	%rbp
+ffffff800158c69d	movq	%rsp, %rbp
+ffffff800158c6a0	pushq	%r14
+ffffff800158c6a2	pushq	%rbx
+ffffff800158c6a3	movq	%rsi, %r14
+ffffff800158c6a6	movq	%rdi, %rbx
+ffffff800158c6a9	movq	(%rdi), %rax
+ffffff800158c6ac	callq	*0xba0(%rax)
+ffffff800158c6b2	testl	%eax, %eax
+ffffff800158c6b4	je	0xffffff800158c6bd
+CONTROL_FLOW=0xffffff800158c6b4 je	0xffffff800158c6bd
+ffffff800158c6b6	xorl	%ebx, %ebx
+ffffff800158c6b8	jmp	0xffffff800158c7e4
+CONTROL_FLOW=0xffffff800158c6b8 jmp	0xffffff800158c7e4
+ffffff800158c6db	callq	*0x20(%rax)
+ffffff800158c6eb	callq	*0x5d0(%rax)
+ffffff800158c70f	callq	0xffffff800227d8ee
+ffffff800158c731	callq	0xffffff80031d421c
+ffffff800158c750	callq	0xffffff80031d421c
+ffffff800158c772	callq	0xffffff80031d421c
+ffffff800158c794	callq	0xffffff80031d421c
+ffffff800158c7af	jmp	0xffffff800158c7e4
+CONTROL_FLOW=0xffffff800158c7af jmp	0xffffff800158c7e4
+ffffff800158c7b4	callq	0xffffff800227dc44
+ffffff800158c7c0	jmp	0xffffff800158c7d1
+CONTROL_FLOW=0xffffff800158c7c0 jmp	0xffffff800158c7d1
+ffffff800158c7c5	callq	0xffffff800227dc44
+ffffff800158c7df	callq	0xffffff8000ab6560
+ffffff800158c7ea	retq
+ffffff800158c804	callq	0xffffff80031d252e
+ffffff800158c810	jmp	0xffffff800158c745
+CONTROL_FLOW=0xffffff800158c810 jmp	0xffffff800158c745
+ffffff800158c82e	callq	0xffffff80031d1f6a
+ffffff800158c83a	jmp	0xffffff800158c764
+CONTROL_FLOW=0xffffff800158c83a jmp	0xffffff800158c764
+ffffff800158c858	callq	0xffffff80031d252e
+ffffff800158c864	jmp	0xffffff800158c786
+CONTROL_FLOW=0xffffff800158c864 jmp	0xffffff800158c786
+ffffff800158c882	callq	0xffffff80031d252e
+ffffff800158c88e	jmp	0xffffff800158c7a8
+CONTROL_FLOW=0xffffff800158c88e jmp	0xffffff800158c7a8
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface4stopEP9IOService ADDRESS=0xffffff800158c894 END=0xffffff800158c8bc INSTRUCTIONS=13
+ffffff800158c894	pushq	%rbp
+ffffff800158c895	movq	%rsp, %rbp
+ffffff800158c898	pushq	%rbx
+ffffff800158c899	pushq	%rax
+ffffff800158c89a	movq	%rdi, %rbx
+ffffff800158c89d	movq	0x1de97c(%rip), %rax
+ffffff800158c8a4	callq	*0x5d8(%rax)
+ffffff800158c8aa	movq	(%rbx), %rax
+ffffff800158c8ad	movq	%rbx, %rdi
+ffffff800158c8b0	addq	$0x8, %rsp
+ffffff800158c8b4	popq	%rbx
+ffffff800158c8b5	popq	%rbp
+ffffff800158c8b6	jmpq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff800158c8b6 jmpq	*0xba8(%rax)
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface13freeResourcesEv ADDRESS=0xffffff800158c8bc END=0xffffff800158c9c0 INSTRUCTIONS=65
+ffffff800158c8bc	pushq	%rbp
+ffffff800158c8bd	movq	%rsp, %rbp
+ffffff800158c8c0	pushq	%r14
+ffffff800158c8c2	pushq	%rbx
+ffffff800158c8c3	subq	$0x10, %rsp
+ffffff800158c8c7	movq	%rdi, %rbx
+ffffff800158c8ca	movq	0x88(%rdi), %rax
+ffffff800158c8d1	cmpl	$0x0, 0x8(%rax)
+ffffff800158c8d5	jne	0xffffff800158c978
+CONTROL_FLOW=0xffffff800158c8d5 jne	0xffffff800158c978
+ffffff800158c8db	movq	0x50(%rax), %rdi
+ffffff800158c8df	testq	%rdi, %rdi
+ffffff800158c8e2	je	0xffffff800158c8f9
+CONTROL_FLOW=0xffffff800158c8e2 je	0xffffff800158c8f9
+ffffff800158c8e7	callq	*0x28(%rax)
+ffffff800158c905	callq	*0x28(%rax)
+ffffff800158c923	callq	*0x28(%rax)
+ffffff800158c941	callq	*0x28(%rax)
+ffffff800158c95e	callq	*0x28(%rax)
+ffffff800158c977	retq
+ffffff800158c97b	callq	0xffffff800227dc44
+ffffff800158c986	callq	0xffffff800048cb00
+ffffff800158c9ba	callq	0xffffff8000bd073c
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface13needWorkQueueEv ADDRESS=0xffffff800158e5c4 END=0xffffff800158e5cc INSTRUCTIONS=5
+ffffff800158e5c4	pushq	%rbp
+ffffff800158e5c5	movq	%rsp, %rbp
+ffffff800158e5c8	xorl	%eax, %eax
+ffffff800158e5ca	popq	%rbp
+ffffff800158e5cb	retq
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZNK24AppleBCMWLANBusInterface12getWorkQueueEv ADDRESS=0xffffff800158e5ec END=0xffffff800158e5f4 INSTRUCTIONS=5
+ffffff800158e5ec	pushq	%rbp
+ffffff800158e5ed	movq	%rsp, %rbp
+ffffff800158e5f0	xorl	%eax, %eax
+ffffff800158e5f2	popq	%rbp
+ffffff800158e5f3	retq
+
+METHOD_TAG=APPLE_BUS_LIFECYCLE SYMBOL=__ZN24AppleBCMWLANBusInterface9MetaClassD0Ev ADDRESS=0xffffff800158e606 END=0xffffff800158e610 INSTRUCTIONS=4
+ffffff800158e606	pushq	%rbp
+ffffff800158e607	movq	%rsp, %rbp
+ffffff800158e60a	popq	%rbp
+ffffff800158e60b	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff800158e60b jmp	0xffffff8000a4a040
+
+CLASS_AUDIT NAME=IO80211WorkQueue INSTANCE_SIZE=80 VTABLE_WORDS=68 VTABLE_OWNER=com.apple.iokit.IO80211Family
+VTABLE_SLOT CLASS=IO80211WorkQueue OFFSET=0x20 WORD=6 RAW=0x4000000094b5c0 TARGET=0xffffff8000a4b5c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject6retainEv
+VTABLE_SLOT_OWNER_REVIEW CLASS=IO80211WorkQueue OFFSET=0x20 EXPECTED=com.apple.iokit.IO80211Family ACTUAL=com.apple.kernel
+VTABLE_SLOT CLASS=IO80211WorkQueue OFFSET=0x28 WORD=7 RAW=0x4000000094b5d0 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT_OWNER_REVIEW CLASS=IO80211WorkQueue OFFSET=0x28 EXPECTED=com.apple.iokit.IO80211Family ACTUAL=com.apple.kernel
+VTABLE_SLOT CLASS=IO80211WorkQueue OFFSET=0x88 WORD=19 RAW=0x400000009f8bb0 TARGET=0xffffff8000af8bb0 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop4initEv
+VTABLE_SLOT_OWNER_REVIEW CLASS=IO80211WorkQueue OFFSET=0x88 EXPECTED=com.apple.iokit.IO80211Family ACTUAL=com.apple.kernel
+VTABLE_SLOT CLASS=IO80211WorkQueue OFFSET=0x90 WORD=20 RAW=0x400000009f8d50 TARGET=0xffffff8000af8d50 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop4freeEv
+VTABLE_SLOT_OWNER_REVIEW CLASS=IO80211WorkQueue OFFSET=0x90 EXPECTED=com.apple.iokit.IO80211Family ACTUAL=com.apple.kernel
+VTABLE_SLOT CLASS=IO80211WorkQueue OFFSET=0xa0 WORD=22 RAW=0x4000000094b8d0 TARGET=0xffffff8000a4b8d0 OWNER=com.apple.kernel SYMBOL=__ZN8OSObject18_RESERVEDOSObject1Ev
+VTABLE_SLOT_OWNER_REVIEW CLASS=IO80211WorkQueue OFFSET=0xa0 EXPECTED=com.apple.iokit.IO80211Family ACTUAL=com.apple.kernel
+IO80211_WORKQUEUE_METHOD_COUNT=37
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258e00 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassC1Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue9MetaClassC1Ev ADDRESS=0xffffff8002258e00 END=0xffffff8002258e32 INSTRUCTIONS=15
+ffffff8002258e00	pushq	%rbp
+ffffff8002258e01	movq	%rsp, %rbp
+ffffff8002258e04	pushq	%rbx
+ffffff8002258e05	pushq	%rax
+ffffff8002258e06	movq	%rdi, %rbx
+ffffff8002258e09	leaq	0x1229d7(%rip), %rsi            ## literal pool for: "IO80211WorkQueue"
+ffffff8002258e10	movq	0x1631f1(%rip), %rdx
+ffffff8002258e17	movl	$0x50, %ecx
+ffffff8002258e1c	callq	0xffffff8000a49940
+ffffff8002258e21	leaq	0x17b0b8(%rip), %rax
+ffffff8002258e28	movq	%rax, (%rbx)
+ffffff8002258e2b	addq	$0x8, %rsp
+ffffff8002258e31	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258e32 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassD1Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue9MetaClassD1Ev ADDRESS=0xffffff8002258e32 END=0xffffff8002258e3c INSTRUCTIONS=4
+ffffff8002258e32	pushq	%rbp
+ffffff8002258e33	movq	%rsp, %rbp
+ffffff8002258e36	popq	%rbp
+ffffff8002258e37	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff8002258e37 jmp	0xffffff8000a4a040
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258e3c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC2EPK11OSMetaClass
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueueC2EPK11OSMetaClass ADDRESS=0xffffff8002258e3c END=0xffffff8002258e5c INSTRUCTIONS=13
+ffffff8002258e3c	pushq	%rbp
+ffffff8002258e3d	movq	%rsp, %rbp
+ffffff8002258e40	pushq	%rbx
+ffffff8002258e41	pushq	%rax
+ffffff8002258e42	movq	%rdi, %rbx
+ffffff8002258e45	callq	0xffffff8000afa3e0
+ffffff8002258e4a	leaq	0x17ae6f(%rip), %rax
+ffffff8002258e51	movq	%rax, (%rbx)
+ffffff8002258e54	addq	$0x8, %rsp
+ffffff8002258e58	popq	%rbx
+ffffff8002258e59	popq	%rbp
+ffffff8002258e5a	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258e5c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC1EPK11OSMetaClass
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueueC1EPK11OSMetaClass ADDRESS=0xffffff8002258e5c END=0xffffff8002258e7c INSTRUCTIONS=13
+ffffff8002258e5c	pushq	%rbp
+ffffff8002258e5d	movq	%rsp, %rbp
+ffffff8002258e60	pushq	%rbx
+ffffff8002258e61	pushq	%rax
+ffffff8002258e62	movq	%rdi, %rbx
+ffffff8002258e65	callq	0xffffff8000afa3e0
+ffffff8002258e6a	leaq	0x17ae4f(%rip), %rax
+ffffff8002258e71	movq	%rax, (%rbx)
+ffffff8002258e74	addq	$0x8, %rsp
+ffffff8002258e78	popq	%rbx
+ffffff8002258e79	popq	%rbp
+ffffff8002258e7a	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258e7c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD2Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueueD2Ev ADDRESS=0xffffff8002258e7c END=0xffffff8002258e86 INSTRUCTIONS=4
+ffffff8002258e7c	pushq	%rbp
+ffffff8002258e7d	movq	%rsp, %rbp
+ffffff8002258e80	popq	%rbp
+ffffff8002258e81	jmp	0xffffff8000afa420
+CONTROL_FLOW=0xffffff8002258e81 jmp	0xffffff8000afa420
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258e86 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD1Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueueD1Ev ADDRESS=0xffffff8002258e86 END=0xffffff8002258e90 INSTRUCTIONS=4
+ffffff8002258e86	pushq	%rbp
+ffffff8002258e87	movq	%rsp, %rbp
+ffffff8002258e8a	popq	%rbp
+ffffff8002258e8b	jmp	0xffffff8000afa420
+CONTROL_FLOW=0xffffff8002258e8b jmp	0xffffff8000afa420
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258e90 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD0Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueueD0Ev ADDRESS=0xffffff8002258e90 END=0xffffff8002258eb8 INSTRUCTIONS=13
+ffffff8002258e90	pushq	%rbp
+ffffff8002258e91	movq	%rsp, %rbp
+ffffff8002258e94	pushq	%rbx
+ffffff8002258e95	pushq	%rax
+ffffff8002258e96	movq	%rdi, %rbx
+ffffff8002258e99	callq	0xffffff8000afa420
+ffffff8002258e9e	leaq	__ZL20IO80211WorkQueue_ktv(%rip), %rdi ## IO80211WorkQueue_ktv
+ffffff8002258ea5	movl	$0x50, %edx
+ffffff8002258eaa	movq	%rbx, %rsi
+ffffff8002258ead	addq	$0x8, %rsp
+ffffff8002258eb1	popq	%rbx
+ffffff8002258eb2	popq	%rbp
+ffffff8002258eb3	jmp	0xffffff8000a4bee0
+CONTROL_FLOW=0xffffff8002258eb3 jmp	0xffffff8000a4bee0
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258eb8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueuedlEPvm
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueuedlEPvm ADDRESS=0xffffff8002258eb8 END=0xffffff8002258ed0 INSTRUCTIONS=8
+ffffff8002258eb8	pushq	%rbp
+ffffff8002258eb9	movq	%rsp, %rbp
+ffffff8002258ebc	movq	%rsi, %rdx
+ffffff8002258ebf	movq	%rdi, %rsi
+ffffff8002258ec2	leaq	__ZL20IO80211WorkQueue_ktv(%rip), %rdi ## IO80211WorkQueue_ktv
+ffffff8002258ec9	popq	%rbp
+ffffff8002258eca	jmp	0xffffff8000a4bee0
+CONTROL_FLOW=0xffffff8002258eca jmp	0xffffff8000a4bee0
+ffffff8002258ecf	nop
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258ed0 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue12getMetaClassEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZNK16IO80211WorkQueue12getMetaClassEv ADDRESS=0xffffff8002258ed0 END=0xffffff8002258ede INSTRUCTIONS=6
+ffffff8002258ed0	pushq	%rbp
+ffffff8002258ed1	movq	%rsp, %rbp
+ffffff8002258ed4	leaq	__ZN16IO80211WorkQueue10gMetaClassE(%rip), %rax ## IO80211WorkQueue::gMetaClass
+ffffff8002258edb	popq	%rbp
+ffffff8002258edc	retq
+ffffff8002258edd	nop
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258ede OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassC2Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue9MetaClassC2Ev ADDRESS=0xffffff8002258ede END=0xffffff8002258f10 INSTRUCTIONS=15
+ffffff8002258ede	pushq	%rbp
+ffffff8002258edf	movq	%rsp, %rbp
+ffffff8002258ee2	pushq	%rbx
+ffffff8002258ee3	pushq	%rax
+ffffff8002258ee4	movq	%rdi, %rbx
+ffffff8002258ee7	leaq	0x1228f9(%rip), %rsi            ## literal pool for: "IO80211WorkQueue"
+ffffff8002258eee	movq	0x163113(%rip), %rdx
+ffffff8002258ef5	movl	$0x50, %ecx
+ffffff8002258efa	callq	0xffffff8000a49940
+ffffff8002258eff	leaq	0x17afda(%rip), %rax
+ffffff8002258f06	movq	%rax, (%rbx)
+ffffff8002258f09	addq	$0x8, %rsp
+ffffff8002258f0f	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258f10 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue9MetaClass5allocEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZNK16IO80211WorkQueue9MetaClass5allocEv ADDRESS=0xffffff8002258f10 END=0xffffff8002258f58 INSTRUCTIONS=22
+ffffff8002258f10	pushq	%rbp
+ffffff8002258f11	movq	%rsp, %rbp
+ffffff8002258f14	pushq	%r14
+ffffff8002258f16	pushq	%rbx
+ffffff8002258f17	leaq	__ZL20IO80211WorkQueue_ktv(%rip), %rdi ## IO80211WorkQueue_ktv
+ffffff8002258f1e	movl	$0x50, %esi
+ffffff8002258f23	callq	0xffffff8000a4be90
+ffffff8002258f28	movq	%rax, %rbx
+ffffff8002258f2b	leaq	__ZN16IO80211WorkQueue10gMetaClassE(%rip), %r14 ## IO80211WorkQueue::gMetaClass
+ffffff8002258f32	movq	%rax, %rdi
+ffffff8002258f35	movq	%r14, %rsi
+ffffff8002258f38	callq	0xffffff8000afa3e0
+ffffff8002258f4a	callq	0xffffff8000a4a700
+ffffff8002258f56	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258f58 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueuenwEm
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueuenwEm ADDRESS=0xffffff8002258f58 END=0xffffff8002258f6c INSTRUCTIONS=6
+ffffff8002258f58	pushq	%rbp
+ffffff8002258f59	movq	%rsp, %rbp
+ffffff8002258f5c	movq	%rdi, %rsi
+ffffff8002258f5f	leaq	__ZL20IO80211WorkQueue_ktv(%rip), %rdi ## IO80211WorkQueue_ktv
+ffffff8002258f66	popq	%rbp
+ffffff8002258f67	jmp	0xffffff8000a4be90
+CONTROL_FLOW=0xffffff8002258f67 jmp	0xffffff8000a4be90
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258f6c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC1Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueueC1Ev ADDRESS=0xffffff8002258f6c END=0xffffff8002258f9c INSTRUCTIONS=16
+ffffff8002258f6c	pushq	%rbp
+ffffff8002258f6d	movq	%rsp, %rbp
+ffffff8002258f70	pushq	%r14
+ffffff8002258f72	pushq	%rbx
+ffffff8002258f73	movq	%rdi, %rbx
+ffffff8002258f76	leaq	__ZN16IO80211WorkQueue10gMetaClassE(%rip), %r14 ## IO80211WorkQueue::gMetaClass
+ffffff8002258f7d	movq	%r14, %rsi
+ffffff8002258f80	callq	0xffffff8000afa3e0
+ffffff8002258f85	leaq	0x17ad34(%rip), %rax
+ffffff8002258f8c	movq	%rax, (%rbx)
+ffffff8002258f8f	movq	%r14, %rdi
+ffffff8002258f92	popq	%rbx
+ffffff8002258f96	jmp	0xffffff8000a4a700
+CONTROL_FLOW=0xffffff8002258f96 jmp	0xffffff8000a4a700
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258f9c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC2Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueueC2Ev ADDRESS=0xffffff8002258f9c END=0xffffff8002258fcc INSTRUCTIONS=16
+ffffff8002258f9c	pushq	%rbp
+ffffff8002258f9d	movq	%rsp, %rbp
+ffffff8002258fa0	pushq	%r14
+ffffff8002258fa2	pushq	%rbx
+ffffff8002258fa3	movq	%rdi, %rbx
+ffffff8002258fa6	leaq	__ZN16IO80211WorkQueue10gMetaClassE(%rip), %r14 ## IO80211WorkQueue::gMetaClass
+ffffff8002258fad	movq	%r14, %rsi
+ffffff8002258fb0	callq	0xffffff8000afa3e0
+ffffff8002258fb5	leaq	0x17ad04(%rip), %rax
+ffffff8002258fbc	movq	%rax, (%rbx)
+ffffff8002258fbf	movq	%r14, %rdi
+ffffff8002258fc2	popq	%rbx
+ffffff8002258fc6	jmp	0xffffff8000a4a700
+CONTROL_FLOW=0xffffff8002258fc6 jmp	0xffffff8000a4a700
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002258fcc OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9workQueueEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue9workQueueEv ADDRESS=0xffffff8002258fcc END=0xffffff8002259042 INSTRUCTIONS=35
+ffffff8002258fcc	pushq	%rbp
+ffffff8002258fcd	movq	%rsp, %rbp
+ffffff8002258fd0	pushq	%r14
+ffffff8002258fd2	pushq	%rbx
+ffffff8002258fd3	leaq	__ZL20IO80211WorkQueue_ktv(%rip), %rdi ## IO80211WorkQueue_ktv
+ffffff8002258fda	movl	$0x50, %esi
+ffffff8002258fdf	callq	0xffffff8000a4be90
+ffffff8002258fe4	movq	%rax, %rbx
+ffffff8002258fe7	leaq	__ZN16IO80211WorkQueue10gMetaClassE(%rip), %r14 ## IO80211WorkQueue::gMetaClass
+ffffff8002258fee	movq	%rax, %rdi
+ffffff8002258ff1	movq	%r14, %rsi
+ffffff8002258ff4	callq	0xffffff8000afa3e0
+ffffff8002259006	callq	0xffffff8000a4a700
+ffffff8002259011	callq	*0x88(%rax)
+ffffff800225901b	cmpq	$0x0, __ZL23IO80211DefaultWorkQueue(%rip) ## IO80211DefaultWorkQueue
+ffffff8002259025	movq	%rbx, __ZL23IO80211DefaultWorkQueue(%rip) ## IO80211DefaultWorkQueue
+ffffff800225902c	jmp	0xffffff8002259039
+CONTROL_FLOW=0xffffff800225902c jmp	0xffffff8002259039
+ffffff8002259034	callq	*0x28(%rax)
+ffffff8002259040	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002259042 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19getDefaultWorkQueueEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue19getDefaultWorkQueueEv ADDRESS=0xffffff8002259042 END=0xffffff8002259050 INSTRUCTIONS=6
+ffffff8002259042	pushq	%rbp
+ffffff8002259043	movq	%rsp, %rbp
+ffffff8002259046	movq	__ZL23IO80211DefaultWorkQueue(%rip), %rax ## IO80211DefaultWorkQueue
+ffffff800225904d	popq	%rbp
+ffffff800225904e	retq
+ffffff800225904f	nop
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002259050 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19setDefaultWorkQueueEPS_
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue19setDefaultWorkQueueEPS_ ADDRESS=0xffffff8002259050 END=0xffffff800225905e INSTRUCTIONS=6
+ffffff8002259050	pushq	%rbp
+ffffff8002259051	movq	%rsp, %rbp
+ffffff8002259054	movq	%rdi, __ZL23IO80211DefaultWorkQueue(%rip) ## IO80211DefaultWorkQueue
+ffffff800225905b	popq	%rbp
+ffffff800225905c	retq
+ffffff800225905d	nop
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff800225905e OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue13addWorkSourceEP17IO80211WorkSource
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue13addWorkSourceEP17IO80211WorkSource ADDRESS=0xffffff800225905e END=0xffffff8002259098 INSTRUCTIONS=19
+ffffff800225905e	pushq	%rbp
+ffffff800225905f	movq	%rsp, %rbp
+ffffff8002259062	pushq	%r14
+ffffff8002259064	pushq	%rbx
+ffffff8002259065	movq	%rsi, %rax
+ffffff8002259068	movq	%rdi, %rbx
+ffffff800225906b	movq	0x16304e(%rip), %r14
+ffffff8002259072	movq	0x162fbf(%rip), %rcx
+ffffff8002259079	movq	(%rcx), %rsi
+ffffff800225907c	movq	%rax, %rdi
+ffffff800225907f	callq	0xffffff8000a49ab0
+ffffff8002259084	movq	%rbx, %rdi
+ffffff8002259091	jmpq	*0x150(%rax)
+CONTROL_FLOW=0xffffff8002259091 jmpq	*0x150(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002259098 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue16removeWorkSourceEP17IO80211WorkSource
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue16removeWorkSourceEP17IO80211WorkSource ADDRESS=0xffffff8002259098 END=0xffffff80022590d2 INSTRUCTIONS=19
+ffffff8002259098	pushq	%rbp
+ffffff8002259099	movq	%rsp, %rbp
+ffffff800225909c	pushq	%r14
+ffffff800225909e	pushq	%rbx
+ffffff800225909f	movq	%rsi, %rax
+ffffff80022590a2	movq	%rdi, %rbx
+ffffff80022590a5	movq	0x163014(%rip), %r14
+ffffff80022590ac	movq	0x162f85(%rip), %rcx
+ffffff80022590b3	movq	(%rcx), %rsi
+ffffff80022590b6	movq	%rax, %rdi
+ffffff80022590b9	callq	0xffffff8000a49ab0
+ffffff80022590be	movq	%rbx, %rdi
+ffffff80022590cb	jmpq	*0x158(%rax)
+CONTROL_FLOW=0xffffff80022590cb jmpq	*0x158(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022590d2 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue20enableAllWorkSourcesEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZNK16IO80211WorkQueue20enableAllWorkSourcesEv ADDRESS=0xffffff80022590d2 END=0xffffff80022590e4 INSTRUCTIONS=5
+ffffff80022590d2	pushq	%rbp
+ffffff80022590d3	movq	%rsp, %rbp
+ffffff80022590d6	movq	0x162fe3(%rip), %rax
+ffffff80022590dd	popq	%rbp
+ffffff80022590de	jmpq	*0x160(%rax)
+CONTROL_FLOW=0xffffff80022590de jmpq	*0x160(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022590e4 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue21disableAllWorkSourcesEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZNK16IO80211WorkQueue21disableAllWorkSourcesEv ADDRESS=0xffffff80022590e4 END=0xffffff80022590f6 INSTRUCTIONS=5
+ffffff80022590e4	pushq	%rbp
+ffffff80022590e5	movq	%rsp, %rbp
+ffffff80022590e8	movq	0x162fd1(%rip), %rax
+ffffff80022590ef	popq	%rbp
+ffffff80022590f0	jmpq	*0x168(%rax)
+CONTROL_FLOW=0xffffff80022590f0 jmpq	*0x168(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022590f6 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9runActionEPFiP8OSObjectPvS2_S2_S2_ES1_S2_S2_S2_S2_
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue9runActionEPFiP8OSObjectPvS2_S2_S2_ES1_S2_S2_S2_S2_ ADDRESS=0xffffff80022590f6 END=0xffffff8002259108 INSTRUCTIONS=5
+ffffff80022590f6	pushq	%rbp
+ffffff80022590f7	movq	%rsp, %rbp
+ffffff80022590fa	movq	0x162fbf(%rip), %rax
+ffffff8002259101	popq	%rbp
+ffffff8002259102	jmpq	*0x1b0(%rax)
+CONTROL_FLOW=0xffffff8002259102 jmpq	*0x1b0(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002259108 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue14runActionBlockEU13block_pointerFivE
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue14runActionBlockEU13block_pointerFivE ADDRESS=0xffffff8002259108 END=0xffffff8002259112 INSTRUCTIONS=4
+ffffff8002259108	pushq	%rbp
+ffffff8002259109	movq	%rsp, %rbp
+ffffff800225910c	popq	%rbp
+ffffff800225910d	jmp	0xffffff8000afa760
+CONTROL_FLOW=0xffffff800225910d jmp	0xffffff8000afa760
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002259112 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue12commandSleepEPvy
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue12commandSleepEPvy ADDRESS=0xffffff8002259112 END=0xffffff8002259188 INSTRUCTIONS=38
+ffffff8002259112	pushq	%rbp
+ffffff8002259113	movq	%rsp, %rbp
+ffffff8002259116	pushq	%r15
+ffffff8002259118	pushq	%r14
+ffffff800225911a	pushq	%rbx
+ffffff800225911b	pushq	%rax
+ffffff800225911c	movq	%rdx, %rbx
+ffffff800225911f	movq	%rsi, %r14
+ffffff8002259122	movq	%rdi, %r15
+ffffff8002259125	movq	(%rdi), %rax
+ffffff8002259128	callq	*0x138(%rax)
+ffffff800225912e	testb	%al, %al
+ffffff8002259144	callq	*0x1c0(%rax)
+ffffff800225916c	retq
+ffffff8002259174	leaq	0x1226d7(%rip), %rsi            ## literal pool for: "IO80211WorkQueue.cpp"
+ffffff8002259182	callq	0xffffff8000bd073c
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002259188 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue13commandWakeupEPv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue13commandWakeupEPv ADDRESS=0xffffff8002259188 END=0xffffff80022591a0 INSTRUCTIONS=7
+ffffff8002259188	pushq	%rbp
+ffffff8002259189	movq	%rsp, %rbp
+ffffff800225918c	movq	0x162f2d(%rip), %rax
+ffffff8002259193	movl	$0x1, %edx
+ffffff8002259198	popq	%rbp
+ffffff8002259199	jmpq	*0x1a8(%rax)
+CONTROL_FLOW=0xffffff8002259199 jmpq	*0x1a8(%rax)
+ffffff800225919f	nop
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022591a0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue20deprecatedWakeupGateEPvb
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue20deprecatedWakeupGateEPvb ADDRESS=0xffffff80022591a0 END=0xffffff80022591b2 INSTRUCTIONS=5
+ffffff80022591a0	pushq	%rbp
+ffffff80022591a1	movq	%rsp, %rbp
+ffffff80022591a4	movq	0x162f15(%rip), %rax
+ffffff80022591ab	popq	%rbp
+ffffff80022591ac	jmpq	*0x1a8(%rax)
+CONTROL_FLOW=0xffffff80022591ac jmpq	*0x1a8(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022591b2 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedSleepGateEPvj
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue19deprecatedSleepGateEPvj ADDRESS=0xffffff80022591b2 END=0xffffff80022591c4 INSTRUCTIONS=5
+ffffff80022591b2	pushq	%rbp
+ffffff80022591b3	movq	%rsp, %rbp
+ffffff80022591b6	movq	0x162f03(%rip), %rax
+ffffff80022591bd	popq	%rbp
+ffffff80022591be	jmpq	*0x1a0(%rax)
+CONTROL_FLOW=0xffffff80022591be jmpq	*0x1a0(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022591c4 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedSleepGateEPvyj
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue19deprecatedSleepGateEPvyj ADDRESS=0xffffff80022591c4 END=0xffffff80022591d6 INSTRUCTIONS=5
+ffffff80022591c4	pushq	%rbp
+ffffff80022591c5	movq	%rsp, %rbp
+ffffff80022591c8	movq	0x162ef1(%rip), %rax
+ffffff80022591cf	popq	%rbp
+ffffff80022591d0	jmpq	*0x1c0(%rax)
+CONTROL_FLOW=0xffffff80022591d0 jmpq	*0x1c0(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022591d6 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue18deprecatedOpenGateEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue18deprecatedOpenGateEv ADDRESS=0xffffff80022591d6 END=0xffffff80022591e8 INSTRUCTIONS=5
+ffffff80022591d6	pushq	%rbp
+ffffff80022591d7	movq	%rsp, %rbp
+ffffff80022591da	movq	0x162edf(%rip), %rax
+ffffff80022591e1	popq	%rbp
+ffffff80022591e2	jmpq	*0x188(%rax)
+CONTROL_FLOW=0xffffff80022591e2 jmpq	*0x188(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022591e8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedCloseGateEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue19deprecatedCloseGateEv ADDRESS=0xffffff80022591e8 END=0xffffff80022591fa INSTRUCTIONS=5
+ffffff80022591e8	pushq	%rbp
+ffffff80022591e9	movq	%rsp, %rbp
+ffffff80022591ec	movq	0x162ecd(%rip), %rax
+ffffff80022591f3	popq	%rbp
+ffffff80022591f4	jmpq	*0x190(%rax)
+CONTROL_FLOW=0xffffff80022591f4 jmpq	*0x190(%rax)
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80022591fa OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue9getThreadEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZNK16IO80211WorkQueue9getThreadEv ADDRESS=0xffffff80022591fa END=0xffffff8002259202 INSTRUCTIONS=5
+ffffff80022591fa	pushq	%rbp
+ffffff80022591fb	movq	%rsp, %rbp
+ffffff80022591fe	xorl	%eax, %eax
+ffffff8002259200	popq	%rbp
+ffffff8002259201	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002259202 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue19enableAllInterruptsEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZNK16IO80211WorkQueue19enableAllInterruptsEv ADDRESS=0xffffff8002259202 END=0xffffff8002259208 INSTRUCTIONS=4
+ffffff8002259202	pushq	%rbp
+ffffff8002259203	movq	%rsp, %rbp
+ffffff8002259206	popq	%rbp
+ffffff8002259207	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff8002259208 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue20disableAllInterruptsEv
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZNK16IO80211WorkQueue20disableAllInterruptsEv ADDRESS=0xffffff8002259208 END=0xffffff800225920e INSTRUCTIONS=4
+ffffff8002259208	pushq	%rbp
+ffffff8002259209	movq	%rsp, %rbp
+ffffff800225920c	popq	%rbp
+ffffff800225920d	retq
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff800225920e OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassD0Ev
+
+METHOD_TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue9MetaClassD0Ev ADDRESS=0xffffff800225920e END=0xffffff8002259218 INSTRUCTIONS=4
+ffffff800225920e	pushq	%rbp
+ffffff800225920f	movq	%rsp, %rbp
+ffffff8002259212	popq	%rbp
+ffffff8002259213	jmp	0xffffff8000a4a040
+CONTROL_FLOW=0xffffff8002259213 jmp	0xffffff8000a4a040
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80023d3ca0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9metaClassE
+METHOD_NOT_VERIFIED TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue9metaClassE ADDRESS=0xffffff80023d3ca0
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80023d3ca8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue10superClassE
+METHOD_NOT_VERIFIED TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue10superClassE ADDRESS=0xffffff80023d3ca8
+IO80211_WORKQUEUE_RELEVANT_SYMBOL ADDRESS=0xffffff80023f7cf0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue10gMetaClassE
+METHOD_NOT_VERIFIED TAG=IO80211_WORKQUEUE_LIFECYCLE SYMBOL=__ZN16IO80211WorkQueue10gMetaClassE ADDRESS=0xffffff80023f7cf0
+APPLE_CORE_QUEUE_LIFECYCLE_SYMBOL ADDRESS=0xffffff8001591664 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN16AppleBCMWLANCore4freeEv
+
+METHOD_TAG=APPLE_CORE_QUEUE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore4freeEv ADDRESS=0xffffff8001591664 END=0xffffff80015916c2 INSTRUCTIONS=23
+ffffff8001591664	pushq	%rbp
+ffffff8001591665	movq	%rsp, %rbp
+ffffff8001591668	pushq	%rbx
+ffffff8001591669	pushq	%rax
+ffffff800159166a	movq	%rdi, %rbx
+ffffff800159166d	callq	__ZN16AppleBCMWLANCore13freeResourcesEv ## AppleBCMWLANCore::freeResources()
+ffffff8001591672	movq	0x128(%rbx), %rdi
+ffffff8001591679	testq	%rdi, %rdi
+ffffff800159167c	je	0xffffff80015916ab
+CONTROL_FLOW=0xffffff800159167c je	0xffffff80015916ab
+ffffff800159167e	movl	$0x7c40, %esi                   ## imm = 0x7C40
+ffffff8001591683	callq	0xffffff8000101100
+ffffff8001591688	movq	0x128(%rbx), %rsi
+ffffff80015916a6	callq	0xffffff8000ab6320
+ffffff80015916bb	jmpq	*0xa0(%rax)
+CONTROL_FLOW=0xffffff80015916bb jmpq	*0xa0(%rax)
+APPLE_CORE_QUEUE_LIFECYCLE_SYMBOL ADDRESS=0xffffff80015916c2 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN16AppleBCMWLANCore13freeResourcesEv
+
+METHOD_TAG=APPLE_CORE_QUEUE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore13freeResourcesEv ADDRESS=0xffffff80015916c2 END=0xffffff8001591f70 INSTRUCTIONS=451
+ffffff80015916c2	pushq	%rbp
+ffffff80015916c3	movq	%rsp, %rbp
+ffffff80015916c6	pushq	%r14
+ffffff80015916c8	pushq	%rbx
+ffffff80015916c9	movq	%rdi, %rbx
+ffffff80015916cc	callq	0xffffff800048cb00
+ffffff80015916d1	leaq	0x17ba6c(%rip), %rdi            ## literal pool for: "AppleBCMWLANCore::freeResources[%u] this[%p]\n"
+ffffff80015916d8	movl	$0xe3c, %esi                    ## imm = 0xE3C
+ffffff80015916dd	movq	%rax, %rdx
+ffffff80015916e0	xorl	%eax, %eax
+ffffff80015916e2	callq	0xffffff8000ab6560
+ffffff80015916e7	movq	0x128(%rbx), %rax
+ffffff80015916fd	callq	*0x28(%rax)
+ffffff800159172b	callq	0xffffff80031c6a46
+ffffff8001591749	callq	*0x28(%rax)
+ffffff800159176d	callq	*0x28(%rax)
+ffffff8001591791	callq	*0x28(%rax)
+ffffff80015917ba	callq	*0x28(%rax)
+ffffff80015917db	callq	0xffffff8000ab6ee0
+ffffff8001591801	callq	*0x28(%rax)
+ffffff8001591825	callq	*0x28(%rax)
+ffffff8001591849	callq	*0x28(%rax)
+ffffff800159186d	callq	*0x28(%rax)
+ffffff8001591891	callq	*0x28(%rax)
+ffffff80015918b5	callq	*0x28(%rax)
+ffffff80015918d9	callq	*0x28(%rax)
+ffffff80015918fd	callq	*0x28(%rax)
+ffffff8001591921	callq	*0x28(%rax)
+ffffff8001591945	callq	*0x28(%rax)
+ffffff8001591969	callq	*0x28(%rax)
+ffffff800159198d	callq	*0x28(%rax)
+ffffff80015919bb	callq	0xffffff80031c6a46
+ffffff80015919d9	callq	*0x28(%rax)
+ffffff80015919fd	callq	*0x28(%rax)
+ffffff8001591a1c	callq	0xffffff800227dbf3
+ffffff8001591a37	callq	*0x28(%rax)
+ffffff8001591a65	callq	0xffffff80031c6a46
+ffffff8001591a83	callq	*0x28(%rax)
+ffffff8001591ab4	callq	0xffffff80031c6a46
+ffffff8001591ad2	callq	*0x28(%rax)
+ffffff8001591af6	callq	*0x28(%rax)
+ffffff8001591b1a	callq	*0x28(%rax)
+ffffff8001591b3e	callq	*0x28(%rax)
+ffffff8001591b62	callq	*0x28(%rax)
+ffffff8001591b86	callq	*0x28(%rax)
+ffffff8001591baa	callq	*0x28(%rax)
+ffffff8001591bce	callq	*0x28(%rax)
+ffffff8001591bfc	callq	0xffffff80031c6a46
+ffffff8001591c1a	callq	*0x28(%rax)
+ffffff8001591c3e	callq	*0x28(%rax)
+ffffff8001591c62	callq	*0x28(%rax)
+ffffff8001591c93	callq	0xffffff80031c6a46
+ffffff8001591cb1	callq	*0x28(%rax)
+ffffff8001591ce3	callq	0xffffff8000ab5a60
+ffffff8001591d05	callq	*0x28(%rax)
+ffffff8001591d29	callq	*0x28(%rax)
+ffffff8001591d4d	callq	*0x28(%rax)
+ffffff8001591d71	callq	*0x28(%rax)
+ffffff8001591d95	callq	*0x28(%rax)
+ffffff8001591db9	callq	*0x28(%rax)
+ffffff8001591ddd	callq	*0x28(%rax)
+ffffff8001591e0a	callq	*0x28(%rax)
+ffffff8001591e2e	callq	*0x28(%rax)
+ffffff8001591e46	callq	__ZN16AppleBCMWLANCore16destroyDebugInfoEv ## AppleBCMWLANCore::destroyDebugInfo()
+ffffff8001591e61	callq	*0x28(%rax)
+ffffff8001591e85	callq	*0x28(%rax)
+ffffff8001591ea9	callq	*0x28(%rax)
+ffffff8001591ecd	callq	*0x28(%rax)
+ffffff8001591ef1	callq	*0x28(%rax)
+ffffff8001591f06	movq	0x1510(%rax), %rdi
+ffffff8001591f15	callq	*0x28(%rax)
+ffffff8001591f1f	movq	$0x0, 0x1510(%rax)
+ffffff8001591f2a	movq	0x7898(%rax), %rdi
+ffffff8001591f39	callq	*0x28(%rax)
+ffffff8001591f43	movq	$0x0, 0x7898(%rax)
+ffffff8001591f51	callq	0xffffff800048cb00
+ffffff8001591f6b	jmp	0xffffff8000ab6560
+CONTROL_FLOW=0xffffff8001591f6b jmp	0xffffff8000ab6560
+APPLE_CORE_QUEUE_LIFECYCLE_SYMBOL ADDRESS=0xffffff8001591f70 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv
+
+METHOD_TAG=APPLE_CORE_QUEUE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore15createWorkQueueEv ADDRESS=0xffffff8001591f70 END=0xffffff800159203c INSTRUCTIONS=49
+ffffff8001591f70	pushq	%rbp
+ffffff8001591f71	movq	%rsp, %rbp
+ffffff8001591f74	pushq	%r14
+ffffff8001591f76	pushq	%rbx
+ffffff8001591f77	subq	$0x10, %rsp
+ffffff8001591f7b	movq	%rdi, %rbx
+ffffff8001591f7e	movq	0x1d92a3(%rip), %rax
+ffffff8001591f85	movq	(%rax), %rax
+ffffff8001591f88	movq	%rax, -0x18(%rbp)
+ffffff8001591f8c	movq	0x128(%rdi), %rax
+ffffff8001591f93	movq	0x1510(%rax), %rdi
+ffffff8001591f9a	movq	(%rdi), %rax
+ffffff8001591f9d	callq	*0x860(%rax)
+ffffff8001591fad	leaq	0x179d11(%rip), %rdi            ## literal pool for: "wlan.workQueue.create"
+ffffff8001591fbc	callq	0xffffff8000b92970
+ffffff8001591fc7	callq	0xffffff8002258fcc
+ffffff8001591fd3	movq	%rax, 0x7898(%rcx)
+ffffff8001591fda	jmp	0xffffff8001592018
+CONTROL_FLOW=0xffffff8001591fda jmp	0xffffff8001592018
+ffffff8001591fe3	movq	0x1510(%rax), %rdi
+ffffff8001591fed	callq	*0x868(%rax)
+ffffff8001591ffa	movq	%rax, 0x7898(%rcx)
+ffffff8001592007	callq	*0x20(%rcx)
+ffffff8001592011	movq	0x7898(%rax), %rax
+ffffff8001592036	retq
+ffffff8001592037	callq	0xffffff8000383150
+APPLE_CORE_QUEUE_LIFECYCLE_SYMBOL ADDRESS=0xffffff800159203c OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZNK16AppleBCMWLANCore12getWorkQueueEv
+
+METHOD_TAG=APPLE_CORE_QUEUE_LIFECYCLE SYMBOL=__ZNK16AppleBCMWLANCore12getWorkQueueEv ADDRESS=0xffffff800159203c END=0xffffff8001592050 INSTRUCTIONS=6
+ffffff800159203c	pushq	%rbp
+ffffff800159203d	movq	%rsp, %rbp
+ffffff8001592040	movq	0x128(%rdi), %rax
+ffffff8001592047	movq	0x7898(%rax), %rax
+ffffff800159204e	popq	%rbp
+ffffff800159204f	retq
+APPLE_CORE_QUEUE_LIFECYCLE_SYMBOL ADDRESS=0xffffff8001593502 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN16AppleBCMWLANCore20stopAndFreeResourcesEv
+
+METHOD_TAG=APPLE_CORE_QUEUE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore20stopAndFreeResourcesEv ADDRESS=0xffffff8001593502 END=0xffffff800159353c INSTRUCTIONS=18
+ffffff8001593502	pushq	%rbp
+ffffff8001593503	movq	%rsp, %rbp
+ffffff8001593506	pushq	%rbx
+ffffff8001593507	pushq	%rax
+ffffff8001593508	movq	%rdi, %rbx
+ffffff800159350b	callq	0xffffff800048cb00
+ffffff8001593510	leaq	0x179bf8(%rip), %rdi            ## literal pool for: "AppleBCMWLANCore::stopAndFreeResources[%u] this[%p]\n"
+ffffff8001593517	movl	$0xe30, %esi                    ## imm = 0xE30
+ffffff800159351c	movq	%rax, %rdx
+ffffff800159351f	xorl	%eax, %eax
+ffffff8001593521	callq	0xffffff8000ab6560
+ffffff8001593526	movq	%rbx, %rdi
+ffffff8001593529	callq	__ZN16AppleBCMWLANCore13stopResourcesEv ## AppleBCMWLANCore::stopResources()
+ffffff8001593537	jmp	__ZN16AppleBCMWLANCore13freeResourcesEv ## AppleBCMWLANCore::freeResources()
+CONTROL_FLOW=0xffffff8001593537 jmp	__ZN16AppleBCMWLANCore13freeResourcesEv ## AppleBCMWLANCore::freeResources()
+APPLE_CORE_QUEUE_LIFECYCLE_SYMBOL ADDRESS=0xffffff800159ca84 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN16AppleBCMWLANCore13stopResourcesEv
+
+METHOD_TAG=APPLE_CORE_QUEUE_LIFECYCLE SYMBOL=__ZN16AppleBCMWLANCore13stopResourcesEv ADDRESS=0xffffff800159ca84 END=0xffffff800159cd58 INSTRUCTIONS=164
+ffffff800159ca84	pushq	%rbp
+ffffff800159ca85	movq	%rsp, %rbp
+ffffff800159ca88	pushq	%rbx
+ffffff800159ca89	subq	$0x18, %rsp
+ffffff800159ca8d	movq	%rdi, %rbx
+ffffff800159ca90	movq	0x1ce791(%rip), %rax
+ffffff800159ca97	movq	(%rax), %rax
+ffffff800159ca9a	movq	%rax, -0x10(%rbp)
+ffffff800159ca9e	callq	0xffffff800048cb00
+ffffff800159caa3	leaq	0x1706c8(%rip), %rdi            ## literal pool for: "AppleBCMWLANCore::stopResources[%u] this[%p]\n"
+ffffff800159caaa	movl	$0xef0, %esi                    ## imm = 0xEF0
+ffffff800159caaf	movq	%rax, %rdx
+ffffff800159cab4	callq	0xffffff8000ab6560
+ffffff800159cad6	callq	*0x158(%rax)
+ffffff800159cae2	callq	*0xc68(%rax)
+ffffff800159caf9	callq	0xffffff8002259098
+ffffff800159cb13	callq	0xffffff8000a48b50
+ffffff800159cb2a	callq	0xffffff8000a9da20
+ffffff800159cb3e	callq	0xffffff8000a9dbb0
+ffffff800159cb49	callq	*0xd40(%rax)
+ffffff800159cb5a	callq	*0xd40(%rax)
+ffffff800159cb68	callq	0xffffff80031d421c
+ffffff800159cba8	callq	0xffffff8000a85d00
+ffffff800159cbc3	callq	*0x158(%rax)
+ffffff800159cbdf	callq	*0x158(%rax)
+ffffff800159cbfb	callq	*0x158(%rax)
+ffffff800159cc17	callq	*0x158(%rax)
+ffffff800159cc33	callq	*0x158(%rax)
+ffffff800159cc4f	callq	*0x158(%rax)
+ffffff800159cc74	callq	*0x158(%rax)
+ffffff800159cc90	callq	*0x158(%rax)
+ffffff800159ccbc	callq	*0x218(%rax)
+ffffff800159ccd8	callq	0xffffff80031c6a46
+ffffff800159cce0	callq	0xffffff800048cb00
+ffffff800159ccf6	callq	0xffffff8000ab6560
+ffffff800159cd11	retq
+ffffff800159cd18	callq	*0xd40(%rax)
+ffffff800159cd48	callq	0xffffff80031d252e
+ffffff800159cd4d	jmp	0xffffff800159cb75
+CONTROL_FLOW=0xffffff800159cd4d jmp	0xffffff800159cb75
+ffffff800159cd52	callq	0xffffff8000383150
+
+KERNEL_WORKQUEUE_SYMBOL_COUNT=108
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80014f75ac OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZNK28AppleBCMWLANBusInterfacePCIe12getWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800150bb60 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe20createSubmissionRingEPP30AppleBCMWLANPCIeSubmissionRingPK12PCIeRingInfoP8OSObjectP16IO80211WorkQueuePFjS7_P20AppleBCMWLANByteRingPvjEPFvS7_SB_iSC_E
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800150bd22 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe25enableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800150be86 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe20createCompletionRingEPP30AppleBCMWLANPCIeCompletionRingPK12PCIeRingInfoP8OSObjectP16IO80211WorkQueuePFjS7_P20AppleBCMWLANByteRingPvjEPFvS7_SB_iSC_E
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800150c04a OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe20enableCompletionRingEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800150c07c OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe25enableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800150c0f0 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe26disableSubmissionRingGatedEP30AppleBCMWLANPCIeSubmissionRingP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800150c296 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe21disableCompletionRingEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800150c2c8 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN28AppleBCMWLANBusInterfacePCIe26disableCompletionRingGatedEP30AppleBCMWLANPCIeCompletionRingP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80015204f4 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZN24AppleBCMWLANPCIeDoorbell13withCallbacksEP28AppleBCMWLANBusInterfacePCIePFiP8OSObjectEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001520710 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZNK24AppleBCMWLANPCIeDoorbell12getWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001548700 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac NAME=__ZZN24AppleBCMWLANPCIeDoorbell17initWithCallbacksEP28AppleBCMWLANBusInterfacePCIePFiP8OSObjectEP16IO80211WorkQueueE19kalloc_type_view_88
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800156873e OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN36AppleBCMWLANSkywalkTxSubmissionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltj17apple80211_wme_acjP11CCLogStreamP15CCFaultReporterP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001568dc4 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN36AppleBCMWLANSkywalkTxCompletionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001569196 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN36AppleBCMWLANSkywalkRxSubmissionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80015695ae OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN36AppleBCMWLANSkywalkRxCompletionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80015748ba OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZNK26AppleBCMWLANTimeSyncEngine12getWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800158e5c4 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN24AppleBCMWLANBusInterface13needWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800158e5ec OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZNK24AppleBCMWLANBusInterface12getWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8001591f70 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800159203c OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZNK16AppleBCMWLANCore12getWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80016a5c50 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN22AppleBCMWLANTaskmaster13withWorkQueueEP16IO80211WorkQueuej
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80016a5cc6 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZN22AppleBCMWLANTaskmaster17initWithWorkQueueEP16IO80211WorkQueuej
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178a980 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZZN36AppleBCMWLANSkywalkTxSubmissionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltj17apple80211_wme_acjP11CCLogStreamP15CCFaultReporterP16IO80211WorkQueueE19kalloc_type_view_58
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178aa40 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZZN36AppleBCMWLANSkywalkTxCompletionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueueE20kalloc_type_view_310
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178ab00 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZZN36AppleBCMWLANSkywalkRxSubmissionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueueE20kalloc_type_view_468
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178abc0 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZZN36AppleBCMWLANSkywalkRxCompletionQueue24initWithPoolAndQueueInfoEP8OSObjectP29AppleBCMWLANSkywalkPacketPooltjjP16IO80211WorkQueueE20kalloc_type_view_629
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800178da00 OWNER=com.apple.driver.AppleBCMWLANCoreMac NAME=__ZZN22AppleBCMWLANTaskmaster17initWithWorkQueueEP16IO80211WorkQueuejE19kalloc_type_view_93
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800212a72a OWNER=com.apple.iokit.IO80211Family NAME=__ZN11IO80211Glue30processPendingEventQueueSourceEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800212a79e OWNER=com.apple.iokit.IO80211Family NAME=__ZN11IO80211Glue23processPendingIoucQueueEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800212b196 OWNER=com.apple.iokit.IO80211Family NAME=____ZN11IO80211Glue23processPendingIoucQueueEP16IO80211WorkQueue_block_invoke
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800212b228 OWNER=com.apple.iokit.IO80211Family NAME=____ZN11IO80211Glue30processPendingEventQueueSourceEP16IO80211WorkQueue_block_invoke
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800212b5e8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN22IO80211IORecursiveLock14initWithParamsEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800212b63a OWNER=com.apple.iokit.IO80211Family NAME=__ZN22IO80211IORecursiveLock15allocWithParamsEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002145a88 OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211TimerSource15allocWithParamsE26IO80211TimerSourcePriorityP8OSObjectP16IO80211WorkQueuePFvS2_PS_E
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002145b16 OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211TimerSource15allocWithParamsEP8OSObjectP16IO80211WorkQueuePFvS1_PS_E
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002145b2e OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211TimerSource4initE26IO80211TimerSourcePriorityP8OSObjectP16IO80211WorkQueuePFvS2_PS_E
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800214727a OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211CommandGate14initWithParamsEP8OSObjectP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80021472cc OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211CommandGate15allocWithParamsEP8OSObjectP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800215e2a8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN21IO80211TrafficMonitor9withParamEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800215e316 OWNER=com.apple.iokit.IO80211Family NAME=__ZN21IO80211TrafficMonitor13initWithParamEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80021f3442 OWNER=com.apple.iokit.IO80211Family NAME=__ZN18IO80211PeerManager19getWorkQueueEnabledEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80021f5a12 OWNER=com.apple.iokit.IO80211Family NAME=__ZN14WCLTimerSource15allocWithParamsEP8OSObjectP16IO80211WorkQueueS3_PFvS1_P18IO80211TimerSourceE
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80021f5aa0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN14WCLTimerSource4initEP8OSObjectP16IO80211WorkQueueS3_PFvS1_P18IO80211TimerSourceE
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002226d0e OWNER=com.apple.iokit.IO80211Family NAME=__ZN17IO80211Controller15createWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002226d16 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK17IO80211Controller12getWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800222cd9e OWNER=com.apple.iokit.IO80211Family NAME=__Z19IO80211AllocBPFNodejP8OSObjectMS_FjP6__mbufPvEP16IO80211WorkQueueMS_FijjE
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002253abc OWNER=com.apple.iokit.IO80211Family NAME=__ZNK17IO80211WorkSource12getWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002253ada OWNER=com.apple.iokit.IO80211Family NAME=__ZN17IO80211WorkSource12setWorkQueueEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258e00 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassC1Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258e32 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassD1Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258e3c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC2EPK11OSMetaClass
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258e5c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC1EPK11OSMetaClass
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258e7c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD2Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258e86 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD1Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258e90 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueD0Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258eb8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueuedlEPvm
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258ed0 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue12getMetaClassEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258ede OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassC2Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258f10 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue9MetaClass5allocEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258f58 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueuenwEm
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258f6c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC1Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258f9c OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueueC2Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002258fcc OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9workQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259042 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19getDefaultWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259050 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19setDefaultWorkQueueEPS_
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800225905e OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue13addWorkSourceEP17IO80211WorkSource
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259098 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue16removeWorkSourceEP17IO80211WorkSource
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022590d2 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue20enableAllWorkSourcesEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022590e4 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue21disableAllWorkSourcesEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022590f6 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9runActionEPFiP8OSObjectPvS2_S2_S2_ES1_S2_S2_S2_S2_
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259108 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue14runActionBlockEU13block_pointerFivE
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259112 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue12commandSleepEPvy
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259188 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue13commandWakeupEPv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022591a0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue20deprecatedWakeupGateEPvb
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022591b2 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedSleepGateEPvj
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022591c4 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedSleepGateEPvyj
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022591d6 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue18deprecatedOpenGateEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022591e8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue19deprecatedCloseGateEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022591fa OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue9getThreadEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259202 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue19enableAllInterruptsEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259208 OWNER=com.apple.iokit.IO80211Family NAME=__ZNK16IO80211WorkQueue20disableAllInterruptsEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff800225920e OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9MetaClassD0Ev
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002259218 OWNER=com.apple.iokit.IO80211Family NAME=__GLOBAL__sub_I_IO80211WorkQueue.cpp
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002264374 OWNER=com.apple.iokit.IO80211Family NAME=__ZN23IO80211SkywalkInterface12getWorkQueueEv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022b2712 OWNER=com.apple.iokit.IO80211Family NAME=__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022b2784 OWNER=com.apple.iokit.IO80211Family NAME=__ZN17IO80211PostOffice14initWithParamsEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022c3c2e OWNER=com.apple.iokit.IO80211Family NAME=__ZN15WCLTimerFactory15allocWithParamsEP16IO80211WorkQueueS1_P11CCLogStream
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022c3cb0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN15WCLTimerFactory4initEP16IO80211WorkQueueS1_P11CCLogStream
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022e3d96 OWNER=com.apple.iokit.IO80211Family NAME=__ZN19IO80211TimerFactory15allocWithParamsEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80022e3e24 OWNER=com.apple.iokit.IO80211Family NAME=__ZN19IO80211TimerFactory4initEP16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023b2b80 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN21IO80211TrafficMonitor13initWithParamEP16IO80211WorkQueueE11_os_log_fmt
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023b2bc0 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN21IO80211TrafficMonitor13initWithParamEP16IO80211WorkQueueE11_os_log_fmt_0
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023b2bf0 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN21IO80211TrafficMonitor13initWithParamEP16IO80211WorkQueueE11_os_log_fmt_1
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023d3ca0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue9metaClassE
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023d3ca8 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue10superClassE
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023d3cb0 OWNER=com.apple.iokit.IO80211Family NAME=__ZTV16IO80211WorkQueue
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023d3ed0 OWNER=com.apple.iokit.IO80211Family NAME=__ZTVN16IO80211WorkQueue9MetaClassE
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023f7cf0 OWNER=com.apple.iokit.IO80211Family NAME=__ZN16IO80211WorkQueue10gMetaClassE
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023fd500 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN22IO80211IORecursiveLock14initWithParamsEP16IO80211WorkQueueE20kalloc_type_view_107
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023fe240 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN18IO80211CommandGate14initWithParamsEP8OSObjectP16IO80211WorkQueueE19kalloc_type_view_63
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023fe600 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN21IO80211TrafficMonitor13initWithParamEP16IO80211WorkQueueE20kalloc_type_view_291
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023ff240 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN14WCLTimerSource4initEP8OSObjectP16IO80211WorkQueueS3_PFvS1_P18IO80211TimerSourceEE19kalloc_type_view_55
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80023ffcc0 OWNER=com.apple.iokit.IO80211Family NAME=__ZZ19IO80211AllocBPFNodejP8OSObjectMS_FjP6__mbufPvEP16IO80211WorkQueueMS_FijjEE20kalloc_type_view_401
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002400940 OWNER=com.apple.iokit.IO80211Family NAME=__ZL20IO80211WorkQueue_ktv
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002403a00 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN17IO80211PostOffice14initWithParamsEP16IO80211WorkQueueE19kalloc_type_view_78
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff80024048c0 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN15WCLTimerFactory4initEP16IO80211WorkQueueS1_P11CCLogStreamE19kalloc_type_view_78
+KERNEL_WORKQUEUE_SYMBOL ADDRESS=0xffffff8002405540 OWNER=com.apple.iokit.IO80211Family NAME=__ZZN19IO80211TimerFactory4initEP16IO80211WorkQueueE19kalloc_type_view_58
+STAGE156_CORE_CALLBACK_RECHECK NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv ADDRESS=0xffffff8001591f70 OWNER=com.apple.driver.AppleBCMWLANCoreMac
+STAGE156_CORE_CALLBACK_RECHECK NAME=__ZNK16AppleBCMWLANCore12getWorkQueueEv ADDRESS=0xffffff800159203c OWNER=com.apple.driver.AppleBCMWLANCoreMac
+
+STAGE157_INTERPRETATION=STATIC_ABI_AND_CALLGRAPH_ONLY; DO_NOT_IMPLEMENT_QUEUE_CREATION_OR_OWNERSHIP_FROM_THIS_REPORT_ALONE
+STAGE157_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE157_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE157 ==========
