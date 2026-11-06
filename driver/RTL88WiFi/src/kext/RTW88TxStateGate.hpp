@@ -45,6 +45,7 @@ public:
         }
     private:
         friend class RTW88TxStateGate;
+        friend class MutationLease;
         explicit TransmitLease(RTW88TxStateGate *gate) : _gate(gate) {}
         RTW88TxStateGate *_gate;
     };
@@ -71,6 +72,24 @@ public:
             return _gate &&
                 __atomic_load_n(&_gate->_state, __ATOMIC_ACQUIRE) == kMutationBit;
         }
+        /* Atomically change exclusive writer ownership into one TX reader.
+         * Unlike finish()+tryEnterTransmit(), this has no admission gap:
+         * another writer cannot replace the just-published key snapshot
+         * before its EAPOL frame is constructed and synchronously submitted. */
+        TransmitLease downgrade()
+        {
+            if (!ready())
+                return TransmitLease();
+            RTW88TxStateGate *gate = _gate;
+            uint32_t expected = kMutationBit;
+            if (!__atomic_compare_exchange_n(&gate->_state, &expected, 1U,
+                                             false, __ATOMIC_ACQ_REL,
+                                             __ATOMIC_ACQUIRE))
+                return TransmitLease();
+            _gate = nullptr;
+            return TransmitLease(gate);
+        }
+
         bool finish()
         {
             if (!ready())
