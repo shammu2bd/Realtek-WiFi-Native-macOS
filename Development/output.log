@@ -1538,3 +1538,18 @@ STAGE89_V20_LOGS: Development/Logs/stage89-v20/run-20261105-112544-ad7cb1db9420/
 - Important: helper is not wired into RTW88IEEE80211.cpp; Stage93 production blockers carry forward. No target-Mac compile, link, signing, installation, loading or hardware TX test.
 - PR #4: remains draft/unmerged; pre-Stage94 GitHub check was mergeable=false and branch comparison was diverged (112 ahead / 64 behind main).
 - Native queue registration/enabling/interface publication/radio start remain blocked.
+
+## Stage94 integrated radio TX synchronization — 20261106
+- Branch: work/stage91-tx-submission-callback-v1
+- Validated source head: 53f0227f7d8dc6b3d3923d6efb8007c1e402d390
+- GitHub Actions: PASS — run 42150985888 (Ubuntu 26.04; GNU C++ 15.2.0; Python 3.14.4).
+- Portable gate model: PASS, three four-AC stress runs; includes admission/drain, writer exclusivity, gap-free writer downgrade and per-frame EAPOL isolation.
+- Packed Block Ack concurrency model: PASS.
+- Source integration audit: PASS, 38 checks, 0 blockers.
+- Integration: gate now wired into four direct RTW88 TX entry points and WMM path; key/STA/target-BSS/channel/BA/handshake mutations are serialized; PN/QoS counters remain monotonic.
+- CAM retirement: result-bearing PCI/HCI + MAC FIFO drains fail closed; DISABLE_KEY does not clear CAM on timeout; retained key/STA objects are not freed before their drains are confirmed.
+- RX teardown: station remains allocated if RX poll drain times out; stop retries after core stop before VIF/PCI destruction.
+- Full report: Development/Logs/stage94-radio-tx-sync-20261106.md
+- Scope limit: portable Linux-host validation and source audit only; no macOS kernel/IOKit object compile, full kext link, signing, install, load, running-24H32 disassembly, hardware TX/RX or throughput test.
+- Native queue registration/enabling, native interface publication, radio start and PR #4 merge remain BLOCKED. PR #4 remains draft/unmerged.
+- This entry supersedes the earlier Stage94 model-only note above; that entry described the pre-integration state.
