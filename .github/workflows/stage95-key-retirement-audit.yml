@@ -9,6 +9,14 @@ on:
       - 'tests/test-wcl-stage95-key-retirement.py'
       - 'tools/run-stage95-key-retirement-audit.sh'
       - '.github/workflows/stage95-key-retirement-audit.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/**'
+      - 'tests/test-wcl-stage95-key-retirement.py'
+      - 'tools/run-stage95-key-retirement-audit.sh'
+      - '.github/workflows/stage95-key-retirement-audit.yml'
   workflow_dispatch:
 
 permissions:
