@@ -111,7 +111,10 @@ if [[ $RUN_STATUS -eq 0 ]]; then RESULT="PASS"; else RESULT="FAIL"; fi
 } >> Development/output.log
 
 git add -f "$LOG" Development/output.log
-git diff --cached --check
+# Keep raw compiler diagnostics byte-for-byte; they may contain trailing
+# whitespace from included third-party headers. Continue checking source and
+# metadata changes for all other whitespace errors.
+git -c core.whitespace=-trailing-space diff --cached --check
 git commit -m "Stage121: validate native controller primary attachment and build"
 git push origin "$EXPECTED_BRANCH"
 
