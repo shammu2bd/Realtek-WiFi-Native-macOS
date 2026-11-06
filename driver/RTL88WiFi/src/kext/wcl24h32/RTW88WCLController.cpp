@@ -126,10 +126,9 @@ bool RTW88WCLController::start(IOService *provider)
     }
 
     /* Stage D: reserve native Skywalk queue/pool objects while the PCI and
-     * RTW88 owners are still available for orderly unwind. The TX submission
-     * action remains unreachable until a later registration stage enables
-     * queue scheduling; binding here only establishes lifetime ownership.
-     */
+     * RTW88 owners are still available for orderly unwind. Queue scheduling
+     * remains owned by Apple's 24H32 registration helper until the infra
+     * interface commits its queue transaction. */
     _skywalkQueues = new RTW88WCLSkywalkQueues;
     if (!_skywalkQueues || !_skywalkQueues->init()) {
         if (_skywalkQueues) {
@@ -202,8 +201,8 @@ bool RTW88WCLController::start(IOService *provider)
     }
 
     /* Stage E: bind the RX workloop consumer to the now-owned 4 KiB RX pool.
-     * It copies frames into native packet buffers, but its sink remains
-     * rejecting until the registration/completion ABI is closed. */
+     * It copies received Ethernet frames into pool-backed Skywalk packets;
+     * the sink accepts ownership only after native interface registration. */
     _rxAdapter = new RTW88WCLSkywalkRxAdapter;
     if (!_rxAdapter || !_rxAdapter->init(
             this, _workLoop, _skywalkQueues->rxPacketPool(),
@@ -404,10 +403,9 @@ IOReturn RTW88WCLController::releaseNativeResources()
         _rxAdapter = nullptr;
     }
 
-    /* The RX adapter transfers accepted native packets into the controller's
-     * bounded ready ring. Recycle those packets while their pool still exists;
-     * on a pool error, retain the queue owner and PCI/backend context so a later
-     * stop/free attempt can retry rather than releasing live packet memory. */
+    /* Return any packets retained by an earlier partial RX handoff while the
+     * pool still exists. On a pool error, retain the queue owner and PCI/backend
+     * context so a later stop/free attempt can retry safely. */
     const IOReturn recycleStatus = recycleStagedRxPackets();
     if (recycleStatus != kIOReturnSuccess) {
         IOLog("rtl88wifi-wcl: staged RX packet recycle deferred: 0x%08x\n",
