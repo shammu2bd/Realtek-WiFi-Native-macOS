@@ -18,6 +18,7 @@ class RTW88WCLSkywalkQueues;
 class RTW88WCLSkywalkRxAdapter;
 class RTW88WCLSkywalkTxAdapter;
 class RTW88WCLTxCompletionWorkQueue;
+class RTW88WCLInfraInterface;
 class IOSkywalkPacket;
 
 class RTW88WCLController final : public IO80211Controller,
@@ -69,6 +70,8 @@ public:
     void unbindRadioBackend();
     RTW88IEEE80211 *radioBackend() const { return _radio; }
     RTW88WCLPCIBackend *pciBackend() const { return _pciBackend; }
+    RTW88WCLSkywalkQueues *skywalkQueues() const { return _skywalkQueues; }
+    IOReturn markSkywalkQueuesRegistered(bool registered);
 
     /* RTW88WCLPCIBackendClient: no native TX queue is registered yet. */
     void rtw88WCLResumeTransmit() override;
@@ -108,7 +111,8 @@ private:
     volatile uint32_t _packetPathState = kPacketPathDisabled;
     volatile uint32_t _packetPathInFlight = 0;
     RTW88WCLPCIBackend *_pciBackend = nullptr; // retained
-    RTW88WCLSkywalkQueues *_skywalkQueues = nullptr; // retained, unregistered
+    RTW88WCLSkywalkQueues *_skywalkQueues = nullptr; // retained by controller
+    RTW88WCLInfraInterface *_infraInterface = nullptr; // retained child service
     RTW88WCLSkywalkRxAdapter *_rxAdapter = nullptr; // retained, workloop-bound
     RTW88WCLSkywalkTxAdapter *_txAdapter = nullptr; // retained, queue-owner-bound
     RTW88WCLTxCompletionWorkQueue *_txCompletionWorker = nullptr; // retained, workloop-bound
