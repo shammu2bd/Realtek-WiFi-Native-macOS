@@ -51,35 +51,57 @@ assert "matchesApple24H32Template(_registrationInfo, address.octet)" in builder
 assert builder.index("initRegistrationInfo(") < builder.index("applyAppleProducerWrites(")
 assert builder.index("matchesApple24H32Template(") < builder.index("_registrationInfoPrepared = true;")
 
-# Stage 11 must not use the newly built payload to register queues or publish
-# a BSD interface. Keep the start path fail-closed and registration calls fenced.
-def strip_comments(source):
-    source = re.sub(r"/\*.*?\*/", "", source, flags=re.S)
-    return re.sub(r"//[^\n]*", "", source)
-
-infra_code = strip_comments(infra_cpp)
-controller_code = strip_comments(CONTROLLER.read_text())
-queue_code = strip_comments(QUEUES.read_text())
+# Stage 108 now uses the audited builder in a registration transaction.
+# This does not authorize controller attachment or radio start: the controller
+# retains its fail-closed publication barrier until later datapath stages pass.
+controller = CONTROLLER.read_text()
+queues = QUEUES.read_text()
+infra_code = infra_cpp
 start_start = infra_code.index("bool RTW88WCLInfraInterface::start(")
-start_end = infra_code.index("void RTW88WCLInfraInterface::stop(", start_start)
+start_end = infra_code.index("IOReturn RTW88WCLInfraInterface::shutdownForController(", start_start)
 start_code = infra_code[start_start:start_end]
-assert "return false;" in start_code
-assert "prepareRegistrationInfo(" not in start_code
-for code in (infra_code, controller_code, queue_code):
-    assert not re.search(r"(?:->|\.)\s*register(?:Infra)?EthernetInterface\s*\(", code)
+assert "prepareRegistrationInfo(address)" in start_code
+assert "beginRegistrationTransaction()" in start_code
+assert "registerInfraEthernetInterface(" in start_code
+assert "commitRegistrationTransaction()" in start_code
+assert start_code.index("beginRegistrationTransaction()") < start_code.index("registerInfraEthernetInterface(")
+assert start_code.index("registerInfraEthernetInterface(") < start_code.index("commitRegistrationTransaction()")
+assert "abortRegistrationTransaction()" in start_code
 
-# Compile and execute the header-level layout/write-preservation test.
+shutdown_start = infra_code.index("IOReturn RTW88WCLInfraInterface::shutdownForController()")
+shutdown_end = infra_code.index("void RTW88WCLInfraInterface::stop(", shutdown_start)
+shutdown_code = infra_code[shutdown_start:shutdown_end]
+assert "beginDeregistrationTransaction()" in shutdown_code
+assert "deregisterEthernetInterface(0)" in shutdown_code
+assert "finishDeregistrationTransaction()" in shutdown_code
+assert "abortDeregistrationTransaction()" in shutdown_code
+
+assert "refusing publication until Skywalk datapath is ready" in controller
+assert "goto fail;" in controller
+assert "RTW88WCLRegistrationTransaction::Transaction _registrationTransaction" in (KEXT / "RTW88WCLSkywalkQueues.hpp").read_text()
+assert "_registrationTransaction.ownsQueues()" in queues
+assert "setRegistered(bool registered)" not in queues
+assert "IOSkywalkQueueSet::createWithQueues" not in queues
+assert "IOSkywalkLogicalLinkInfo" not in queues
+
+# Compile and execute the Stage11 payload-layout test plus the Stage108
+# registration state-machine test using the host compiler.
 compiler = os.environ.get("CXX", "c++")
-with tempfile.TemporaryDirectory(prefix="rtl88wcl-stage11-") as tmp:
-    binary = Path(tmp) / "registration-info-test"
-    subprocess.run(
-        [compiler, "-std=c++17", "-Wall", "-Wextra", "-Werror", "-O2",
-         str(ROOT / "tests/wcl_registration_info_stage11_test.cpp"), "-o", str(binary)],
-        check=True,
-    )
-    subprocess.run([str(binary)], check=True)
+tests = (
+    (ROOT / "tests/wcl_registration_info_stage11_test.cpp", "registration-info-test"),
+    (ROOT / "tests/wcl_registration_transaction_stage108_test.cpp", "registration-transaction-test"),
+)
+with tempfile.TemporaryDirectory(prefix="rtl88wcl-registration-") as tmp:
+    for source, name in tests:
+        binary = Path(tmp) / name
+        subprocess.run(
+            [compiler, "-std=c++17", "-Wall", "-Wextra", "-Werror", "-O2",
+             str(source), "-o", str(binary)],
+            check=True,
+        )
+        subprocess.run([str(binary)], check=True)
 
 print("PASS: RegistrationInfo buffer is 0x130 bytes and 8-byte aligned")
 print("PASS: builder follows initRegistrationInfo(option=1, size=0x130)")
-print("PASS: Apple 24H32 opaque writes are applied without touching other bytes")
-print("PASS: payload builder remains disconnected from start/registration")
+print("PASS: Stage108 registration/deregistration uses explicit queue-owner state")
+print("PASS: controller publication and radio startup remain fail-closed")
