@@ -278,14 +278,14 @@ check("PACKED_BA_SNAPSHOT",
       "snapshot() const" in ba and
       "__atomic_load_n(&_state, __ATOMIC_ACQUIRE)" in ba and
       "__atomic_store_n(&_state" in ba and
-      "_txBAState.snapshot()" in data_tx and
+      "_txBaState.snapshot()" in data_tx and
       "_txBaActive" not in cpp + hpp,
       "TX observes active+TID from one packed atomic BA snapshot")
 back_action = function(cpp, "void RTW88IEEE80211::handleBackAction(")
 check("BA_MUTATIONS_DRAIN_TX",
       back_action.count("beginTxStateMutation()") >= 2 and
-      "_txBAState.activate(tid)" in back_action and
-      "_txBAState.clear()" in back_action,
+      "_txBaState.activate(tid)" in back_action and
+      "_txBaState.clear()" in back_action,
       "ADDBA response and DELBA state changes are serialized against all WMM submitters")
 
 # Sequence/PN values are monotonically allocated, never reset by key/STA teardown.
