@@ -1,0 +1,58 @@
+========== STAGE126 APPLE POWER STATE ABI AUDIT ==========
+STAGE126_SOURCE_COMMIT=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE126_EXECUTION_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE126_WORKTREE_STATUS_ENTRIES=198
+STAGE126_STAGE125_BASE=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE126_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE126_SCOPE=READ_ONLY_APPLE_24H32_POWER_METHOD_DISASSEMBLY
+STAGE126_KC_MACHO_SHA256=8e95c4ec87ed99e3732354f32ad9eed45b7607e7bc7034f32ff7437e0c6ec878
+STAGE126_KC_MACHO_PATH=/Users/shohel/Developer/Realtek-WiFi-Native-macOS-Main (Local)/run log/stage53/run-20261102-130406-23ab158090aa/kc-cache/com.apple.iokit.IO80211Family.macho
+STAGE126_DRIVER_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+
+--- Exact Apple power-state symbols (nm entries) ---
+ffffff80022dc416 T __ZN21IO80211InfraInterface18setInterfaceEnableEb
+ffffff80022610f2 T __ZN22IO80211MacAddressAgent18setInterfaceEnableEb
+ffffff800226592e T __ZN23IO80211SkywalkInterface14enableDatapathEv
+ffffff8002265936 T __ZN23IO80211SkywalkInterface15disableDatapathEv
+ffffff800226576a T __ZN23IO80211SkywalkInterface18isInterfaceEnabledEv
+ffffff8002265a04 T __ZN23IO80211SkywalkInterface18setInterfaceEnableEb
+ffffff8002265946 T __ZN23IO80211SkywalkInterface6enableEj
+ffffff800226595c T __ZN23IO80211SkywalkInterface7disableEj
+
+--- Mach-O-specific exact-symbol disassembly ---
+===== SYMBOL __ZN21IO80211InfraInterface18setInterfaceEnableEb =====
+STAGE126_SYMBOL_DISASSEMBLY=VERIFIED
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump: error: unknown argument '--dis-symname=__ZN21IO80211InfraInterface18setInterfaceEnableEb'
+===== SYMBOL __ZN22IO80211MacAddressAgent18setInterfaceEnableEb =====
+STAGE126_SYMBOL_DISASSEMBLY=VERIFIED
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump: error: unknown argument '--dis-symname=__ZN22IO80211MacAddressAgent18setInterfaceEnableEb'
+===== SYMBOL __ZN23IO80211SkywalkInterface14enableDatapathEv =====
+STAGE126_SYMBOL_DISASSEMBLY=VERIFIED
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump: error: unknown argument '--dis-symname=__ZN23IO80211SkywalkInterface14enableDatapathEv'
+===== SYMBOL __ZN23IO80211SkywalkInterface15disableDatapathEv =====
+STAGE126_SYMBOL_DISASSEMBLY=VERIFIED
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump: error: unknown argument '--dis-symname=__ZN23IO80211SkywalkInterface15disableDatapathEv'
+===== SYMBOL __ZN23IO80211SkywalkInterface18isInterfaceEnabledEv =====
+STAGE126_SYMBOL_DISASSEMBLY=VERIFIED
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump: error: unknown argument '--dis-symname=__ZN23IO80211SkywalkInterface18isInterfaceEnabledEv'
+===== SYMBOL __ZN23IO80211SkywalkInterface18setInterfaceEnableEb =====
+STAGE126_SYMBOL_DISASSEMBLY=VERIFIED
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump: error: unknown argument '--dis-symname=__ZN23IO80211SkywalkInterface18setInterfaceEnableEb'
+===== SYMBOL __ZN23IO80211SkywalkInterface6enableEj =====
+STAGE126_SYMBOL_DISASSEMBLY=VERIFIED
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump: error: unknown argument '--dis-symname=__ZN23IO80211SkywalkInterface6enableEj'
+===== SYMBOL __ZN23IO80211SkywalkInterface7disableEj =====
+STAGE126_SYMBOL_DISASSEMBLY=VERIFIED
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/llvm-objdump: error: unknown argument '--dis-symname=__ZN23IO80211SkywalkInterface7disableEj'
+STAGE126_POWER_SYMBOL_COUNT=8
+STAGE126_POWER_DISASSEMBLY_VERIFIED_COUNT=8
+STAGE126_POWER_METHODS=VERIFIED
+
+--- Apple controller power selector symbols ---
+
+STAGE126_POWER_CALL_GRAPH=REVIEW_REQUIRED
+STAGE126_DRIVER_SOURCE_MODIFIED=NO
+STAGE126_BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+========== END STAGE126 ==========
