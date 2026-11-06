@@ -753,9 +753,10 @@ void RTW88WCLController::injectRxFrame(mbuf_t packet)
         return;
     }
 
-    /* enqueueFrame consumes the mbuf on both success and failure. The native
-     * RX completion queue is not registered yet, so the workloop sink below
-     * deliberately drops frames after staging rather than exposing them. */
+    /* enqueueFrame consumes the mbuf on both success and failure. The
+     * workloop sink rejects packets until both the queue-owner transaction
+     * and InfraProtocol registration have committed; after that it transfers
+     * accepted pool-backed packets into the 24H32 networking RX path. */
     (void)_rxAdapter->enqueueFrame(packet);
     leavePacketPath();
 }
