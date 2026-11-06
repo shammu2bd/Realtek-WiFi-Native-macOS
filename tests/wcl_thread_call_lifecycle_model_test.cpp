@@ -54,7 +54,7 @@ public:
         ++active;
     }
     bool cancelWait() {
-        std::lock_guard<std::mutex> guard(lock);
+        std::unique_lock<std::mutex> guard(lock);
         if (pending) {
             --pending; // cancelled=true: this path does not join active work
             return true;
