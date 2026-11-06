@@ -792,6 +792,20 @@ void RTW88IEEE80211::releaseSta()
 {
     __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
 
+    /* A failed CAM drain leaves a hardware key slot potentially live. Keep
+     * both the key object and station allocation until a later retry succeeds
+     * or the whole PCI core has been stopped. Never free station drv_priv
+     * while a descriptor/CAM key may still refer to it. */
+    {
+        auto mutation = beginTxStateMutation();
+        if (_ptkConf || _gtkConf) {
+            IOLog("rtw88: retaining STA while PTK/GTK CAM retirement is pending\\n");
+            mutation.finish();
+            return;
+        }
+        mutation.finish();
+    }
+
     /* rtw88_unregister_sta() drains RX datapath readers and may sleep. Do it
      * before taking the radio TX mutation lease: an RX callback that needs to
      * mutate radio state must not deadlock behind a writer waiting for NAPI. */
@@ -804,7 +818,8 @@ void RTW88IEEE80211::releaseSta()
     _baRecovery.reset();
     if (_lock) IOLockUnlock(_lock);
     if (_sta) {
-        if (_hw && _hw->ops && _hw->ops->sta_remove && _vif)
+        if (__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) &&
+            _hw && _hw->ops && _hw->ops->sta_remove && _vif)
             _hw->ops->sta_remove(_hw, _vif, _sta);
 
         if (quiesced)
@@ -1113,6 +1128,13 @@ void RTW88IEEE80211::stop()
      * NAPI/RX workers; those callbacks must be free to acquire the radio gate
      * and observe the powered-off state rather than deadlock behind teardown. */
     powerOff();
+
+    /* If CAM removal timed out while the core was running, the PCI/core stop
+     * has now fenced hardware references. Clear retained software key objects
+     * and release the station before VIF/PCI memory is removed. releaseSta()
+     * skips the hardware sta_remove callback once powered=false. */
+    clearKeys();
+    releaseSta();
 
     struct ieee80211_hw *hw = nullptr;
     struct ieee80211_vif *vif = nullptr;
@@ -3530,8 +3552,17 @@ IOReturn RTW88IEEE80211::cmdConnect(const char *ssid, const char *password, cons
     if (!_powered || !_connectTC) return kIOReturnNotReady;
     clearKeys();
     releaseSta();
-    /* A new join supersedes any previous externally-visible RUN state. */
-    /* clearKeys() already published the disconnected latch under the writer gate. */
+    /* A timed-out CAM retirement deliberately retains its key and station
+     * objects. Do not reuse that station for a different BSSID/key generation. */
+    {
+        auto mutation = beginTxStateMutation();
+        const bool keyRetirementPending = _ptkConf || _gtkConf || _sta;
+        mutation.finish();
+        if (keyRetirementPending) {
+            IOLog("rtw88: refusing new join while previous CAM key/station retirement is pending\\n");
+            return kIOReturnBusy;
+        }
+    }
 
     /* Find the SSID in our BSS list */
     IOLockLock(_bssLock);
@@ -4616,6 +4647,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             auto mutation = beginTxStateMutation();
             if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
                 __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+                !associatedVisible() ||
                 __atomic_load_n(&_state, __ATOMIC_ACQUIRE) != RTW88_STATE_CONNECTED ||
                 !__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE) || _handshakePending || !_ptkConf) {
                 IOLog("rtw88: group M1 dropped: no established PTK state=%d\n",
@@ -4699,6 +4731,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             auto mutation = beginTxStateMutation();
             if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
                 __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+                !associatedVisible() ||
                 (_snonceValid && memcmp(data + 9, _replayCtr, 8) < 0) ||
                 (__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE) &&
                  memcmp(data + 9, _installedM3ReplayCtr, 8) <= 0)) {
@@ -4744,6 +4777,7 @@ void RTW88IEEE80211::handleEAPOL(const uint8_t *data, uint32_t len)
             auto mutation = beginTxStateMutation();
             if (!__atomic_load_n(&_powered, __ATOMIC_ACQUIRE) ||
                 __atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+                !associatedVisible() ||
                 !_snonceValid || memcmp(data + 17, _anonce, 32) != 0 ||
                 memcmp(data + 9, _replayCtr, 8) < 0 ||
                 (!_handshakePending && !__atomic_load_n(&_m3KeysInstalled, __ATOMIC_ACQUIRE))) {
