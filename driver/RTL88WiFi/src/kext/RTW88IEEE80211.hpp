@@ -345,7 +345,8 @@ private:
     void      handleEAPOL(const uint8_t *data, uint32_t len);
     bool      deriveKeys(const uint8_t *anonce, const uint8_t *snonce);
     bool      sendEAPOLKey(int step, const uint8_t *replay_counter,
-                            bool install, bool ack, bool mic);
+                            bool install, bool ack, bool mic,
+                            RTW88TxStateGate::TransmitLease *existingLease = nullptr);
 
     /* A-MPDU BlockAck (aggregation) negotiation */
     bool      htAllowed() const;   /* HT/VHT/A-MPDU usable on this link? */
