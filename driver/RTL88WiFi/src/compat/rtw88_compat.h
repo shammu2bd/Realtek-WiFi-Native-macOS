@@ -149,6 +149,8 @@ typedef atomic_t refcount_t;
 
 int  rtw88_compat_init(void);
 void rtw88_compat_exit(void);
+/* Transfer skb ownership to deferred reaper; false means fail-closed quarantine. */
+bool rtw88_defer_skb_free(struct sk_buff *skb);
 
 /* Set the firmware resources directory (call before rtw_pci_probe) */
 void rtw88_set_fw_dir(const char *dir);
