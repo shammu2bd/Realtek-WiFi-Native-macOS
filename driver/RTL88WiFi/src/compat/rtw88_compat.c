@@ -292,6 +292,49 @@ bool rtw88_defer_skb_free(struct sk_buff *skb)
     return true;
 }
 
+bool rtw88_compat_quiesce_skb_free_reaper(void)
+{
+    /* Close every producer path before joining the thread call. The producer
+     * count covers enqueue plus thread_call_enter, so no new submission can
+     * appear after it reaches zero.
+     */
+    __atomic_fetch_or(&g_tx_skb_free_producer_gate,
+                      RTW88_SKB_FREE_GATE_CLOSED, __ATOMIC_ACQ_REL);
+    while ((__atomic_load_n(&g_tx_skb_free_producer_gate, __ATOMIC_ACQUIRE) &
+            RTW88_SKB_FREE_GATE_PRODUCERS) != 0)
+        IOSleep(1);
+
+    if (g_tx_skb_free_reaper_call) {
+        /* XNU cancel_wait may cancel a pending invocation without waiting for
+         * another already-running invocation of a non-ONCE call. isactive is
+         * the final join after admission has been closed and producers left.
+         */
+        (void)thread_call_cancel_wait(g_tx_skb_free_reaper_call);
+        while (thread_call_isactive(g_tx_skb_free_reaper_call))
+            IOSleep(1);
+    }
+
+    /* No callback or producer can touch the queue now. Use this passive
+     * teardown thread as the sole final consumer, then prove it is empty.
+     */
+    __atomic_store_n(&g_tx_skb_free_reaper_state, 0U, __ATOMIC_RELEASE);
+    rtw88_skb_free_drain_batch();
+    if (!rtw88_mpsc_bounded_queue_empty(&g_tx_skb_free_queue) ||
+        __atomic_load_n(&g_tx_skb_free_outstanding, __ATOMIC_ACQUIRE) != 0) {
+        rtw88_candidate_log("rtw88: deferred TX skb queue did not drain; retaining compat runtime\n");
+        return false;
+    }
+
+    if (g_tx_skb_free_reaper_call) {
+        if (!thread_call_free(g_tx_skb_free_reaper_call)) {
+            rtw88_candidate_log("rtw88: deferred TX skb thread-call still active; retaining compat runtime\n");
+            return false;
+        }
+        g_tx_skb_free_reaper_call = NULL;
+    }
+    return true;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Workqueue implementation (kernel threads + IOLock)                  */
 /* ------------------------------------------------------------------ */
@@ -1286,37 +1329,16 @@ bool rtw88_compat_exit(void)
     destroy_workqueue(system_long_wq);
     system_wq = system_long_wq = NULL;
 
-    /* Join the entire status dispatch, including completion reporting before
-     * the deferred-free enqueue. No radio/worker owner may be dropped sooner.
-     */
+    /* No radio status callback may publish another skb after this point. */
     rtw88_compat_quiesce_tx_status();
-
-    __atomic_fetch_or(&g_tx_skb_free_producer_gate,
-                      RTW88_SKB_FREE_GATE_CLOSED, __ATOMIC_ACQ_REL);
-    while ((__atomic_load_n(&g_tx_skb_free_producer_gate, __ATOMIC_ACQUIRE) &
-            RTW88_SKB_FREE_GATE_PRODUCERS) != 0)
-        IOSleep(1);
-
-    if (g_tx_skb_free_reaper_call) {
-        (void)thread_call_cancel_wait(g_tx_skb_free_reaper_call);
-        __atomic_store_n(&g_tx_skb_free_reaper_state, 0U, __ATOMIC_RELEASE);
-        rtw88_skb_free_drain_batch();
-        if (!rtw88_mpsc_bounded_queue_empty(&g_tx_skb_free_queue) ||
-            __atomic_load_n(&g_tx_skb_free_outstanding, __ATOMIC_ACQUIRE) != 0) {
-            rtw88_candidate_log("rtw88: deferred TX skb queue did not drain; retaining compat runtime\n");
-            return false;
-        }
-        if (!thread_call_free(g_tx_skb_free_reaper_call)) {
-            rtw88_candidate_log("rtw88: deferred TX skb thread-call still active; retaining compat runtime\n");
-            return false;
-        }
-        g_tx_skb_free_reaper_call = NULL;
-    }
+    if (!rtw88_compat_quiesce_skb_free_reaper())
+        return false;
 
     const uint32_t rejected =
         __atomic_exchange_n(&g_tx_skb_free_rejected, 0U, __ATOMIC_ACQ_REL);
     if (rejected)
-        rtw88_candidate_log("rtw88: %u TX skb frees quarantined after callback/reaper closure\n",
+        rtw88_candidate_log("rtw88: %u TX skb frees quarantined after callback/reaper closure
+",
                             rejected);
     if (work_state_lock) {
         IOLockFree(work_state_lock);
