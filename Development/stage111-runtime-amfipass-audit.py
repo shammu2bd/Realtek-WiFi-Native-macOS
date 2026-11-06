@@ -337,7 +337,7 @@ def main():
         rc, output = run_cmd(
             ["ioreg", "-p", "IOService", "-r", "-c", class_name, "-l", "-w0"], 25)
         matched = bool(rc == 0 and re.search(
-            r"<class\\s+" + re.escape(class_name) + r"(?:[,>])", output))
+            r"<class\s+" + re.escape(class_name) + r"(?:[,>])", output))
         state = "MATCH" if matched else ("NO_MATCH" if rc == 0 else "UNKNOWN")
         emit("IOREG_" + label + "_EXIT=" + str(rc))
         emit_block(label + " CLASS QUERY", output, 24, 420)
@@ -357,9 +357,9 @@ def main():
         ["ioreg", "-p", "IOService", "-n", "pci10ec,c821", "-l", "-w0"], 25)
     pci_lines = [line for line in pci_text.splitlines()
                  if "pci10ec,c821" in line.lower() or
-                 re.search(r"<class\\s+IOPCIDevice", line)]
+                 re.search(r"<class\s+IOPCIDevice", line)]
     emit("IOREG_RTL8821CE_PCI_NODE_EXIT=" + str(pci_rc))
-    emit_block("RTL8821CE PCI NODE", "\\n".join(pci_lines), 16, 420)
+    emit_block("RTL8821CE PCI NODE", "\n".join(pci_lines), 16, 420)
     realtek_pci_state = "YES" if pci_rc == 0 and any(
         "pci10ec,c821" in line.lower() for line in pci_lines) else (
         "NO_MATCH" if pci_rc == 0 else "UNKNOWN")
@@ -435,7 +435,7 @@ def main():
     # Summary deliberately separates "configured" from "actually loaded" and "hardware attached".
     amfi_config = "PRESENT_ENABLED" if any(x["enabled"] for x in amfi_rows) else ("PRESENT_DISABLED" if amfi_rows else "MISSING")
     order_summary = amfipass_order
-    activation = "BLOCKED_UNSIGNED_AND_NOT_AUTHORIZED"
+    activation = "UNPROVEN_NATIVE_FRONTEND_RUNTIME; AUDIT_DOES_NOT_LOAD_OR_ACTIVATE_KEXTS"
     result = "AUDIT_COMPLETE" if efi_state == "PARSED" and counts["FAIL"] == 0 else "REVIEW_REQUIRED"
     emit("========== STAGE111 SUMMARY ==========")
     emit("STAGE111_PASS_COUNT=" + str(counts["PASS"]))
@@ -459,7 +459,7 @@ def main():
     emit("STAGE111_LIVE_AMFIPASS_BETA_FLAG_PRESENT=" + str("-amfipassbeta" in [x.lower() for x in live_tokens]))
     emit("STAGE111_SIP_STATE=" + sip)
     emit("STAGE111_DETAIL_LOG=" + str(log_path))
-    emit("BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN")
+    emit("BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_PERFORMED_BY_RUNNER MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN")
     emit("STAGE111_NATIVE_ACTIVATION=" + activation)
     emit("STAGE111_PR4_MERGE=BLOCKED")
 
