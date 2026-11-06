@@ -1,0 +1,77 @@
+========== STAGE123 CONTROLLED RUNTIME ACTIVATION ==========
+STAGE123_TARGET=macOS_15.8.1_24H32_x86_64
+STAGE123_EXPECTED_BINARY_SHA256=de7cf579008a650cc7a12fd4f15005cdb7347daac335edc193e1f5be21b11611
+STAGE123_SCOPE=ONE_TRANSIENT_KMUTIL_LOAD_ATTEMPT
+STAGE123_SIGNING=NOT_AUTHORIZED INSTALL=PERMANENT_NOT_AUTHORIZED
+STAGE123_OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_AUTHORIZED
+STAGE123_EXACT_BUILD_MATCHES=1
+STAGE123_BUNDLE=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+STAGE123_BINARY_SHA256=de7cf579008a650cc7a12fd4f15005cdb7347daac335edc193e1f5be21b11611
+--- Bundle metadata ---
+{
+  "CFBundleDevelopmentRegion" => "English"
+  "CFBundleDisplayName" => "RTL88WiFi for RTL88xx"
+  "CFBundleExecutable" => "RTL88WiFiNative"
+  "CFBundleGetInfoString" => "RTL88WiFi 1.0.11 — Skywalk Private Wi-Fi Address controls"
+  "CFBundleIdentifier" => "io.github.x1ren41l.RTL88WiFi"
+  "CFBundleInfoDictionaryVersion" => "6.0"
+  "CFBundleName" => "RTL88WiFi Native"
+  "CFBundlePackageType" => "KEXT"
+  "CFBundleShortVersionString" => "1.0.11"
+  "CFBundleSignature" => "????"
+  "CFBundleSupportedPlatforms" => [
+    0 => "MacOSX"
+  ]
+  "CFBundleVersion" => "1.0.11"
+  "IOKitPersonalities" => {
+    "RTL88WiFiNative_8821CE" => {
+      "CFBundleIdentifier" => "io.github.x1ren41l.RTL88WiFi"
+      "IOClass" => "RTW88WCLController"
+      "IOMatchCategory" => "IODefaultMatchCategory"
+      "IOPCIMatch" => "0xC82110EC 0xB82110EC"
+      "IOProbeScore" => 5000
+      "IOProviderClass" => "IOPCIDevice"
+    }
+  }
+  "LSMinimumSystemVersion" => "15.0"
+  "NSHumanReadableCopyright" => "GPL-2.0 OR BSD-3-Clause"
+  "OSBundleCompatibleVersion" => "1.0.0"
+  "OSBundleLibraries" => {
+    "com.apple.iokit.IO80211Family" => "1200.13.1"
+    "com.apple.iokit.IONetworkingFamily" => "3.4"
+    "com.apple.iokit.IOPCIFamily" => "2.9"
+    "com.apple.iokit.IOSkywalkFamily" => "1.0"
+    "com.apple.kpi.bsd" => "20.0.0"
+    "com.apple.kpi.iokit" => "20.0.0"
+    "com.apple.kpi.libkern" => "20.0.0"
+    "com.apple.kpi.mach" => "20.0.0"
+    "com.apple.kpi.unsupported" => "20.0.0"
+  }
+  "OSBundleRequired" => "Network-Root"
+}
+--- Existing signature inspection only; no signing ---
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext: code object is not signed at all
+STAGE123_CODESIGN_INSPECTION_EXIT=1
+--- One transient runtime load attempt ---
+Error Domain=KMErrorDomain Code=30 "Validating extension failed: Kext io.github.x1ren41l.RTL88WiFi v1.0.11 in executable kext bundle io.github.x1ren41l.RTL88WiFi at /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext:
+
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext/Contents
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext/Contents/MacOS
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext/Contents/Info.plist
+Authenticating extension failed: Bad code signature" UserInfo={NSLocalizedDescription=Validating extension failed: Kext io.github.x1ren41l.RTL88WiFi v1.0.11 in executable kext bundle io.github.x1ren41l.RTL88WiFi at /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext:
+
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext/Contents
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext/Contents/MacOS
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+Filesystem error: Invalid ownership (501:20) should be (0:0) on /private/var/db/KernelExtensionManagement/Staging/io.github.x1ren41l.RTL88WiFi.soAiNF/RTL88WiFiNative.kext/Contents/Info.plist
+Authenticating extension failed: Bad code signature}
+STAGE123_LOAD_RESULT=REJECTED_OR_FAILED
+STAGE123_KMUTIL_EXIT=30
+STAGE123_SECURITY_BYPASS=NOT_ATTEMPTED
+STAGE123_RUNTIME_COLLECTION=NOT_RUN
+STAGE123_INSTALL=PERMANENT_NOT_PERFORMED
+STAGE123_OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+========== END STAGE123 ==========
