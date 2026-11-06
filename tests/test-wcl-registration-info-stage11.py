@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
+KEXT = ROOT / "driver/RTL88WiFi/src/kext/wcl24h32"
 HEADER = ROOT / "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationInfo.hpp"
 INFRA_HPP = ROOT / "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp"
 INFRA_CPP = ROOT / "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp"
@@ -97,6 +98,14 @@ assert "IOSkywalkLogicalLinkInfo" not in queues
 # Compile and execute the Stage11 payload-layout test plus the Stage108
 # registration state-machine test using the host compiler.
 compiler = os.environ.get("CXX", "c++")
+compiler_flags = ["-std=c++17", "-Wall", "-Wextra", "-Werror", "-O2"]
+if os.uname().sysname == "Darwin":
+    sdkroot = os.environ.get("SDKROOT")
+    if not sdkroot:
+        sdkroot = subprocess.check_output(
+            ["xcrun", "--show-sdk-path"], text=True
+        ).strip()
+    compiler_flags.extend(["-stdlib=libc++", "-isysroot", sdkroot])
 tests = (
     (ROOT / "tests/wcl_registration_info_stage11_test.cpp", "registration-info-test"),
     (ROOT / "tests/wcl_registration_transaction_stage108_test.cpp", "registration-transaction-test"),
@@ -105,8 +114,7 @@ with tempfile.TemporaryDirectory(prefix="rtl88wcl-registration-") as tmp:
     for source, name in tests:
         binary = Path(tmp) / name
         subprocess.run(
-            [compiler, "-std=c++17", "-Wall", "-Wextra", "-Werror", "-O2",
-             str(source), "-o", str(binary)],
+            [compiler, *compiler_flags, str(source), "-o", str(binary)],
             check=True,
         )
         subprocess.run([str(binary)], check=True)
