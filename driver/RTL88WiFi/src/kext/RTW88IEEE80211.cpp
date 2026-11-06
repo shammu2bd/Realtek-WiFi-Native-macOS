@@ -1420,7 +1420,8 @@ IOReturn RTW88IEEE80211::powerOn()
     struct ieee80211_vif *vif = nullptr;
     {
         auto mutation = beginTxStateMutation();
-        if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE)) {
+        if (__atomic_load_n(&_stopping, __ATOMIC_ACQUIRE) ||
+            __atomic_load_n(&_coreStopping, __ATOMIC_ACQUIRE)) {
             mutation.finish();
             return kIOReturnNotReady;
         }
@@ -1505,31 +1506,54 @@ void RTW88IEEE80211::powerOff()
     /* A concurrent powerOn owns lifecycle start until it publishes either
      * powered=true or a stopped failure result. Wait without holding the TX
      * writer so core/RX work can complete normally. */
-    while (__atomic_load_n(&_coreStarting, __ATOMIC_ACQUIRE))
-        IOSleep(1);
-
-    struct ieee80211_hw *hw = nullptr;
-    bool wasPowered = false;
-    {
-        auto mutation = beginTxStateMutation();
-        while (__atomic_load_n(&_coreStarting, __ATOMIC_ACQUIRE)) {
-            mutation.finish();
+    for (;;) {
+        while (__atomic_load_n(&_coreStarting, __ATOMIC_ACQUIRE))
             IOSleep(1);
-            mutation = beginTxStateMutation();
-        }
-        wasPowered = __atomic_load_n(&_powered, __ATOMIC_ACQUIRE);
-        hw = _hw;
-        __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
-        _awdlPreparedChannel = 0;
-        _awdlOffChannel = false;
-        mutation.finish();
-    }
 
-    /* The reader drain above means no TX callback remains inside ops->tx().
-     * Late readers observe powered=false and return. ops->stop may drain RX
-     * workers that need the radio gate, so it runs outside the writer. */
-    if (wasPowered && hw && hw->ops && hw->ops->stop)
-        hw->ops->stop(hw, false);
+        struct ieee80211_hw *hw = nullptr;
+        bool wasPowered = false;
+        bool waitForOtherStop = false;
+        {
+            auto mutation = beginTxStateMutation();
+            if (__atomic_load_n(&_coreStarting, __ATOMIC_ACQUIRE)) {
+                mutation.finish();
+                waitForOtherStop = true;
+            } else if (__atomic_load_n(&_coreStopping, __ATOMIC_ACQUIRE)) {
+                mutation.finish();
+                waitForOtherStop = true;
+            } else {
+                wasPowered = __atomic_load_n(&_powered, __ATOMIC_ACQUIRE);
+                if (!wasPowered) {
+                    mutation.finish();
+                    return;
+                }
+                hw = _hw;
+                __atomic_store_n(&_coreStopping, true, __ATOMIC_RELEASE);
+                __atomic_store_n(&_powered, false, __ATOMIC_RELEASE);
+                _awdlPreparedChannel = 0;
+                _awdlOffChannel = false;
+                mutation.finish();
+            }
+        }
+
+        if (waitForOtherStop) {
+            IOSleep(1);
+            continue;
+        }
+
+        /* The reader drain above means no TX callback remains inside ops->tx().
+         * Late readers observe powered=false and return. ops->stop may drain RX
+         * workers that need the radio gate, so it runs outside the writer. */
+        if (wasPowered && hw && hw->ops && hw->ops->stop)
+            hw->ops->stop(hw, false);
+
+        {
+            auto mutation = beginTxStateMutation();
+            __atomic_store_n(&_coreStopping, false, __ATOMIC_RELEASE);
+            mutation.finish();
+        }
+        return;
+    }
 }
 
 /*  Interrupt dispatch                                                  */
