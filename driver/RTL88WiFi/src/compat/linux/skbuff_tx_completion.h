@@ -25,6 +25,10 @@ struct rtw88_skb_tx_completion_token {
     rtw88_skb_tx_completion_release_fn release;
     void *context;
     void *cookie;
+
+    /* Intrusive link used by the native WCL deferred token reaper. The
+     * release hook may only enqueue this node; it must not free it. */
+    struct rtw88_skb_tx_completion_token *deferred_next;
 };
 
 /* This one pointer is the only completion state stored inside struct sk_buff. */
@@ -74,10 +78,17 @@ rtw88_skb_tx_completion_dispatch(
     void *context = token->context;
     void *cookie = token->cookie;
 
-    if (callback)
-        callback(context, cookie, transmitted);
+    /*
+     * Retire the token before notifying the backend. The callback may publish
+     * the final ticket and wake teardown concurrently; moving the token onto
+     * its deferred-reclamation list first ensures that a completed ticket
+     * cannot make its context appear quiescent while this token still refers
+     * to it. The release hook must be bounded/nonblocking and must not free.
+     */
     if (release)
         release(token);
+    if (callback)
+        callback(context, cookie, transmitted);
     return callback != 0;
 }
 
