@@ -116,3 +116,23 @@ Still open:
 - Verify actual target macOS lock ordering/runtime behavior; source checks are not a deadlock proof.
 - No full kext link, signing, install/load, RTL8821CE hardware TX/RX or throughput test has been performed.
 - Native activation and PR #4 merge remain blocked.
+## Clean-from-empty target object build — verified
+
+Published clean-build log:
+Development/Logs/stage98-clean-compile-20261106T034521Z.log
+
+Verified from the uploaded target log:
+- The command ran `make clean`, which removed only `driver/RTL88WiFi/build/`, before `make native-compile-only`.
+- Target environment: macOS 15.8.1 build 24H32, Intel x86_64, Xcode 16.4.
+- The compile produced 41 distinct Mach-O object output paths: 25 driver, 4 compatibility, 1 airport kmod metadata, 4 native core and 7 WCL 24H32 objects.
+- The object list includes `RTW88WCLTxCompletionWorkQueue.o` and the 24H32 Skywalk TX/RX adapter/controller objects.
+- No compiler errors or make failure lines were present. The final marker is `NATIVE_COMPILE_ONLY=PASS (objects only; no link/sign/install/load)`.
+- The command status recorded in `Development/output.log` is 0.
+
+To verify the compiled source revision remains the current PR source, Git blob hashes were compared between the build's recorded source commit `2b5d286747effdbef7be1842af4e5169162e44c2` and the current branch head. Makefile, RTW88IEEE80211.cpp/.hpp, RTW88 sec.c and mac80211.c all have identical blob hashes.
+
+Static regression status remains: Stage98 13 passed / 0 failed; Stage94 39 passed / 0 blockers.
+
+Important scope: this is a complete clean **object-only compile**. It does not test kext linking, signing, installation, loading, Skywalk runtime behavior, radio activation, RTL8821CE hardware TX/RX or throughput.
+
+Open review items: internal locks/callback re-entry in `rtw88_skb_tx_completion_report()` and target macOS runtime lock-order verification. Native activation and PR #4 merge remain blocked until those are resolved.
