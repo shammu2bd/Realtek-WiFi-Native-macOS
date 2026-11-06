@@ -184,13 +184,13 @@ for _,line in out:
 PY
 )" || {
           echo "STAGE126_SYMBOL_DISASSEMBLY=NOT_VERIFIED"
-          printf '%s\\n' "$SELECTED"
+          printf '%s\n' "$SELECTED"
           continue
         }
 
         echo "STAGE126_SYMBOL_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED_RANGE"
         VERIFIED_COUNT=$((VERIFIED_COUNT+1))
-        printf '%s\\n' "$SELECTED"
+        printf '%s\n' "$SELECTED"
       done <<< "$SYMBOLS"
     fi
   fi
@@ -208,7 +208,8 @@ PY
   echo "--- Apple controller power selector symbols ---"
   grep -E 'IO80211Controller.*(getPOWER|setPOWER)' "$NM_FILE" || true
   echo
-  echo "STAGE126_RANGE_POLICY=otool_starts_at_first_exact_symbol_and_python_filters_each_nm_symbol_range"\n  echo "STAGE126_POWER_CALL_GRAPH=REVIEW_REQUIRED"
+  echo "STAGE126_RANGE_POLICY=otool_starts_at_first_exact_symbol_and_python_filters_each_nm_symbol_range"
+  echo "STAGE126_POWER_CALL_GRAPH=REVIEW_REQUIRED"
   echo "STAGE126_DRIVER_SOURCE_MODIFIED=NO"
   echo "STAGE126_BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN"
   echo "STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN"
