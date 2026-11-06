@@ -39,24 +39,41 @@ SOURCE_COMMIT="$(git rev-parse HEAD)"
   echo "STAGE126_DRIVER_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN"
   echo "STAGE126_HARDWARE_ACTIVATION=NOT_RUN OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN"
   echo
-  echo "--- Exact Apple power-state symbols (raw mangled names) ---"
+  echo "--- Exact Apple power-state symbols (nm entries) ---"
   SYMBOL_RE='^(__ZN21IO80211InfraInterface18setInterfaceEnableEb|__ZN22IO80211MacAddressAgent18setInterfaceEnableEb|__ZN23IO80211SkywalkInterface14enableDatapathEv|__ZN23IO80211SkywalkInterface15disableDatapathEv|__ZN23IO80211SkywalkInterface18isInterfaceEnabledEv|__ZN23IO80211SkywalkInterface18setInterfaceEnableEb|__ZN23IO80211SkywalkInterface6enableEj|__ZN23IO80211SkywalkInterface7disableEj)$'
-  "$NM" --defined-only "$KC" 2>&1 | awk '{print $NF}' | grep -E "$SYMBOL_RE" | sort -u || true
+  NM_LIST="$("$NM" --defined-only "$KC" 2>&1 || true)"
+  SYMBOL_LINES="$(printf "%s\\n" "$NM_LIST" | grep -E "$SYMBOL_RE" || true)"
+  printf "%s\\n" "$SYMBOL_LINES"
+  SYMBOLS="$(printf "%s\\n" "$SYMBOL_LINES" | awk '{print $NF}' | sort -u)"
   echo
-  echo "--- Disassembly of exact Apple power-state methods ---"
-  SYMBOLS="$("$NM" --defined-only "$KC" 2>/dev/null | awk '{print $NF}' | grep -E "$SYMBOL_RE" | sort -u || true)"
+  echo "--- Mach-O-specific exact-symbol disassembly ---"
   COUNT=0
+  VERIFIED_COUNT=0
   while IFS= read -r SYMBOL; do
     [[ -n "$SYMBOL" ]] || continue
     COUNT=$((COUNT+1))
     echo "===== SYMBOL $SYMBOL ====="
-    "$OBJDUMP" --macho --disassemble --symbolize-operands --demangle --disassemble-symbols="$SYMBOL" "$KC" 2>&1 || true
+    DUMP="$("$OBJDUMP" --macho --dis-symname="$SYMBOL" "$KC" 2>&1 || true)"
+    if printf "%s\\n" "$DUMP" | grep -Fq "$SYMBOL"; then
+      if printf "%s\\n" "$DUMP" | grep -Eq "__start:|__stop:|IO80211TimeSyncPeer"; then
+        echo "STAGE126_SYMBOL_DISASSEMBLY=NOT_ISOLATED"
+        printf "%s\\n" "$DUMP" | head -35
+      else
+        echo "STAGE126_SYMBOL_DISASSEMBLY=VERIFIED"
+        VERIFIED_COUNT=$((VERIFIED_COUNT+1))
+        printf "%s\\n" "$DUMP"
+      fi
+    else
+      echo "STAGE126_SYMBOL_DISASSEMBLY=NOT_FOUND_OR_NOT_ISOLATED"
+      printf "%s\\n" "$DUMP" | head -25
+    fi
   done <<< "$SYMBOLS"
   echo "STAGE126_POWER_SYMBOL_COUNT=$COUNT"
-  if [[ "$COUNT" -eq 0 ]]; then echo "STAGE126_POWER_METHODS=NOT_FOUND"; else echo "STAGE126_POWER_METHODS=DISASSEMBLED_CANDIDATES"; fi
+  echo "STAGE126_POWER_DISASSEMBLY_VERIFIED_COUNT=$VERIFIED_COUNT"
+  if [[ "$COUNT" -eq 0 ]]; then echo "STAGE126_POWER_METHODS=NOT_FOUND"; elif [[ "$VERIFIED_COUNT" -eq "$COUNT" ]]; then echo "STAGE126_POWER_METHODS=VERIFIED"; else echo "STAGE126_POWER_METHODS=INCOMPLETE_OR_NOT_ISOLATED"; fi
   echo
   echo "--- Apple controller power selector symbols ---"
-  "$NM" --defined-only "$KC" 2>&1 | grep -E 'IO80211Controller.*(getPOWER|setPOWER)' || true
+  printf "%s\\n" "$NM_LIST" | grep -E 'IO80211Controller.*(getPOWER|setPOWER)' || true
   echo
   echo "STAGE126_POWER_CALL_GRAPH=REVIEW_REQUIRED"
   echo "STAGE126_DRIVER_SOURCE_MODIFIED=NO"
