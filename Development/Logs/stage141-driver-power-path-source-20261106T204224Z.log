@@ -1,0 +1,355 @@
+========== STAGE141 RTL88WIFI POWER PATH SOURCE AUDIT ==========
+STAGE141_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE141_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE141_WORKTREE_STATUS_ENTRIES=198
+STAGE141_TARGET=LOCAL_CHECKOUT_WORKING_TREE_INCLUDING_STAGED_CHANGES
+STAGE141_SCOPE=READ_ONLY_INHERITANCE_ENABLE_DISABLE_AND_POWER_STATE_SOURCE_REVIEW
+STAGE141_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE141_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+SOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4 BYTES=17853
+SOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b BYTES=29184
+SOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp SHA256=63a6a038ef7513312c686199b00e8cf45a16d251c7792ab03d2f5986f9fd84fb BYTES=49082
+SOURCE_FILE=driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211SkywalkInterface.h SHA256=039e5871ab572eafd116122a5a260c1463a3911b7b2ea063578188d2e75a61f4 BYTES=640
+SOURCE_FILE=driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkEthernetInterface.h SHA256=203290fb1761f1a76bbf99fb03b4809f66eab11b6ab425a3c2bcd70fd56e3b09 BYTES=4500
+SOURCE_FILE=driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkNetworkInterface.h SHA256=73b9072293bbc23b90173a0a3e14f96a90d1b461bf0032c78648799c82a0b213 BYTES=6973
+CLASS_INHERITANCE=RTW88WCLInfraInterface:NOT_FOUND
+CLASS_INHERITANCE=IO80211InfraProtocol:IO80211InfraInterface
+CLASS_INHERITANCE=IO80211InfraInterface:IO80211SkywalkInterface
+CLASS_INHERITANCE=IO80211SkywalkInterface:NOT_FOUND
+CLASS_INHERITANCE=IOSkywalkEthernetInterface:IOSkywalkNetworkInterface
+CLASS_INHERITANCE=IOSkywalkNetworkInterface:IOSkywalkInterface
+
+METHOD=ENABLE
+METHOD_BODY_BEGIN
+SOURCE|    (void)options;
+SOURCE|    if (_stopping || !_bridge.isAttached() || !_controller)
+SOURCE|        return kIOReturnNotReady;
+SOURCE|    /* Bring the RTW88 station path up first. Only then may the controller's
+SOURCE|     * standard mbuf TX hook admit packets for this registered interface. */
+SOURCE|    IOReturn status = _bridge.powerOn();
+SOURCE|    if (status != kIOReturnSuccess)
+SOURCE|        return status;
+SOURCE|    status = _controller->activatePacketPath(this);
+SOURCE|    if (status != kIOReturnSuccess) {
+SOURCE|        _bridge.powerOff();
+SOURCE|        return status;
+SOURCE|    }
+SOURCE|    return kIOReturnSuccess;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::disable(unsigned int options)
+SOURCE|{
+SOURCE|    (void)options;
+SOURCE|    if (!_bridge.isAttached() || !_controller)
+SOURCE|        return kIOReturnNotReady;
+SOURCE|    /* Stop new mbuf submissions and wait for synchronous TX handoffs before
+SOURCE|     * asking RTW88 to power down. A busy path leaves the radio running. */
+SOURCE|    IOReturn status = _controller->quiescePacketPath();
+SOURCE|    if (status != kIOReturnSuccess)
+SOURCE|        return status;
+SOURCE|    return _bridge.powerOff();
+SOURCE|}
+SOURCE|SInt32 RTW88WCLInfraInterface::initBSDInterfaceParameters(
+SOURCE|    ifnet_init_eparams *params, sockaddr_dl **address)
+SOURCE|{
+SOURCE|    /*
+SOURCE|     * Stage42 confirmed that the 24H32 IO80211InfraInterface implementation
+SOURCE|     * forwards to IO80211SkywalkInterface::initBSDInterfaceParameters().
+SOURCE|     * Use a qualified base call so this override does not recurse through
+SOURCE|     * virtual dispatch. Apple retains ownership of the BSD parameter setup.
+SOURCE|     */
+SOURCE|    return IO80211InfraInterface::initBSDInterfaceParameters(params, address);
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::setMacAddress(ether_addr &address)
+SOURCE|{
+SOURCE|    return _bridge.setMACAddress(address.octet);
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::getHardwareAddress(ether_addr *address)
+SOURCE|{
+SOURCE|    if (!address) return kIOReturnBadArgument;
+SOURCE|    if (!_bridge.isAttached()) return kIOReturnNotReady;
+SOURCE|    return _bridge.getMACAddress(address->octet);
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::setHardwareAddress(ether_addr *address)
+SOURCE|{
+SOURCE|    if (!address) return kIOReturnBadArgument;
+SOURCE|    return setMacAddress(*address);
+SOURCE|}
+SOURCE|IO80211Controller *RTW88WCLInfraInterface::getController()
+SOURCE|{
+SOURCE|    return _controller;
+SOURCE|}
+SOURCE|bool RTW88WCLInfraInterface::isChipInterfaceReady()
+SOURCE|{
+SOURCE|    return !_stopping && _bridge.isAttached();
+SOURCE|}
+SOURCE|bool RTW88WCLInfraInterface::isDebounceOnGoing()
+SOURCE|{
+SOURCE|    return false;
+SOURCE|}
+SOURCE|IO80211LinkState RTW88WCLInfraInterface::linkState()
+SOURCE|{
+SOURCE|    if (!_bridge.isAttached() || !_bridge.connectionReady())
+SOURCE|        return kIO80211NetworkLinkDown;
+SOURCE|    return kIO80211NetworkLinkUp;
+SOURCE|}
+SOURCE|bool RTW88WCLInfraInterface::setLinkState(IO80211LinkState state,
+SOURCE|                                           unsigned int reason,
+SOURCE|                                           bool debounce,
+SOURCE|                                           unsigned int duration)
+SOURCE|{
+SOURCE|    return IO80211InfraInterface::setLinkState(state, reason, debounce, duration);
+SOURCE|}
+SOURCE|int RTW88WCLInfraInterface::getAssocState()
+SOURCE|{
+SOURCE|    return linkState() == kIO80211NetworkLinkUp ? 1 : 0;
+SOURCE|}
+SOURCE|UInt RTW88WCLInfraInterface::getHardwareAssists()
+SOURCE|{
+SOURCE|    return 0;
+SOURCE|}
+SOURCE|bool RTW88WCLInfraInterface::bpfTap(unsigned int direction, unsigned int flags)
+SOURCE|{
+SOURCE|    (void)direction;
+SOURCE|    (void)flags;
+SOURCE|    return false;
+SOURCE|}
+SOURCE|void RTW88WCLInfraInterface::hwConfigNicProxyData(nicproxy_info_s *info)
+SOURCE|{
+SOURCE|    /* Proxy offload is not implemented; leave the opaque SDK structure alone. */
+SOURCE|    (void)info;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::getCHANNEL(apple80211_channel_data *data)
+SOURCE|{
+SOURCE|    if (!data) return kIOReturnBadArgument;
+SOURCE|    if (!_bridge.isAttached()) return kIOReturnNotReady;
+SOURCE|    RTW88BSS bss = {};
+SOURCE|    IOReturn status = _bridge.copyCurrentBSS(&bss);
+SOURCE|    if (status != kIOReturnSuccess) return status;
+SOURCE|    if (bss.channel == 0 || bss.channel > 196) return kIOReturnNotReady;
+SOURCE|    bzero(data, sizeof(*data));
+SOURCE|    data->version = APPLE80211_VERSION;
+SOURCE|    data->channel.version = APPLE80211_VERSION;
+SOURCE|    data->channel.channel = bss.channel;
+SOURCE|    data->channel.flags = bss.channel <= 14 ? APPLE80211_C_FLAG_2GHZ
+SOURCE|                                             : APPLE80211_C_FLAG_5GHZ;
+SOURCE|    data->channel.flags |= APPLE80211_C_FLAG_20MHZ;
+SOURCE|    return kIOReturnSuccess;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::getRSSI(apple80211_rssi_data *data)
+SOURCE|{
+SOURCE|    if (!data) return kIOReturnBadArgument;
+SOURCE|    if (!_bridge.isAttached()) return kIOReturnNotReady;
+SOURCE|    int rssi = 0;
+SOURCE|    IOReturn status = _bridge.getRSSI(&rssi);
+SOURCE|    if (status != kIOReturnSuccess) return status;
+SOURCE|    bzero(data, sizeof(*data));
+SOURCE|    data->version = APPLE80211_VERSION;
+SOURCE|    data->num_radios = 1;
+SOURCE|    data->rssi_unit = APPLE80211_UNIT_DBM;
+SOURCE|    data->rssi[0] = rssi;
+SOURCE|    data->aggregate_rssi = rssi;
+SOURCE|    return kIOReturnSuccess;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::getSUPPORTED_CHANNELS(
+SOURCE|    apple80211_sup_channel_data *data)
+SOURCE|{
+SOURCE|    if (!data) return kIOReturnBadArgument;
+SOURCE|    if (!_bridge.isAttached()) return kIOReturnNotReady;
+SOURCE|    RTW88Channel channels[APPLE80211_MAX_CHANNELS] = {};
+SOURCE|    uint32_t count = 0;
+SOURCE|    IOReturn status = _bridge.copyChannels(channels,
+SOURCE|                                           APPLE80211_MAX_CHANNELS, &count);
+SOURCE|    if (status != kIOReturnSuccess) return status;
+SOURCE|    if (count > APPLE80211_MAX_CHANNELS) return kIOReturnNoResources;
+SOURCE|    bzero(data, sizeof(*data));
+SOURCE|    data->version = APPLE80211_VERSION;
+SOURCE|    data->num_channels = count;
+SOURCE|    for (uint32_t i = 0; i < count; ++i) {
+SOURCE|        if (!channels[i].number || channels[i].number > 196)
+SOURCE|            return kIOReturnError;
+SOURCE|        data->supported_channels[i].version = APPLE80211_VERSION;
+SOURCE|        data->supported_channels[i].channel = channels[i].number;
+SOURCE|        data->supported_channels[i].flags = channelFlags(channels[i]);
+SOURCE|    }
+SOURCE|    return kIOReturnSuccess;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::setCIPHER_KEY(apple80211_key *data)
+SOURCE|{
+SOURCE|    if (!data) return kIOReturnBadArgument;
+SOURCE|    if (!_bridge.isAttached()) return kIOReturnNotReady;
+SOURCE|    /* The Sequoia WCL protocol uses cipher values PMK (6), PMKSA (7) and MSK
+SOURCE|     * (9) here. The RTW88 internal WPA2-PSK path consumes its PMK from the
+SOURCE|     * association request and performs the four-way handshake itself. The
+SOURCE|     * backend has no WCL PMKSA/MSK cache insertion API yet. Do not reinterpret
+SOURCE|     * this message as a PTK/GTK key install. */
+SOURCE|    return kIOReturnUnsupported;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::setCLEAR_PMKSA_CACHE(void *data)
+SOURCE|{
+SOURCE|    (void)data;
+SOURCE|    /* The existing RTW88 backend does not expose a PMKSA-cache removal API. */
+SOURCE|    return kIOReturnUnsupported;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::setWCL_LEAVE_NETWORK(
+SOURCE|    apple80211_leave_network *data)
+SOURCE|{
+SOURCE|    (void)data;
+SOURCE|    if (!_bridge.isAttached()) return kIOReturnNotReady;
+SOURCE|    IOReturn status = _bridge.leaveNetwork();
+SOURCE|    if (status == kIOReturnSuccess) {
+SOURCE|        /* Invalidate any deferred disconnect callback from the old join. */
+SOURCE|        _activeJoinGeneration = 0;
+SOURCE|        _connectNotified = false;
+SOURCE|        _assocNotified = false;
+SOURCE|        setCurrentApAddress(nullptr);
+SOURCE|        setLinkState(kIO80211NetworkLinkDown, 0, false, 0);
+SOURCE|        RTW88WCLLinkStatusEvent link = {};
+SOURCE|        link.up = 0;
+SOURCE|        postWCLMessage(kWCLMessageLinkStatus, &link, sizeof(link));
+SOURCE|        bzero(_targetBSSID, sizeof(_targetBSSID));
+SOURCE|    }
+SOURCE|    return status;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::setWCL_SCAN_ABORT(void *data)
+SOURCE|{
+SOURCE|    (void)data;
+SOURCE|    if (!_bridge.isAttached()) return kIOReturnNotReady;
+SOURCE|    return _bridge.abortScan();
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::setWCL_JOIN_ABORT(void *data)
+SOURCE|{
+SOURCE|    (void)data;
+SOURCE|    if (!_bridge.isAttached()) return kIOReturnNotReady;
+SOURCE|    IOReturn status = _bridge.abortJoin();
+SOURCE|    if (status == kIOReturnSuccess) {
+SOURCE|        _activeJoinGeneration = 0;
+SOURCE|        _assocNotified = false;
+SOURCE|        _connectNotified = false;
+SOURCE|        postWCLMessage(kWCLMessageJoinAbortComplete, nullptr, 0);
+SOURCE|        setCurrentApAddress(nullptr);
+SOURCE|        setLinkState(kIO80211NetworkLinkDown, 0, false, 0);
+SOURCE|        bzero(_targetBSSID, sizeof(_targetBSSID));
+SOURCE|    }
+SOURCE|    return status;
+SOURCE|}
+SOURCE|IOReturn RTW88WCLInfraInterface::setWCL_SCAN_REQ(apple80211ScanRequest *data)
+SOURCE|{
+SOURCE|    if (!data) return kIOReturnBadArgument;
+SOURCE|    if (!_bridge.isAttached() || _stopping) return kIOReturnNotReady;
+SOURCE|    if (_scanActive || _bridge.scanInFlight()) return kIOReturnBusy;
+SOURCE|    const uint8_t *raw = reinterpret_cast<const uint8_t *>(data);
+SOURCE|    const uint32_t channelCount = RTW88WCLRequest::read32(raw + 0x54);
+SOURCE|    if (channelCount > 400) return kIOReturnBadArgument;
+SOURCE|    const size_t requestLength = 0x58 + static_cast<size_t>(channelCount) * 12;
+SOURCE|    RTW88WCLRequest::Scan request = {};
+SOURCE|    if (!RTW88WCLRequest::decodeScan(data, requestLength, request))
+SOURCE|        return kIOReturnBadArgument;
+SOURCE|    /* The backend currently supports active scans only. A FAST request is
+SOURCE|     * serviced as a fresh active scan because there is no separate cached-
+SOURCE|     * scan transaction; passive/background requests fail closed rather than
+SOURCE|     * being silently converted into active probe transmission. */
+SOURCE|    if (request.type != APPLE80211_SCAN_TYPE_ACTIVE &&
+SOURCE|        request.type != APPLE80211_SCAN_TYPE_FAST)
+SOURCE|        return kIOReturnUnsupported;
+SOURCE|    uint16_t channels[128] = {};
+SOURCE|    uint32_t selected = 0;
+SOURCE|    for (unsigned channel = 1; channel <= 196; ++channel) {
+SOURCE|        if (!(request.channelBitmap[channel / 8] & (1U << (channel % 8))))
+SOURCE|            continue;
+SOURCE|        if (selected == sizeof(channels) / sizeof(channels[0]))
+SOURCE|            return kIOReturnNoResources;
+SOURCE|        channels[selected++] = static_cast<uint16_t>(channel);
+SOURCE|    }
+SOURCE|    if (request.channelCount != 0 && selected == 0)
+SOURCE|        return kIOReturnUnsupported;
+SOURCE|    ScanFilter filter = {};
+SOURCE|    filter.identifier = request.identifier;
+SOURCE|    filter.ssidLength = static_cast<uint8_t>(request.ssidLength);
+SOURCE|    memcpy(filter.ssid, request.ssid, sizeof(filter.ssid));
+SOURCE|    memcpy(filter.bssid, request.bssid, sizeof(filter.bssid));
+SOURCE|    memcpy(filter.channelBitmap, request.channelBitmap,
+SOURCE|           sizeof(filter.channelBitmap));
+SOURCE|    filter.filterBSSID = !isZeroAddress(filter.bssid, sizeof(filter.bssid));
+SOURCE|    filter.filterChannels = request.channelCount != 0;
+SOURCE|    _scanFilter = filter;
+SOURCE|    _scanActive = true;
+SOURCE|    /* The bridge writes this generation before it enters the asynchronous
+SOURCE|     * backend, so a fast completion cannot race the interface's filter state. */
+SOURCE|    _activeScanGeneration = 0;
+SOURCE|    setScanningState(request.identifier, true, nullptr, 0);
+SOURCE|    IOReturn status = _bridge.startScan(selected ? channels : nullptr, selected,
+SOURCE|                                        &_activeScanGeneration);
+SOURCE|    if (status != kIOReturnSuccess) {
+SOURCE|        _scanActive = false;
+SOURCE|        _activeScanGeneration = 0;
+SOURCE|        setScanningState(request.identifier, false, nullptr, 0);
+SOURCE|    }
+SOURCE|    return status;
+METHOD_BODY_END
+CALLS_SUPER_ENABLE=NO
+CALLS_SUPER_DISABLE=NO
+CALLS_INFRA_ENABLE=NO
+CALLS_INFRA_DISABLE=NO
+CALLS_SKYWALK_ENABLE=NO
+CALLS_SKYWALK_DISABLE=NO
+CALLS_SET_INTERFACE_ENABLE=NO
+CALLS_IS_INTERFACE_ENABLED=NO
+CALLS_RADIO_POWER_ON=YES
+CALLS_RADIO_POWER_OFF=YES
+CALLS_PACKET_PATH_ACTIVATE=YES
+CALLS_PACKET_PATH_QUIESCE=YES
+RETURNS_SUCCESS_TOKEN=YES
+
+METHOD=DISABLE
+METHOD_BODY_BEGIN
+SOURCE|    (void)options;
+SOURCE|    if (!_bridge.isAttached() || !_controller)
+SOURCE|        return kIOReturnNotReady;
+SOURCE|    /* Stop new mbuf submissions and wait for synchronous TX handoffs before
+SOURCE|     * asking RTW88 to power down. A busy path leaves the radio running. */
+SOURCE|    IOReturn status = _controller->quiescePacketPath();
+SOURCE|    if (status != kIOReturnSuccess)
+SOURCE|        return status;
+SOURCE|    return _bridge.powerOff();
+METHOD_BODY_END
+CALLS_SUPER_ENABLE=NO
+CALLS_SUPER_DISABLE=NO
+CALLS_INFRA_ENABLE=NO
+CALLS_INFRA_DISABLE=NO
+CALLS_SKYWALK_ENABLE=NO
+CALLS_SKYWALK_DISABLE=NO
+CALLS_SET_INTERFACE_ENABLE=NO
+CALLS_IS_INTERFACE_ENABLED=NO
+CALLS_RADIO_POWER_ON=NO
+CALLS_RADIO_POWER_OFF=YES
+CALLS_PACKET_PATH_ACTIVATE=NO
+CALLS_PACKET_PATH_QUIESCE=YES
+RETURNS_SUCCESS_TOKEN=YES
+
+--- Power and enable references in driver source ---
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp:100:virtual IOReturn getPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp:101:virtual IOReturn setPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:338:virtual IOReturn interfaceAdvisoryEnable(bool);
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:339:virtual SInt32 setInterfaceEnable(bool);
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:489:virtual SInt32 setInterfaceEnable(bool) override;
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:567:virtual bool isInterfaceEnabled();
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:639:virtual SInt32 setInterfaceEnable(bool) override;
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:333:IOReturn RTW88WCLController::getPOWER(IO80211SkywalkInterface *interface,
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:344:IOReturn RTW88WCLController::setPOWER(IO80211SkywalkInterface *interface,
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:53:IOReturn getPOWER(IO80211SkywalkInterface *interface,
+SOURCE_REFERENCE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:55:IOReturn setPOWER(IO80211SkywalkInterface *interface,
+STAGE141_POWER_REFERENCE_COUNT=11
+
+--- Source-level path assessment ---
+ENABLE_BASE_FORWARDING=NO
+DISABLE_BASE_FORWARDING=NO
+ENABLE_APPLE_POWER_FLAG_PATH=NO
+DISABLE_APPLE_POWER_FLAG_PATH=NO
+ENABLE_RADIO_HARDWARE_PATH=YES
+DISABLE_RADIO_HARDWARE_PATH=YES
+ENABLE_PACKET_PATH_PATH=YES
+DISABLE_PACKET_PATH_PATH=YES
+STAGE141_INTERPRETATION=STATIC_SOURCE_ONLY_NO_RUNTIME_OR_HARDWARE_CONCLUSION
+STAGE141_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE141_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE141 ==========
