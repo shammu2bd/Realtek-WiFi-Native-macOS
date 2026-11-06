@@ -1,0 +1,899 @@
+========== STAGE146 APPLE POWER MESSAGE SEMANTICS AUDIT ==========
+STAGE146_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE146_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE146_WORKTREE_STATUS_ENTRIES=198
+STAGE146_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE146_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE146_SCOPE=READ_ONLY_POWER_WRAPPER_ARGUMENTS_MESSAGE_DISPATCH_AND_DRIVER_SOURCE_CORRELATION
+STAGE146_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE146_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+STAGE146_FILES_BASE=0xffffff8000100000
+STAGE146_FILESET_ENTRY_COUNT=211
+STAGE146_SYMBOL_COUNT=165349
+METHOD_LOOKUP TAG=APPLE_GET_POWER SYMBOL=__Z18apple80211getPOWERP23IO80211SkywalkInterfaceP21apple80211_power_data ADDRESS=0xffffff80021f6b6f OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+METHOD_LOOKUP TAG=APPLE_SET_POWER SYMBOL=__Z18apple80211setPOWERP23IO80211SkywalkInterfaceP21apple80211_power_data ADDRESS=0xffffff80021fb767 OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+METHOD_LOOKUP TAG=SET_POWER_IOCTL_WRAPPER SYMBOL=__ZL8setPOWERP17IO80211ControllerP23IO80211SkywalkInterfaceP13apple80211req ADDRESS=0xffffff80022187d9 OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+METHOD_LOOKUP TAG=SKYWALK_POST_MESSAGE SYMBOL=__ZN23IO80211SkywalkInterface11postMessageEjPvmb ADDRESS=0xffffff8002264658 OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+METHOD_LOOKUP TAG=INFRA_POST_MESSAGE SYMBOL=__ZN21IO80211InfraInterface11postMessageEjPvmb ADDRESS=0xffffff80022d5f9a OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+METHOD_LOOKUP TAG=SKYWALK_POST_MESSAGE_INTERNAL SYMBOL=__ZN23IO80211SkywalkInterface19postMessageInternalEjPvmb ADDRESS=0xffffff8002264662 OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+
+--- METHOD APPLE_GET_POWER ---
+METHOD_SYMBOL=__Z18apple80211getPOWERP23IO80211SkywalkInterfaceP21apple80211_power_data
+METHOD_ADDRESS=0xffffff80021f6b6f
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff80021f6bd3
+METHOD_AUDIT_BOUND=0xffffff80021f6bd3
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff80021f6b6f	pushq	%rbp
+ffffff80021f6b70	movq	%rsp, %rbp
+ffffff80021f6b73	pushq	%r14
+ffffff80021f6b75	pushq	%rbx
+ffffff80021f6b76	movq	%rsi, %rbx
+ffffff80021f6b79	movq	%rdi, %r14
+ffffff80021f6b7c	movq	(%rdi), %rax
+ffffff80021f6b7f	movl	$0x13, %esi
+ffffff80021f6b84	callq	*0xcc0(%rax)
+CONTROL_FLOW=0xffffff80021f6b84 callq	*0xcc0(%rax)
+ffffff80021f6b8a	testl	%eax, %eax
+ffffff80021f6b8c	je	0xffffff80021f6b93
+ffffff80021f6b8e	popq	%rbx
+ffffff80021f6b8f	popq	%r14
+ffffff80021f6b91	popq	%rbp
+ffffff80021f6b92	retq
+ffffff80021f6b93	leaq	__ZN23IO80211SkywalkInterface10gMetaClassE(%rip), %rsi ## IO80211SkywalkInterface::gMetaClass
+ffffff80021f6b9a	movq	%r14, %rdi
+ffffff80021f6b9d	callq	0xffffff8000a49ab0
+CONTROL_FLOW=0xffffff80021f6b9d callq	0xffffff8000a49ab0
+ffffff80021f6ba2	testq	%rax, %rax
+ffffff80021f6ba5	je	0xffffff80021f6bcc
+ffffff80021f6ba7	movq	(%r14), %rax
+ffffff80021f6baa	movq	%r14, %rdi
+ffffff80021f6bad	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80021f6bad callq	*0xba8(%rax)
+ffffff80021f6bb3	movq	(%rax), %rcx
+ffffff80021f6bb6	movq	0xcd8(%rcx), %rcx
+ffffff80021f6bbd	movq	%rax, %rdi
+ffffff80021f6bc0	movq	%r14, %rsi
+ffffff80021f6bc3	movq	%rbx, %rdx
+ffffff80021f6bc6	popq	%rbx
+ffffff80021f6bc7	popq	%r14
+ffffff80021f6bc9	popq	%rbp
+ffffff80021f6bca	jmpq	*%rcx
+CONTROL_FLOW=0xffffff80021f6bca jmpq	*%rcx
+ffffff80021f6bcc	movl	$0xe082280e, %eax               ## imm = 0xE082280E
+ffffff80021f6bd1	jmp	0xffffff80021f6b8e
+CONTROL_FLOW=0xffffff80021f6bd1 jmp	0xffffff80021f6b8e
+
+--- METHOD APPLE_SET_POWER ---
+METHOD_SYMBOL=__Z18apple80211setPOWERP23IO80211SkywalkInterfaceP21apple80211_power_data
+METHOD_ADDRESS=0xffffff80021fb767
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff80021fb7cb
+METHOD_AUDIT_BOUND=0xffffff80021fb7cb
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=34
+ffffff80021fb767	pushq	%rbp
+ffffff80021fb768	movq	%rsp, %rbp
+ffffff80021fb76b	pushq	%r14
+ffffff80021fb76d	pushq	%rbx
+ffffff80021fb76e	movq	%rsi, %rbx
+ffffff80021fb771	movq	%rdi, %r14
+ffffff80021fb774	movq	(%rdi), %rax
+ffffff80021fb777	movl	$0x13, %esi
+ffffff80021fb77c	callq	*0xcc0(%rax)
+CONTROL_FLOW=0xffffff80021fb77c callq	*0xcc0(%rax)
+ffffff80021fb782	testl	%eax, %eax
+ffffff80021fb784	je	0xffffff80021fb78b
+ffffff80021fb786	popq	%rbx
+ffffff80021fb787	popq	%r14
+ffffff80021fb789	popq	%rbp
+ffffff80021fb78a	retq
+ffffff80021fb78b	leaq	__ZN23IO80211SkywalkInterface10gMetaClassE(%rip), %rsi ## IO80211SkywalkInterface::gMetaClass
+ffffff80021fb792	movq	%r14, %rdi
+ffffff80021fb795	callq	0xffffff8000a49ab0
+CONTROL_FLOW=0xffffff80021fb795 callq	0xffffff8000a49ab0
+ffffff80021fb79a	testq	%rax, %rax
+ffffff80021fb79d	je	0xffffff80021fb7c4
+ffffff80021fb79f	movq	(%r14), %rax
+ffffff80021fb7a2	movq	%r14, %rdi
+ffffff80021fb7a5	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80021fb7a5 callq	*0xba8(%rax)
+ffffff80021fb7ab	movq	(%rax), %rcx
+ffffff80021fb7ae	movq	0xce0(%rcx), %rcx
+ffffff80021fb7b5	movq	%rax, %rdi
+ffffff80021fb7b8	movq	%r14, %rsi
+ffffff80021fb7bb	movq	%rbx, %rdx
+ffffff80021fb7be	popq	%rbx
+ffffff80021fb7bf	popq	%r14
+ffffff80021fb7c1	popq	%rbp
+ffffff80021fb7c2	jmpq	*%rcx
+CONTROL_FLOW=0xffffff80021fb7c2 jmpq	*%rcx
+ffffff80021fb7c4	movl	$0xe082280e, %eax               ## imm = 0xE082280E
+ffffff80021fb7c9	jmp	0xffffff80021fb786
+CONTROL_FLOW=0xffffff80021fb7c9 jmp	0xffffff80021fb786
+
+--- METHOD SET_POWER_IOCTL_WRAPPER ---
+METHOD_SYMBOL=__ZL8setPOWERP17IO80211ControllerP23IO80211SkywalkInterfaceP13apple80211req
+METHOD_ADDRESS=0xffffff80022187d9
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff80022188c5
+METHOD_AUDIT_BOUND=0xffffff80022188c5
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=65
+ffffff80022187d9	pushq	%rbp
+ffffff80022187da	movq	%rsp, %rbp
+ffffff80022187dd	pushq	%r15
+ffffff80022187df	pushq	%r14
+ffffff80022187e1	pushq	%r12
+ffffff80022187e3	pushq	%rbx
+ffffff80022187e4	subq	$0x10, %rsp
+ffffff80022187e8	movq	0x1a3929(%rip), %rax
+ffffff80022187ef	movq	(%rax), %rax
+ffffff80022187f2	movq	%rax, -0x28(%rbp)
+ffffff80022187f6	cmpl	$0x18, 0x18(%rdx)
+ffffff80022187fa	movl	$0x16, %r14d
+ffffff8002218800	jne	0xffffff8002218898
+ffffff8002218806	movq	0x20(%rdx), %r15
+ffffff800221880a	testq	%r15, %r15
+ffffff800221880d	je	0xffffff8002218898
+ffffff8002218813	movq	%rsi, %rbx
+ffffff8002218816	testq	%rsi, %rsi
+ffffff8002218819	je	0xffffff80022188b8
+ffffff800221881f	movq	0x110(%rbx), %rax
+ffffff8002218826	movq	0xd8(%rax), %rdi
+ffffff800221882d	testq	%rdi, %rdi
+ffffff8002218830	je	0xffffff8002218867
+ffffff8002218832	leaq	-0x29(%rbp), %r12
+ffffff8002218836	movb	$0x0, (%r12)
+ffffff800221883b	movl	$0x18, %r8d
+ffffff8002218841	movl	$0x802869c8, %esi               ## imm = 0x802869C8
+ffffff8002218846	movl	$0x13, %edx
+ffffff800221884b	movq	%r15, %rcx
+ffffff800221884e	movq	%r12, %r9
+ffffff8002218851	callq	__ZN11IO80211Glue13sendIOUCToWclEjjPvmRb ## IO80211Glue::sendIOUCToWcl(unsigned int, unsigned int, void*, unsigned long, bool&)
+CONTROL_FLOW=0xffffff8002218851 callq	__ZN11IO80211Glue13sendIOUCToWclEjjPvmRb ## IO80211Glue::sendIOUCToWcl(unsigned int, unsigned int, void*, unsigned long, bool&)
+ffffff8002218856	cmpb	$0x1, (%r12)
+ffffff800221885b	jne	0xffffff8002218867
+ffffff800221885d	movl	%eax, %r14d
+ffffff8002218860	cmpl	$0xe082280f, %eax               ## imm = 0xE082280F
+ffffff8002218865	jne	0xffffff8002218875
+ffffff8002218867	movq	%rbx, %rdi
+ffffff800221886a	movq	%r15, %rsi
+ffffff800221886d	callq	__Z18apple80211setPOWERP23IO80211SkywalkInterfaceP21apple80211_power_data ## apple80211setPOWER(IO80211SkywalkInterface*, apple80211_power_data*)
+CONTROL_FLOW=0xffffff800221886d callq	__Z18apple80211setPOWERP23IO80211SkywalkInterfaceP21apple80211_power_data ## apple80211setPOWER(IO80211SkywalkInterface*, apple80211_power_data*)
+ffffff8002218872	movl	%eax, %r14d
+ffffff8002218875	testl	%r14d, %r14d
+ffffff8002218878	jne	0xffffff8002218898
+ffffff800221887a	movq	(%rbx), %rax
+ffffff800221887d	xorl	%r14d, %r14d
+ffffff8002218880	movq	%rbx, %rdi
+ffffff8002218883	movl	$0x1, %esi
+ffffff8002218888	xorl	%edx, %edx
+ffffff800221888a	xorl	%ecx, %ecx
+ffffff800221888c	movl	$0x1, %r8d
+POWER_POST_MESSAGE_ARGUMENT_TRACE=0xffffff800221888c movl	$0x1, %r8d
+ffffff8002218892	callq	*0xb10(%rax)
+POWER_POST_MESSAGE_ARGUMENT_TRACE=0xffffff8002218892 callq	*0xb10(%rax)
+CONTROL_FLOW=0xffffff8002218892 callq	*0xb10(%rax)
+ffffff8002218898	movq	0x1a3879(%rip), %rax
+ffffff800221889f	movq	(%rax), %rax
+ffffff80022188a2	cmpq	-0x28(%rbp), %rax
+ffffff80022188a6	jne	0xffffff80022188c0
+ffffff80022188a8	movl	%r14d, %eax
+ffffff80022188ab	addq	$0x10, %rsp
+ffffff80022188af	popq	%rbx
+ffffff80022188b0	popq	%r12
+ffffff80022188b2	popq	%r14
+ffffff80022188b4	popq	%r15
+ffffff80022188b6	popq	%rbp
+ffffff80022188b7	retq
+ffffff80022188b8	movl	$0x66, %r14d
+ffffff80022188be	jmp	0xffffff8002218898
+CONTROL_FLOW=0xffffff80022188be jmp	0xffffff8002218898
+ffffff80022188c0	callq	0xffffff8000383150
+CONTROL_FLOW=0xffffff80022188c0 callq	0xffffff8000383150
+
+--- METHOD SKYWALK_POST_MESSAGE ---
+METHOD_SYMBOL=__ZN23IO80211SkywalkInterface11postMessageEjPvmb
+METHOD_ADDRESS=0xffffff8002264658
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff8002264662
+METHOD_AUDIT_BOUND=0xffffff8002264662
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=4
+ffffff8002264658	pushq	%rbp
+ffffff8002264659	movq	%rsp, %rbp
+ffffff800226465c	popq	%rbp
+ffffff800226465d	jmp	__ZN23IO80211SkywalkInterface19postMessageInternalEjPvmb ## IO80211SkywalkInterface::postMessageInternal(unsigned int, void*, unsigned long, bool)
+CONTROL_FLOW=0xffffff800226465d jmp	__ZN23IO80211SkywalkInterface19postMessageInternalEjPvmb ## IO80211SkywalkInterface::postMessageInternal(unsigned int, void*, unsigned long, bool)
+
+--- METHOD SKYWALK_POST_MESSAGE_INTERNAL ---
+METHOD_SYMBOL=__ZN23IO80211SkywalkInterface19postMessageInternalEjPvmb
+METHOD_ADDRESS=0xffffff8002264662
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff8002264696
+METHOD_AUDIT_BOUND=0xffffff8002264696
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=16
+ffffff8002264662	xorb	$0x1, %r8b
+ffffff8002264666	movq	0x110(%rdi), %rax
+ffffff800226466d	movq	0xd8(%rax), %rax
+ffffff8002264674	testq	%rax, %rax
+ffffff8002264677	sete	%r9b
+ffffff800226467b	orb	%r8b, %r9b
+ffffff800226467e	jne	0xffffff8002264688
+ffffff8002264680	movq	%rax, %rdi
+ffffff8002264683	jmp	__ZN11IO80211Glue15routeEventToWclEjPvm ## IO80211Glue::routeEventToWcl(unsigned int, void*, unsigned long)
+CONTROL_FLOW=0xffffff8002264683 jmp	__ZN11IO80211Glue15routeEventToWclEjPvm ## IO80211Glue::routeEventToWcl(unsigned int, void*, unsigned long)
+ffffff8002264688	pushq	%rbp
+ffffff8002264689	movq	%rsp, %rbp
+ffffff800226468c	callq	__ZN23IO80211SkywalkInterface15postMessageSyncEjPvm ## IO80211SkywalkInterface::postMessageSync(unsigned int, void*, unsigned long)
+CONTROL_FLOW=0xffffff800226468c callq	__ZN23IO80211SkywalkInterface15postMessageSyncEjPvm ## IO80211SkywalkInterface::postMessageSync(unsigned int, void*, unsigned long)
+ffffff8002264691	xorl	%eax, %eax
+ffffff8002264693	popq	%rbp
+ffffff8002264694	retq
+ffffff8002264695	nop
+
+--- METHOD INFRA_POST_MESSAGE ---
+METHOD_SYMBOL=__ZN21IO80211InfraInterface11postMessageEjPvmb
+METHOD_ADDRESS=0xffffff80022d5f9a
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff80022d740c
+METHOD_AUDIT_BOUND=0xffffff80022d740c
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=1303
+ffffff80022d5f9a	pushq	%rbp
+ffffff80022d5f9b	movq	%rsp, %rbp
+ffffff80022d5f9e	pushq	%r15
+ffffff80022d5fa0	pushq	%r14
+ffffff80022d5fa2	pushq	%r13
+ffffff80022d5fa4	pushq	%r12
+ffffff80022d5fa6	pushq	%rbx
+ffffff80022d5fa7	subq	$0x88, %rsp
+ffffff80022d5fae	movl	%r8d, %ebx
+ffffff80022d5fb1	movq	%rcx, %r14
+ffffff80022d5fb4	movq	%rdx, %r12
+ffffff80022d5fb7	movl	%esi, %r15d
+ffffff80022d5fba	movq	%rdi, %r13
+ffffff80022d5fbd	testq	%rcx, %rcx
+ffffff80022d5fc0	setne	%al
+ffffff80022d5fc3	testq	%rdx, %rdx
+ffffff80022d5fc6	sete	%cl
+ffffff80022d5fc9	xorb	%al, %cl
+ffffff80022d5fcb	je	0xffffff80022d6060
+ffffff80022d5fd1	movq	0x110(%r13), %rax
+ffffff80022d5fd8	movq	0x28(%rax), %rax
+ffffff80022d5fdc	movb	$0x1, %cl
+ffffff80022d5fde	movl	%ecx, -0x54(%rbp)
+ffffff80022d5fe1	testq	%rax, %rax
+ffffff80022d5fe4	je	0xffffff80022d61f7
+ffffff80022d5fea	movq	0x18(%rax), %rcx
+ffffff80022d5fee	movq	0x528(%rcx), %rcx
+ffffff80022d5ff5	movb	$0x1, %dl
+ffffff80022d5ff7	movq	%rdx, -0x88(%rbp)
+ffffff80022d5ffe	testq	%rcx, %rcx
+ffffff80022d6001	je	0xffffff80022d60a7
+ffffff80022d6007	movq	0x18(%rcx), %rcx
+ffffff80022d600b	movq	0x4c0(%rcx), %rcx
+ffffff80022d6012	testq	%rcx, %rcx
+ffffff80022d6015	je	0xffffff80022d60a7
+ffffff80022d601b	movq	0x10(%rcx), %rcx
+ffffff80022d601f	movq	0xa30(%rcx), %rdi
+ffffff80022d6026	testq	%rdi, %rdi
+ffffff80022d6029	je	0xffffff80022d60a7
+ffffff80022d602b	movq	(%rdi), %rax
+ffffff80022d602e	movq	%rdi, -0x50(%rbp)
+ffffff80022d6032	callq	*0x20(%rax)
+CONTROL_FLOW=0xffffff80022d6032 callq	*0x20(%rax)
+ffffff80022d6048	testq	%rax, %rax
+ffffff80022d605b	jmp	0xffffff80022d6213
+CONTROL_FLOW=0xffffff80022d605b jmp	0xffffff80022d6213
+ffffff80022d6096	callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+CONTROL_FLOW=0xffffff80022d6096 callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+ffffff80022d60a2	jmp	0xffffff80022d705d
+CONTROL_FLOW=0xffffff80022d60a2 jmp	0xffffff80022d705d
+ffffff80022d60c0	testq	%rcx, %rcx
+ffffff80022d60d0	testq	%rcx, %rcx
+ffffff80022d60e0	testq	%rdi, %rdi
+ffffff80022d60ec	callq	*0x20(%rax)
+CONTROL_FLOW=0xffffff80022d60ec callq	*0x20(%rax)
+ffffff80022d6105	testq	%rax, %rax
+ffffff80022d6118	jmp	0xffffff80022d6224
+CONTROL_FLOW=0xffffff80022d6118 jmp	0xffffff80022d6224
+ffffff80022d6136	testq	%rcx, %rcx
+ffffff80022d614d	testq	%rcx, %rcx
+ffffff80022d615d	testq	%rdi, %rdi
+ffffff80022d6169	callq	*0x20(%rax)
+CONTROL_FLOW=0xffffff80022d6169 callq	*0x20(%rax)
+ffffff80022d617f	testq	%rax, %rax
+ffffff80022d6191	jmp	0xffffff80022d61aa
+CONTROL_FLOW=0xffffff80022d6191 jmp	0xffffff80022d61aa
+ffffff80022d61b5	testq	%rbx, %rbx
+ffffff80022d61c4	callq	*0x20(%rax)
+CONTROL_FLOW=0xffffff80022d61c4 callq	*0x20(%rax)
+ffffff80022d61d6	testq	%rdi, %rdi
+ffffff80022d61e2	callq	*0x20(%rax)
+CONTROL_FLOW=0xffffff80022d61e2 callq	*0x20(%rax)
+ffffff80022d61f5	jmp	0xffffff80022d6262
+CONTROL_FLOW=0xffffff80022d61f5 jmp	0xffffff80022d6262
+ffffff80022d6240	jmp	0xffffff80022d6272
+CONTROL_FLOW=0xffffff80022d6240 jmp	0xffffff80022d6272
+ffffff80022d6250	jmp	0xffffff80022d625a
+CONTROL_FLOW=0xffffff80022d6250 jmp	0xffffff80022d625a
+ffffff80022d627c	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d627c callq	*0xba8(%rax)
+ffffff80022d6282	testq	%rax, %rax
+ffffff80022d628e	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d628e callq	*0xba8(%rax)
+ffffff80022d62a2	testq	%rbx, %rbx
+ffffff80022d62ad	callq	*0x20(%rax)
+CONTROL_FLOW=0xffffff80022d62ad callq	*0x20(%rax)
+ffffff80022d62c9	callq	0xffffff8000a49ab0
+CONTROL_FLOW=0xffffff80022d62c9 callq	0xffffff8000a49ab0
+ffffff80022d62ce	testq	%rax, %rax
+ffffff80022d62dc	callq	*0x20(%rax)
+CONTROL_FLOW=0xffffff80022d62dc callq	*0x20(%rax)
+ffffff80022d62e6	jmp	0xffffff80022d6302
+CONTROL_FLOW=0xffffff80022d62e6 jmp	0xffffff80022d6302
+ffffff80022d62fe	jmp	0xffffff80022d630d
+CONTROL_FLOW=0xffffff80022d62fe jmp	0xffffff80022d630d
+ffffff80022d6318	testq	%rdi, %rdi
+ffffff80022d6326	callq	__ZN30IO80211AssociationJoinSnapshot5countEjPvm ## IO80211AssociationJoinSnapshot::count(unsigned int, void*, unsigned long)
+CONTROL_FLOW=0xffffff80022d6326 callq	__ZN30IO80211AssociationJoinSnapshot5countEjPvm ## IO80211AssociationJoinSnapshot::count(unsigned int, void*, unsigned long)
+ffffff80022d632b	cmpl	$0x7d, %r15d
+ffffff80022d633c	cmpl	$0x3b, %r15d
+ffffff80022d6342	cmpl	$0x51, %r15d
+ffffff80022d634f	cmpl	$0x3c, %r15d
+ffffff80022d6359	cmpl	$0x42, %r15d
+ffffff80022d6363	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d6370	callq	__ZN25IO80211LinkQualityMonitor20recordIPAddressEventEP22apple80211_assoc_ready ## IO80211LinkQualityMonitor::recordIPAddressEvent(apple80211_assoc_ready*)
+CONTROL_FLOW=0xffffff80022d6370 callq	__ZN25IO80211LinkQualityMonitor20recordIPAddressEventEP22apple80211_assoc_ready ## IO80211LinkQualityMonitor::recordIPAddressEvent(apple80211_assoc_ready*)
+ffffff80022d6375	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6386	callq	__ZN21IO80211LQMCrashTracer20recordIPAddressEventEP22apple80211_assoc_ready ## IO80211LQMCrashTracer::recordIPAddressEvent(apple80211_assoc_ready*)
+CONTROL_FLOW=0xffffff80022d6386 callq	__ZN21IO80211LQMCrashTracer20recordIPAddressEventEP22apple80211_assoc_ready ## IO80211LQMCrashTracer::recordIPAddressEvent(apple80211_assoc_ready*)
+ffffff80022d638b	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d638b jmp	0xffffff80022d6db0
+ffffff80022d6390	cmpl	$0x3, %r15d
+ffffff80022d639d	cmpl	$0x4, %r15d
+ffffff80022d63a7	cmpl	$0x27, %r15d
+ffffff80022d63b1	testq	%r12, %r12
+ffffff80022d63b6	cmpq	$0x0, -0x60(%rbp)
+ffffff80022d63bd	cmpb	$0x0, (%r12)
+ffffff80022d63d0	callq	__ZN18IO80211PeerMonitor11setPeerRSSIEx ## IO80211PeerMonitor::setPeerRSSI(long long)
+CONTROL_FLOW=0xffffff80022d63d0 callq	__ZN18IO80211PeerMonitor11setPeerRSSIEx ## IO80211PeerMonitor::setPeerRSSI(long long)
+ffffff80022d63e4	callq	__ZN18IO80211PeerMonitor18setPeerPerCoreRSSIEa24apple80211_per_core_rssi ## IO80211PeerMonitor::setPeerPerCoreRSSI(signed char, apple80211_per_core_rssi)
+CONTROL_FLOW=0xffffff80022d63e4 callq	__ZN18IO80211PeerMonitor18setPeerPerCoreRSSIEa24apple80211_per_core_rssi ## IO80211PeerMonitor::setPeerPerCoreRSSI(signed char, apple80211_per_core_rssi)
+ffffff80022d63ec	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d63f9	callq	__ZN25IO80211LinkQualityMonitor12recordAvgLQMEP25apple80211_lqm_event_data ## IO80211LinkQualityMonitor::recordAvgLQM(apple80211_lqm_event_data*)
+CONTROL_FLOW=0xffffff80022d63f9 callq	__ZN25IO80211LinkQualityMonitor12recordAvgLQMEP25apple80211_lqm_event_data ## IO80211LinkQualityMonitor::recordAvgLQM(apple80211_lqm_event_data*)
+ffffff80022d6409	testq	%rdi, %rdi
+ffffff80022d6413	callq	__ZN23IO80211InterfaceMonitor16setInterfaceQBSSEP20apple80211_qbss_load ## IO80211InterfaceMonitor::setInterfaceQBSS(apple80211_qbss_load*)
+CONTROL_FLOW=0xffffff80022d6413 callq	__ZN23IO80211InterfaceMonitor16setInterfaceQBSSEP20apple80211_qbss_load ## IO80211InterfaceMonitor::setInterfaceQBSS(apple80211_qbss_load*)
+ffffff80022d6418	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6429	callq	__ZN21IO80211LQMCrashTracer24recordRssiChangeLqmEventEP25apple80211_lqm_event_data ## IO80211LQMCrashTracer::recordRssiChangeLqmEvent(apple80211_lqm_event_data*)
+CONTROL_FLOW=0xffffff80022d6429 callq	__ZN21IO80211LQMCrashTracer24recordRssiChangeLqmEventEP25apple80211_lqm_event_data ## IO80211LQMCrashTracer::recordRssiChangeLqmEvent(apple80211_lqm_event_data*)
+ffffff80022d642e	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d642e jmp	0xffffff80022d6db0
+ffffff80022d6433	cmpl	$0x52, %r15d
+ffffff80022d643d	cmpl	$0x7d, %r15d
+ffffff80022d6447	testq	%r12, %r12
+ffffff80022d644d	cmpq	$0x323, %r14                    ## imm = 0x323
+ffffff80022d6465	callq	__ZN21IO80211InfraInterface20updateChanOutageTimeEP38apple80211_infra_scan_start_event_data ## IO80211InfraInterface::updateChanOutageTime(apple80211_infra_scan_start_event_data*)
+CONTROL_FLOW=0xffffff80022d6465 callq	__ZN21IO80211InfraInterface20updateChanOutageTimeEP38apple80211_infra_scan_start_event_data ## IO80211InfraInterface::updateChanOutageTime(apple80211_infra_scan_start_event_data*)
+ffffff80022d646a	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d646a jmp	0xffffff80022d6db0
+ffffff80022d6476	cmpl	$0x31, %eax
+ffffff80022d648d	jmpq	*%rax
+CONTROL_FLOW=0xffffff80022d648d jmpq	*%rax
+ffffff80022d648f	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d649c	callq	__ZN25IO80211LinkQualityMonitor20recordWeightedAvgLQMEP36apple80211_weight_avg_lqm_event_data ## IO80211LinkQualityMonitor::recordWeightedAvgLQM(apple80211_weight_avg_lqm_event_data*)
+CONTROL_FLOW=0xffffff80022d649c callq	__ZN25IO80211LinkQualityMonitor20recordWeightedAvgLQMEP36apple80211_weight_avg_lqm_event_data ## IO80211LinkQualityMonitor::recordWeightedAvgLQM(apple80211_weight_avg_lqm_event_data*)
+ffffff80022d64a1	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d64ae	callq	__ZN21IO80211LQMCrashTracer20recordWeightedAvgLQMEP36apple80211_weight_avg_lqm_event_data ## IO80211LQMCrashTracer::recordWeightedAvgLQM(apple80211_weight_avg_lqm_event_data*)
+CONTROL_FLOW=0xffffff80022d64ae callq	__ZN21IO80211LQMCrashTracer20recordWeightedAvgLQMEP36apple80211_weight_avg_lqm_event_data ## IO80211LQMCrashTracer::recordWeightedAvgLQM(apple80211_weight_avg_lqm_event_data*)
+ffffff80022d64be	testq	%rax, %rax
+ffffff80022d64c4	testq	%r12, %r12
+ffffff80022d64e3	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d64e3 jmp	0xffffff80022d6db0
+ffffff80022d64e8	cmpq	$0x20, %r14
+ffffff80022d64fd	testq	%rdi, %rdi
+ffffff80022d6509	callq	__ZN23IO80211InterfaceMonitor34updateInterfaceMonitorOnLinkChangeEP34apple80211_link_changed_event_data ## IO80211InterfaceMonitor::updateInterfaceMonitorOnLinkChange(apple80211_link_changed_event_data*)
+CONTROL_FLOW=0xffffff80022d6509 callq	__ZN23IO80211InterfaceMonitor34updateInterfaceMonitorOnLinkChangeEP34apple80211_link_changed_event_data ## IO80211InterfaceMonitor::updateInterfaceMonitorOnLinkChange(apple80211_link_changed_event_data*)
+ffffff80022d650e	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d650e jmp	0xffffff80022d6db0
+ffffff80022d6513	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d6520	callq	__ZN25IO80211LinkQualityMonitor12recordAvgCCAEP29apple80211_homechan_qual_data ## IO80211LinkQualityMonitor::recordAvgCCA(apple80211_homechan_qual_data*)
+CONTROL_FLOW=0xffffff80022d6520 callq	__ZN25IO80211LinkQualityMonitor12recordAvgCCAEP29apple80211_homechan_qual_data ## IO80211LinkQualityMonitor::recordAvgCCA(apple80211_homechan_qual_data*)
+ffffff80022d6525	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6536	callq	__ZN21IO80211LQMCrashTracer9recordCCAEP29apple80211_homechan_qual_data ## IO80211LQMCrashTracer::recordCCA(apple80211_homechan_qual_data*)
+CONTROL_FLOW=0xffffff80022d6536 callq	__ZN21IO80211LQMCrashTracer9recordCCAEP29apple80211_homechan_qual_data ## IO80211LQMCrashTracer::recordCCA(apple80211_homechan_qual_data*)
+ffffff80022d653b	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d653b jmp	0xffffff80022d6db0
+ffffff80022d6547	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d6547 callq	*0xba8(%rax)
+ffffff80022d654d	cmpq	$0xc, %r14
+ffffff80022d6557	testq	%r12, %r12
+ffffff80022d6560	testq	%rax, %rax
+ffffff80022d6570	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d6570 callq	*0xba8(%rax)
+ffffff80022d657c	callq	__ZN17IO80211Controller15setInfraChannelEP18apple80211_channel ## IO80211Controller::setInfraChannel(apple80211_channel*)
+CONTROL_FLOW=0xffffff80022d657c callq	__ZN17IO80211Controller15setInfraChannelEP18apple80211_channel ## IO80211Controller::setInfraChannel(apple80211_channel*)
+ffffff80022d6581	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6581 jmp	0xffffff80022d6db0
+ffffff80022d658f	callq	__ZN21IO80211InfraInterface11bssidChangeEPvm ## IO80211InfraInterface::bssidChange(void*, unsigned long)
+CONTROL_FLOW=0xffffff80022d658f callq	__ZN21IO80211InfraInterface11bssidChangeEPvm ## IO80211InfraInterface::bssidChange(void*, unsigned long)
+ffffff80022d6594	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6594 jmp	0xffffff80022d6db0
+ffffff80022d65a0	cmpl	$0x9, %eax
+ffffff80022d65b6	jmpq	*%rax
+CONTROL_FLOW=0xffffff80022d65b6 jmpq	*%rax
+ffffff80022d65bb	callq	__ZN21IO80211InfraInterface14loadHwChannelsEv ## IO80211InfraInterface::loadHwChannels()
+CONTROL_FLOW=0xffffff80022d65bb callq	__ZN21IO80211InfraInterface14loadHwChannelsEv ## IO80211InfraInterface::loadHwChannels()
+ffffff80022d65c3	callq	__ZN21IO80211InfraInterface15loadChannelInfoEv ## IO80211InfraInterface::loadChannelInfo()
+CONTROL_FLOW=0xffffff80022d65c3 callq	__ZN21IO80211InfraInterface15loadChannelInfoEv ## IO80211InfraInterface::loadChannelInfo()
+ffffff80022d65c8	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d65c8 jmp	0xffffff80022d6db0
+ffffff80022d65cd	cmpl	$0x7e, %r15d
+ffffff80022d65ee	callq	__ZN18IO80211AVCAdvisory18setAVCAdvisoryInfoEhtt ## IO80211AVCAdvisory::setAVCAdvisoryInfo(unsigned char, unsigned short, unsigned short)
+CONTROL_FLOW=0xffffff80022d65ee callq	__ZN18IO80211AVCAdvisory18setAVCAdvisoryInfoEhtt ## IO80211AVCAdvisory::setAVCAdvisoryInfo(unsigned char, unsigned short, unsigned short)
+ffffff80022d65f3	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d65f3 jmp	0xffffff80022d6db0
+ffffff80022d65ff	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d65ff callq	*0xba8(%rax)
+ffffff80022d6605	testq	%r12, %r12
+ffffff80022d660e	testq	%rax, %rax
+ffffff80022d661e	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d661e callq	*0xba8(%rax)
+ffffff80022d6624	cmpl	$0x0, (%r12)
+ffffff80022d6637	cmpb	$0x0, -0x54(%rbp)
+ffffff80022d6648	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d6648 callq	*0xba8(%rax)
+ffffff80022d6665	jmp	0xffffff80022d6dad
+CONTROL_FLOW=0xffffff80022d6665 jmp	0xffffff80022d6dad
+ffffff80022d666a	testq	%r12, %r12
+ffffff80022d6677	cmpl	$0x7, %eax
+ffffff80022d66a7	callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+CONTROL_FLOW=0xffffff80022d66a7 callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+ffffff80022d66ac	cmpb	$0x0, -0x54(%rbp)
+ffffff80022d66b6	testb	$0x1, 0x3ee8(%rax)
+ffffff80022d66c2	cmpl	$0x0, 0x4(%r12)
+ffffff80022d66fc	callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+CONTROL_FLOW=0xffffff80022d66fc callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+ffffff80022d6704	callq	__ZN22IO80211AWDLPeerManager21programMasterChannelsEv ## IO80211AWDLPeerManager::programMasterChannels()
+CONTROL_FLOW=0xffffff80022d6704 callq	__ZN22IO80211AWDLPeerManager21programMasterChannelsEv ## IO80211AWDLPeerManager::programMasterChannels()
+ffffff80022d670c	callq	__ZN22IO80211AWDLPeerManager39updateSibCoexAWDLScanChanSeqActiveStateEv ## IO80211AWDLPeerManager::updateSibCoexAWDLScanChanSeqActiveState()
+CONTROL_FLOW=0xffffff80022d670c callq	__ZN22IO80211AWDLPeerManager39updateSibCoexAWDLScanChanSeqActiveStateEv ## IO80211AWDLPeerManager::updateSibCoexAWDLScanChanSeqActiveState()
+ffffff80022d6715	cmpl	$0x2, %eax
+ffffff80022d6766	cmpb	$0x0, -0x54(%rbp)
+ffffff80022d6774	cmpb	$0x1, 0x422b(%rcx)
+ffffff80022d6781	cmpl	$0x0, 0xc0(%r10)
+ffffff80022d678f	testl	%eax, %eax
+ffffff80022d679f	cmpl	$0x14, %eax
+ffffff80022d67a8	cmpl	$0x40, %eax
+ffffff80022d67b6	jmp	0xffffff80022d7290
+CONTROL_FLOW=0xffffff80022d67b6 jmp	0xffffff80022d7290
+ffffff80022d67c2	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d67c2 callq	*0xba8(%rax)
+ffffff80022d67c8	testq	%r12, %r12
+ffffff80022d67d1	testq	%rax, %rax
+ffffff80022d67e4	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d67e4 callq	*0xba8(%rax)
+ffffff80022d67fb	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d680c	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d680c callq	*0xba8(%rax)
+ffffff80022d6823	callq	__ZN21IO80211LQMCrashTracer31reportLQMCrashTracerFeatureFlagEj ## IO80211LQMCrashTracer::reportLQMCrashTracerFeatureFlag(unsigned int)
+CONTROL_FLOW=0xffffff80022d6823 callq	__ZN21IO80211LQMCrashTracer31reportLQMCrashTracerFeatureFlagEj ## IO80211LQMCrashTracer::reportLQMCrashTracerFeatureFlag(unsigned int)
+ffffff80022d6828	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6828 jmp	0xffffff80022d6db0
+ffffff80022d682d	testq	%r12, %r12
+ffffff80022d683a	testq	%rdi, %rdi
+ffffff80022d684a	callq	__ZN25IO80211LinkQualityMonitor21recordUserInputResultEi ## IO80211LinkQualityMonitor::recordUserInputResult(int)
+CONTROL_FLOW=0xffffff80022d684a callq	__ZN25IO80211LinkQualityMonitor21recordUserInputResultEi ## IO80211LinkQualityMonitor::recordUserInputResult(int)
+ffffff80022d684f	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d684f jmp	0xffffff80022d6db0
+ffffff80022d6854	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d685a	cmpb	$0x0, (%r12)
+ffffff80022d6880	callq	__ZN25IO80211LinkQualityMonitor23checkMeasurementTimeoutEv ## IO80211LinkQualityMonitor::checkMeasurementTimeout()
+CONTROL_FLOW=0xffffff80022d6880 callq	__ZN25IO80211LinkQualityMonitor23checkMeasurementTimeoutEv ## IO80211LinkQualityMonitor::checkMeasurementTimeout()
+ffffff80022d6885	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6899	callq	__ZN21IO80211LQMCrashTracer21recordRC2CoexActivityEP32apple80211_rc2_coex_stats_report ## IO80211LQMCrashTracer::recordRC2CoexActivity(apple80211_rc2_coex_stats_report*)
+CONTROL_FLOW=0xffffff80022d6899 callq	__ZN21IO80211LQMCrashTracer21recordRC2CoexActivityEP32apple80211_rc2_coex_stats_report ## IO80211LQMCrashTracer::recordRC2CoexActivity(apple80211_rc2_coex_stats_report*)
+ffffff80022d689e	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d689e jmp	0xffffff80022d6db0
+ffffff80022d68aa	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d68aa callq	*0xba8(%rax)
+ffffff80022d68b0	testq	%rax, %rax
+ffffff80022d68c0	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d68c0 callq	*0xba8(%rax)
+ffffff80022d68cc	callq	*0xc80(%rcx)
+CONTROL_FLOW=0xffffff80022d68cc callq	*0xc80(%rcx)
+ffffff80022d68d2	testq	%rax, %rax
+ffffff80022d68e2	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d68e2 callq	*0xba8(%rax)
+ffffff80022d68ee	callq	*0xc80(%rcx)
+CONTROL_FLOW=0xffffff80022d68ee callq	*0xc80(%rcx)
+ffffff80022d68f4	testq	%rax, %rax
+ffffff80022d6903	callq	*0xb88(%rcx)
+CONTROL_FLOW=0xffffff80022d6903 callq	*0xb88(%rcx)
+ffffff80022d6909	cmpl	$0x2, %eax
+ffffff80022d6912	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6922	callq	__ZN21IO80211LQMCrashTracer22recordDPSSymptomsInputEP29apple80211_dps_symptoms_input ## IO80211LQMCrashTracer::recordDPSSymptomsInput(apple80211_dps_symptoms_input*)
+CONTROL_FLOW=0xffffff80022d6922 callq	__ZN21IO80211LQMCrashTracer22recordDPSSymptomsInputEP29apple80211_dps_symptoms_input ## IO80211LQMCrashTracer::recordDPSSymptomsInput(apple80211_dps_symptoms_input*)
+ffffff80022d6927	cmpb	$0x0, -0x78(%rbp)
+ffffff80022d6934	callq	__ZN18IO80211PeerMonitor22recordDPSSymptomsInputEP29apple80211_dps_symptoms_input ## IO80211PeerMonitor::recordDPSSymptomsInput(apple80211_dps_symptoms_input*)
+CONTROL_FLOW=0xffffff80022d6934 callq	__ZN18IO80211PeerMonitor22recordDPSSymptomsInputEP29apple80211_dps_symptoms_input ## IO80211PeerMonitor::recordDPSSymptomsInput(apple80211_dps_symptoms_input*)
+ffffff80022d6939	testq	%r12, %r12
+ffffff80022d6966	jmp	0xffffff80022d6b79
+CONTROL_FLOW=0xffffff80022d6966 jmp	0xffffff80022d6b79
+ffffff80022d696b	cmpb	$0x0, -0x88(%rbp)
+ffffff80022d697f	callq	__ZN19IO80211LinkRecovery23recordBSSBlacklistEventEP30apple80211_bss_blacklist_event ## IO80211LinkRecovery::recordBSSBlacklistEvent(apple80211_bss_blacklist_event*)
+CONTROL_FLOW=0xffffff80022d697f callq	__ZN19IO80211LinkRecovery23recordBSSBlacklistEventEP30apple80211_bss_blacklist_event ## IO80211LinkRecovery::recordBSSBlacklistEvent(apple80211_bss_blacklist_event*)
+ffffff80022d6984	jmp	0xffffff80022d6dad
+CONTROL_FLOW=0xffffff80022d6984 jmp	0xffffff80022d6dad
+ffffff80022d6989	cmpb	$0x0, -0x88(%rbp)
+ffffff80022d699d	callq	__ZN19IO80211LinkRecovery14recordAppStateEP20apple80211_app_state ## IO80211LinkRecovery::recordAppState(apple80211_app_state*)
+CONTROL_FLOW=0xffffff80022d699d callq	__ZN19IO80211LinkRecovery14recordAppStateEP20apple80211_app_state ## IO80211LinkRecovery::recordAppState(apple80211_app_state*)
+ffffff80022d69a2	jmp	0xffffff80022d6dad
+CONTROL_FLOW=0xffffff80022d69a2 jmp	0xffffff80022d6dad
+ffffff80022d69a7	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d69c1	callq	__ZN25IO80211LinkQualityMonitor15recordTVPMStateEP21apple80211_tvpm_event ## IO80211LinkQualityMonitor::recordTVPMState(apple80211_tvpm_event*)
+CONTROL_FLOW=0xffffff80022d69c1 callq	__ZN25IO80211LinkQualityMonitor15recordTVPMStateEP21apple80211_tvpm_event ## IO80211LinkQualityMonitor::recordTVPMState(apple80211_tvpm_event*)
+ffffff80022d69c6	jmp	0xffffff80022d6b79
+CONTROL_FLOW=0xffffff80022d69c6 jmp	0xffffff80022d6b79
+ffffff80022d69cb	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d69d1	cmpb	$0x0, (%r12)
+ffffff80022d69f7	callq	__ZN25IO80211LinkQualityMonitor23checkMeasurementTimeoutEv ## IO80211LinkQualityMonitor::checkMeasurementTimeout()
+CONTROL_FLOW=0xffffff80022d69f7 callq	__ZN25IO80211LinkQualityMonitor23checkMeasurementTimeoutEv ## IO80211LinkQualityMonitor::checkMeasurementTimeout()
+ffffff80022d69fc	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6a10	callq	__ZN21IO80211LQMCrashTracer21recordRC1CoexActivityEP32apple80211_rc1_coex_stats_report ## IO80211LQMCrashTracer::recordRC1CoexActivity(apple80211_rc1_coex_stats_report*)
+CONTROL_FLOW=0xffffff80022d6a10 callq	__ZN21IO80211LQMCrashTracer21recordRC1CoexActivityEP32apple80211_rc1_coex_stats_report ## IO80211LQMCrashTracer::recordRC1CoexActivity(apple80211_rc1_coex_stats_report*)
+ffffff80022d6a15	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6a15 jmp	0xffffff80022d6db0
+ffffff80022d6a1a	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6a2b	callq	__ZN21IO80211LQMCrashTracer13recordWpsInfoEP21apple80211_WPS_info_t ## IO80211LQMCrashTracer::recordWpsInfo(apple80211_WPS_info_t*)
+CONTROL_FLOW=0xffffff80022d6a2b callq	__ZN21IO80211LQMCrashTracer13recordWpsInfoEP21apple80211_WPS_info_t ## IO80211LQMCrashTracer::recordWpsInfo(apple80211_WPS_info_t*)
+ffffff80022d6a30	jmp	0xffffff80022d6dad
+CONTROL_FLOW=0xffffff80022d6a30 jmp	0xffffff80022d6dad
+ffffff80022d6a35	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6a46	callq	__ZN21IO80211LQMCrashTracer22recordScanSummaryEventEP25apple80211_scan_summary_t ## IO80211LQMCrashTracer::recordScanSummaryEvent(apple80211_scan_summary_t*)
+CONTROL_FLOW=0xffffff80022d6a46 callq	__ZN21IO80211LQMCrashTracer22recordScanSummaryEventEP25apple80211_scan_summary_t ## IO80211LQMCrashTracer::recordScanSummaryEvent(apple80211_scan_summary_t*)
+ffffff80022d6a4b	jmp	0xffffff80022d6dad
+CONTROL_FLOW=0xffffff80022d6a4b jmp	0xffffff80022d6dad
+ffffff80022d6a50	cmpb	$0x0, -0x54(%rbp)
+ffffff80022d6a5a	cmpb	$0x1, 0x422b(%rax)
+ffffff80022d6a78	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6a8c	callq	__ZN21IO80211LQMCrashTracer30recordInfraBandTxRxStatsUpdateEP33apple80211_infra_band_tx_rx_stats ## IO80211LQMCrashTracer::recordInfraBandTxRxStatsUpdate(apple80211_infra_band_tx_rx_stats*)
+CONTROL_FLOW=0xffffff80022d6a8c callq	__ZN21IO80211LQMCrashTracer30recordInfraBandTxRxStatsUpdateEP33apple80211_infra_band_tx_rx_stats ## IO80211LQMCrashTracer::recordInfraBandTxRxStatsUpdate(apple80211_infra_band_tx_rx_stats*)
+ffffff80022d6a91	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6a91 jmp	0xffffff80022d6db0
+ffffff80022d6a96	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d6ab0	callq	__ZN25IO80211LinkQualityMonitor20recordDataQueueStateEP33apple80211_data_queue_state_event ## IO80211LinkQualityMonitor::recordDataQueueState(apple80211_data_queue_state_event*)
+CONTROL_FLOW=0xffffff80022d6ab0 callq	__ZN25IO80211LinkQualityMonitor20recordDataQueueStateEP33apple80211_data_queue_state_event ## IO80211LinkQualityMonitor::recordDataQueueState(apple80211_data_queue_state_event*)
+ffffff80022d6ab5	jmp	0xffffff80022d6b79
+CONTROL_FLOW=0xffffff80022d6ab5 jmp	0xffffff80022d6b79
+ffffff80022d6aba	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d6ad4	callq	__ZN25IO80211LinkQualityMonitor24recordChannelSwitchEventEP30apple80211_channel_switch_data ## IO80211LinkQualityMonitor::recordChannelSwitchEvent(apple80211_channel_switch_data*)
+CONTROL_FLOW=0xffffff80022d6ad4 callq	__ZN25IO80211LinkQualityMonitor24recordChannelSwitchEventEP30apple80211_channel_switch_data ## IO80211LinkQualityMonitor::recordChannelSwitchEvent(apple80211_channel_switch_data*)
+ffffff80022d6ad9	jmp	0xffffff80022d6b79
+CONTROL_FLOW=0xffffff80022d6ad9 jmp	0xffffff80022d6b79
+ffffff80022d6ade	testq	%r12, %r12
+ffffff80022d6aeb	testq	%rdi, %rdi
+ffffff80022d6afb	callq	__ZN19IO80211LinkRecovery21recordLinkProbeResultEi ## IO80211LinkRecovery::recordLinkProbeResult(int)
+CONTROL_FLOW=0xffffff80022d6afb callq	__ZN19IO80211LinkRecovery21recordLinkProbeResultEi ## IO80211LinkRecovery::recordLinkProbeResult(int)
+ffffff80022d6b00	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6b00 jmp	0xffffff80022d6db0
+ffffff80022d6b05	testq	%r12, %r12
+ffffff80022d6b12	testq	%rdi, %rdi
+ffffff80022d6b22	callq	__ZN25IO80211LinkQualityMonitor19recordSymptomsInputEy ## IO80211LinkQualityMonitor::recordSymptomsInput(unsigned long long)
+CONTROL_FLOW=0xffffff80022d6b22 callq	__ZN25IO80211LinkQualityMonitor19recordSymptomsInputEy ## IO80211LinkQualityMonitor::recordSymptomsInput(unsigned long long)
+ffffff80022d6b27	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6b27 jmp	0xffffff80022d6db0
+ffffff80022d6b2c	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6b3d	callq	__ZN21IO80211LQMCrashTracer19recordRxAmpduUpdateEP31apple80211_rx_ampdu_lqmct_stats ## IO80211LQMCrashTracer::recordRxAmpduUpdate(apple80211_rx_ampdu_lqmct_stats*)
+CONTROL_FLOW=0xffffff80022d6b3d callq	__ZN21IO80211LQMCrashTracer19recordRxAmpduUpdateEP31apple80211_rx_ampdu_lqmct_stats ## IO80211LQMCrashTracer::recordRxAmpduUpdate(apple80211_rx_ampdu_lqmct_stats*)
+ffffff80022d6b42	jmp	0xffffff80022d6dad
+CONTROL_FLOW=0xffffff80022d6b42 jmp	0xffffff80022d6dad
+ffffff80022d6b47	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d6b81	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6b81 jmp	0xffffff80022d6db0
+ffffff80022d6b86	testq	%r12, %r12
+ffffff80022d6b93	testq	%rdi, %rdi
+ffffff80022d6ba3	callq	__ZN21IO80211LQMCrashTracer14triggerCaptureEj ## IO80211LQMCrashTracer::triggerCapture(unsigned int)
+CONTROL_FLOW=0xffffff80022d6ba3 callq	__ZN21IO80211LQMCrashTracer14triggerCaptureEj ## IO80211LQMCrashTracer::triggerCapture(unsigned int)
+ffffff80022d6ba8	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6ba8 jmp	0xffffff80022d6db0
+ffffff80022d6bad	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d6bbe	callq	__ZN21IO80211LQMCrashTracer18recordPhyRxDesenseEP26apple80211_phy_rxdesense_t ## IO80211LQMCrashTracer::recordPhyRxDesense(apple80211_phy_rxdesense_t*)
+CONTROL_FLOW=0xffffff80022d6bbe callq	__ZN21IO80211LQMCrashTracer18recordPhyRxDesenseEP26apple80211_phy_rxdesense_t ## IO80211LQMCrashTracer::recordPhyRxDesense(apple80211_phy_rxdesense_t*)
+ffffff80022d6bc3	jmp	0xffffff80022d6dad
+CONTROL_FLOW=0xffffff80022d6bc3 jmp	0xffffff80022d6dad
+ffffff80022d6bc8	testq	%r12, %r12
+ffffff80022d6bd5	testq	%rdi, %rdi
+ffffff80022d6be5	callq	__ZN25IO80211LinkQualityMonitor27recordEscoTrafficIndicationEj ## IO80211LinkQualityMonitor::recordEscoTrafficIndication(unsigned int)
+CONTROL_FLOW=0xffffff80022d6be5 callq	__ZN25IO80211LinkQualityMonitor27recordEscoTrafficIndicationEj ## IO80211LinkQualityMonitor::recordEscoTrafficIndication(unsigned int)
+ffffff80022d6bea	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6bea jmp	0xffffff80022d6db0
+ffffff80022d6bef	cmpq	$0x6, %r14
+ffffff80022d6bf9	testq	%r12, %r12
+ffffff80022d6c10	testq	%rdi, %rdi
+ffffff80022d6c35	callq	__ZN16CommonFsmManager12processEventEhPv ## CommonFsmManager::processEvent(unsigned char, void*)
+CONTROL_FLOW=0xffffff80022d6c35 callq	__ZN16CommonFsmManager12processEventEhPv ## CommonFsmManager::processEvent(unsigned char, void*)
+ffffff80022d6c3a	jmp	0xffffff80022d6d6e
+CONTROL_FLOW=0xffffff80022d6c3a jmp	0xffffff80022d6d6e
+ffffff80022d6c3f	cmpq	$0x6, %r14
+ffffff80022d6c49	testq	%r12, %r12
+ffffff80022d6c60	testq	%rdi, %rdi
+ffffff80022d6c6c	callq	__ZN14IO80211LQMData25handleCCAStatisticsReportEPK24apple80211_lqm_cca_stats ## IO80211LQMData::handleCCAStatisticsReport(apple80211_lqm_cca_stats const*)
+CONTROL_FLOW=0xffffff80022d6c6c callq	__ZN14IO80211LQMData25handleCCAStatisticsReportEPK24apple80211_lqm_cca_stats ## IO80211LQMData::handleCCAStatisticsReport(apple80211_lqm_cca_stats const*)
+ffffff80022d6c71	jmp	0xffffff80022d6d6e
+CONTROL_FLOW=0xffffff80022d6c71 jmp	0xffffff80022d6d6e
+ffffff80022d6c76	cmpq	$0x18, %r14
+ffffff80022d6c80	testq	%r12, %r12
+ffffff80022d6c97	testq	%rdi, %rdi
+ffffff80022d6ca3	callq	__ZN14IO80211LQMData23handleBeaconStatsReportEPK27apple80211_lqm_beacon_stats ## IO80211LQMData::handleBeaconStatsReport(apple80211_lqm_beacon_stats const*)
+CONTROL_FLOW=0xffffff80022d6ca3 callq	__ZN14IO80211LQMData23handleBeaconStatsReportEPK27apple80211_lqm_beacon_stats ## IO80211LQMData::handleBeaconStatsReport(apple80211_lqm_beacon_stats const*)
+ffffff80022d6ca8	jmp	0xffffff80022d6d6e
+CONTROL_FLOW=0xffffff80022d6ca8 jmp	0xffffff80022d6d6e
+ffffff80022d6cad	cmpq	$0x6, %r14
+ffffff80022d6cb7	testq	%r12, %r12
+ffffff80022d6cce	testq	%rdi, %rdi
+ffffff80022d6cda	callq	__ZN14IO80211LQMData24handleNFStatisticsReportEPK31apple80211_lqm_noisefloor_stats ## IO80211LQMData::handleNFStatisticsReport(apple80211_lqm_noisefloor_stats const*)
+CONTROL_FLOW=0xffffff80022d6cda callq	__ZN14IO80211LQMData24handleNFStatisticsReportEPK31apple80211_lqm_noisefloor_stats ## IO80211LQMData::handleNFStatisticsReport(apple80211_lqm_noisefloor_stats const*)
+ffffff80022d6cdf	jmp	0xffffff80022d6d6e
+CONTROL_FLOW=0xffffff80022d6cdf jmp	0xffffff80022d6d6e
+ffffff80022d6ce4	cmpq	$0x10, %r14
+ffffff80022d6cee	testq	%r12, %r12
+ffffff80022d6d05	testq	%rdi, %rdi
+ffffff80022d6d11	callq	__ZN14IO80211LQMData24handleStaInfoStatsReportEPK28apple80211_lqm_stainfo_stats ## IO80211LQMData::handleStaInfoStatsReport(apple80211_lqm_stainfo_stats const*)
+CONTROL_FLOW=0xffffff80022d6d11 callq	__ZN14IO80211LQMData24handleStaInfoStatsReportEPK28apple80211_lqm_stainfo_stats ## IO80211LQMData::handleStaInfoStatsReport(apple80211_lqm_stainfo_stats const*)
+ffffff80022d6d16	jmp	0xffffff80022d6d6e
+CONTROL_FLOW=0xffffff80022d6d16 jmp	0xffffff80022d6d6e
+ffffff80022d6d18	cmpq	$0x30, %r14
+ffffff80022d6d22	testq	%r12, %r12
+ffffff80022d6d39	testq	%rdi, %rdi
+ffffff80022d6d41	callq	__ZN14IO80211LQMData21handleTxRxStatsReportEPK25apple80211_lqm_txrx_stats ## IO80211LQMData::handleTxRxStatsReport(apple80211_lqm_txrx_stats const*)
+CONTROL_FLOW=0xffffff80022d6d41 callq	__ZN14IO80211LQMData21handleTxRxStatsReportEPK25apple80211_lqm_txrx_stats ## IO80211LQMData::handleTxRxStatsReport(apple80211_lqm_txrx_stats const*)
+ffffff80022d6d46	jmp	0xffffff80022d6d6e
+CONTROL_FLOW=0xffffff80022d6d46 jmp	0xffffff80022d6d6e
+ffffff80022d6d48	cmpq	$0xc, %r14
+ffffff80022d6d4e	testq	%r12, %r12
+ffffff80022d6d61	testq	%rdi, %rdi
+ffffff80022d6d69	callq	__ZN14IO80211LQMData26handleRSSIStatisticsReportEPK25apple80211_lqm_rssi_stats ## IO80211LQMData::handleRSSIStatisticsReport(apple80211_lqm_rssi_stats const*)
+CONTROL_FLOW=0xffffff80022d6d69 callq	__ZN14IO80211LQMData26handleRSSIStatisticsReportEPK25apple80211_lqm_rssi_stats ## IO80211LQMData::handleRSSIStatisticsReport(apple80211_lqm_rssi_stats const*)
+ffffff80022d6d6e	cmpl	$0xe00002f0, %eax               ## imm = 0xE00002F0
+ffffff80022d6d84	callq	0xffffff8000ab6560
+CONTROL_FLOW=0xffffff80022d6d84 callq	0xffffff8000ab6560
+ffffff80022d6d89	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d6d89 jmp	0xffffff80022d6db0
+ffffff80022d6da8	callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+CONTROL_FLOW=0xffffff80022d6da8 callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+ffffff80022d6db7	cmpq	$0x0, 0x28(%rax)
+ffffff80022d6dd2	callq	*0xb18(%rax)
+CONTROL_FLOW=0xffffff80022d6dd2 callq	*0xb18(%rax)
+ffffff80022d6ddb	jmp	0xffffff80022d6df2
+CONTROL_FLOW=0xffffff80022d6ddb jmp	0xffffff80022d6df2
+ffffff80022d6ded	callq	__ZN23IO80211SkywalkInterface19postMessageInternalEjPvmb ## IO80211SkywalkInterface::postMessageInternal(unsigned int, void*, unsigned long, bool)
+CONTROL_FLOW=0xffffff80022d6ded callq	__ZN23IO80211SkywalkInterface19postMessageInternalEjPvmb ## IO80211SkywalkInterface::postMessageInternal(unsigned int, void*, unsigned long, bool)
+ffffff80022d6df2	testl	%eax, %eax
+ffffff80022d6e03	callq	0xffffff8000ab6560
+CONTROL_FLOW=0xffffff80022d6e03 callq	0xffffff8000ab6560
+ffffff80022d6e08	cmpl	$0x35, %r15d
+ffffff80022d6e12	cmpl	$0xe, %eax
+ffffff80022d6e29	jmpq	*%rax
+CONTROL_FLOW=0xffffff80022d6e29 jmpq	*%rax
+ffffff80022d6e2e	callq	__ZN21IO80211InfraInterface18updateSSIDPropertyEv ## IO80211InfraInterface::updateSSIDProperty()
+CONTROL_FLOW=0xffffff80022d6e2e callq	__ZN21IO80211InfraInterface18updateSSIDPropertyEv ## IO80211InfraInterface::updateSSIDProperty()
+ffffff80022d6e33	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d6e33 jmp	0xffffff80022d6fd0
+ffffff80022d6e38	cmpl	$0x53, %r15d
+ffffff80022d6e3e	cmpl	$0x36, %r15d
+ffffff80022d6e48	cmpl	$0x37, %r15d
+ffffff80022d6e52	cmpl	$0x4c, %r15d
+ffffff80022d6e5c	testq	%r12, %r12
+ffffff80022d6e65	cmpl	$0xe0822c15, 0x4(%r12)          ## imm = 0xE0822C15
+ffffff80022d6e81	callq	__ZN21IO80211InfraInterface13handleKeyDoneEbb ## IO80211InfraInterface::handleKeyDone(bool, bool)
+CONTROL_FLOW=0xffffff80022d6e81 callq	__ZN21IO80211InfraInterface13handleKeyDoneEbb ## IO80211InfraInterface::handleKeyDone(bool, bool)
+ffffff80022d6e86	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d6e86 jmp	0xffffff80022d6fd0
+ffffff80022d6e8b	cmpl	$0x54, %r15d
+ffffff80022d6e95	cmpl	$0x55, %r15d
+ffffff80022d6e9f	cmpl	$0xbf, %r15d
+ffffff80022d6eb7	testq	%rdi, %rdi
+ffffff80022d6ec0	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d6ec0 jmp	0xffffff80022d6fd0
+ffffff80022d6ec5	cmpl	$0x31, %r15d
+ffffff80022d6ed8	callq	__ZN21IO80211InfraInterface14resetInterfaceEPvm ## IO80211InfraInterface::resetInterface(void*, unsigned long)
+CONTROL_FLOW=0xffffff80022d6ed8 callq	__ZN21IO80211InfraInterface14resetInterfaceEPvm ## IO80211InfraInterface::resetInterface(void*, unsigned long)
+ffffff80022d6edd	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d6edd jmp	0xffffff80022d6fd0
+ffffff80022d6eea	callq	__ZN21IO80211InfraInterface25updateCountryCodePropertyEb ## IO80211InfraInterface::updateCountryCodeProperty(bool)
+CONTROL_FLOW=0xffffff80022d6eea callq	__ZN21IO80211InfraInterface25updateCountryCodePropertyEb ## IO80211InfraInterface::updateCountryCodeProperty(bool)
+ffffff80022d6eef	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d6eef jmp	0xffffff80022d6fd0
+ffffff80022d6ef4	cmpq	$0x20, %r14
+ffffff80022d6efe	testq	%r12, %r12
+ffffff80022d6f12	testq	%rdi, %rdi
+ffffff80022d6f1b	cmpb	$0x0, (%r12)
+ffffff80022d6f26	cmpb	$0x0, 0x1c(%r12)
+ffffff80022d6f32	jmp	0xffffff80022d6f64
+CONTROL_FLOW=0xffffff80022d6f32 jmp	0xffffff80022d6f64
+ffffff80022d6f34	testq	%r12, %r12
+ffffff80022d6f48	testq	%rdi, %rdi
+ffffff80022d6f4e	cmpq	$0x1cc, %r14                    ## imm = 0x1CC
+ffffff80022d6f5c	cmpl	$0x0, 0x8(%r12)
+ffffff80022d6f64	callq	__ZN22IO80211MacAddressAgent8linkDownEv ## IO80211MacAddressAgent::linkDown()
+CONTROL_FLOW=0xffffff80022d6f64 callq	__ZN22IO80211MacAddressAgent8linkDownEv ## IO80211MacAddressAgent::linkDown()
+ffffff80022d6f69	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d6f69 jmp	0xffffff80022d6fd0
+ffffff80022d6f72	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d6f72 callq	*0xba8(%rax)
+ffffff80022d6f80	jmp	0xffffff80022d6fc9
+CONTROL_FLOW=0xffffff80022d6f80 jmp	0xffffff80022d6fc9
+ffffff80022d6f96	callq	__ZN18IO80211AVCAdvisory18setAVCAdvisoryInfoEhtt ## IO80211AVCAdvisory::setAVCAdvisoryInfo(unsigned char, unsigned short, unsigned short)
+CONTROL_FLOW=0xffffff80022d6f96 callq	__ZN18IO80211AVCAdvisory18setAVCAdvisoryInfoEhtt ## IO80211AVCAdvisory::setAVCAdvisoryInfo(unsigned char, unsigned short, unsigned short)
+ffffff80022d6fa5	testq	%rdi, %rdi
+ffffff80022d6faf	callq	__ZN18IO80211ScanManager8scanDoneEb ## IO80211ScanManager::scanDone(bool)
+CONTROL_FLOW=0xffffff80022d6faf callq	__ZN18IO80211ScanManager8scanDoneEb ## IO80211ScanManager::scanDone(bool)
+ffffff80022d6fbb	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d6fbb callq	*0xba8(%rax)
+ffffff80022d6fcb	callq	__ZN17IO80211Controller8scanDoneE10scanSourcei ## IO80211Controller::scanDone(scanSource, int)
+CONTROL_FLOW=0xffffff80022d6fcb callq	__ZN17IO80211Controller8scanDoneE10scanSourcei ## IO80211Controller::scanDone(scanSource, int)
+ffffff80022d6fdc	callq	__ZN21IO80211InfraInterface19routeToP2PInterfaceEjPvm ## IO80211InfraInterface::routeToP2PInterface(unsigned int, void*, unsigned long)
+CONTROL_FLOW=0xffffff80022d6fdc callq	__ZN21IO80211InfraInterface19routeToP2PInterfaceEjPvm ## IO80211InfraInterface::routeToP2PInterface(unsigned int, void*, unsigned long)
+ffffff80022d6fe1	cmpb	$0x0, -0x54(%rbp)
+ffffff80022d6ff1	callq	*0x28(%rax)
+CONTROL_FLOW=0xffffff80022d6ff1 callq	*0x28(%rax)
+ffffff80022d6ff4	cmpb	$0x0, -0x90(%rbp)
+ffffff80022d7007	callq	*0x28(%rax)
+CONTROL_FLOW=0xffffff80022d7007 callq	*0x28(%rax)
+ffffff80022d700a	cmpb	$0x0, -0x78(%rbp)
+ffffff80022d7017	callq	*0x28(%rax)
+CONTROL_FLOW=0xffffff80022d7017 callq	*0x28(%rax)
+ffffff80022d701a	cmpb	$0x0, -0x70(%rbp)
+ffffff80022d7027	callq	*0x28(%rax)
+CONTROL_FLOW=0xffffff80022d7027 callq	*0x28(%rax)
+ffffff80022d702a	cmpb	$0x0, -0x48(%rbp)
+ffffff80022d7036	callq	*0x28(%rax)
+CONTROL_FLOW=0xffffff80022d7036 callq	*0x28(%rax)
+ffffff80022d7039	cmpb	$0x0, -0x88(%rbp)
+ffffff80022d7049	callq	*0x28(%rax)
+CONTROL_FLOW=0xffffff80022d7049 callq	*0x28(%rax)
+ffffff80022d704c	cmpb	$0x0, -0x38(%rbp)
+ffffff80022d707c	jmpq	*0x28(%rax)
+CONTROL_FLOW=0xffffff80022d707c jmpq	*0x28(%rax)
+ffffff80022d707f	cmpq	$0x20, %r14
+ffffff80022d7086	testq	%r12, %r12
+ffffff80022d709b	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d709b callq	*0xba8(%rax)
+ffffff80022d70af	testq	%rax, %rax
+ffffff80022d70c9	callq	*0x158(%rax)
+CONTROL_FLOW=0xffffff80022d70c9 callq	*0x158(%rax)
+ffffff80022d70cf	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d70cf jmp	0xffffff80022d6fd0
+ffffff80022d70d4	testq	%r12, %r12
+ffffff80022d70da	cmpq	$0x14, %r14
+ffffff80022d70f0	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d70f0 callq	*0xba8(%rax)
+ffffff80022d7107	callq	__ZN21IO80211RangingManager23authenticationCompletedEP41apple80211_ranging_authentication_event_t ## IO80211RangingManager::authenticationCompleted(apple80211_ranging_authentication_event_t*)
+CONTROL_FLOW=0xffffff80022d7107 callq	__ZN21IO80211RangingManager23authenticationCompletedEP41apple80211_ranging_authentication_event_t ## IO80211RangingManager::authenticationCompleted(apple80211_ranging_authentication_event_t*)
+ffffff80022d710c	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d710c jmp	0xffffff80022d6fd0
+ffffff80022d7118	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d7118 callq	*0xba8(%rax)
+ffffff80022d711e	testq	%rax, %rax
+ffffff80022d712e	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d712e callq	*0xba8(%rax)
+ffffff80022d713b	cmpq	$0x0, 0x30(%rax)
+ffffff80022d714d	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d714d callq	*0xba8(%rax)
+ffffff80022d7164	callq	__ZN24IO80211ControllerMonitor18setDriverAvailableEPvm ## IO80211ControllerMonitor::setDriverAvailable(void*, unsigned long)
+CONTROL_FLOW=0xffffff80022d7164 callq	__ZN24IO80211ControllerMonitor18setDriverAvailableEPvm ## IO80211ControllerMonitor::setDriverAvailable(void*, unsigned long)
+ffffff80022d7169	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d7169 jmp	0xffffff80022d6fd0
+ffffff80022d716e	testq	%r12, %r12
+ffffff80022d7174	cmpq	$0x1c0, %r14                    ## imm = 0x1C0
+ffffff80022d717e	testb	%cl, %al
+ffffff80022d718d	callq	*0xba8(%rax)
+CONTROL_FLOW=0xffffff80022d718d callq	*0xba8(%rax)
+ffffff80022d71a4	callq	__ZN21IO80211RangingManager13rangingResultEP25apple80211_ranging_peer_t ## IO80211RangingManager::rangingResult(apple80211_ranging_peer_t*)
+CONTROL_FLOW=0xffffff80022d71a4 callq	__ZN21IO80211RangingManager13rangingResultEP25apple80211_ranging_peer_t ## IO80211RangingManager::rangingResult(apple80211_ranging_peer_t*)
+ffffff80022d71a9	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d71a9 jmp	0xffffff80022d6fd0
+ffffff80022d71ba	testq	%rdi, %rdi
+ffffff80022d71c6	callq	*0x218(%rax)
+CONTROL_FLOW=0xffffff80022d71c6 callq	*0x218(%rax)
+ffffff80022d71cc	jmp	0xffffff80022d6fd0
+CONTROL_FLOW=0xffffff80022d71cc jmp	0xffffff80022d6fd0
+ffffff80022d7227	callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+CONTROL_FLOW=0xffffff80022d7227 callq	__ZN23IO80211SkywalkInterface8logDebugEyPKcz ## IO80211SkywalkInterface::logDebug(unsigned long long, char const*, ...)
+ffffff80022d7230	jmp	0xffffff80022d6db0
+CONTROL_FLOW=0xffffff80022d7230 jmp	0xffffff80022d6db0
+ffffff80022d7235	testl	%eax, %eax
+ffffff80022d7240	callq	__Z36getCurrentContinuousTimeMilliSecondsv ## getCurrentContinuousTimeMilliSeconds()
+CONTROL_FLOW=0xffffff80022d7240 callq	__Z36getCurrentContinuousTimeMilliSecondsv ## getCurrentContinuousTimeMilliSeconds()
+ffffff80022d7272	cmpl	$0x0, 0xc0(%r10)
+ffffff80022d7286	jmp	0xffffff80022d678f
+CONTROL_FLOW=0xffffff80022d7286 jmp	0xffffff80022d678f
+ffffff80022d7299	callq	__ZN21IO80211InfraInterface18UpdateULLADurationEPy ## IO80211InfraInterface::UpdateULLADuration(unsigned long long*)
+CONTROL_FLOW=0xffffff80022d7299 callq	__ZN21IO80211InfraInterface18UpdateULLADurationEPy ## IO80211InfraInterface::UpdateULLADuration(unsigned long long*)
+ffffff80022d72a8	cmpl	$0x0, 0xc0(%r10)
+ffffff80022d72b6	cmpl	$0x0, 0xbc(%r10)
+ffffff80022d72c7	callq	__ZN21IO80211InfraInterface18finishSIBCoexTimerEv ## IO80211InfraInterface::finishSIBCoexTimer()
+CONTROL_FLOW=0xffffff80022d72c7 callq	__ZN21IO80211InfraInterface18finishSIBCoexTimerEv ## IO80211InfraInterface::finishSIBCoexTimer()
+ffffff80022d72d3	jmp	0xffffff80022d71d4
+CONTROL_FLOW=0xffffff80022d72d3 jmp	0xffffff80022d71d4
+ffffff80022d72de	jmp	0xffffff80022d72a8
+CONTROL_FLOW=0xffffff80022d72de jmp	0xffffff80022d72a8
+ffffff80022d7320	jmp	0xffffff80022d7318
+CONTROL_FLOW=0xffffff80022d7320 jmp	0xffffff80022d7318
+ffffff80022d7347	jmpq	*-0x32000008(%rip)
+CONTROL_FLOW=0xffffff80022d7347 jmpq	*-0x32000008(%rip)
+ffffff80022d734f	jmpq	*-0x8(%rdi)
+CONTROL_FLOW=0xffffff80022d734f jmpq	*-0x8(%rdi)
+ffffff80022d7370	callq	0xffffff7fd02d736d
+CONTROL_FLOW=0xffffff80022d7370 callq	0xffffff7fd02d736d
+ffffff80022d737b	jmpq	*-0x32000008(%rsi)
+CONTROL_FLOW=0xffffff80022d737b jmpq	*-0x32000008(%rsi)
+ffffff80022d7384	cmpb	%bh, %dh
+ffffff80022d7387	callq	*-0x9(%rbp)
+CONTROL_FLOW=0xffffff80022d7387 callq	*-0x9(%rbp)
+ffffff80022d73a7	callq	*(%rax)
+CONTROL_FLOW=0xffffff80022d73a7 callq	*(%rax)
+ffffff80022d73b8	cmpb	$-0x7, %al
+ffffff80022d73bf	jmpq	*0x47fffff9(%rax)
+CONTROL_FLOW=0xffffff80022d73bf jmpq	*0x47fffff9(%rax)
+ffffff80022d73d7	jmpq	*(%rbx,%rdi,8)
+CONTROL_FLOW=0xffffff80022d73d7 jmpq	*(%rbx,%rdi,8)
+ffffff80022d73ea	.byte 0xff #bad opcode
+ffffff80022d73eb	jmpq	*-0x1(%rbx,%rdi,8)
+CONTROL_FLOW=0xffffff80022d73eb jmpq	*-0x1(%rbx,%rdi,8)
+ffffff80022d73ef	pushq	0x12fffffb(%rdx)
+ffffff80022d73f5	sti
+ffffff80022d73f6	.byte 0xff #bad opcode
+ffffff80022d73f7	incl	(%rax)
+ffffff80022d73f9	cld
+ffffff80022d73fa	.byte 0xff #bad opcode
+ffffff80022d73fb	incl	(%rax)
+ffffff80022d73fd	cld
+ffffff80022d73fe	.byte 0xff #bad opcode
+ffffff80022d73ff	incl	(%rax)
+ffffff80022d7401	cld
+ffffff80022d7402	.byte 0xff #bad opcode
+ffffff80022d7403	incl	(%rax)
+ffffff80022d7405	cld
+ffffff80022d7406	.byte 0xff #bad opcode
+ffffff80022d7407	lcalll	*0x55fffffb(%rbx)
+
+--- Local driver POWER / postMessage source correlation ---
+SOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp SHA256=a312895412fc504602189683a6a32ba013f5bafdc9bd8482da14734f4e55212a BYTES=8089
+SOURCE_MATCH file=RTW88WCL24H32ABI.hpp line=62 text=IOReturn postMessage(IO80211SkywalkInterface *, unsigned int, void *, unsigned long, bool);
+SOURCE_MATCH file=RTW88WCL24H32ABI.hpp line=100 text=virtual IOReturn getPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+SOURCE_MATCH file=RTW88WCL24H32ABI.hpp line=101 text=virtual IOReturn setPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+SOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp SHA256=740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee BYTES=5330
+SOURCE_MATCH file=RTW88WCLController.hpp line=53 text=IOReturn getPOWER(IO80211SkywalkInterface *interface,
+SOURCE_MATCH file=RTW88WCLController.hpp line=54 text=apple80211_power_data *data) override;
+SOURCE_MATCH file=RTW88WCLController.hpp line=55 text=IOReturn setPOWER(IO80211SkywalkInterface *interface,
+SOURCE_MATCH file=RTW88WCLController.hpp line=56 text=apple80211_power_data *data) override;
+SOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp SHA256=63a6a038ef7513312c686199b00e8cf45a16d251c7792ab03d2f5986f9fd84fb BYTES=49082
+SOURCE_MATCH file=RTW88WCL24H32InterfaceABI.hpp line=502 text=virtual void postMessage(unsigned int, void *, unsigned long, bool);
+SOURCE_MATCH file=RTW88WCL24H32InterfaceABI.hpp line=599 text=virtual void postMessageIOUC(char const *, unsigned int, void *, unsigned long);
+SOURCE_MATCH file=RTW88WCL24H32InterfaceABI.hpp line=643 text=virtual void postMessage(unsigned int, void *, unsigned long, bool) override;
+SOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b BYTES=29184
+SOURCE_MATCH file=RTW88WCLInfraInterface.cpp line=681 text=return _controller->postMessage(this, message, payload, length, true);
+SOURCE_FILE=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp SHA256=2c67658a50b40ec65cc400fbc7f13295d054e95a039aaf7060a65457c6087059 BYTES=20358
+SOURCE_MATCH file=RTW88WCLController.cpp line=333 text=IOReturn RTW88WCLController::getPOWER(IO80211SkywalkInterface *interface,
+SOURCE_MATCH file=RTW88WCLController.cpp line=334 text=apple80211_power_data *data)
+SOURCE_MATCH file=RTW88WCLController.cpp line=344 text=IOReturn RTW88WCLController::setPOWER(IO80211SkywalkInterface *interface,
+SOURCE_MATCH file=RTW88WCLController.cpp line=345 text=apple80211_power_data *data)
+STAGE146_MESSAGE_DISPATCH_POLICY=STATIC_ARGUMENT_AND_EXACT_SYMBOL_CORRELATION
+STAGE146_INTERPRETATION=NO_HARDWARE_OR_RUNTIME_CLAIM
+STAGE146_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE146_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE146 ==========
