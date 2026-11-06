@@ -16,6 +16,7 @@
 
 class RTW88TxStateGate {
 public:
+    class MutationLease;
     static constexpr uint32_t kMutationBit = 0x80000000U;
     static constexpr uint32_t kReaderMask = 0x7fffffffU;
 
