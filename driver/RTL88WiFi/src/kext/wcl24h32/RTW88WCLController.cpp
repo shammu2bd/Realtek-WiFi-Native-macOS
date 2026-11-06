@@ -323,9 +323,8 @@ IOReturn RTW88WCLController::releaseNativeResources()
     }
 
     /* Stop the RTW88 RX/TX producer before removing its deferred consumers or
-     * disabling PCI interrupts. The staged path currently leaves
-     * _radioStarted false; preserve this ordering when native radio start is
-     * enabled after queue registration. */
+     * disabling PCI interrupts. The radio has been probed and started only
+     * after its native interface's complete queue-registration preflight. */
     if (_radio && _radioStarted) {
         _radio->stop();
         _radioStarted = false;
@@ -484,7 +483,10 @@ void RTW88WCLController::free()
 bool RTW88WCLController::isCommandProhibited(int command)
 {
     (void)command;
-    return true; // No WCL interface is published by this ABI-only slice.
+    /* Do not dispatch WCL commands into a partially constructed controller.
+     * Once the 24H32 infra child has registered, the protocol adapter handles
+     * the implemented selectors and explicitly rejects the remaining ones. */
+    return !_infraInterface || !_infraInterface->isRegistered();
 }
 
 SInt32 RTW88WCLController::handleCardSpecific(IO80211SkywalkInterface *interface,
@@ -521,32 +523,66 @@ IOReturn RTW88WCLController::getHARDWARE_VERSION(IO80211SkywalkInterface *interf
 IOReturn RTW88WCLController::getCARD_CAPABILITIES(IO80211SkywalkInterface *interface,
                                                    apple80211_capability_data *data)
 {
-    (void)interface;
     if (!data)
         return kIOReturnBadArgument;
+    if (!_infraInterface || !_infraInterface->isRegistered() ||
+        interface != _infraInterface)
+        return kIOReturnNotReady;
+
     bzero(data, sizeof(*data));
     data->version = APPLE80211_VERSION;
-    /* Do not advertise unsupported modes or ciphers before the radio owner
-     * and InfraProtocol capabilities are wired up. */
-    return kIOReturnNotReady;
+    auto advertise = [data](apple80211_card_capability capability) {
+        const unsigned bit = static_cast<unsigned>(capability);
+        if (bit < sizeof(data->capabilities) * 8U)
+            data->capabilities[bit / 8U] |=
+                static_cast<uint8_t>(1U << (bit % 8U));
+    };
+    /* Conservative station-mode capabilities backed by the current RTW88
+     * WCL implementation: WPA2/CCMP, power management and WMM. Do not expose
+     * WEP, TKIP, IBSS, host-AP, monitor, or unimplemented offloads. */
+    advertise(APPLE80211_CAP_AES_CCM);
+    advertise(APPLE80211_CAP_PMGT);
+    advertise(APPLE80211_CAP_WPA2);
+    advertise(APPLE80211_CAP_WME);
+    return kIOReturnSuccess;
 }
 
 IOReturn RTW88WCLController::getPOWER(IO80211SkywalkInterface *interface,
                                        apple80211_power_data *data)
 {
-    (void)interface;
     if (!data)
         return kIOReturnBadArgument;
+    if (!_infraInterface || !_infraInterface->isRegistered() ||
+        interface != _infraInterface)
+        return kIOReturnNotReady;
+
     bzero(data, sizeof(*data));
     data->version = APPLE80211_VERSION;
-    return kIOReturnNotReady;
+    data->num_radios = 1;
+    data->power_state[0] = _infraInterface->isInterfaceEnabled()
+        ? APPLE80211_POWER_ON : APPLE80211_POWER_OFF;
+    return kIOReturnSuccess;
 }
 
 IOReturn RTW88WCLController::setPOWER(IO80211SkywalkInterface *interface,
                                        apple80211_power_data *data)
 {
-    (void)interface;
-    return data ? kIOReturnNotReady : kIOReturnBadArgument;
+    if (!data)
+        return kIOReturnBadArgument;
+    if (!_infraInterface || !_infraInterface->isRegistered() ||
+        interface != _infraInterface)
+        return kIOReturnNotReady;
+    if (data->num_radios != 1)
+        return kIOReturnBadArgument;
+
+    switch (data->power_state[0]) {
+    case APPLE80211_POWER_ON:
+        return _infraInterface->enable(0);
+    case APPLE80211_POWER_OFF:
+        return _infraInterface->disable(0);
+    default:
+        return kIOReturnBadArgument;
+    }
 }
 
 IOReturn RTW88WCLController::getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
