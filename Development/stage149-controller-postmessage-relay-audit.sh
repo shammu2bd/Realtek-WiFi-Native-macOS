@@ -102,7 +102,7 @@ for owner,dest in paths.items():
   print("METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED")
   print("INSTRUCTION_COUNT=%d"%len(ins))
   for a,raw,asm in ins:
-   if name in wanted or re.search(r"0xb08|0x120|0x120\\(",asm,re.I) or re.search(r"postMessage|routeEvent|sendIOUC",asm):
+   if name in wanted or re.search(r"0xb08|0x120|0x120\(",asm,re.I) or re.search(r"postMessage|routeEvent|sendIOUC",asm):
     print(raw)
     if re.search(r"\b(call|jmp)q?\b",asm):print("CONTROL_FLOW=0x%x %s"%(a,asm))
 print("\n--- Local source ownership of controller helper and postWCLMessage ---")
