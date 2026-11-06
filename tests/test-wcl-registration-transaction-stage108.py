@@ -156,7 +156,7 @@ assert "queue->init(this, workLoop, this)" in attach_radio
 assert "_bridge.attach(radio, queue)" in attach_radio
 bridge_cpp = (ROOT / "driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp").read_text()
 assert "radio->setEventDelegate(this)" in bridge_cpp
-assert "_sink->onRTW88WCLRadioEvent(event)" in bridge_cpp
+assert "sink->onRTW88WCLRadioEvent(event)" in bridge_cpp
 
 # User-facing power and capability control is available only after successful
 # registration; no unregistered interface can activate the packet path.
@@ -173,7 +173,7 @@ assert "return !_infraInterface || !_infraInterface->isRegistered();" in control
 
 # TX ownership stays connected to the existing deferred completion consumer.
 assert "_txCompletionWorker->init(this, _workLoop, _txAdapter" in controller_cpp
-assert "enqueuePackets(packets, 1, 0)" in (
+assert "_completionQueue->enqueuePackets(batch, 1, 0)" in (
     ROOT / "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp"
 ).read_text()
 
