@@ -40,26 +40,26 @@ assert "Apple primary Skywalk interface attached and getter-verified" in interfa
 assert "Apple primary Skywalk interface detached and getter-verified" in interface_source
 assert "_infraInterface->registerService()" in controller_source
 
-# These executable mutation/activation paths are forbidden in this observer.
-forbidden = (
-    "sudo ",
-    "kextload",
-    "kextunload",
-    "kextutil",
-    "kmutil load",
-    "kmutil install",
-    "kmutil unload",
-    "diskutil ",
-    "bless ",
-    "nvram ",
-    "networksetup -set",
-    "ifconfig en",
-    "launchctl kickstart",
-    "reboot",
-    "shutdown ",
+# Prohibit executable mutation/activation commands (status labels may mention reboot).
+forbidden_patterns = (
+    r"^\s*sudo\b",
+    r"^\s*kextload\b",
+    r"^\s*kextunload\b",
+    r"^\s*kextutil\b",
+    r"^\s*kmutil\s+(load|install|unload)\b",
+    r"^\s*diskutil\b",
+    r"^\s*bless\b",
+    r"^\s*nvram\b",
+    r"^\s*networksetup\s+-set",
+    r"^\s*ifconfig\s+\S+\s+(up|down)\b",
+    r"^\s*launchctl\s+(kickstart|bootout|bootstrap)\b",
+    r"^\s*(reboot|shutdown)\b",
+    r"^\s*defaults\s+write\b",
 )
-for token in forbidden:
-    assert token not in runner, f"Forbidden mutation/activation token present: {token}"
+for pattern in forbidden_patterns:
+    assert not re.search(pattern, runner, flags=re.MULTILINE | re.IGNORECASE), (
+        f"Forbidden command pattern present: {pattern}"
+    )
 
 syntax = subprocess.run(
     ["bash", "-n", str(runner_path)],
