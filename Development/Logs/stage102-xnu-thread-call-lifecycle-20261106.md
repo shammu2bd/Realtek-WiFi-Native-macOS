@@ -8,7 +8,7 @@ Current PR head at report time: `afbc6b08024d978bcd6230541ce2e9b5b5c602f5`
 
 ## Result
 
-**Static lifecycle audit passed: 31 assertions, 0 failures.** The portable non-ONCE cancellation model and producer-admission shutdown race model passed. The target SDK/API review is source-grounded, but it is not a live kernel experiment. A fresh Stage102 target-Mac compile and actual XNU runtime test are still required.
+**Post-fix Stage102 source lifecycle validation passed: 32 assertions, 0 failures.** The portable non-ONCE cancellation and producer-admission shutdown models passed, and a fresh macOS 15.8.1 (24H32) / Xcode 16.4 clean dual-object compile passed with 49 object files. The target SDK/API review remains source-grounded, not a live kernel experiment; actual XNU/IOWorkLoop runtime and RTL8821CE hardware validation remain required.
 
 ## XNU contract verified
 
@@ -62,7 +62,7 @@ If any drain or join fails, cleanup returns busy/false and retains owners rather
 
 ## Validation
 
-- [Stage102 Actions run 42166463980](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42166463980): success; **31 static assertions passed, 0 failed**.
+- Initial pre-fix [Stage102 Actions run 42166463980](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42166463980): success; **31 static assertions passed, 0 failed**. The post-fix target-Mac combined run added the string-literal regression assertion and passed **32 checks, 0 failures**.
 - Portable model: pending cancellation while another non-ONCE invocation is executing behaved as expected; the worker remained active until the executing invocation finished.
 - Portable producer shutdown model: **12 producers** raced the close gate; the join returned only after accepted producers had left, and subsequent admission was rejected.
 - [Stage99 token-queue audit run 42166532642](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42166532642): success; **25 assertions passed, 0 failed**, plus 12-producer bounded MPSC token-queue stress.
