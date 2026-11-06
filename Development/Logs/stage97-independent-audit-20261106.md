@@ -33,3 +33,10 @@ Still open:
 ## Explicit limits
 
 No target macOS 24H32 compile, full kext link, signing, install, load, target disassembly, hardware TX/RX, throughput test, native queue activation, interface publication, radio start, or EFI/OpenCore/SIP/NVRAM change. PR #4 remains draft and unmerged. Native activation remains blocked pending target-Mac compile-only validation and independent runtime lock-order review.
+
+
+## GitHub validation results
+
+- Stage97 Actions run [42154791354](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42154791354): **success**, 9 checks passed, 0 failed.
+- Stage94 compatibility run [42154791308](https://github.com/shammu2bd/Realtek-WiFi-Native-macOS/actions/runs/42154791308): **success**, 39 checks passed, 0 blockers.
+- These workflows execute static/source regression checks on Linux. They do not compile the macOS IOKit target or validate target runtime lock ordering.
