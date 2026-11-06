@@ -30,8 +30,9 @@ if [[ ! -x "$NM" || -z "$OTOOL" || ! -x "$OTOOL" ]]; then
   echo "ERROR: Xcode 16.4 llvm-nm and macOS otool are required"; exit 4
 fi
 
-if [[ -n "$STAGE127_KC_MACHO" ]]; then
-  KC="$STAGE127_KC_MACHO"
+KC_OVERRIDE="$(printenv STAGE127_KC_MACHO 2>/dev/null || true)"
+if [[ -n "$KC_OVERRIDE" ]]; then
+  KC="$KC_OVERRIDE"
 else
   KC="$(find "$HOME/Developer" -type f -path '*/kc-cache/com.apple.iokit.IO80211Family.macho' -print -quit 2>/dev/null || true)"
 fi
