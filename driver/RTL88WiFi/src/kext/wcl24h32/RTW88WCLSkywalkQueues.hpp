@@ -17,6 +17,7 @@
 #include <libkern/c++/OSObject.h>
 
 #include "RTW88WCLAcquisitionJournal.hpp"
+#include "RTW88WCLRegistrationTransaction.hpp"
 #include "RTW88WCLTxSubmissionGate.hpp"
 
 class RTW88WCLSkywalkTxAdapter;
@@ -42,8 +43,16 @@ public:
         return kRegistrationQueueCount;
     }
     bool registrationQueuesValid() const;
-    IOReturn setRegistered(bool registered);
-    bool isRegistered() const { return _registered; }
+    IOReturn beginRegistrationTransaction();
+    IOReturn commitRegistrationTransaction();
+    IOReturn abortRegistrationTransaction(bool quarantine = false);
+    IOReturn beginDeregistrationTransaction();
+    IOReturn finishDeregistrationTransaction();
+    IOReturn abortDeregistrationTransaction(bool quarantine = false);
+    bool isRegistered() const { return _registrationTransaction.isRegistered(); }
+    bool registrationOwnsQueues() const { return _registrationTransaction.ownsQueues(); }
+    bool registrationInProgress() const { return _registrationTransaction.isInProgress(); }
+    bool registrationQuarantined() const { return _registrationTransaction.isQuarantined(); }
 
     /* Successful 24H32 enqueuePacketsForNetworking transfers packet ownership
      * from the driver to the RX networking pipeline. */
@@ -101,7 +110,7 @@ private:
     IOSkywalkRxSubmissionQueue *_rxSubmission = nullptr;
     IOSkywalkRxCompletionQueue *_rxCompletion = nullptr;
     IOSkywalkPacketQueue *_registrationQueues[kRegistrationQueueCount] = {};
-    bool _registered = false;
+    RTW88WCLRegistrationTransaction::Transaction _registrationTransaction;
     RTW88WCLSkywalkTxAdapter *_txAdapter = nullptr; // retained; action callback context
     RTW88WCLTxSubmissionGate _txCallbackGate;
     RTW88WCLAcquisitionJournal::Journal _acquisitionJournal;
