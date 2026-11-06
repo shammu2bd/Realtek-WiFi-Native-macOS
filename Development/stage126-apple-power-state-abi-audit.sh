@@ -75,7 +75,7 @@ fi
   echo "--- Apple otool exact-symbol disassembly, range-filtered by nm addresses ---"
   echo "STAGE126_DISASSEMBLY_TOOL=$OTOOL"
   echo "STAGE126_DISASSEMBLY_METHOD=otool -arch x86_64 -tvV -p"
-  COUNT="$(printf "%s\\n" "$SYMBOLS" | awk 'NF {n++} END {print n+0}')"
+  COUNT="$(printf "%s\n" "$SYMBOLS" | awk 'NF {n++} END {print n+0}')"
   VERIFIED_COUNT=0
 
   FIRST_SYMBOL="$(python3 - "$NM_FILE" "$SYMBOL_RE" <<'PY'
