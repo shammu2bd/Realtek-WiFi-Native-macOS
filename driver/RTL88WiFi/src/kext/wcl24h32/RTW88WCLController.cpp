@@ -221,7 +221,7 @@ bool RTW88WCLController::start(IOService *provider)
      * PCI interrupts remain masked until all Skywalk queues are registered. */
     const IOReturn radioStatus = _radio->start();
     if (radioStatus != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: RTW88 probe/start failed: 0x%08x\\n", radioStatus);
+        IOLog("rtl88wifi-wcl: RTW88 probe/start failed: 0x%08x\n", radioStatus);
         goto fail;
     }
     _radioStarted = true;
@@ -232,7 +232,7 @@ bool RTW88WCLController::start(IOService *provider)
     for (unsigned i = 0; i < sizeof(address.octet); ++i)
         addressBits |= address.octet[i];
     if (addressBits == 0 || (address.octet[0] & 0x01)) {
-        IOLog("rtl88wifi-wcl: probed RTW88 MAC is not a valid unicast address\\n");
+        IOLog("rtl88wifi-wcl: probed RTW88 MAC is not a valid unicast address\n");
         goto fail;
     }
 
@@ -242,17 +242,17 @@ bool RTW88WCLController::start(IOService *provider)
             _infraInterface->release();
             _infraInterface = nullptr;
         }
-        IOLog("rtl88wifi-wcl: native IO80211InfraProtocol allocation/init failed\\n");
+        IOLog("rtl88wifi-wcl: native IO80211InfraProtocol allocation/init failed\n");
         goto fail;
     }
     if (!_infraInterface->attach(this)) {
         _infraInterface->release();
         _infraInterface = nullptr;
-        IOLog("rtl88wifi-wcl: failed to attach native infra protocol to controller\\n");
+        IOLog("rtl88wifi-wcl: failed to attach native infra protocol to controller\n");
         goto fail;
     }
     if (!_infraInterface->start(this)) {
-        IOLog("rtl88wifi-wcl: native 24H32 Skywalk interface registration failed\\n");
+        IOLog("rtl88wifi-wcl: native 24H32 Skywalk interface registration failed\n");
         goto fail;
     }
 
@@ -260,14 +260,14 @@ bool RTW88WCLController::start(IOService *provider)
 
     const IOReturn interruptStatus = _pciBackend->setRadioRunning(true);
     if (interruptStatus != kIOReturnSuccess) {
-        IOLog("rtl88wifi-wcl: PCI interrupt activation failed: 0x%08x\\n",
+        IOLog("rtl88wifi-wcl: PCI interrupt activation failed: 0x%08x\n",
               interruptStatus);
         goto fail;
     }
 
     provider->setProperty("RTW88WCLControllerStage",
                           "24H32 native infrastructure interface registered; Skywalk queues active");
-    IOLog("rtl88wifi-wcl: native 24H32 infrastructure interface published\\n");
+    IOLog("rtl88wifi-wcl: native 24H32 infrastructure interface published\n");
     return true;
 
 fail:
@@ -423,7 +423,7 @@ IOReturn RTW88WCLController::releaseNativeResources()
         const IOReturn interfaceStatus =
             _infraInterface->shutdownForController();
         if (interfaceStatus != kIOReturnSuccess) {
-            IOLog("rtl88wifi-wcl: native interface deregistration deferred: 0x%08x\\n",
+            IOLog("rtl88wifi-wcl: native interface deregistration deferred: 0x%08x\n",
                   interfaceStatus);
             return interfaceStatus;
         }
@@ -763,11 +763,19 @@ bool RTW88WCLController::stagedRxFrame(
     if (!self || !preparedPacket)
         return false;
 
-    /* Preserve the pool-backed packet in a fixed-capacity owner ring. The
-     * ring is bounded to the RX pool's 128 packets; overflow returns false,
-     * causing the RX adapter to recycle the packet immediately. No queue API
-     * is called here: completion-queue registration/ownership is still fenced. */
-    return self->_stagedRxPackets.push(preparedPacket);
+    if (!self->_skywalkQueues ||
+        !self->_skywalkQueues->isRegistered() ||
+        !self->_infraInterface ||
+        !self->_infraInterface->isRegistered())
+        return false;
+
+    /* This helper's 24H32 return is a UInt32 accepted-buffer count, not an
+     * IOReturn. RX pool packets are single-buffer by construction. A result
+     * of one transfers the packet to the network-facing receive path; zero
+     * leaves ownership with this adapter, which returns it to the RX pool. */
+    const UInt32 accepted =
+        self->_skywalkQueues->enqueueRXPacketForNetworking(preparedPacket);
+    return accepted == 1;
 }
 
 IOWorkLoop *RTW88WCLController::getRxWorkLoop()
