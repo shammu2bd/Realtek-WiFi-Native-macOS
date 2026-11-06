@@ -59,6 +59,31 @@ static void testSingleWriterAndCancellation()
     secondReader.reset();
 }
 
+static void testWriterDowngradeIsGapFree()
+{
+    RTW88TxStateGate gate;
+    auto writer = gate.tryBeginMutation();
+    assert(writer && writer.ready());
+
+    auto downgraded = writer.downgrade();
+    assert(downgraded);
+    assert(!gate.mutationPending());
+    assert(gate.activeTransmitters() == 1);
+
+    /* A new writer may close admission, but it must see the downgraded reader
+     * and wait until the handshake submit completes. */
+    auto nextWriter = gate.tryBeginMutation();
+    assert(nextWriter);
+    assert(!nextWriter.ready());
+    assert(!gate.tryEnterTransmit());
+
+    downgraded.reset();
+    assert(nextWriter.ready());
+    assert(nextWriter.finish());
+    assert(gate.activeTransmitters() == 0);
+    assert(!gate.mutationPending());
+}
+
 static void testPerCallEapolProtectionDoesNotLeakAcrossTransmitters()
 {
     std::atomic<unsigned> incorrect{0};
@@ -157,8 +182,9 @@ int main()
 {
     testBasicAdmissionAndDrain();
     testSingleWriterAndCancellation();
+    testWriterDowngradeIsGapFree();
     testPerCallEapolProtectionDoesNotLeakAcrossTransmitters();
     testFourACStressWithWriterBarriers();
-    std::puts("PASS: admission/drain, writer exclusivity/cancellation, per-frame EAPOL policy, four-AC stress");
+    std::puts("PASS: admission/drain, writer exclusivity/cancellation, gap-free writer downgrade, per-frame EAPOL policy, four-AC stress");
     return 0;
 }
