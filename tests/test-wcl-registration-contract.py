@@ -88,4 +88,4 @@ assert "WCL24H32_" not in link_objs, "Native WCL objects must remain out of lega
 print("PASS: registration payloads/expansion blocks remain opaque and target ABI declarations are pinned")
 print("PASS: native interface uses Apple's 24H32 registration/deregistration wrapper transactionally")
 print("PASS: QueueSet/LogicalLink private layouts are not constructed by driver code")
-print("PASS: native interface/radio activation remains fenced until datapath stages pass")
+print("PASS: controller commits infra registration before publication and PCI interrupt activation")
