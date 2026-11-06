@@ -1,0 +1,198 @@
+========== STAGE114 OPENCORE NATIVE-KEXT LOAD DIAGNOSTICS ==========
+UTC_STAMP=20261106T130227Z
+BRANCH=work/stage114-opencore-load-diagnostics
+HEAD=37ac968c4f8f2d2ae517887c3c2a3c0b872c8a10
+BASE_COMMIT=86e2dbae408395a42b6cbc41876b8009f76d64bd
+RUNNER_GIT_BLOB_SHA=28d8ae42fa94aee5eb050cdc73c6bd5a4d6f5653
+TARGET=15.8.1 (24H32) x86_64
+SCOPE=READ_ONLY_EXISTING_EFI_SIGNATURE_OWNERSHIP_BOOT_LOGS_KMUTIL_IOREGISTRY
+BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_RUN
+MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN
+PASS: Stage114 runner is SHA-pinned and Stage113 validation commit is an ancestor
+PASS: host matches Sequoia 15.8.1 build 24H32 x86_64
+SIP_STATUS_EXIT=0
+----- SIP_STATUS -----
+System Integrity Protection status: enabled.
+----- END SIP_STATUS -----
+SIP_STATE=ENABLED
+LIVE_BOOT_ARGS_EXIT=0
+----- LIVE_BOOT_ARGS -----
+keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+----- END LIVE_BOOT_ARGS -----
+LIVE_BOOT_ARGS=keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+NVRAM_READ_EXIT=0
+----- LIVE_NVRAM_RELEVANT_KEYS -----
+csr-active-config	%00%00%00%00
+boot-args	keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+----- END LIVE_NVRAM_RELEVANT_KEYS -----
+OPENCORE_CONFIG_PLUTIL_EXIT=0
+----- OPENCORE_CONFIG_PLUTIL -----
+/Volumes/EFI/EFI/OC/config.plist: OK
+----- END OPENCORE_CONFIG_PLUTIL -----
+OPENCORE_CONFIG_PATH=/Volumes/EFI/EFI/OC/config.plist
+OPENCORE_OC_ROOT=/Volumes/EFI/EFI/OC
+OPENCORE_VOLUME_PATH=/Volumes/EFI
+NATIVE_KERNEL_ADD_ENTRY={"arch": "Any", "bundle_id": "io.github.x1ren41l.RTL88WiFi", "bundle_path": "RTL88WiFiNative.kext", "enabled": true, "entry_executable_path": "Contents/MacOS/RTL88WiFiNative", "entry_plist_path": "Contents/Info.plist", "executable_exists": true, "index": 31, "max_kernel": "", "min_kernel": "", "plist_executable": "RTL88WiFiNative", "resolved_bundle": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext", "sha256": "409137db0772c6f5326af89f9f6dc699f8f18a13eb9025bc194b58e5bb92cd0a"}
+SAME_BUNDLE_ID_KERNEL_ADD_ENTRIES=[{"bundle_path": "RTL88WiFiNative.kext", "enabled": true, "index": 31, "native_path": true}]
+NATIVE_KERNEL_ADD_COUNT=1
+NATIVE_KERNEL_ADD_ENABLED_COUNT=1
+NATIVE_EFI_SHA_MATCH_STAGE113=True
+RELEVANT_ENABLED_KERNEL_BLOCK_ENTRIES=NONE
+CONFIGURED_BOOT_ARGS=keepsyms=1 -igfxblt -igfxblr alcid=14 -vi2c-force-polling revpatch=sbvmm -btlfxboardid npci=0x2000 -amfipassbeta
+CONFIGURED_CSR_ACTIVE_CONFIG=00000000
+SECURE_BOOT_MODEL=Disabled
+VAULT=Optional
+OPENCORE_DEBUG_TARGET=0
+OPENCORE_DEBUG_DISPLAY_LEVEL=2147483650
+OPENCORE_DEBUG_APPLE_DEBUG=True
+KERNEL_QUIRK_DisableLinkeditJettison=True
+PASS: already-mounted OpenCore config parsed without modification
+OPENCORE_CONFIG_RESULT=PARSED
+EFI_PATH_STAT={"gid": 20, "is_dir": true, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext", "size": null, "uid": 501}
+EFI_PATH_STAT={"gid": 20, "is_dir": true, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents", "size": null, "uid": 501}
+EFI_PATH_STAT={"gid": 20, "is_dir": false, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/Info.plist", "size": 2395, "uid": 501}
+EFI_PATH_STAT={"gid": 20, "is_dir": true, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS", "size": null, "uid": 501}
+EFI_PATH_STAT={"gid": 20, "is_dir": false, "mode": "0o700", "path": "/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative", "size": 1686024, "uid": 501}
+EFI_BUNDLE_ACL_METADATA_EXIT=0
+----- EFI_BUNDLE_ACL_METADATA -----
+drwx------  1 shohel  staff      512 Nov  6 11:28 /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext
+drwx------  1 shohel  staff      512 Nov  6 14:10 /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents
+-rwx------  1 shohel  staff     2395 Nov  6 18:07 /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/Info.plist
+-rwx------  1 shohel  staff  1686024 Nov  6 18:07 /Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+----- END EFI_BUNDLE_ACL_METADATA -----
+EFI_VOLUME_INFO_EXIT=0
+----- EFI_VOLUME_INFO -----
+   Device Identifier:         disk3s1
+   Device Node:               /dev/disk3s1
+   Whole:                     No
+   Part of Whole:             disk3
+
+   Volume Name:               EFI
+   Mounted:                   Yes
+   Mount Point:               /Volumes/EFI
+
+   Partition Type:            EFI
+   File System Personality:   MS-DOS FAT32
+   Type (Bundle):             msdos
+   Name (User Visible):       MS-DOS (FAT32)
+
+   OS Can Be Installed:       No
+   Media Type:                Generic
+   Protocol:                  USB
+   SMART Status:              Not Supported
+   Volume UUID:               0E239BC6-F960-3107-89CF-1C97F78BB46B
+   Disk / Partition UUID:     803DA4F1-7C15-4113-84D7-C6FA6A077DC6
+   Partition Offset:          20480 Bytes (40 512-Byte-Device-Blocks)
+
+   Disk Size:                 209.7 MB (209715200 Bytes) (exactly 409600 512-Byte-Units)
+   Device Block Size:         512 Bytes
+
+   Volume Total Space:        206.5 MB (206472704 Bytes) (exactly 403267 512-Byte-Units)
+   Volume Used Space:         35.4 MB (35373568 Bytes) (exactly 69089 512-Byte-Units) (17.1%)
+   Volume Free Space:         171.1 MB (171099136 Bytes) (exactly 334178 512-Byte-Units) (82.9%)
+   Allocation Block Size:     512 Bytes
+
+   Media OS Use Only:         No
+   Media Read-Only:           No
+   Volume Read-Only:          No
+
+   Device Location:           Internal
+... 5 additional lines omitted
+----- END EFI_VOLUME_INFO -----
+----- EFI_VOLUME_MOUNT_LINE -----
+/dev/disk3s1 on /Volumes/EFI (msdos, local, nodev, nosuid, noowners, noatime, fskit)
+----- END EFI_VOLUME_MOUNT_LINE -----
+CODESIGN_DETAILS_EXIT=1
+----- CODESIGN_DETAILS -----
+/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext: code object is not signed at all
+----- END CODESIGN_DETAILS -----
+CODESIGN_VERIFY_EXIT=1
+----- CODESIGN_VERIFY -----
+/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext: code object is not signed at all
+In architecture: x86_64
+----- END CODESIGN_VERIFY -----
+NATIVE_CODESIGN_VERIFY_STATE=VERIFY_FAIL
+KMUTIL_PRINT_DIAGNOSTICS_EXIT=1
+----- KMUTIL_PRINT_DIAGNOSTICS -----
+Unexpected argument '/Volumes/EFI/EFI/OC/Kexts/RTL88WiFiNative.kext'
+----- END KMUTIL_PRINT_DIAGNOSTICS -----
+KMUTIL_DIAGNOSTICS_BAD_SIGNATURE=False
+KMUTIL_DIAGNOSTICS_INVALID_OWNER=False
+KMUTIL_LIBRARIES_EXIT=0
+EXECUTABLE_DERIVED_DEPENDENCIES={"com.apple.iokit.IO80211Family": "1200.13.1", "com.apple.iokit.IONetworkingFamily": "3.4", "com.apple.iokit.IOPCIFamily": "2.9", "com.apple.iokit.IOSkywalkFamily": "1.0", "com.apple.kpi.bsd": "24.6.0", "com.apple.kpi.iokit": "24.6.0", "com.apple.kpi.libkern": "24.6.0", "com.apple.kpi.mach": "24.6.0", "com.apple.kpi.private": "24.6.0"}
+PLIST_DEPENDENCIES_MATCH_KMUTIL=False
+KMUTIL_NATIVE_BUNDLE_QUERY_EXIT=0
+KMUTIL_NATIVE_BUNDLE_MATCH=False
+----- KMUTIL_NATIVE_BUNDLE_QUERY -----
+No variant specified, falling back to release
+Index Refs Address            Size       Wired      Name (Version) UUID <Linked Against>
+----- END KMUTIL_NATIVE_BUNDLE_QUERY -----
+KMUTIL_SHOWLOADED_EXIT=0
+----- LOADED_KEXT_RELEVANT_LINES -----
+   55    3 0xffffff8002973000 0x33ff8    0x33ff8    com.apple.iokit.IOSkywalkFamily (1.0) 70DFAA8E-E369-3417-B6FD-B19FB6D5D49B <54 53 9 8 7 6 3 1>
+   57   14 0xffffff8004013000 0x31000    0x31000    as.vit9696.Lilu (1.7.2) C2A303B8-6D22-3163-A905-5DB8E340D285 <9 7 6 3 2 1>
+   58    0 0xffffff8004044000 0xcf000    0xcf000    com.dhinakg.AMFIPass (1.4.1) 7DF1CDFC-7EFE-3D82-A3A2-7DACE8B1D097 <57 9 8 7 6 3 2 1>
+----- END LOADED_KEXT_RELEVANT_LINES -----
+IOREG_RTW88WCLController_EXIT=0
+----- IOREG_RTW88WCLController -----
+(no output)
+----- END IOREG_RTW88WCLController -----
+IOREG_RTW88WCLController_STATE=NO_MATCH
+IOREG_RTW88WCLInfraInterface_EXIT=0
+----- IOREG_RTW88WCLInfraInterface -----
+(no output)
+----- END IOREG_RTW88WCLInfraInterface -----
+IOREG_RTW88WCLInfraInterface_STATE=NO_MATCH
+IOREG_RTL8821CE_PCI_EXIT=0
+----- IOREG_RTL8821CE_PCI -----
++-o Root  <class IORegistryEntry, id 0x100000100, retain 10>
+  | {
+  |   "IOKitBuildVersion" = "Darwin Kernel Version 24.6.0: Sun Aug 23 20:30:56 PDT 2026; root:xnu-11417.140.69.712.69~1/RELEASE_X86_64"
+  |   "OS Build Version" = "24H32"
+  |   "OSKernelCPUSubtype" = 3
+  |   "OSKernelCPUType" = 16777223
+  |   "OSPrelinkKextCount" = 18
+  |   "IORegistryPlanes" = {"IOACPIPlane"="IOACPIPlane","IOPower"="IOPower","IODeviceTree"="IODeviceTree","IOService"="IOService","VoodooI2C"="VoodooI2C","IOUSB"="IOUSB"}
+  |   "IOConsoleLocked" = No
+  |   "IOConsoleUsers" = ({"kCGSSessionOnConsoleKey"=Yes,"kSCSecuritySessionID"=100002,"kCGSSessionSystemSafeBoot"=No,"kCGSessionLoginDoneKey"=Yes,"kCGSSessionIDKey"=257,"kCGSSessionUserNameKey"="shohel","kCGSSessionGroupIDKey"=20,"CGSSessionUniqueSessionUUID"="AEDE0160-5D05-40CB-B937-E1809E0AB1AE","kCGSessionLongUserNameKey"="Mahfujul Haque","kCGSSessionAuditIDKey"=100002,"kCGSSessionLoginwindowSafeLogin"=No,"kCGSSessionUserIDKey"=501})
+  |   "IOKitDiagnostics" = {"Instance allocation"=12452008,"Container allocation"=5861722,"Pageable allocation"=2372747264,"Classes"={"IONDRVFramebuffer"=0,"IGAccelCommandQueue"=16,"IOHIDEventServiceFastPathUserClient"=0,"IONaturalMemoryCursor"=0,"IOKitDiagnosticsClient"=0,"AppleUSBXHCIIsochronousRequestPool"=1,"AppleUSBDiagnostics"=0,"DspFuncBuzzKill"=0,"IOUSBHostHIDDevice"=0,"AppleHDAMikeyInternalCS4208"=0,"IOEventLink"=0,"AppleUSBRequest"=1,"TSNPacketPool"=0,"AppleASMedia1 ...[truncated]
+  | }
+  |
+  +-o MacBookPro16,3  <class IOPlatformExpertDevice, id 0x100000118, registered, matched, active, busy 0 (19392 ms), retain 62>
+    | {
+    |   "IOInterruptSpecifiers" = (<0900000005000000>)
+    |   "IOPolledInterface" = "SMCPolledInterface is not serializable"
+    |   "IOPlatformUUID" = "8C3B930D-7465-51B9-A2B3-19739B29E6EB"
+    |   "serial-number" = <50335859000000000000000000433032434753595150335859000000000000000000000000000000000000>
+    |   "platform-feature" = <320000003dfc4387>
+... 13040 additional lines omitted
+----- END IOREG_RTL8821CE_PCI -----
+IOREG_RTL8821CE_PCI_PRESENT=True
+UNIFIED_LOG_QUERY_EXIT=124
+----- RECENT_AMFI_KEXT_LOG_ERROR -----
+Wall Clock adjustment detected - results might be strange while using --end
+Timestamp               Ty Process[PID:TID]
+2026-11-06 13:03:10.087 Df syspolicyd[223:5dc8] [com.apple.syspolicy.exec:default] Found provenance data on process: TA(be348bfee36fca5e, 2), 1886
+2026-11-06 13:03:10.087 Df syspolicyd[223:5dc8] [com.apple.syspolicy.exec:default] Process was already in provenance sandbox, skipping: 1886, TA(be348bfee36fca5e, 2)
+2026-11-06 13:03:16.721 A  amfid[112:61d1] (Security) SecKeyVerifySignature
+2026-11-06 13:03:16.722 A  amfid[112:61d1] (Security) SecKeyVerifySignature
+2026-11-06 13:03:16.722 A  amfid[112:61d1] (Security) SecTrustEvaluateIfNecessary
+2026-11-06 13:03:16.723 A  amfid[112:61d1] (Security) SecKeyVerifySignature
+2026-11-06 13:03:16.724 A  amfid[112:61d1] (Security) SecTrustEvaluateIfNecessary
+2026-11-06 13:03:16.726 A  syspolicyd[223:6177] (Security) SecTrustEvaluateIfNecessary
+2026-11-06 13:03:16.732 A  syspolicyd[223:6177] (Security) SecKeyVerifySignature
+2026-11-06 13:03:16.748 A  syspolicyd[223:5dc8] (Security) SecKeyVerifySignature
+... 4633 additional lines omitted
+----- END RECENT_AMFI_KEXT_LOG_ERROR -----
+OPENCORE_DEBUG_LOG_FILES_FOUND=0
+STAGE114_PRIMARY_DIAGNOSIS=NATIVE_NOT_LOADED_WITH_CODE_SIGNATURE_FAILURE_EVIDENCE
+STAGE114_CODE_SIGNATURE_FAILURE_EVIDENCE=True
+STAGE114_INVALID_OWNERSHIP_DIAGNOSTIC=False
+STAGE114_PCI_DEVICE_PRESENT=True
+STAGE114_NATIVE_CONTROLLER_IOREGISTRY=NO_MATCH
+STAGE114_NATIVE_INTERFACE_IOREGISTRY=NO_MATCH
+STAGE114_OPENCORE_LOG_FILES=0
+STAGE114_RESULT=EVIDENCE_CAPTURED_REQUIRES_REVIEW
+STAGE114_ACTIVATION=BLOCKED
+SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN
+PR4_MERGE=BLOCKED
