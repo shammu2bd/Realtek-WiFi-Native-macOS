@@ -6,6 +6,7 @@
  * the target IO80211InfraInterface / Skywalk ABI.
  */
 #include "RTW88WCLController.hpp"
+#include "RTW88WCLSkywalkQueues.hpp"
 #include "RTW88WCLInfraInterface.hpp"
 
 #include <IOKit/IOLib.h>
