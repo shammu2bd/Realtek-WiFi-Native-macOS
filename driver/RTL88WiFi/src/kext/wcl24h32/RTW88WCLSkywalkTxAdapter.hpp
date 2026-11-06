@@ -11,6 +11,9 @@
 
 #include "RTW88WCLTxCompletionSlots.hpp"
 #include "RTW88WCLTxSubmissionGate.hpp"
+#include "RTW88WCLCompletionTokenRetireList.hpp"
+
+struct rtw88_skb_tx_completion_token;
 
 class RTW88IEEE80211;
 
@@ -57,6 +60,12 @@ public:
     bool hasOutstandingCompletions() const;
     uint32_t outstandingCompletionCount() const;
     uint32_t readyCompletionCount() const;
+    /* Completion release hooks only publish nodes here. Actual kfree/IOFree
+     * runs later on the dedicated thread-call reaper, never under TX/IRQ locks. */
+    void retireCompletionToken(struct rtw88_skb_tx_completion_token *token);
+    void reapDeferredCompletionTokens();
+    bool hasReapableCompletionTokens() const;
+    bool hasRetiredCompletionTokens() const;
     IOReturn setCompletionNotifier(CompletionNotify notify, void *context);
     void clearCompletionNotifier(void *context);
     void free() override;
@@ -74,6 +83,9 @@ private:
     RTW88IEEE80211 *_radio = nullptr; // retained while bound
     IOSkywalkPacketBufferPool *_txPool = nullptr; // retained while bound
     TicketPool _tickets;
+    RTW88WCLCompletionTokenRetireList<rtw88_skb_tx_completion_token>
+        _retiredCompletionTokens;
+    volatile uint32_t _retiredCompletionTokenCount = 0;
     volatile uint32_t _backendCompletionCallbacksInFlight = 0;
     CompletionNotify _completionNotifier = nullptr; // non-owning, signal-only
     void *_completionNotifierContext = nullptr;     // non-owning; cleared after drain
