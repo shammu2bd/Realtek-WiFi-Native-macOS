@@ -1,0 +1,70 @@
+========== STAGE124 NATIVE WIFI INTERFACE STATE ==========
+STAGE124_SOURCE_COMMIT=92322c8d966929649fa4a648570a917ea25b3b31
+STAGE124_TARGET=macOS_15.8.1_24H32_x86_64
+STAGE124_SCOPE=CONNECTED_BSSID_CACHE_AND_NATIVE_INTERFACE_CONTROL_PLANE
+STAGE124_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE124_OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+
+----- Stage124 current-AP/link-state source contract -----
+STAGE124_LIVE_JOIN_GUARD=PASS
+STAGE124_CURRENT_AP_CACHE_FROM_JOIN_BSSID=PASS
+STAGE124_BSSID_BEFORE_LINK_UP=PASS
+STAGE124_LEAVE_DEAUTH_DISCONNECT_CLEAR=PASS
+STAGE124_CONTROLLER_CAPABILITY_AND_POWER_GATES=PASS
+
+----- Existing native interface/registration regressions -----
+STAGE121_SOURCE_CONTRACT=PASS
+STAGE121_ATTACH_AFTER_APPLE_BASE_START=PASS
+STAGE121_PRIMARY_GETTER_VERIFICATION=PASS
+STAGE121_DETACH_AFTER_DEREGISTRATION_AND_BASE_STOP=PASS
+STAGE121_GENERIC_CHILD_DETACH_PRESERVED=PASS
+PASS: 24H32 registration uses Apple's audited infra wrapper and stable seven-queue vector
+PASS: atomic begin/commit/abort and deregistration retry/quarantine states guard queue ownership
+PASS: opaque descriptor tail and private QueueSet/LogicalLink layouts are not guessed
+PASS: controller publishes only after registration and opens PCI interrupt gate afterward
+PASS: RX sink transfers only accepted packets after both interface and queue registration
+PASS: failed local registration rollback quarantines all queue owners
+PASS: radio events and power controls flow through the registered infra interface
+PASS: obsolete bool registration shortcuts are absent
+PASS: RTW88 TX-resume callback wakes all four registered WMM queues
+PASS: registration payloads/expansion blocks remain opaque and target ABI declarations are pinned
+PASS: native interface uses Apple's 24H32 registration/deregistration wrapper transactionally
+PASS: QueueSet/LogicalLink private layouts are not constructed by driver code
+PASS: controller commits infra registration before publication and PCI interrupt activation
+PASS: 0x130-byte aligned opaque RegistrationInfo storage
+PASS: exact 24H32 Apple producer overrides and six-byte address copy
+PASS: all unlisted initializer-owned bytes remain untouched
+PASS: version/size header validation and clear
+PASS: RegistrationInfo buffer is 0x130 bytes and 8-byte aligned
+PASS: builder follows initRegistrationInfo(option=1, size=0x130)
+PASS: Stage108 registration/deregistration uses explicit queue-owner state
+PASS: controller registers and publishes the interface before PCI interrupt activation
+PASS: four-entry target WMM queue array is fixed, ordered, validated, and journal-rollback compatible
+PASS: target TX action reports accepted prefix; native registration remains fenced
+PASS: all nine queue/pool acquisitions are journaled and committed only when complete
+PASS: partial and committed teardown pop resources in reverse order
+PASS: registration and packet callbacks remain fail-closed
+
+----- Native 24H32 unsigned build (no activation) -----
+  WCL-ABI CXX  RTW88WCLInfraInterface.cpp (24H32, compile-only)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o
+  NATIVE LD   RTL88WiFiNative
+xcrun clang++ -arch x86_64 -static -nostdlib -Xlinker -kext /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Library/x86_64/libkmod.a -Xlinker -undefined -Xlinker dynamic_lookup -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/main.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/mac.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/phy.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/fw.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/tx.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rx.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/sec.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/efuse.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/coex.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/ps.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/regd.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/bf.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/sar.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/util.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/pci.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/mac80211.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822b.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822b_table.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822be.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822c.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822c_table.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822ce.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8821c.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8821c_table.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8821ce.o  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/rtw88_thread_call.o  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/rtw88_compat.o  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/rtw88_firmware.o  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/fw_blobs.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/airport/kmod_info.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88IEEE80211.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88HwOps.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88WCLRadioBridge.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88WCLWorkQueue.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLPCIBackend.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkQueues.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkTxAdapter.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLTxCompletionWorkQueue.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+  NATIVE SYNC /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+rsync -a --exclude='MacOS' /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native-skeleton/RTL88WiFiNative.kext/ /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/
+  NATIVE OK   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/Info.plist: OK
+driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative: Mach-O 64-bit kext bundle x86_64
+STAGE124_NATIVE_BUNDLE_ID=io.github.x1ren41l.RTL88WiFi
+STAGE124_NATIVE_BINARY_SHA256=aff9963978b8dd75c725d09f450a6fb59cb870ec5d53951adbc7ff8767a53a09
+STAGE124_NATIVE_BUILD=PASS
+
+STAGE124_RESULT=PASS
+STAGE124_EXIT=0
+STAGE124_SOURCE_COMMIT=92322c8d966929649fa4a648570a917ea25b3b31
+STAGE124_CONNECTED_BSSID_CACHE=IMPLEMENTED
+STAGE124_RUNTIME_INTERFACE_PUBLICATION=NOT_TESTED
+STAGE124_WIFI_MENU=NOT_VERIFIED_DRIVER_NOT_LOADED
+STAGE124_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN HARDWARE_TEST=NOT_RUN
+STAGE124_OPENCORE_CHANGE=NONE EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE REBOOT=NOT_RUN
+========== END STAGE124 ==========
