@@ -69,11 +69,12 @@ for cls,offsets in slots.items():
    resolved[target]=(exact,symowner)
 print("\n--- Controller callback declaration review in local 24H32 ABI source ---")
 abi=root/"driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp"
+controller_abi=root/"driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp"
 controller=root/"driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp"
-if abi.exists() and controller.exists():
- for p in (abi,controller):
+if abi.exists() and controller_abi.exists() and controller.exists():
+ for p in (abi,controller_abi,controller):
   d=p.read_bytes();print("SOURCE_FILE=%s SHA256=%s BYTES=%d"%(p.relative_to(root),hashlib.sha256(d).hexdigest(),len(d)))
- text=abi.read_text(errors="replace")
+ text=controller_abi.read_text(errors="replace")
  m=re.search(r"\bclass\s+IO80211Controller\b",text)
  if m:
   op=text.find("{",m.end()); depth=0; end=None
@@ -87,7 +88,7 @@ if abi.exists() and controller.exists():
   for i,line in enumerate(lines):
    if re.search(r"\b(getPOWER|setPOWER)\s*\(",line):
     print("ABI_CONTROLLER_DECLARATION="+line.strip())
- else: print("ABI_CONTROLLER_CLASS=NOT_FOUND")
+ else: print("ABI_CONTROLLER_CLASS=NOT_FOUND_IN_RT WCL24H32ABI")
  h=controller.read_text(errors="replace")
  m=re.search(r"\bclass\s+RTW88WCLController\b",h)
  if m:
