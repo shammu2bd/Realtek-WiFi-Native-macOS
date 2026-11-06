@@ -37,7 +37,7 @@ curl -fsSLo "$WORK/kcfile.py" "https://raw.githubusercontent.com/watchthelight-l
 python3 - "$WORK/kcfile.py" "$READER_SHA" <<'PY'
 import hashlib,pathlib,sys
 data=pathlib.Path(sys.argv[1]).read_bytes()
-actual=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\\0"+data).hexdigest()
+actual=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
 print("STAGE163_READER_BLOB_SHA="+actual)
 if actual != sys.argv[2]:
     raise SystemExit("STOP: pinned KC reader blob mismatch")
@@ -118,9 +118,8 @@ if loads.returncode==0:
 else:
     print("OTOOL_LOAD_COMMANDS_ERROR="+loads.stderr.strip()[:400])
 
-dyld_info=None
-for candidate in ("/usr/bin/dyld_info","/usr/bin/dyldinfo"):
-    if os.path.isfile(candidate): dyld_info=candidate; break
+import shutil
+dyld_info=shutil.which("dyld_info") or shutil.which("dyldinfo")
 if dyld_info:
     exp=run([dyld_info,"-exports",image])
     print("DYLD_INFO_EXPORTS_RETURN_CODE=%d"%exp.returncode)
@@ -141,7 +140,7 @@ if addr:
     if dis.returncode==0:
         kept=[]
         for line in dis.stdout.splitlines():
-            if re.match(r"^\\s*(?:0x)?[0-9a-fA-F]{8,}",line): kept.append(line.strip())
+            if re.match(r"^\s*(?:0x)?[0-9a-fA-F]{8,}",line): kept.append(line.strip())
         for line in kept[:180]: print("FACTORY_ASM "+line)
     else:
         print("FACTORY_DISASSEMBLY_ERROR="+dis.stderr.strip()[:400])
@@ -155,7 +154,7 @@ for label in ("DEFAULT_GET","DEFAULT_SET"):
         if d.returncode==0:
             kept=[]
             for line in d.stdout.splitlines():
-                if re.match(r"^\\s*(?:0x)?[0-9a-fA-F]{8,}",line): kept.append(line.strip())
+                if re.match(r"^\s*(?:0x)?[0-9a-fA-F]{8,}",line): kept.append(line.strip())
             for line in kept[:100]: print(label+"_ASM "+line)
 
 # Search the installed SDK's IOKit and Kernel headers only (bounded, read-only).
@@ -204,7 +203,7 @@ import base64,hashlib,json,pathlib,subprocess,sys,tempfile,time
 report=pathlib.Path(sys.argv[1]); stamp,repo=sys.argv[2:]
 data=report.read_bytes()
 dest="Development/Logs/stage163-workqueue-export-sdk-abi-"+stamp+".log"
-expected=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\\0"+data).hexdigest()
+expected=hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
 payload={"message":"Stage163: publish read-only workqueue factory export and SDK ABI audit","branch":"main","content":base64.b64encode(data).decode("ascii")}
 for attempt in range(1,4):
     with tempfile.NamedTemporaryFile(mode="w",suffix=".json") as f:
