@@ -202,6 +202,11 @@ check("LEGACY_RADIO_RELEASE_FOLLOWS_CALLBACK_QUIESCE",
       legacy_teardown.find("rtw88_compat_quiesce_tx_status();") <
       legacy_teardown.find("_ieee80211->release()"),
       "legacy radio object stays alive until all status callbacks return")
+check("WCL_CONTROLLER_IMPORTS_COMPAT_QUIESCE_API",
+      '#include "../../compat/rtw88_compat.h"' in WCL_CONTROLLER and
+      "extern \"C\"" in WCL_CONTROLLER and
+      "rtw88_compat_quiesce_tx_status();" in controller_release,
+      "WCL controller imports the quiescence declaration with C linkage")
 check("WCL_COMPLETION_WORKER_RELEASE_FOLLOWS_CALLBACK_QUIESCE",
       "rtw88_compat_quiesce_tx_status();" in controller_release and
       controller_release.find("rtw88_compat_quiesce_tx_status();") <
