@@ -10,7 +10,7 @@ Target: Intel x86_64 Hackintosh, macOS Sequoia 15.8.1 (24H32), RTL8821CE PCIe (1
 - `kmutil showloaded` matches for the native bundle and known Realtek Wi-Fi bundle names.
 - I/O Registry records for `RTW88WCLController` and `RTW88WCLInfraInterface`.
 - PCI provider context for vendor 0x10EC / device 0xC821.
-- Controller stage properties published by the Stage121 source.
+- Stage121 `RTW88WCLControllerStage` property on the PCI provider and `RTW88WCLInfraInterfaceStage` property on the controller.
 - Recent `rtl88wifi-wcl` kernel log messages, including the exact attach/getter and detach/getter success markers.
 - Current network hardware-port list, interface list, and AirPort system-profiler view.
 
