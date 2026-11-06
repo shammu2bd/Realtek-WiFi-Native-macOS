@@ -235,6 +235,30 @@ for attempt in range(1,4):
         last_error="GitHub content SHA verification mismatch: "+str(actual)
     else:
         last_error=r.stderr.strip() or r.stdout.strip()
+
+    # A client timeout can happen after GitHub has committed the PUT.
+    # Read the exact path before retrying so we don't turn success into a 422.
+    check=subprocess.run(
+        ["gh","api",f"repos/{repo}/contents/{dest}?ref=main"],
+        capture_output=True,text=True
+    )
+    if check.returncode == 0:
+        try:
+            existing=json.loads(check.stdout).get("sha")
+        except Exception:
+            existing=None
+        if existing == expected:
+            print("STAGE126_UPLOAD=PASS_RECOVERED_AFTER_TIMEOUT")
+            print("STAGE126_UPLOAD_BYTES="+str(len(data)))
+            print("STAGE126_UPLOAD_SHA="+existing)
+            print("STAGE126_GITHUB_PATH="+dest)
+            print("STAGE126_GITHUB_URL=https://github.com/"+repo+"/blob/main/"+dest)
+            break
+        print("STAGE126_UPLOAD=DESTINATION_EXISTS_WITH_DIFFERENT_SHA")
+        print("EXPECTED="+expected)
+        print("EXISTING="+str(existing))
+        raise SystemExit(8)
+
     print(f"STAGE126_UPLOAD_ATTEMPT={attempt}_FAILED")
     if attempt < 3:
         time.sleep(3*attempt)
