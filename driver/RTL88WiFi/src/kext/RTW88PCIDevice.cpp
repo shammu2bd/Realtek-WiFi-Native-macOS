@@ -448,8 +448,13 @@ bool RTW88PCIDevice::teardown()
         disable(_iface);
     drainPendingFree();
 
-    if (_ieee80211) {
+    if (_ieee80211)
         _ieee80211->stop();
+
+    if (_compatInitialized)
+        rtw88_compat_quiesce_tx_status();
+
+    if (_ieee80211) {
         _ieee80211->release();
         _ieee80211 = nullptr;
     }
