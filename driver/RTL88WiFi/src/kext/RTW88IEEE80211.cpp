@@ -41,7 +41,6 @@ int  rtw_regd_set_country(struct rtw_dev *rtwdev, const char alpha2[2]);
 
 /* Exported from the compat layer for hooking */
 void rtw88_set_hw_callbacks(struct rtw88_hw_callbacks *cbs, void *kext_hw);
-void rtw88_wcl_defer_skb_tx_completion_token(void *context, void *token);
 
 /* chip hw_spec structs — driver_data for rtw_pci_probe */
 extern const struct rtw_chip_info rtw8822b_hw_spec;
@@ -49,6 +48,21 @@ extern const struct rtw_chip_info rtw8822c_hw_spec;
 extern const struct rtw_chip_info rtw8821c_hw_spec;
 
 } /* extern "C" */
+
+using RTW88TxCompletionTokenRetireHook = void (*)(void *context, void *token);
+static RTW88TxCompletionTokenRetireHook volatile
+    g_rtw88TxCompletionTokenRetireHook = nullptr;
+
+/* The shared radio object is also linked into the legacy Airport kext, where
+ * no WCL adapter object exists. Native WCL registers its hook before queues can
+ * submit packets; the legacy path never binds completion tokens. */
+extern "C" void rtw88_set_skb_tx_completion_token_releaser(
+    RTW88TxCompletionTokenRetireHook hook)
+{
+    __atomic_store_n(&g_rtw88TxCompletionTokenRetireHook, hook,
+                     __ATOMIC_RELEASE);
+}
+
 
 /* Completion-token release runs in the same context as TX status/free.
  * It must only publish the detached token onto the adapter's lock-free retire
@@ -60,7 +74,13 @@ static void rtw88_release_skb_tx_completion_token(void *token)
         return;
     auto *completion =
         static_cast<struct rtw88_skb_tx_completion_token *>(token);
-    rtw88_wcl_defer_skb_tx_completion_token(completion->context, token);
+    RTW88TxCompletionTokenRetireHook hook =
+        __atomic_load_n(&g_rtw88TxCompletionTokenRetireHook,
+                        __ATOMIC_ACQUIRE);
+    if (hook)
+        hook(completion->context, token);
+    else
+        kfree(token);
 }
 
 #define IOLog rtw88_candidate_log
