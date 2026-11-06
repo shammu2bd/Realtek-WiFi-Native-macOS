@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Stage99 TX completion callback lock and deferred token-reclamation audit."""
 from pathlib import Path
+import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
