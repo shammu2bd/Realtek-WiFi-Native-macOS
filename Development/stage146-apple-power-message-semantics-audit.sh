@@ -79,14 +79,14 @@ for owner,dest in paths.items():
   if end<=addr: end=addr+0x4000
   cap=min(end,addr+0x4000)
   p=subprocess.run([otool,"-arch","x86_64","-tvV","-p",name,str(dest)],capture_output=True,text=True)
-  print("\\n--- METHOD %s ---"%tag)
+  print("\n--- METHOD %s ---"%tag)
   print("METHOD_SYMBOL="+name);print("METHOD_ADDRESS=0x%x"%addr)
   print("METHOD_OWNER="+owner);print("METHOD_NEXT_SYMBOL_BOUND=0x%x"%end)
   print("METHOD_AUDIT_BOUND=0x%x"%cap);print("OTOOL_EXIT=%d"%p.returncode)
   if p.returncode: print("METHOD_DISASSEMBLY=FAILED");continue
   ins=[]
   for line in p.stdout.splitlines():
-   m=re.match(r"^\\s*(?:0x)?([0-9a-fA-F]{8,}):?\\s+(.*)$",line)
+   m=re.match(r"^\s*(?:0x)?([0-9a-fA-F]{8,}):?\s+(.*)$",line)
    if m:
     a=int(m.group(1),16)
     if addr<=a<cap: ins.append((a,line.strip(),m.group(2)))
@@ -100,17 +100,17 @@ for owner,dest in paths.items():
    selected=[]
    for i,item in enumerate(ins):
     a,raw,asm=item
-    if i<42 or i>=max(0,len(ins)-18) or re.search(r"\\b(cmp|test)",asm) or re.search(r"\\b(call|jmp)",asm):
+    if i<42 or i>=max(0,len(ins)-18) or re.search(r"\b(cmp|test)",asm) or re.search(r"\b(call|jmp)",asm):
      selected.append(item)
    # stable de-duplication
    seen=set();selected=[x for x in selected if not (x[0] in seen or seen.add(x[0]))]
   for a,raw,asm in selected:
    print(raw)
-   if tag=="APPLE_SET_POWER" and ("0xb10" in asm.lower() or re.search(r"\\$0x1, %r[89]d",asm)):
+   if tag=="APPLE_SET_POWER" and ("0xb10" in asm.lower() or re.search(r"\$0x1, %r[89]d",asm)):
     print("POWER_POST_MESSAGE_ARGUMENT_TRACE=0x%x %s"%(a,asm))
-   if re.search(r"\\b(call|jmp)q?\\b",asm):
+   if re.search(r"\b(call|jmp)q?\b",asm):
     print("CONTROL_FLOW=0x%x %s"%(a,asm))
-print("\\n--- Local driver POWER / postMessage source correlation ---")
+print("\n--- Local driver POWER / postMessage source correlation ---")
 base=root/"driver/RTL88WiFi/src/kext/wcl24h32"
 files=[]
 for p in base.rglob("*"):
@@ -123,7 +123,7 @@ for p in base.rglob("*"):
 for p,d in files:
  lines=d.decode("utf-8","replace").splitlines()
  print("SOURCE_FILE=%s SHA256=%s BYTES=%d"%(p.relative_to(root),hashlib.sha256(d).hexdigest(),len(d)))
- matched=[i for i,x in enumerate(lines) if re.search(r"postMessage|apple80211_power_data|getPOWER\\s*\\(|setPOWER\\s*\\(",x)]
+ matched=[i for i,x in enumerate(lines) if re.search(r"postMessage|apple80211_power_data|getPOWER\s*\(|setPOWER\s*\(",x)]
  for i in matched:
   print("SOURCE_MATCH file=%s line=%d text=%s"%(p.name,i+1,lines[i].strip()))
 if not files: print("DRIVER_POWER_MESSAGE_SOURCE_MATCHES=NONE")
