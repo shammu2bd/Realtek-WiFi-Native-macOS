@@ -78,7 +78,7 @@ with tempfile.NamedTemporaryFile(mode="w",suffix=".json") as f:
 if r.returncode:
     print("STAGE126_UPLOAD=FAILED"); print(r.stderr.strip()); sys.exit(r.returncode)
 obj=json.loads(r.stdout)
-expected=hashlib.sha1(f"blob {len(data)}\\0".encode("ascii")+data).hexdigest()
+expected=hashlib.sha1(f"blob {len(data)}\0".encode("ascii")+data).hexdigest()
 actual=obj.get("content",{}).get("sha")
 if actual!=expected:
     print("STAGE126_UPLOAD=VERIFY_REQUIRED"); print("EXPECTED="+expected); print("ACTUAL="+str(actual)); sys.exit(4)
