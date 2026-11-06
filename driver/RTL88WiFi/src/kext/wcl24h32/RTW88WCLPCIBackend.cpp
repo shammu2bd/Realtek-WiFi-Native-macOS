@@ -203,7 +203,7 @@ bool RTW88WCLPCIBackend::closeResources()
 
     if (_compatInitialized) {
         if (!rtw88_compat_exit()) {
-            IOLog("rtl88wifi-wcl: compat deferred TX reaper failed to drain; retaining PCI/DMA resources\\n");
+            IOLog("rtl88wifi-wcl: compat deferred TX reaper failed to drain; retaining PCI/DMA resources\n");
             return false;
         }
         _compatInitialized = false;
@@ -271,13 +271,13 @@ void RTW88WCLPCIBackend::free()
         _pciDev->setBusMasterEnable(false);
         const UInt16 command = _pciDev->configRead16(kIOPCIConfigCommand);
         if (command & 0x0004U) {
-            IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\\n",
+            IOLog("rtl88wifi-wcl: PCI bus-master bit remains set (command=0x%04x); refusing to free DMA resources; backend quarantined\n",
                   command);
             return;
         }
     }
     if (!closeResources()) {
-        IOLog("rtl88wifi-wcl: compat teardown incomplete; backend quarantined with DMA resources retained\\n");
+        IOLog("rtl88wifi-wcl: compat teardown incomplete; backend quarantined with DMA resources retained\n");
         return;
     }
     super::free();
