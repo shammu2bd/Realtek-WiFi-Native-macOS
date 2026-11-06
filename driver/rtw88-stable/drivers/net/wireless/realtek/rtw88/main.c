@@ -2186,6 +2186,7 @@ int rtw_core_init(struct rtw_dev *rtwdev)
 	skb_queue_head_init(&rtwdev->tx_report.queue);
 
 	spin_lock_init(&rtwdev->txq_lock);
+	rtwdev->txq_quiescing = false;
 	spin_lock_init(&rtwdev->tx_report.q_lock);
 
 	mutex_init(&rtwdev->mutex);
