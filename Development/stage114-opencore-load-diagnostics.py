@@ -147,7 +147,7 @@ def main():
 
     # Booted state: configured NVRAM values and live values are deliberately separate.
     sip_rc, sip = record_command("SIP_STATUS", ["csrutil", "status"], 15, 8)
-    emit("SIP_STATE=" + ("ENABLED" if re.search(r"status:\\s*enabled|is enabled", sip, re.I) else "NOT_CONFIRMED"))
+    emit("SIP_STATE=" + ("ENABLED" if re.search(r"status:\s*enabled|is enabled", sip, re.I) else "NOT_CONFIRMED"))
     boot_rc, boot = record_command("LIVE_BOOT_ARGS", ["sysctl", "-n", "kern.bootargs"], 15, 8)
     emit("LIVE_BOOT_ARGS=" + boot.strip()[:700].replace("\n", " "))
     nv_rc, nv = run(["nvram", "-p"], 15)
@@ -342,7 +342,7 @@ def main():
     ioreg_results = {}
     for cls in ("RTW88WCLController", "RTW88WCLInfraInterface"):
         rc, out = run(["ioreg", "-p", "IOService", "-r", "-c", cls, "-l", "-w0"], 25)
-        found = bool(rc == 0 and re.search(r"<class\\s+" + re.escape(cls) + r"(?:[,>])", out))
+        found = bool(rc == 0 and re.search(r"<class\s+" + re.escape(cls) + r"(?:[,>])", out))
         state = "MATCH" if found else ("NO_MATCH" if rc == 0 else "UNKNOWN")
         ioreg_results[cls] = state
         emit("IOREG_" + cls + "_EXIT=" + str(rc))
@@ -388,7 +388,7 @@ def main():
                 except OSError as exc:
                     emit("OPENCORE_LOG_READ_ERROR=" + repr(exc))
         except OSError as exc:
-            emit("OPENCORE_LOG_ENUMERATION_ERROR=" + repr(exc)
+            emit("OPENCORE_LOG_ENUMERATION_ERROR=" + repr(exc))
     emit("OPENCORE_DEBUG_LOG_FILES_FOUND=" + str(len(oc_logs)))
 
     # High-level diagnosis keeps observations distinct from causal proof.
