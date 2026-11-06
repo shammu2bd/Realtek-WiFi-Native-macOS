@@ -1,0 +1,116 @@
+========== STAGE148 APPLE CONTROLLER POSTMESSAGE SYMBOL AUDIT ==========
+STAGE148_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE148_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE148_WORKTREE_STATUS_ENTRIES=198
+STAGE148_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE148_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE148_SCOPE=READ_ONLY_RESOLVE_APPLE_BASE_POSTMESSAGE_SYMBOL_AND_FORWARDING_DECLARATION
+STAGE148_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE148_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+STAGE148_FILES_BASE=0xffffff8000100000
+STAGE148_FILESET_ENTRY_COUNT=211
+STAGE148_SYMBOL_COUNT=165349
+APPLE_CONTROLLER_POSTMESSAGE_CANDIDATE_COUNT=2
+APPLE_POSTMESSAGE_SYMBOL ADDRESS=0xffffff800222b340 NAME=__ZN17IO80211Controller11postMessageEP23IO80211SkywalkInterfacejPvmb SYMBOL_OWNER=com.apple.iokit.IO80211Family OWNER=com.apple.iokit.IO80211Family
+APPLE_POSTMESSAGE_SYMBOL ADDRESS=0xffffff800222b360 NAME=__ZN17IO80211Controller15postMessageSyncEP23IO80211SkywalkInterfacejPvmb SYMBOL_OWNER=com.apple.iokit.IO80211Family OWNER=com.apple.iokit.IO80211Family
+APPLE_CONTROLLER_POSTMESSAGE_EXACT_SYMBOL=FOUND
+METHOD_SYMBOL=__ZN17IO80211Controller11postMessageEP23IO80211SkywalkInterfacejPvmb
+METHOD_ADDRESS=0xffffff800222b340
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff800222b360
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=9
+ffffff800222b340	pushq	%rbp
+ffffff800222b341	movq	%rsp, %rbp
+ffffff800222b344	movq	0x120(%rdi), %rax
+ffffff800222b34b	movq	0xb08(%rax), %rdi
+ffffff800222b352	movq	(%rdi), %rax
+ffffff800222b355	movq	0x120(%rax), %rax
+ffffff800222b35c	popq	%rbp
+ffffff800222b35d	jmpq	*%rax
+CONTROL_FLOW=0xffffff800222b35d jmpq	*%rax
+ffffff800222b35f	nop
+
+--- Local ABI declaration and helper call context ---
+SOURCE_FILE=RTW88WCL24H32ABI.hpp SHA256=a312895412fc504602189683a6a32ba013f5bafdc9bd8482da14734f4e55212a BYTES=8089
+SOURCE_MATCH=RTW88WCL24H32ABI.hpp:62:IOReturn postMessage(IO80211SkywalkInterface *, unsigned int, void *, unsigned long, bool);
+00059 class IO80211Controller : public IOEthernetController {
+00060     OSDeclareAbstractStructors(IO80211Controller)
+00061 public:
+00062     IOReturn postMessage(IO80211SkywalkInterface *, unsigned int, void *, unsigned long, bool);
+00063     virtual void _RESERVEDIONetworkController6() __asm__("__ZN19IONetworkController20allocatePacketNoWaitEj") override;
+00064     virtual void _RESERVEDIONetworkController7() __asm__("__ZN19IONetworkController18setHardwareAssistsEjj") override;
+00065     virtual void free() override;
+00066     virtual bool init(OSDictionary *) override;
+00067     virtual IOReturn configureReport(IOReportChannelList *, unsigned int, void *, void *) override;
+00068     virtual IOReturn updateReport(IOReportChannelList *, unsigned int, void *, void *) override;
+00069     virtual bool start(IOService *) override;
+00070     virtual void stop(IOService *) override;
+00071     virtual IOWorkLoop *getWorkLoop() const override;
+00072     virtual const char *stringFromReturn(int) override;
+00073     virtual int errnoFromReturn(int) override;
+SOURCE_CONTEXT_END
+SOURCE_FILE=RTW88WCLInfraInterface.hpp SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4 BYTES=17853
+SOURCE_MATCH=RTW88WCLInfraInterface.hpp:265:IOReturn postWCLMessage(unsigned int message, void *payload,
+00262     void postConnectionComplete(uint16_t status, uint16_t reason,
+00263                                 IOReturn driverStatus);
+00264     void maybePublishConnected();
+00265     IOReturn postWCLMessage(unsigned int message, void *payload,
+00266                             unsigned long length);
+00267 
+00268     RTW88WCLController *_controller = nullptr; // provider-owned
+00269     RTW88WCLRadioBridge _bridge;
+00270     RTW88WCLWorkQueue *_workQueue = nullptr;   // interface-owned
+00271     ScanFilter _scanFilter = {};
+00272     uint8_t _targetBSSID[6] = {0};
+00273     bool _scanActive = false;
+00274     uint32_t _activeScanGeneration = 0;
+00275     uint32_t _activeJoinGeneration = 0;
+00276     bool _assocNotified = false;
+SOURCE_CONTEXT_END
+SOURCE_FILE=RTW88WCLInfraInterface.cpp SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b BYTES=29184
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:676:IOReturn RTW88WCLInfraInterface::postWCLMessage(unsigned int message,
+00673     return true;
+00674 }
+00675 
+00676 IOReturn RTW88WCLInfraInterface::postWCLMessage(unsigned int message,
+00677                                                  void *payload,
+00678                                                  unsigned long length)
+00679 {
+00680     if (!_controller) return kIOReturnNotReady;
+00681     return _controller->postMessage(this, message, payload, length, true);
+00682 }
+00683 
+00684 void RTW88WCLInfraInterface::publishScanResults(IOReturn status)
+00685 {
+00686     if (!_controller) return;
+00687     if (status == kIOReturnSuccess) {
+00688         for (uint32_t index = 0; index < 128; ++index) {
+00689             RTW88BSS bss = {};
+SOURCE_CONTEXT_END
+SOURCE_FILE=RTW88WCLController.hpp SHA256=740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee BYTES=5330
+SOURCE_MATCH=RTW88WCLController.hpp:21:class RTW88WCLController final : public IO80211Controller,
+00018 class RTW88WCLSkywalkRxAdapter;
+00019 class IOSkywalkPacket;
+00020 
+00021 class RTW88WCLController final : public IO80211Controller,
+00022                                  public RTW88WCLPCIBackendClient,
+00023                                  public RTW88EventDelegate,
+00024                                  public RTW88RxDelegate {
+00025     OSDeclareDefaultStructors(RTW88WCLController)
+00026 
+00027 public:
+00028     bool init(OSDictionary *properties) override;
+00029     bool start(IOService *provider) override;
+00030     void stop(IOService *provider) override;
+00031     void free() override;
+00032     bool createWorkLoop() override;
+SOURCE_CONTEXT_END
+APPLE_BASE_POSTMESSAGE_DECLARATION=FOUND
+APPLE_BASE_POSTMESSAGE_DECLARATION_VIRTUAL=NO
+DRIVER_CONTROLLER_POSTMESSAGE_OVERRIDE=NO
+STAGE148_INTERPRETATION=SYMBOL_AND_SOURCE_CORRELATION_ONLY; NO_COMPILED_DRIVER_CALLSITE_OR_RUNTIME_PROOF
+STAGE148_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE148_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE148 ==========
