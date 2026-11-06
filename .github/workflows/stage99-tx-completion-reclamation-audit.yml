@@ -1,0 +1,52 @@
+name: Stage99 TX completion lock and deferred reclamation audit
+
+on:
+  push:
+    branches:
+      - work/stage91-tx-submission-callback-v1
+    paths:
+      - 'driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h'
+      - 'driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLCompletionTokenRetireList.hpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp'
+      - 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp'
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c'
+      - 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c'
+      - 'tests/test-wcl-stage99-tx-completion-reclamation-audit.py'
+      - 'tests/wcl_tx_completion_retire_list_test.cpp'
+      - 'tools/run-stage99-tx-completion-reclamation-audit.sh'
+      - '.github/workflows/stage99-tx-completion-reclamation-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tx-completion-reclamation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out pinned branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/stage91-tx-submission-callback-v1
+
+      - name: Show toolchain
+        run: |
+          c++ --version
+          python3 --version
+
+      - name: Run Stage99 portable and source audit
+        run: |
+          set -o pipefail
+          bash tools/run-stage99-tx-completion-reclamation-audit.sh | tee stage99-result.txt
+
+      - name: Upload Stage99 audit result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: stage99-tx-completion-reclamation-audit
+          path: stage99-result.txt
