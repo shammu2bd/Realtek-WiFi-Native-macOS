@@ -90,7 +90,7 @@ queue_dequeue = body(FILES["queue"], "rtw88_mpsc_bounded_queue_dequeue(")
 queue_empty = body(FILES["queue"], "rtw88_mpsc_bounded_queue_empty(")
 
 check("XNU_CANCEL_WAIT_CAVEAT_PRESENT_IN_TARGET_SDK",
-      "<i>after the current invocation</i> may be in flight" in FILES["sdk"],
+      "<i>after</i> the current invocation may be in flight when" in FILES["sdk"],
       "target MacKernelSDK documents that cancel_wait may return with later invocations in flight")
 check("XNU_THREAD_CALL_ISACTIVE_AVAILABLE",
       "boolean_t               thread_call_isactive(" in FILES["sdk"] or
