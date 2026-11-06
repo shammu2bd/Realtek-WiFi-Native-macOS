@@ -27,7 +27,7 @@ for factory, token in acquire_pairs:
     record_position = cpp.index(token, position)
     assert record_position > position
 
-assert "if (!txSubmissionQueuesValid() || !_acquisitionJournal.commit())" in cpp
+assert "if (!txSubmissionQueuesValid() || !registrationQueuesValid() ||\n        !_acquisitionJournal.commit())" in cpp
 assert cpp.index("_acquisitionJournal.commit()") < cpp.index("_allocated = true;")
 assert "return (_acquisitionJournal.isCommitted() && queuesAllocated())" in cpp
 
