@@ -1,0 +1,340 @@
+========== STAGE149 CONTROLLER POSTMESSAGE RELAY AUDIT ==========
+STAGE149_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE149_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE149_WORKTREE_STATUS_ENTRIES=198
+STAGE149_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE149_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE149_SCOPE=READ_ONLY_RESOLVE_CONTROLLER_EXPANSION_0xB08_AND_RECEIVER_VTABLE_SLOT_0x120
+STAGE149_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE149_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+STAGE149_FILES_BASE=0xffffff8000100000
+STAGE149_FILESET_ENTRY_COUNT=211
+STAGE149_SYMBOL_COUNT=165349
+SYMBOL_LOOKUP NAME=__ZN17IO80211Controller11postMessageEP23IO80211SkywalkInterfacejPvmb ADDRESS=0xffffff800222b340 OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+SYMBOL_LOOKUP NAME=__ZN17IO80211Controller15postMessageSyncEP23IO80211SkywalkInterfacejPvmb ADDRESS=0xffffff800222b360 OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+SYMBOL_LOOKUP NAME=__ZN11IO80211Glue15routeEventToWclEjPvm ADDRESS=0xffffff800212ac5a OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+SYMBOL_LOOKUP NAME=__ZN11IO80211Glue13sendIOUCToWclEjjPvmRb ADDRESS=0xffffff800212ad12 OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family
+
+--- IO80211Glue virtual-table receiver candidates ---
+VTABLE CLASS=IO80211Glue STATUS=FOUND
+VTABLE_SLOT CLASS=IO80211Glue OBJECT_OFFSET=0x120 WORD=38 TARGET=0xffffff800211e840 OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family EXACT_SYMBOL=__ZN10CommonGlue11sendMessageER17CommonGlueMessage NEAREST=__ZN10CommonGlue11sendMessageER17CommonGlueMessage
+VTABLE CLASS=IO80211Controller STATUS=FOUND
+VTABLE_SLOT CLASS=IO80211Controller OBJECT_OFFSET=0x120 WORD=38 TARGET=0xffffff8000abbc30 OWNER=com.apple.kernel SYMBOL_OWNER=com.apple.kernel EXACT_SYMBOL=__ZNK15IORegistryEntry12copyPropertyEPK8OSStringPK15IORegistryPlanej NEAREST=__ZNK15IORegistryEntry12copyPropertyEPK8OSStringPK15IORegistryPlanej
+VTABLE_SLOT CLASS=IO80211Controller OBJECT_OFFSET=0xb08 WORD=355 TARGET=0xffffff800262ca9e OWNER=com.apple.iokit.IONetworkingFamily SYMBOL_OWNER=com.apple.iokit.IONetworkingFamily EXACT_SYMBOL=__ZN19IONetworkController30_RESERVEDIONetworkController30Ev NEAREST=__ZN19IONetworkController30_RESERVEDIONetworkController30Ev
+VTABLE CLASS=IO80211InfraInterface STATUS=FOUND
+VTABLE_SLOT CLASS=IO80211InfraInterface OBJECT_OFFSET=0x120 WORD=38 TARGET=0xffffff8000abbc30 OWNER=com.apple.kernel SYMBOL_OWNER=com.apple.kernel EXACT_SYMBOL=__ZNK15IORegistryEntry12copyPropertyEPK8OSStringPK15IORegistryPlanej NEAREST=__ZNK15IORegistryEntry12copyPropertyEPK8OSStringPK15IORegistryPlanej
+VTABLE_SLOT CLASS=IO80211InfraInterface OBJECT_OFFSET=0xb08 WORD=355 TARGET=0xffffff8002263c4a OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family EXACT_SYMBOL=__ZN23IO80211SkywalkInterface10createPeerEPKhP18IO80211PeerManager NEAREST=__ZN23IO80211SkywalkInterface10createPeerEPKhP18IO80211PeerManager
+VTABLE CLASS=IO80211SkywalkInterface STATUS=FOUND
+VTABLE_SLOT CLASS=IO80211SkywalkInterface OBJECT_OFFSET=0x120 WORD=38 TARGET=0xffffff8000abbc30 OWNER=com.apple.kernel SYMBOL_OWNER=com.apple.kernel EXACT_SYMBOL=__ZNK15IORegistryEntry12copyPropertyEPK8OSStringPK15IORegistryPlanej NEAREST=__ZNK15IORegistryEntry12copyPropertyEPK8OSStringPK15IORegistryPlanej
+VTABLE_SLOT CLASS=IO80211SkywalkInterface OBJECT_OFFSET=0xb08 WORD=355 TARGET=0xffffff8002263c4a OWNER=com.apple.iokit.IO80211Family SYMBOL_OWNER=com.apple.iokit.IO80211Family EXACT_SYMBOL=__ZN23IO80211SkywalkInterface10createPeerEPKhP18IO80211PeerManager NEAREST=__ZN23IO80211SkywalkInterface10createPeerEPKhP18IO80211PeerManager
+
+--- Exact bounded method disassembly ---
+
+METHOD_SYMBOL=__ZN11IO80211Glue15routeEventToWclEjPvm
+METHOD_ADDRESS=0xffffff800212ac5a
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff800212ac9e
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=23
+ffffff800212ac5a	pushq	%rbp
+ffffff800212ac5b	movq	%rsp, %rbp
+ffffff800212ac5e	pushq	%rbx
+ffffff800212ac5f	pushq	%rax
+ffffff800212ac60	movq	%rdi, %rbx
+ffffff800212ac63	callq	__ZN11IO80211Glue22addEventToPendingQueueEjPvm ## IO80211Glue::addEventToPendingQueue(unsigned int, void*, unsigned long)
+CONTROL_FLOW=0xffffff800212ac63 callq	__ZN11IO80211Glue22addEventToPendingQueueEjPvm ## IO80211Glue::addEventToPendingQueue(unsigned int, void*, unsigned long)
+ffffff800212ac68	movq	0x18(%rbx), %rax
+ffffff800212ac6c	cmpb	$0x0, 0x30(%rax)
+ffffff800212ac70	jne	0xffffff800212ac94
+ffffff800212ac72	movb	$0x1, 0x30(%rax)
+ffffff800212ac76	movq	0x60(%rax), %rbx
+ffffff800212ac7a	movq	0x48(%rbx), %rsi
+ffffff800212ac7e	addq	$0x10, %rsi
+ffffff800212ac82	movl	$0x1, %edi
+ffffff800212ac87	callq	0xffffff8000a48c30
+CONTROL_FLOW=0xffffff800212ac87 callq	0xffffff8000a48c30
+ffffff800212ac8c	movq	%rbx, %rdi
+ffffff800212ac8f	callq	0xffffff8000afafb0
+CONTROL_FLOW=0xffffff800212ac8f callq	0xffffff8000afafb0
+ffffff800212ac94	xorl	%eax, %eax
+ffffff800212ac96	addq	$0x8, %rsp
+ffffff800212ac9a	popq	%rbx
+ffffff800212ac9b	popq	%rbp
+ffffff800212ac9c	retq
+ffffff800212ac9d	nop
+
+METHOD_SYMBOL=__ZN11IO80211Glue13sendIOUCToWclEjjPvmRb
+METHOD_ADDRESS=0xffffff800212ad12
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff800212b030
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=187
+ffffff800212ad12	pushq	%rbp
+ffffff800212ad13	movq	%rsp, %rbp
+ffffff800212ad16	pushq	%r15
+ffffff800212ad18	pushq	%r14
+ffffff800212ad1a	pushq	%r13
+ffffff800212ad1c	pushq	%r12
+ffffff800212ad1e	pushq	%rbx
+ffffff800212ad1f	subq	$0x108, %rsp                    ## imm = 0x108
+ffffff800212ad26	movq	%r9, -0x120(%rbp)
+ffffff800212ad2d	movq	%r8, %r12
+ffffff800212ad30	movq	%rcx, %r15
+ffffff800212ad33	movl	%edx, %r14d
+ffffff800212ad36	movl	%esi, -0x110(%rbp)
+ffffff800212ad3c	movq	%rdi, -0x128(%rbp)
+ffffff800212ad43	movq	0x2913ce(%rip), %rax
+ffffff800212ad4a	movq	(%rax), %rax
+ffffff800212ad4d	movq	%rax, -0x30(%rbp)
+ffffff800212ad51	xorl	%ebx, %ebx
+ffffff800212ad53	leaq	-0xc8(%rbp), %r13
+ffffff800212ad5a	movq	%rbx, (%r13)
+ffffff800212ad5e	callq	0xffffff80003cbf20
+CONTROL_FLOW=0xffffff800212ad5e callq	0xffffff80003cbf20
+ffffff800212ad63	movq	%rax, %rdi
+ffffff800212ad66	movq	%r13, %rsi
+ffffff800212ad69	callq	0xffffff8000536d80
+CONTROL_FLOW=0xffffff800212ad69 callq	0xffffff8000536d80
+ffffff800212ad6e	movq	(%r13), %rax
+ffffff800212ad72	movq	%rax, -0x118(%rbp)
+ffffff800212ad79	leaq	-0x50(%rbp), %rdx
+ffffff800212ad7d	movq	%rbx, (%rdx)
+ffffff800212ad80	movq	%rdx, 0x8(%rdx)
+ffffff800212ad84	movabsq	$0x2000000000, %rax             ## imm = 0x2000000000
+ffffff800212ad8e	movq	%rax, 0x10(%rdx)
+ffffff800212ad92	movabsq	$-0x5555555555555556, %rcx      ## imm = 0xAAAAAAAAAAAAAAAA
+ffffff800212ad9c	movq	%rcx, 0x18(%rdx)
+ffffff800212ada0	leaq	-0x70(%rbp), %rdx
+ffffff800212ada4	movq	%rbx, (%rdx)
+ffffff800212ada7	movq	%rdx, 0x8(%rdx)
+ffffff800212adab	movq	%rax, 0x10(%rdx)
+ffffff800212adaf	movq	%rbx, (%r13)
+ffffff800212adb3	movq	%r13, 0x8(%r13)
+ffffff800212adb7	movabsq	$0x5802000000, %rax             ## imm = 0x5802000000
+ffffff800212adc1	movq	%rax, 0x10(%r13)
+ffffff800212adc5	leaq	___Block_byref_object_copy_(%rip), %rax
+ffffff800212adcc	movq	%rax, 0x18(%r13)
+ffffff800212add0	leaq	___Block_byref_object_dispose_(%rip), %rax
+ffffff800212add7	movq	%rax, 0x20(%r13)
+ffffff800212addb	movq	%rcx, 0x28(%r13)
+ffffff800212addf	movq	%rcx, 0x50(%r13)
+ffffff800212ade3	movl	%r14d, -0x10c(%rbp)
+ffffff800212adea	movl	%r14d, 0x28(%r13)
+ffffff800212adee	movq	%rdx, %r14
+ffffff800212adf1	movb	$0x1, 0x2c(%r13)
+ffffff800212adf6	cmpl	$0xc02869c9, -0x110(%rbp)       ## imm = 0xC02869C9
+ffffff800212ae00	sete	0x2d(%r13)
+ffffff800212ae05	movl	$0x0, 0x18(%rdx)
+ffffff800212ae0c	movq	%r12, %rax
+ffffff800212ae0f	cmoveq	%rbx, %rax
+ffffff800212ae13	movb	%bl, 0x2e(%r13)
+ffffff800212ae17	movq	%r15, %rcx
+ffffff800212ae1a	cmoveq	%rbx, %rcx
+ffffff800212ae1e	movq	%rax, 0x30(%r13)
+ffffff800212ae22	movq	%rcx, 0x38(%r13)
+ffffff800212ae26	cmovneq	%rbx, %r12
+ffffff800212ae2a	movq	%r12, 0x40(%r13)
+ffffff800212ae2e	cmovneq	%rbx, %r15
+ffffff800212ae32	movq	%r15, 0x48(%r13)
+ffffff800212ae36	movb	%bl, 0x50(%r13)
+ffffff800212ae3a	movq	-0x128(%rbp), %rbx
+ffffff800212ae41	movq	0x18(%rbx), %rax
+ffffff800212ae45	movq	0x38(%rax), %rdi
+ffffff800212ae49	movq	(%rdi), %rax
+ffffff800212ae4c	callq	*0x138(%rax)
+CONTROL_FLOW=0xffffff800212ae4c callq	*0x138(%rax)
+ffffff800212ae52	testb	%al, %al
+ffffff800212ae54	je	0xffffff800212af97
+ffffff800212ae5a	movq	0x18(%rbx), %rax
+ffffff800212ae5e	movq	0x38(%rax), %rdi
+ffffff800212ae62	movq	(%rdi), %rax
+ffffff800212ae65	callq	*0x130(%rax)
+CONTROL_FLOW=0xffffff800212ae65 callq	*0x130(%rax)
+ffffff800212ae6b	testb	%al, %al
+ffffff800212ae6d	jne	0xffffff800212af97
+ffffff800212ae73	movq	0x291186(%rip), %rax
+ffffff800212ae7a	leaq	-0x108(%rbp), %rdx
+ffffff800212ae81	movq	%rax, (%rdx)
+ffffff800212ae84	movq	$0x42000000, 0x8(%rdx)          ## imm = 0x42000000
+ffffff800212ae8c	leaq	____ZN11IO80211Glue13sendIOUCToWclEjjPvmRb_block_invoke(%rip), %rax
+ffffff800212ae93	movq	%rax, 0x10(%rdx)
+ffffff800212ae97	leaq	___block_descriptor_tmp.30(%rip), %rax
+ffffff800212ae9e	movq	%rax, 0x18(%rdx)
+ffffff800212aea2	movq	%rbx, 0x38(%rdx)
+ffffff800212aea6	leaq	-0x50(%rbp), %rax
+ffffff800212aeaa	movq	%rax, 0x20(%rdx)
+ffffff800212aeae	movq	%r14, 0x28(%rdx)
+ffffff800212aeb2	movq	%r13, 0x30(%rdx)
+ffffff800212aeb6	movq	%rbx, %rdi
+ffffff800212aeb9	xorl	%esi, %esi
+ffffff800212aebb	callq	__ZN11IO80211Glue22runActionBlockOnSerialEbU13block_pointerFivE ## IO80211Glue::runActionBlockOnSerial(bool, int () block_pointer)
+CONTROL_FLOW=0xffffff800212aebb callq	__ZN11IO80211Glue22runActionBlockOnSerialEbU13block_pointerFivE ## IO80211Glue::runActionBlockOnSerial(bool, int () block_pointer)
+ffffff800212aec0	movl	-0x10c(%rbp), %eax
+ffffff800212aec6	cmpl	$0x231, %eax                    ## imm = 0x231
+ffffff800212aecb	jg	0xffffff800212aef1
+ffffff800212aecd	cmpl	$-0x1, %eax
+ffffff800212aed0	je	0xffffff800212aefa
+ffffff800212aed2	testl	%eax, %eax
+ffffff800212aed4	js	0xffffff800212aee8
+ffffff800212aed6	movl	%eax, %eax
+ffffff800212aed8	leaq	__ZL23gAppleIoucIndexToString(%rip), %rcx ## gAppleIoucIndexToString
+ffffff800212aedf	movq	(%rcx,%rax,8), %rsi
+ffffff800212aee3	testq	%rsi, %rsi
+ffffff800212aee6	jne	0xffffff800212af01
+ffffff800212aee8	leaq	_.str.40(%rip), %rsi            ## literal pool for: "unknown Apple80211_IOC_"
+ffffff800212aeef	jmp	0xffffff800212af01
+CONTROL_FLOW=0xffffff800212aeef jmp	0xffffff800212af01
+ffffff800212aef1	leaq	_.str.38(%rip), %rsi            ## literal pool for: "Error Invalid ioctl"
+ffffff800212aef8	jmp	0xffffff800212af01
+CONTROL_FLOW=0xffffff800212aef8 jmp	0xffffff800212af01
+ffffff800212aefa	leaq	_.str.39(%rip), %rsi            ## literal pool for: "APPLE80211_IOC_CARD_SPECIFIC"
+ffffff800212af01	movabsq	$0x431bde82d7b634db, %rcx       ## imm = 0x431BDE82D7B634DB
+ffffff800212af0b	movq	-0x118(%rbp), %rax
+ffffff800212af12	mulq	%rcx
+ffffff800212af15	shrq	$0x12, %rdx
+ffffff800212af19	leaq	-0x50(%rbp), %r14
+ffffff800212af1d	movq	0x8(%r14), %rax
+ffffff800212af21	movq	0x18(%rax), %rcx
+ffffff800212af25	movq	%rbx, %rdi
+ffffff800212af28	callq	__ZN11IO80211Glue13printTaskInfoEPKcyy ## IO80211Glue::printTaskInfo(char const*, unsigned long long, unsigned long long)
+CONTROL_FLOW=0xffffff800212af28 callq	__ZN11IO80211Glue13printTaskInfoEPKcyy ## IO80211Glue::printTaskInfo(char const*, unsigned long long, unsigned long long)
+ffffff800212af2d	leaq	-0xc8(%rbp), %rdi
+ffffff800212af34	movq	0x8(%rdi), %rax
+ffffff800212af38	movb	0x50(%rax), %al
+ffffff800212af3b	movq	-0x120(%rbp), %rcx
+ffffff800212af42	movb	%al, (%rcx)
+ffffff800212af44	leaq	-0x70(%rbp), %r15
+ffffff800212af48	movq	0x8(%r15), %rax
+ffffff800212af4c	movl	0x18(%rax), %ebx
+ffffff800212af4f	movl	$0x8, %esi
+ffffff800212af54	callq	0xffffff8000a96f50
+CONTROL_FLOW=0xffffff800212af54 callq	0xffffff8000a96f50
+ffffff800212af59	movq	%r15, %rdi
+ffffff800212af5c	movl	$0x8, %esi
+ffffff800212af61	callq	0xffffff8000a96f50
+CONTROL_FLOW=0xffffff800212af61 callq	0xffffff8000a96f50
+ffffff800212af66	movq	%r14, %rdi
+ffffff800212af69	movl	$0x8, %esi
+ffffff800212af6e	callq	0xffffff8000a96f50
+CONTROL_FLOW=0xffffff800212af6e callq	0xffffff8000a96f50
+ffffff800212af73	movq	0x29119e(%rip), %rax
+ffffff800212af7a	movq	(%rax), %rax
+ffffff800212af7d	cmpq	-0x30(%rbp), %rax
+ffffff800212af81	jne	0xffffff800212afcf
+ffffff800212af83	movl	%ebx, %eax
+ffffff800212af85	addq	$0x108, %rsp                    ## imm = 0x108
+ffffff800212af8c	popq	%rbx
+ffffff800212af8d	popq	%r12
+ffffff800212af8f	popq	%r13
+ffffff800212af91	popq	%r14
+ffffff800212af93	popq	%r15
+ffffff800212af95	popq	%rbp
+ffffff800212af96	retq
+ffffff800212af97	movq	0x18(%rbx), %rax
+ffffff800212af9b	movq	0x50(%rax), %rdi
+ffffff800212af9f	testq	%rdi, %rdi
+ffffff800212afa2	je	0xffffff800212afb5
+ffffff800212afa4	movq	%rbx, %r14
+ffffff800212afa7	movl	$0x1, %esi
+ffffff800212afac	callq	0xffffff80031d421c
+CONTROL_FLOW=0xffffff800212afac callq	0xffffff80031d421c
+ffffff800212afb1	testb	%al, %al
+ffffff800212afb3	jne	0xffffff800212afd4
+ffffff800212afb5	leaq	0x2023bb(%rip), %rdi            ## literal pool for: "\"trying to send on thread panic \\n\" @%s:%d"
+ffffff800212afbc	leaq	0x202344(%rip), %rsi            ## literal pool for: "IO80211Glue.cpp"
+ffffff800212afc3	movl	$0x1a1, %edx                    ## imm = 0x1A1
+ffffff800212afc8	xorl	%eax, %eax
+ffffff800212afca	callq	0xffffff8000bd073c
+CONTROL_FLOW=0xffffff800212afca callq	0xffffff8000bd073c
+ffffff800212afcf	callq	0xffffff8000383150
+CONTROL_FLOW=0xffffff800212afcf callq	0xffffff8000383150
+ffffff800212afd4	movq	%r14, %rbx
+ffffff800212afd7	movq	0x18(%r14), %rax
+ffffff800212afdb	movq	0x38(%rax), %rdi
+ffffff800212afdf	movq	0x50(%rax), %r14
+ffffff800212afe3	movq	(%rdi), %rax
+ffffff800212afe6	callq	*0x130(%rax)
+CONTROL_FLOW=0xffffff800212afe6 callq	*0x130(%rax)
+ffffff800212afec	movzbl	%al, %r15d
+ffffff800212aff0	movq	0x18(%rbx), %rax
+ffffff800212aff4	movq	0x38(%rax), %rdi
+ffffff800212aff8	movq	(%rdi), %rax
+ffffff800212affb	callq	*0x138(%rax)
+CONTROL_FLOW=0xffffff800212affb callq	*0x138(%rax)
+ffffff800212b001	movzbl	%al, %eax
+ffffff800212b004	movl	%eax, (%rsp)
+ffffff800212b007	leaq	0x202309(%rip), %rsi            ## literal pool for: "[wcl] %s@%d:Trying to send iouc msg<%d> on thread=<%d> inGate=<%d> return error \n"
+ffffff800212b00e	leaq	0x202354(%rip), %rdx            ## literal pool for: "sendIOUCToWcl"
+ffffff800212b015	movq	%r14, %rdi
+ffffff800212b018	movl	$0x1a0, %ecx                    ## imm = 0x1A0
+ffffff800212b01d	movl	-0x10c(%rbp), %r8d
+ffffff800212b024	movl	%r15d, %r9d
+ffffff800212b027	xorl	%eax, %eax
+ffffff800212b029	callq	0xffffff80031d252e
+CONTROL_FLOW=0xffffff800212b029 callq	0xffffff80031d252e
+ffffff800212b02e	jmp	0xffffff800212afb5
+CONTROL_FLOW=0xffffff800212b02e jmp	0xffffff800212afb5
+
+METHOD_SYMBOL=__ZN17IO80211Controller11postMessageEP23IO80211SkywalkInterfacejPvmb
+METHOD_ADDRESS=0xffffff800222b340
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff800222b360
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=9
+ffffff800222b340	pushq	%rbp
+ffffff800222b341	movq	%rsp, %rbp
+ffffff800222b344	movq	0x120(%rdi), %rax
+ffffff800222b34b	movq	0xb08(%rax), %rdi
+ffffff800222b352	movq	(%rdi), %rax
+ffffff800222b355	movq	0x120(%rax), %rax
+ffffff800222b35c	popq	%rbp
+ffffff800222b35d	jmpq	*%rax
+CONTROL_FLOW=0xffffff800222b35d jmpq	*%rax
+ffffff800222b35f	nop
+
+METHOD_SYMBOL=__ZN17IO80211Controller15postMessageSyncEP23IO80211SkywalkInterfacejPvmb
+METHOD_ADDRESS=0xffffff800222b360
+METHOD_OWNER=com.apple.iokit.IO80211Family
+METHOD_NEXT_SYMBOL_BOUND=0xffffff800222b380
+OTOOL_EXIT=0
+METHOD_DISASSEMBLY=VERIFIED_EXACT_START_BOUNDED
+INSTRUCTION_COUNT=9
+ffffff800222b360	pushq	%rbp
+ffffff800222b361	movq	%rsp, %rbp
+ffffff800222b364	movq	0x120(%rdi), %rax
+ffffff800222b36b	movq	0xb08(%rax), %rdi
+ffffff800222b372	movq	(%rdi), %rax
+ffffff800222b375	movq	0x128(%rax), %rax
+ffffff800222b37c	popq	%rbp
+ffffff800222b37d	jmpq	*%rax
+CONTROL_FLOW=0xffffff800222b37d jmpq	*%rax
+ffffff800222b37f	nop
+
+--- Local source ownership of controller helper and postWCLMessage ---
+SOURCE_FILE=RTW88WCL24H32ABI.hpp SHA256=a312895412fc504602189683a6a32ba013f5bafdc9bd8482da14734f4e55212a BYTES=8089
+SOURCE_MATCH=RTW88WCL24H32ABI.hpp:62:IOReturn postMessage(IO80211SkywalkInterface *, unsigned int, void *, unsigned long, bool);
+SOURCE_FILE=RTW88WCLInfraInterface.hpp SHA256=9b1181fd35990cebc128228503bc671a60a680815a698c79121ac9bdcf23cfc4 BYTES=17853
+SOURCE_MATCH=RTW88WCLInfraInterface.hpp:265:IOReturn postWCLMessage(unsigned int message, void *payload,
+SOURCE_FILE=RTW88WCLInfraInterface.cpp SHA256=2a6da4ac698635e2bfe904a23004536478d60cad99718ec3d7186e9be68cfc9b BYTES=29184
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:497:postWCLMessage(kWCLMessageLinkStatus, &link, sizeof(link));
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:519:postWCLMessage(kWCLMessageJoinAbortComplete, nullptr, 0);
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:676:IOReturn RTW88WCLInfraInterface::postWCLMessage(unsigned int message,
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:681:return _controller->postMessage(this, message, payload, length, true);
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:712:postWCLMessage(kWCLMessageScanResult, message,
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:720:postWCLMessage(kWCLMessageScanDone, &status, sizeof(status));
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:732:postWCLMessage(kWCLMessageConnectComplete, &event, sizeof(event));
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:751:postWCLMessage(kWCLMessageLinkStatus, &link, sizeof(link));
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:774:postWCLMessage(kWCLMessageAssocComplete, &assoc, sizeof(assoc));
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:787:postWCLMessage(kWCLMessageAssocComplete, &assoc, sizeof(assoc));
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:798:postWCLMessage(kWCLMessageDeauth, &reason, sizeof(reason));
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:822:postWCLMessage(kWCLMessageLinkStatus, &link, sizeof(link));
+SOURCE_MATCH=RTW88WCLInfraInterface.cpp:834:postWCLMessage(kWCLMessageLqmUpdate, &update, sizeof(update));
+SOURCE_FILE=RTW88WCLController.hpp SHA256=740115d9d5db50517d365e523174c17385c587eaabd45bafbeba2521edacb6ee BYTES=5330
+SOURCE_FILE=RTW88WCLController.cpp SHA256=2c67658a50b40ec65cc400fbc7f13295d054e95a039aaf7060a65457c6087059 BYTES=20358
+STAGE149_INTERPRETATION=STATIC_RELAY_MAPPING_ONLY; INTERNAL_RECEIVER_IDENTITY_REQUIRES_EXACT_SYMBOL_OR_LAYOUT_EVIDENCE
+STAGE149_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE149_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE149 ==========
