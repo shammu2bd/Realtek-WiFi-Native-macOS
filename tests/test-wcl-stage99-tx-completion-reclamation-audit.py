@@ -154,7 +154,7 @@ check("LEGACY_AIRPORT_OBJECT_GRAPH_HAS_COMPILE_ONLY_GATE",
       "airport-compile-only: $(AIRPORT_ALL_OBJS)" in MAKE,
       "shared radio object can be compiled in legacy Airport configuration without invoking the legacy linker")
 def target_recipe(name):
-    match = re.search(r"^" + re.escape(name) + r":[^\\n]*\\n((?:\\t[^\\n]*\\n)*)",
+    match = re.search(r"^" + re.escape(name) + r":[^\n]*\n((?:\t[^\n]*\n)*)",
                       MAKE, re.M)
     return match.group(1) if match else None
 
