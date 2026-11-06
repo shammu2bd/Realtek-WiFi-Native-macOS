@@ -724,11 +724,11 @@ static bool __pci_flush_queue_sync(struct rtw_dev *rtwdev, u8 pci_q)
 
 	/* Key CAM retirement is permitted only after every DMA descriptor
 	 * referencing the old key slot has left the PCI ring. */
-	for (i = 0; i < 2000; i++) {
+	for (i = 0; i < 100; i++) {
 		cur_rp = __pci_get_hw_tx_ring_rp(rtwdev, pci_q);
 		if (cur_rp == ring->r.wp)
 			return true;
-		udelay(1);
+		msleep(1);
 	}
 	return false;
 }
