@@ -11,3 +11,6 @@ The Stage120 extracted Apple IO80211Family Mach-O is reused if present. Otherwis
 **Strict exclusions:** no driver source changes, build, signing, install, load/unload, hardware activation, OpenCore/EFI/SIP/NVRAM changes, security bypass, or reboot.
 
 **Decision rule:** a missing symbol or incomplete disassembly is `NOT_PROVEN`; no guessed power-state patch is permitted. Stage126 does not itself change readiness status or authorize runtime activation.
+
+
+**Stage126 narrowed rerun:** The first nm expression matched unrelated Wi-Fi feature selectors, producing an oversized report (GitHub HTTP 413). The `main` runner now selects only eight exact mangled power-state methods spanning `IO80211InfraInterface`, `IO80211MacAddressAgent`, and `IO80211SkywalkInterface`. The complete report remains local; a bounded, explicitly marked compact upload is used only if the report exceeds 700 KB.
