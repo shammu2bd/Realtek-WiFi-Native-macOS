@@ -109,6 +109,9 @@ owner_paths={}
 for bid,_,_ in kc.entries:
  if bid in {v[1] for v in resolved.values()}:owner_paths[bid]=pathlib.Path(os.environ["STAGE144_WORK"])/(re.sub(r"[^A-Za-z0-9_.-]","_",bid)+".macho")
 for owner,dest in owner_paths.items():
+ if owner not in kc.entry_segs:
+  print("OWNER_IMAGE=%s STATUS=NOT_A_CARVED_FILESET_ENTRY"%owner)
+  continue
  kc.carve(owner,str(dest))
  for addr,(name,_) in sorted(resolved.items()):
   if kc.sym_owner.get(addr)!=owner:continue
