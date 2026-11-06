@@ -5,10 +5,10 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 CXX="${CXX:-c++}"
-TMP_BIN="${TMPDIR:-/tmp}/stage99-tx-completion-retire-list-test-$$"
+TMP_BIN="${TMPDIR:-/tmp}/stage99-bounded-mpsc-token-test-$$"
 trap 'rm -f "$TMP_BIN"' EXIT
 
-echo "===== STAGE99 MPSC TOKEN RETIRE-LIST STRESS ====="
+echo "===== STAGE99 BOUNDED MPSC TOKEN RETIREMENT STRESS ====="
 "$CXX" -std=c++17 -O2 -pthread -Wall -Wextra -Werror \
     tests/wcl_tx_completion_retire_list_test.cpp -o "$TMP_BIN"
 "$TMP_BIN"
