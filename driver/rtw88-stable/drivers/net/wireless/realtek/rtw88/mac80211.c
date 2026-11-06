@@ -624,7 +624,7 @@ static int rtw_ops_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
 		if (!hci_drained || !mac_drained) {
 			ret = -ETIMEDOUT;
 			rtw_warn(rtwdev,
-				 "refusing to clear CAM key slot %u: TX queues not drained (hci=%d mac=%d)\\n",
+				 "refusing to clear CAM key slot %u: TX queues not drained (hci=%d mac=%d)\n",
 				 key->hw_key_idx, hci_drained, mac_drained);
 			break;
 		}
