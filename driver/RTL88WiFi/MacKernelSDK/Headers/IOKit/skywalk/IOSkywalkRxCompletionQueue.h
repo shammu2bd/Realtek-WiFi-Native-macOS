@@ -62,6 +62,16 @@ public:
     virtual IOReturn requestEnqueue( void * packets, IOOptionBits options );
     virtual IOReturn enqueuePackets( const IOSkywalkPacket ** packets, UInt32 packetCount, IOOptionBits options );
     virtual IOReturn enqueuePackets( const queue_entry * packets, UInt32 packetCount, IOOptionBits options );
+
+    /* Sequoia 15.8.1 (24H32) non-virtual networking handoff observed in
+     * IOSkywalkFamily: transfers completed RX packets to the network stack.
+     * Mangled target symbol:
+     * IOSkywalkRxCompletionQueue::enqueuePacketsForNetworking(
+     *     IOSkywalkPacket const **, unsigned int, unsigned int)
+     * This is deliberately non-virtual and does not alter the class vtable. */
+    IOReturn enqueuePacketsForNetworking( const IOSkywalkPacket ** packets,
+                                          UInt32 packetCount,
+                                          IOOptionBits options );
     virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
     UInt32 getEffectiveCapacity( IOOptionBits options );
     virtual bool checkForWork() APPLE_KEXT_OVERRIDE;
