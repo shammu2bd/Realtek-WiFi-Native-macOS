@@ -1687,3 +1687,20 @@ STAGE98_TARGET_COMPILE_LOG=Development/Logs/stage98-target-compile-20261106T0330
 
 STAGE98_TARGET_COMPILE_DIAGNOSTIC_STATUS=2
 STAGE98_TARGET_COMPILE_DIAGNOSTIC_LOG=Development/Logs/stage98-target-compile-diagnostic-20261106T033413Z.log
+
+========== STAGE98 TARGET COMPILE DIAGNOSTIC AND SOURCE CORRECTION ==========
+STAGE98_DIAGNOSTIC_LOG=Development/Logs/stage98-target-compile-diagnostic-20261106T033413Z.log
+STAGE98_TARGET_OS=macOS_15.8.1_24H32_x86_64
+STAGE98_TARGET_XCODE=Xcode_16.4
+STAGE98_TARGET_COMPILE_STATUS=2
+STAGE98_COMPILE_BLOCKER=sec.c calls undeclared rtw_warn at lines 32 and 98; make stopped building build/driver/sec.o
+STAGE98_ROOT_CAUSE=Stage97 CAM bounds checks used a logger symbol absent from the macOS compatibility layer
+STAGE98_SOURCE_FIX=Both bounds diagnostics now use dev_warn(rtwdev->dev,...); rtw_dev contains struct device *dev and rtw88_compat.h defines dev_warn
+STAGE98_REGRESSION_CHECK=Added CAM_BOUNDS_DIAGNOSTICS_USE_COMPAT_DEVICE_LOGGER to tests/test-wcl-stage97-independent-audit.py
+STAGE98_FIX_REPORT=Development/Logs/stage98-target-compile-diagnostic-20261106.md
+STAGE98_POST_FIX_STATIC_AUDIT=PENDING_GITHUB_ACTIONS
+STAGE98_POST_FIX_TARGET_COMPILE=PENDING_TARGET_MAC_RERUN
+STAGE98_LOCK_ORDER_RUNTIME_PROOF=OPEN
+STAGE98_NATIVE_ACTIVATION=BLOCKED
+STAGE98_PR4_MERGE=BLOCKED
+===============================================================
