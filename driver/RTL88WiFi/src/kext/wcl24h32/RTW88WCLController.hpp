@@ -41,8 +41,9 @@ public:
     IOReturn activatePacketPath(IO80211SkywalkInterface *interface);
     IOReturn quiescePacketPath();
 
-    /* Required pure virtuals in the 24H32 IO80211Controller ABI. Until the
-     * native protocol + Skywalk datapath are attached, operations fail closed. */
+    /* Required pure virtuals in the 24H32 IO80211Controller ABI. Command and
+     * power operations remain closed until the native infra interface and its
+     * Skywalk registration transaction have committed. */
     bool isCommandProhibited(int command) override;
     SInt32 handleCardSpecific(IO80211SkywalkInterface *interface,
                               unsigned long command, void *data,
@@ -72,16 +73,18 @@ public:
     RTW88WCLPCIBackend *pciBackend() const { return _pciBackend; }
     RTW88WCLSkywalkQueues *skywalkQueues() const { return _skywalkQueues; }
 
-    /* RTW88WCLPCIBackendClient: no native TX queue is registered yet. */
+    /* RTW88WCLPCIBackendClient: resume the registered native WMM submission path
+     * when RTW88 reopens its software TX queues. */
     void rtw88WCLResumeTransmit() override;
 
-    /* RTW88EventDelegate: events are deliberately not published until the
-     * Skywalk interface has completed registration. */
+    /* Legacy controller delegate surface. The active native path installs
+     * RTW88WCLRadioBridge as the radio event delegate and posts events from the
+     * interface-owned workloop. */
     void rtw88Event(RTW88Event event, void *data) override;
 
-    /* RTW88RxDelegate: receive mbufs enter a bounded workloop staging ring,
-     * then become pool-backed Skywalk packets. The sink still rejects them
-     * until the RX completion queue is registered and verified. */
+    /* RTW88RxDelegate: receive mbufs enter the native RX workloop adapter,
+     * become RX-pool Skywalk packets, and transfer to the network receive path
+     * only after interface registration is committed. */
     mbuf_t allocateInputPacket(uint32_t length) override;
     void injectRxFrame(mbuf_t packet) override;
     IOWorkLoop *getRxWorkLoop() override;
