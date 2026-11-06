@@ -715,29 +715,31 @@ static u32 __pci_get_hw_tx_ring_rp(struct rtw_dev *rtwdev, u8 pci_q)
 	return FIELD_GET(TRX_BD_IDX_MASK, bd_idx);
 }
 
-static void __pci_flush_queue(struct rtw_dev *rtwdev, u8 pci_q, bool drop)
+static bool __pci_flush_queue_sync(struct rtw_dev *rtwdev, u8 pci_q)
 {
 	struct rtw_pci *rtwpci = (struct rtw_pci *)rtwdev->priv;
 	struct rtw_pci_tx_ring *ring = &rtwpci->tx_rings[pci_q];
 	u32 cur_rp;
-	u8 i;
+	u32 i;
 
-	/* Because the time taked by the I/O in __pci_get_hw_tx_ring_rp is a
-	 * bit dynamic, it's hard to define a reasonable fixed total timeout to
-	 * use read_poll_timeout* helper. Instead, we can ensure a reasonable
-	 * polling times, so we just use for loop with udelay here.
-	 */
-	for (i = 0; i < 30; i++) {
+	/* Key CAM retirement is permitted only after every DMA descriptor
+	 * referencing the old key slot has left the PCI ring. */
+	for (i = 0; i < 2000; i++) {
 		cur_rp = __pci_get_hw_tx_ring_rp(rtwdev, pci_q);
 		if (cur_rp == ring->r.wp)
-			return;
-
+			return true;
 		udelay(1);
 	}
+	return false;
+}
 
+static void __pci_flush_queue(struct rtw_dev *rtwdev, u8 pci_q, bool drop)
+{
+	if (__pci_flush_queue_sync(rtwdev, pci_q))
+		return;
 	if (!drop)
 		rtw_dbg(rtwdev, RTW_DBG_UNEXP,
-			"timed out to flush pci tx ring[%d]\n", pci_q);
+			"timed out to flush pci tx ring[%d]\\n", pci_q);
 }
 
 static void __rtw_pci_flush_queues(struct rtw_dev *rtwdev, u32 pci_queues,
@@ -773,6 +775,34 @@ static void rtw_pci_flush_queues(struct rtw_dev *rtwdev, u32 queues, bool drop)
 	}
 
 	__rtw_pci_flush_queues(rtwdev, pci_queues, drop);
+}
+
+static bool rtw_pci_flush_queues_sync(struct rtw_dev *rtwdev, u32 queues, bool drop)
+{
+	u32 pci_queues = 0;
+	u8 i, q;
+
+	if (queues == BIT(rtwdev->hw->queues) - 1) {
+		pci_queues = BIT(RTK_MAX_TX_QUEUE_NUM) - 1;
+	} else {
+		for (i = 0; i < rtwdev->hw->queues; i++) {
+			if (queues & BIT(i))
+				pci_queues |= BIT(rtw_tx_ac_to_hwq(i));
+		}
+	}
+
+	for (q = 0; q < RTK_MAX_TX_QUEUE_NUM; q++) {
+		if (q == RTW_TX_QUEUE_BCN || q == RTW_TX_QUEUE_H2C ||
+		    q == RTW_TX_QUEUE_HI0)
+			continue;
+		if ((pci_queues & BIT(q)) && !__pci_flush_queue_sync(rtwdev, q)) {
+			if (!drop)
+				rtw_dbg(rtwdev, RTW_DBG_UNEXP,
+					"synchronous PCI TX drain failed queue[%d]\\n", q);
+			return false;
+		}
+	}
+	return true;
 }
 
 static void rtw_pci_tx_kick_off_queue(struct rtw_dev *rtwdev,
@@ -1670,6 +1700,7 @@ static const struct rtw_hci_ops rtw_pci_ops = {
 	.tx_write = rtw_pci_tx_write,
 	.tx_kick_off = rtw_pci_tx_kick_off,
 	.flush_queues = rtw_pci_flush_queues,
+	.flush_queues_sync = rtw_pci_flush_queues_sync,
 	.setup = rtw_pci_setup,
 	.start = rtw_pci_start,
 	.stop = rtw_pci_stop,
