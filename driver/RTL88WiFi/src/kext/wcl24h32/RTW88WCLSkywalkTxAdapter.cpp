@@ -315,6 +315,12 @@ bool RTW88WCLSkywalkTxAdapter::hasRetiredCompletionTokens() const
            !rtw88_mpsc_bounded_queue_empty(&_retiredCompletionTokens);
 }
 
+bool RTW88WCLSkywalkTxAdapter::hasBackendCompletionCallbacksInFlight() const
+{
+    return __atomic_load_n(&_backendCompletionCallbacksInFlight,
+                           __ATOMIC_ACQUIRE) != 0;
+}
+
 extern "C" void rtw88_wcl_defer_skb_tx_completion_token(
     void *context, void *token)
 {
