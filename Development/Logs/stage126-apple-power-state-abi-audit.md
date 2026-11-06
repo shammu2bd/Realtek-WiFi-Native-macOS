@@ -1,5 +1,7 @@
 # Stage126 — Apple 24H32 power-state ABI audit
 
+**Run location:** use the repository `main` branch and run `bash Development/stage126-apple-power-state-abi-audit.sh` from a clean checkout. The runner explicitly requires `main`; it does not require Stage125 branch ancestry because this stage inspects the extracted Apple binary only.
+
 **Scope:** read-only disassembly of Apple IO80211Family power-state methods on macOS 15.8.1 build 24H32 x86_64.
 
 Stage125 found that the native controller reports power through `isInterfaceEnabled()`, while the custom interface's `enable()` / `disable()` methods manipulate RTW88 radio and packet-path state. The ABI shim declares `setInterfaceEnable(bool)`. This stage collects target-kernel disassembly so the call/state semantics can be reviewed before any source change.
