@@ -25,7 +25,15 @@ void rtw_sec_write_cam(struct rtw_dev *rtwdev,
 		       struct ieee80211_key_conf *key,
 		       u8 hw_key_type, u8 hw_key_idx)
 {
-	struct rtw_cam_entry *cam = &sec->cam_table[hw_key_idx];
+	struct rtw_cam_entry *cam;
+
+	if (hw_key_idx >= RTW_MAX_SEC_CAM_NUM ||
+	    hw_key_idx >= sec->total_cam_num) {
+		rtw_warn(rtwdev, "refusing out-of-range CAM write index %u\\n",
+			 hw_key_idx);
+		return;
+	}
+	cam = &sec->cam_table[hw_key_idx];
 	u32 write_cmd;
 	u32 command;
 	u32 content;
@@ -83,7 +91,15 @@ void rtw_sec_clear_cam(struct rtw_dev *rtwdev,
 		       struct rtw_sec_desc *sec,
 		       u8 hw_key_idx)
 {
-	struct rtw_cam_entry *cam = &sec->cam_table[hw_key_idx];
+	struct rtw_cam_entry *cam;
+
+	if (hw_key_idx >= RTW_MAX_SEC_CAM_NUM ||
+	    hw_key_idx >= sec->total_cam_num) {
+		rtw_warn(rtwdev, "refusing out-of-range CAM clear index %u\\n",
+			 hw_key_idx);
+		return;
+	}
+	cam = &sec->cam_table[hw_key_idx];
 	u32 write_cmd;
 	u32 command;
 	u32 addr;
