@@ -13,6 +13,7 @@ PCI = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c"
 MAC = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c"
 MAC80211 = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c"
 HCI = ROOT / "driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h"
+COMPAT = ROOT / "driver/RTL88WiFi/src/compat/rtw88_compat.c"
 
 def read(path):
     if not path.is_file():
@@ -74,6 +75,7 @@ pci = read(PCI)
 mac = read(MAC)
 mac80211 = read(MAC80211)
 hci = read(HCI)
+compat = read(COMPAT)
 passed = []
 failed = []
 
@@ -186,12 +188,25 @@ check("CAM_CLEAR_REQUIRES_BOTH_DRAINS",
 clear_keys = function(cpp, "void RTW88IEEE80211::clearKeys()")
 release_sta = function(cpp, "void RTW88IEEE80211::releaseSta()")
 install_under = function(cpp, "bool RTW88IEEE80211::installKeyUnderMutation(")
+compat_unregister = function(compat, "bool rtw88_unregister_sta(")
+stop = function(cpp, "void RTW88IEEE80211::stop()")
 check("KEY_AND_STATION_WRITER_BARRIERS",
       "beginTxStateMutation()" in clear_keys and
       "beginTxStateMutation()" in release_sta and
       "mutation->ready()" in install_under and
       "installKeyUnderMutation" in cpp,
       "key clearing/replacement and station retirement wait for TX readers to drain")
+check("RX_STA_POLL_DRAIN_BEFORE_FREE",
+      "if (!quiesced)" in release_sta and
+      release_sta.find("if (!quiesced)") < release_sta.find("_hw->ops->sta_remove") <
+      release_sta.find("IOFree(_sta") and
+      "__atomic_load_n(&g_rtw88_rx_poll_active, __ATOMIC_SEQ_CST) == 0" in compat_unregister and
+      "g_rtw88_rx_poll_thread" in compat_unregister,
+      "station remove/free is forbidden until all RX poll readers acknowledge drain, including a retry after timeout")
+check("STOP_RETRIES_RX_STA_DRAIN_AFTER_CORE_STOP",
+      stop.find("powerOff();") < stop.find("clearKeys();", stop.find("powerOff();")) <
+      stop.find("while (_sta)") < stop.find("remove_interface"),
+      "stop retries retained station cleanup after core stop and before VIF/PCI destruction")
 check("REPLACEMENT_KEY_DRAIN_BEFORE_REUSE",
       install_under.find("DISABLE_KEY") < install_under.find("SET_KEY") and
       install_under.find("oldKey") < install_under.find("IOFree(oldKey") and
