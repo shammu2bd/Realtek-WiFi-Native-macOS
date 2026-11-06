@@ -60,14 +60,17 @@ def filtered_tokens(value):
     return [t for t in tokens if t.lower().startswith("amfi") or
             t.lower() == "-amfipassbeta" or t.lower().startswith("ipc_control_port_options")]
 
-def emit_block(title, value, max_lines=60):
+def emit_block(title, value, max_lines=60, max_chars=420):
     emit("----- " + title + " -----")
     if not value.strip():
         emit("(no matching output)")
     else:
-        for line in value.splitlines()[:max_lines]:
+        all_lines = value.splitlines()
+        for line in all_lines[:max_lines]:
+            if len(line) > max_chars:
+                line = line[:max_chars] + " ... [line truncated]"
             emit(line)
-        if len(value.splitlines()) > max_lines:
+        if len(all_lines) > max_lines:
             emit("... output truncated for report")
     emit("----- END " + title + " -----")
 
@@ -120,7 +123,7 @@ def main():
     emit("RUNNER_GIT_BLOB_SHA=" + actual_blob)
     emit("TARGET=" + os_version + " (" + build + ") " + arch)
     emit("SCOPE=READ_ONLY_AMFIPASS_OPENCORE_LIVE_KEXT_IOREGISTRY_WIFI_DIAGNOSTICS")
-    emit("BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN")
+    emit("BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_PERFORMED_BY_RUNNER MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN")
     mark("PASS", "Stage111 runner is SHA-pinned and Stage110 audit commit is an ancestor")
     if (os_version, build, arch) == ("15.8.1", "24H32", "x86_64"):
         mark("PASS", "host matches macOS Sequoia 15.8.1 build 24H32 x86_64")
@@ -316,11 +319,11 @@ def main():
     km_low = km_text.lower()
     runtime_amfipass = "FOUND" if "amfipass" in km_low else ("NOT_FOUND" if km_rc == 0 else "UNKNOWN")
     runtime_lilu = "FOUND" if "lilu" in km_low else ("NOT_FOUND" if km_rc == 0 else "UNKNOWN")
-    runtime_native = "FOUND_BY_BUNDLE_ID" if NATIVE_ID in km_low else ("NOT_FOUND" if km_rc == 0 else "UNKNOWN")
+    runtime_native_bundle = "AMBIGUOUS_SHARED_BUNDLE_ID" if NATIVE_ID in km_low else ("NOT_FOUND" if km_rc == 0 else "UNKNOWN")
     runtime_realtek = "FOUND" if ("rtl88wifi" in km_low or "airportrtw" in km_low or "rtw88" in km_low) else ("NOT_FOUND" if km_rc == 0 else "UNKNOWN")
     emit("STAGE111_AMFIPASS_RUNTIME_LOADED=" + runtime_amfipass)
     emit("STAGE111_LILU_RUNTIME_LOADED=" + runtime_lilu)
-    emit("STAGE111_NATIVE_BUNDLE_ID_RUNTIME_LOADED=" + runtime_native)
+    emit("STAGE111_NATIVE_BUNDLE_ID_RUNTIME_LOADED=" + runtime_native_bundle)
     emit("STAGE111_ANY_REALTEK_DRIVER_RUNTIME_LOADED=" + runtime_realtek)
     if runtime_amfipass == "FOUND":
         mark("PASS", "AMFIPass appears in the live loaded-kext inventory")
@@ -329,21 +332,73 @@ def main():
     else:
         mark("WARN", "loaded-kext inventory could not be interpreted")
 
-    # IORegistry observations are read-only and are not treated as a successful attach by themselves.
-    io_rc, io_text = run_cmd(["ioreg", "-p", "IOService", "-l", "-w0"], 45)
-    emit("IOREG_SERVICE_TREE_EXIT=" + str(io_rc))
-    io_matches = [x for x in io_text.splitlines() if re.search(r"RTL88WiFi|RTL8821|RTW88WCL|AirportRTW|10ec|c821", x, re.I)]
-    emit_block("REALTEK IOREGISTRY MATCHES", "\n".join(io_matches), 100)
-    native_ioreg = any(re.search(r"RTL88WiFiNative|RTW88WCL", x, re.I) for x in io_matches)
-    realtek_pci_hint = any(re.search(r"RTL8821|10ec|c821", x, re.I) for x in io_matches)
-    native_ioreg_state = "YES" if native_ioreg else ("NO_MATCH" if io_rc == 0 else "UNKNOWN")
-    realtek_pci_state = "YES" if realtek_pci_hint else ("NO_MATCH" if io_rc == 0 else "UNKNOWN")
-    emit("STAGE111_NATIVE_IOREGISTRY_SERVICE_MATCH=" + native_ioreg_state)
-    emit("STAGE111_REALTEK_PCI_IOREGISTRY_HINT=" + realtek_pci_state)
-    if io_rc == 0:
-        mark("PASS", "IORegistry read completed without altering device state")
+    # Query exact IORegistry classes. A shared bundle ID is never treated as native proof.
+    def query_ioreg_class(class_name, label):
+        rc, output = run_cmd(
+            ["ioreg", "-p", "IOService", "-r", "-c", class_name, "-l", "-w0"], 25)
+        matched = bool(rc == 0 and re.search(
+            r"<class\\s+" + re.escape(class_name) + r"(?:[,>])", output))
+        state = "MATCH" if matched else ("NO_MATCH" if rc == 0 else "UNKNOWN")
+        emit("IOREG_" + label + "_EXIT=" + str(rc))
+        emit_block(label + " CLASS QUERY", output, 24, 420)
+        emit("STAGE111_" + label + "_CLASS_MATCH=" + state)
+        return state, rc
+
+    native_controller_state, native_controller_rc = query_ioreg_class(
+        "RTW88WCLController", "NATIVE_CONTROLLER_IOREGISTRY")
+    native_interface_state, native_interface_rc = query_ioreg_class(
+        "RTW88WCLInfraInterface", "NATIVE_INFRA_INTERFACE_IOREGISTRY")
+    legacy_controller_state, legacy_controller_rc = query_ioreg_class(
+        "RTL88WiFi", "LEGACY_CONTROLLER_IOREGISTRY")
+    legacy_interface_state, legacy_interface_rc = query_ioreg_class(
+        "RTL88WiFiInterface", "LEGACY_INTERFACE_IOREGISTRY")
+
+    pci_rc, pci_text = run_cmd(
+        ["ioreg", "-p", "IOService", "-n", "pci10ec,c821", "-l", "-w0"], 25)
+    pci_lines = [line for line in pci_text.splitlines()
+                 if "pci10ec,c821" in line.lower() or
+                 re.search(r"<class\\s+IOPCIDevice", line)]
+    emit("IOREG_RTL8821CE_PCI_NODE_EXIT=" + str(pci_rc))
+    emit_block("RTL8821CE PCI NODE", "\\n".join(pci_lines), 16, 420)
+    realtek_pci_state = "YES" if pci_rc == 0 and any(
+        "pci10ec,c821" in line.lower() for line in pci_lines) else (
+        "NO_MATCH" if pci_rc == 0 else "UNKNOWN")
+
+    native_states = [native_controller_state, native_interface_state]
+    if native_states == ["MATCH", "MATCH"]:
+        native_ioreg_state = "BOTH_NATIVE_CLASSES_MATCH"
+    elif native_states == ["MATCH", "NO_MATCH"]:
+        native_ioreg_state = "CONTROLLER_ONLY"
+    elif native_states == ["NO_MATCH", "MATCH"]:
+        native_ioreg_state = "INFRA_INTERFACE_ONLY"
+    elif native_states == ["NO_MATCH", "NO_MATCH"]:
+        native_ioreg_state = "NO_NATIVE_CLASS_MATCH"
     else:
-        mark("WARN", "IORegistry query failed or timed out")
+        native_ioreg_state = "UNKNOWN"
+
+    legacy_states = [legacy_controller_state, legacy_interface_state]
+    if "MATCH" in legacy_states:
+        legacy_ioreg_state = "LEGACY_CLASS_MATCH"
+    elif legacy_states == ["NO_MATCH", "NO_MATCH"]:
+        legacy_ioreg_state = "NO_LEGACY_CLASS_MATCH"
+    else:
+        legacy_ioreg_state = "UNKNOWN"
+
+    emit("STAGE111_NATIVE_CONTROLLER_IOREGISTRY_CLASS=" + native_controller_state)
+    emit("STAGE111_NATIVE_INFRA_INTERFACE_IOREGISTRY_CLASS=" + native_interface_state)
+    emit("STAGE111_NATIVE_IOREGISTRY_SERVICE_MATCH=" + native_ioreg_state)
+    emit("STAGE111_LEGACY_CONTROLLER_IOREGISTRY_CLASS=" + legacy_controller_state)
+    emit("STAGE111_LEGACY_INTERFACE_IOREGISTRY_CLASS=" + legacy_interface_state)
+    emit("STAGE111_LEGACY_IOREGISTRY_FRONTEND_STATE=" + legacy_ioreg_state)
+    emit("STAGE111_REALTEK_PCI_IOREGISTRY_HINT=" + realtek_pci_state)
+
+    io_rc = 0 if all(rc == 0 for rc in [
+        native_controller_rc, native_interface_rc,
+        legacy_controller_rc, legacy_interface_rc, pci_rc]) else 1
+    if io_rc == 0:
+        mark("PASS", "targeted IORegistry class queries completed without altering device state")
+    else:
+        mark("WARN", "one or more targeted IORegistry class queries failed or timed out")
 
     # Wi-Fi inventory is supplementary; a generic Wi-Fi interface is not proof of RTL8821CE attachment.
     sp_rc, sp_text = run_cmd(["system_profiler", "SPAirPortDataType", "-detailLevel", "mini"], 45) if need_tool("system_profiler") else (127, "")
@@ -358,7 +413,7 @@ def main():
 
     # Recent diagnostic messages may explain AMFI, kext policy or attachment failures.
     log_predicate = 'eventMessage CONTAINS[c] "AMFIPass" OR eventMessage CONTAINS[c] "RTL88WiFi" OR eventMessage CONTAINS[c] "RTL8821" OR eventMessage CONTAINS[c] "RTW88"'
-    log_rc, log_text = run_cmd(["log", "show", "--last", "1d", "--style", "compact", "--predicate", log_predicate], 45) if need_tool("log") else (127, "")
+    log_rc, log_text = run_cmd(["log", "show", "--last", "6h", "--style", "compact", "--predicate", log_predicate], 45) if need_tool("log") else (127, "")
     emit("UNIFIED_LOG_QUERY_EXIT=" + str(log_rc))
     relevant_logs = [x for x in log_text.splitlines() if re.search(r"AMFIPass|RTL88WiFi|RTL8821|RTW88", x, re.I)]
     emit_block("RECENT AMFI / REALTEK LOG MATCHES", "\n".join(relevant_logs), 80)
@@ -391,9 +446,14 @@ def main():
     emit("STAGE111_LILU_AMFIPASS_ORDER=" + str(order_summary))
     emit("STAGE111_AMFIPASS_RUNTIME_LOADED=" + runtime_amfipass)
     emit("STAGE111_LILU_RUNTIME_LOADED=" + runtime_lilu)
-    emit("STAGE111_NATIVE_BUNDLE_ID_RUNTIME_LOADED=" + runtime_native)
+    emit("STAGE111_NATIVE_BUNDLE_ID_RUNTIME_LOADED=" + runtime_native_bundle)
     emit("STAGE111_ANY_REALTEK_DRIVER_RUNTIME_LOADED=" + runtime_realtek)
+    emit("STAGE111_NATIVE_CONTROLLER_IOREGISTRY_CLASS=" + native_controller_state)
+    emit("STAGE111_NATIVE_INFRA_INTERFACE_IOREGISTRY_CLASS=" + native_interface_state)
     emit("STAGE111_NATIVE_IOREGISTRY_SERVICE_MATCH=" + native_ioreg_state)
+    emit("STAGE111_LEGACY_CONTROLLER_IOREGISTRY_CLASS=" + legacy_controller_state)
+    emit("STAGE111_LEGACY_INTERFACE_IOREGISTRY_CLASS=" + legacy_interface_state)
+    emit("STAGE111_LEGACY_IOREGISTRY_FRONTEND_STATE=" + legacy_ioreg_state)
     emit("STAGE111_REALTEK_PCI_IOREGISTRY_HINT=" + realtek_pci_state)
     emit("STAGE111_LIVE_AMFI_OVERRIDE_TOKEN_PRESENT=" + str(live_amfi_override))
     emit("STAGE111_LIVE_AMFIPASS_BETA_FLAG_PRESENT=" + str("-amfipassbeta" in [x.lower() for x in live_tokens]))
@@ -416,14 +476,19 @@ def main():
         f.write("STAGE111_LILU_AMFIPASS_ORDER=" + str(order_summary) + "\n")
         f.write("STAGE111_AMFIPASS_RUNTIME_LOADED=" + runtime_amfipass + "\n")
         f.write("STAGE111_LILU_RUNTIME_LOADED=" + runtime_lilu + "\n")
-        f.write("STAGE111_NATIVE_BUNDLE_ID_RUNTIME_LOADED=" + runtime_native + "\n")
+        f.write("STAGE111_NATIVE_BUNDLE_ID_RUNTIME_LOADED=" + runtime_native_bundle + "\n")
         f.write("STAGE111_ANY_REALTEK_DRIVER_RUNTIME_LOADED=" + runtime_realtek + "\n")
+        f.write("STAGE111_NATIVE_CONTROLLER_IOREGISTRY_CLASS=" + native_controller_state + "\n")
+        f.write("STAGE111_NATIVE_INFRA_INTERFACE_IOREGISTRY_CLASS=" + native_interface_state + "\n")
         f.write("STAGE111_NATIVE_IOREGISTRY_SERVICE_MATCH=" + native_ioreg_state + "\n")
+        f.write("STAGE111_LEGACY_CONTROLLER_IOREGISTRY_CLASS=" + legacy_controller_state + "\n")
+        f.write("STAGE111_LEGACY_INTERFACE_IOREGISTRY_CLASS=" + legacy_interface_state + "\n")
+        f.write("STAGE111_LEGACY_IOREGISTRY_FRONTEND_STATE=" + legacy_ioreg_state + "\n")
         f.write("STAGE111_REALTEK_PCI_IOREGISTRY_HINT=" + realtek_pci_state + "\n")
         f.write("STAGE111_LIVE_AMFI_OVERRIDE_TOKEN_PRESENT=" + str(live_amfi_override) + "\n")
         f.write("STAGE111_SIP_STATE=" + sip + "\n")
         f.write("STAGE111_DETAIL_LOG=" + str(log_path) + "\n")
-        f.write("BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN\n")
+        f.write("BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD_UNLOAD=NOT_PERFORMED_BY_RUNNER MOUNT=NOT_RUN EFI_WRITE=NONE SIP_CHANGE=NONE NVRAM_CHANGE=NONE HARDWARE_TEST=NOT_RUN\n")
         f.write("STAGE111_NATIVE_ACTIVATION=" + activation + "\n")
         f.write("STAGE111_PR4_MERGE=BLOCKED\n")
         f.write("============================================================\n")
