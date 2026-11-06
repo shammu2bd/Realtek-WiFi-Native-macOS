@@ -7,6 +7,11 @@
 #include <IOKit/IOLib.h>
 #include <libkern/c++/OSMetaClass.h>
 
+extern "C" void rtw88_set_skb_tx_completion_token_releaser(
+    void (*hook)(void *context, void *token));
+extern "C" void rtw88_wcl_defer_skb_tx_completion_token(
+    void *context, void *token);
+
 #define super IOEventSource
 OSDefineMetaClassAndStructors(RTW88WCLTxCompletionWorkQueue, IOEventSource)
 
@@ -51,6 +56,12 @@ bool RTW88WCLTxCompletionWorkQueue::init(
             &RTW88WCLTxCompletionWorkQueue::completionNotifier,
             this) != kIOReturnSuccess)
         goto fail;
+
+    /* Install the WCL-only retire hook after the worker is ready but before
+     * any native TX queue can accept a packet. The shared radio object remains
+     * linkable in the legacy Airport build without this WCL implementation. */
+    rtw88_set_skb_tx_completion_token_releaser(
+        &rtw88_wcl_defer_skb_tx_completion_token);
 
     /* Cover a terminal callback that raced setup before the notifier was
      * installed. No packet can be submitted until queue activation, but this
@@ -106,6 +117,7 @@ IOReturn RTW88WCLTxCompletionWorkQueue::stop()
         _tokenReapCall = nullptr;
     }
     __atomic_store_n(&_tokenReapState, 0U, __ATOMIC_RELEASE);
+    rtw88_set_skb_tx_completion_token_releaser(nullptr);
 
     if (_completionQueue) {
         _completionQueue->release();
