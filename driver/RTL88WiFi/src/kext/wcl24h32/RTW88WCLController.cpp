@@ -308,7 +308,7 @@ IOReturn RTW88WCLController::releaseNativeResources()
     if (_txCompletionWorker) {
         const IOReturn workerStopStatus = _txCompletionWorker->stop();
         if (workerStopStatus != kIOReturnSuccess) {
-            IOLog("rtl88wifi-wcl: completion worker stop deferred: 0x%08x\\n",
+            IOLog("rtl88wifi-wcl: completion worker stop deferred: 0x%08x\n",
                   workerStopStatus);
             return workerStopStatus;
         }
