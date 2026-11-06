@@ -855,9 +855,9 @@ bool RTW88IEEE80211::installKeyUnderMutation(
         return true;
     }
 
-    /* Stage and program the candidate before retiring the working key. A
-     * failed SET_KEY leaves the previous software/hardware key object intact.
-     * The writer lease excludes every WMM submitter during this handoff. */
+    /* Allocate the replacement first so allocation failure never retires the
+     * working key. A rekey then disables/drains the old CAM slot before the
+     * replacement is programmed into the newly free slot. */
     struct ieee80211_key_conf *key =
         (struct ieee80211_key_conf *)IOMallocZero(sizeof(*key));
     if (!key)
@@ -871,26 +871,46 @@ bool RTW88IEEE80211::installKeyUnderMutation(
     key->icv_len = (cipher == WLAN_CIPHER_SUITE_TKIP) ? 4 : 8;
     memcpy(key->key, tk, tk_len);
 
-    int ret = _hw->ops->set_key(_hw, SET_KEY, _vif,
-                                pairwise ? _sta : nullptr, key);
-    if (ret) {
-        IOLog("rtw88: failed to install %s %s key ret=%d; previous key retained\n",
-              pairwise ? "pairwise" : "group", rtw88CipherName(cipher), ret);
-        IOFree(key, sizeof(*key));
-        return false;
+    if (oldKey) {
+        /* DISABLE_KEY is fail-closed: it returns ETIMEDOUT unless both the PCI
+         * DMA rings and firmware priority pages explicitly report drained.
+         * If that barrier fails, the old CAM entry and object remain intact. */
+        const int disableRet = _hw->ops->set_key(
+            _hw, DISABLE_KEY, _vif, pairwise ? _sta : nullptr, oldKey);
+        if (disableRet) {
+            IOLog("rtw88: retaining old %s key: TX drain/CAM disable failed ret=%d hw_idx=%u\n",
+                  pairwise ? "PTK" : "GTK", disableRet, oldKey->hw_key_idx);
+            IOFree(key, sizeof(*key));
+            return false;
+        }
     }
 
-    /* Only disable the old hardware slot when the new key was assigned a
-     * distinct slot. DISABLE_KEY on a reused index would disable the new key. */
-    if (oldKey &&
-        (oldKey->keyidx != key->keyidx ||
-         oldKey->hw_key_idx != key->hw_key_idx)) {
-        int disableRet = _hw->ops->set_key(
-            _hw, DISABLE_KEY, _vif, pairwise ? _sta : nullptr, oldKey);
-        if (disableRet)
-            IOLog("rtw88: old %s key slot disable failed ret=%d old_hw_idx=%u new_hw_idx=%u\n",
-                  pairwise ? "PTK" : "GTK", disableRet,
-                  oldKey->hw_key_idx, key->hw_key_idx);
+    const int installRet = _hw->ops->set_key(
+        _hw, SET_KEY, _vif, pairwise ? _sta : nullptr, key);
+    if (installRet) {
+        IOLog("rtw88: replacement %s key install failed ret=%d; attempting old-key restore\n",
+              pairwise ? "PTK" : "GTK", installRet);
+
+        bool restored = false;
+        if (oldKey) {
+            const int restoreRet = _hw->ops->set_key(
+                _hw, SET_KEY, _vif, pairwise ? _sta : nullptr, oldKey);
+            restored = (restoreRet == 0);
+            if (!restored)
+                IOLog("rtw88: CRITICAL old %s key restore failed ret=%d; data port forced closed\n",
+                      pairwise ? "PTK" : "GTK", restoreRet);
+        }
+
+        IOFree(key, sizeof(*key));
+        if (oldKey && !restored) {
+            *slot = nullptr;
+            IOFree(oldKey, sizeof(*oldKey));
+            __atomic_store_n(&_dataTxBlocked, true, __ATOMIC_RELEASE);
+            __atomic_store_n(&_externalPTKInstalled, false, __ATOMIC_RELEASE);
+            __atomic_store_n(&_externalGTKInstalled, false, __ATOMIC_RELEASE);
+            __atomic_store_n(&_m3KeysInstalled, false, __ATOMIC_RELEASE);
+        }
+        return false;
     }
 
     *slot = key;
