@@ -109,10 +109,10 @@ check("TX_BA_MEMBER_NAME_MATCHES_DECLARATION",
 deauth = block(IEEE, "void RTW88IEEE80211::processRxMgmt(")
 rx_data = block(IEEE, "void RTW88IEEE80211::processRxData(")
 check("DEAUTH_SCAN_PREDICATE_IS_CLOSED",
-      "__atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);\\n            clearKeys();" in deauth,
+      deauth.find("__atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);") < deauth.find("clearKeys();"),
       "connected-scan deauth predicate closes before key teardown")
 check("RX_DATA_CONNECTED_PREDICATE_IS_CLOSED",
-      "__atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);\\n    if (!connected)" in rx_data,
+      rx_data.find("__atomic_load_n(&_scanReturnState, __ATOMIC_ACQUIRE) == RTW88_STATE_CONNECTED);") < rx_data.find("if (!connected)"),
       "RX data state predicate closes before interface/BSSID filtering")
 m3 = block(IEEE, "if (is_m3) {")
 gtk_decls = m3.find("uint8_t gtk_len = 0;")
