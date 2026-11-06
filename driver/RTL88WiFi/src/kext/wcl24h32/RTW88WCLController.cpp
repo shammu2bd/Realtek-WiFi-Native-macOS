@@ -181,8 +181,14 @@ bool RTW88WCLController::start(IOService *provider)
         !_txCompletionWorker->init(this, _workLoop, _txAdapter,
                                    _skywalkQueues->txCompletionQueue())) {
         if (_txCompletionWorker) {
-            _txCompletionWorker->release();
-            _txCompletionWorker = nullptr;
+            const IOReturn workerStopStatus = _txCompletionWorker->stop();
+            if (workerStopStatus == kIOReturnSuccess) {
+                _txCompletionWorker->release();
+                _txCompletionWorker = nullptr;
+            } else {
+                IOLog("rtl88wifi-wcl: partial TX completion worker cleanup deferred: 0x%08x\\n",
+                      workerStopStatus);
+            }
         }
         IOLog("rtl88wifi-wcl: TX completion worker initialization failed\n");
         goto fail;
@@ -300,7 +306,12 @@ IOReturn RTW88WCLController::releaseNativeResources()
      * synchronous completion queue. Remove the notifier/event source only
      * after that proof, while the queue owner is still retained. */
     if (_txCompletionWorker) {
-        _txCompletionWorker->stop();
+        const IOReturn workerStopStatus = _txCompletionWorker->stop();
+        if (workerStopStatus != kIOReturnSuccess) {
+            IOLog("rtl88wifi-wcl: completion worker stop deferred: 0x%08x\\n",
+                  workerStopStatus);
+            return workerStopStatus;
+        }
         _txCompletionWorker->release();
         _txCompletionWorker = nullptr;
     }
