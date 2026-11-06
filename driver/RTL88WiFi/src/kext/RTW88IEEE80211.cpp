@@ -558,7 +558,10 @@ void RTW88IEEE80211::compat_tx_status(void *kext_hw, struct sk_buff *skb)
 {
     RTW88IEEE80211 *self = (RTW88IEEE80211 *)kext_hw;
     if (self) self->txStatus(skb);
-    kfree_skb(skb);
+    /* Synchronous producer may hold PCI IRQ or firmware TX-report locks.
+     * Transfer ownership to generic compat reaper; never free here.
+     */
+    (void)rtw88_defer_skb_free(skb);
 }
 
 void RTW88IEEE80211::compat_scan_done(void *kext_hw, bool aborted)
@@ -2675,54 +2678,15 @@ void RTW88IEEE80211::reorderTimerFired(OSObject *owner, IOTimerEventSource *)
 
 void RTW88IEEE80211::txStatus(struct sk_buff *skb)
 {
+    if (!skb) return;
     struct ieee80211_tx_info *info = IEEE80211_SKB_CB(skb);
     const bool transmitted =
         (info->flags & (IEEE80211_TX_STAT_ACK |
                         IEEE80211_TX_STAT_NOACK_TRANSMITTED)) != 0;
+    /* Keep this synchronous locked callback free of IOLog/diagnostic-ring
+     * work. Completion is an atomic one-shot token publication.
+     */
     rtw88_skb_tx_completion_report(&skb->tx_completion, transmitted);
-    if (!(info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS))
-        return;
-
-    const char *frameName = "frame";
-    if (skb->len >= sizeof(struct ieee80211_hdr_3addr)) {
-        struct ieee80211_hdr *hdr = (struct ieee80211_hdr *)skb->data;
-        uint16_t fc = le16_to_cpu(hdr->frame_control);
-
-        if ((fc & IEEE80211_FCTL_FTYPE) == IEEE80211_FTYPE_MGMT) {
-            switch (fc & IEEE80211_FCTL_STYPE) {
-            case IEEE80211_STYPE_AUTH:       frameName = "authentication"; break;
-            case IEEE80211_STYPE_ASSOC_REQ:  frameName = "association request"; break;
-            case IEEE80211_STYPE_DEAUTH:     frameName = "deauthentication"; break;
-            case IEEE80211_STYPE_ACTION:     frameName = "action"; break;
-            default:                         frameName = "management"; break;
-            }
-        } else if ((fc & IEEE80211_FCTL_FTYPE) == IEEE80211_FTYPE_DATA) {
-            uint16_t hdrlen = ieee80211_get_hdrlen_from_skb(skb);
-            if (skb->len >= hdrlen + 8) {
-                const uint8_t *llc = skb->data + hdrlen;
-                uint16_t ethertype = (uint16_t)((llc[6] << 8) | llc[7]);
-                if (llc[0] == 0xaa && llc[1] == 0xaa && llc[2] == 0x03 &&
-                    ethertype == ETH_P_PAE && skb->len >= hdrlen + 8 + 99) {
-                    /* Pairwise M2 carries the RSN IE; M4 has no key data. The
-                     * Secure bit cannot distinguish them during a rekey. */
-                    const uint8_t *eapol = llc + 8;
-                    uint16_t keyDataLen = (uint16_t)((eapol[97] << 8) | eapol[98]);
-                    uint16_t keyInfo = (uint16_t)((eapol[5] << 8) | eapol[6]);
-                    frameName = !(keyInfo & 0x0008) ? "EAPOL group M2" :
-                                keyDataLen ? "EAPOL M2" : "EAPOL M4";
-                } else if (fc & IEEE80211_FCTL_PROTECTED) {
-                    /* Only management and EAPOL request status, so a protected
-                     * data frame here is an encrypted EAPOL during rekey. */
-                    frameName = "protected EAPOL";
-                } else {
-                    frameName = "data";
-                }
-            }
-        }
-    }
-
-    IOLog("rtw88: TX status %s: %s\n", frameName,
-          (info->flags & IEEE80211_TX_STAT_ACK) ? "ACK" : "NO ACK");
 }
 
 /*
