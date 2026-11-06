@@ -1,0 +1,410 @@
+========== STAGE159 APPLE PCIE WORKQUEUE LIFECYCLE CONFIRMATION ==========
+STAGE159_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE159_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE159_WORKTREE_STATUS_ENTRIES=198
+STAGE159_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE159_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE159_STAGE158_REPORT_SHA=f7d153bca56a1552160e46c4c61b3214b1670fda
+STAGE159_SCOPE=READ_ONLY_QUEUE_FACTORY_CREATION_RETENTION_AND_RELEASE_CORRELATION
+STAGE159_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE159_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+FILESSET_CARVE=PASS OWNER=com.apple.iokit.IO80211Family
+FILESSET_CARVE=PASS OWNER=com.apple.driver.AppleBCMWLANCoreMac
+FILESSET_CARVE=PASS OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+
+TARGET_SYMBOL TAG=PCIE_START NAME=__ZN28AppleBCMWLANBusInterfacePCIe5startEP9IOService ADDRESS=0xffffff80014eac42 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+
+METHOD_TAG=PCIE_START SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe5startEP9IOService ADDRESS=0xffffff80014eac42 END=0xffffff80014ec9f0 INSTRUCTIONS=1675
+ffffff80014eac42	pushq	%rbp
+ffffff80014eac43	movq	%rsp, %rbp
+ffffff80014eac46	pushq	%r15
+ffffff80014eac48	pushq	%r14
+ffffff80014eac4a	pushq	%r12
+ffffff80014eac4c	pushq	%rbx
+ffffff80014eac4d	subq	$0x20, %rsp
+ffffff80014eac51	movq	%rsi, %r14
+ffffff80014eac54	movq	%rdi, %rbx
+ffffff80014eac57	movq	0x52552(%rip), %rax
+ffffff80014eac5e	movq	(%rax), %rax
+ffffff80014eac61	movq	%rax, -0x28(%rbp)
+ffffff80014eac65	movl	$0x1, %esi
+ffffff80014eac6a	movl	$0x3, %edx
+ffffff80014eac6f	callq	0xffffff800158ddea
+ffffff80014eac74	callq	0xffffff8002258fcc
+ffffff80014eac79	movq	0x90(%rbx), %rcx
+ffffff80014eac80	movq	%rax, 0xdd0(%rcx)
+ffffff80014eac87	testq	%rax, %rax
+ffffff80014eac8a	je	0xffffff80014eae00
+CONTROL_FLOW=0xffffff80014eac8a je	0xffffff80014eae00
+ffffff80014eac90	movq	0x524d1(%rip), %rax
+ffffff80014eac97	movq	%rbx, %rdi
+ffffff80014eac9a	movq	%r14, %rsi
+ffffff80014eac9d	callq	*0x5d0(%rax)
+ffffff80014eaca3	testb	%al, %al
+ffffff80014eaca5	je	0xffffff80014eae15
+CONTROL_FLOW=0xffffff80014eaca5 je	0xffffff80014eae15
+ffffff80014eacab	movq	(%r14), %rax
+ffffff80014eacae	movq	%r14, %rdi
+ffffff80014eacb1	movq	%rbx, %rsi
+ffffff80014eacb4	xorl	%edx, %edx
+ffffff80014eacb6	xorl	%ecx, %ecx
+ffffff80014eacb8	callq	*0x5d0(%rax)
+ffffff80014eacbe	testb	%al, %al
+ffffff80014eacc0	je	0xffffff80014eae26
+CONTROL_FLOW=0xffffff80014eacc0 je	0xffffff80014eae26
+ffffff80014eacc6	leaq	-0x2c(%rbp), %rsi
+ffffff80014eacca	movl	$0x1, (%rsi)
+ffffff80014eacd0	movq	0x90(%rbx), %rax
+ffffff80014eacd7	movb	$0x1, %cl
+ffffff80014eacd9	movb	%cl, 0x14c2(%rax)
+ffffff80014eacdf	movb	%cl, 0xcc4(%rax)
+ffffff80014eace5	leaq	0x42bff(%rip), %rdi             ## literal pool for: "wlan.pcie.useOLYHALDriver"
+ffffff80014eacec	movl	$0x4, %edx
+ffffff80014eacf1	callq	0xffffff8000b92970
+ffffff80014eacf6	testl	%eax, %eax
+ffffff80014eacf8	je	0xffffff80014ead24
+CONTROL_FLOW=0xffffff80014eacf8 je	0xffffff80014ead24
+ffffff80014eacfa	movq	%rbx, %rdi
+ffffff80014eacfd	callq	0xffffff800158c46a
+ffffff80014ead02	testq	%rax, %rax
+ffffff80014ead05	je	0xffffff80014ead24
+CONTROL_FLOW=0xffffff80014ead05 je	0xffffff80014ead24
+ffffff80014ead07	movq	%rbx, %rdi
+ffffff80014ead0a	callq	0xffffff800158c46a
+ffffff80014ead0f	movq	%rax, %rdi
+ffffff80014ead12	movl	$0x5, %esi
+ffffff80014ead17	callq	0xffffff80031d421c
+ffffff80014ead1c	testb	%al, %al
+ffffff80014ead1e	jne	0xffffff80014ec347
+CONTROL_FLOW=0xffffff80014ead1e jne	0xffffff80014ec347
+ffffff80014ebd01	movq	%rax, %rsi
+ffffff80014ebd04	callq	0xffffff8002145b16
+ffffff80014ebd09	movq	0x90(%rbx), %rcx
+ffffff80014ebd10	movq	%rax, 0x1068(%rcx)
+ffffff80014ebd17	movq	(%rax), %rcx
+ffffff80014ebd1a	movq	%rax, %rdi
+ffffff80014ebd1d	callq	*0x150(%rcx)
+ffffff80014ebd23	movq	0x90(%rbx), %rax
+ffffff80014ebd2a	movq	0xdd0(%rax), %rsi
+ffffff80014ebd31	movq	%rbx, %rdi
+ffffff80014ebd34	callq	0xffffff80021472cc
+ffffff80014ebd39	movq	0x90(%rbx), %rcx
+ffffff80014ebd40	movq	%rax, 0xdd8(%rcx)
+ffffff80014ebd47	testq	%rax, %rax
+ffffff80014ebd4a	je	0xffffff80014ebeaf
+CONTROL_FLOW=0xffffff80014ebd4a je	0xffffff80014ebeaf
+ffffff80014ebd50	leaq	0x5e0(%rcx), %rax
+ffffff80014ebd57	movq	%rax, 0x5e0(%rcx)
+ffffff80014ebd5e	movq	%rax, 0x5e8(%rcx)
+ffffff80014ebd65	callq	0xffffff8000ab6e70
+ffffff80014ebd6a	movq	0x90(%rbx), %rcx
+ffffff80014ebd71	movq	%rax, 0xb10(%rcx)
+ffffff80014ebd78	testq	%rax, %rax
+ffffff80014ebd7b	je	0xffffff80014ebf2d
+CONTROL_FLOW=0xffffff80014ebd7b je	0xffffff80014ebf2d
+ffffff80014ebd81	leaq	__ZN28AppleBCMWLANBusInterfacePCIe21pciePortErrorDispatchEP22IOInterruptEventSourcei(%rip), %rsi ## AppleBCMWLANBusInterfacePCIe::pciePortErrorDispatch(IOInterruptEventSource*, int)
+ffffff80014ebd88	movq	%rbx, %rdi
+ffffff80014ebd8b	xorl	%edx, %edx
+ffffff80014ebd8d	xorl	%ecx, %ecx
+ffffff80014ebd8f	callq	0xffffff8000afc410
+ffffff80014ebd94	movq	0x90(%rbx), %rcx
+ffffff80014ebd9b	movq	%rax, 0x808(%rcx)
+ffffff80014ebda2	movq	0xdd0(%rcx), %rdi
+ffffff80014ebda9	movq	(%rdi), %rcx
+ffffff80014ebdac	movq	%rax, %rsi
+ffffff80014ebdaf	callq	*0x140(%rcx)
+ffffff80014ebdb5	movq	0x90(%rbx), %rax
+ffffff80014ebdbc	movq	0x808(%rax), %rdi
+ffffff80014ebdc3	movq	(%rdi), %rax
+ffffff80014ebdc6	callq	*0x150(%rax)
+ffffff80014ebdcc	movq	%rbx, %rdi
+ffffff80014ebdcf	callq	__ZN28AppleBCMWLANBusInterfacePCIe17initMRUFlowIdListEv ## AppleBCMWLANBusInterfacePCIe::initMRUFlowIdList()
+ffffff80014ebdd4	leaq	__ZN28AppleBCMWLANBusInterfacePCIe13attachPCIeBusEP11IOPCIDevice(%rip), %rsi ## AppleBCMWLANBusInterfacePCIe::attachPCIeBus(IOPCIDevice*)
+ffffff80014ebddb	leaq	__ZN28AppleBCMWLANBusInterfacePCIe19linkdownDetachGatedEP11IOPCIDevice(%rip), %rdx ## AppleBCMWLANBusInterfacePCIe::linkdownDetachGated(IOPCIDevice*)
+ffffff80014ebde2	movq	%rbx, %rdi
+ffffff80014ebde5	callq	__ZN37AppleBCMWLANPCIeLinkChangeEventSource13withCallbacksEP8OSObjectPFiS1_P11IOPCIDeviceES5_ ## AppleBCMWLANPCIeLinkChangeEventSource::withCallbacks(OSObject*, int (*)(OSObject*, IOPCIDevice*), int (*)(OSObject*, IOPCIDevice*))
+ffffff80014ebdea	movq	0x90(%rbx), %rcx
+ffffff80014ebdf1	movq	%rax, 0xcd8(%rcx)
+ffffff80014ebdf8	testq	%rax, %rax
+ffffff80014ebdfb	je	0xffffff80014ebf69
+CONTROL_FLOW=0xffffff80014ebdfb je	0xffffff80014ebf69
+ffffff80014ebe01	movq	0xdd0(%rcx), %rdi
+ffffff80014ebe08	movq	(%rdi), %rcx
+ffffff80014ebe0b	movq	%rax, %rsi
+ffffff80014ebe0e	callq	*0x140(%rcx)
+ffffff80014ebe14	callq	0xffffff80022c466e
+ffffff80014ebe19	movq	0x90(%rbx), %rcx
+ffffff80014ebe20	movq	%rax, 0x520(%rcx)
+ffffff80014ebe27	testq	%rax, %rax
+ffffff80014ebe2a	je	0xffffff80014ebfa5
+CONTROL_FLOW=0xffffff80014ebe2a je	0xffffff80014ebfa5
+ffffff80014ebe30	movq	(%rbx), %rax
+
+TARGET_SYMBOL TAG=PCIE_FREE_RESOURCES NAME=__ZN28AppleBCMWLANBusInterfacePCIe13freeResourcesEv ADDRESS=0xffffff80014f5ec8 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+
+METHOD_TAG=PCIE_FREE_RESOURCES SYMBOL=__ZN28AppleBCMWLANBusInterfacePCIe13freeResourcesEv ADDRESS=0xffffff80014f5ec8 END=0xffffff80014f6ad8 INSTRUCTIONS=635
+ffffff80014f69a7	movq	0xdd8(%rax), %rdi
+ffffff80014f69ae	testq	%rdi, %rdi
+ffffff80014f69b1	je	0xffffff80014f69c0
+CONTROL_FLOW=0xffffff80014f69b1 je	0xffffff80014f69c0
+ffffff80014f69b3	movq	(%rdi), %rax
+ffffff80014f69b6	callq	*0x28(%rax)
+ffffff80014f69b9	movq	0x90(%rbx), %rax
+ffffff80014f69c0	movq	$0x0, 0xdd8(%rax)
+ffffff80014f69cb	movq	0xdd0(%rax), %rdi
+ffffff80014f69d2	testq	%rdi, %rdi
+ffffff80014f69d5	je	0xffffff80014f69e4
+CONTROL_FLOW=0xffffff80014f69d5 je	0xffffff80014f69e4
+ffffff80014f69d7	movq	(%rdi), %rax
+ffffff80014f69da	callq	*0x28(%rax)
+ffffff80014f69dd	movq	0x90(%rbx), %rax
+ffffff80014f69e4	movq	$0x0, 0xdd0(%rax)
+ffffff80014f69ef	movq	0x1068(%rax), %rdi
+ffffff80014f69f6	testq	%rdi, %rdi
+ffffff80014f69f9	je	0xffffff80014f6a2f
+CONTROL_FLOW=0xffffff80014f69f9 je	0xffffff80014f6a2f
+ffffff80014f69fb	movq	(%rdi), %rax
+ffffff80014f69fe	callq	*0x158(%rax)
+ffffff80014f6a04	movq	0x90(%rbx), %rax
+ffffff80014f6a0b	movq	0x1068(%rax), %rdi
+
+TARGET_SYMBOL TAG=PCIE_QUEUE_GETTER NAME=__ZNK28AppleBCMWLANBusInterfacePCIe12getWorkQueueEv ADDRESS=0xffffff80014f75ac OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+
+METHOD_TAG=PCIE_QUEUE_GETTER SYMBOL=__ZNK28AppleBCMWLANBusInterfacePCIe12getWorkQueueEv ADDRESS=0xffffff80014f75ac END=0xffffff80014f75c0 INSTRUCTIONS=6
+ffffff80014f75ac	pushq	%rbp
+ffffff80014f75ad	movq	%rsp, %rbp
+ffffff80014f75b0	movq	0x90(%rdi), %rax
+ffffff80014f75b7	movq	0xdd0(%rax), %rax
+ffffff80014f75be	popq	%rbp
+ffffff80014f75bf	retq
+
+TARGET_SYMBOL TAG=BUS_NEED_QUEUE_BASE NAME=__ZN24AppleBCMWLANBusInterfacePCIe13needWorkQueueEv ADDRESS=NOT_FOUND OWNER=UNKNOWN
+
+TARGET_SYMBOL TAG=BUS_GET_QUEUE_BASE NAME=__ZNK24AppleBCMWLANBusInterface12getWorkQueueEv ADDRESS=0xffffff800158e5ec OWNER=com.apple.driver.AppleBCMWLANCoreMac
+
+METHOD_TAG=BUS_GET_QUEUE_BASE SYMBOL=__ZNK24AppleBCMWLANBusInterface12getWorkQueueEv ADDRESS=0xffffff800158e5ec END=0xffffff800158e5f4 INSTRUCTIONS=5
+ffffff800158e5ec	pushq	%rbp
+ffffff800158e5ed	movq	%rsp, %rbp
+ffffff800158e5f0	xorl	%eax, %eax
+ffffff800158e5f2	popq	%rbp
+ffffff800158e5f3	retq
+
+TARGET_SYMBOL TAG=IO80211_WORKQUEUE_FACTORY NAME=__ZN16IO80211WorkQueue9workQueueEv ADDRESS=0xffffff8002258fcc OWNER=com.apple.iokit.IO80211Family
+
+METHOD_TAG=IO80211_WORKQUEUE_FACTORY SYMBOL=__ZN16IO80211WorkQueue9workQueueEv ADDRESS=0xffffff8002258fcc END=0xffffff8002259042 INSTRUCTIONS=35
+ffffff8002258fcc	pushq	%rbp
+ffffff8002258fcd	movq	%rsp, %rbp
+ffffff8002258fd0	pushq	%r14
+ffffff8002258fd2	pushq	%rbx
+ffffff8002258fd3	leaq	__ZL20IO80211WorkQueue_ktv(%rip), %rdi ## IO80211WorkQueue_ktv
+ffffff8002258fda	movl	$0x50, %esi
+ffffff8002258fdf	callq	0xffffff8000a4be90
+ffffff8002258fe4	movq	%rax, %rbx
+ffffff8002258fe7	leaq	__ZN16IO80211WorkQueue10gMetaClassE(%rip), %r14 ## IO80211WorkQueue::gMetaClass
+ffffff8002258fee	movq	%rax, %rdi
+ffffff8002258ff1	movq	%r14, %rsi
+ffffff8002258ff4	callq	0xffffff8000afa3e0
+ffffff8002258ff9	leaq	0x17acc0(%rip), %rax
+ffffff8002259000	movq	%rax, (%rbx)
+ffffff8002259003	movq	%r14, %rdi
+ffffff8002259006	callq	0xffffff8000a4a700
+ffffff800225900b	movq	(%rbx), %rax
+ffffff800225900e	movq	%rbx, %rdi
+ffffff8002259011	callq	*0x88(%rax)
+ffffff8002259017	testb	%al, %al
+ffffff800225901b	cmpq	$0x0, __ZL23IO80211DefaultWorkQueue(%rip) ## IO80211DefaultWorkQueue
+ffffff8002259025	movq	%rbx, __ZL23IO80211DefaultWorkQueue(%rip) ## IO80211DefaultWorkQueue
+ffffff800225902c	jmp	0xffffff8002259039
+CONTROL_FLOW=0xffffff800225902c jmp	0xffffff8002259039
+ffffff8002259034	callq	*0x28(%rax)
+ffffff8002259040	retq
+
+TARGET_SYMBOL TAG=CONTROLLER_POSTOFFICE_FACTORY NAME=__ZN17IO80211Controller16CreatePostOfficeEv ADDRESS=0xffffff800222b53e OWNER=com.apple.iokit.IO80211Family
+
+METHOD_TAG=CONTROLLER_POSTOFFICE_FACTORY SYMBOL=__ZN17IO80211Controller16CreatePostOfficeEv ADDRESS=0xffffff800222b53e END=0xffffff800222b554 INSTRUCTIONS=7
+ffffff800222b53e	pushq	%rbp
+ffffff800222b53f	movq	%rsp, %rbp
+ffffff800222b542	movq	(%rdi), %rax
+ffffff800222b545	callq	*0xc68(%rax)
+ffffff800222b54b	movq	%rax, %rdi
+ffffff800222b54e	popq	%rbp
+ffffff800222b54f	jmp	__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue ## IO80211PostOffice::allocWithParams(IO80211WorkQueue*)
+CONTROL_FLOW=0xffffff800222b54f jmp	__ZN17IO80211PostOffice15allocWithParamsEP16IO80211WorkQueue ## IO80211PostOffice::allocWithParams(IO80211WorkQueue*)
+
+TARGET_SYMBOL TAG=CONTROLLER_FREE NAME=__ZN17IO80211Controller4freeEv ADDRESS=0xffffff80022239f8 OWNER=com.apple.iokit.IO80211Family
+
+METHOD_TAG=CONTROLLER_FREE SYMBOL=__ZN17IO80211Controller4freeEv ADDRESS=0xffffff80022239f8 END=0xffffff8002223c02 INSTRUCTIONS=116
+ffffff80022239f8	pushq	%rbp
+ffffff80022239f9	movq	%rsp, %rbp
+ffffff80022239fc	pushq	%r15
+ffffff80022239fe	pushq	%r14
+ffffff8002223a00	pushq	%r12
+ffffff8002223a02	pushq	%rbx
+ffffff8002223a03	movq	%rdi, %rbx
+ffffff8002223a06	leaq	0x147a6a(%rip), %rdi            ## literal pool for: "IO80211Controller::free start \n"
+ffffff8002223a0d	xorl	%eax, %eax
+ffffff8002223a0f	callq	0xffffff8000ab6560
+ffffff8002223a14	movq	0x120(%rbx), %rcx
+ffffff8002223a1b	testq	%rcx, %rcx
+ffffff8002223a1e	je	0xffffff8002223bd1
+CONTROL_FLOW=0xffffff8002223a1e je	0xffffff8002223bd1
+ffffff8002223a24	movq	0x3b8(%rcx), %rdi
+ffffff8002223a2b	testq	%rdi, %rdi
+ffffff8002223a2e	je	0xffffff8002223a3d
+CONTROL_FLOW=0xffffff8002223a2e je	0xffffff8002223a3d
+ffffff8002223a30	movq	(%rdi), %rax
+ffffff8002223a33	callq	*0x28(%rax)
+ffffff8002223a36	movq	0x120(%rbx), %rcx
+ffffff8002223a3d	movq	$0x0, 0x3b8(%rcx)
+ffffff8002223a57	callq	*0x28(%rax)
+ffffff8002223a7b	callq	*0x118(%rax)
+ffffff8002223b11	callq	*0x28(%rax)
+ffffff8002223b22	callq	0xffffff8000ab5a60
+ffffff8002223b51	callq	0xffffff8000ab6ee0
+ffffff8002223b61	callq	0xffffff8000ab7160
+ffffff8002223b8d	callq	*0x28(%rcx)
+ffffff8002223bae	callq	0xffffff8000454290
+ffffff8002223bcc	callq	0xffffff8000ab5a60
+ffffff8002223bdb	callq	*0xa0(%rax)
+ffffff8002223bf2	jmp	0xffffff8000ab6560
+CONTROL_FLOW=0xffffff8002223bf2 jmp	0xffffff8000ab6560
+
+TARGET_SYMBOL TAG=APPLE_CORE_QUEUE_CREATE NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv ADDRESS=0xffffff8001591f70 OWNER=com.apple.driver.AppleBCMWLANCoreMac
+
+METHOD_TAG=APPLE_CORE_QUEUE_CREATE SYMBOL=__ZN16AppleBCMWLANCore15createWorkQueueEv ADDRESS=0xffffff8001591f70 END=0xffffff800159203c INSTRUCTIONS=49
+ffffff8001591f70	pushq	%rbp
+ffffff8001591f71	movq	%rsp, %rbp
+ffffff8001591f74	pushq	%r14
+ffffff8001591f76	pushq	%rbx
+ffffff8001591f77	subq	$0x10, %rsp
+ffffff8001591f7b	movq	%rdi, %rbx
+ffffff8001591f7e	movq	0x1d92a3(%rip), %rax
+ffffff8001591f85	movq	(%rax), %rax
+ffffff8001591f88	movq	%rax, -0x18(%rbp)
+ffffff8001591f8c	movq	0x128(%rdi), %rax
+ffffff8001591f93	movq	0x1510(%rax), %rdi
+ffffff8001591f9a	movq	(%rdi), %rax
+ffffff8001591f9d	callq	*0x860(%rax)
+ffffff8001591fa3	movzbl	%al, %eax
+ffffff8001591fa6	leaq	-0x1c(%rbp), %r14
+ffffff8001591faa	movl	%eax, (%r14)
+ffffff8001591fad	leaq	0x179d11(%rip), %rdi            ## literal pool for: "wlan.workQueue.create"
+ffffff8001591fb4	movq	%r14, %rsi
+ffffff8001591fb7	movl	$0x4, %edx
+ffffff8001591fbc	callq	0xffffff8000b92970
+ffffff8001591fc7	callq	0xffffff8002258fcc
+ffffff8001591fd3	movq	%rax, 0x7898(%rcx)
+ffffff8001591fda	jmp	0xffffff8001592018
+CONTROL_FLOW=0xffffff8001591fda jmp	0xffffff8001592018
+ffffff8001591fed	callq	*0x868(%rax)
+ffffff8001591ffa	movq	%rax, 0x7898(%rcx)
+ffffff8001592007	callq	*0x20(%rcx)
+ffffff8001592011	movq	0x7898(%rax), %rax
+ffffff8001592036	retq
+ffffff8001592037	callq	0xffffff8000383150
+
+TARGET_SYMBOL TAG=APPLE_CORE_FREE_RESOURCES NAME=__ZN16AppleBCMWLANCore13freeResourcesEv ADDRESS=0xffffff80015916c2 OWNER=com.apple.driver.AppleBCMWLANCoreMac
+
+METHOD_TAG=APPLE_CORE_FREE_RESOURCES SYMBOL=__ZN16AppleBCMWLANCore13freeResourcesEv ADDRESS=0xffffff80015916c2 END=0xffffff8001591f70 INSTRUCTIONS=451
+ffffff80015916c2	pushq	%rbp
+ffffff80015916c3	movq	%rsp, %rbp
+ffffff80015916c6	pushq	%r14
+ffffff80015916c8	pushq	%rbx
+ffffff80015916c9	movq	%rdi, %rbx
+ffffff80015916cc	callq	0xffffff800048cb00
+ffffff80015916d1	leaq	0x17ba6c(%rip), %rdi            ## literal pool for: "AppleBCMWLANCore::freeResources[%u] this[%p]\n"
+ffffff80015916d8	movl	$0xe3c, %esi                    ## imm = 0xE3C
+ffffff80015916dd	movq	%rax, %rdx
+ffffff80015916e0	xorl	%eax, %eax
+ffffff80015916e2	callq	0xffffff8000ab6560
+ffffff80015916e7	movq	0x128(%rbx), %rax
+ffffff80015916ee	movq	0x1580(%rax), %rdi
+ffffff80015916f5	testq	%rdi, %rdi
+ffffff80015916f8	je	0xffffff8001591707
+CONTROL_FLOW=0xffffff80015916f8 je	0xffffff8001591707
+ffffff80015916fa	movq	(%rdi), %rax
+ffffff80015916fd	callq	*0x28(%rax)
+ffffff8001591700	movq	0x128(%rbx), %rax
+ffffff8001591707	movq	$0x0, 0x1580(%rax)
+ffffff8001591712	movq	0x1588(%rax), %rsi
+ffffff800159172b	callq	0xffffff80031c6a46
+ffffff8001591749	callq	*0x28(%rax)
+ffffff800159176d	callq	*0x28(%rax)
+ffffff8001591791	callq	*0x28(%rax)
+ffffff80015917ba	callq	*0x28(%rax)
+ffffff80015917db	callq	0xffffff8000ab6ee0
+ffffff8001591801	callq	*0x28(%rax)
+ffffff8001591825	callq	*0x28(%rax)
+ffffff8001591849	callq	*0x28(%rax)
+ffffff800159186d	callq	*0x28(%rax)
+ffffff8001591891	callq	*0x28(%rax)
+ffffff80015918b5	callq	*0x28(%rax)
+ffffff80015918d9	callq	*0x28(%rax)
+ffffff80015918fd	callq	*0x28(%rax)
+ffffff8001591921	callq	*0x28(%rax)
+ffffff8001591945	callq	*0x28(%rax)
+ffffff8001591969	callq	*0x28(%rax)
+ffffff800159198d	callq	*0x28(%rax)
+ffffff80015919bb	callq	0xffffff80031c6a46
+ffffff80015919d9	callq	*0x28(%rax)
+ffffff80015919fd	callq	*0x28(%rax)
+ffffff8001591a1c	callq	0xffffff800227dbf3
+ffffff8001591a37	callq	*0x28(%rax)
+ffffff8001591a65	callq	0xffffff80031c6a46
+ffffff8001591a83	callq	*0x28(%rax)
+ffffff8001591ab4	callq	0xffffff80031c6a46
+ffffff8001591ad2	callq	*0x28(%rax)
+ffffff8001591af6	callq	*0x28(%rax)
+ffffff8001591b1a	callq	*0x28(%rax)
+ffffff8001591b3e	callq	*0x28(%rax)
+ffffff8001591b62	callq	*0x28(%rax)
+ffffff8001591b86	callq	*0x28(%rax)
+ffffff8001591baa	callq	*0x28(%rax)
+ffffff8001591bce	callq	*0x28(%rax)
+ffffff8001591bfc	callq	0xffffff80031c6a46
+ffffff8001591c1a	callq	*0x28(%rax)
+ffffff8001591c3e	callq	*0x28(%rax)
+ffffff8001591c62	callq	*0x28(%rax)
+ffffff8001591c93	callq	0xffffff80031c6a46
+ffffff8001591cb1	callq	*0x28(%rax)
+ffffff8001591ce3	callq	0xffffff8000ab5a60
+ffffff8001591d05	callq	*0x28(%rax)
+ffffff8001591d29	callq	*0x28(%rax)
+ffffff8001591d4d	callq	*0x28(%rax)
+ffffff8001591d71	callq	*0x28(%rax)
+ffffff8001591d95	callq	*0x28(%rax)
+ffffff8001591db9	callq	*0x28(%rax)
+ffffff8001591ddd	callq	*0x28(%rax)
+ffffff8001591e0a	callq	*0x28(%rax)
+ffffff8001591e2e	callq	*0x28(%rax)
+ffffff8001591e46	callq	__ZN16AppleBCMWLANCore16destroyDebugInfoEv ## AppleBCMWLANCore::destroyDebugInfo()
+ffffff8001591e61	callq	*0x28(%rax)
+ffffff8001591e85	callq	*0x28(%rax)
+ffffff8001591ea9	callq	*0x28(%rax)
+ffffff8001591ecd	callq	*0x28(%rax)
+ffffff8001591ef1	callq	*0x28(%rax)
+ffffff8001591f15	callq	*0x28(%rax)
+ffffff8001591f2a	movq	0x7898(%rax), %rdi
+ffffff8001591f39	callq	*0x28(%rax)
+ffffff8001591f43	movq	$0x0, 0x7898(%rax)
+ffffff8001591f51	callq	0xffffff800048cb00
+ffffff8001591f6b	jmp	0xffffff8000ab6560
+CONTROL_FLOW=0xffffff8001591f6b jmp	0xffffff8000ab6560
+
+QUEUE_FIELD_SEQUENCE_SUMMARY
+EXPECTED_PCIE_EXPANSION_QUEUE_FIELD=0xdd0
+EXPECTED_PCIE_START_QUEUE_FACTORY_CALL=0xffffff8002258fcc
+EXPECTED_PCIE_GETTER_LOAD=expansion[0x90]+0xdd0
+EXPECTED_PCIE_FREE_RELEASE_AND_CLEAR=expansion[0x90]+0xdd0
+EXPECTED_APPLE_CORE_RETAIN_PATH=bus.getWorkQueue()->retain()
+SYMBOL_OWNER_CHECK NAME=__ZN16IO80211WorkQueue9workQueueEv ADDRESS=0xffffff8002258fcc OWNER=com.apple.iokit.IO80211Family
+SYMBOL_OWNER_CHECK NAME=__ZNK28AppleBCMWLANBusInterfacePCIe12getWorkQueueEv ADDRESS=0xffffff80014f75ac OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+SYMBOL_OWNER_CHECK NAME=__ZN28AppleBCMWLANBusInterfacePCIe5startEP9IOService ADDRESS=0xffffff80014eac42 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+SYMBOL_OWNER_CHECK NAME=__ZN28AppleBCMWLANBusInterfacePCIe13freeResourcesEv ADDRESS=0xffffff80014f5ec8 OWNER=com.apple.driver.AppleBCMWLANBusInterfacePCIeMac
+SYMBOL_OWNER_CHECK NAME=__ZN16AppleBCMWLANCore15createWorkQueueEv ADDRESS=0xffffff8001591f70 OWNER=com.apple.driver.AppleBCMWLANCoreMac
+SYMBOL_OWNER_CHECK NAME=__ZN17IO80211Controller16CreatePostOfficeEv ADDRESS=0xffffff800222b53e OWNER=com.apple.iokit.IO80211Family
+
+STAGE159_INTERPRETATION=APPLE_PCIE_QUEUE_PATH_STATICALLY_CORRELATED; NOT_A_PUBLIC_DRIVER_API_OR_AUTHORIZATION_TO_COPY_PRIVATE_LAYOUTS
+STAGE159_SOURCE_MODIFIED=NO BUILD=NOT_RUN SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN
+STAGE159_HARDWARE=NOT_RUN OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE159 ==========
