@@ -9,6 +9,10 @@
 #include "RTW88WCLTxCompletionWorkQueue.hpp"
 #include "../RTW88IEEE80211.hpp"
 
+extern "C" {
+#include "../../compat/rtw88_compat.h"
+}
+
 #include <IOKit/pci/IOPCIDevice.h>
 
 #include <IOKit/IOLib.h>
