@@ -69,7 +69,7 @@ public:
      * IOSkywalkRxCompletionQueue::enqueuePacketsForNetworking(
      *     IOSkywalkPacket const **, unsigned int, unsigned int)
      * This is deliberately non-virtual and does not alter the class vtable. */
-    IOReturn enqueuePacketsForNetworking( const IOSkywalkPacket ** packets,
+    UInt32 enqueuePacketsForNetworking( const IOSkywalkPacket ** packets,
                                           UInt32 packetCount,
                                           IOOptionBits options );
     virtual UInt32 getPacketCount() APPLE_KEXT_OVERRIDE;
