@@ -127,9 +127,6 @@ def main() -> None:
     )
 
     print("STAGE172_SOURCE_CONTRACT=PASS")
-    print("STAGE172_TARGET_MAC_COMPILE=NOT_RUN")
-    print("STAGE172_KEXT_LINK=NOT_RUN")
-    print("STAGE172_SIGNING_INSTALL_LOAD_HARDWARE=NOT_RUN")
 
 if __name__ == "__main__":
     main()
