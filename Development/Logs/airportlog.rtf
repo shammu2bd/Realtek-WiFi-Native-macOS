@@ -1,523 +1,1614 @@
-Last login: Sat Nov  7 15:32:03 on ttys000
+Last login: Sat Nov  7 15:33:31 on ttys000
 shohel@Mahfujuls-MacBook-Pro ~ % >....                                          
-  echo "=== RSSI INPUT ==="
-  sed -n '105,140p' rtw/hal_rtw88/driver/rx.c
-
-  echo
-  echo "=== RATE DESCRIPTOR DECODER ==="
-  sed -n '70,120p' rtw/hal_rtw88/driver/util.c
-  sed -n '115,155p' rtw/hal_rtw88/driver/main.c
-
-  echo
-  echo "=== RTL8821C C2H RATE REPORT PARSER ==="
-  sed -n '140,225p' rtw/hal_rtw88/driver/fw.c
-  sed -n '80,105p' rtw/hal_rtw88/driver/fw.h
-
-  echo
-  echo "=== RATE MASK AND FIRMWARE UPDATE ==="
-  sed -n '1140,1325p' rtw/hal_rtw88/driver/main.c
-
-  echo
-  echo "=== PRESERVED WORKTREE STATUS ==="
-  git status --short
-} 2>&1 | tee "$LOG"
-
-echo "RATE_FUNCTIONS_LOG=$LOG"
-=== RSSI LEVEL THRESHOLDS AND UPDATE ===
-}
-
-static void rtw_phy_stat_false_alarm(struct rtw_dev *rtwdev)
-{
-	const struct rtw_chip_info *chip = rtwdev->chip;
-
-	chip->ops->false_alarm_statistics(rtwdev);
-}
-
-#define RA_FLOOR_TABLE_SIZE	7
-#define RA_FLOOR_UP_GAP		3
-
-static u8 rtw_phy_get_rssi_level(u8 old_level, u8 rssi)
-{
-	u8 table[RA_FLOOR_TABLE_SIZE] = {20, 34, 38, 42, 46, 50, 100};
-	u8 new_level = 0;
-	int i;
-
-	for (i = 0; i < RA_FLOOR_TABLE_SIZE; i++)
-		if (i >= old_level)
-			table[i] += RA_FLOOR_UP_GAP;
-
-	for (i = 0; i < RA_FLOOR_TABLE_SIZE; i++) {
-		if (rssi < table[i]) {
-			new_level = i;
-			break;
-		}
-	}
-
-	return new_level;
-}
-
-struct rtw_phy_stat_iter_data {
-	struct rtw_dev *rtwdev;
-	u8 min_rssi;
-};
-
-static void rtw_phy_stat_rssi_iter(void *data, struct ieee80211_sta *sta)
-{
-	struct rtw_phy_stat_iter_data *iter_data = data;
-	struct rtw_dev *rtwdev = iter_data->rtwdev;
-	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
-	u8 rssi;
-
-	rssi = ewma_rssi_read(&si->avg_rssi);
-	si->rssi_level = rtw_phy_get_rssi_level(si->rssi_level, rssi);
-
-	rtw_fw_send_rssi_info(rtwdev, si);
-
-	iter_data->min_rssi = min_t(u8, rssi, iter_data->min_rssi);
-}
-
-static void rtw_phy_stat_rssi(struct rtw_dev *rtwdev)
-{
-	struct rtw_dm_info *dm_info = &rtwdev->dm_info;
-	struct rtw_phy_stat_iter_data data = {};
-
-=== RSSI INPUT ===
-	struct rtw_rx_addr_match_data *iter_data = data;
-	struct ieee80211_sta *sta;
-	struct ieee80211_hdr *hdr = iter_data->hdr;
-	struct rtw_dev *rtwdev = iter_data->rtwdev;
-	struct rtw_sta_info *si;
-	struct rtw_rx_pkt_stat *pkt_stat = iter_data->pkt_stat;
-	u8 *bssid = iter_data->bssid;
-
-	if (!ether_addr_equal(vif->bss_conf.bssid, bssid))
-		return;
-
-	if (!(ether_addr_equal(vif->addr, hdr->addr1) ||
-	      ieee80211_is_beacon(hdr->frame_control)))
-		return;
-
-	rtw_rx_phy_stat(rtwdev, pkt_stat, hdr);
-	sta = ieee80211_find_sta_by_ifaddr(rtwdev->hw, hdr->addr2,
-					   vif->addr);
-	if (!sta)
-		return;
-
-	si = (struct rtw_sta_info *)sta->drv_priv;
-	ewma_rssi_add(&si->avg_rssi, pkt_stat->rssi);
-}
-
-static void rtw_rx_addr_match(struct rtw_dev *rtwdev,
-			      struct rtw_rx_pkt_stat *pkt_stat,
-			      struct ieee80211_hdr *hdr)
-{
-	struct rtw_rx_addr_match_data data = {};
-
-	if (pkt_stat->crc_err || pkt_stat->icv_err || !pkt_stat->phy_status ||
-	    ieee80211_is_ctl(hdr->frame_control))
-		return;
-
-	data.rtwdev = rtwdev;
-
-=== RATE DESCRIPTOR DECODER ===
-			rtw_write16(rtwdev, reg, (u16)val);
-			break;
-		case 4:
-			rtw_write32(rtwdev, reg, (u32)val);
-			break;
-		default:
-			break;
-		}
-	}
-}
-EXPORT_SYMBOL(rtw_restore_reg);
-
-void rtw_desc_to_mcsrate(u16 rate, u8 *mcs, u8 *nss)
-{
-	if (rate <= DESC_RATE54M)
-		return;
-
-	if (rate >= DESC_RATEVHT1SS_MCS0 &&
-	    rate <= DESC_RATEVHT1SS_MCS9) {
-		*nss = 1;
-		*mcs = rate - DESC_RATEVHT1SS_MCS0;
-	} else if (rate >= DESC_RATEVHT2SS_MCS0 &&
-		   rate <= DESC_RATEVHT2SS_MCS9) {
-		*nss = 2;
-		*mcs = rate - DESC_RATEVHT2SS_MCS0;
-	} else if (rate >= DESC_RATEVHT3SS_MCS0 &&
-		   rate <= DESC_RATEVHT3SS_MCS9) {
-		*nss = 3;
-		*mcs = rate - DESC_RATEVHT3SS_MCS0;
-	} else if (rate >= DESC_RATEVHT4SS_MCS0 &&
-		   rate <= DESC_RATEVHT4SS_MCS9) {
-		*nss = 4;
-		*mcs = rate - DESC_RATEVHT4SS_MCS0;
-	} else if (rate >= DESC_RATEMCS0 &&
-		   rate <= DESC_RATEMCS31) {
-		*nss = 0;
-		*mcs = rate - DESC_RATEMCS0;
-	}
-}
-
-struct rtw_stas_entry {
-	struct list_head list;
-	struct ieee80211_sta *sta;
-};
-
-struct rtw_iter_stas_data {
-	struct rtw_dev *rtwdev;
-	struct list_head list;
-};
-
-static void rtw_collect_sta_iter(void *data, struct ieee80211_sta *sta)
-	}
-};
-
-static const struct ieee80211_iface_combination rtw_iface_combs[] = {
-	{
-		.limits = rtw_iface_limits,
-		.n_limits = ARRAY_SIZE(rtw_iface_limits),
-		.max_interfaces = 2,
-		.num_different_channels = 1,
-	}
-};
-
-u16 rtw_desc_to_bitrate(u8 desc_rate)
-{
-	struct ieee80211_rate rate;
-
-	if (WARN(desc_rate >= ARRAY_SIZE(rtw_ratetable), "invalid desc rate\n"))
-		return 0;
-
-	rate = rtw_ratetable[desc_rate];
-
-	return rate.bitrate;
-}
-
-static const struct ieee80211_supported_band rtw_band_2ghz = {
-	.band = NL80211_BAND_2GHZ,
-
-	.channels = rtw_channeltable_2g,
-	.n_channels = ARRAY_SIZE(rtw_channeltable_2g),
-
-	.bitrates = rtw_ratetable,
-	.n_bitrates = ARRAY_SIZE(rtw_ratetable),
-
-	.ht_cap = {0},
-	.vht_cap = {0},
-};
-
-static const struct ieee80211_supported_band rtw_band_5ghz = {
-	.band = NL80211_BAND_5GHZ,
-
-	.channels = rtw_channeltable_5g,
-
-=== RTL8821C C2H RATE REPORT PARSER ===
-	struct rtw_dev *rtwdev;
-	u8 *payload;
-	u8 length;
-};
-
-static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
-{
-	struct rtw_fw_iter_ra_data *ra_data = data;
-	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)ra_data->payload;
-	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
-	u8 mac_id, rate, sgi, bw;
-	u8 mcs, nss;
-	u32 bit_rate;
-
-	mac_id = ra_rpt->mac_id;
-	if (si->mac_id != mac_id)
-		return;
-
-	si->ra_report.txrate.flags = 0;
-
-	rate = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE);
-	sgi = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_SGI);
-	if (ra_data->length >= offsetofend(typeof(*ra_rpt), bw))
-		bw = ra_rpt->bw;
-	else
-		bw = si->bw_mode;
-
-	if (rate < DESC_RATEMCS0) {
-		si->ra_report.txrate.legacy = rtw_desc_to_bitrate(rate);
-		goto legacy;
-	}
-
-	rtw_desc_to_mcsrate(rate, &mcs, &nss);
-	if (rate >= DESC_RATEVHT1SS_MCS0)
-		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_VHT_MCS;
-	else if (rate >= DESC_RATEMCS0)
-		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_MCS;
-
-	if (rate >= DESC_RATEMCS0) {
-		si->ra_report.txrate.mcs = mcs;
-		si->ra_report.txrate.nss = nss;
-	}
-
-	if (sgi)
-		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
-
-	if (bw == RTW_CHANNEL_WIDTH_80)
-		si->ra_report.txrate.bw = RATE_INFO_BW_80;
-	else if (bw == RTW_CHANNEL_WIDTH_40)
-		si->ra_report.txrate.bw = RATE_INFO_BW_40;
-	else
-		si->ra_report.txrate.bw = RATE_INFO_BW_20;
-
-legacy:
-	bit_rate = cfg80211_calculate_bitrate(&si->ra_report.txrate);
-
-	si->ra_report.desc_rate = rate;
-	si->ra_report.bit_rate = bit_rate;
-
-	sta->deflink.agg.max_rc_amsdu_len = get_max_amsdu_len(bit_rate);
-}
-
-static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
-				    u8 length)
-{
-	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)payload;
-	struct rtw_fw_iter_ra_data ra_data;
-
-	if (WARN(length < rtwdev->chip->c2h_ra_report_size,
-		 "invalid ra report c2h length %d\n", length))
-		return;
-
-	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
-					      RTW_C2H_RA_RPT_RATE);
-	ra_data.rtwdev = rtwdev;
-	ra_data.payload = payload;
-	ra_data.length = length;
-	rtw_iterate_stas_atomic(rtwdev, rtw_fw_ra_report_iter, &ra_data);
-}
-
-struct rtw_beacon_filter_iter_data {
-	struct rtw_dev *rtwdev;
-	u8 *payload;
-};
-
-static void rtw_fw_bcn_filter_notify_vif_iter(void *data,
-	u8 density;
-	u8 igi;
-	u8 l2h_th_init;
-	u8 l2h;
-	u8 h2l;
-	u8 option;
-} __packed;
-
-struct rtw_c2h_ra_rpt {
-	u8 rate_sgi;
-	u8 mac_id;
-	u8 byte2;
-	u8 status;
-	u8 byte4;
-	u8 ra_ratio;
-	u8 bw;
-} __packed;
-
-#define RTW_C2H_RA_RPT_RATE	GENMASK(6, 0)
-#define RTW_C2H_RA_RPT_SGI	BIT(7)
-
-struct rtw_h2c_register {
-	u32 w0;
-	u32 w1;
-} __packed;
-
-
-=== RATE MASK AND FIRMWARE UPDATE ===
-				 RA_MASK_HT_RATES_3SS)
-#define RA_MASK_VHT_RATES_1SS	(0x3ff000ULL << 0)
-#define RA_MASK_VHT_RATES_2SS	(0x3ff000ULL << 10)
-#define RA_MASK_VHT_RATES_3SS	(0x3ff000ULL << 20)
-#define RA_MASK_VHT_RATES	(RA_MASK_VHT_RATES_1SS | \
-				 RA_MASK_VHT_RATES_2SS | \
-				 RA_MASK_VHT_RATES_3SS)
-#define RA_MASK_CCK_IN_BG	0x00005
-#define RA_MASK_CCK_IN_HT	0x00005
-#define RA_MASK_CCK_IN_VHT	0x00005
-#define RA_MASK_OFDM_IN_VHT	0x00010
-#define RA_MASK_OFDM_IN_HT_2G	0x00010
-#define RA_MASK_OFDM_IN_HT_5G	0x00030
-
-static u64 rtw_rate_mask_rssi(struct rtw_sta_info *si, u8 wireless_set)
-{
-	u8 rssi_level = si->rssi_level;
-
-	if (wireless_set == WIRELESS_CCK)
-		return 0xffffffffffffffffULL;
-
-	if (rssi_level == 0)
-		return 0xffffffffffffffffULL;
-	else if (rssi_level == 1)
-		return 0xfffffffffffffff0ULL;
-	else if (rssi_level == 2)
-		return 0xffffffffffffefe0ULL;
-	else if (rssi_level == 3)
-		return 0xffffffffffffcfc0ULL;
-	else if (rssi_level == 4)
-		return 0xffffffffffff8f80ULL;
-	else
-		return 0xffffffffffff0f00ULL;
-}
-
-static u64 rtw_rate_mask_recover(u64 ra_mask, u64 ra_mask_bak)
-{
-	if ((ra_mask & ~(RA_MASK_CCK_RATES | RA_MASK_OFDM_RATES)) == 0)
-		ra_mask |= (ra_mask_bak & ~(RA_MASK_CCK_RATES | RA_MASK_OFDM_RATES));
-
-	if (ra_mask == 0)
-		ra_mask |= (ra_mask_bak & (RA_MASK_CCK_RATES | RA_MASK_OFDM_RATES));
-
-	return ra_mask;
-}
-
-static u64 rtw_rate_mask_cfg(struct rtw_dev *rtwdev, struct rtw_sta_info *si,
-			     u64 ra_mask, bool is_vht_enable)
-{
-	struct rtw_hal *hal = &rtwdev->hal;
-	const struct cfg80211_bitrate_mask *mask = si->mask;
-	u64 cfg_mask = GENMASK_ULL(63, 0);
-	u8 band;
-
-	if (!si->use_cfg_mask)
-		return ra_mask;
-
-	band = hal->current_band_type;
-	if (band == RTW_BAND_2G) {
-		band = NL80211_BAND_2GHZ;
-		cfg_mask = mask->control[band].legacy;
-	} else if (band == RTW_BAND_5G) {
-		band = NL80211_BAND_5GHZ;
-		cfg_mask = u64_encode_bits(mask->control[band].legacy,
-					   RA_MASK_OFDM_RATES);
-	}
-
-	if (!is_vht_enable) {
-		if (ra_mask & RA_MASK_HT_RATES_1SS)
-			cfg_mask |= u64_encode_bits(mask->control[band].ht_mcs[0],
-						    RA_MASK_HT_RATES_1SS);
-		if (ra_mask & RA_MASK_HT_RATES_2SS)
-			cfg_mask |= u64_encode_bits(mask->control[band].ht_mcs[1],
-						    RA_MASK_HT_RATES_2SS);
-	} else {
-		if (ra_mask & RA_MASK_VHT_RATES_1SS)
-			cfg_mask |= u64_encode_bits(mask->control[band].vht_mcs[0],
-						    RA_MASK_VHT_RATES_1SS);
-		if (ra_mask & RA_MASK_VHT_RATES_2SS)
-			cfg_mask |= u64_encode_bits(mask->control[band].vht_mcs[1],
-						    RA_MASK_VHT_RATES_2SS);
-	}
-
-	ra_mask &= cfg_mask;
-
-	return ra_mask;
-}
-
-void rtw_update_sta_info(struct rtw_dev *rtwdev, struct rtw_sta_info *si,
-			 bool reset_ra_mask)
-{
-	struct rtw_dm_info *dm_info = &rtwdev->dm_info;
-	struct ieee80211_sta *sta = si->sta;
-	struct rtw_efuse *efuse = &rtwdev->efuse;
-	struct rtw_hal *hal = &rtwdev->hal;
-	u8 wireless_set;
-	u8 bw_mode;
-	u8 rate_id;
-	u8 stbc_en = 0;
-	u8 ldpc_en = 0;
-	u8 tx_num = 1;
-	u64 ra_mask = 0;
-	u64 ra_mask_bak = 0;
-	bool is_vht_enable = false;
-	bool is_support_sgi = false;
-
-	if (sta->deflink.vht_cap.vht_supported) {
-		is_vht_enable = true;
-		ra_mask |= get_vht_ra_mask(sta);
-		if (sta->deflink.vht_cap.cap & IEEE80211_VHT_CAP_RXSTBC_MASK)
-			stbc_en = VHT_STBC_EN;
-		if (sta->deflink.vht_cap.cap & IEEE80211_VHT_CAP_RXLDPC)
-			ldpc_en = VHT_LDPC_EN;
-	} else if (sta->deflink.ht_cap.ht_supported) {
-		ra_mask |= ((u64)sta->deflink.ht_cap.mcs.rx_mask[3] << 36) |
-			   ((u64)sta->deflink.ht_cap.mcs.rx_mask[2] << 28) |
-			   (sta->deflink.ht_cap.mcs.rx_mask[1] << 20) |
-			   (sta->deflink.ht_cap.mcs.rx_mask[0] << 12);
-		if (sta->deflink.ht_cap.cap & IEEE80211_HT_CAP_RX_STBC)
-			stbc_en = HT_STBC_EN;
-		if (sta->deflink.ht_cap.cap & IEEE80211_HT_CAP_LDPC_CODING)
-			ldpc_en = HT_LDPC_EN;
-	}
-
-	if (efuse->hw_cap.nss == 1 || rtwdev->hal.txrx_1ss)
-		ra_mask &= RA_MASK_VHT_RATES_1SS | RA_MASK_HT_RATES_1SS;
-	else if (efuse->hw_cap.nss == 2)
-		ra_mask &= RA_MASK_VHT_RATES_2SS | RA_MASK_HT_RATES_2SS |
-			   RA_MASK_VHT_RATES_1SS | RA_MASK_HT_RATES_1SS;
-
-	if (hal->current_band_type == RTW_BAND_5G) {
-		ra_mask |= (u64)sta->deflink.supp_rates[NL80211_BAND_5GHZ] << 4;
-		ra_mask_bak = ra_mask;
-		if (sta->deflink.vht_cap.vht_supported) {
-			ra_mask &= RA_MASK_VHT_RATES | RA_MASK_OFDM_IN_VHT;
-			wireless_set = WIRELESS_OFDM | WIRELESS_VHT;
-		} else if (sta->deflink.ht_cap.ht_supported) {
-			ra_mask &= RA_MASK_HT_RATES | RA_MASK_OFDM_IN_HT_5G;
-			wireless_set = WIRELESS_OFDM | WIRELESS_HT;
-		} else {
-			wireless_set = WIRELESS_OFDM;
-		}
-		dm_info->rrsr_val_init = RRSR_INIT_5G;
-	} else if (hal->current_band_type == RTW_BAND_2G) {
-		ra_mask |= sta->deflink.supp_rates[NL80211_BAND_2GHZ];
-		ra_mask_bak = ra_mask;
-		if (sta->deflink.vht_cap.vht_supported) {
-			ra_mask &= RA_MASK_VHT_RATES | RA_MASK_CCK_IN_VHT |
-				   RA_MASK_OFDM_IN_VHT;
-			wireless_set = WIRELESS_CCK | WIRELESS_OFDM |
-				       WIRELESS_HT | WIRELESS_VHT;
-		} else if (sta->deflink.ht_cap.ht_supported) {
-			ra_mask &= RA_MASK_HT_RATES | RA_MASK_CCK_IN_HT |
-				   RA_MASK_OFDM_IN_HT_2G;
-			wireless_set = WIRELESS_CCK | WIRELESS_OFDM |
-				       WIRELESS_HT;
-		} else if (sta->deflink.supp_rates[0] <= 0xf) {
-			wireless_set = WIRELESS_CCK;
-		} else {
-			ra_mask &= RA_MASK_OFDM_RATES | RA_MASK_CCK_IN_BG;
-			wireless_set = WIRELESS_CCK | WIRELESS_OFDM;
-		}
-		dm_info->rrsr_val_init = RRSR_INIT_2G;
-	} else {
-		rtw_err(rtwdev, "Unknown band type\n");
-		ra_mask_bak = ra_mask;
-		wireless_set = 0;
-	}
-
-	switch (sta->deflink.bandwidth) {
-	case IEEE80211_STA_RX_BW_80:
-		bw_mode = RTW_CHANNEL_WIDTH_80;
-		is_support_sgi = sta->deflink.vht_cap.vht_supported &&
-				 (sta->deflink.vht_cap.cap & IEEE80211_VHT_CAP_SHORT_GI_80);
-		break;
-	case IEEE80211_STA_RX_BW_40:
-		bw_mode = RTW_CHANNEL_WIDTH_40;
-		is_support_sgi = sta->deflink.ht_cap.ht_supported &&
-				 (sta->deflink.ht_cap.cap & IEEE80211_HT_CAP_SGI_40);
-		break;
-	default:
-		bw_mode = RTW_CHANNEL_WIDTH_20;
-		is_support_sgi = sta->deflink.ht_cap.ht_supported &&
-				 (sta->deflink.ht_cap.cap & IEEE80211_HT_CAP_SGI_20);
-		break;
-	}
-
-=== PRESERVED WORKTREE STATUS ===
+        continue
+
+    hits = [i for i, line in enumerate(lines) if patterns.search(line)]
+    if not hits:
+        continue
+
+    print(f"\n{'=' * 78}\nFILE: {name}\n{'=' * 78}")
+    shown = set()
+    for i in hits:
+        start, end = max(0, i - 3), min(len(lines), i + 9)
+        if any(j in shown for j in range(start, end)):
+            continue
+        for j in range(start, end):
+            print(f"{j+1:5}: {lines[j]}")
+            shown.add(j)
+
+print("\n=== WORKTREE STATUS ===")
+print(subprocess.check_output(["git", "status", "--short"], text=True))
+print("=== HEAD ===")
+print(subprocess.check_output(["git", "rev-parse", "HEAD"], text=True))
+PY
+
+echo "RATE_TRACE_LOG=$LOG"
+
+==============================================================================
+FILE: AirportRTW/AirportRTWSkywalkInterface.cpp
+==============================================================================
+  482:     memset(data, 0, sizeof(struct apple80211_mcs_vht_data));
+  483:     data->version = APPLE80211_VERSION;
+  484:     RTWTxRate liveRate = {};
+  485:     if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+  486:         if (!liveRate.valid || liveRate.mode != RTW_RATE_VHT) return 6;
+  487:         data->guard_interval = liveRate.shortGI ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
+  488:         data->index = liveRate.mcs;
+  489:         data->nss = liveRate.nss;
+  490:         data->bw = liveRate.widthMHz;
+  491:         return kIOReturnSuccess;
+  492:     }
+  493:     data->guard_interval = (ieee80211_node_supports_vht_sgi80(ic->ic_bss) || ieee80211_node_supports_vht_sgi160(ic->ic_bss)) ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
+  568:         rd->version = APPLE80211_VERSION;
+  569:         rd->num_radios = 1;
+  570:         RTWTxRate liveRate = {};
+  571:         if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+  572:             if (!liveRate.valid) return 6;
+  573:             rd->rate[0] = liveRate.bitrate100Kbps / 10; // Apple ABI uses integer Mbps.
+  574:             return kIOReturnSuccess;
+  575:         }
+  576: 
+  577:         sgi = ieee80211_node_supports_sgi(ic->ic_bss);
+  578:         if (ic->ic_curmode == IEEE80211_MODE_11AC) {
+  579:             if (sgi)
+  884:     if (ic->ic_state != IEEE80211_S_RUN ||  ic->ic_bss == NULL || !md)
+  885:         return 6;
+  886:     RTWTxRate liveRate = {};
+  887:     if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+  888:         if (!liveRate.valid || liveRate.mode == RTW_RATE_LEGACY) return 6;
+  889:         md->version = APPLE80211_VERSION;
+  890:         md->index = liveRate.mcs;
+  891:         return kIOReturnSuccess;
+  892:     }
+  893:     md->version = APPLE80211_VERSION;
+  894:     md->index = ic->ic_bss->ni_txmcs;
+  895:     return kIOReturnSuccess;
+
+==============================================================================
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+==============================================================================
+  482:         rd->version = APPLE80211_VERSION;
+  483:         rd->num_radios = 1;
+  484:         RTWTxRate liveRate = {};
+  485:         if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+  486:             if (!liveRate.valid) return 6;
+  487:             rd->rate[0] = liveRate.bitrate100Kbps / 10; // Apple ABI uses integer Mbps.
+  488:             return kIOReturnSuccess;
+  489:         }
+  490: 
+  491:         sgi = ieee80211_node_supports_sgi(ic->ic_bss);
+  492:         if (ic->ic_curmode == IEEE80211_MODE_11AC) {
+  493:             if (sgi)
+  771:     memset(data, 0, sizeof(struct apple80211_mcs_vht_data));
+  772:     data->version = APPLE80211_VERSION;
+  773:     RTWTxRate liveRate = {};
+  774:     if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+  775:         if (!liveRate.valid || liveRate.mode != RTW_RATE_VHT) return 6;
+  776:         data->guard_interval = liveRate.shortGI ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
+  777:         data->index = liveRate.mcs;
+  778:         data->nss = liveRate.nss;
+  779:         data->bw = liveRate.widthMHz;
+  780:         return kIOReturnSuccess;
+  781:     }
+  782:     data->guard_interval = (ieee80211_node_supports_vht_sgi80(ic->ic_bss) || ieee80211_node_supports_vht_sgi160(ic->ic_bss)) ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
+ 1300:     if (ic->ic_state != IEEE80211_S_RUN ||  ic->ic_bss == NULL || !md)
+ 1301:         return 6;
+ 1302:     RTWTxRate liveRate = {};
+ 1303:     if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+ 1304:         if (!liveRate.valid || liveRate.mode == RTW_RATE_LEGACY) return 6;
+ 1305:         md->version = APPLE80211_VERSION;
+ 1306:         md->index = liveRate.mcs;
+ 1307:         return kIOReturnSuccess;
+ 1308:     }
+ 1309:     md->version = APPLE80211_VERSION;
+ 1310:     md->index = ic->ic_bss->ni_txmcs;
+ 1311:     return kIOReturnSuccess;
+
+==============================================================================
+FILE: AirportRTW/WCL/AirportRTWSkywalkInterface.cpp
+==============================================================================
+  515:     memset(data, 0, sizeof(struct apple80211_mcs_vht_data));
+  516:     data->version = APPLE80211_VERSION;
+  517:     RTWTxRate liveRate = {};
+  518:     if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+  519:         if (!liveRate.valid || liveRate.mode != RTW_RATE_VHT) return 6;
+  520:         data->guard_interval = liveRate.shortGI ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
+  521:         data->index = liveRate.mcs;
+  522:         data->nss = liveRate.nss;
+  523:         data->bw = liveRate.widthMHz;
+  524:         return kIOReturnSuccess;
+  525:     }
+  526:     data->guard_interval = (ieee80211_node_supports_vht_sgi80(ic->ic_bss) || ieee80211_node_supports_vht_sgi160(ic->ic_bss)) ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
+  605:         rd->version = APPLE80211_VERSION;
+  606:         rd->num_radios = 1;
+  607:         RTWTxRate liveRate = {};
+  608:         if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+  609:             if (!liveRate.valid) return 6;
+  610:             rd->rate[0] = liveRate.bitrate100Kbps / 10; // Apple ABI uses integer Mbps.
+  611:             return kIOReturnSuccess;
+  612:         }
+  613: 
+  614:         sgi = ieee80211_node_supports_sgi(ic->ic_bss);
+  615:         if (ic->ic_curmode == IEEE80211_MODE_11AC) {
+  616:             if (sgi)
+  932:     if (ic->ic_state != IEEE80211_S_RUN ||  ic->ic_bss == NULL || !md)
+  933:         return 6;
+  934:     RTWTxRate liveRate = {};
+  935:     if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
+  936:         if (!liveRate.valid || liveRate.mode == RTW_RATE_LEGACY) return 6;
+  937:         md->version = APPLE80211_VERSION;
+  938:         md->index = liveRate.mcs;
+  939:         return kIOReturnSuccess;
+  940:     }
+  941:     md->version = APPLE80211_VERSION;
+  942:     md->index = ic->ic_bss->ni_txmcs;
+  943:     return kIOReturnSuccess;
+
+==============================================================================
+FILE: include/HAL/RTWTxRate.h
+==============================================================================
+    9: enum RTWRateMode { RTW_RATE_LEGACY, RTW_RATE_HT, RTW_RATE_VHT, RTW_RATE_HE };
+   10: /* A firmware TX-rate sample, not the maximum supported link rate. */
+   11: struct RTWTxRate {
+   12:     uint32_t bitrate100Kbps;
+   13:     uint16_t widthMHz;
+   14:     uint8_t mcs; /* HT: combined 0..31; VHT: per-stream 0..9; HE: per-stream 0..11. */
+   15:     uint8_t nss;
+   16:     uint8_t mode;
+   17:     bool shortGI;
+   18:     bool valid;
+   19:     uint16_t guardIntervalNs; /* HE: 800, 1600 or 3200; HT/VHT: 400 or 800. */
+   20:     bool dcm; /* HE dual-carrier modulation, when supplied by firmware. */
+   25:  * Modulation rates are numeric protocol data; the HAL supplies actual NSS,
+   26:  * width and guard interval rather than substituting advertised capabilities.
+   27:  */
+   28: static inline uint32_t rtw_tx_rate_calculate(const struct RTWTxRate *rate)
+   29: {
+   30:     uint64_t bits;
+   31:     if (!rate) return 0;
+   32:     if (rate->mode == RTW_RATE_LEGACY) return rate->bitrate100Kbps;
+   33:     if (rate->mode == RTW_RATE_HE) {
+   34:         /* HE has a 12.8 us useful symbol. Full-channel data subcarriers:
+   35:          * 234/468/980/1960 for 20/40/80/160 MHz, respectively.
+   36:          */
+
+==============================================================================
+FILE: rtw/hal_rtw88/RTWCore88.cpp
+==============================================================================
+  276:     return rtw88LinuxGetNSS(&linuxContext);
+  277: }
+  278: 
+  279: bool RTWCore88::getTxRate(RTWTxRate &rate)
+  280: {
+  281:     rtw88LinuxGetTxRate(&linuxContext, rate);
+  282:     return rate.valid && rate.bitrate100Kbps != 0;
+  283: }
+  284: 
+  285: bool RTWCore88::is5GBandSupport()
+  286: {
+  287:     Rtw88NativeCapabilities caps = {};
+  619:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RAAssocMask",
+  620:                             owner->linuxContext.raAuditU64[0], 64));
+  621:     RTWTxRate liveRate = {};
+  622:     owner->getTxRate(liveRate);
+  623:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveValid", liveRate.valid));
+  624:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
+  625:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+  626:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+  627:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+  628:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+  629:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+  630:     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseLength",
+
+==============================================================================
+FILE: rtw/hal_rtw88/Rtw88Hardware.c
+==============================================================================
+  145: 
+  146: /* Share the station iteration lock with C2H RA updates and station teardown. */
+  147: #include "../../include/HAL/RTWTxRate.h"
+  148: static void copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
+  149: {
+  150:     struct RTWTxRate *out = opaque;
+  151:     const struct rtw_sta_info *si = (const void *)sta->drv_priv;
+  152:     const struct rate_info *report = &si->ra_report.txrate;
+  153:     if (!si->ra_report.bit_rate) return;
+  154:     out->shortGI = (report->flags & RATE_INFO_FLAGS_SHORT_GI) != 0;
+  155:     out->guardIntervalNs = out->shortGI ? 400 : 800;
+  156:     if (report->flags & RATE_INFO_FLAGS_VHT_MCS) {
+  164:     } else {
+  165:         out->mode = RTW_RATE_LEGACY;
+  166:         out->nss = 1;
+  167:         out->bitrate100Kbps = report->legacy;
+  168:     }
+  169:     switch (report->bw) {
+  170:     case RATE_INFO_BW_20: out->widthMHz = 20; break;
+  171:     case RATE_INFO_BW_40: out->widthMHz = 40; break;
+  172:     case RATE_INFO_BW_80: out->widthMHz = 80; break;
+  173:     case RATE_INFO_BW_160: out->widthMHz = 160; break;
+  174:     default: return;
+  175:     }
+  181: {
+  182:     if (!out) return;
+  183:     memset(out, 0, sizeof(*out));
+  184:     if (hw) ieee80211_iterate_stations_atomic(hw, copy_tx_rate, out);
+  185: }
+
+==============================================================================
+FILE: rtw/hal_rtw88/Rtw88LinuxBridge.cpp
+==============================================================================
+  957:     rtw88_get_country_code(static_cast<struct rtw_dev *>(context->device), out);
+  958: }
+  959: 
+  960: void rtw88LinuxGetTxRate(Rtw88LinuxContext *context, RTWTxRate &rate)
+  961: {
+  962:     rate = {};
+  963:     auto *hw = context ? static_cast<ieee80211_hw *>(context->hardware) : nullptr;
+  964:     if (hw) rtw88_hw_get_tx_rate(hw, &rate);
+  965: }
+  966: 
+  967: bool rtw88LinuxGetCapabilities(Rtw88LinuxContext *context, bool fiveGHz,
+  968:                                Rtw88NativeCapabilities &caps)
+
+==============================================================================
+FILE: rtw/hal_rtw88/Rtw88Namespace.h
+==============================================================================
+  290: #define rtw_core_stop airportrtw88_rtw_core_stop
+  291: #define rtw_ddma_to_fw_fifo airportrtw88_rtw_ddma_to_fw_fifo
+  292: #define rtw_debug_mask airportrtw88_rtw_debug_mask
+  293: #define rtw_desc_to_bitrate airportrtw88_rtw_desc_to_bitrate
+  294: #define rtw_desc_to_mcsrate airportrtw88_rtw_desc_to_mcsrate
+  295: #define rtw_disable_lps_deep_mode airportrtw88_rtw_disable_lps_deep_mode
+  296: #define rtw_download_firmware airportrtw88_rtw_download_firmware
+  297: #define rtw_dump_fw airportrtw88_rtw_dump_fw
+  298: #define rtw_dump_reg airportrtw88_rtw_dump_reg
+  299: #define rtw_edcca_enabled airportrtw88_rtw_edcca_enabled
+  300: #define rtw_enter_ips airportrtw88_rtw_enter_ips
+  301: #define rtw_enter_lps airportrtw88_rtw_enter_lps
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/bf.c
+==============================================================================
+  262: 
+  263: 	rtw_bf_init_bfer_entry_mu(rtwdev, &param);
+  264: 
+  265: 	bf_info->cur_csi_rpt_rate = DESC_RATE6M;
+  266: 	rtw_bf_cfg_sounding(rtwdev, vif, DESC_RATE6M);
+  267: 
+  268: 	/* accept action_no_ack */
+  269: 	rtw_write16_set(rtwdev, REG_RXFLTMAP0, BIT_RXFLTMAP0_ACTIONNOACK);
+  270: 
+  271: 	/* accept NDPA and BF report poll */
+  272: 	rtw_write16_set(rtwdev, REG_RXFLTMAP1, BIT_RXFLTMAP1_BF);
+  273: }
+  377: 	rtw_write8(rtwdev, REG_NDPA_OPT_CTRL, ndpa_rate);
+  378: 
+  379: 	rtw_write32_mask(rtwdev, REG_BBPSF_CTRL, BIT_MASK_CSI_RATE,
+  380: 			 DESC_RATE6M);
+  381: }
+  382: EXPORT_SYMBOL(rtw_bf_phy_init);
+  383: 
+  384: void rtw_bf_cfg_csi_rate(struct rtw_dev *rtwdev, u8 rssi, u8 cur_rate,
+  385: 			 u8 fixrate_en, u8 *new_rate)
+  386: {
+  387: 	u32 csi_cfg;
+  388: 	u16 cur_rrsr;
+  394: 		csi_cfg |= BIT_CSI_FORCE_RATE;
+  395: 
+  396: 	if (rssi >= 40) {
+  397: 		if (cur_rate != DESC_RATE54M) {
+  398: 			cur_rrsr |= BIT(DESC_RATE54M);
+  399: 			csi_cfg |= (DESC_RATE54M & BIT_MASK_CSI_RATE_VAL) <<
+  400: 				   BIT_SHIFT_CSI_RATE;
+  401: 			rtw_write16(rtwdev, REG_RRSR, cur_rrsr);
+  402: 			rtw_write32(rtwdev, REG_BBPSF_CTRL, csi_cfg);
+  403: 		}
+  404: 		*new_rate = DESC_RATE54M;
+  405: 	} else {
+  410: 			rtw_write16(rtwdev, REG_RRSR, cur_rrsr);
+  411: 			rtw_write32(rtwdev, REG_BBPSF_CTRL, csi_cfg);
+  412: 		}
+  413: 		*new_rate = DESC_RATE24M;
+  414: 	}
+  415: }
+  416: EXPORT_SYMBOL(rtw_bf_cfg_csi_rate);
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/coex.c
+==============================================================================
+ 2687: 		coex_dm->wl_rssi_state[i] = COEX_RSSI_STATE_LOW;
+ 2688: 
+ 2689: 	coex_stat->wl_coex_mode = COEX_WLINK_MAX;
+ 2690: 	coex_stat->wl_rx_rate = DESC_RATE5_5M;
+ 2691: 	coex_stat->wl_rts_rx_rate = DESC_RATE5_5M;
+ 2692: }
+ 2693: 
+ 2694: static void __rtw_coex_init_hw_config(struct rtw_dev *rtwdev, bool wifi_only)
+ 2695: {
+ 2696: 	struct rtw_coex *coex = &rtwdev->coex;
+ 2697: 	struct rtw_coex_stat *coex_stat = &coex->stat;
+ 2698: 
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/fw.c
+==============================================================================
+  142: 	u8 length;
+  143: };
+  144: 
+  145: static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
+  146: {
+  147: 	struct rtw_fw_iter_ra_data *ra_data = data;
+  148: 	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)ra_data->payload;
+  149: 	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
+  150: 	u8 mac_id, rate, sgi, bw;
+  151: 	u8 mcs, nss;
+  152: 	u32 bit_rate;
+  153: 
+  157: 
+  158: 	si->ra_report.txrate.flags = 0;
+  159: 
+  160: 	rate = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE);
+  161: 	sgi = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_SGI);
+  162: 	if (ra_data->length >= offsetofend(typeof(*ra_rpt), bw))
+  163: 		bw = ra_rpt->bw;
+  164: 	else
+  165: 		bw = si->bw_mode;
+  166: 
+  167: 	if (rate < DESC_RATEMCS0) {
+  168: 		si->ra_report.txrate.legacy = rtw_desc_to_bitrate(rate);
+  169: 		goto legacy;
+  170: 	}
+  171: 
+  172: 	rtw_desc_to_mcsrate(rate, &mcs, &nss);
+  173: 	if (rate >= DESC_RATEVHT1SS_MCS0)
+  174: 		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_VHT_MCS;
+  175: 	else if (rate >= DESC_RATEMCS0)
+  176: 		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_MCS;
+  177: 
+  178: 	if (rate >= DESC_RATEMCS0) {
+  179: 		si->ra_report.txrate.mcs = mcs;
+  180: 		si->ra_report.txrate.nss = nss;
+  210: 		return;
+  211: 
+  212: 	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
+  213: 					      RTW_C2H_RA_RPT_RATE);
+  214: 	ra_data.rtwdev = rtwdev;
+  215: 	ra_data.payload = payload;
+  216: 	ra_data.length = length;
+  217: 	rtw_iterate_stas_atomic(rtwdev, rtw_fw_ra_report_iter, &ra_data);
+  218: }
+  219: 
+  220: struct rtw_beacon_filter_iter_data {
+  221: 	struct rtw_dev *rtwdev;
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/fw.h
+==============================================================================
+   95: 	u8 bw;
+   96: } __packed;
+   97: 
+   98: #define RTW_C2H_RA_RPT_RATE	GENMASK(6, 0)
+   99: #define RTW_C2H_RA_RPT_SGI	BIT(7)
+  100: 
+  101: struct rtw_h2c_register {
+  102: 	u32 w0;
+  103: 	u32 w1;
+  104: } __packed;
+  105: 
+  106: #define RTW_H2C_W0_CMDID		GENMASK(7, 0)
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/main.c
+==============================================================================
+   89: 	 .flags = IEEE80211_CHAN_NO_HT40MINUS},
+   90: };
+   91: 
+   92: static struct ieee80211_rate rtw_ratetable[] = {
+   93: 	{.bitrate = 10, .hw_value = 0x00,},
+   94: 	{.bitrate = 20, .hw_value = 0x01,},
+   95: 	{.bitrate = 55, .hw_value = 0x02,},
+   96: 	{.bitrate = 110, .hw_value = 0x03,},
+   97: 	{.bitrate = 60, .hw_value = 0x04,},
+   98: 	{.bitrate = 90, .hw_value = 0x05,},
+   99: 	{.bitrate = 120, .hw_value = 0x06,},
+  100: 	{.bitrate = 180, .hw_value = 0x07,},
+  124: 	}
+  125: };
+  126: 
+  127: u16 rtw_desc_to_bitrate(u8 desc_rate)
+  128: {
+  129: 	struct ieee80211_rate rate;
+  130: 
+  131: 	if (WARN(desc_rate >= ARRAY_SIZE(rtw_ratetable), "invalid desc rate\n"))
+  132: 		return 0;
+  133: 
+  134: 	rate = rtw_ratetable[desc_rate];
+  135: 
+  142: 	.channels = rtw_channeltable_2g,
+  143: 	.n_channels = ARRAY_SIZE(rtw_channeltable_2g),
+  144: 
+  145: 	.bitrates = rtw_ratetable,
+  146: 	.n_bitrates = ARRAY_SIZE(rtw_ratetable),
+  147: 
+  148: 	.ht_cap = {0},
+  149: 	.vht_cap = {0},
+  150: };
+  151: 
+  152: static const struct ieee80211_supported_band rtw_band_5ghz = {
+  153: 	.band = NL80211_BAND_5GHZ,
+  156: 	.n_channels = ARRAY_SIZE(rtw_channeltable_5g),
+  157: 
+  158: 	/* 5G has no CCK rates */
+  159: 	.bitrates = rtw_ratetable + 4,
+  160: 	.n_bitrates = ARRAY_SIZE(rtw_ratetable) - 4,
+  161: 
+  162: 	.ht_cap = {0},
+  163: 	.vht_cap = {0},
+  164: };
+  165: 
+  166: struct rtw_watch_dog_iter_data {
+  167: 	struct rtw_dev *rtwdev;
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/main.h
+==============================================================================
+  247: };
+  248: 
+  249: enum rtw_trx_desc_rate {
+  250: 	DESC_RATE1M	= 0x00,
+  251: 	DESC_RATE2M	= 0x01,
+  252: 	DESC_RATE5_5M	= 0x02,
+  253: 	DESC_RATE11M	= 0x03,
+  254: 
+  255: 	DESC_RATE6M	= 0x04,
+  256: 	DESC_RATE9M	= 0x05,
+  257: 	DESC_RATE12M	= 0x06,
+  258: 	DESC_RATE18M	= 0x07,
+  259: 	DESC_RATE24M	= 0x08,
+  260: 	DESC_RATE36M	= 0x09,
+  261: 	DESC_RATE48M	= 0x0a,
+  262: 	DESC_RATE54M	= 0x0b,
+  263: 
+  264: 	DESC_RATEMCS0	= 0x0c,
+  265: 	DESC_RATEMCS1	= 0x0d,
+  266: 	DESC_RATEMCS2	= 0x0e,
+  267: 	DESC_RATEMCS3	= 0x0f,
+  268: 	DESC_RATEMCS4	= 0x10,
+  269: 	DESC_RATEMCS5	= 0x11,
+  270: 	DESC_RATEMCS6	= 0x12,
+  271: 	DESC_RATEMCS7	= 0x13,
+  272: 	DESC_RATEMCS8	= 0x14,
+  273: 	DESC_RATEMCS9	= 0x15,
+  274: 	DESC_RATEMCS10	= 0x16,
+  275: 	DESC_RATEMCS11	= 0x17,
+  276: 	DESC_RATEMCS12	= 0x18,
+  277: 	DESC_RATEMCS13	= 0x19,
+  278: 	DESC_RATEMCS14	= 0x1a,
+  279: 	DESC_RATEMCS15	= 0x1b,
+  280: 	DESC_RATEMCS16	= 0x1c,
+  281: 	DESC_RATEMCS17	= 0x1d,
+  282: 	DESC_RATEMCS18	= 0x1e,
+  283: 	DESC_RATEMCS19	= 0x1f,
+  284: 	DESC_RATEMCS20	= 0x20,
+  285: 	DESC_RATEMCS21	= 0x21,
+  286: 	DESC_RATEMCS22	= 0x22,
+  287: 	DESC_RATEMCS23	= 0x23,
+  288: 	DESC_RATEMCS24	= 0x24,
+  289: 	DESC_RATEMCS25	= 0x25,
+  290: 	DESC_RATEMCS26	= 0x26,
+  291: 	DESC_RATEMCS27	= 0x27,
+  292: 	DESC_RATEMCS28	= 0x28,
+  293: 	DESC_RATEMCS29	= 0x29,
+  294: 	DESC_RATEMCS30	= 0x2a,
+  295: 	DESC_RATEMCS31	= 0x2b,
+  296: 
+  297: 	DESC_RATEVHT1SS_MCS0	= 0x2c,
+  298: 	DESC_RATEVHT1SS_MCS1	= 0x2d,
+  299: 	DESC_RATEVHT1SS_MCS2	= 0x2e,
+  300: 	DESC_RATEVHT1SS_MCS3	= 0x2f,
+  301: 	DESC_RATEVHT1SS_MCS4	= 0x30,
+  302: 	DESC_RATEVHT1SS_MCS5	= 0x31,
+  303: 	DESC_RATEVHT1SS_MCS6	= 0x32,
+  304: 	DESC_RATEVHT1SS_MCS7	= 0x33,
+  305: 	DESC_RATEVHT1SS_MCS8	= 0x34,
+  306: 	DESC_RATEVHT1SS_MCS9	= 0x35,
+  307: 
+  308: 	DESC_RATEVHT2SS_MCS0	= 0x36,
+  309: 	DESC_RATEVHT2SS_MCS1	= 0x37,
+  310: 	DESC_RATEVHT2SS_MCS2	= 0x38,
+  311: 	DESC_RATEVHT2SS_MCS3	= 0x39,
+  312: 	DESC_RATEVHT2SS_MCS4	= 0x3a,
+  313: 	DESC_RATEVHT2SS_MCS5	= 0x3b,
+  314: 	DESC_RATEVHT2SS_MCS6	= 0x3c,
+  315: 	DESC_RATEVHT2SS_MCS7	= 0x3d,
+  316: 	DESC_RATEVHT2SS_MCS8	= 0x3e,
+  317: 	DESC_RATEVHT2SS_MCS9	= 0x3f,
+  318: 
+  319: 	DESC_RATEVHT3SS_MCS0	= 0x40,
+  320: 	DESC_RATEVHT3SS_MCS1	= 0x41,
+  321: 	DESC_RATEVHT3SS_MCS2	= 0x42,
+  322: 	DESC_RATEVHT3SS_MCS3	= 0x43,
+  323: 	DESC_RATEVHT3SS_MCS4	= 0x44,
+  324: 	DESC_RATEVHT3SS_MCS5	= 0x45,
+  325: 	DESC_RATEVHT3SS_MCS6	= 0x46,
+  326: 	DESC_RATEVHT3SS_MCS7	= 0x47,
+  327: 	DESC_RATEVHT3SS_MCS8	= 0x48,
+  328: 	DESC_RATEVHT3SS_MCS9	= 0x49,
+  329: 
+  330: 	DESC_RATEVHT4SS_MCS0	= 0x4a,
+  331: 	DESC_RATEVHT4SS_MCS1	= 0x4b,
+  332: 	DESC_RATEVHT4SS_MCS2	= 0x4c,
+  333: 	DESC_RATEVHT4SS_MCS3	= 0x4d,
+  334: 	DESC_RATEVHT4SS_MCS4	= 0x4e,
+  335: 	DESC_RATEVHT4SS_MCS5	= 0x4f,
+  336: 	DESC_RATEVHT4SS_MCS6	= 0x50,
+  337: 	DESC_RATEVHT4SS_MCS7	= 0x51,
+  338: 	DESC_RATEVHT4SS_MCS8	= 0x52,
+  339: 	DESC_RATEVHT4SS_MCS9	= 0x53,
+  340: 
+  341: 	DESC_RATE_MAX,
+  342: };
+ 1632: 
+ 1633: struct rtw_pkt_count {
+ 1634: 	u16 num_bcn_pkt;
+ 1635: 	u16 num_qry_pkt[DESC_RATE_MAX];
+ 1636: };
+ 1637: 
+ 1638: DECLARE_EWMA(evm, 10, 4);
+ 1639: DECLARE_EWMA(snr, 10, 4);
+ 1640: 
+ 1641: struct rtw_iqk_info {
+ 1642: 	bool done;
+ 1643: 	struct {
+ 1992: 	/* protect tx power section */
+ 1993: 	struct mutex tx_power_mutex;
+ 1994: 	s8 tx_pwr_by_rate_offset_2g[RTW_RF_PATH_MAX]
+ 1995: 				   [DESC_RATE_MAX];
+ 1996: 	s8 tx_pwr_by_rate_offset_5g[RTW_RF_PATH_MAX]
+ 1997: 				   [DESC_RATE_MAX];
+ 1998: 	s8 tx_pwr_by_rate_base_2g[RTW_RF_PATH_MAX]
+ 1999: 				 [RTW_RATE_SECTION_NUM];
+ 2000: 	s8 tx_pwr_by_rate_base_5g[RTW_RF_PATH_MAX]
+ 2001: 				 [RTW_RATE_SECTION_NUM];
+ 2002: 	s8 tx_pwr_limit_2g[RTW_REGD_MAX]
+ 2003: 			  [RTW_CHANNEL_WIDTH_MAX]
+ 2008: 			  [RTW_RATE_SECTION_NUM]
+ 2009: 			  [RTW_MAX_CHANNEL_NUM_5G];
+ 2010: 	s8 tx_pwr_tbl[RTW_RF_PATH_MAX]
+ 2011: 		     [DESC_RATE_MAX];
+ 2012: 
+ 2013: 	enum rtw_sar_bands sar_band;
+ 2014: 	struct rtw_sar sar;
+ 2015: 
+ 2016: 	/* for 8821c set channel */
+ 2017: 	u32 ch_param[3];
+ 2018: };
+ 2019: 
+ 2234: bool ltecoex_reg_write(struct rtw_dev *rtwdev, u16 offset, u32 value);
+ 2235: void rtw_restore_reg(struct rtw_dev *rtwdev,
+ 2236: 		     struct rtw_backup_info *bckp, u32 num);
+ 2237: void rtw_desc_to_mcsrate(u16 rate, u8 *mcs, u8 *nss);
+ 2238: void rtw_set_channel(struct rtw_dev *rtwdev);
+ 2239: void rtw_chip_prepare_tx(struct rtw_dev *rtwdev);
+ 2240: void rtw_vif_port_config(struct rtw_dev *rtwdev, struct rtw_vif *rtwvif,
+ 2241: 			 u32 config);
+ 2242: void rtw_tx_report_purge_timer(struct timer_list *t);
+ 2243: void rtw_update_sta_info(struct rtw_dev *rtwdev, struct rtw_sta_info *si,
+ 2244: 			 bool reset_ra_mask);
+ 2245: void rtw_core_scan_start(struct rtw_dev *rtwdev, struct rtw_vif *rtwvif,
+ 2254: void rtw_core_deinit(struct rtw_dev *rtwdev);
+ 2255: int rtw_register_hw(struct rtw_dev *rtwdev, struct ieee80211_hw *hw);
+ 2256: void rtw_unregister_hw(struct rtw_dev *rtwdev, struct ieee80211_hw *hw);
+ 2257: u16 rtw_desc_to_bitrate(u8 desc_rate);
+ 2258: void rtw_vif_assoc_changed(struct rtw_vif *rtwvif,
+ 2259: 			   struct ieee80211_bss_conf *conf);
+ 2260: int rtw_sta_add(struct rtw_dev *rtwdev, struct ieee80211_sta *sta,
+ 2261: 		struct ieee80211_vif *vif);
+ 2262: void rtw_sta_remove(struct rtw_dev *rtwdev, struct ieee80211_sta *sta,
+ 2263: 		    bool fw_exist);
+ 2264: void rtw_fw_recovery(struct rtw_dev *rtwdev);
+ 2265: int rtw_wait_firmware_completion(struct rtw_dev *rtwdev);
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/phy.c
+==============================================================================
+   52: 	 1995262315,	2511886432U,	3162277660U,	3981071706U}
+   53: };
+   54: 
+   55: const u8 rtw_cck_rates[] = { DESC_RATE1M, DESC_RATE2M, DESC_RATE5_5M, DESC_RATE11M };
+   56: 
+   57: const u8 rtw_ofdm_rates[] = {
+   58: 	DESC_RATE6M,  DESC_RATE9M,  DESC_RATE12M,
+   59: 	DESC_RATE18M, DESC_RATE24M, DESC_RATE36M,
+   60: 	DESC_RATE48M, DESC_RATE54M
+   61: };
+   62: 
+   63: const u8 rtw_ht_1s_rates[] = {
+   67: };
+   68: 
+   69: const u8 rtw_ht_2s_rates[] = {
+   70: 	DESC_RATEMCS8,  DESC_RATEMCS9,  DESC_RATEMCS10,
+   71: 	DESC_RATEMCS11, DESC_RATEMCS12, DESC_RATEMCS13,
+   72: 	DESC_RATEMCS14, DESC_RATEMCS15
+   73: };
+   74: 
+   75: const u8 rtw_vht_1s_rates[] = {
+   76: 	DESC_RATEVHT1SS_MCS0, DESC_RATEVHT1SS_MCS1,
+   77: 	DESC_RATEVHT1SS_MCS2, DESC_RATEVHT1SS_MCS3,
+   78: 	DESC_RATEVHT1SS_MCS4, DESC_RATEVHT1SS_MCS5,
+   81: };
+   82: 
+   83: const u8 rtw_vht_2s_rates[] = {
+   84: 	DESC_RATEVHT2SS_MCS0, DESC_RATEVHT2SS_MCS1,
+   85: 	DESC_RATEVHT2SS_MCS2, DESC_RATEVHT2SS_MCS3,
+   86: 	DESC_RATEVHT2SS_MCS4, DESC_RATEVHT2SS_MCS5,
+   87: 	DESC_RATEVHT2SS_MCS6, DESC_RATEVHT2SS_MCS7,
+   88: 	DESC_RATEVHT2SS_MCS8, DESC_RATEVHT2SS_MCS9
+   89: };
+   90: 
+   91: const u8 rtw_ht_3s_rates[] = {
+   92: 	DESC_RATEMCS16, DESC_RATEMCS17, DESC_RATEMCS18,
+   95: };
+   96: 
+   97: const u8 rtw_ht_4s_rates[] = {
+   98: 	DESC_RATEMCS24, DESC_RATEMCS25, DESC_RATEMCS26,
+   99: 	DESC_RATEMCS27, DESC_RATEMCS28, DESC_RATEMCS29,
+  100: 	DESC_RATEMCS30, DESC_RATEMCS31
+  101: };
+  102: 
+  103: const u8 rtw_vht_3s_rates[] = {
+  104: 	DESC_RATEVHT3SS_MCS0, DESC_RATEVHT3SS_MCS1,
+  105: 	DESC_RATEVHT3SS_MCS2, DESC_RATEVHT3SS_MCS3,
+  106: 	DESC_RATEVHT3SS_MCS4, DESC_RATEVHT3SS_MCS5,
+  109: };
+  110: 
+  111: const u8 rtw_vht_4s_rates[] = {
+  112: 	DESC_RATEVHT4SS_MCS0, DESC_RATEVHT4SS_MCS1,
+  113: 	DESC_RATEVHT4SS_MCS2, DESC_RATEVHT4SS_MCS3,
+  114: 	DESC_RATEVHT4SS_MCS4, DESC_RATEVHT4SS_MCS5,
+  115: 	DESC_RATEVHT4SS_MCS6, DESC_RATEVHT4SS_MCS7,
+  116: 	DESC_RATEVHT4SS_MCS8, DESC_RATEVHT4SS_MCS9
+  117: };
+  118: 
+  119: const u8 * const rtw_rate_section[RTW_RATE_SECTION_NUM] = {
+  120: 	rtw_cck_rates, rtw_ofdm_rates,
+  616: 
+  617: 	rate_order = rate_idx;
+  618: 
+  619: 	if (rate_idx >= DESC_RATEVHT4SS_MCS0)
+  620: 		rate_order -= DESC_RATEVHT4SS_MCS0;
+  621: 	else if (rate_idx >= DESC_RATEVHT3SS_MCS0)
+  622: 		rate_order -= DESC_RATEVHT3SS_MCS0;
+  623: 	else if (rate_idx >= DESC_RATEVHT2SS_MCS0)
+  624: 		rate_order -= DESC_RATEVHT2SS_MCS0;
+  625: 	else if (rate_idx >= DESC_RATEVHT1SS_MCS0)
+  626: 		rate_order -= DESC_RATEVHT1SS_MCS0;
+  627: 	else if (rate_idx >= DESC_RATEMCS24)
+  628: 		rate_order -= DESC_RATEMCS24;
+  629: 	else if (rate_idx >= DESC_RATEMCS16)
+  630: 		rate_order -= DESC_RATEMCS16;
+  631: 	else if (rate_idx >= DESC_RATEMCS8)
+  632: 		rate_order -= DESC_RATEMCS8;
+  633: 	else if (rate_idx >= DESC_RATEMCS0)
+  634: 		rate_order -= DESC_RATEMCS0;
+  635: 	else if (rate_idx >= DESC_RATE6M)
+  636: 		rate_order -= DESC_RATE6M;
+  637: 	else
+  638: 		rate_order -= DESC_RATE1M;
+  639: 
+ 1256: 	switch (addr) {
+ 1257: 	case 0xE00:
+ 1258: 	case 0x830:
+ 1259: 		rate[0] = DESC_RATE6M;
+ 1260: 		rate[1] = DESC_RATE9M;
+ 1261: 		rate[2] = DESC_RATE12M;
+ 1262: 		rate[3] = DESC_RATE18M;
+ 1263: 		for (i = 0; i < 4; ++i)
+ 1264: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1265: 		*rate_num = 4;
+ 1266: 		break;
+ 1267: 	case 0xE04:
+ 1268: 	case 0x834:
+ 1269: 		rate[0] = DESC_RATE24M;
+ 1270: 		rate[1] = DESC_RATE36M;
+ 1271: 		rate[2] = DESC_RATE48M;
+ 1272: 		rate[3] = DESC_RATE54M;
+ 1273: 		for (i = 0; i < 4; ++i)
+ 1274: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1275: 		*rate_num = 4;
+ 1276: 		break;
+ 1277: 	case 0xE08:
+ 1278: 		rate[0] = DESC_RATE1M;
+ 1279: 		pwr_by_rate[0] = bcd_to_dec_pwr_by_rate(val, 1);
+ 1281: 		break;
+ 1282: 	case 0x86C:
+ 1283: 		if (mask == 0xffffff00) {
+ 1284: 			rate[0] = DESC_RATE2M;
+ 1285: 			rate[1] = DESC_RATE5_5M;
+ 1286: 			rate[2] = DESC_RATE11M;
+ 1287: 			for (i = 1; i < 4; ++i)
+ 1288: 				pwr_by_rate[i - 1] =
+ 1289: 					tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1290: 			*rate_num = 3;
+ 1291: 		} else if (mask == 0x000000ff) {
+ 1292: 			rate[0] = DESC_RATE11M;
+ 1296: 		break;
+ 1297: 	case 0xE10:
+ 1298: 	case 0x83C:
+ 1299: 		rate[0] = DESC_RATEMCS0;
+ 1300: 		rate[1] = DESC_RATEMCS1;
+ 1301: 		rate[2] = DESC_RATEMCS2;
+ 1302: 		rate[3] = DESC_RATEMCS3;
+ 1303: 		for (i = 0; i < 4; ++i)
+ 1304: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1305: 		*rate_num = 4;
+ 1306: 		break;
+ 1307: 	case 0xE14:
+ 1308: 	case 0x848:
+ 1309: 		rate[0] = DESC_RATEMCS4;
+ 1310: 		rate[1] = DESC_RATEMCS5;
+ 1311: 		rate[2] = DESC_RATEMCS6;
+ 1312: 		rate[3] = DESC_RATEMCS7;
+ 1313: 		for (i = 0; i < 4; ++i)
+ 1314: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1315: 		*rate_num = 4;
+ 1316: 		break;
+ 1317: 	case 0xE18:
+ 1318: 	case 0x84C:
+ 1319: 		rate[0] = DESC_RATEMCS8;
+ 1326: 		break;
+ 1327: 	case 0xE1C:
+ 1328: 	case 0x868:
+ 1329: 		rate[0] = DESC_RATEMCS12;
+ 1330: 		rate[1] = DESC_RATEMCS13;
+ 1331: 		rate[2] = DESC_RATEMCS14;
+ 1332: 		rate[3] = DESC_RATEMCS15;
+ 1333: 		for (i = 0; i < 4; ++i)
+ 1334: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1335: 		*rate_num = 4;
+ 1336: 		break;
+ 1337: 	case 0x838:
+ 1347: 	case 0xE20:
+ 1348: 	case 0x1820:
+ 1349: 	case 0x1A20:
+ 1350: 		rate[0] = DESC_RATE1M;
+ 1351: 		rate[1] = DESC_RATE2M;
+ 1352: 		rate[2] = DESC_RATE5_5M;
+ 1353: 		rate[3] = DESC_RATE11M;
+ 1354: 		for (i = 0; i < 4; ++i)
+ 1355: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1356: 		*rate_num = 4;
+ 1357: 		break;
+ 1358: 	case 0xC24:
+ 1359: 	case 0xE24:
+ 1360: 	case 0x1824:
+ 1361: 	case 0x1A24:
+ 1362: 		rate[0] = DESC_RATE6M;
+ 1363: 		rate[1] = DESC_RATE9M;
+ 1364: 		rate[2] = DESC_RATE12M;
+ 1365: 		rate[3] = DESC_RATE18M;
+ 1366: 		for (i = 0; i < 4; ++i)
+ 1367: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1368: 		*rate_num = 4;
+ 1369: 		break;
+ 1370: 	case 0xC28:
+ 1371: 	case 0xE28:
+ 1372: 	case 0x1828:
+ 1373: 	case 0x1A28:
+ 1374: 		rate[0] = DESC_RATE24M;
+ 1375: 		rate[1] = DESC_RATE36M;
+ 1376: 		rate[2] = DESC_RATE48M;
+ 1377: 		rate[3] = DESC_RATE54M;
+ 1378: 		for (i = 0; i < 4; ++i)
+ 1379: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1380: 		*rate_num = 4;
+ 1381: 		break;
+ 1382: 	case 0xC2C:
+ 1383: 	case 0xE2C:
+ 1384: 	case 0x182C:
+ 1385: 	case 0x1A2C:
+ 1386: 		rate[0] = DESC_RATEMCS0;
+ 1387: 		rate[1] = DESC_RATEMCS1;
+ 1388: 		rate[2] = DESC_RATEMCS2;
+ 1389: 		rate[3] = DESC_RATEMCS3;
+ 1390: 		for (i = 0; i < 4; ++i)
+ 1391: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1392: 		*rate_num = 4;
+ 1393: 		break;
+ 1394: 	case 0xC30:
+ 1395: 	case 0xE30:
+ 1396: 	case 0x1830:
+ 1397: 	case 0x1A30:
+ 1398: 		rate[0] = DESC_RATEMCS4;
+ 1399: 		rate[1] = DESC_RATEMCS5;
+ 1400: 		rate[2] = DESC_RATEMCS6;
+ 1401: 		rate[3] = DESC_RATEMCS7;
+ 1402: 		for (i = 0; i < 4; ++i)
+ 1403: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1404: 		*rate_num = 4;
+ 1405: 		break;
+ 1406: 	case 0xC34:
+ 1407: 	case 0xE34:
+ 1408: 	case 0x1834:
+ 1409: 	case 0x1A34:
+ 1410: 		rate[0] = DESC_RATEMCS8;
+ 1411: 		rate[1] = DESC_RATEMCS9;
+ 1412: 		rate[2] = DESC_RATEMCS10;
+ 1413: 		rate[3] = DESC_RATEMCS11;
+ 1414: 		for (i = 0; i < 4; ++i)
+ 1415: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1416: 		*rate_num = 4;
+ 1417: 		break;
+ 1418: 	case 0xC38:
+ 1419: 	case 0xE38:
+ 1420: 	case 0x1838:
+ 1421: 	case 0x1A38:
+ 1422: 		rate[0] = DESC_RATEMCS12;
+ 1423: 		rate[1] = DESC_RATEMCS13;
+ 1424: 		rate[2] = DESC_RATEMCS14;
+ 1425: 		rate[3] = DESC_RATEMCS15;
+ 1426: 		for (i = 0; i < 4; ++i)
+ 1427: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1428: 		*rate_num = 4;
+ 1429: 		break;
+ 1430: 	case 0xC3C:
+ 1431: 	case 0xE3C:
+ 1432: 	case 0x183C:
+ 1433: 	case 0x1A3C:
+ 1434: 		rate[0] = DESC_RATEVHT1SS_MCS0;
+ 1435: 		rate[1] = DESC_RATEVHT1SS_MCS1;
+ 1436: 		rate[2] = DESC_RATEVHT1SS_MCS2;
+ 1437: 		rate[3] = DESC_RATEVHT1SS_MCS3;
+ 1438: 		for (i = 0; i < 4; ++i)
+ 1439: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1440: 		*rate_num = 4;
+ 1441: 		break;
+ 1442: 	case 0xC40:
+ 1443: 	case 0xE40:
+ 1444: 	case 0x1840:
+ 1445: 	case 0x1A40:
+ 1446: 		rate[0] = DESC_RATEVHT1SS_MCS4;
+ 1447: 		rate[1] = DESC_RATEVHT1SS_MCS5;
+ 1448: 		rate[2] = DESC_RATEVHT1SS_MCS6;
+ 1449: 		rate[3] = DESC_RATEVHT1SS_MCS7;
+ 1450: 		for (i = 0; i < 4; ++i)
+ 1451: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1452: 		*rate_num = 4;
+ 1453: 		break;
+ 1454: 	case 0xC44:
+ 1455: 	case 0xE44:
+ 1456: 	case 0x1844:
+ 1457: 	case 0x1A44:
+ 1458: 		rate[0] = DESC_RATEVHT1SS_MCS8;
+ 1459: 		rate[1] = DESC_RATEVHT1SS_MCS9;
+ 1460: 		rate[2] = DESC_RATEVHT2SS_MCS0;
+ 1461: 		rate[3] = DESC_RATEVHT2SS_MCS1;
+ 1462: 		for (i = 0; i < 4; ++i)
+ 1463: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1464: 		*rate_num = 4;
+ 1465: 		break;
+ 1466: 	case 0xC48:
+ 1467: 	case 0xE48:
+ 1468: 	case 0x1848:
+ 1469: 	case 0x1A48:
+ 1470: 		rate[0] = DESC_RATEVHT2SS_MCS2;
+ 1471: 		rate[1] = DESC_RATEVHT2SS_MCS3;
+ 1472: 		rate[2] = DESC_RATEVHT2SS_MCS4;
+ 1473: 		rate[3] = DESC_RATEVHT2SS_MCS5;
+ 1474: 		for (i = 0; i < 4; ++i)
+ 1475: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1476: 		*rate_num = 4;
+ 1477: 		break;
+ 1478: 	case 0xC4C:
+ 1479: 	case 0xE4C:
+ 1480: 	case 0x184C:
+ 1481: 	case 0x1A4C:
+ 1482: 		rate[0] = DESC_RATEVHT2SS_MCS6;
+ 1483: 		rate[1] = DESC_RATEVHT2SS_MCS7;
+ 1484: 		rate[2] = DESC_RATEVHT2SS_MCS8;
+ 1485: 		rate[3] = DESC_RATEVHT2SS_MCS9;
+ 1486: 		for (i = 0; i < 4; ++i)
+ 1487: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1488: 		*rate_num = 4;
+ 1489: 		break;
+ 1490: 	case 0xCD8:
+ 1491: 	case 0xED8:
+ 1492: 	case 0x18D8:
+ 1493: 	case 0x1AD8:
+ 1494: 		rate[0] = DESC_RATEMCS16;
+ 1495: 		rate[1] = DESC_RATEMCS17;
+ 1496: 		rate[2] = DESC_RATEMCS18;
+ 1497: 		rate[3] = DESC_RATEMCS19;
+ 1498: 		for (i = 0; i < 4; ++i)
+ 1499: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1500: 		*rate_num = 4;
+ 1501: 		break;
+ 1502: 	case 0xCDC:
+ 1503: 	case 0xEDC:
+ 1504: 	case 0x18DC:
+ 1505: 	case 0x1ADC:
+ 1506: 		rate[0] = DESC_RATEMCS20;
+ 1507: 		rate[1] = DESC_RATEMCS21;
+ 1508: 		rate[2] = DESC_RATEMCS22;
+ 1509: 		rate[3] = DESC_RATEMCS23;
+ 1510: 		for (i = 0; i < 4; ++i)
+ 1511: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1512: 		*rate_num = 4;
+ 1513: 		break;
+ 1514: 	case 0xCE0:
+ 1515: 	case 0xEE0:
+ 1516: 	case 0x18E0:
+ 1517: 	case 0x1AE0:
+ 1518: 		rate[0] = DESC_RATEVHT3SS_MCS0;
+ 1519: 		rate[1] = DESC_RATEVHT3SS_MCS1;
+ 1520: 		rate[2] = DESC_RATEVHT3SS_MCS2;
+ 1521: 		rate[3] = DESC_RATEVHT3SS_MCS3;
+ 1522: 		for (i = 0; i < 4; ++i)
+ 1523: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1524: 		*rate_num = 4;
+ 1525: 		break;
+ 1526: 	case 0xCE4:
+ 1527: 	case 0xEE4:
+ 1528: 	case 0x18E4:
+ 1529: 	case 0x1AE4:
+ 1530: 		rate[0] = DESC_RATEVHT3SS_MCS4;
+ 1531: 		rate[1] = DESC_RATEVHT3SS_MCS5;
+ 1532: 		rate[2] = DESC_RATEVHT3SS_MCS6;
+ 1533: 		rate[3] = DESC_RATEVHT3SS_MCS7;
+ 1534: 		for (i = 0; i < 4; ++i)
+ 1535: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1536: 		*rate_num = 4;
+ 1537: 		break;
+ 1538: 	case 0xCE8:
+ 1539: 	case 0xEE8:
+ 1540: 	case 0x18E8:
+ 1541: 	case 0x1AE8:
+ 1542: 		rate[0] = DESC_RATEVHT3SS_MCS8;
+ 1543: 		rate[1] = DESC_RATEVHT3SS_MCS9;
+ 1544: 		for (i = 0; i < 2; ++i)
+ 1545: 			pwr_by_rate[i] = tbl_to_dec_pwr_by_rate(rtwdev, val, i);
+ 1546: 		*rate_num = 2;
+ 1547: 		break;
+ 1548: 	default:
+ 1549: 		rtw_warn(rtwdev, "invalid tx power index addr 0x%08x\n", addr);
+ 1550: 		break;
+ 1933: 	case 106:
+ 1934: 		return 4;
+ 1935: 	case 14:
+ 1936: 		return rate <= DESC_RATE11M ? 5 : 4;
+ 1937: 	case 108:
+ 1938: 	case 110:
+ 1939: 	case 112:
+ 1940: 	case 114:
+ 1941: 		return 5;
+ 1942: 	case 116:
+ 1943: 	case 118:
+ 1944: 	case 120:
+ 1988: 		return 0;
+ 1989: 
+ 1990: #define RTW_DPD_RATE_CHECK(_rate)					\
+ 1991: 	case DESC_RATE ## _rate:					\
+ 1992: 	if (DIS_DPD_RATE ## _rate & chip->dpd_ratemask)			\
+ 1993: 		dpd_diff = -6 * chip->txgi_factor;			\
+ 1994: 	break
+ 1995: 
+ 1996: 	switch (rate) {
+ 1997: 	RTW_DPD_RATE_CHECK(6M);
+ 1998: 	RTW_DPD_RATE_CHECK(9M);
+ 1999: 	RTW_DPD_RATE_CHECK(MCS0);
+ 2021: 	bool mcs_rate;
+ 2022: 	u8 tx_power;
+ 2023: 
+ 2024: 	if (rate <= DESC_RATE11M)
+ 2025: 		tx_power = pwr_idx_2g->cck_base[group];
+ 2026: 	else
+ 2027: 		tx_power = pwr_idx_2g->bw40_base[group];
+ 2028: 
+ 2029: 	if (rate >= DESC_RATE6M && rate <= DESC_RATE54M)
+ 2030: 		tx_power += pwr_idx_2g->ht_1s_diff.ofdm * factor;
+ 2031: 
+ 2032: 	mcs_rate = (rate >= DESC_RATEMCS0 && rate <= DESC_RATEMCS31) ||
+ 2033: 		   (rate >= DESC_RATEVHT1SS_MCS0 &&
+ 2034: 		    rate <= DESC_RATEVHT4SS_MCS9);
+ 2035: 	above_2ss = (rate >= DESC_RATEMCS8 && rate <= DESC_RATEMCS31) ||
+ 2036: 		    (rate >= DESC_RATEVHT2SS_MCS0);
+ 2037: 	above_3ss = (rate >= DESC_RATEMCS16 && rate <= DESC_RATEMCS31) ||
+ 2038: 		    (rate >= DESC_RATEVHT3SS_MCS0);
+ 2039: 	above_4ss = (rate >= DESC_RATEMCS24 && rate <= DESC_RATEMCS31) ||
+ 2040: 		    (rate >= DESC_RATEVHT4SS_MCS0);
+ 2041: 
+ 2042: 	if (!mcs_rate)
+ 2043: 		return tx_power;
+ 2044: 
+ 2083: 
+ 2084: 	tx_power = pwr_idx_5g->bw40_base[group];
+ 2085: 
+ 2086: 	mcs_rate = (rate >= DESC_RATEMCS0 && rate <= DESC_RATEMCS31) ||
+ 2087: 		   (rate >= DESC_RATEVHT1SS_MCS0 &&
+ 2088: 		    rate <= DESC_RATEVHT4SS_MCS9);
+ 2089: 	above_2ss = (rate >= DESC_RATEMCS8 && rate <= DESC_RATEMCS31) ||
+ 2090: 		    (rate >= DESC_RATEVHT2SS_MCS0);
+ 2091: 	above_3ss = (rate >= DESC_RATEMCS16 && rate <= DESC_RATEMCS31) ||
+ 2092: 		    (rate >= DESC_RATEVHT3SS_MCS0);
+ 2093: 	above_4ss = (rate >= DESC_RATEMCS24 && rate <= DESC_RATEMCS31) ||
+ 2094: 		    (rate >= DESC_RATEVHT4SS_MCS0);
+ 2142: /* return RTW_RATE_SECTION_NUM to indicate rate is invalid */
+ 2143: static u8 rtw_phy_rate_to_rate_section(u8 rate)
+ 2144: {
+ 2145: 	if (rate >= DESC_RATE1M && rate <= DESC_RATE11M)
+ 2146: 		return RTW_RATE_SECTION_CCK;
+ 2147: 	else if (rate >= DESC_RATE6M && rate <= DESC_RATE54M)
+ 2148: 		return RTW_RATE_SECTION_OFDM;
+ 2149: 	else if (rate >= DESC_RATEMCS0 && rate <= DESC_RATEMCS7)
+ 2150: 		return RTW_RATE_SECTION_HT_1S;
+ 2151: 	else if (rate >= DESC_RATEMCS8 && rate <= DESC_RATEMCS15)
+ 2152: 		return RTW_RATE_SECTION_HT_2S;
+ 2153: 	else if (rate >= DESC_RATEMCS16 && rate <= DESC_RATEMCS23)
+ 2154: 		return RTW_RATE_SECTION_HT_3S;
+ 2155: 	else if (rate >= DESC_RATEMCS24 && rate <= DESC_RATEMCS31)
+ 2156: 		return RTW_RATE_SECTION_HT_4S;
+ 2157: 	else if (rate >= DESC_RATEVHT1SS_MCS0 && rate <= DESC_RATEVHT1SS_MCS9)
+ 2158: 		return RTW_RATE_SECTION_VHT_1S;
+ 2159: 	else if (rate >= DESC_RATEVHT2SS_MCS0 && rate <= DESC_RATEVHT2SS_MCS9)
+ 2160: 		return RTW_RATE_SECTION_VHT_2S;
+ 2161: 	else if (rate >= DESC_RATEVHT3SS_MCS0 && rate <= DESC_RATEVHT3SS_MCS9)
+ 2162: 		return RTW_RATE_SECTION_VHT_3S;
+ 2163: 	else if (rate >= DESC_RATEVHT4SS_MCS0 && rate <= DESC_RATEVHT4SS_MCS9)
+ 2164: 		return RTW_RATE_SECTION_VHT_4S;
+ 2165: 	else
+ 2189: 		bw = RTW_CHANNEL_WIDTH_20;
+ 2190: 
+ 2191: 	/* only 20/40M BW with ht */
+ 2192: 	if (rate >= DESC_RATEMCS0 && rate <= DESC_RATEMCS31)
+ 2193: 		bw = min_t(u8, bw, RTW_CHANNEL_WIDTH_40);
+ 2194: 
+ 2195: 	/* select min power limit among [20M BW ~ current BW] */
+ 2196: 	for (cur_bw = RTW_CHANNEL_WIDTH_20; cur_bw <= bw; cur_bw++) {
+ 2197: 		cur_ch = cch_by_bw[cur_bw];
+ 2198: 
+ 2199: 		ch_idx = rtw_channel_to_idx(band, cur_ch);
+ 2200: 		if (ch_idx < 0)
+ 2269: 
+ 2270: 	*limit = rtw_phy_get_tx_power_limit(rtwdev, band, bw, path,
+ 2271: 					    rate, ch, regd);
+ 2272: 	*remnant = rate <= DESC_RATE11M ? dm_info->txagc_remnant_cck :
+ 2273: 					  dm_info->txagc_remnant_ofdm[path];
+ 2274: 	*sar = rtw_phy_get_tx_power_sar(rtwdev, hal->sar_band, path, rate);
+ 2275: }
+ 2276: 
+ 2277: u8
+ 2278: rtw_phy_get_tx_power_index(struct rtw_dev *rtwdev, u8 rf_path, u8 rate,
+ 2279: 			   enum rtw_bandwidth bandwidth, u8 channel, u8 regd)
+ 2280: {
+ 2451: 
+ 2452: 	/* init tx power by rate offset */
+ 2453: 	for (path = 0; path < RTW_RF_PATH_MAX; path++) {
+ 2454: 		for (rate = 0; rate < DESC_RATE_MAX; rate++) {
+ 2455: 			hal->tx_pwr_by_rate_offset_2g[path][rate] = 0;
+ 2456: 			hal->tx_pwr_by_rate_offset_5g[path][rate] = 0;
+ 2457: 		}
+ 2458: 	}
+ 2459: 
+ 2460: 	/* init tx power limit */
+ 2461: 	for (regd = 0; regd < RTW_REGD_MAX; regd++)
+ 2462: 		for (bw = 0; bw < RTW_CHANNEL_WIDTH_MAX; bw++)
+ 2473: 	u8 channel = rtwdev->hal.current_channel;
+ 2474: 
+ 2475: 	if (IS_CH_2G_BAND(channel)) {
+ 2476: 		if (rtwdev->dm_info.tx_rate <= DESC_RATE11M) {
+ 2477: 			swing_table->p[RF_PATH_A] = tbl->pwrtrk_2g_ccka_p;
+ 2478: 			swing_table->n[RF_PATH_A] = tbl->pwrtrk_2g_ccka_n;
+ 2479: 			swing_table->p[RF_PATH_B] = tbl->pwrtrk_2g_cckb_p;
+ 2480: 			swing_table->n[RF_PATH_B] = tbl->pwrtrk_2g_cckb_n;
+ 2481: 			swing_table->p[RF_PATH_C] = tbl->pwrtrk_2g_cckc_p;
+ 2482: 			swing_table->n[RF_PATH_C] = tbl->pwrtrk_2g_cckc_n;
+ 2483: 			swing_table->p[RF_PATH_D] = tbl->pwrtrk_2g_cckd_p;
+ 2484: 			swing_table->n[RF_PATH_D] = tbl->pwrtrk_2g_cckd_n;
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/rtw8723d.c
+==============================================================================
+  176: 	s8 min_rx_power = -120;
+  177: 	s8 rx_evm;
+  178: 
+  179: 	if (pkt_stat->rate > DESC_RATE11M && pkt_stat->rate < DESC_RATEMCS0)
+  180: 		rxsc = GET_PHY_STAT_P1_L_RXSC(phy_status);
+  181: 	else
+  182: 		rxsc = GET_PHY_STAT_P1_HT_RXSC(phy_status);
+  183: 
+  184: 	if (GET_PHY_STAT_P1_RF_MODE(phy_status) == 0)
+  185: 		bw = RTW_CHANNEL_WIDTH_20;
+  186: 	else if ((rxsc == 1) || (rxsc == 2))
+  187: 		bw = RTW_CHANNEL_WIDTH_20;
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/rtw8723x.c
+==============================================================================
+   13: #include "rtw8723x.h"
+   14: 
+   15: static const struct rtw_hw_reg rtw8723x_txagc[] = {
+   16: 	[DESC_RATE1M]	= { .addr = 0xe08, .mask = 0x0000ff00 },
+   17: 	[DESC_RATE2M]	= { .addr = 0x86c, .mask = 0x0000ff00 },
+   18: 	[DESC_RATE5_5M]	= { .addr = 0x86c, .mask = 0x00ff0000 },
+   19: 	[DESC_RATE11M]	= { .addr = 0x86c, .mask = 0xff000000 },
+   20: 	[DESC_RATE6M]	= { .addr = 0xe00, .mask = 0x000000ff },
+   21: 	[DESC_RATE9M]	= { .addr = 0xe00, .mask = 0x0000ff00 },
+   22: 	[DESC_RATE12M]	= { .addr = 0xe00, .mask = 0x00ff0000 },
+   23: 	[DESC_RATE18M]	= { .addr = 0xe00, .mask = 0xff000000 },
+   24: 	[DESC_RATE24M]	= { .addr = 0xe04, .mask = 0x000000ff },
+   25: 	[DESC_RATE36M]	= { .addr = 0xe04, .mask = 0x0000ff00 },
+   26: 	[DESC_RATE48M]	= { .addr = 0xe04, .mask = 0x00ff0000 },
+   27: 	[DESC_RATE54M]	= { .addr = 0xe04, .mask = 0xff000000 },
+   28: 	[DESC_RATEMCS0]	= { .addr = 0xe10, .mask = 0x000000ff },
+   29: 	[DESC_RATEMCS1]	= { .addr = 0xe10, .mask = 0x0000ff00 },
+   30: 	[DESC_RATEMCS2]	= { .addr = 0xe10, .mask = 0x00ff0000 },
+   31: 	[DESC_RATEMCS3]	= { .addr = 0xe10, .mask = 0xff000000 },
+   32: 	[DESC_RATEMCS4]	= { .addr = 0xe14, .mask = 0x000000ff },
+   33: 	[DESC_RATEMCS5]	= { .addr = 0xe14, .mask = 0x0000ff00 },
+   34: 	[DESC_RATEMCS6]	= { .addr = 0xe14, .mask = 0x00ff0000 },
+   35: 	[DESC_RATEMCS7]	= { .addr = 0xe14, .mask = 0xff000000 },
+   36: };
+  629: 	u8 limit_ofdm = 30;
+  630: 
+  631: 	switch (tx_rate) {
+  632: 	case DESC_RATE1M...DESC_RATE5_5M:
+  633: 	case DESC_RATE11M:
+  634: 		break;
+  635: 	case DESC_RATE6M...DESC_RATE48M:
+  636: 		limit_ofdm = 36;
+  637: 		break;
+  638: 	case DESC_RATE54M:
+  639: 		limit_ofdm = 34;
+  640: 		break;
+  641: 	case DESC_RATEMCS0...DESC_RATEMCS2:
+  642: 		limit_ofdm = 38;
+  643: 		break;
+  644: 	case DESC_RATEMCS3...DESC_RATEMCS4:
+  645: 		limit_ofdm = 36;
+  646: 		break;
+  647: 	case DESC_RATEMCS5...DESC_RATEMCS7:
+  648: 		limit_ofdm = 34;
+  649: 		break;
+  650: 	default:
+  651: 		rtw_warn(rtwdev, "pwrtrack unhandled tx_rate 0x%x\n", tx_rate);
+  652: 		break;
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/rtw8814a.c
+==============================================================================
+ 1183: 
+ 1184: 	pkt_stat->bw = RTW_CHANNEL_WIDTH_20;
+ 1185: 
+ 1186: 	if (pkt_stat->rate <= DESC_RATE11M) {
+ 1187: 		lna = le32_get_bits(rpt->w1, RTW_JGRPHY_W1_AGC_RPT_LNA_IDX);
+ 1188: 		vga = le32_get_bits(rpt->w1, RTW_JGRPHY_W1_AGC_RPT_VGA_IDX);
+ 1189: 
+ 1190: 		rx_pwr_db = rtw8814a_cck_rx_pwr(lna, vga);
+ 1191: 
+ 1192: 		pkt_stat->rx_power[RF_PATH_A] = rx_pwr_db;
+ 1193: 		pkt_stat->rssi = rtw_phy_rf_power_2_rssi(pkt_stat->rx_power, 1);
+ 1194: 		dm_info->rssi[RF_PATH_A] = pkt_stat->rssi;
+ 1209: 		evm[RF_PATH_C] = le32_get_bits(rpt->w4, RTW_JGRPHY_W4_RXEVM_3);
+ 1210: 		evm[RF_PATH_D] = le32_get_bits(rpt->w5, RTW_JGRPHY_W5_RXEVM_4);
+ 1211: 
+ 1212: 		if (pkt_stat->rate <= DESC_RATE54M)
+ 1213: 			evm[RF_PATH_A] = le32_get_bits(rpt->w6,
+ 1214: 						       RTW_JGRPHY_W6_SIGEVM);
+ 1215: 
+ 1216: 		for (i = RF_PATH_A; i < RTW_RF_PATH_MAX; i++) {
+ 1217: 			pkt_stat->rx_power[i] = gain[i] - 110;
+ 1218: 
+ 1219: 			rssi = rtw_phy_rf_power_2_rssi(&pkt_stat->rx_power[i], 1);
+ 1220: 			dm_info->rssi[i] = rssi;
+ 1290: 		/* first time to turn on the txagc table
+ 1291: 		 * second to write the addr0
+ 1292: 		 */
+ 1293: 		if (rate == DESC_RATE1M)
+ 1294: 			rtw_write32(rtwdev, REG_AGC_TBL, txagc_table_wd);
+ 1295: 	}
+ 1296: }
+ 1297: 
+ 1298: static void rtw8814a_set_tx_power_index(struct rtw_dev *rtwdev)
+ 1299: {
+ 1300: 	struct rtw_hal *hal = &rtwdev->hal;
+ 1301: 	int path;
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/rtw8821c.c
+==============================================================================
+  637: 	u8 rxsc, bw;
+  638: 	s8 min_rx_power = -120;
+  639: 
+  640: 	if (pkt_stat->rate > DESC_RATE11M && pkt_stat->rate < DESC_RATEMCS0)
+  641: 		rxsc = GET_PHY_STAT_P1_L_RXSC(phy_status);
+  642: 	else
+  643: 		rxsc = GET_PHY_STAT_P1_HT_RXSC(phy_status);
+  644: 
+  645: 	if (rxsc >= 1 && rxsc <= 8)
+  646: 		bw = RTW_CHANNEL_WIDTH_20;
+  647: 	else if (rxsc >= 9 && rxsc <= 12)
+  648: 		bw = RTW_CHANNEL_WIDTH_40;
+  693: 		pwr_index = hal->tx_pwr_tbl[path][rate];
+  694: 		shift = rate & 0x3;
+  695: 		*phy_pwr_idx |= ((u32)pwr_index << (shift * 8));
+  696: 		if (shift == 0x3 || rate == DESC_RATEVHT1SS_MCS9) {
+  697: 			rate_idx = rate & 0xfc;
+  698: 			rtw_write32(rtwdev, offset_txagc[path] + rate_idx,
+  699: 				    *phy_pwr_idx);
+  700: 			*phy_pwr_idx = 0;
+  701: 		}
+  702: 	}
+  703: }
+  704: 
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/rtw8822b.c
+==============================================================================
+  863: 	u8 rssi;
+  864: 	int path;
+  865: 
+  866: 	if (pkt_stat->rate > DESC_RATE11M && pkt_stat->rate < DESC_RATEMCS0)
+  867: 		rxsc = GET_PHY_STAT_P1_L_RXSC(phy_status);
+  868: 	else
+  869: 		rxsc = GET_PHY_STAT_P1_HT_RXSC(phy_status);
+  870: 
+  871: 	if (rxsc >= 1 && rxsc <= 8)
+  872: 		bw = RTW_CHANNEL_WIDTH_20;
+  873: 	else if (rxsc >= 9 && rxsc <= 12)
+  874: 		bw = RTW_CHANNEL_WIDTH_40;
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/rtw8822c.c
+==============================================================================
+ 2608: 	int path;
+ 2609: 	u8 channel;
+ 2610: 
+ 2611: 	if (pkt_stat->rate > DESC_RATE11M && pkt_stat->rate < DESC_RATEMCS0)
+ 2612: 		rxsc = GET_PHY_STAT_P1_L_RXSC(phy_status);
+ 2613: 	else
+ 2614: 		rxsc = GET_PHY_STAT_P1_HT_RXSC(phy_status);
+ 2615: 
+ 2616: 	if (rxsc == 0)
+ 2617: 		bw = rtwdev->hal.current_band_width;
+ 2618: 	else if (rxsc >= 1 && rxsc <= 8)
+ 2619: 		bw = RTW_CHANNEL_WIDTH_20;
+ 2737: {
+ 2738: 	struct rtw_hal *hal = &rtwdev->hal;
+ 2739: 	u8 rs, rate, j;
+ 2740: 	u8 pwr_ref_cck[2] = {hal->tx_pwr_tbl[RF_PATH_A][DESC_RATE11M],
+ 2741: 			     hal->tx_pwr_tbl[RF_PATH_B][DESC_RATE11M]};
+ 2742: 	u8 pwr_ref_ofdm[2] = {hal->tx_pwr_tbl[RF_PATH_A][DESC_RATEMCS7],
+ 2743: 			      hal->tx_pwr_tbl[RF_PATH_B][DESC_RATEMCS7]};
+ 2744: 	s8 diff_a, diff_b;
+ 2745: 	u8 pwr_a, pwr_b;
+ 2746: 	s8 diff_idx[4];
+ 2747: 
+ 2748: 	rtw8822c_set_write_tx_power_ref(rtwdev, pwr_ref_cck, pwr_ref_ofdm);
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/rx.c
+==============================================================================
+   54: 		cur_pkt_cnt->num_bcn_pkt++;
+   55: 
+   56: 	switch (pkt_stat->rate) {
+   57: 	case DESC_RATE1M...DESC_RATE11M:
+   58: 		goto pkt_num;
+   59: 	case DESC_RATE6M...DESC_RATE54M:
+   60: 		rate_ss = 0;
+   61: 		rate_ss_evm = 1;
+   62: 		evm_id = RTW_EVM_OFDM;
+   63: 		break;
+   64: 	case DESC_RATEMCS0...DESC_RATEMCS7:
+   65: 	case DESC_RATEVHT1SS_MCS0...DESC_RATEVHT1SS_MCS9:
+   67: 		rate_ss_evm = 1;
+   68: 		evm_id = RTW_EVM_1SS;
+   69: 		break;
+   70: 	case DESC_RATEMCS8...DESC_RATEMCS15:
+   71: 	case DESC_RATEVHT2SS_MCS0...DESC_RATEVHT2SS_MCS9:
+   72: 		rate_ss = 2;
+   73: 		rate_ss_evm = 2;
+   74: 		evm_id = RTW_EVM_2SS_A;
+   75: 		break;
+   76: 	case DESC_RATEMCS16...DESC_RATEMCS23:
+   77: 	case DESC_RATEVHT3SS_MCS0...DESC_RATEVHT3SS_MCS9:
+   78: 		rate_ss = 3;
+  212: 	if (pkt_stat->decrypted)
+  213: 		rx_status->flag |= RX_FLAG_DECRYPTED;
+  214: 
+  215: 	if (pkt_stat->rate >= DESC_RATEVHT1SS_MCS0)
+  216: 		rx_status->encoding = RX_ENC_VHT;
+  217: 	else if (pkt_stat->rate >= DESC_RATEMCS0)
+  218: 		rx_status->encoding = RX_ENC_HT;
+  219: 
+  220: 	if (rx_status->band == NL80211_BAND_5GHZ &&
+  221: 	    pkt_stat->rate >= DESC_RATE6M &&
+  222: 	    pkt_stat->rate <= DESC_RATE54M) {
+  223: 		rx_status->rate_idx = pkt_stat->rate - DESC_RATE6M;
+  224: 	} else if (rx_status->band == NL80211_BAND_2GHZ &&
+  225: 		   pkt_stat->rate >= DESC_RATE1M &&
+  226: 		   pkt_stat->rate <= DESC_RATE54M) {
+  227: 		rx_status->rate_idx = pkt_stat->rate - DESC_RATE1M;
+  228: 	} else if (pkt_stat->rate >= DESC_RATEMCS0) {
+  229: 		rtw_desc_to_mcsrate(pkt_stat->rate, &rx_status->rate_idx,
+  230: 				    &rx_status->nss);
+  231: 	}
+  232: 
+  233: 	rx_status->flag |= RX_FLAG_MACTIME_START;
+  234: 	rx_status->mactime = pkt_stat->tsf_low;
+  235: 
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/tx.c
+==============================================================================
+   83: 	tx_desc->w9 = le32_encode_bits(pkt_info->seq, RTW_TX_DESC_W9_SW_SEQ);
+   84: 
+   85: 	if (pkt_info->rts) {
+   86: 		tx_desc->w4 |= le32_encode_bits(DESC_RATE24M, RTW_TX_DESC_W4_RTSRATE);
+   87: 		tx_desc->w5 |= le32_encode_bits(1, RTW_TX_DESC_W5_DATA_RTS_SHORT);
+   88: 	}
+   89: 
+   90: 	if (pkt_info->tim_offset)
+   91: 		tx_desc->w9 |= le32_encode_bits(1, RTW_TX_DESC_W9_TIM_EN) |
+   92: 			       le32_encode_bits(pkt_info->tim_offset, RTW_TX_DESC_W9_TIM_OFFSET);
+   93: }
+   94: EXPORT_SYMBOL(rtw_tx_fill_tx_desc);
+  115: 	u8 rate;
+  116: 
+  117: 	if (rtwdev->hal.rf_type == RF_2T2R && sta->deflink.ht_cap.mcs.rx_mask[1] != 0)
+  118: 		rate = DESC_RATEMCS15;
+  119: 	else
+  120: 		rate = DESC_RATEMCS7;
+  121: 
+  122: 	return rate;
+  123: }
+  124: 
+  125: static u8 get_highest_vht_tx_rate(struct rtw_dev *rtwdev,
+  126: 				  struct ieee80211_sta *sta)
+  133: 	if (efuse->hw_cap.nss == 1) {
+  134: 		switch (tx_mcs_map & 0x3) {
+  135: 		case IEEE80211_VHT_MCS_SUPPORT_0_7:
+  136: 			rate = DESC_RATEVHT1SS_MCS7;
+  137: 			break;
+  138: 		case IEEE80211_VHT_MCS_SUPPORT_0_8:
+  139: 			rate = DESC_RATEVHT1SS_MCS8;
+  140: 			break;
+  141: 		default:
+  142: 		case IEEE80211_VHT_MCS_SUPPORT_0_9:
+  143: 			rate = DESC_RATEVHT1SS_MCS9;
+  144: 			break;
+  146: 	} else if (efuse->hw_cap.nss >= 2) {
+  147: 		switch ((tx_mcs_map & 0xc) >> 2) {
+  148: 		case IEEE80211_VHT_MCS_SUPPORT_0_7:
+  149: 			rate = DESC_RATEVHT2SS_MCS7;
+  150: 			break;
+  151: 		case IEEE80211_VHT_MCS_SUPPORT_0_8:
+  152: 			rate = DESC_RATEVHT2SS_MCS8;
+  153: 			break;
+  154: 		default:
+  155: 		case IEEE80211_VHT_MCS_SUPPORT_0_9:
+  156: 			rate = DESC_RATEVHT2SS_MCS9;
+  157: 			break;
+  278: {
+  279: 	if (rtwdev->hal.current_band_type == RTW_BAND_2G) {
+  280: 		pkt_info->rate_id = RTW_RATEID_B_20M;
+  281: 		pkt_info->rate = rtw_get_mgmt_rate(rtwdev, skb, DESC_RATE1M,
+  282: 						   ignore_rate);
+  283: 	} else {
+  284: 		pkt_info->rate_id = RTW_RATEID_G;
+  285: 		pkt_info->rate = rtw_get_mgmt_rate(rtwdev, skb, DESC_RATE6M,
+  286: 						   ignore_rate);
+  287: 	}
+  288: 
+  289: 	pkt_info->use_rate = true;
+  344: 	u8 ampdu_factor = 0;
+  345: 	u8 ampdu_density = 0;
+  346: 	bool ampdu_en = false;
+  347: 	u8 rate = DESC_RATE6M;
+  348: 	u8 rate_id = 6;
+  349: 	u8 bw = RTW_CHANNEL_WIDTH_20;
+  350: 	bool stbc = false;
+  351: 	bool ldpc = false;
+  352: 
+  353: 	seq = (le16_to_cpu(hdr->seq_ctrl) & IEEE80211_SCTL_SEQ) >> 4;
+  354: 
+  355: 	/* for broadcast/multicast, use default values */
+  370: 	else if (sta->deflink.ht_cap.ht_supported)
+  371: 		rate = get_highest_ht_tx_rate(rtwdev, sta);
+  372: 	else if (sta->deflink.supp_rates[0] <= 0xf)
+  373: 		rate = DESC_RATE11M;
+  374: 	else
+  375: 		rate = DESC_RATE54M;
+  376: 
+  377: 	si = (struct rtw_sta_info *)sta->drv_priv;
+  378: 
+  379: 	bw = si->bw_mode;
+  380: 	rate_id = si->rate_id;
+  381: 	stbc = rtwdev->hal.txrx_1ss ? false : si->stbc_en;
+  393: 	pkt_info->ldpc = ldpc;
+  394: 
+  395: 	fix_rate = dm_info->fix_rate;
+  396: 	if (fix_rate < DESC_RATE_MAX) {
+  397: 		pkt_info->rate = fix_rate;
+  398: 		pkt_info->dis_rate_fallback = true;
+  399: 		pkt_info->use_rate = true;
+  400: 	}
+  401: }
+  402: 
+  403: /* Direct AWDL peers do not have the infrastructure AP's firmware RA table.
+  404:  * Match our unencrypted TX envelopes before selecting a conservative OFDM
+  420: 
+  421: static void rtw_tx_awdl_rate(struct rtw_tx_pkt_info *pkt_info)
+  422: {
+  423: 	pkt_info->rate = DESC_RATE6M;
+  424: 	pkt_info->rate_id = RTW_RATEID_G;
+  425: 	pkt_info->bw = RTW_CHANNEL_WIDTH_20;
+  426: 	pkt_info->use_rate = true;
+  427: 	pkt_info->dis_rate_fallback = true;
+  428: }
+  429: 
+  430: void rtw_tx_pkt_info_update(struct rtw_dev *rtwdev,
+  431: 			    struct rtw_tx_pkt_info *pkt_info,
+
+==============================================================================
+FILE: rtw/hal_rtw88/driver/util.c
+==============================================================================
+   79: }
+   80: EXPORT_SYMBOL(rtw_restore_reg);
+   81: 
+   82: void rtw_desc_to_mcsrate(u16 rate, u8 *mcs, u8 *nss)
+   83: {
+   84: 	if (rate <= DESC_RATE54M)
+   85: 		return;
+   86: 
+   87: 	if (rate >= DESC_RATEVHT1SS_MCS0 &&
+   88: 	    rate <= DESC_RATEVHT1SS_MCS9) {
+   89: 		*nss = 1;
+   90: 		*mcs = rate - DESC_RATEVHT1SS_MCS0;
+   91: 	} else if (rate >= DESC_RATEVHT2SS_MCS0 &&
+   92: 		   rate <= DESC_RATEVHT2SS_MCS9) {
+   93: 		*nss = 2;
+   94: 		*mcs = rate - DESC_RATEVHT2SS_MCS0;
+   95: 	} else if (rate >= DESC_RATEVHT3SS_MCS0 &&
+   96: 		   rate <= DESC_RATEVHT3SS_MCS9) {
+   97: 		*nss = 3;
+   98: 		*mcs = rate - DESC_RATEVHT3SS_MCS0;
+   99: 	} else if (rate >= DESC_RATEVHT4SS_MCS0 &&
+  100: 		   rate <= DESC_RATEVHT4SS_MCS9) {
+  101: 		*nss = 4;
+  102: 		*mcs = rate - DESC_RATEVHT4SS_MCS0;
+  103: 	} else if (rate >= DESC_RATEMCS0 &&
+  104: 		   rate <= DESC_RATEMCS31) {
+  105: 		*nss = 0;
+  106: 		*mcs = rate - DESC_RATEMCS0;
+  107: 	}
+  108: }
+  109: 
+  110: struct rtw_stas_entry {
+  111: 	struct list_head list;
+  112: 	struct ieee80211_sta *sta;
+  113: };
+  114: 
+
+==============================================================================
+FILE: rtw/hal_rtw89/RTWCore89.cpp
+==============================================================================
+  306:     super::free();
+  307: }
+  308: 
+  309: bool RTWCore89::getTxRate(RTWTxRate &rate)
+  310: {
+  311:     rtw89LinuxGetTxRate(&linuxContext, rate);
+  312:     return true;
+  313: }
+  314: 
+  315: const char *RTWCore89::getFirmwareName()
+  316: {
+  317:     return sc.sc_fwname;
+  759:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RAAssocMask",
+  760:                             owner->linuxContext.raAuditU64[0], 64));
+  761:     RTWTxRate liveRate = {};
+  762:     owner->getTxRate(liveRate);
+  763:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RALiveValid", liveRate.valid));
+  764:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RALiveMode", liveRate.mode, 8));
+  765:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RALiveMcs", liveRate.mcs, 8));
+  766:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RALiveBandwidth", liveRate.widthMHz, 16));
+  767:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RALiveNss", liveRate.nss, 8));
+  768:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RALiveShortGI", liveRate.shortGI));
+  769:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RALiveGuardIntervalNs", liveRate.guardIntervalNs, 16));
+  770:     RTW_DIAGNOSTIC(controller->setProperty("RTW89RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+
+==============================================================================
+FILE: rtw/hal_rtw89/driver/Senmiko.c
+==============================================================================
+  686:     return cc != NULL;
+  687: }
+  688: 
+  689: static void rtw89_copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
+  690: {
+  691:     struct RTWTxRate *out = opaque;
+  692:     const struct rtw89_sta *rtwsta = sta_to_rtwsta(sta);
+  693:     const struct rtw89_sta_link *link = rtwsta->links[0];
+  694:     const struct rate_info *report;
+  695:     uint32_t modes;
+  696:     if (!link) return;
+  697:     report = &link->ra_report.txrate;
+  725:     } else {
+  726:         out->mode = RTW_RATE_LEGACY;
+  727:         out->nss = 1;
+  728:         out->bitrate100Kbps = report->legacy;
+  729:     }
+  730:     switch (report->bw) {
+  731:     case RATE_INFO_BW_20: out->widthMHz = 20; break;
+  732:     case RATE_INFO_BW_40: out->widthMHz = 40; break;
+  733:     case RATE_INFO_BW_80: out->widthMHz = 80; break;
+  734:     case RATE_INFO_BW_160: out->widthMHz = 160; break;
+  735:     default: return;
+  736:     }
+  742: {
+  743:     if (!out) return;
+  744:     memset(out, 0, sizeof(*out));
+  745:     if (hw) ieee80211_iterate_stations_atomic(hw, rtw89_copy_tx_rate, out);
+  746: }
+  747: 
+  748: /* Bound the software pool by the chip's MAC-ID namespace, including the
+  749:  * same MLO partition used by rtw89_acquire_mac_id(). Reserve the primary and
+  750:  * secondary VIF IDs; allocation can still fail if other users consume IDs. */
+  751: unsigned int rtw89_macos_awdl_peer_capacity(struct ieee80211_hw *hw)
+  752: {
+  753:     struct rtw89_dev *rtwdev;
+
+==============================================================================
+FILE: tests/rtw_tx_rate_test.cpp
+==============================================================================
+    3: int main()
+    4: {
+    5:     RTWTxRate r{};
+    6:     assert(rtw_tx_rate_calculate(nullptr)==0);
+    7:     r.mode=RTW_RATE_HT;r.widthMHz=20;r.mcs=7;r.nss=1;
+    8:     assert(rtw_tx_rate_calculate(&r)==650);
+    9:     r.shortGI=true;assert(rtw_tx_rate_calculate(&r)==722);
+   10:     r.widthMHz=40;r.mcs=15;r.nss=2;
+   11:     assert(rtw_tx_rate_calculate(&r)==3000);
+   12:     r.mcs=31;r.nss=4;assert(rtw_tx_rate_calculate(&r)==6000);
+   13:     r.mcs=32;assert(rtw_tx_rate_calculate(&r)==0);
+   14:     r.mcs=7;r.widthMHz=80;assert(rtw_tx_rate_calculate(&r)==0);
+   15:     r.mode=RTW_RATE_VHT;r.mcs=9;r.nss=1;r.widthMHz=80;
+   16:     assert(rtw_tx_rate_calculate(&r)==4333);
+   17:     r.nss=2;assert(rtw_tx_rate_calculate(&r)==8667);
+   18:     r.widthMHz=40;r.nss=1;assert(rtw_tx_rate_calculate(&r)==2000);
+   19:     r.shortGI=false;assert(rtw_tx_rate_calculate(&r)==1800);
+   20:     r.mcs=7;assert(rtw_tx_rate_calculate(&r)==1350);
+   21:     r.nss=0;assert(rtw_tx_rate_calculate(&r)==0);
+   22:     r.nss=5;assert(rtw_tx_rate_calculate(&r)==0);
+   23:     r.nss=1;r.mcs=10;assert(rtw_tx_rate_calculate(&r)==0);
+   24:     r.mcs=0;r.widthMHz=10;assert(rtw_tx_rate_calculate(&r)==0);
+   25:     r.mode=RTW_RATE_HE;r.widthMHz=80;r.mcs=11;r.nss=2;r.guardIntervalNs=800;
+   26:     r.shortGI=false;r.dcm=false;
+   27:     assert(rtw_tx_rate_calculate(&r)==12010);
+   28:     r.nss=1;assert(rtw_tx_rate_calculate(&r)==6005);
+   29:     r.widthMHz=20;assert(rtw_tx_rate_calculate(&r)==1434);
+   30:     r.mcs=0;assert(rtw_tx_rate_calculate(&r)==86);
+   31:     r.dcm=true;assert(rtw_tx_rate_calculate(&r)==43);
+   32:     r.mcs=11;assert(rtw_tx_rate_calculate(&r)==0); // DCM is not valid at MCS11.
+   33:     r.dcm=false;r.widthMHz=80;r.nss=2;r.guardIntervalNs=1600;
+   34:     assert(rtw_tx_rate_calculate(&r)==11343);
+   35:     r.guardIntervalNs=3200;assert(rtw_tx_rate_calculate(&r)==10208);
+   36:     r.guardIntervalNs=400;assert(rtw_tx_rate_calculate(&r)==0);
+   37:     r.guardIntervalNs=800;r.mcs=12;assert(rtw_tx_rate_calculate(&r)==0);
+   38:     r.mcs=11;r.nss=0;assert(rtw_tx_rate_calculate(&r)==0);
+   39:     r.nss=9;assert(rtw_tx_rate_calculate(&r)==0);
+   40:     r.nss=1;r.widthMHz=320;assert(rtw_tx_rate_calculate(&r)==0);
+   41:     r.mode=RTW_RATE_LEGACY;r.bitrate100Kbps=540;
+   42:     assert(rtw_tx_rate_calculate(&r)==540);
+   43:     r.bitrate100Kbps=55;assert(rtw_tx_rate_calculate(&r)==55);
+   44: }
+
+=== WORKTREE STATUS ===
  M .DS_Store
  M rtw/hal_rtw88/RTWCore88.cpp
  M rtw/hal_rtw88/driver/tx.c
-RATE_FUNCTIONS_LOG=/Users/shohel/Desktop/AirportRTW-RATE-FUNCTIONS.txt
+
+=== HEAD ===
+2033dc3d581dcb4faaa46651f31c0f4a0b322e0b
+
+RATE_TRACE_LOG=/Users/shohel/Desktop/AirportRTW-RATE-TRACE.txt
 shohel@Mahfujuls-MacBook-Pro AirportRTW-port-txrx % 
