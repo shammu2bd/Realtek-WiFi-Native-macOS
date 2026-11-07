@@ -1,377 +1,330 @@
-Last login: Sat Nov  7 15:16:21 on ttys000
+Last login: Sat Nov  7 15:28:15 on ttys000
 shohel@Mahfujuls-MacBook-Pro ~ % >....                                          
-        rtw/hal_rtw88/driver/rtw8821c.c
+    echo "=== RSSI LEVEL CALCULATION AND UPDATES ==="
+    git grep -n -E 'rssi_level|rtw_update_sta_info|ewma_rssi|avg_rssi'
 
     echo
-    echo "=== RA REPORT EVENT DISPATCH ==="
-    sed -n '300,345p' rtw/hal_rtw88/driver/fw.c
+    echo "=== FIRMWARE RATE DECODERS ==="
+    git grep -n -E 'rtw_desc_to_mcsrate|rtw_desc_to_bitrate|DESC_RATEVHT|DESC_RATEMCS0'
 
     echo
-    echo "=== RATE CALCULATION AND REPORT WRITERS ==="
-    git grep -n -E \
-      'rtw_desc_to_bitrate|rtw_desc_to_mcsrate|ra_report\.bit_rate|ra_report\.txrate|rtw_fw_ra_report' \
-      -- rtw/hal_rtw88
+    echo "=== C2H RA REPORT STRUCTURE ==="
+    git grep -n -E 'rtw_c2h_ra_rpt|c2h_ra_report_size|RA_RPT_RATE|RA_RPT_SGI'
 
     echo
-    echo "=== SEQUOIA TARGET SOURCE MEMBERSHIP ==="
-    grep -n -E \
-      'AirportRTWSkywalkInterface.cpp|AirportRTWNativeInterface|AirportRTWV2.cpp|RTWCore88.cpp|Rtw88Hardware.c' \
-      AirportRTW.xcodeproj/project.pbxproj
+    echo "=== RTL8821C RATE ID DEFINITIONS ==="
+    git grep -n -E 'RTW_RATEID_ARFR1_AC_1SS|ARFR1_AC_1SS'
 
+    echo
+    echo "=== SOURCE STATUS ==="
+    git status --short
 } 2>&1 | tee "$LOG"
 
-echo "LOG=$LOG"
-=== REVISION ===
-2033dc3d581dcb4faaa46651f31c0f4a0b322e0b
- M .DS_Store
- M rtw/hal_rtw88/driver/tx.c
+echo
+echo "DECODER_LOG=$LOG"
+=== RSSI LEVEL CALCULATION AND UPDATES ===
+rtw/hal_rtw88/Rtw88Namespace.h:465:#define rtw_update_sta_info airportrtw88_rtw_update_sta_info
+rtw/hal_rtw88/compat/net/mac80211.h:1902:                                s32 rssi_level, gfp_t gfp);
+rtw/hal_rtw88/compat/rtw88_compat.c:631:                                int event, s32 rssi_level, gfp_t gfp) {}
+rtw/hal_rtw88/compat/rtw88_compat.c:1306:     * STA (rtw_update_sta_info builds an HT/VHT RA mask), the firmware adapts
+rtw/hal_rtw88/driver/coex.c:3872:	rssi = ewma_rssi_read(&si->avg_rssi);
+rtw/hal_rtw88/driver/fw.c:721:	u8 rssi = ewma_rssi_read(&si->avg_rssi);
+rtw/hal_rtw88/driver/mac80211.c:777:	rtw_update_sta_info(br_data->rtwdev, si, true);
+rtw/hal_rtw88/driver/main.c:357:	rtw_update_sta_info(rtwdev, si, true);
+rtw/hal_rtw88/driver/main.c:380:	ewma_rssi_init(&si->avg_rssi);
+rtw/hal_rtw88/driver/main.c:385:	rtw_update_sta_info(rtwdev, si, true);
+rtw/hal_rtw88/driver/main.c:1156:	u8 rssi_level = si->rssi_level;
+rtw/hal_rtw88/driver/main.c:1161:	if (rssi_level == 0)
+rtw/hal_rtw88/driver/main.c:1163:	else if (rssi_level == 1)
+rtw/hal_rtw88/driver/main.c:1165:	else if (rssi_level == 2)
+rtw/hal_rtw88/driver/main.c:1167:	else if (rssi_level == 3)
+rtw/hal_rtw88/driver/main.c:1169:	else if (rssi_level == 4)
+rtw/hal_rtw88/driver/main.c:1228:void rtw_update_sta_info(struct rtw_dev *rtwdev, struct rtw_sta_info *si,
+rtw/hal_rtw88/driver/main.h:767:	struct ewma_rssi avg_rssi;
+rtw/hal_rtw88/driver/main.h:768:	u8 rssi_level;
+rtw/hal_rtw88/driver/main.h:2243:void rtw_update_sta_info(struct rtw_dev *rtwdev, struct rtw_sta_info *si,
+rtw/hal_rtw88/driver/phy.c:292:static u8 rtw_phy_get_rssi_level(u8 old_level, u8 rssi)
+rtw/hal_rtw88/driver/phy.c:324:	rssi = ewma_rssi_read(&si->avg_rssi);
+rtw/hal_rtw88/driver/phy.c:325:	si->rssi_level = rtw_phy_get_rssi_level(si->rssi_level, rssi);
+rtw/hal_rtw88/driver/phy.c:602:	rtw_update_sta_info(rtwdev, si, false);
+rtw/hal_rtw88/driver/rx.c:127:	ewma_rssi_add(&si->avg_rssi, pkt_stat->rssi);
+rtw/hal_rtw89/compat/net/mac80211.h:1916:                                s32 rssi_level, gfp_t gfp);
+rtw/hal_rtw89/compat/rtw88_compat.c:640:                                int event, s32 rssi_level, gfp_t gfp) {}
+rtw/hal_rtw89/compat/rtw88_compat.c:1291:     * STA (rtw_update_sta_info builds an HT/VHT RA mask), the firmware adapts
+rtw/hal_rtw89/driver/coex.c:3179:			if (wl->rssi_level == 4 && bt->rssi_level > 2)
+rtw/hal_rtw89/driver/coex.c:3181:			else if (wl->rssi_level == 3 && bt->rssi_level > 3)
+rtw/hal_rtw89/driver/coex.c:3591:	} else if (wl->rssi_level > 1) {/* WL rssi < 50% (-60dBm) */
+rtw/hal_rtw89/driver/coex.c:3595:		if (wl->rssi_level == 0 && bt_linfo->rssi > 31) {
+rtw/hal_rtw89/driver/coex.c:3598:		} else if (wl->rssi_level == 1 && bt_linfo->rssi > 36) {
+rtw/hal_rtw89/driver/coex.c:8015:static u8 _update_bt_rssi_level(struct rtw89_dev *rtwdev, u8 rssi)
+rtw/hal_rtw89/driver/coex.c:8020:	u8 *rssi_st, rssi_th, rssi_level = 0;
+rtw/hal_rtw89/driver/coex.c:8024:	 * if rssi >= 40% (-60dBm) --> rssi_level = 4
+rtw/hal_rtw89/driver/coex.c:8025:	 * if 36% <= rssi < 40%    --> rssi_level = 3
+rtw/hal_rtw89/driver/coex.c:8026:	 * if 31% <= rssi < 36%    --> rssi_level = 2
+rtw/hal_rtw89/driver/coex.c:8027:	 * if 28% <= rssi < 31%    --> rssi_level = 1
+rtw/hal_rtw89/driver/coex.c:8028:	 * if rssi < 28%           --> rssi_level = 0
+rtw/hal_rtw89/driver/coex.c:8039:			rssi_level = BTC_BT_RSSI_THMAX - i;
+rtw/hal_rtw89/driver/coex.c:8043:	return rssi_level;
+rtw/hal_rtw89/driver/coex.c:8132:	bt->rssi_level = _update_bt_rssi_level(rtwdev, b->rssi);
+rtw/hal_rtw89/driver/coex.c:8133:	btc->dm.trx_info.bt_rssi = bt->rssi_level;
+rtw/hal_rtw89/driver/coex.c:8542:	rssi = ewma_rssi_read(&rtwsta_link->avg_rssi) >> RSSI_FACTOR;
+rtw/hal_rtw89/driver/coex.c:8682:	wl->rssi_level = 0;
+rtw/hal_rtw89/driver/coex.c:8687:			wl->rssi_level = i;
+rtw/hal_rtw89/driver/coex.c:8692:	if (dm->trx_info.wl_rssi != wl->rssi_level)
+rtw/hal_rtw89/driver/coex.c:8693:		dm->trx_info.wl_rssi = wl->rssi_level;
+rtw/hal_rtw89/driver/coex.c:9158:		       bt->rssi_level,
+rtw/hal_rtw89/driver/coex.c:9667:			       "[trx_ctrl]", wl->rssi_level,
+rtw/hal_rtw89/driver/coex.c:9673:			       "[trx_ctrl]", wl->rssi_level,
+rtw/hal_rtw89/driver/core.c:2232:	ewma_rssi_add(&rtwsta_link->avg_rssi, phy_ppdu->rssi_avg);
+rtw/hal_rtw89/driver/core.c:2235:		ewma_rssi_add(&rtwsta_link->rssi[ant_pos], phy_ppdu->rssi[0]);
+rtw/hal_rtw89/driver/core.c:2238:			ewma_rssi_add(&rtwsta_link->rssi[i], phy_ppdu->rssi[i]);
+rtw/hal_rtw89/driver/core.c:2993:	u8 rssi = ewma_rssi_read(&rtwdev->phystat.bcn_rssi);
+rtw/hal_rtw89/driver/core.c:3237:			ewma_rssi_add(&rtwdev->phystat.bcn_rssi, phy_ppdu->rssi_avg);
+rtw/hal_rtw89/driver/core.c:4928:	rssi = ewma_rssi_read(&rtwdev->phystat.bcn_rssi);
+rtw/hal_rtw89/driver/core.c:5191:	ewma_rssi_init(&rtwsta_link->avg_rssi);
+rtw/hal_rtw89/driver/core.c:5195:		ewma_rssi_init(&rtwsta_link->rssi[i]);
+rtw/hal_rtw89/driver/core.h:2008:	u8 rssi_level;
+rtw/hal_rtw89/driver/core.h:2178:	u8 rssi_level;
+rtw/hal_rtw89/driver/core.h:2751:	u8 rssi; /* [7:4] -> bt_rssi_level, [3:0]-> wl_rssi_level */
+rtw/hal_rtw89/driver/core.h:2769:	u8 rssi; /* [7:4] -> bt_rssi_level, [3:0]-> wl_rssi_level */
+rtw/hal_rtw89/driver/core.h:3536:	struct ewma_rssi avg_rssi;
+rtw/hal_rtw89/driver/core.h:3537:	struct ewma_rssi rssi[RF_PATH_MAX];
+rtw/hal_rtw89/driver/core.h:4457:	struct ewma_rssi cck_rssi_avg;
+rtw/hal_rtw89/driver/core.h:4458:	struct ewma_rssi ofdm_rssi_avg;
+rtw/hal_rtw89/driver/core.h:4459:	struct ewma_rssi non_legacy_rssi_avg;
+rtw/hal_rtw89/driver/core.h:5296:	struct ewma_rssi bcn_rssi;
+rtw/hal_rtw89/driver/debug.c:3956:	rssi = ewma_rssi_read(&rtwsta_link->avg_rssi);
+rtw/hal_rtw89/driver/debug.c:3961:		rssi = ewma_rssi_read(&rtwsta_link->rssi[i]);
+rtw/hal_rtw89/driver/debug.c:4058:	rssi = ewma_rssi_read(&rtwdev->phystat.bcn_rssi);
+rtw/hal_rtw89/driver/debug.c:4807:		       ewma_rssi_read(&rtwdev->phystat.bcn_rssi));
+rtw/hal_rtw89/driver/phy.c:339:	u8 rssi = ewma_rssi_read(&rtwsta_link->avg_rssi);
+rtw/hal_rtw89/driver/phy.c:748:	u8 rssi = ewma_rssi_read(&rtwsta_link->avg_rssi) >> RSSI_FACTOR;
+rtw/hal_rtw89/driver/phy.c:5595:	ewma_rssi_init(&antdiv_sts->cck_rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5596:	ewma_rssi_init(&antdiv_sts->ofdm_rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5597:	ewma_rssi_init(&antdiv_sts->non_legacy_rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5610:			ewma_rssi_add(&stats->cck_rssi_avg, phy_ppdu->rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5613:			ewma_rssi_add(&stats->ofdm_rssi_avg, phy_ppdu->rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5618:		ewma_rssi_add(&stats->non_legacy_rssi_avg, phy_ppdu->rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5628:		return ewma_rssi_read(&stats->non_legacy_rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5631:		return ewma_rssi_read(&stats->ofdm_rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5633:		return ewma_rssi_read(&stats->cck_rssi_avg);
+rtw/hal_rtw89/driver/phy.c:5773:	rssi_curr = ewma_rssi_read(&rtwsta_link->avg_rssi);
+rtw/hal_rtw89/driver/phy.c:5833:	ewma_rssi_init(&phystat->bcn_rssi);
+rtw/hal_rtw89/driver/phy.c:7311:	if (ewma_rssi_read(&rtwsta_link->avg_rssi) < mcc_dig->rssi_min)
+rtw/hal_rtw89/driver/phy.c:7312:		mcc_dig->rssi_min = ewma_rssi_read(&rtwsta_link->avg_rssi);
+rtw/hal_rtw89/driver/phy.c:7454:	rssi_a = ewma_rssi_read(&rtwsta_link->rssi[RF_PATH_A]);
+rtw/hal_rtw89/driver/phy.c:7455:	rssi_b = ewma_rssi_read(&rtwsta_link->rssi[RF_PATH_B]);
+rtw/hal_rtw89/driver/rtw8852a.c:2167:			raw = ewma_rssi_read(&rtwdev->phystat.bcn_rssi);
+rtw80211/openbsd/net80211/ieee80211_rssadapt.c:131:		if ((*thrs)[i] < ra->ra_avg_rssi)
+rtw80211/openbsd/net80211/ieee80211_rssadapt.c:142:		    (*thrs)[rateidx], ra->ra_avg_rssi);
+rtw80211/openbsd/net80211/ieee80211_rssadapt.c:170:	int last_avg_rssi = ra->ra_avg_rssi;
+rtw80211/openbsd/net80211/ieee80211_rssadapt.c:173:	ra->ra_avg_rssi = interpolate(master_expavgctl.rc_avgrssi,
+rtw80211/openbsd/net80211/ieee80211_rssadapt.c:174:	    ra->ra_avg_rssi, (rssi << 8));
+rtw80211/openbsd/net80211/ieee80211_rssadapt.c:178:	    rssi, last_avg_rssi, ra->ra_avg_rssi));
+rtw80211/openbsd/net80211/ieee80211_rssadapt.c:262:			newthr = ra->ra_avg_rssi;
+rtw80211/openbsd/net80211/ieee80211_rssadapt.h:77:	u_int16_t		ra_avg_rssi;
+tests/rtw_awdl_peer_role_test.py:30:    ieee80211_sta sta; int prev_rssi,ba_cam_list,avg_rssi,avg_snr,evm_1ss;
+tests/rtw_awdl_peer_role_test.py:38:static void ewma_rssi_init(int *p) { *p=0; }
 
-=== FIRMWARE RATE REPORT PARSER ===
-		return 1200;
-
-	/* lower than 40M 2ss mcs9, make it medium */
-	if (bit_rate < 4000)
-		return 2600;
-
-	/* not yet 80M 2ss mcs8/9, make it twice regular packet size */
-	if (bit_rate < 7000)
-		return 3500;
-
-	/* unlimited */
-	return 0;
-}
-
-struct rtw_fw_iter_ra_data {
-	struct rtw_dev *rtwdev;
-	u8 *payload;
-	u8 length;
-};
-
-static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
-{
-	struct rtw_fw_iter_ra_data *ra_data = data;
-	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)ra_data->payload;
-	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
-	u8 mac_id, rate, sgi, bw;
-	u8 mcs, nss;
-	u32 bit_rate;
-
-	mac_id = ra_rpt->mac_id;
-	if (si->mac_id != mac_id)
-		return;
-
-	si->ra_report.txrate.flags = 0;
-
-	rate = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE);
-	sgi = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_SGI);
-	if (ra_data->length >= offsetofend(typeof(*ra_rpt), bw))
-		bw = ra_rpt->bw;
-	else
-		bw = si->bw_mode;
-
-	if (rate < DESC_RATEMCS0) {
-		si->ra_report.txrate.legacy = rtw_desc_to_bitrate(rate);
-		goto legacy;
-	}
-
-	rtw_desc_to_mcsrate(rate, &mcs, &nss);
-	if (rate >= DESC_RATEVHT1SS_MCS0)
-		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_VHT_MCS;
-	else if (rate >= DESC_RATEMCS0)
-		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_MCS;
-
-	if (rate >= DESC_RATEMCS0) {
-		si->ra_report.txrate.mcs = mcs;
-		si->ra_report.txrate.nss = nss;
-	}
-
-	if (sgi)
-		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
-
-	if (bw == RTW_CHANNEL_WIDTH_80)
-		si->ra_report.txrate.bw = RATE_INFO_BW_80;
-	else if (bw == RTW_CHANNEL_WIDTH_40)
-		si->ra_report.txrate.bw = RATE_INFO_BW_40;
-	else
-		si->ra_report.txrate.bw = RATE_INFO_BW_20;
-
-legacy:
-	bit_rate = cfg80211_calculate_bitrate(&si->ra_report.txrate);
-
-	si->ra_report.desc_rate = rate;
-	si->ra_report.bit_rate = bit_rate;
-
-	sta->deflink.agg.max_rc_amsdu_len = get_max_amsdu_len(bit_rate);
-}
-
-static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
-				    u8 length)
-{
-	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)payload;
-	struct rtw_fw_iter_ra_data ra_data;
-
-	if (WARN(length < rtwdev->chip->c2h_ra_report_size,
-		 "invalid ra report c2h length %d\n", length))
-		return;
-
-	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
-					      RTW_C2H_RA_RPT_RATE);
-	ra_data.rtwdev = rtwdev;
-	ra_data.payload = payload;
-	ra_data.length = length;
-	rtw_iterate_stas_atomic(rtwdev, rtw_fw_ra_report_iter, &ra_data);
-}
-
-struct rtw_beacon_filter_iter_data {
-	struct rtw_dev *rtwdev;
-	u8 *payload;
-};
-
-static void rtw_fw_bcn_filter_notify_vif_iter(void *data,
-					      struct ieee80211_vif *vif)
-{
-	struct rtw_beacon_filter_iter_data *iter_data = data;
-	struct rtw_dev *rtwdev = iter_data->rtwdev;
-	u8 *payload = iter_data->payload;
-
-=== RATE REPORT STRUCTURES ===
-
-	u32 total_cam_num;
-	struct rtw_cam_entry cam_table[RTW_MAX_SEC_CAM_NUM];
-	DECLARE_BITMAP(cam_map, RTW_MAX_SEC_CAM_NUM);
-};
-
-struct rtw_tx_report {
-	/* protect the tx report queue */
-	spinlock_t q_lock;
-	struct sk_buff_head queue;
-	atomic_t sn;
-	struct timer_list purge_timer;
-};
-
-struct rtw_ra_report {
-	struct rate_info txrate;
-	u32 bit_rate;
-	u8 desc_rate;
-};
-
-struct rtw_txq {
-	struct list_head list;
-	unsigned long flags;
-};
-
-DECLARE_EWMA(rssi, 10, 16);
-
-struct rtw_sta_info {
-	struct rtw_dev *rtwdev;
-	struct ieee80211_sta *sta;
-	struct ieee80211_vif *vif;
-
-	struct ewma_rssi avg_rssi;
-	u8 rssi_level;
-
-	u8 mac_id;
-	u8 rate_id;
-	enum rtw_bandwidth bw_mode;
-	u8 stbc_en:2;
-	u8 ldpc_en:2;
-	bool sgi_enable;
-	bool vht_enable;
-	u8 init_ra_lv;
-	u64 ra_mask;
-
-	DECLARE_BITMAP(tid_ba, IEEE80211_NUM_TIDS);
-
-	struct rtw_ra_report ra_report;
-
-	bool use_cfg_mask;
-	struct cfg80211_bitrate_mask *mask;
-
-	struct work_struct rc_work;
-};
-
-enum rtw_bfee_role {
-	RTW_BFEE_NONE,
-	RTW_BFEE_SU,
-	RTW_BFEE_MU
-};
-
-};
-
-/* rate_info — used by rtw_ra_report in main.h */
-#define RATE_INFO_FLAGS_MCS       (1 << 0)
-#define RATE_INFO_FLAGS_VHT_MCS   (1 << 1)
-#define RATE_INFO_FLAGS_SHORT_GI  (1 << 2)
-#define RATE_INFO_FLAGS_HE_MCS    (1 << 3)
-#define RATE_INFO_FLAGS_EHT_MCS   (1 << 4)
-
-struct rate_info {
-    u32 flags;
-    u32 legacy;
-    u8  mcs;
-    u8  nss;
-    u8  bw;
-    u8  he_gi;
-    u8  he_dcm;
-    u8  he_ru_alloc;
-    u8  n_bonded_ch;
-    u8  eht_gi;
-    u8  eht_ru_alloc;
-};
-
-static inline u32 cfg80211_calculate_bitrate(struct rate_info *rate)
-{
-    if (rate->flags & RATE_INFO_FLAGS_VHT_MCS)
-        return rate->nss * (rate->mcs + 1) * 1000; /* rough estimate */
-    if (rate->flags & RATE_INFO_FLAGS_MCS)
-        return (rate->mcs + 1) * 1000;
-    return rate->legacy * 100; /* legacy is in 100kbps units */
-}
-
-struct station_info {
-    u64              filled;
-    struct rate_info txrate;
-    struct rate_info rxrate;
-    u32  inactive_time;
-    u64  rx_bytes;
-    u64  tx_bytes;
-    u32  rx_packets;
-    u32  tx_packets;
-    s8   signal;
-    s8   signal_avg;
-};
-
-struct ieee80211_prep_tx_info {
-    u16 duration;
-    bool success;
-};
-
-/* ------------------------------------------------------------------ */
-
-=== RTL8821CE RA REPORT CONFIGURATION ===
-1990-	.max_power_index = 0x3f,
-1991-	.csi_buf_pg_num = 0,
-1992-	.band = RTW_BAND_2G | RTW_BAND_5G,
-1993-	.page_size = TX_PAGE_SIZE,
-1994-	.dig_min = 0x1c,
-1995-	.amsdu_in_ampdu = true,
-1996-	.usb_tx_agg_desc_num = 3,
-1997-	.hw_feature_report = true,
-1998:	.c2h_ra_report_size = 7,
-1999-	.old_datarate_fb_limit = false,
-2000-	.ht_supported = true,
-2001-	.vht_supported = true,
-2002-	.lps_deep_mode_supported = BIT(LPS_DEEP_MODE_LCLK),
-2003-	.sys_func_en = 0xD8,
-2004-	.pwr_on_seq = card_enable_flow_8821c,
-2005-	.pwr_off_seq = card_disable_flow_8821c,
-2006-	.page_table = page_table_8821c,
-2007-	.rqpn_table = rqpn_table_8821c,
-2008-	.prioq_addrs = &prioq_addrs_8821c,
-2009-	.intf_table = &phy_para_table_8821c,
-2010-	.dig = rtw8821c_dig,
-
-=== RA REPORT EVENT DISPATCH ===
-	struct rtw_c2h_cmd *c2h;
-	u32 pkt_offset;
-	u8 len;
-
-	pkt_offset = *((u32 *)skb->cb);
-	c2h = (struct rtw_c2h_cmd *)(skb->data + pkt_offset);
-	len = skb->len - pkt_offset - 2;
-
-	mutex_lock(&rtwdev->mutex);
-
-	if (!test_bit(RTW_FLAG_RUNNING, rtwdev->flags))
-		goto unlock;
-
-	switch (c2h->id) {
-	case C2H_CCX_TX_RPT:
-		rtw_tx_report_handle(rtwdev, skb, C2H_CCX_TX_RPT);
-		break;
-	case C2H_BT_INFO:
-		rtw_coex_bt_info_notify(rtwdev, c2h->payload, len);
-		break;
-	case C2H_BT_HID_INFO:
-		rtw_coex_bt_hid_info_notify(rtwdev, c2h->payload, len);
-		break;
-	case C2H_WLAN_INFO:
-		rtw_coex_wl_fwdbginfo_notify(rtwdev, c2h->payload, len);
-		break;
-	case C2H_BCN_FILTER_NOTIFY:
-		rtw_fw_bcn_filter_notify(rtwdev, c2h->payload, len);
-		break;
-	case C2H_HALMAC:
-		rtw_fw_c2h_cmd_handle_ext(rtwdev, skb);
-		break;
-	case C2H_RA_RPT:
-		rtw_fw_ra_report_handle(rtwdev, c2h->payload, len);
-		break;
-	case C2H_ADAPTIVITY:
-		rtw_fw_adaptivity_result(rtwdev, c2h->payload, len);
-		break;
-	default:
-		rtw_dbg(rtwdev, RTW_DBG_FW, "C2H 0x%x isn't handled\n", c2h->id);
-		break;
-	}
-
-unlock:
-	mutex_unlock(&rtwdev->mutex);
-}
-
-=== RATE CALCULATION AND REPORT WRITERS ===
-rtw/hal_rtw88/Rtw88Hardware.c:152:    const struct rate_info *report = &si->ra_report.txrate;
-rtw/hal_rtw88/Rtw88Hardware.c:153:    if (!si->ra_report.bit_rate) return;
+=== FIRMWARE RATE DECODERS ===
 rtw/hal_rtw88/Rtw88Namespace.h:293:#define rtw_desc_to_bitrate airportrtw88_rtw_desc_to_bitrate
 rtw/hal_rtw88/Rtw88Namespace.h:294:#define rtw_desc_to_mcsrate airportrtw88_rtw_desc_to_mcsrate
-rtw/hal_rtw88/driver/fw.c:145:static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
-rtw/hal_rtw88/driver/fw.c:158:	si->ra_report.txrate.flags = 0;
+rtw/hal_rtw88/driver/fw.c:167:	if (rate < DESC_RATEMCS0) {
 rtw/hal_rtw88/driver/fw.c:168:		si->ra_report.txrate.legacy = rtw_desc_to_bitrate(rate);
 rtw/hal_rtw88/driver/fw.c:172:	rtw_desc_to_mcsrate(rate, &mcs, &nss);
-rtw/hal_rtw88/driver/fw.c:174:		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_VHT_MCS;
-rtw/hal_rtw88/driver/fw.c:176:		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_MCS;
-rtw/hal_rtw88/driver/fw.c:179:		si->ra_report.txrate.mcs = mcs;
-rtw/hal_rtw88/driver/fw.c:180:		si->ra_report.txrate.nss = nss;
-rtw/hal_rtw88/driver/fw.c:184:		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
-rtw/hal_rtw88/driver/fw.c:187:		si->ra_report.txrate.bw = RATE_INFO_BW_80;
-rtw/hal_rtw88/driver/fw.c:189:		si->ra_report.txrate.bw = RATE_INFO_BW_40;
-rtw/hal_rtw88/driver/fw.c:191:		si->ra_report.txrate.bw = RATE_INFO_BW_20;
-rtw/hal_rtw88/driver/fw.c:194:	bit_rate = cfg80211_calculate_bitrate(&si->ra_report.txrate);
-rtw/hal_rtw88/driver/fw.c:197:	si->ra_report.bit_rate = bit_rate;
-rtw/hal_rtw88/driver/fw.c:202:static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
-rtw/hal_rtw88/driver/fw.c:217:	rtw_iterate_stas_atomic(rtwdev, rtw_fw_ra_report_iter, &ra_data);
-rtw/hal_rtw88/driver/fw.c:333:		rtw_fw_ra_report_handle(rtwdev, c2h->payload, len);
-rtw/hal_rtw88/driver/mac80211.c:735:	sinfo->txrate = si->ra_report.txrate;
+rtw/hal_rtw88/driver/fw.c:173:	if (rate >= DESC_RATEVHT1SS_MCS0)
+rtw/hal_rtw88/driver/fw.c:175:	else if (rate >= DESC_RATEMCS0)
+rtw/hal_rtw88/driver/fw.c:178:	if (rate >= DESC_RATEMCS0) {
 rtw/hal_rtw88/driver/main.c:127:u16 rtw_desc_to_bitrate(u8 desc_rate)
+rtw/hal_rtw88/driver/main.h:264:	DESC_RATEMCS0	= 0x0c,
+rtw/hal_rtw88/driver/main.h:297:	DESC_RATEVHT1SS_MCS0	= 0x2c,
+rtw/hal_rtw88/driver/main.h:298:	DESC_RATEVHT1SS_MCS1	= 0x2d,
+rtw/hal_rtw88/driver/main.h:299:	DESC_RATEVHT1SS_MCS2	= 0x2e,
+rtw/hal_rtw88/driver/main.h:300:	DESC_RATEVHT1SS_MCS3	= 0x2f,
+rtw/hal_rtw88/driver/main.h:301:	DESC_RATEVHT1SS_MCS4	= 0x30,
+rtw/hal_rtw88/driver/main.h:302:	DESC_RATEVHT1SS_MCS5	= 0x31,
+rtw/hal_rtw88/driver/main.h:303:	DESC_RATEVHT1SS_MCS6	= 0x32,
+rtw/hal_rtw88/driver/main.h:304:	DESC_RATEVHT1SS_MCS7	= 0x33,
+rtw/hal_rtw88/driver/main.h:305:	DESC_RATEVHT1SS_MCS8	= 0x34,
+rtw/hal_rtw88/driver/main.h:306:	DESC_RATEVHT1SS_MCS9	= 0x35,
+rtw/hal_rtw88/driver/main.h:308:	DESC_RATEVHT2SS_MCS0	= 0x36,
+rtw/hal_rtw88/driver/main.h:309:	DESC_RATEVHT2SS_MCS1	= 0x37,
+rtw/hal_rtw88/driver/main.h:310:	DESC_RATEVHT2SS_MCS2	= 0x38,
+rtw/hal_rtw88/driver/main.h:311:	DESC_RATEVHT2SS_MCS3	= 0x39,
+rtw/hal_rtw88/driver/main.h:312:	DESC_RATEVHT2SS_MCS4	= 0x3a,
+rtw/hal_rtw88/driver/main.h:313:	DESC_RATEVHT2SS_MCS5	= 0x3b,
+rtw/hal_rtw88/driver/main.h:314:	DESC_RATEVHT2SS_MCS6	= 0x3c,
+rtw/hal_rtw88/driver/main.h:315:	DESC_RATEVHT2SS_MCS7	= 0x3d,
+rtw/hal_rtw88/driver/main.h:316:	DESC_RATEVHT2SS_MCS8	= 0x3e,
+rtw/hal_rtw88/driver/main.h:317:	DESC_RATEVHT2SS_MCS9	= 0x3f,
+rtw/hal_rtw88/driver/main.h:319:	DESC_RATEVHT3SS_MCS0	= 0x40,
+rtw/hal_rtw88/driver/main.h:320:	DESC_RATEVHT3SS_MCS1	= 0x41,
+rtw/hal_rtw88/driver/main.h:321:	DESC_RATEVHT3SS_MCS2	= 0x42,
+rtw/hal_rtw88/driver/main.h:322:	DESC_RATEVHT3SS_MCS3	= 0x43,
+rtw/hal_rtw88/driver/main.h:323:	DESC_RATEVHT3SS_MCS4	= 0x44,
+rtw/hal_rtw88/driver/main.h:324:	DESC_RATEVHT3SS_MCS5	= 0x45,
+rtw/hal_rtw88/driver/main.h:325:	DESC_RATEVHT3SS_MCS6	= 0x46,
+rtw/hal_rtw88/driver/main.h:326:	DESC_RATEVHT3SS_MCS7	= 0x47,
+rtw/hal_rtw88/driver/main.h:327:	DESC_RATEVHT3SS_MCS8	= 0x48,
+rtw/hal_rtw88/driver/main.h:328:	DESC_RATEVHT3SS_MCS9	= 0x49,
+rtw/hal_rtw88/driver/main.h:330:	DESC_RATEVHT4SS_MCS0	= 0x4a,
+rtw/hal_rtw88/driver/main.h:331:	DESC_RATEVHT4SS_MCS1	= 0x4b,
+rtw/hal_rtw88/driver/main.h:332:	DESC_RATEVHT4SS_MCS2	= 0x4c,
+rtw/hal_rtw88/driver/main.h:333:	DESC_RATEVHT4SS_MCS3	= 0x4d,
+rtw/hal_rtw88/driver/main.h:334:	DESC_RATEVHT4SS_MCS4	= 0x4e,
+rtw/hal_rtw88/driver/main.h:335:	DESC_RATEVHT4SS_MCS5	= 0x4f,
+rtw/hal_rtw88/driver/main.h:336:	DESC_RATEVHT4SS_MCS6	= 0x50,
+rtw/hal_rtw88/driver/main.h:337:	DESC_RATEVHT4SS_MCS7	= 0x51,
+rtw/hal_rtw88/driver/main.h:338:	DESC_RATEVHT4SS_MCS8	= 0x52,
+rtw/hal_rtw88/driver/main.h:339:	DESC_RATEVHT4SS_MCS9	= 0x53,
 rtw/hal_rtw88/driver/main.h:2237:void rtw_desc_to_mcsrate(u16 rate, u8 *mcs, u8 *nss);
 rtw/hal_rtw88/driver/main.h:2257:u16 rtw_desc_to_bitrate(u8 desc_rate);
+rtw/hal_rtw88/driver/phy.c:64:	DESC_RATEMCS0, DESC_RATEMCS1, DESC_RATEMCS2,
+rtw/hal_rtw88/driver/phy.c:76:	DESC_RATEVHT1SS_MCS0, DESC_RATEVHT1SS_MCS1,
+rtw/hal_rtw88/driver/phy.c:77:	DESC_RATEVHT1SS_MCS2, DESC_RATEVHT1SS_MCS3,
+rtw/hal_rtw88/driver/phy.c:78:	DESC_RATEVHT1SS_MCS4, DESC_RATEVHT1SS_MCS5,
+rtw/hal_rtw88/driver/phy.c:79:	DESC_RATEVHT1SS_MCS6, DESC_RATEVHT1SS_MCS7,
+rtw/hal_rtw88/driver/phy.c:80:	DESC_RATEVHT1SS_MCS8, DESC_RATEVHT1SS_MCS9
+rtw/hal_rtw88/driver/phy.c:84:	DESC_RATEVHT2SS_MCS0, DESC_RATEVHT2SS_MCS1,
+rtw/hal_rtw88/driver/phy.c:85:	DESC_RATEVHT2SS_MCS2, DESC_RATEVHT2SS_MCS3,
+rtw/hal_rtw88/driver/phy.c:86:	DESC_RATEVHT2SS_MCS4, DESC_RATEVHT2SS_MCS5,
+rtw/hal_rtw88/driver/phy.c:87:	DESC_RATEVHT2SS_MCS6, DESC_RATEVHT2SS_MCS7,
+rtw/hal_rtw88/driver/phy.c:88:	DESC_RATEVHT2SS_MCS8, DESC_RATEVHT2SS_MCS9
+rtw/hal_rtw88/driver/phy.c:104:	DESC_RATEVHT3SS_MCS0, DESC_RATEVHT3SS_MCS1,
+rtw/hal_rtw88/driver/phy.c:105:	DESC_RATEVHT3SS_MCS2, DESC_RATEVHT3SS_MCS3,
+rtw/hal_rtw88/driver/phy.c:106:	DESC_RATEVHT3SS_MCS4, DESC_RATEVHT3SS_MCS5,
+rtw/hal_rtw88/driver/phy.c:107:	DESC_RATEVHT3SS_MCS6, DESC_RATEVHT3SS_MCS7,
+rtw/hal_rtw88/driver/phy.c:108:	DESC_RATEVHT3SS_MCS8, DESC_RATEVHT3SS_MCS9
+rtw/hal_rtw88/driver/phy.c:112:	DESC_RATEVHT4SS_MCS0, DESC_RATEVHT4SS_MCS1,
+rtw/hal_rtw88/driver/phy.c:113:	DESC_RATEVHT4SS_MCS2, DESC_RATEVHT4SS_MCS3,
+rtw/hal_rtw88/driver/phy.c:114:	DESC_RATEVHT4SS_MCS4, DESC_RATEVHT4SS_MCS5,
+rtw/hal_rtw88/driver/phy.c:115:	DESC_RATEVHT4SS_MCS6, DESC_RATEVHT4SS_MCS7,
+rtw/hal_rtw88/driver/phy.c:116:	DESC_RATEVHT4SS_MCS8, DESC_RATEVHT4SS_MCS9
+rtw/hal_rtw88/driver/phy.c:619:	if (rate_idx >= DESC_RATEVHT4SS_MCS0)
+rtw/hal_rtw88/driver/phy.c:620:		rate_order -= DESC_RATEVHT4SS_MCS0;
+rtw/hal_rtw88/driver/phy.c:621:	else if (rate_idx >= DESC_RATEVHT3SS_MCS0)
+rtw/hal_rtw88/driver/phy.c:622:		rate_order -= DESC_RATEVHT3SS_MCS0;
+rtw/hal_rtw88/driver/phy.c:623:	else if (rate_idx >= DESC_RATEVHT2SS_MCS0)
+rtw/hal_rtw88/driver/phy.c:624:		rate_order -= DESC_RATEVHT2SS_MCS0;
+rtw/hal_rtw88/driver/phy.c:625:	else if (rate_idx >= DESC_RATEVHT1SS_MCS0)
+rtw/hal_rtw88/driver/phy.c:626:		rate_order -= DESC_RATEVHT1SS_MCS0;
+rtw/hal_rtw88/driver/phy.c:633:	else if (rate_idx >= DESC_RATEMCS0)
+rtw/hal_rtw88/driver/phy.c:634:		rate_order -= DESC_RATEMCS0;
+rtw/hal_rtw88/driver/phy.c:640:	if (rate_idx >= DESC_RATEMCS0 || rate_order == 0)
+rtw/hal_rtw88/driver/phy.c:1299:		rate[0] = DESC_RATEMCS0;
+rtw/hal_rtw88/driver/phy.c:1386:		rate[0] = DESC_RATEMCS0;
+rtw/hal_rtw88/driver/phy.c:1434:		rate[0] = DESC_RATEVHT1SS_MCS0;
+rtw/hal_rtw88/driver/phy.c:1435:		rate[1] = DESC_RATEVHT1SS_MCS1;
+rtw/hal_rtw88/driver/phy.c:1436:		rate[2] = DESC_RATEVHT1SS_MCS2;
+rtw/hal_rtw88/driver/phy.c:1437:		rate[3] = DESC_RATEVHT1SS_MCS3;
+rtw/hal_rtw88/driver/phy.c:1446:		rate[0] = DESC_RATEVHT1SS_MCS4;
+rtw/hal_rtw88/driver/phy.c:1447:		rate[1] = DESC_RATEVHT1SS_MCS5;
+rtw/hal_rtw88/driver/phy.c:1448:		rate[2] = DESC_RATEVHT1SS_MCS6;
+rtw/hal_rtw88/driver/phy.c:1449:		rate[3] = DESC_RATEVHT1SS_MCS7;
+rtw/hal_rtw88/driver/phy.c:1458:		rate[0] = DESC_RATEVHT1SS_MCS8;
+rtw/hal_rtw88/driver/phy.c:1459:		rate[1] = DESC_RATEVHT1SS_MCS9;
+rtw/hal_rtw88/driver/phy.c:1460:		rate[2] = DESC_RATEVHT2SS_MCS0;
+rtw/hal_rtw88/driver/phy.c:1461:		rate[3] = DESC_RATEVHT2SS_MCS1;
+rtw/hal_rtw88/driver/phy.c:1470:		rate[0] = DESC_RATEVHT2SS_MCS2;
+rtw/hal_rtw88/driver/phy.c:1471:		rate[1] = DESC_RATEVHT2SS_MCS3;
+rtw/hal_rtw88/driver/phy.c:1472:		rate[2] = DESC_RATEVHT2SS_MCS4;
+rtw/hal_rtw88/driver/phy.c:1473:		rate[3] = DESC_RATEVHT2SS_MCS5;
+rtw/hal_rtw88/driver/phy.c:1482:		rate[0] = DESC_RATEVHT2SS_MCS6;
+rtw/hal_rtw88/driver/phy.c:1483:		rate[1] = DESC_RATEVHT2SS_MCS7;
+rtw/hal_rtw88/driver/phy.c:1484:		rate[2] = DESC_RATEVHT2SS_MCS8;
+rtw/hal_rtw88/driver/phy.c:1485:		rate[3] = DESC_RATEVHT2SS_MCS9;
+rtw/hal_rtw88/driver/phy.c:1518:		rate[0] = DESC_RATEVHT3SS_MCS0;
+rtw/hal_rtw88/driver/phy.c:1519:		rate[1] = DESC_RATEVHT3SS_MCS1;
+rtw/hal_rtw88/driver/phy.c:1520:		rate[2] = DESC_RATEVHT3SS_MCS2;
+rtw/hal_rtw88/driver/phy.c:1521:		rate[3] = DESC_RATEVHT3SS_MCS3;
+rtw/hal_rtw88/driver/phy.c:1530:		rate[0] = DESC_RATEVHT3SS_MCS4;
+rtw/hal_rtw88/driver/phy.c:1531:		rate[1] = DESC_RATEVHT3SS_MCS5;
+rtw/hal_rtw88/driver/phy.c:1532:		rate[2] = DESC_RATEVHT3SS_MCS6;
+rtw/hal_rtw88/driver/phy.c:1533:		rate[3] = DESC_RATEVHT3SS_MCS7;
+rtw/hal_rtw88/driver/phy.c:1542:		rate[0] = DESC_RATEVHT3SS_MCS8;
+rtw/hal_rtw88/driver/phy.c:1543:		rate[1] = DESC_RATEVHT3SS_MCS9;
+rtw/hal_rtw88/driver/phy.c:2032:	mcs_rate = (rate >= DESC_RATEMCS0 && rate <= DESC_RATEMCS31) ||
+rtw/hal_rtw88/driver/phy.c:2033:		   (rate >= DESC_RATEVHT1SS_MCS0 &&
+rtw/hal_rtw88/driver/phy.c:2034:		    rate <= DESC_RATEVHT4SS_MCS9);
+rtw/hal_rtw88/driver/phy.c:2036:		    (rate >= DESC_RATEVHT2SS_MCS0);
+rtw/hal_rtw88/driver/phy.c:2038:		    (rate >= DESC_RATEVHT3SS_MCS0);
+rtw/hal_rtw88/driver/phy.c:2040:		    (rate >= DESC_RATEVHT4SS_MCS0);
+rtw/hal_rtw88/driver/phy.c:2086:	mcs_rate = (rate >= DESC_RATEMCS0 && rate <= DESC_RATEMCS31) ||
+rtw/hal_rtw88/driver/phy.c:2087:		   (rate >= DESC_RATEVHT1SS_MCS0 &&
+rtw/hal_rtw88/driver/phy.c:2088:		    rate <= DESC_RATEVHT4SS_MCS9);
+rtw/hal_rtw88/driver/phy.c:2090:		    (rate >= DESC_RATEVHT2SS_MCS0);
+rtw/hal_rtw88/driver/phy.c:2092:		    (rate >= DESC_RATEVHT3SS_MCS0);
+rtw/hal_rtw88/driver/phy.c:2094:		    (rate >= DESC_RATEVHT4SS_MCS0);
+rtw/hal_rtw88/driver/phy.c:2149:	else if (rate >= DESC_RATEMCS0 && rate <= DESC_RATEMCS7)
+rtw/hal_rtw88/driver/phy.c:2157:	else if (rate >= DESC_RATEVHT1SS_MCS0 && rate <= DESC_RATEVHT1SS_MCS9)
+rtw/hal_rtw88/driver/phy.c:2159:	else if (rate >= DESC_RATEVHT2SS_MCS0 && rate <= DESC_RATEVHT2SS_MCS9)
+rtw/hal_rtw88/driver/phy.c:2161:	else if (rate >= DESC_RATEVHT3SS_MCS0 && rate <= DESC_RATEVHT3SS_MCS9)
+rtw/hal_rtw88/driver/phy.c:2163:	else if (rate >= DESC_RATEVHT4SS_MCS0 && rate <= DESC_RATEVHT4SS_MCS9)
+rtw/hal_rtw88/driver/phy.c:2192:	if (rate >= DESC_RATEMCS0 && rate <= DESC_RATEMCS31)
+rtw/hal_rtw88/driver/rtw8723d.c:179:	if (pkt_stat->rate > DESC_RATE11M && pkt_stat->rate < DESC_RATEMCS0)
+rtw/hal_rtw88/driver/rtw8723x.c:28:	[DESC_RATEMCS0]	= { .addr = 0xe10, .mask = 0x000000ff },
+rtw/hal_rtw88/driver/rtw8723x.c:641:	case DESC_RATEMCS0...DESC_RATEMCS2:
+rtw/hal_rtw88/driver/rtw8821c.c:640:	if (pkt_stat->rate > DESC_RATE11M && pkt_stat->rate < DESC_RATEMCS0)
+rtw/hal_rtw88/driver/rtw8821c.c:696:		if (shift == 0x3 || rate == DESC_RATEVHT1SS_MCS9) {
+rtw/hal_rtw88/driver/rtw8822b.c:866:	if (pkt_stat->rate > DESC_RATE11M && pkt_stat->rate < DESC_RATEMCS0)
+rtw/hal_rtw88/driver/rtw8822c.c:2611:	if (pkt_stat->rate > DESC_RATE11M && pkt_stat->rate < DESC_RATEMCS0)
+rtw/hal_rtw88/driver/rx.c:64:	case DESC_RATEMCS0...DESC_RATEMCS7:
+rtw/hal_rtw88/driver/rx.c:65:	case DESC_RATEVHT1SS_MCS0...DESC_RATEVHT1SS_MCS9:
+rtw/hal_rtw88/driver/rx.c:71:	case DESC_RATEVHT2SS_MCS0...DESC_RATEVHT2SS_MCS9:
+rtw/hal_rtw88/driver/rx.c:77:	case DESC_RATEVHT3SS_MCS0...DESC_RATEVHT3SS_MCS9:
+rtw/hal_rtw88/driver/rx.c:215:	if (pkt_stat->rate >= DESC_RATEVHT1SS_MCS0)
+rtw/hal_rtw88/driver/rx.c:217:	else if (pkt_stat->rate >= DESC_RATEMCS0)
+rtw/hal_rtw88/driver/rx.c:228:	} else if (pkt_stat->rate >= DESC_RATEMCS0) {
 rtw/hal_rtw88/driver/rx.c:229:		rtw_desc_to_mcsrate(pkt_stat->rate, &rx_status->rate_idx,
+rtw/hal_rtw88/driver/tx.c:136:			rate = DESC_RATEVHT1SS_MCS7;
+rtw/hal_rtw88/driver/tx.c:139:			rate = DESC_RATEVHT1SS_MCS8;
+rtw/hal_rtw88/driver/tx.c:143:			rate = DESC_RATEVHT1SS_MCS9;
+rtw/hal_rtw88/driver/tx.c:149:			rate = DESC_RATEVHT2SS_MCS7;
+rtw/hal_rtw88/driver/tx.c:152:			rate = DESC_RATEVHT2SS_MCS8;
+rtw/hal_rtw88/driver/tx.c:156:			rate = DESC_RATEVHT2SS_MCS9;
+rtw/hal_rtw88/driver/tx.c:160:		rate = DESC_RATEVHT1SS_MCS9;
 rtw/hal_rtw88/driver/util.c:82:void rtw_desc_to_mcsrate(u16 rate, u8 *mcs, u8 *nss)
+rtw/hal_rtw88/driver/util.c:87:	if (rate >= DESC_RATEVHT1SS_MCS0 &&
+rtw/hal_rtw88/driver/util.c:88:	    rate <= DESC_RATEVHT1SS_MCS9) {
+rtw/hal_rtw88/driver/util.c:90:		*mcs = rate - DESC_RATEVHT1SS_MCS0;
+rtw/hal_rtw88/driver/util.c:91:	} else if (rate >= DESC_RATEVHT2SS_MCS0 &&
+rtw/hal_rtw88/driver/util.c:92:		   rate <= DESC_RATEVHT2SS_MCS9) {
+rtw/hal_rtw88/driver/util.c:94:		*mcs = rate - DESC_RATEVHT2SS_MCS0;
+rtw/hal_rtw88/driver/util.c:95:	} else if (rate >= DESC_RATEVHT3SS_MCS0 &&
+rtw/hal_rtw88/driver/util.c:96:		   rate <= DESC_RATEVHT3SS_MCS9) {
+rtw/hal_rtw88/driver/util.c:98:		*mcs = rate - DESC_RATEVHT3SS_MCS0;
+rtw/hal_rtw88/driver/util.c:99:	} else if (rate >= DESC_RATEVHT4SS_MCS0 &&
+rtw/hal_rtw88/driver/util.c:100:		   rate <= DESC_RATEVHT4SS_MCS9) {
+rtw/hal_rtw88/driver/util.c:102:		*mcs = rate - DESC_RATEVHT4SS_MCS0;
+rtw/hal_rtw88/driver/util.c:103:	} else if (rate >= DESC_RATEMCS0 &&
+rtw/hal_rtw88/driver/util.c:106:		*mcs = rate - DESC_RATEMCS0;
 
-=== SEQUOIA TARGET SOURCE MEMBERSHIP ===
-490:		F8A028222A4A7DDC00C6DE90 /* AirportRTWV2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028202A4A7DDC00C6DE90 /* AirportRTWV2.cpp */; };
-494:		F8A028722A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028702A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp */; };
-770:		F8D94CCD2B9ABFE20081A3C4 /* AirportRTWV2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028202A4A7DDC00C6DE90 /* AirportRTWV2.cpp */; };
-775:		F8D94CD22B9ABFE20081A3C4 /* AirportRTWSkywalkInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028702A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp */; };
-1135:		00B6E3322109E6A8EBBE7429 /* AirportRTW-Sequoia WCL/AirportRTWV2.cpp */ = {isa = PBXBuildFile; fileRef = DCF64BCD448F0C0719DD9131 /* AirportRTWV2.cpp */; };
-1136:		1015BB37CB80C30DD4C9AD6F /* AirportRTW-Sequoia WCL/AirportRTWSkywalkInterface.cpp */ = {isa = PBXBuildFile; fileRef = 1609A38552302A3D45D6666F /* AirportRTWSkywalkInterface.cpp */; };
-1138:		AB9BDFA642C2339CCA9690F5 /* AirportRTW-Tahoe WCL/AirportRTWV2.cpp */ = {isa = PBXBuildFile; fileRef = DCF64BCD448F0C0719DD9131 /* AirportRTWV2.cpp */; };
-1139:		1690A53773C7C2C8CB17D267 /* AirportRTW-Tahoe WCL/AirportRTWSkywalkInterface.cpp */ = {isa = PBXBuildFile; fileRef = 1609A38552302A3D45D6666F /* AirportRTWSkywalkInterface.cpp */; };
-1396:		F8A028202A4A7DDC00C6DE90 /* AirportRTWV2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AirportRTWV2.cpp; sourceTree = "<group>"; };
-1400:		F8A028702A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AirportRTWSkywalkInterface.cpp; sourceTree = "<group>"; };
-1537:		DCF64BCD448F0C0719DD9131 /* WCL/AirportRTWV2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "AirportRTW/WCL/AirportRTWV2.cpp"; sourceTree = SOURCE_ROOT; };
-1538:		1609A38552302A3D45D6666F /* WCL/AirportRTWSkywalkInterface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "AirportRTW/WCL/AirportRTWSkywalkInterface.cpp"; sourceTree = SOURCE_ROOT; };
-1541:		511E0B690B4B222E8418B477 /* WCL/AirportRTWNativeInterface.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = "AirportRTW/WCL/AirportRTWNativeInterface.hpp"; sourceTree = SOURCE_ROOT; };
-1547:		07B5BB249744E37FC2B8C48B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "rtw/hal_rtw88/RTWCore88.cpp"; sourceTree = SOURCE_ROOT; };
-1861:				F8A028202A4A7DDC00C6DE90 /* AirportRTWV2.cpp */,
-1865:				F8A028702A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp */,
-3546:				F8A028222A4A7DDC00C6DE90 /* AirportRTWV2.cpp in Sources */,
-3551:				F8A028722A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp in Sources */,
-3616:				F8D94CCD2B9ABFE20081A3C4 /* AirportRTWV2.cpp in Sources */,
-3621:				F8D94CD22B9ABFE20081A3C4 /* AirportRTWSkywalkInterface.cpp in Sources */,
-3687:				00B6E3322109E6A8EBBE7429 /* AirportRTWV2.cpp in Sources */,
-3691:				1015BB37CB80C30DD4C9AD6F /* AirportRTWSkywalkInterface.cpp in Sources */,
-3760:				AB9BDFA642C2339CCA9690F5 /* AirportRTWV2.cpp in Sources */,
-3764:				1690A53773C7C2C8CB17D267 /* AirportRTWSkywalkInterface.cpp in Sources */,
-LOG=/Users/shohel/Desktop/AirportRTW-FIRMWARE-RATE-PARSER.txt
+=== C2H RA REPORT STRUCTURE ===
+rtw/hal_rtw88/driver/fw.c:148:	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)ra_data->payload;
+rtw/hal_rtw88/driver/fw.c:160:	rate = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE);
+rtw/hal_rtw88/driver/fw.c:161:	sgi = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_SGI);
+rtw/hal_rtw88/driver/fw.c:205:	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)payload;
+rtw/hal_rtw88/driver/fw.c:208:	if (WARN(length < rtwdev->chip->c2h_ra_report_size,
+rtw/hal_rtw88/driver/fw.c:213:					      RTW_C2H_RA_RPT_RATE);
+rtw/hal_rtw88/driver/fw.h:88:struct rtw_c2h_ra_rpt {
+rtw/hal_rtw88/driver/fw.h:98:#define RTW_C2H_RA_RPT_RATE	GENMASK(6, 0)
+rtw/hal_rtw88/driver/fw.h:99:#define RTW_C2H_RA_RPT_SGI	BIT(7)
+rtw/hal_rtw88/driver/main.h:1237:	u8 c2h_ra_report_size;
+rtw/hal_rtw88/driver/rtw8723d.c:2140:	.c2h_ra_report_size = 7,
+rtw/hal_rtw88/driver/rtw8814a.c:2207:	.c2h_ra_report_size = 6,
+rtw/hal_rtw88/driver/rtw8821c.c:1998:	.c2h_ra_report_size = 7,
+rtw/hal_rtw88/driver/rtw8822b.c:2541:	.c2h_ra_report_size = 7,
+rtw/hal_rtw88/driver/rtw8822c.c:5359:	.c2h_ra_report_size = 7,
+
+=== RTL8821C RATE ID DEFINITIONS ===
+rtw/hal_rtw88/driver/main.c:1097:			rate_id = RTW_RATEID_ARFR1_AC_1SS;
+rtw/hal_rtw88/driver/main.c:1108:				rate_id = RTW_RATEID_ARFR1_AC_1SS;
+rtw/hal_rtw88/driver/main.h:240:	RTW_RATEID_ARFR1_AC_1SS	= 10,
+
+=== SOURCE STATUS ===
+ M .DS_Store
+ M rtw/hal_rtw88/RTWCore88.cpp
+ M rtw/hal_rtw88/driver/tx.c
+
+DECODER_LOG=/Users/shohel/Desktop/AirportRTW-RTL8821CE-RATE-DECODER.txt
 shohel@Mahfujuls-MacBook-Pro AirportRTW-port-txrx % 
