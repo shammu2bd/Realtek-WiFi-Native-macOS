@@ -189,6 +189,8 @@ void rtw_tx_report_purge_timer(struct timer_list *t)
 	rtw_warn(rtwdev, "failed to get tx report from firmware\n");
 
 	spin_lock_irqsave(&tx_report->q_lock, flags);
+	rtw88_candidate_log("rtw88: TX report expired pending=%u; ACK unknown\n",
+                            skb_queue_len(&tx_report->queue));
 	skb_queue_purge(&tx_report->queue);
 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
 }
@@ -263,10 +265,6 @@ static u8 rtw_get_mgmt_rate(struct rtw_dev *rtwdev, struct sk_buff *skb,
 	struct ieee80211_tx_info *tx_info = IEEE80211_SKB_CB(skb);
 	struct ieee80211_vif *vif = tx_info->control.vif;
 	bool force_lowest = test_bit(RTW_FLAG_FORCE_LOWEST_RATE, rtwdev->flags);
-
-	/* AWDL action frames use OFDM even on a 2.4 GHz discovery channel. */
-	if (vif && vif->type == NL80211_IFTYPE_ADHOC && vif->no_beacon)
-		return DESC_RATE6M;
 
 	if (!vif || !vif->bss_conf.basic_rates || ignore_rate || force_lowest)
 		return lowest_rate;
@@ -403,6 +401,33 @@ out:
 	}
 }
 
+/* Direct AWDL peers do not have the infrastructure AP's firmware RA table.
+ * Match our unencrypted TX envelopes before selecting a conservative OFDM
+ * rate. Never apply this to ordinary ToDS traffic or arbitrary management. */
+static bool rtw_tx_is_awdl(const struct sk_buff *skb)
+{
+	static const u8 bssid[6] = {0, 0x25, 0, 0xff, 0x94, 0x73};
+	static const u8 action[6] = {127, 0, 0x17, 0xf2, 8, 0x10};
+	static const u8 snap[10] = {0xaa, 0xaa, 3, 0, 0x17, 0xf2, 8, 0, 3, 4};
+	const u8 *p = skb->data;
+
+	if (skb->len < 40 || (p[1] & 0xc7) || memcmp(p + 16, bssid, 6))
+		return false;
+	if (p[0] == 0xd0)
+		return !memcmp(p + 24, action, sizeof(action)) &&
+		       (p[30] == 0 || p[30] == 3);
+	return p[0] == 0x08 && !memcmp(p + 24, snap, sizeof(snap));
+}
+
+static void rtw_tx_awdl_rate(struct rtw_tx_pkt_info *pkt_info)
+{
+	pkt_info->rate = DESC_RATE6M;
+	pkt_info->rate_id = RTW_RATEID_G;
+	pkt_info->bw = RTW_CHANNEL_WIDTH_20;
+	pkt_info->use_rate = true;
+	pkt_info->dis_rate_fallback = true;
+}
+
 void rtw_tx_pkt_info_update(struct rtw_dev *rtwdev,
 			    struct rtw_tx_pkt_info *pkt_info,
 			    struct ieee80211_sta *sta,
@@ -429,6 +454,12 @@ void rtw_tx_pkt_info_update(struct rtw_dev *rtwdev,
 		rtw_tx_mgmt_pkt_info_update(rtwdev, pkt_info, sta, skb);
 	else if (ieee80211_is_data(fc))
 		rtw_tx_data_pkt_info_update(rtwdev, pkt_info, sta, skb);
+
+	/* Management otherwise defaults to CCK on channel 6. Direct data without
+	 * a peer STA otherwise leaves use_rate clear and inherits AP firmware RA.
+	 * Pin only AWDL; infrastructure Wi-Fi retains its normal rate adaptation. */
+	if (!sta && rtw_tx_is_awdl(skb))
+		rtw_tx_awdl_rate(pkt_info);
 
 	bmc = is_broadcast_ether_addr(hdr->addr1) ||
 	      is_multicast_ether_addr(hdr->addr1);
