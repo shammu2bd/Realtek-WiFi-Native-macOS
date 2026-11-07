@@ -1,0 +1,1351 @@
+=== STAGE179: GUARDED THREE-AREA IMPLEMENTATION ===
+Sat Nov  7 07:46:40 UTC 2026
+PROJECT=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552
+REPO=shammu2bd/Realtek-WiFi-Native-macOS
+BRANCH=work/stage125-native-wifi-menu-readiness-audit
+RUN=stage179-20261107T074640Z
+
+=== 1. PRESERVE AND INSPECT WORKTREE ===
+D  .github/workflows/stage100-tx-callback-deferral-audit.yml
+D  .github/workflows/stage101-bounded-queue-lifecycle.yml
+D  .github/workflows/stage102-xnu-thread-call-lifecycle.yml
+D  .github/workflows/stage94-radio-tx-sync.yml
+D  .github/workflows/stage95-key-retirement-audit.yml
+D  .github/workflows/stage96-key-retirement.yml
+D  .github/workflows/stage97-independent-audit.yml
+D  .github/workflows/stage98-native-build-lock-audit.yml
+D  .github/workflows/stage99-tx-completion-reclamation-audit.yml
+D  Development/Allowlist/stage110-signing-efi-audit.gitblob
+D  Development/Allowlist/stage111-runtime-amfipass-audit.gitblob
+D  Development/Allowlist/stage119-controller-interface-attachment.gitblob
+D  Development/Allowlist/stage120-exact-attachment-abi.gitblob
+M  Development/Logs/automation-status/latest.txt
+D  Development/Logs/stage100-clean-dual-object-compile-20261106T043340Z.log
+D  Development/Logs/stage100-tx-callback-deferral-audit-20261106.md
+D  Development/Logs/stage101-bounded-queue-lifecycle-20261106.md
+D  Development/Logs/stage101-clean-dual-object-compile-20261106T044830Z.log
+D  Development/Logs/stage101-final-clean-compile-20261106T045101Z.log
+D  Development/Logs/stage102-clean-dual-object-compile-20261106T051059Z.log
+D  Development/Logs/stage102-post-fix-clean-dual-object-compile-20261106T051547Z.log
+D  Development/Logs/stage102-xnu-thread-call-lifecycle-20261106.md
+D  Development/Logs/stage103-final-bundle-validation-20261106T053206Z.log
+D  Development/Logs/stage103-native-full-link-bundle-20261106T052811Z.log
+D  Development/Logs/stage104-native-binary-audit-20261106T053603Z.log
+D  Development/Logs/stage105-native-symbol-abi-audit-20261106T054714Z.log
+D  Development/Logs/stage106-sip-preserving-signing-feasibility-20261106T055452Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T060847Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T061303Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T062025Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T081017Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092047Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092654Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092902Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T093052Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T093213Z.log
+D  Development/Logs/stage109-native-bundle-readiness-20261106T093723Z.log
+D  Development/Logs/stage110-signing-efi-audit-20261106T104448Z.log
+D  Development/Logs/stage110-signing-efi-audit-20261106T104722Z.log
+D  Development/Logs/stage111-first-run-unverified-20261106T114413Z.patch
+D  Development/Logs/stage111-first-run-unverified-20261106T114413Z.txt
+D  Development/Logs/stage119-controller-interface-attachment-20261106T141021Z.log
+D  Development/Logs/stage120-20261106T141707Z/class-and-vtable-index.txt
+D  Development/Logs/stage120-20261106T141707Z/controller-attachment-abi.txt
+D  Development/Logs/stage120-20261106T141707Z/method-status.txt
+D  Development/Logs/stage120-20261106T141707Z/selected-method-disassembly.txt
+D  Development/Logs/stage120-20261106T141707Z/summary.txt
+D  Development/Logs/stage120-20261106T141707Z/tools/__pycache__/disasm.cpython-315.pyc
+D  Development/Logs/stage120-20261106T141707Z/tools/__pycache__/kcfile.cpython-315.pyc
+D  Development/Logs/stage120-20261106T141707Z/tools/disasm.py
+D  Development/Logs/stage120-20261106T141707Z/tools/kcfile.py
+D  Development/Logs/stage120-20261106T141707Z/vtable-index.txt
+D  Development/Logs/stage121-github-source-review-20261106T142841Z.log
+D  Development/Logs/stage121-native-controller-attachment-20261106T142556Z.log
+A  Development/Logs/stage122-readonly-runtime-diagnostics-20261106T144511Z-upload-20261106T151521Z-0a691ba8.log
+A  Development/Logs/stage122-runtime-summary-20261106T151904Z.txt
+A  Development/Logs/stage123-runtime-activation-recovered-20261106T212519.log
+A  Development/Logs/stage124-native-wifi-interface-state-20261106T155623Z.log
+A  Development/Logs/stage124-native-wifi-interface-state-20261106T160152Z.log
+A  Development/Logs/stage125-native-wifi-menu-readiness-20261106T162258Z.log
+D  Development/Logs/stage125-native-wifi-menu-readiness-audit.md
+A  Development/Logs/stage126-apple-power-state-abi-audit.md
+D  Development/Logs/stage91-native-wcl-compile-20261105T181953Z.log
+D  Development/Logs/stage91-ownership-review-20261106.md
+D  Development/Logs/stage91-tx-submission-tests-20261105T173517Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T175804Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T181048Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T181733Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T185437Z.log
+D  Development/Logs/stage91-wmm-completion-fix-compile-20261105T185446Z.log
+D  Development/Logs/stage91-wmm-completion-retry-fix-20261106.md
+D  Development/Logs/stage92-tx-completion-compile-20261105T193145Z.log
+D  Development/Logs/stage92-tx-completion-handoff-24H32-20261106.md
+D  Development/Logs/stage92-tx-completion-tests-20261105T192820Z.log
+D  Development/Logs/stage92-tx-completion-tests-20261105T193136Z.log
+D  Development/Logs/stage93-independent-tx-audit-20261105T194044Z.log
+D  Development/Logs/stage94-radio-tx-sync-20261106.md
+D  Development/Logs/stage94-radio-tx-sync-design-20261106.md
+D  Development/Logs/stage94-radio-tx-sync-model-20261106.log
+D  Development/Logs/stage95-key-retirement-audit-20261106.md
+D  Development/Logs/stage96-key-retirement-barrier-20261106.md
+D  Development/Logs/stage97-independent-audit-20261106.md
+D  Development/Logs/stage98-clean-compile-20261106T034521Z.log
+D  Development/Logs/stage98-final-compile-20261106T034120Z.log
+D  Development/Logs/stage98-native-build-lock-audit-20261106.md
+D  Development/Logs/stage98-target-compile-diagnostic-20261106.md
+D  Development/Logs/stage98-target-compile-diagnostic-20261106T033413Z.log
+D  Development/Logs/stage98-target-compile-fixed-20261106T033742Z.log
+D  Development/Logs/stage99-clean-dual-object-compile-20261106T041443Z.log
+D  Development/Logs/stage99-tx-completion-lock-and-reclamation-audit-20261106.md
+M  Development/README.md
+D  Development/STAGE108-REGISTRATION-TRANSACTION.md
+D  Development/STAGE110-SIGNING-EFI-AUDIT.md
+D  Development/STAGE111-RUNTIME-AMFIPASS-AUDIT.md
+M  Development/output.log
+D  Development/stage104-native-binary-audit.sh
+D  Development/stage105-native-symbol-abi-audit.sh
+D  Development/stage106-sip-preserving-signing-audit.sh
+D  Development/stage107-opencore-injection-feasibility.sh
+D  Development/stage108-registration-transaction.sh
+D  Development/stage109-native-bundle-readiness-audit.sh
+D  Development/stage110-signing-efi-audit.sh
+D  Development/stage111-runtime-amfipass-audit.py
+D  Development/stage119-controller-interface-attachment.py
+D  Development/stage120-exact-attachment-abi.py
+D  Development/stage121-native-controller-attachment.sh
+D  Development/stage121-publish-existing-run.sh
+D  Development/stage124-native-wifi-interface-state.sh
+D  Development/stage125-native-wifi-menu-readiness-audit.sh
+A  Development/stage126-apple-power-state-abi-audit.sh
+D  docs/STAGE91-TX-SUBMISSION-CALLBACK.md
+M  driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h
+M  driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h
+M  driver/RTL88WiFi/Makefile
+M  driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h
+M  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp
+M  driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp
+M  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp
+M  driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxFrameProtection.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp
+MM driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp
+MM driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationTransaction.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionBatch.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h
+D  tests/rtw88_tx_ba_state_test.cpp
+D  tests/rtw88_tx_sequence_numbers_test.cpp
+D  tests/rtw88_tx_state_gate_test.cpp
+D  tests/test-stage102-xnu-thread-call-lifecycle.py
+D  tests/test-wcl-controller-primary-attachment-stage121.py
+D  tests/test-wcl-link-state-publication-stage124.py
+D  tests/test-wcl-native-wifi-menu-readiness-stage125.py
+M  tests/test-wcl-registration-contract.py
+M  tests/test-wcl-registration-info-stage11.py
+D  tests/test-wcl-registration-transaction-stage108.py
+M  tests/test-wcl-resource-transaction.py
+M  tests/test-wcl-skywalk-queues.py
+D  tests/test-wcl-stage100-tx-callback-deferral.py
+D  tests/test-wcl-stage93-independent-tx-audit.py
+D  tests/test-wcl-stage94-radio-tx-sync.py
+D  tests/test-wcl-stage95-key-retirement.py
+D  tests/test-wcl-stage96-key-retirement.py
+D  tests/test-wcl-stage97-independent-audit.py
+D  tests/test-wcl-stage98-native-build-lock-audit.py
+D  tests/test-wcl-stage99-tx-completion-reclamation-audit.py
+D  tests/test-wcl-tx-completion-stage92.py
+M  tests/test-wcl-tx-queue-array-contract.py
+D  tests/test-wcl-tx-submission-stage91.py
+D  tests/wcl_registration_transaction_stage108_test.cpp
+D  tests/wcl_tx_completion_bounded_queue_test.cpp
+M  tests/wcl_tx_completion_slots_test.cpp
+D  tests/wcl_tx_submission_batch_test.cpp
+D  tests/wcl_tx_submission_gate_test.cpp
+M  tests/wcl_tx_submission_queue_array_test.cpp
+D  tools/run-stage100-tx-callback-deferral-audit.sh
+D  tools/run-stage101-bounded-queue-lifecycle.sh
+D  tools/run-stage102-xnu-thread-call-lifecycle.sh
+D  tools/run-stage91-tx-submission-tests.sh
+D  tools/run-stage91-wmm-completion-fix-validation.sh
+D  tools/run-stage92-tx-completion-tests.sh
+D  tools/run-stage92-tx-completion-validation.sh
+D  tools/run-stage93-independent-tx-audit.sh
+D  tools/run-stage94-radio-tx-ba-model-tests.sh
+D  tools/run-stage94-radio-tx-sync-model-tests.sh
+D  tools/run-stage95-key-retirement-audit.sh
+D  tools/run-stage96-key-retirement-tests.sh
+D  tools/run-stage97-independent-audit.sh
+D  tools/run-stage98-native-build-lock-audit.sh
+D  tools/run-stage99-tx-completion-reclamation-audit.sh
+?? .github/workflows/
+?? Development/Logs/stage172/
+?? Development/Logs/stage173-undefined-symbols.txt
+?? Development/Logs/stage174-network-symbols.txt
+?? Development/Logs/stage174-undefined-symbols.txt
+?? Development/Logs/stage176-runtime-preflight.txt
+?? Development/Logs/stage177-control-plane-source-inventory.txt
+?? Development/Logs/stage178-control-plane-focused-review.txt
+?? Development/Logs/stage179-implementation-preflight.txt
+?? tests/test-wcl-controller-native-workqueue-stage172.py
+ .../stage100-tx-callback-deferral-audit.yml        |    46 -
+ .../workflows/stage101-bounded-queue-lifecycle.yml |    44 -
+ .../stage102-xnu-thread-call-lifecycle.yml         |    43 -
+ .github/workflows/stage94-radio-tx-sync.yml        |    59 -
+ .github/workflows/stage95-key-retirement-audit.yml |    45 -
+ .github/workflows/stage96-key-retirement.yml       |    36 -
+ .github/workflows/stage97-independent-audit.yml    |    28 -
+ .../workflows/stage98-native-build-lock-audit.yml  |    34 -
+ .../stage99-tx-completion-reclamation-audit.yml    |    53 -
+ .../Allowlist/stage110-signing-efi-audit.gitblob   |     1 -
+ .../stage111-runtime-amfipass-audit.gitblob        |     1 -
+ ...tage119-controller-interface-attachment.gitblob |     1 -
+ .../stage120-exact-attachment-abi.gitblob          |     1 -
+ Development/Logs/automation-status/latest.txt      |     6 +-
+ ...-clean-dual-object-compile-20261106T043340Z.log |  6152 -----
+ ...stage100-tx-callback-deferral-audit-20261106.md |    50 -
+ .../stage101-bounded-queue-lifecycle-20261106.md   |    46 -
+ ...-clean-dual-object-compile-20261106T044830Z.log |  6113 -----
+ ...age101-final-clean-compile-20261106T045101Z.log |  6252 -----
+ ...-clean-dual-object-compile-20261106T051059Z.log |  5872 ----
+ ...-clean-dual-object-compile-20261106T051547Z.log |  6290 -----
+ .../stage102-xnu-thread-call-lifecycle-20261106.md |    92 -
+ ...03-final-bundle-validation-20261106T053206Z.log |    12 -
+ ...03-native-full-link-bundle-20261106T052811Z.log |  5838 ----
+ ...age104-native-binary-audit-20261106T053603Z.log |    89 -
+ ...05-native-symbol-abi-audit-20261106T054714Z.log |   789 -
+ ...erving-signing-feasibility-20261106T055452Z.log |    46 -
+ ...core-injection-feasibility-20261106T060847Z.log |    54 -
+ ...core-injection-feasibility-20261106T061303Z.log |    88 -
+ ...core-injection-feasibility-20261106T062025Z.log |    83 -
+ ...8-registration-transaction-20261106T081017Z.log |  6152 -----
+ ...8-registration-transaction-20261106T092047Z.log |    23 -
+ ...8-registration-transaction-20261106T092654Z.log |    40 -
+ ...8-registration-transaction-20261106T092902Z.log |    50 -
+ ...8-registration-transaction-20261106T093052Z.log |   312 -
+ ...8-registration-transaction-20261106T093213Z.log |    61 -
+ ...09-native-bundle-readiness-20261106T093723Z.log |   705 -
+ ...stage110-signing-efi-audit-20261106T104448Z.log |    53 -
+ ...stage110-signing-efi-audit-20261106T104722Z.log |    65 -
+ ...111-first-run-unverified-20261106T114413Z.patch |    40 -
+ ...ge111-first-run-unverified-20261106T114413Z.txt |     9 -
+ ...oller-interface-attachment-20261106T141021Z.log |    33 -
+ .../class-and-vtable-index.txt                     |    30 -
+ .../controller-attachment-abi.txt                  |    30 -
+ .../stage120-20261106T141707Z/method-status.txt    |     8 -
+ .../selected-method-disassembly.txt                |  1231 -
+ .../Logs/stage120-20261106T141707Z/summary.txt     |    15 -
+ .../tools/__pycache__/disasm.cpython-315.pyc       |   Bin 9536 -> 0 bytes
+ .../tools/__pycache__/kcfile.cpython-315.pyc       |   Bin 16621 -> 0 bytes
+ .../Logs/stage120-20261106T141707Z/tools/disasm.py |   139 -
+ .../Logs/stage120-20261106T141707Z/tools/kcfile.py |   210 -
+ .../stage120-20261106T141707Z/vtable-index.txt     |    34 -
+ ...ge121-github-source-review-20261106T142841Z.log |    53 -
+ ...tive-controller-attachment-20261106T142556Z.log |  5863 ----
+ ...06T144511Z-upload-20261106T151521Z-0a691ba8.log | 26588 +++++++++++++++++++
+ .../stage122-runtime-summary-20261106T151904Z.txt  |    33 +
+ ...untime-activation-recovered-20261106T212519.log |    77 +
+ ...ative-wifi-interface-state-20261106T155623Z.log |    28 +
+ ...ative-wifi-interface-state-20261106T160152Z.log |    70 +
+ ...native-wifi-menu-readiness-20261106T162258Z.log |    88 +
+ .../stage125-native-wifi-menu-readiness-audit.md   |    82 -
+ .../Logs/stage126-apple-power-state-abi-audit.md   |    13 +
+ ...stage91-native-wcl-compile-20261105T181953Z.log |    96 -
+ .../Logs/stage91-ownership-review-20261106.md      |    56 -
+ ...tage91-tx-submission-tests-20261105T173517Z.log |    17 -
+ ...tage91-tx-submission-tests-20261105T175804Z.log |    41 -
+ ...tage91-tx-submission-tests-20261105T181048Z.log |    47 -
+ ...tage91-tx-submission-tests-20261105T181733Z.log |    50 -
+ ...tage91-tx-submission-tests-20261105T185437Z.log |    53 -
+ ...wmm-completion-fix-compile-20261105T185446Z.log |   187 -
+ .../stage91-wmm-completion-retry-fix-20261106.md   |    55 -
+ ...ge92-tx-completion-compile-20261105T193145Z.log |   192 -
+ ...stage92-tx-completion-handoff-24H32-20261106.md |    73 -
+ ...tage92-tx-completion-tests-20261105T192820Z.log |    21 -
+ ...tage92-tx-completion-tests-20261105T193136Z.log |    53 -
+ ...age93-independent-tx-audit-20261105T194044Z.log |    22 -
+ Development/Logs/stage94-radio-tx-sync-20261106.md |    41 -
+ .../Logs/stage94-radio-tx-sync-design-20261106.md  |    85 -
+ .../Logs/stage94-radio-tx-sync-model-20261106.log  |    12 -
+ .../Logs/stage95-key-retirement-audit-20261106.md  |    51 -
+ .../stage96-key-retirement-barrier-20261106.md     |    39 -
+ .../Logs/stage97-independent-audit-20261106.md     |    42 -
+ .../stage98-clean-compile-20261106T034521Z.log     |  5636 ----
+ .../stage98-final-compile-20261106T034120Z.log     |    95 -
+ .../stage98-native-build-lock-audit-20261106.md    |    57 -
+ .../stage98-target-compile-diagnostic-20261106.md  |   138 -
+ ...-target-compile-diagnostic-20261106T033413Z.log |  2150 --
+ ...age98-target-compile-fixed-20261106T033742Z.log |  1103 -
+ ...-clean-dual-object-compile-20261106T041443Z.log |  6074 -----
+ ...mpletion-lock-and-reclamation-audit-20261106.md |    59 -
+ Development/README.md                              |    20 -
+ Development/STAGE108-REGISTRATION-TRANSACTION.md   |    78 -
+ Development/STAGE110-SIGNING-EFI-AUDIT.md          |    13 -
+ Development/STAGE111-RUNTIME-AMFIPASS-AUDIT.md     |    36 -
+ Development/output.log                             |  1180 +-
+ Development/stage104-native-binary-audit.sh        |   186 -
+ Development/stage105-native-symbol-abi-audit.sh    |   307 -
+ .../stage106-sip-preserving-signing-audit.sh       |   162 -
+ .../stage107-opencore-injection-feasibility.sh     |   406 -
+ Development/stage108-registration-transaction.sh   |   129 -
+ .../stage109-native-bundle-readiness-audit.sh      |   343 -
+ Development/stage110-signing-efi-audit.sh          |   387 -
+ Development/stage111-runtime-amfipass-audit.py     |   518 -
+ .../stage119-controller-interface-attachment.py    |   191 -
+ Development/stage120-exact-attachment-abi.py       |   280 -
+ .../stage121-native-controller-attachment.sh       |   125 -
+ Development/stage121-publish-existing-run.sh       |    93 -
+ .../stage124-native-wifi-interface-state.sh        |   146 -
+ .../stage125-native-wifi-menu-readiness-audit.sh   |   106 -
+ .../stage126-apple-power-state-abi-audit.sh        |    88 +
+ docs/STAGE91-TX-SUBMISSION-CALLBACK.md             |    60 -
+ .../IOKit/skywalk/IOSkywalkRxCompletionQueue.h     |    10 -
+ .../IOKit/skywalk/IOSkywalkTxSubmissionQueue.h     |     2 +-
+ driver/RTL88WiFi/Makefile                          |    51 +-
+ .../src/compat/linux/skbuff_tx_completion.h        |    24 +-
+ driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp       |  2284 +-
+ driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp       |    68 +-
+ driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp       |    67 +-
+ driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp       |     4 +-
+ driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp       |    56 -
+ .../RTL88WiFi/src/kext/RTW88TxFrameProtection.hpp  |    15 -
+ .../RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp  |    78 -
+ driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp     |   158 -
+ .../src/kext/wcl24h32/RTW88WCLController.cpp       |   335 +-
+ .../src/kext/wcl24h32/RTW88WCLController.hpp       |    29 +-
+ .../src/kext/wcl24h32/RTW88WCLInfraInterface.cpp   |   309 +-
+ .../src/kext/wcl24h32/RTW88WCLInfraInterface.hpp   |    17 +-
+ .../wcl24h32/RTW88WCLRegistrationTransaction.hpp   |   112 -
+ .../src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp    |   324 +-
+ .../src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp    |    66 +-
+ .../src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp |   243 +-
+ .../src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp |    52 +-
+ .../kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp |    63 +-
+ .../kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp    |    27 -
+ .../wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp     |   333 -
+ .../wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp     |    71 -
+ .../kext/wcl24h32/RTW88WCLTxSubmissionBatch.hpp    |    38 -
+ .../src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp |   116 -
+ .../drivers/net/wireless/realtek/rtw88/hci.h       |     9 -
+ .../drivers/net/wireless/realtek/rtw88/mac.c       |    55 -
+ .../drivers/net/wireless/realtek/rtw88/mac.h       |     7 -
+ .../drivers/net/wireless/realtek/rtw88/mac80211.c  |    37 +-
+ .../drivers/net/wireless/realtek/rtw88/main.c      |     1 -
+ .../drivers/net/wireless/realtek/rtw88/main.h      |     3 +-
+ .../drivers/net/wireless/realtek/rtw88/pci.c       |    53 +-
+ .../drivers/net/wireless/realtek/rtw88/sec.c       |    20 +-
+ .../drivers/net/wireless/realtek/rtw88/tx.c        |    33 -
+ .../drivers/net/wireless/realtek/rtw88/tx.h        |     2 -
+ tests/rtw88_tx_ba_state_test.cpp                   |    61 -
+ tests/rtw88_tx_sequence_numbers_test.cpp           |    90 -
+ tests/rtw88_tx_state_gate_test.cpp                 |   190 -
+ tests/test-stage102-xnu-thread-call-lifecycle.py   |   239 -
+ ...t-wcl-controller-primary-attachment-stage121.py |    72 -
+ tests/test-wcl-link-state-publication-stage124.py  |    83 -
+ ...test-wcl-native-wifi-menu-readiness-stage125.py |   254 -
+ tests/test-wcl-registration-contract.py            |    78 +-
+ tests/test-wcl-registration-info-stage11.py        |    90 +-
+ .../test-wcl-registration-transaction-stage108.py  |   197 -
+ tests/test-wcl-resource-transaction.py             |     2 +-
+ tests/test-wcl-skywalk-queues.py                   |     4 +-
+ tests/test-wcl-stage100-tx-callback-deferral.py    |   225 -
+ tests/test-wcl-stage93-independent-tx-audit.py     |   305 -
+ tests/test-wcl-stage94-radio-tx-sync.py            |   364 -
+ tests/test-wcl-stage95-key-retirement.py           |   155 -
+ tests/test-wcl-stage96-key-retirement.py           |   142 -
+ tests/test-wcl-stage97-independent-audit.py        |   111 -
+ tests/test-wcl-stage98-native-build-lock-audit.py  |   135 -
+ ...-wcl-stage99-tx-completion-reclamation-audit.py |   280 -
+ tests/test-wcl-tx-completion-stage92.py            |   283 -
+ tests/test-wcl-tx-queue-array-contract.py          |    15 +-
+ tests/test-wcl-tx-submission-stage91.py            |   237 -
+ .../wcl_registration_transaction_stage108_test.cpp |    64 -
+ tests/wcl_tx_completion_bounded_queue_test.cpp     |   101 -
+ tests/wcl_tx_completion_slots_test.cpp             |    34 -
+ tests/wcl_tx_submission_batch_test.cpp             |    91 -
+ tests/wcl_tx_submission_gate_test.cpp              |   164 -
+ tests/wcl_tx_submission_queue_array_test.cpp       |    13 -
+ tools/run-stage100-tx-callback-deferral-audit.sh   |    12 -
+ tools/run-stage101-bounded-queue-lifecycle.sh      |    13 -
+ tools/run-stage102-xnu-thread-call-lifecycle.sh    |    15 -
+ tools/run-stage91-tx-submission-tests.sh           |   146 -
+ tools/run-stage91-wmm-completion-fix-validation.sh |   124 -
+ tools/run-stage92-tx-completion-tests.sh           |   146 -
+ tools/run-stage92-tx-completion-validation.sh      |   125 -
+ tools/run-stage93-independent-tx-audit.sh          |    92 -
+ tools/run-stage94-radio-tx-ba-model-tests.sh       |     9 -
+ tools/run-stage94-radio-tx-sync-model-tests.sh     |    13 -
+ tools/run-stage95-key-retirement-audit.sh          |     6 -
+ tools/run-stage96-key-retirement-tests.sh          |     6 -
+ tools/run-stage97-independent-audit.sh             |     6 -
+ tools/run-stage98-native-build-lock-audit.sh       |     6 -
+ .../run-stage99-tx-completion-reclamation-audit.sh |    19 -
+ 192 files changed, 28059 insertions(+), 83728 deletions(-)
+ .../src/kext/wcl24h32/RTW88WCLController.cpp       | 44 ++++++++++++++++++++++
+ .../src/kext/wcl24h32/RTW88WCLController.hpp       |  8 +++-
+ 2 files changed, 51 insertions(+), 1 deletion(-)
+
+=== 2. FETCH CANONICAL GITHUB SOURCE WITHOUT CHECKOUT ===
+From https://github.com/shammu2bd/Realtek-WiFi-Native-macOS
+ * branch            work/stage125-native-wifi-menu-readiness-audit -> FETCH_HEAD
+FETCH_EXIT=0
+STOP: canonical GitHub source unavailable
+RESTORE_CHECK_EXIT=1
+
+=== 3. COUNTRY-CODE ABI INSPECTION ===
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative matches
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o matches
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-712-    u_int32_t    tx_errors;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-713-    u_int32_t    rx_frame_count;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-714-    u_int32_t    rx_errors;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-715-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-716-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h:717:struct apple80211_country_code_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-718-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-719-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-720-    u_int8_t     cc[APPLE80211_MAX_CC_LEN];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-721-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-722-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-723-struct apple80211_last_rx_pkt_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-724-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-725-    u_int32_t         version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-726-    u_int32_t         rate;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-727-    int32_t           rssi;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-728-    u_int32_t         num_streams;    // number of spatial streams
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-729-    struct ether_addr sa;             // source address
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-730-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-731-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-732-struct apple80211_radio_info_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-733-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-734-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-735-    u_int32_t    count;        // number of rf chains
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-736-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-737-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-738-struct apple80211_guard_interval_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-739-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-740-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-741-    u_int32_t    interval;    // apple80211_guard_interval
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-742-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-743-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-744-struct apple80211_mcs_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-745-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-746-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-747-    u_int32_t    index;        // 0 to APPLE80211_MAX_MCS_INDEX
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-748-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-749-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-750-struct apple80211_rifs_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-751-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-752-    u_int32_t    version;
+--
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-267-//    IOReturn setChanCCA(apple80211_stat_report *,int);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-268-//    IOReturn setChanExtendedCCA(apple80211_stat_report *,apple80211_cca_report *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-269-//    bool setLTECoexstat(apple80211_stat_report *,apple80211_lteCoex_report *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-270-//    bool setBTCoexstat(apple80211_stat_report *,apple80211_btCoex_report *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-271-//    bool setAMPDUstat(apple80211_stat_report *,apple80211_ampdu_stat_report *,apple80211_channel *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h:272://    UInt32 getCountryCode(apple80211_country_code_data *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h:273://    IOReturn setCountryCode(apple80211_country_code_data *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-274-//    bool getInfraExtendedStats(apple80211_extended_stats *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-275-//    bool getChipCounterStats(apple80211_chip_stats *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-276-//    bool setExtendedChipCounterStats(apple80211_stat_report *,void *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-277-//    bool setChipCounterStats(apple80211_stat_report *,apple80211_chip_stats *,apple80211_channel *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-278-//    virtual bool setLeakyAPStats(apple80211_leaky_ap_event *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-279-//    bool setFrameStats(apple80211_stat_report *,apple80211_frame_counters *,apple80211_channel *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-280-//    bool setPowerStats(apple80211_stat_report *,apple80211_power_debug_sub_info *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-281-//    bool getBeaconPeriod(apple80211_beacon_period_data *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-282-    SInt32 apple80211VirtualRequestIoctl(unsigned int,int,IO80211VirtualInterface *,void *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-283-//    bool getBSSIDData(OSObject *,apple80211_bssid_data *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-284-//    bool getSSIDData(apple80211_ssid_data *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-285-//    bool inputInfraPacket(mbuf_t);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-286-//    void notifyHostapState(apple80211_hostap_state *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-287-//    bool isAwdlAssistedDiscoveryEnabled(void);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-288-//    void joinDone(scanSource,joinStatus);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-289-//    void joinStarted(scanSource,joinStatus);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-290-//    void handleChannelSwitchAnnouncement(apple80211_channel_switch_announcement *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-291-//    void scanDone(scanSource,int);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-292-//    void scanStarted(scanSource,apple80211_scan_data *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-293-//    void printChannels(void);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-294-//    void updateInterfaceCoexRiskPct(unsigned long long);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-295-//    SInt32 getInfraChannel(apple80211_channel_data *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-296-//    void calculateInterfacesAvaiability(void); // Suspected return type - int
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-297-//    void setChannelSequenceList(apple80211_awdl_sync_channel_sequence *); // Suspected return type - int
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-298-//    void setPrimaryInterfaceDatapathState(bool);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-299-//    UInt32 getPrimaryInterfaceLinkState(void);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-300-//    void setCurrentChannel(apple80211_channel *); // Suspected return type - int
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-301-//    void setHtCapability(ieee80211_ht_capability_ie *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-302-//    UInt32 getHtCapability(void);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-303-//    UInt32 getHtCapabilityLength(void);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-304-//    bool io80211isDebuggable(bool* enable);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-305-//    void logDebug(unsigned long long,char const*,...); // Suspected return type - int
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-306-//    void vlogDebug(unsigned long long,char const*,va_list); // Suspected return type - char
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-307-//    void logDebug(char const*,...); // Suspected return type - int
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/IO80211Controller.h-308-//    bool calculateInterfacesCoex(void);
+--
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-97-    virtual IOReturn getDRIVER_VERSION(IO80211SkywalkInterface *, apple80211_version_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-98-    virtual IOReturn getHARDWARE_VERSION(IO80211SkywalkInterface *, apple80211_version_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-99-    virtual IOReturn getCARD_CAPABILITIES(IO80211SkywalkInterface *, apple80211_capability_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-100-    virtual IOReturn getPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-101-    virtual IOReturn setPOWER(IO80211SkywalkInterface *, apple80211_power_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp:102:    virtual IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *, apple80211_country_code_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp:103:    virtual IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *, apple80211_country_code_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-104-    virtual IOReturn setGET_DEBUG_INFO(IO80211SkywalkInterface *, apple80211_debug_command *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-105-private:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-106-    virtual void _abi_0d00() __asm__("__ZN17IO80211Controller18getPLATFORM_CONFIGEP23IO80211SkywalkInterfaceP26apple80211_platform_config");
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-107-public:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-108-    virtual SInt32 enableVirtualInterface(IO80211VirtualInterface *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-109-    virtual SInt32 disableVirtualInterface(IO80211VirtualInterface *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-110-    virtual bool requiresExplicitMBufRelease();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-111-    virtual bool flowIdSupported();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-112-    virtual IO80211FlowQueueLegacy *requestFlowQueue(FlowIdMetadata const *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-113-    virtual void releaseFlowQueue(IO80211FlowQueue *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-114-    virtual bool getLogPipes(CCPipe **, CCPipe **, CCPipe **);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-115-    virtual CCLogStream *getLogger() const = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-116-    virtual void enableFeatureForLoggingFlags(unsigned long long);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-117-    virtual IOReturn requestQueueSizeAndTimeout(unsigned short *, unsigned short *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-118-    virtual IOReturn enablePacketTimestamping();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-119-    virtual IOReturn disablePacketTimestamping();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-120-    virtual UInt getPacketTSCounter();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-121-    virtual void *getDriverTextLog();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-122-    virtual UInt32 selfDiagnosticsReport(int, char const *, unsigned int);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-123-    virtual CommonFaultReporter *getFaultReporterFromDriver() = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-124-private:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-125-    virtual void _abi_0d88() __asm__("__ZN17IO80211Controller25allocIO80211RecursiveLockEv");
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-126-public:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-127-    virtual UInt32 getDataQueueDepth(OSObject *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-128-    virtual bool wasDynSARInFailSafeMode();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-129-    virtual void updateAdvisoryScoresIfNeed();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-130-    virtual UInt64 getAVCAdvisoryInfo(IO80211InterfaceAVCAdvisory *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-131-private:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-132-    virtual void _abi_0db0() __asm__("__ZN17IO80211Controller26getActionFramePoolCapacityEv");
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-133-    virtual void _abi_0db8() __asm__("__ZN17IO80211Controller13getPostOfficeEv");
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-134-    virtual void _abi_0dc0() __asm__("__ZN17IO80211Controller16CreatePostOfficeEv");
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-135-public:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-136-    virtual bool attachInterface(OSObject *, IOService *);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-137-    virtual void detachInterface(OSObject *, bool);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp-138-    virtual IO80211VirtualInterface *createVirtualInterface(ether_addr *, unsigned int);
+--
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-58-    IOReturn getPOWER(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-59-                      apple80211_power_data *data) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-60-    IOReturn setPOWER(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-61-                      apple80211_power_data *data) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-62-    IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:63:                             apple80211_country_code_data *data) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-64-    IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:65:                             apple80211_country_code_data *data) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-66-    IOReturn setGET_DEBUG_INFO(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-67-                               apple80211_debug_command *data) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-68-    CCLogStream *getLogger() const override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-69-    CommonFaultReporter *getFaultReporterFromDriver() override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-70-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-71-    IOReturn bindRadioBackend(RTW88IEEE80211 *radio);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-72-    void unbindRadioBackend();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-73-    RTW88IEEE80211 *radioBackend() const { return _radio; }
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-74-    RTW88WCLPCIBackend *pciBackend() const { return _pciBackend; }
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-75-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-76-    /* RTW88WCLPCIBackendClient: no native TX queue is registered yet. */
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-77-    void rtw88WCLResumeTransmit() override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-78-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-79-    /* RTW88EventDelegate: events are deliberately not published until the
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-80-     * Skywalk interface has completed registration. */
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-81-    void rtw88Event(RTW88Event event, void *data) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-82-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-83-    /* RTW88RxDelegate: receive mbufs enter a bounded workloop staging ring,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-84-     * then become pool-backed Skywalk packets. The sink still rejects them
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-85-     * until the RX completion queue is registered and verified. */
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-86-    mbuf_t allocateInputPacket(uint32_t length) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-87-    void injectRxFrame(mbuf_t packet) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-88-    IOWorkLoop *getRxWorkLoop() override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-89-    void setLinkStatus(UInt32 status) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-90-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-91-private:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-92-    IOReturn releaseNativeResources();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-93-    IOReturn recycleStagedRxPackets();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-94-    static bool stagedRxFrame(IOSkywalkPacket *preparedPacket, void *context);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-95-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-96-    enum : uint32_t {
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-97-        kPacketPathDisabled = 0,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-98-        kPacketPathActive = 1,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-99-        kPacketPathQuiescing = 2,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp-100-        kPacketPathReleasing = 3,
+--
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp-391-    (void)interface;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp-392-    return data ? kIOReturnNotReady : kIOReturnBadArgument;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp-393-}
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp-394-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp-395-IOReturn RTW88WCLController::getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:396:                                              apple80211_country_code_data *data)
+
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88IEEE80211.o matches
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative matches
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o matches
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h:603:#define APPLE80211_M_COUNTRY_CODE_CHANGED    11
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:5234:IOReturn RTW88IEEE80211::setRegulatoryCountry(const char alpha2[2])
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp:102:    virtual IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *, apple80211_country_code_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32ABI.hpp:103:    virtual IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *, apple80211_country_code_data *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:62:    IOReturn getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp:64:    IOReturn setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:395:IOReturn RTW88WCLController::getCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp:406:IOReturn RTW88WCLController::setCOUNTRY_CODE(IO80211SkywalkInterface *interface,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:233:    IOReturn  setRegulatoryCountry(const char alpha2[2]);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:1986:    // COUNTRY_CODE_CHANGED synchronously requests COUNTRY_CODE again.
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:2902:                    IOReturn regRet = _ieee80211->setRegulatoryCountry(alpha2);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:2906:                if (_netif) _netif->postMessage(APPLE80211_M_COUNTRY_CODE_CHANGED);
+
+=== 4. PMKSA ABI AND BACKEND INSPECTION ===
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative matches
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o matches
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-599-    u_int16_t                ad_auth_lower;    // apple80211_authtype_lower
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-600-    u_int16_t                ad_auth_upper;    // apple80211_authtype_upper
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-601-    u_int32_t                ad_ssid_len;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-602-    u_int8_t                 ad_ssid[ APPLE80211_MAX_SSID_LEN ];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-603-    struct ether_addr        ad_bssid;         // prefer over ssid if not zeroed
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h:604:    struct apple80211_key    ad_key;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-605-    uint16_t                 pad;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-606-    u_int8_t                 ad_rsn_ie[ APPLE80211_MAX_RSN_IE_LEN ];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-607-    u_int32_t                ad_flags;         // apple80211_assoc_flags
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-608-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-609-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-610-static_assert(offsetof(apple80211_assoc_data, ad_rsn_ie) == 206, "offsetof(apple80211_assoc_data, ad_rsn_ie)");
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-611-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-612-struct apple80211_deauth_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-613-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-614-    u_int32_t            version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-615-    u_int32_t            deauth_reason;    // reason code
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-616-    struct ether_addr    deauth_ea;        // BSSID of AP
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-617-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-618-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-619-struct apple80211_countermeasures_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-620-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-621-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-622-    u_int32_t    enabled;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-623-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-624-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-625-struct apple80211_frag_threshold_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-626-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-627-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-628-    u_int32_t    threshold;    // bytes
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-629-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-630-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-631-struct apple80211_rate_set_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-632-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-633-    u_int32_t                version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-634-    u_int16_t                num_rates;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-635-    struct apple80211_rate   rates[APPLE80211_MAX_RATES];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-636-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-637-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-638-struct apple80211_short_slot_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-639-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-640-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-641-    u_int8_t     mode;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-642-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-643-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-644-struct apple80211_retry_limit_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-645-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-646-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-647-    u_int32_t    limit;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-648-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-649-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-650-struct apple80211_antenna_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-651-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-652-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-653-    u_int32_t    num_radios;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-654-    int32_t      antenna_index[APPLE80211_MAX_RADIO];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-655-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-656-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-657-struct apple80211_dtim_int_data
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-658-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_ioctl.h-659-    u_int32_t    version;
+--
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-308-#define APPLE80211_KEY_FLAG_UNICAST       0x1
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-309-#define APPLE80211_KEY_FLAG_MULTICAST     0x2
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-310-#define APPLE80211_KEY_FLAG_TX            0x4
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-311-#define APPLE80211_KEY_FLAG_RX            0x8
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-312-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h:313:struct apple80211_key
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-314-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-315-    u_int32_t           version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-316-    u_int32_t           key_len;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-317-    u_int32_t           key_cipher_type;                    // apple80211_cipher_type
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-318-    u_int16_t           key_flags;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-319-    u_int16_t           key_index;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-320-    u_int8_t            key[ APPLE80211_KEY_BUFF_LEN ];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-321-    u_int8_t            pad[30];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-322-    u_int32_t           key_rsc_len;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-323-    u_int8_t            key_rsc[ APPLE80211_RSC_LEN ];    // receive sequence counter
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-324-    struct ether_addr   key_ea;                           // key applies to this bssid
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-325-    uint                wowl_kck_len;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-326-    uint8_t             wowl_kck_key[16];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-327-    uint                wowl_kek_len;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-328-    u_int8_t            wowl_kek_key[24];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-329-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-330-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-331-// Changing this affects any structure that contains a channel
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-332-struct apple80211_channel
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-333-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-334-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-335-    u_int32_t    channel;    //    channel number
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-336-    u_int32_t    flags;      //    apple80211_channel_flag vector
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-337-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-338-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-339-struct apple80211_rate
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-340-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-341-    u_int32_t    version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-342-    u_int32_t    rate;     // rate mbps
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-343-    u_int32_t    flags;    // apple80211_rate_flag vector
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-344-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-345-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-346-// Probe response capability flags, IEEE 7.3.1.4
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-347-#define APPLE80211_CAPINFO_ESS               0x0001
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-348-#define APPLE80211_CAPINFO_IBSS              0x0002
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-349-#define APPLE80211_CAPINFO_CF_POLLABLE       0x0004
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-350-#define APPLE80211_CAPINFO_CF_POLLREQ        0x0008
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-351-#define APPLE80211_CAPINFO_PRIVACY           0x0010
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-352-#define APPLE80211_CAPINFO_SHORT_PREAMBLE    0x0020
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-353-#define APPLE80211_CAPINFO_PBCC              0x0040
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-354-#define APPLE80211_CAPINFO_AGILITY           0x0080
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-355-// 0x0100, 0x0200 reserved
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-356-#define APPLE80211_CAPINFO_SHORT_SLOT_TIME   0x0400
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-357-// 0x0800, 0x1000 reserved
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-358-#define APPLE80211_CAPINFO_DSSS_OFDM         0x2000
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-359-// 0x4000, 0x8000 reserved
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-360-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-361-// Reason codes IEEE 7.3.1.7
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-362-#define APPLE80211_REASON_UNSPECIFIED                1
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-363-#define APPLE80211_REASON_PREV_AUTH_EXPIRED          2
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-364-#define APPLE80211_REASON_AUTH_LEAVING               3
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-365-#define APPLE80211_REASON_INACTIVE                   4
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-366-#define APPLE80211_REASON_AP_OVERLOAD                5
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-367-#define APPLE80211_REASON_NOT_AUTHED                 6
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-368-#define APPLE80211_REASON_NOT_ASSOCED                7
+--
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-491-    u_int16_t                   nd_auth_lower;        // apple80211_authtype_lower
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-492-    u_int16_t                   nd_auth_upper;        // apple80211_authtype_upper
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-493-    struct apple80211_channel   nd_channel;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-494-    u_int32_t                   nd_ssid_len;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-495-    u_int8_t                    nd_ssid[ APPLE80211_MAX_SSID_LEN ];
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h:496:    struct apple80211_key       nd_key;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-497-    u_int32_t                   nd_ie_len;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-498-    void                        *nd_ie_data;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-499-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-500-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-501-#define APPLE80211_NETWORK_DATA_MAX_IE_LEN 1024
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-502-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-503-// As hostap support improves, this will grow
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-504-struct apple80211_station
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-505-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-506-    u_int32_t            version;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-507-    struct ether_addr    sta_mac;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-508-    int32_t              sta_rssi;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-509-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-510-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-511-// WOW structures and defines
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-512-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-513-struct apple80211_wow_pattern
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-514-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-515-    size_t      len;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-516-    u_int8_t    *pattern;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-517-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-518-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-519-enum apple80211_wake_condition
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-520-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-521-    APPLE80211_WAKE_COND_MAGIC_PATTERN  = 0,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-522-    APPLE80211_WAKE_COND_NET_PATTERN    = 1,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-523-    APPLE80211_WAKE_COND_DISASSOCIATED  = 2,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-524-    APPLE80211_WAKE_COND_DEAUTHED       = 3,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-525-    APPLE80211_WAKE_COND_RETROGRADE_TSF = 4,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-526-    APPLE80211_WAKE_COND_BEACON_LOSS    = 5,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-527-};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-528-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-529-#define APPLE80211_MAX_WAKE_COND 5
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-530-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-531-enum apple80211_card_capability
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-532-{
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-533-    APPLE80211_CAP_WEP             = 0,    // CAPABILITY: WEP available
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-534-    APPLE80211_CAP_TKIP            = 1,    // CAPABILITY: TKIP available
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-535-    APPLE80211_CAP_AES             = 2,    // CAPABILITY: AES OCB avail
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-536-    APPLE80211_CAP_AES_CCM         = 3,    // CAPABILITY: AES CCM avail
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-537-    APPLE80211_CAP_CKIP            = 4,    // CAPABILITY: CKIP available
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-538-    APPLE80211_CAP_IBSS            = 5,    // CAPABILITY: IBSS available
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-539-    APPLE80211_CAP_PMGT            = 6,    // CAPABILITY: Power mgmt
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-540-    APPLE80211_CAP_HOSTAP          = 7,    // CAPABILITY: HOSTAP avail
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-541-    APPLE80211_CAP_TXPMGT          = 8,    // CAPABILITY: tx power mgmt
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-542-    APPLE80211_CAP_SHSLOT          = 9,    // CAPABILITY: short slottime
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-543-    APPLE80211_CAP_SHPREAMBLE      = 10,   // CAPABILITY: short preamble
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-544-    APPLE80211_CAP_MONITOR         = 11,   // CAPABILITY: monitor mode
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-545-    APPLE80211_CAP_TKIPMIC         = 12,   // CAPABILITY: TKIP MIC avail
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-546-    APPLE80211_CAP_WPA1            = 13,   // CAPABILITY: WPA1 avail
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-547-    APPLE80211_CAP_WPA2            = 14,   // CAPABILITY: WPA2 avail
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-548-    APPLE80211_CAP_WPA             = 15,   // CAPABILITY: WPA1+WPA2 avail
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-549-    APPLE80211_CAP_BURST           = 16,   // CAPABILITY: frame bursting
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-550-    APPLE80211_CAP_WME             = 17,   // CAPABILITY: WME avail
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h-551-    APPLE80211_CAP_SHORT_GI_40MHZ  = 18,   // CAPABILITY: Short guard interval in 40 MHz
+--
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-240-    IOReturn handleSSID(bool set, struct apple80211_ssid_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-241-    IOReturn handleAUTH_TYPE(bool set, struct apple80211_authtype_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-242-    IOReturn handleASSOCIATE(struct apple80211_assoc_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-243-    IOReturn handleRSN_IE(bool set, struct apple80211_rsn_ie_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-244-    IOReturn handleAP_IE_LIST(struct apple80211_ap_ie_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp:245:    IOReturn handleCIPHER_KEY(struct apple80211_key *key);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-246-    IOReturn handleDISASSOCIATE();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-247-    IOReturn handleSCAN_REQ(void *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-248-    IOReturn handleSCAN_RESULT(struct apple80211_scan_result **data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-249-    IOReturn handleCURRENT_NETWORK(struct apple80211_scan_result *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-250-    void fillScanResultFromBSS(const RTW88BSS &b, struct apple80211_scan_result *data, bool fullIEs);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-251-    IOReturn handleSTATE(struct apple80211_state_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-252-    IOReturn handleCHANNEL(struct apple80211_channel_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-253-    IOReturn handlePOWER(bool set, struct apple80211_power_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-254-    IOReturn handleVIRTUAL_IF_CREATE(struct apple80211_virt_if_create_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-255-    IOReturn handleVIRTUAL_IF_DELETE(struct apple80211_virt_if_delete_data *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-256-    SInt32 handleAWDLVirtualRequest(UInt request_type, int request_number,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-257-                                    IO80211VirtualInterface *interface, void *data);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-258-    bool ensureAWDLVirtualInterface();
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-259-
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-260-    apple80211_scan_result _scanResult = {};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-261-    uint32_t _scanCursor = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-262-    /* 1.0.5: APPLE80211_IOC_PRIVATE_MAC state; see handleRequestPRIVATE_MAC(). */
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-263-    bool     _privMacEnabled = true;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-264-    uint32_t _privMacFlags = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-265-    uint32_t _privMacIntervalS = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-266-    uint32_t _privMacGets = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-267-    uint8_t  _privMacAddress[6] = {};
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-268-    bool     _privMacAddressValid = false;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-269-    bool     _privMacApplyPending = false;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-270-    bool     _privMacRotatePending = false;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.hpp-271-    uint32_t _authLower = APPLE80211_AUTHTYPE_OPEN;
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88WCLRadioBridge.o matches
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88IEEE80211.o matches
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative matches
+Binary file /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o matches
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/80211/apple80211_var.h:120:    APPLE80211_CIPHER_PMKSA       = 7,        // PMK obtained from pre-authentication
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.hpp:84:    IOReturn installKey(bool pairwise, uint8_t keyIndex, uint32_t keyCipher,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:772:bool RTW88IEEE80211::installKey(struct ieee80211_key_conf **slot, bool pairwise,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3895:IOReturn RTW88IEEE80211::cmdInstallExternalKey(bool pairwise, uint8_t keyidx, uint32_t cipher,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3904:    if (!installKey(slot, pairwise, keyidx, cipher, key, key_len))
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4198:        /* installKey is a no-op for identical material, so AP retries keep
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4200:        if (!installKey(&_gtkConf, false, gtk_idx, groupCipher, gtk, gtk_len)) {
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4290:        if (!installKey(&_ptkConf, true, 0, WLAN_CIPHER_SUITE_CCMP,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4295:        if (gtk_len && !installKey(&_gtkConf, false, gtk_idx, groupCipher,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:53:    IOReturn setCIPHER_KEY(apple80211_key *data) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp:54:    IOReturn setCLEAR_PMKSA_CACHE(void *data) override;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:774:    RTW88_WCL_ABI_METHOD(setCIPHER_KEY, apple80211_key)
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCL24H32InterfaceABI.hpp:783:    virtual IOReturn setCLEAR_PMKSA_CACHE(void *) = 0;
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:123:/* WCL's 24H32 setCIPHER_KEY path carries PMK/PMKSA/MSK semantics. It is not
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:125: * ASSOCIATE and runs the internal WPA2 handshake; enterprise PMKSA insertion
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:126: * is not implemented here, so setCIPHER_KEY must fail closed. */
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:462:IOReturn RTW88WCLInfraInterface::setCIPHER_KEY(apple80211_key *data)
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:467:    /* The Sequoia WCL protocol uses cipher values PMK (6), PMKSA (7) and MSK
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:470:     * backend has no WCL PMKSA/MSK cache insertion API yet. Do not reinterpret
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:475:IOReturn RTW88WCLInfraInterface::setCLEAR_PMKSA_CACHE(void *data)
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp:478:    /* The existing RTW88 backend does not expose a PMKSA-cache removal API. */
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:253:    IOReturn  cmdInstallExternalKey(bool pairwise, uint8_t keyidx, uint32_t cipher,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp:311:    bool      installKey(struct ieee80211_key_conf **slot, bool pairwise,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp:266:IOReturn RTW88WCLRadioBridge::installKey(bool pairwise, uint8_t keyIndex,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp:274:    return _radio->cmdInstallExternalKey(pairwise, keyIndex, keyCipher,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTL88WiFi.cpp:3298:    IOReturn ret = _ieee80211->cmdInstallExternalKey(pairwise,
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-join-policy.py:577:        /* typical WPA2/WPA3 transition RSN element incl. PMF-capable caps, PMKID count and BIP group-mgmt cipher */
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-handshake.py:77: bool installKey(ieee80211_key_conf**,bool,uint8_t,uint32_t,const uint8_t*,uint8_t);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-handshake.py:87:wire='\n'.join(fn(x) for x in ('static void rtw88WriteSuite(', 'static uint16_t rtw88BuildSelectedRsnIe(', 'static const char *rtw88CipherName(', 'bool RTW88IEEE80211::installKey(', 'bool RTW88IEEE80211::sendEAPOLKey(', 'void RTW88IEEE80211::handleEAPOL('))
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-group-key.py:68: bool installKey(ieee80211_key_conf**,bool,uint8_t,uint32_t,const uint8_t*,uint8_t);
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-group-key.py:77:wire='\n'.join(fn(x) for x in ('static void rtw88WriteSuite(', 'static uint16_t rtw88BuildSelectedRsnIe(', 'static const char *rtw88CipherName(', 'bool RTW88IEEE80211::installKey(', 'bool RTW88IEEE80211::sendEAPOLKey(', 'void RTW88IEEE80211::handleEAPOL('))
+
+=== 5. CRITICAL INTERFACE LIFECYCLE ASSERTIONS ===
+173:IOReturn RTW88WCLInfraInterface::attachRadio(RTW88IEEE80211 *radio)
+262:bool RTW88WCLInfraInterface::start(IOService *provider)
+
+=== 6. FOCUSED REGRESSION TESTS ===
+--- tests/test-wcl-registration-info-stage11.py ---
+PASS: 0x130-byte aligned opaque RegistrationInfo storage
+PASS: exact 24H32 Apple producer overrides and six-byte address copy
+PASS: all unlisted initializer-owned bytes remain untouched
+PASS: version/size header validation and clear
+PASS: RegistrationInfo buffer is 0x130 bytes and 8-byte aligned
+PASS: builder follows initRegistrationInfo(option=1, size=0x130)
+PASS: Apple 24H32 opaque writes are applied without touching other bytes
+PASS: payload builder remains disconnected from start/registration
+TEST_EXIT=0
+--- tests/test-wcl-skywalk-queues.py ---
+PASS: four Skywalk queue objects and pools are owned with journal rollback; callbacks remain fail-closed and unregistered
+TEST_EXIT=0
+--- tests/test-focused.py ---
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:27:8: error: unknown type name 'thread_call_t'; did you mean 'pthread_cond_t'?
+   27 | static thread_call_t g_tx_skb_free_reaper_call = NULL;
+      |        ^~~~~~~~~~~~~
+      |        pthread_cond_t
+/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/_pthread/_pthread_cond_t.h:31:33: note: 'pthread_cond_t' declared here
+   31 | typedef __darwin_pthread_cond_t pthread_cond_t;
+      |                                 ^
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:27:22: error: initializing 'pthread_cond_t' (aka 'struct _opaque_pthread_cond_t') with an expression of incompatible type 'void *'
+   27 | static thread_call_t g_tx_skb_free_reaper_call = NULL;
+      |                      ^                           ~~~~
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:39:8: error: unknown type name 'bool'
+   39 | static bool rtw88_tx_status_callback_enter(void)
+      |        ^
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:47:20: error: use of undeclared identifier 'false'; did you mean 'else'?
+   47 |             return false;
+      |                    ^~~~~
+      |                    else
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:47:20: error: expected expression
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:50:52: error: use of undeclared identifier 'false'; did you mean 'else'?
+   50 |                                         gate + 1U, false,
+      |                                                    ^~~~~
+      |                                                    else
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:50:52: error: expected expression
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:52:20: error: use of undeclared identifier 'true'
+   52 |             return true;
+      |                    ^
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:67:9: error: call to undeclared function 'IOSleep'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
+   67 |         IOSleep(1);
+      |         ^
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:28:40: error: tentative definition has type 'struct rtw88_mpsc_bounded_queue' that is never completed
+   28 | static struct rtw88_mpsc_bounded_queue g_tx_skb_free_queue;
+      |                                        ^
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c:28:15: note: forward declaration of 'struct rtw88_mpsc_bounded_queue'
+   28 | static struct rtw88_mpsc_bounded_queue g_tx_skb_free_queue;
+      |               ^
+10 errors generated.
+Traceback (most recent call last):
+  File "/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-focused.py", line 526, in <module>
+    ring_checks(tmp)
+    ~~~~~~~~~~~^^^^^
+  File "/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-focused.py", line 483, in ring_checks
+    out = build_and_run('ring', [('ring.c', prog)], tmp)
+  File "/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/tests/test-focused.py", line 46, in build_and_run
+    subprocess.run([cc, *CFLAGS, '-w', *extra, *files, '-o', str(exe)], check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.15/lib/python3.15/subprocess.py", line 692, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command ['clang', '-g', '-O1', '-fsanitize=address,undefined', '-fno-sanitize-recover=all', '-fno-omit-frame-pointer', '-Wall', '-Wno-unused-function', '-w', '/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring.c', '-o', '/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/tmpyqf3m3c6/ring'] returned non-zero exit status 1.
+TEST_EXIT=1
+
+=== 7. NATIVE COMPILE-ONLY BUILD ===
+BUILD=SKIPPED (native target not found in project root Makefile)
+
+=== 8. FINAL WORKTREE AND SAFETY STATE ===
+D  .github/workflows/stage100-tx-callback-deferral-audit.yml
+D  .github/workflows/stage101-bounded-queue-lifecycle.yml
+D  .github/workflows/stage102-xnu-thread-call-lifecycle.yml
+D  .github/workflows/stage94-radio-tx-sync.yml
+D  .github/workflows/stage95-key-retirement-audit.yml
+D  .github/workflows/stage96-key-retirement.yml
+D  .github/workflows/stage97-independent-audit.yml
+D  .github/workflows/stage98-native-build-lock-audit.yml
+D  .github/workflows/stage99-tx-completion-reclamation-audit.yml
+D  Development/Allowlist/stage110-signing-efi-audit.gitblob
+D  Development/Allowlist/stage111-runtime-amfipass-audit.gitblob
+D  Development/Allowlist/stage119-controller-interface-attachment.gitblob
+D  Development/Allowlist/stage120-exact-attachment-abi.gitblob
+M  Development/Logs/automation-status/latest.txt
+D  Development/Logs/stage100-clean-dual-object-compile-20261106T043340Z.log
+D  Development/Logs/stage100-tx-callback-deferral-audit-20261106.md
+D  Development/Logs/stage101-bounded-queue-lifecycle-20261106.md
+D  Development/Logs/stage101-clean-dual-object-compile-20261106T044830Z.log
+D  Development/Logs/stage101-final-clean-compile-20261106T045101Z.log
+D  Development/Logs/stage102-clean-dual-object-compile-20261106T051059Z.log
+D  Development/Logs/stage102-post-fix-clean-dual-object-compile-20261106T051547Z.log
+D  Development/Logs/stage102-xnu-thread-call-lifecycle-20261106.md
+D  Development/Logs/stage103-final-bundle-validation-20261106T053206Z.log
+D  Development/Logs/stage103-native-full-link-bundle-20261106T052811Z.log
+D  Development/Logs/stage104-native-binary-audit-20261106T053603Z.log
+D  Development/Logs/stage105-native-symbol-abi-audit-20261106T054714Z.log
+D  Development/Logs/stage106-sip-preserving-signing-feasibility-20261106T055452Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T060847Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T061303Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T062025Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T081017Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092047Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092654Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092902Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T093052Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T093213Z.log
+D  Development/Logs/stage109-native-bundle-readiness-20261106T093723Z.log
+D  Development/Logs/stage110-signing-efi-audit-20261106T104448Z.log
+D  Development/Logs/stage110-signing-efi-audit-20261106T104722Z.log
+D  Development/Logs/stage111-first-run-unverified-20261106T114413Z.patch
+D  Development/Logs/stage111-first-run-unverified-20261106T114413Z.txt
+D  Development/Logs/stage119-controller-interface-attachment-20261106T141021Z.log
+D  Development/Logs/stage120-20261106T141707Z/class-and-vtable-index.txt
+D  Development/Logs/stage120-20261106T141707Z/controller-attachment-abi.txt
+D  Development/Logs/stage120-20261106T141707Z/method-status.txt
+D  Development/Logs/stage120-20261106T141707Z/selected-method-disassembly.txt
+D  Development/Logs/stage120-20261106T141707Z/summary.txt
+D  Development/Logs/stage120-20261106T141707Z/tools/__pycache__/disasm.cpython-315.pyc
+D  Development/Logs/stage120-20261106T141707Z/tools/__pycache__/kcfile.cpython-315.pyc
+D  Development/Logs/stage120-20261106T141707Z/tools/disasm.py
+D  Development/Logs/stage120-20261106T141707Z/tools/kcfile.py
+D  Development/Logs/stage120-20261106T141707Z/vtable-index.txt
+D  Development/Logs/stage121-github-source-review-20261106T142841Z.log
+D  Development/Logs/stage121-native-controller-attachment-20261106T142556Z.log
+A  Development/Logs/stage122-readonly-runtime-diagnostics-20261106T144511Z-upload-20261106T151521Z-0a691ba8.log
+A  Development/Logs/stage122-runtime-summary-20261106T151904Z.txt
+A  Development/Logs/stage123-runtime-activation-recovered-20261106T212519.log
+A  Development/Logs/stage124-native-wifi-interface-state-20261106T155623Z.log
+A  Development/Logs/stage124-native-wifi-interface-state-20261106T160152Z.log
+A  Development/Logs/stage125-native-wifi-menu-readiness-20261106T162258Z.log
+D  Development/Logs/stage125-native-wifi-menu-readiness-audit.md
+A  Development/Logs/stage126-apple-power-state-abi-audit.md
+D  Development/Logs/stage91-native-wcl-compile-20261105T181953Z.log
+D  Development/Logs/stage91-ownership-review-20261106.md
+D  Development/Logs/stage91-tx-submission-tests-20261105T173517Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T175804Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T181048Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T181733Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T185437Z.log
+D  Development/Logs/stage91-wmm-completion-fix-compile-20261105T185446Z.log
+D  Development/Logs/stage91-wmm-completion-retry-fix-20261106.md
+D  Development/Logs/stage92-tx-completion-compile-20261105T193145Z.log
+D  Development/Logs/stage92-tx-completion-handoff-24H32-20261106.md
+D  Development/Logs/stage92-tx-completion-tests-20261105T192820Z.log
+D  Development/Logs/stage92-tx-completion-tests-20261105T193136Z.log
+D  Development/Logs/stage93-independent-tx-audit-20261105T194044Z.log
+D  Development/Logs/stage94-radio-tx-sync-20261106.md
+D  Development/Logs/stage94-radio-tx-sync-design-20261106.md
+D  Development/Logs/stage94-radio-tx-sync-model-20261106.log
+D  Development/Logs/stage95-key-retirement-audit-20261106.md
+D  Development/Logs/stage96-key-retirement-barrier-20261106.md
+D  Development/Logs/stage97-independent-audit-20261106.md
+D  Development/Logs/stage98-clean-compile-20261106T034521Z.log
+D  Development/Logs/stage98-final-compile-20261106T034120Z.log
+D  Development/Logs/stage98-native-build-lock-audit-20261106.md
+D  Development/Logs/stage98-target-compile-diagnostic-20261106.md
+D  Development/Logs/stage98-target-compile-diagnostic-20261106T033413Z.log
+D  Development/Logs/stage98-target-compile-fixed-20261106T033742Z.log
+D  Development/Logs/stage99-clean-dual-object-compile-20261106T041443Z.log
+D  Development/Logs/stage99-tx-completion-lock-and-reclamation-audit-20261106.md
+M  Development/README.md
+D  Development/STAGE108-REGISTRATION-TRANSACTION.md
+D  Development/STAGE110-SIGNING-EFI-AUDIT.md
+D  Development/STAGE111-RUNTIME-AMFIPASS-AUDIT.md
+M  Development/output.log
+D  Development/stage104-native-binary-audit.sh
+D  Development/stage105-native-symbol-abi-audit.sh
+D  Development/stage106-sip-preserving-signing-audit.sh
+D  Development/stage107-opencore-injection-feasibility.sh
+D  Development/stage108-registration-transaction.sh
+D  Development/stage109-native-bundle-readiness-audit.sh
+D  Development/stage110-signing-efi-audit.sh
+D  Development/stage111-runtime-amfipass-audit.py
+D  Development/stage119-controller-interface-attachment.py
+D  Development/stage120-exact-attachment-abi.py
+D  Development/stage121-native-controller-attachment.sh
+D  Development/stage121-publish-existing-run.sh
+D  Development/stage124-native-wifi-interface-state.sh
+D  Development/stage125-native-wifi-menu-readiness-audit.sh
+A  Development/stage126-apple-power-state-abi-audit.sh
+D  docs/STAGE91-TX-SUBMISSION-CALLBACK.md
+M  driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h
+M  driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h
+M  driver/RTL88WiFi/Makefile
+M  driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h
+M  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp
+M  driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp
+M  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp
+M  driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxFrameProtection.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp
+MM driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp
+MM driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationTransaction.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionBatch.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h
+D  tests/rtw88_tx_ba_state_test.cpp
+D  tests/rtw88_tx_sequence_numbers_test.cpp
+D  tests/rtw88_tx_state_gate_test.cpp
+D  tests/test-stage102-xnu-thread-call-lifecycle.py
+D  tests/test-wcl-controller-primary-attachment-stage121.py
+D  tests/test-wcl-link-state-publication-stage124.py
+D  tests/test-wcl-native-wifi-menu-readiness-stage125.py
+M  tests/test-wcl-registration-contract.py
+M  tests/test-wcl-registration-info-stage11.py
+D  tests/test-wcl-registration-transaction-stage108.py
+M  tests/test-wcl-resource-transaction.py
+M  tests/test-wcl-skywalk-queues.py
+D  tests/test-wcl-stage100-tx-callback-deferral.py
+D  tests/test-wcl-stage93-independent-tx-audit.py
+D  tests/test-wcl-stage94-radio-tx-sync.py
+D  tests/test-wcl-stage95-key-retirement.py
+D  tests/test-wcl-stage96-key-retirement.py
+D  tests/test-wcl-stage97-independent-audit.py
+D  tests/test-wcl-stage98-native-build-lock-audit.py
+D  tests/test-wcl-stage99-tx-completion-reclamation-audit.py
+D  tests/test-wcl-tx-completion-stage92.py
+M  tests/test-wcl-tx-queue-array-contract.py
+D  tests/test-wcl-tx-submission-stage91.py
+D  tests/wcl_registration_transaction_stage108_test.cpp
+D  tests/wcl_tx_completion_bounded_queue_test.cpp
+M  tests/wcl_tx_completion_slots_test.cpp
+D  tests/wcl_tx_submission_batch_test.cpp
+D  tests/wcl_tx_submission_gate_test.cpp
+M  tests/wcl_tx_submission_queue_array_test.cpp
+D  tools/run-stage100-tx-callback-deferral-audit.sh
+D  tools/run-stage101-bounded-queue-lifecycle.sh
+D  tools/run-stage102-xnu-thread-call-lifecycle.sh
+D  tools/run-stage91-tx-submission-tests.sh
+D  tools/run-stage91-wmm-completion-fix-validation.sh
+D  tools/run-stage92-tx-completion-tests.sh
+D  tools/run-stage92-tx-completion-validation.sh
+D  tools/run-stage93-independent-tx-audit.sh
+D  tools/run-stage94-radio-tx-ba-model-tests.sh
+D  tools/run-stage94-radio-tx-sync-model-tests.sh
+D  tools/run-stage95-key-retirement-audit.sh
+D  tools/run-stage96-key-retirement-tests.sh
+D  tools/run-stage97-independent-audit.sh
+D  tools/run-stage98-native-build-lock-audit.sh
+D  tools/run-stage99-tx-completion-reclamation-audit.sh
+?? .github/workflows/
+?? Development/Logs/stage172/
+?? Development/Logs/stage173-undefined-symbols.txt
+?? Development/Logs/stage174-network-symbols.txt
+?? Development/Logs/stage174-undefined-symbols.txt
+?? Development/Logs/stage176-runtime-preflight.txt
+?? Development/Logs/stage177-control-plane-source-inventory.txt
+?? Development/Logs/stage178-control-plane-focused-review.txt
+?? Development/Logs/stage179-implementation-preflight.txt
+?? tests/test-wcl-controller-native-workqueue-stage172.py
+ .../stage100-tx-callback-deferral-audit.yml        |    46 -
+ .../workflows/stage101-bounded-queue-lifecycle.yml |    44 -
+ .../stage102-xnu-thread-call-lifecycle.yml         |    43 -
+ .github/workflows/stage94-radio-tx-sync.yml        |    59 -
+ .github/workflows/stage95-key-retirement-audit.yml |    45 -
+ .github/workflows/stage96-key-retirement.yml       |    36 -
+ .github/workflows/stage97-independent-audit.yml    |    28 -
+ .../workflows/stage98-native-build-lock-audit.yml  |    34 -
+ .../stage99-tx-completion-reclamation-audit.yml    |    53 -
+ .../Allowlist/stage110-signing-efi-audit.gitblob   |     1 -
+ .../stage111-runtime-amfipass-audit.gitblob        |     1 -
+ ...tage119-controller-interface-attachment.gitblob |     1 -
+ .../stage120-exact-attachment-abi.gitblob          |     1 -
+ Development/Logs/automation-status/latest.txt      |     6 +-
+ ...-clean-dual-object-compile-20261106T043340Z.log |  6152 -----
+ ...stage100-tx-callback-deferral-audit-20261106.md |    50 -
+ .../stage101-bounded-queue-lifecycle-20261106.md   |    46 -
+ ...-clean-dual-object-compile-20261106T044830Z.log |  6113 -----
+ ...age101-final-clean-compile-20261106T045101Z.log |  6252 -----
+ ...-clean-dual-object-compile-20261106T051059Z.log |  5872 ----
+ ...-clean-dual-object-compile-20261106T051547Z.log |  6290 -----
+ .../stage102-xnu-thread-call-lifecycle-20261106.md |    92 -
+ ...03-final-bundle-validation-20261106T053206Z.log |    12 -
+ ...03-native-full-link-bundle-20261106T052811Z.log |  5838 ----
+ ...age104-native-binary-audit-20261106T053603Z.log |    89 -
+ ...05-native-symbol-abi-audit-20261106T054714Z.log |   789 -
+ ...erving-signing-feasibility-20261106T055452Z.log |    46 -
+ ...core-injection-feasibility-20261106T060847Z.log |    54 -
+ ...core-injection-feasibility-20261106T061303Z.log |    88 -
+ ...core-injection-feasibility-20261106T062025Z.log |    83 -
+ ...8-registration-transaction-20261106T081017Z.log |  6152 -----
+ ...8-registration-transaction-20261106T092047Z.log |    23 -
+ ...8-registration-transaction-20261106T092654Z.log |    40 -
+ ...8-registration-transaction-20261106T092902Z.log |    50 -
+ ...8-registration-transaction-20261106T093052Z.log |   312 -
+ ...8-registration-transaction-20261106T093213Z.log |    61 -
+ ...09-native-bundle-readiness-20261106T093723Z.log |   705 -
+ ...stage110-signing-efi-audit-20261106T104448Z.log |    53 -
+ ...stage110-signing-efi-audit-20261106T104722Z.log |    65 -
+ ...111-first-run-unverified-20261106T114413Z.patch |    40 -
+ ...ge111-first-run-unverified-20261106T114413Z.txt |     9 -
+ ...oller-interface-attachment-20261106T141021Z.log |    33 -
+ .../class-and-vtable-index.txt                     |    30 -
+ .../controller-attachment-abi.txt                  |    30 -
+ .../stage120-20261106T141707Z/method-status.txt    |     8 -
+ .../selected-method-disassembly.txt                |  1231 -
+ .../Logs/stage120-20261106T141707Z/summary.txt     |    15 -
+ .../tools/__pycache__/disasm.cpython-315.pyc       |   Bin 9536 -> 0 bytes
+ .../tools/__pycache__/kcfile.cpython-315.pyc       |   Bin 16621 -> 0 bytes
+ .../Logs/stage120-20261106T141707Z/tools/disasm.py |   139 -
+ .../Logs/stage120-20261106T141707Z/tools/kcfile.py |   210 -
+ .../stage120-20261106T141707Z/vtable-index.txt     |    34 -
+ ...ge121-github-source-review-20261106T142841Z.log |    53 -
+ ...tive-controller-attachment-20261106T142556Z.log |  5863 ----
+ ...06T144511Z-upload-20261106T151521Z-0a691ba8.log | 26588 +++++++++++++++++++
+ .../stage122-runtime-summary-20261106T151904Z.txt  |    33 +
+ ...untime-activation-recovered-20261106T212519.log |    77 +
+ ...ative-wifi-interface-state-20261106T155623Z.log |    28 +
+ ...ative-wifi-interface-state-20261106T160152Z.log |    70 +
+ ...native-wifi-menu-readiness-20261106T162258Z.log |    88 +
+ .../stage125-native-wifi-menu-readiness-audit.md   |    82 -
+ .../Logs/stage126-apple-power-state-abi-audit.md   |    13 +
+ ...stage91-native-wcl-compile-20261105T181953Z.log |    96 -
+ .../Logs/stage91-ownership-review-20261106.md      |    56 -
+ ...tage91-tx-submission-tests-20261105T173517Z.log |    17 -
+ ...tage91-tx-submission-tests-20261105T175804Z.log |    41 -
+ ...tage91-tx-submission-tests-20261105T181048Z.log |    47 -
+ ...tage91-tx-submission-tests-20261105T181733Z.log |    50 -
+ ...tage91-tx-submission-tests-20261105T185437Z.log |    53 -
+ ...wmm-completion-fix-compile-20261105T185446Z.log |   187 -
+ .../stage91-wmm-completion-retry-fix-20261106.md   |    55 -
+ ...ge92-tx-completion-compile-20261105T193145Z.log |   192 -
+ ...stage92-tx-completion-handoff-24H32-20261106.md |    73 -
+ ...tage92-tx-completion-tests-20261105T192820Z.log |    21 -
+ ...tage92-tx-completion-tests-20261105T193136Z.log |    53 -
+ ...age93-independent-tx-audit-20261105T194044Z.log |    22 -
+ Development/Logs/stage94-radio-tx-sync-20261106.md |    41 -
+ .../Logs/stage94-radio-tx-sync-design-20261106.md  |    85 -
+ .../Logs/stage94-radio-tx-sync-model-20261106.log  |    12 -
+ .../Logs/stage95-key-retirement-audit-20261106.md  |    51 -
+ .../stage96-key-retirement-barrier-20261106.md     |    39 -
+ .../Logs/stage97-independent-audit-20261106.md     |    42 -
+ .../stage98-clean-compile-20261106T034521Z.log     |  5636 ----
+ .../stage98-final-compile-20261106T034120Z.log     |    95 -
+ .../stage98-native-build-lock-audit-20261106.md    |    57 -
+ .../stage98-target-compile-diagnostic-20261106.md  |   138 -
+ ...-target-compile-diagnostic-20261106T033413Z.log |  2150 --
+ ...age98-target-compile-fixed-20261106T033742Z.log |  1103 -
+ ...-clean-dual-object-compile-20261106T041443Z.log |  6074 -----
+ ...mpletion-lock-and-reclamation-audit-20261106.md |    59 -
+ Development/README.md                              |    20 -
+ Development/STAGE108-REGISTRATION-TRANSACTION.md   |    78 -
+ Development/STAGE110-SIGNING-EFI-AUDIT.md          |    13 -
+ Development/STAGE111-RUNTIME-AMFIPASS-AUDIT.md     |    36 -
+ Development/output.log                             |  1180 +-
+ Development/stage104-native-binary-audit.sh        |   186 -
+ Development/stage105-native-symbol-abi-audit.sh    |   307 -
+ .../stage106-sip-preserving-signing-audit.sh       |   162 -
+ .../stage107-opencore-injection-feasibility.sh     |   406 -
+ Development/stage108-registration-transaction.sh   |   129 -
+ .../stage109-native-bundle-readiness-audit.sh      |   343 -
+ Development/stage110-signing-efi-audit.sh          |   387 -
+ Development/stage111-runtime-amfipass-audit.py     |   518 -
+ .../stage119-controller-interface-attachment.py    |   191 -
+ Development/stage120-exact-attachment-abi.py       |   280 -
+ .../stage121-native-controller-attachment.sh       |   125 -
+ Development/stage121-publish-existing-run.sh       |    93 -
+ .../stage124-native-wifi-interface-state.sh        |   146 -
+ .../stage125-native-wifi-menu-readiness-audit.sh   |   106 -
+ .../stage126-apple-power-state-abi-audit.sh        |    88 +
+ docs/STAGE91-TX-SUBMISSION-CALLBACK.md             |    60 -
+ .../IOKit/skywalk/IOSkywalkRxCompletionQueue.h     |    10 -
+ .../IOKit/skywalk/IOSkywalkTxSubmissionQueue.h     |     2 +-
+ driver/RTL88WiFi/Makefile                          |    51 +-
+ .../src/compat/linux/skbuff_tx_completion.h        |    24 +-
+ driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp       |  2284 +-
+ driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp       |    68 +-
+ driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp       |    67 +-
+ driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp       |     4 +-
+ driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp       |    56 -
+ .../RTL88WiFi/src/kext/RTW88TxFrameProtection.hpp  |    15 -
+ .../RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp  |    78 -
+ driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp     |   158 -
+ .../src/kext/wcl24h32/RTW88WCLController.cpp       |   335 +-
+ .../src/kext/wcl24h32/RTW88WCLController.hpp       |    29 +-
+ .../src/kext/wcl24h32/RTW88WCLInfraInterface.cpp   |   309 +-
+ .../src/kext/wcl24h32/RTW88WCLInfraInterface.hpp   |    17 +-
+ .../wcl24h32/RTW88WCLRegistrationTransaction.hpp   |   112 -
+ .../src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp    |   324 +-
+ .../src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp    |    66 +-
+ .../src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp |   243 +-
+ .../src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp |    52 +-
+ .../kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp |    63 +-
+ .../kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp    |    27 -
+ .../wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp     |   333 -
+ .../wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp     |    71 -
+ .../kext/wcl24h32/RTW88WCLTxSubmissionBatch.hpp    |    38 -
+ .../src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp |   116 -
+ .../drivers/net/wireless/realtek/rtw88/hci.h       |     9 -
+ .../drivers/net/wireless/realtek/rtw88/mac.c       |    55 -
+ .../drivers/net/wireless/realtek/rtw88/mac.h       |     7 -
+ .../drivers/net/wireless/realtek/rtw88/mac80211.c  |    37 +-
+ .../drivers/net/wireless/realtek/rtw88/main.c      |     1 -
+ .../drivers/net/wireless/realtek/rtw88/main.h      |     3 +-
+ .../drivers/net/wireless/realtek/rtw88/pci.c       |    53 +-
+ .../drivers/net/wireless/realtek/rtw88/sec.c       |    20 +-
+ .../drivers/net/wireless/realtek/rtw88/tx.c        |    33 -
+ .../drivers/net/wireless/realtek/rtw88/tx.h        |     2 -
+ tests/rtw88_tx_ba_state_test.cpp                   |    61 -
+ tests/rtw88_tx_sequence_numbers_test.cpp           |    90 -
+ tests/rtw88_tx_state_gate_test.cpp                 |   190 -
+ tests/test-stage102-xnu-thread-call-lifecycle.py   |   239 -
+ ...t-wcl-controller-primary-attachment-stage121.py |    72 -
+ tests/test-wcl-link-state-publication-stage124.py  |    83 -
+ ...test-wcl-native-wifi-menu-readiness-stage125.py |   254 -
+ tests/test-wcl-registration-contract.py            |    78 +-
+ tests/test-wcl-registration-info-stage11.py        |    90 +-
+ .../test-wcl-registration-transaction-stage108.py  |   197 -
+ tests/test-wcl-resource-transaction.py             |     2 +-
+ tests/test-wcl-skywalk-queues.py                   |     4 +-
+ tests/test-wcl-stage100-tx-callback-deferral.py    |   225 -
+ tests/test-wcl-stage93-independent-tx-audit.py     |   305 -
+ tests/test-wcl-stage94-radio-tx-sync.py            |   364 -
+ tests/test-wcl-stage95-key-retirement.py           |   155 -
+ tests/test-wcl-stage96-key-retirement.py           |   142 -
+ tests/test-wcl-stage97-independent-audit.py        |   111 -
+ tests/test-wcl-stage98-native-build-lock-audit.py  |   135 -
+ ...-wcl-stage99-tx-completion-reclamation-audit.py |   280 -
+ tests/test-wcl-tx-completion-stage92.py            |   283 -
+ tests/test-wcl-tx-queue-array-contract.py          |    15 +-
+ tests/test-wcl-tx-submission-stage91.py            |   237 -
+ .../wcl_registration_transaction_stage108_test.cpp |    64 -
+ tests/wcl_tx_completion_bounded_queue_test.cpp     |   101 -
+ tests/wcl_tx_completion_slots_test.cpp             |    34 -
+ tests/wcl_tx_submission_batch_test.cpp             |    91 -
+ tests/wcl_tx_submission_gate_test.cpp              |   164 -
+ tests/wcl_tx_submission_queue_array_test.cpp       |    13 -
+ tools/run-stage100-tx-callback-deferral-audit.sh   |    12 -
+ tools/run-stage101-bounded-queue-lifecycle.sh      |    13 -
+ tools/run-stage102-xnu-thread-call-lifecycle.sh    |    15 -
+ tools/run-stage91-tx-submission-tests.sh           |   146 -
+ tools/run-stage91-wmm-completion-fix-validation.sh |   124 -
+ tools/run-stage92-tx-completion-tests.sh           |   146 -
+ tools/run-stage92-tx-completion-validation.sh      |   125 -
+ tools/run-stage93-independent-tx-audit.sh          |    92 -
+ tools/run-stage94-radio-tx-ba-model-tests.sh       |     9 -
+ tools/run-stage94-radio-tx-sync-model-tests.sh     |    13 -
+ tools/run-stage95-key-retirement-audit.sh          |     6 -
+ tools/run-stage96-key-retirement-tests.sh          |     6 -
+ tools/run-stage97-independent-audit.sh             |     6 -
+ tools/run-stage98-native-build-lock-audit.sh       |     6 -
+ .../run-stage99-tx-completion-reclamation-audit.sh |    19 -
+ 192 files changed, 28059 insertions(+), 83728 deletions(-)
+ .../src/kext/wcl24h32/RTW88WCLController.cpp       | 44 ++++++++++++++++++++++
+ .../src/kext/wcl24h32/RTW88WCLController.hpp       |  8 +++-
+ 2 files changed, 51 insertions(+), 1 deletion(-)
+INSTALL=NOT_RUN
+LOAD=NOT_RUN
+OPENCORE=UNCHANGED
+SYSTEM_SECURITY=UNCHANGED
+PMKSA_POLICY=FAIL_CLOSED_UNTIL_ABI_AND_ASSOCIATION_PATH_ARE_PROVEN
+COUNTRY_CALLBACKS=NOT_MODIFIED_UNLESS ABI FIELD LAYOUT IS VERIFIED
+
+=== REPORT READY ===
+LOG=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/Development/Logs/stage179/stage179-20261107T074640Z/output.log
+SUMMARY=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/Development/Logs/stage179/stage179-20261107T074640Z/summary.txt
