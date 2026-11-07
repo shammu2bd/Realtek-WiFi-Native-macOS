@@ -38,6 +38,7 @@ public:
 
     int getTxNSS() override;
     bool getTxRate(RTWTxRate &rate) override;
+    bool getRxRate(RTWTxRate &rate) override;
     bool is5GBandSupport() override;
     const char *getFirmwareName() override;
     const char *getFirmwareCountryCode() override;
