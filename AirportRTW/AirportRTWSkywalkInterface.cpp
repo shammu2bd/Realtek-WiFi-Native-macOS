@@ -513,6 +513,25 @@ getMCS_VHT(struct apple80211_mcs_vht_data *data)
 }
 
 IOReturn AirportRTWSkywalkInterface::
+getRX_RATE(apple80211_rate_data *data)
+{
+    if (!data)
+        return kIOReturnBadArgument;
+
+    memset(data, 0, sizeof(*data));
+    data->version = APPLE80211_VERSION;
+    data->num_radios = 1;
+
+    RTWTxRate liveRate = {};
+    if (!fHalService->getDriverInfo()->getRxRate(liveRate) ||
+        !liveRate.valid || !liveRate.bitrate100Kbps)
+        return 6;
+
+    data->rate[0] = liveRate.bitrate100Kbps / 10;
+    return kIOReturnSuccess;
+}
+
+IOReturn AirportRTWSkywalkInterface::
 getRATE_SET(struct apple80211_rate_set_data *ad)
 {
     struct ieee80211com *ic = fHalService->get80211Controller();
