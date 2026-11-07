@@ -39,6 +39,60 @@ static void resumeTransmit()
         activeContext->txResume(activeContext->nativeOwner);
 }
 
+static RTWTxRate decodeRxRate(const struct ieee80211_rx_status *status)
+{
+    RTWTxRate rate = {};
+    if (!status)
+        return rate;
+
+    rate.widthMHz = status->bw == RATE_INFO_BW_80 ? 80 :
+        status->bw == RATE_INFO_BW_40 ? 40 :
+        status->bw == RATE_INFO_BW_160 ? 160 : 20;
+    rate.shortGI = (status->flag & RX_FLAG_SHORT_GI) != 0;
+    rate.guardIntervalNs = rate.shortGI ? 400 : 800;
+
+    if (status->encoding == RX_ENC_VHT) {
+        rate.mode = RTW_RATE_VHT;
+        rate.mcs = status->rate_idx;
+        rate.nss = status->nss;
+    } else if (status->encoding == RX_ENC_HT) {
+        rate.mode = RTW_RATE_HT;
+        rate.mcs = status->rate_idx;
+        rate.nss = status->nss ? status->nss : (status->rate_idx / 8 + 1);
+    } else {
+        static const uint16_t rates2GHz[12] =
+            {10, 20, 55, 110, 60, 90, 120, 180, 240, 360, 480, 540};
+        static const uint16_t rates5GHz[8] =
+            {60, 90, 120, 180, 240, 360, 480, 540};
+        if (status->band == NL80211_BAND_2GHZ) {
+            if (status->rate_idx >= sizeof(rates2GHz) / sizeof(rates2GHz[0]))
+                return rate;
+            rate.bitrate100Kbps = rates2GHz[status->rate_idx];
+        } else {
+            if (status->rate_idx >= sizeof(rates5GHz) / sizeof(rates5GHz[0]))
+                return rate;
+            rate.bitrate100Kbps = rates5GHz[status->rate_idx];
+        }
+        rate.mode = RTW_RATE_LEGACY;
+        rate.nss = 1;
+        rate.valid = true;
+        return rate;
+    }
+
+    rate.bitrate100Kbps = rtw_tx_rate_calculate(&rate);
+    rate.valid = rate.bitrate100Kbps != 0 && rate.nss != 0;
+    return rate;
+}
+
+static void publishRxRate(Rtw88LinuxContext *context, const RTWTxRate &rate)
+{
+    if (!context || !rate.valid)
+        return;
+    while (__sync_lock_test_and_set(&context->rxRateLock, 1)) { }
+    context->rxRate = rate;
+    __sync_lock_release(&context->rxRateLock);
+}
+
 static void receiveFrame(void *opaque, struct sk_buff *skb)
 {
     auto *context = static_cast<Rtw88LinuxContext *>(opaque);
@@ -72,6 +126,9 @@ static void receiveFrame(void *opaque, struct sk_buff *skb)
         (skb->data[0] & 0x0c) == 0x08 && (skb->data[1] & 3) == 2 &&
         !memcmp(skb->data + 10, vif->cfg.ap_addr, 6) &&
         ((skb->data[4] & 1) || !memcmp(skb->data + 4, vif->addr, 6));
+    if (connectionData && !(status->flag &
+        (RX_FLAG_FAILED_FCS_CRC | RX_FLAG_FAILED_PLCP_CRC)))
+        publishRxRate(context, decodeRxRate(status));
     if (connectionData) {
         if (skb->data[1] & 0x40) {
             __sync_fetch_and_add(&context->rxConnectionProtectedCount, 1);
@@ -961,7 +1018,18 @@ void rtw88LinuxGetTxRate(Rtw88LinuxContext *context, RTWTxRate &rate)
 {
     rate = {};
     auto *hw = context ? static_cast<ieee80211_hw *>(context->hardware) : nullptr;
-    if (hw) rtw88_hw_get_tx_rate(hw, &rate);
+    auto *sta = context ? static_cast<ieee80211_sta *>(context->station) : nullptr;
+    if (hw && sta) rtw88_hw_get_tx_rate(hw, sta, &rate);
+}
+
+void rtw88LinuxGetRxRate(Rtw88LinuxContext *context, RTWTxRate &rate)
+{
+    rate = {};
+    if (!context)
+        return;
+    while (__sync_lock_test_and_set(&context->rxRateLock, 1)) { }
+    rate = context->rxRate;
+    __sync_lock_release(&context->rxRateLock);
 }
 
 bool rtw88LinuxGetCapabilities(Rtw88LinuxContext *context, bool fiveGHz,
