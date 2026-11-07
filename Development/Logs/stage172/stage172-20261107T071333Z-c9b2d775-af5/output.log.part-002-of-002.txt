@@ -1,0 +1,710 @@
+at.h:59:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #d/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:76:efine mo12: dwarning: ulimplicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]e
+_usb_d   76 |     return __builtinr_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+iver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+  CC   rtw88_firmware.c
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -Wno-unused-function -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_firmware.c -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/rtw88_firmware.o
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:14:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h:48:55: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+   48 |         rtw_mac_flush_queues(rtwdev, BIT(rtwdev->hw->queues) - 1, drop);
+      |         ~~~~~~~~~~~~~~~~~~~~         ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:519:55: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  519 |                 val32 |= 0x20020000 | ((primary_ch_idx & 0xf) << 2) |
+      |                       ~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  520 |                          RTW_CHANNEL_WIDTH_40;
+      |                          ~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:528:55: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  528 |                 val32 |= 0x40040000 | ((primary_ch_idx & 0xf) << 2) |
+      |                       ~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+  529 |                          RTW_CHANNEL_WIDTH_80;
+      |                          ~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c_table.c:5:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2137:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:205:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  205 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:225:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  225 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:218:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  218 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:609:24: warning: implicit conversion loses integer precision: 'int' to 's8' (aka 'signed char') [-Wimplicit-int-conversion]
+  609 |         rx_pwr_all = lna_gain - 2 * vg/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:238:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  238 |         return ret;
+      |         ~~~~~~ ^~~
+a_/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:231:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  231 |         u32 shift = __ffsi(dmxa;s
+k      )| ;                   ~ ~~~~~~~~~^~~~~~~~~~~~~
+
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:244:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  244 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:265:23: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  265/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:622 |         set = (:o12r:i gwarning:  &implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion] 
+~mask) | ((data << shift) & mask);
+      |             ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:265:32  622 |         vga_idx = GET_PHY_S: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  265 |         set =TAT_P0_VGA(p (orig & ~mask) | ((data << shifthy_status);
+      |                 ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+) /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h&: 182m:a2s:k )note: ;expanded from macro 'GET_PHY_STAT_P0_VGA'
+
+      |                                  ~~~~~^~~~~~~~  ~
+  182 |         le32_get_bits(*((__le/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:262:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  262 |         shift = __ffs(mask);
+      |               ~ ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:285:36: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  284 |                 rtwdev->hci.ops->flush_queues(rtwdev,
+      |                 ~~~~~~
+  285 |                                               BIT(rtwdev->hw->queues) - 1,
+      |                                               ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+32 *)(phy_stat) + 0x03), GENMASK(12, 8))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c_table.c:5:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2198:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2198 |         return mac_id;
+      |         ~~~~~~ ^~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2196:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+ 2196 |                 set_bit(mac_id, rtwdev->mac_id_map);
+      |                 ~~~~~~~ ^~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:642:10: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  642 |                 rxsc = GET_PHY_STAT_P1_L_RXSC(phy_status);
+      |                      ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h:198:2: note: expanded from macro 'GET_PHY_STAT_P1_L_RXSC'
+  198 |         le32_get_bits(*((__le32 *)(phy_stat) + 0x01), GENMASK(11, 8))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:644:10: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  644 |                 rxsc = GET_PHY_STAT_P1_HT_RXSC(phy_status);
+      |                      ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h:200:2: note: expanded from macro 'GET_PHY_STAT_P1_HT_RXSC'
+  200 |         le32_get_bits(*((__le32 *)(phy_stat) + 0x01), GENMASK(15, 12))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:653:8: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  653 |                 bw = GET_PHY_STAT_P1_RF_MODE(phy_status);
+      |                    ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h:196:2: note: expanded from macro 'GET_PHY_STAT_P1_RF_MODE'
+In file included from   196<built-in> | :        1l:
+eIn file included from 3/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h2:_52g:
+e/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/skbuff.ht:_244b:i20t:s (warning: *implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion](
+(__le32   244* | ) ( p h ys_ksbt_arte)s e+r v0ex(0n3,) ,s kGbE_NMASKheadroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+(29, 28))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:655:69: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 's8' (aka 'signed char') [-Wimplicit-int-conversion]
+  655 |         pkt_stat->rx_power[RF_PATH_A] = GET_PHY_STAT_P1_PWDB_A(phy_status) - 110;
+      |                                       ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:662:32: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 's8' (aka 'signed char') [-Wimplicit-int-conversion]
+  662 |         pkt_stat->rx_snr[RF_PATH_A] = GET_PHY_STAT_P1_RXSNR_A(phy_status);
+      |                                     ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.h:210:2: note: expanded from macro 'GET_PHY_STAT_P1_RXSNR_A'
+  210 |         le32_get_bits(*((__le32 *)(phy_stat) + 0x06), GENMASK(7, 0))
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:700:15: warning: implicit conversion changes signedness: 's8' (aka 'signed char') to 'u8' (aka 'unsigned char') [-Wsign-conversion]
+  700 |                 pwr_index = hal->tx_pwr_tbl[path][rate];
+      |                           ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:723:54: warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  723 |                         rtw8821c_set_tx_power_index_by_rate(rtwdev, path, rs,
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~               ^~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:723:48: warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  723 |                         rtw8821c_set_tx_power_index_by_rate(rtwdev, path, rs,
+      |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~         ^~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1034:16: warning: implicit conversion changes signedness: 'u8' (aka 'unsigned char') to 's8' (aka 'signed char') [-Wsign-conversion]
+ 1034 |                         agc_index = pwr_idx_offset;
+      |                                   ~ ^~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1036:20: warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1035 |                         swing_index = dm_info->default_ofdm_index +
+      |                                     ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1036 |                                         delta_pwr_idx - pwr_idx_offset;
+      |                                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1047:20: warning: implicit conversion loses integer precision: 'int' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1046 |                                 swing_index = dm_info->default_ofdm_index +
+      |                                             ~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1047 |                                         delta_pwr_idx - pwr_idx_offset_lower;
+      |                                         ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1072:56: warning: implicit conversion changes signedness: 's8' (aka 'signed char') to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+ 1072 |         rtw_write32_mask(rtwdev, REG_TXAGCIDX, GENMASK(6, 1), txagc_idx);
+In file included from <built-in>:1:
+In file included from       |         ~~~~~~~~~~~~~~~~                                      ^~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821c.c:1110:18: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1110 |         thermal_value = rtw_read_rf(rtwdev, RF_PATH_A, RF_T_METER, 0xfc00);
+      |                       ~ ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:11:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:10:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:35:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:71:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:178:9: warning: '__cold' macro redefined [-Wmacro-redefined]
+  178 | #define __cold          __attribute__((__cold__))
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:18:9: note: previous definition is here
+   18 | #define __cold __attribute__((cold))
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:11:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:10:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:35:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:71:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:218:9: warning: '__pure' macro redefined [-Wmacro-redefined]
+  218 | #define __pure
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:22:9: note: previous definition is here
+   22 | #define __pure __attribute__((pure))
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:11:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:10:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:35:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:71:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:178:9: warning: '__cold' macro redefined [-Wmacro-redefined]
+  178 | #define __cold          __attribute__((__cold__))
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:18:9: note: previous definition is here
+   18 | #define __cold __attribute__((cold))
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:11:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/stdint.h:10:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/machine/types.h:35:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/i386/types.h:71:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/sys/cdefs.h:218:9: warning: '__pure' macro redefined [-Wmacro-redefined]
+  218 | #define __pure
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:22:9: note: previous definition is here
+   22 | #define __pure __attribute__((pure))
+      |         ^
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c:7:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:8:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2137:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:205:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  205 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:225:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  225 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:218:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  218 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:238:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  238 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:231:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  231 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:244:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  244 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:265:23: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  265 |         set = (orig & ~mask) | ((data << shift) & mask);
+      |             ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:265:32: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  265 |         set = (orig & ~mask) | ((data << shift) & mask);
+      |                                  ~~~~~^~~~~~~~  ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:262:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  262 |         shift = __ffs(mask);
+      |               ~ ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:285:36: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  284 |                 rtwdev->hci.ops->flush_queues(rtwdev,
+      |                 ~~~~~~
+  285 |                                               BIT(rtwdev->hw->queues) - 1,
+      |                                               ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c:7:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:8:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2198:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2198 |         return mac_id;
+      |         ~~~~~~ ^~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2196:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+ 2196 |                 set_bit(mac_id, rtwdev->mac_id_map);
+      |                 ~~~~~~~ ^~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/rtw8821ce.c:7:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:157:18: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  157 |                 return rp - wp - 1;
+      |                 ~~~~~~ ~~~~~~~~^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.h:159:24: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  159 |                 return len - wp + rp - 1;
+      |                 ~~~~~~ ~~~~~~~~~~~~~~^~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:143:9: warning: 'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+  143 | #define THREAD_UNINT                    0x00000000  /* not interruptible      */
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:39:9: note: previous definition is here
+   39 | #define THREAD_UNINT         0
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:144:9: warning: 'THREAD_INTERRUPTIBLE' macro redefined [-Wmacro-redefined]
+  144 | #define THREAD_INTERRUPTIBLE            0x00000001  /* may not be restartable */
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:38:9: note: previous definition is here
+   38 | #define THREAD_INTERRUPTIBLE 1
+      |         ^
+27 warnings generated.
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:143:9: warning: 'THREAD_UNINT' macro redefined [-Wmacro-redefined]
+  143 | #define THREAD_UNINT                    0x00000000  /* not interruptible      */
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:39:9: note: previous definition is here
+   39 | #define THREAD_UNINT         0
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:32:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:73:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/thread_call.h:39:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/clock.h:44:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers/kern/kern_types.h:144:9: warning: 'THREAD_INTERRUPTIBLE' macro redefined [-Wmacro-redefined]
+  144 | #define THREAD_INTERRUPTIBLE            0x00000001  /* may not be restartable */
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/iokit_shim.h:38:9: note: previous definition is here
+   38 | #define THREAD_INTERRUPTIBLE 1
+      |         ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+  CC   fw_blobs.c
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -Wno-unused-function -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/fw_blobs.c -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/fw_blobs.o
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_firmware.c:5:40: warning: '/*' within block comment [-Wcomment]
+    5 |  * (fw_blobs.c, generated from firmware/*.bin).  No VFS needed at boot.
+      |                                        ^
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+25 warnings generated.
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+43 warnings generated.
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+  CC   airport/kmod_info.c
+xcrun clang -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -DRTW88_AIRPORT_KMOD=1 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/kmod_info.c -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/airport/kmod_info.o
+  NATIVE CXX  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp (24H32 isolated RTW88 core object)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88IEEE80211.o
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.c:174:37: warning: implicit conversion changes signedness: 'int' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  174 |         pos += snprintf(line + pos, (int)(sizeof(line) - pos), "  %04zx: ", i);
+      |                ~~~~~~~~             ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.c:174:58: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  174 |         pos += snprintf(line + pos, (int)(sizeof(line) - pos), "  %04zx: ", i);
+      |                                                        ~ ^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.c:176:41: warning: implicit conversion changes signedness: 'int' to 'size_t' (aka 'unsigned long') [-Wsign-conversion]
+  176 |             pos += snprintf(line + pos, (int)(sizeof(line) - pos), "%02x ", p[j]);
+      |                    ~~~~~~~~             ^~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.c:176:62: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+  176 |             pos += snprintf(line + pos, (int)(sizeof(line) - pos), "%02x ", p[j]);
+      |                                                            ~ ^~~
+13 warnings generated.
+  NATIVE CXX  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88HwOps.cpp (24H32 isolated RTW88 core object)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88HwOps.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88HwOps.o
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.c:1213:37: warning: declaration of 'struct sdio_func' will not be visible outside of this function [-Wvisibility]
+ 1213 | unsigned int sdio_align_size(struct sdio_func *func, unsigned int size)
+      |                                     ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.c:1244:37: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+ 1244 |         sizeof(struct net_device) + sizeof_priv, GFP_KERNEL);
+      |                                   ~ ^~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.c:1367:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2137:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:205:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  205 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:225:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u16' (aka 'unsigned short') [-Wimplicit-int-conversion]
+  225 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:218:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  218 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:238:9: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  238 |         return ret;
+      |         ~~~~~~ ^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:231:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  231 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:244:14: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  244 |         u32 shift = __ffs(mask);
+      |             ~~~~~   ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:265:23: warning: implicit conversion loses integer precision: 'u32' (aka 'unsigned int') to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+  265 |         set = (orig & ~mask) | ((data << shift) & mask);
+      |             ~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:265:32: warning: implicit conversion changes signedness: 'int' to 'u32' (aka 'unsigned int') [-Wsign-conversion]
+  265 |         set = (orig & ~mask) | ((data << shift) & mask);
+      |                                  ~~~~~^~~~~~~~  ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:262:10: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  262 |         shift = __ffs(mask);
+      |               ~ ^~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h:285:36: warning: implicit conversion loses integer precision: 'unsigned long' to 'u32' (aka 'unsigned int') [-Wshorten-64-to-32]
+  284 |                 rtwdev->hci.ops->flush_queues(rtwdev,
+      |                 ~~~~~~
+  285 |                                               BIT(rtwdev->hw->queues) - 1,
+      |                                               ~~~~~~~~~~~~~~~~~~~~~~~~^~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/rtw88_compat.c:1367:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2198:9: warning: implicit conversion loses integer precision: 'unsigned long' to 'u8' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 2198 |         return mac_id;
+      |         ~~~~~~ ^~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h:2196:11: warning: implicit conversion loses integer precision: 'unsigned long' to 'unsigned int' [-Wshorten-64-to-32]
+ 2196 |                 set_bit(mac_id, rtwdev->mac_id_map);
+      |                 ~~~~~~~ ^~~~~~
+  NATIVE CXX  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp (24H32 isolated RTW88 core object)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88WCLRadioBridge.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88WCLRadioBridge.o
+1 warning generated.
+  NATIVE CXX  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp (24H32 isolated RTW88 core object)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88WCLWorkQueue.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88WCLWorkQueue.o
+130 warnings generated.
+  WCL-ABI CXX  RTW88WCLController.cpp (24H32, bounded RX packet owner; compile-only)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o
+31 warnings generated.
+  WCL-ABI CXX  RTW88WCLInfraInterface.cpp (24H32, compile-only)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o
+25 warnings generated.
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:7:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp:20:38: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+   20 |     etherType = uint16_t(p[14]) << 8 | p[15];
+      |               ~ ~~~~~~~~~~~~~~~~~~~~~^~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp:48:64: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+   48 | inline uint16_t le16(const uint8_t *p) { return uint16_t(p[0]) | (uint16_t(p[1]) << 8); }
+      |                                          ~~~~~~ ~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+  WCL-ABI CXX  RTW88WCLPCIBackend.cpp (ABI-neutral, compile-only)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLPCIBackend.o
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp:213:44: warning: implicit conversion changes signedness: 'const char' to 'uint8_t' (aka 'unsigned char') [-Wsign-conversion]
+  213 |         for(unsigned i=0;i<6;++i){v[8+2*i]=digits[local[i]>>4];v[9+2*i]=digits[local[i]&15];}
+      |                                           ~^~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88AWDLProtocol.hpp:213:73: warning: implicit conversion changes signedness: 'const char' to 'uint8_t' (aka 'unsigned char') [-Wsign-conversion]
+  213 |         for(unsigned i=0;i<6;++i){v[8+2*i]=digits[local[i]>>4];v[9+2*i]=digits[local[i]&15];}
+      |                                                                        ~^~~~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:8:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:8:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:8:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:8:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88HwOps.cpp:8:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:63:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/net/mac80211.h:96:9: warning: struct has size 0 in C, size 1 in C++ [-Wextern-c-compat]
+   96 |         struct {
+      |         ^
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+10 warnings generated.
+  WCL-ABI CXX  RTW88WCLSkywalkQueues.cpp (24H32, unregistered queues)
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkQueues.o
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN <  WCL-ABI CXX  RTW88WCLSkywalkTxAdapter.cpp (24H32, mbuf copy + deferred completion; compile-only)
+< 24) | (USB_ENDxcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkTxAdapter.o
+POINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+  WCL-ABI CXX  RTW88WCLSkywalkRxAdapter.cpp (24H32, pool-backed RX conversion; compile-only)
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:27:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/rtw88_compat.h:63:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/../compat/net/mac80211.h:96:9: warning: struct has size 0 in C, size 1 in C++ [-Wextern-c-compat]
+   96 |         struct {
+      |         ^
+xcrun clang++ -fno-exceptions -fno-rtti -fno-stack-protector -mkernel -MMD -MP -arch x86_64 -mmacosx-version-min=13.0 -ffile-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -fdebug-prefix-map=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi=driver/RTL88WiFi -isysroot /Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Headers -I/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Kernel.framework/Headers -fapple-kext -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/compat/linux -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext -std=c++17 -DKERNEL -Wno-deprecated-declarations -Wno-nullability-completeness -D__IO80211_TARGET=__MAC_15_2 -I/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32 -c /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkRxAdapter.cpp -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:35:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:53:12: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   53 |     return __builtin_ctzl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:58:34: warning: implicit conversion changes signedness: 'int' to 'unsigned long' [-Wsign-conversion]
+   58 |     return (BITS_PER_LONG - 1) - __builtin_clzl(x);
+      |                                ~ ^~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:71:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   71 |     return __builtin_popcount(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/bitops.h:76:12: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+   76 |     return __builtin_popcountl(x);
+      |     ~~~~~~ ^~~~~~~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:52:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/skbuff.h:244:20: warning: implicit conversion changes signedness: 'u32' (aka 'unsigned int') to 'int' [-Wsign-conversion]
+  244 |     skb_reserve(n, skb_headroom(skb));
+      |     ~~~~~~~~~~~    ^~~~~~~~~~~~~~~~~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:58:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:144:36: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  144 |     return (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |             ~~~~~~~~~~~~~~~~~~~~~~~^~~~~  ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:148:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  148 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_BULK << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:156:31: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+  156 |     return (USB_DIR_IN << 24) | (USB_ENDPOINT_XFER_CONTROL << 30) | (ep & 0xf);
+      |            ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ~
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:12:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:59:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/module.h:36:9: warning: 'module_usb_driver' macro redefined [-Wmacro-redefined]
+   36 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/linux/usb.h:311:9: note: previous definition is here
+  311 | #define module_usb_driver(__usb_driver) \
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1667:42: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 1667 |     bss->beacon_interval = skb->data[32] | (uint16_t(skb->data[33]) << 8);
+      |                          ~ ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1668:39: warning: implicit conversion changes signedness: 'int' to 'uint32_t' (aka 'unsigned int') [-Wsign-conversion]
+ 1668 |     bss->capabilities = skb->data[34] | (uint16_t(skb->data[35]) In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLPCIBackend.cpp:<< 812);
+      |                       ~ ~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:
+In file included from /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/rtw88_compat.h:63:
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/../../compat/net/mac80211.h:96:9: warning: struct has size 0 in C, size 1 in C++ [-Wextern-c-compat]
+   96 |         struct {
+      |         ^
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1746:39: warning: implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1746 |             bss->channel = (f - 2407) / 5;
+      |                          ~ ~~~~~~~~~~~^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:1748:39: warning: implicit conversion loses integer precision: 'int' to 'uint8_t' (aka 'unsigned char') [-Wimplicit-int-conversion]
+ 1748 |             bss->channel = (f - 5000) / 5;
+      |                          ~ ~~~~~~~~~~~^~~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3073:45: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+ 3073 |             hex[2 * i]     = hexd[b.ies[rsn + 2 + i] >> 4];
+      |                                         ~~~~^~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3074:45: warning: implicit conversion changes signedness: 'int' to 'unsigned int' [-Wsign-conversion]
+ 3074 |             hex[2 * i + 1] = hexd[b.ies[rsn + 2 + i] & 0x0f];
+      |                                         ~~~~^~~ ~
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:3230:59: warning: implicit conversion loses integer precision: 'uint32_t' (aka 'unsigned int') to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 3228 |     _wpa2 = RTW88Join::useWpa2(externalSupplicant,
+      |             ~~~~~~~~~
+ 3229 |                                _targetBSS.cipher == WLAN_CIPHER_SUITE_CCMP,
+ 3230 |                                pmk != nullptr, _targetBSS.capabilities);
+      |                                                ~~~~~~~~~~~^~~~~~~~~~~~
+10 warnings generated.
+  NATIVE PLIST  RTL88WiFiNative.kext (macOS 15.8.1 / 24H32)
+python3 /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/../../tools/generate-sequoia-native-plist.py --base-plist "/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/RTL88WiFi.kext/Contents/Info.plist" \
+	    --controller-header "/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp" \
+	    --output "/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native-skeleton/RTL88WiFiNative.kext/Contents/Info.plist"
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp:4397:38: warning: implicit conversion loses integer precision: 'int' to 'uint16_t' (aka 'unsigned short') [-Wimplicit-int-conversion]
+ 4397 |     uint16_t fc = (uint16_t)frame[0] | ((uint16_t)frame[1] << 8);
+      |              ~~   ~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+22 warnings generated.
+NATIVE_PLIST_GENERATION=PASS
+TARGET=macOS 15.8.1 (24H32) x86_64
+CFBundleIdentifier=io.github.x1ren41l.RTL88WiFi
+CFBundleExecutable=RTL88WiFiNative
+NATIVE_DEPENDENCY=com.apple.iokit.IO80211Family 1200.13.1
+NATIVE_DEPENDENCY=com.apple.iokit.IOSkywalkFamily 1.0
+NATIVE_DEPENDENCY=com.apple.iokit.IOPCIFamily 2.9
+IO80211FamilyLegacy=ABSENT
+PERSONALITY=RTW88WCLController PCI=0xC82110EC 0xB82110EC
+OUTPUT=/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native-skeleton/RTL88WiFiNative.kext/Contents/Info.plist
+  NATIVE LD   RTL88WiFiNative
+xcrun clang++ -arch x86_64 -static -nostdlib -Xlinker -kext /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/MacKernelSDK/Library/x86_64/libkmod.a -Xlinker -undefined -Xlinker dynamic_lookup -o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/main.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/mac.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/phy.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/fw.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/tx.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rx.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/sec.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/efuse.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/coex.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/ps.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/regd.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/bf.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/sar.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/util.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/pci.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/mac80211.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822b.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822b_table.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822be.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822c.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822c_table.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8822ce.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8821c.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8821c_table.o   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/driver/rtw8821ce.o  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/rtw88_thread_call.o  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/rtw88_compat.o  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/rtw88_firmware.o  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/compat/fw_blobs.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/airport/kmod_info.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88IEEE80211.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88HwOps.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88WCLRadioBridge.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native/RTW88WCLWorkQueue.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLController.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLInfraInterface.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLPCIBackend.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkQueues.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkTxAdapter.o /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/wcl24h32/RTW88WCLSkywalkRxAdapter.o
+  NATIVE SYNC /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+rsync -a --exclude='MacOS' /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/native-skeleton/RTL88WiFiNative.kext/ /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/
+  NATIVE OK   /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext
+STAGE172_NATIVE_BUILD_EXIT: 0
+
+========== NATIVE BUNDLE VALIDATION ==========
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/Info.plist: OK
+/Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative: Mach-O 64-bit kext bundle x86_64
+error: /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo: unknown architecture specification flag: /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative in specifying -verify_arch operation
+/Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/lipo: known architecture flags are: any little big ppc64 x86_64 x86_64h arm64 ppc970-64 arm64_32 arm64e ppc i386 m68k hppa sparc m88k i860 veo arm ppc601 ppc603 ppc603e ppc603ev ppc604 ppc604e ppc750 ppc7400 ppc7450 ppc970 i486 i486SX pentium i586 pentpro i686 pentIIm3 pentIIm5 pentium4 m68030 m68040 hppa7100LC veo1 veo2 veo3 veo4 armv4t armv5 xscale armv6 armv6m armv7 armv7f armv7s armv7k armv7m armv7em arm64v8
+usage: lipo <input_file> <command> [<options> ...]
+  command is one of:
+    -archs
+    -create
+    -detailed_info
+    -extract <arch_type> [-extract <arch_type> ...]
+    -extract_family <arch_type> [-extract_family <arch_type> ...]
+    -info
+    -remove <arch_type> [-remove <arch_type> ...]
+    -replace <arch_type> <file_name> [-replace <arch_type> <file_name> ...]
+    -thin <arch_type>
+    -verify_arch <arch_type> ...
+  options are one or more of:
+    -arch <arch_type> <input_file>
+    -hideARM64
+    -output <output_file>
+    -segalign <arch_type> <alignment>
+NATIVE_BINARY_SHA256:
+cc81f7a1cc5c4b408e5bb66e6b93c34109c245af82e8748bbb9e467b06ba1cfc  /Users/shohel/Developer/Stage121-native-controller-attachment-20261106-202552/driver/RTL88WiFi/build/out/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative
+NATIVE_BUNDLE_DEPENDENCIES:
+Dict {
+    com.apple.kpi.bsd = 20.0.0
+    com.apple.kpi.libkern = 20.0.0
+    com.apple.kpi.mach = 20.0.0
+    com.apple.iokit.IOPCIFamily = 2.9
+    com.apple.iokit.IO80211Family = 1200.13.1
+    com.apple.iokit.IOSkywalkFamily = 1.0
+    com.apple.kpi.iokit = 20.0.0
+    com.apple.kpi.unsupported = 20.0.0
+    com.apple.iokit.IONetworkingFamily = 3.4
+}
+NATIVE_BUNDLE_ID:
+io.github.x1ren41l.RTL88WiFi
+
+========== STAGE172 RESULT ==========
+STAGE172_SOURCE_CONTRACT_EXIT: 0
+STAGE172_NATIVE_BUILD_EXIT: 0
+STAGE172_BUNDLE_VALIDATION_EXIT: 23
+STAGE172_RESULT: BLOCKED_OR_FAILED
+INSTALL: NOT_RUN
+LOAD: NOT_RUN
+SIGNING: NOT_RUN
+OPENCORE_EFI_SIP_NVRAM: UNCHANGED
+END_UTC: 2026-11-07T07:13:39Z
+STAGE172_FINAL_EXIT: 23
