@@ -1708,3 +1708,190 @@ FILE: rtw/hal_rtw88/driver/debug.h
 === INSPECTION NOTES ===
 This inspection reads source only. It does not edit, reset, clean, or rebuild the repository.
 No local log file was created.
+
+
+AIRPORTRTW TARGETED RA DIAGNOSTIC FIX
+UTC: 2026-11-07T12:45:16.313682+00:00
+Repository: /Users/shohel/Developer/AirportRTW-port-txrx
+Branch: port/rtl88wifi-txrx-20261107
+HEAD before changes: 2033dc3d581dcb4faaa46651f31c0f4a0b322e0b
+RA_RAW_NEWLINE_FIX=APPLIED
+RA_DECODE_NEWLINE_FIX=APPLIED
+RTW88RALIVE_PROPERTIES_MADE_UNCONDITIONAL=7
+
+=== dev_info / dev_warn / IOLog TRACE ===
+rtw/hal_rtw88/compat/rtw89_compat.h:644: dev_info(dev, __VA_ARGS__); } } while (0)
+rtw/hal_rtw88/compat/rtw88_compat.h:80: #define dev_err(dev, fmt, ...)  rtw88_dev_printk(KERN_ERR,   dev, fmt, ##__VA_ARGS__)
+rtw/hal_rtw88/compat/rtw88_compat.h:81: #define dev_warn(dev, fmt, ...) rtw88_dev_printk(KERN_WARN,  dev, fmt, ##__VA_ARGS__)
+rtw/hal_rtw88/compat/rtw88_compat.h:82: #define dev_info(dev, fmt, ...) rtw88_dev_printk(KERN_INFO,  dev, fmt, ##__VA_ARGS__)
+rtw/hal_rtw88/driver/debug.h:72: #define rtw_info(rtwdev, a...) dev_info(rtwdev->dev, ##a)
+rtw/hal_rtw88/driver/debug.h:73: #define rtw_warn(rtwdev, a...) dev_warn(rtwdev->dev, ##a)
+rtw/hal_rtw88/driver/debug.h:74: #define rtw_err(rtwdev, a...) dev_err(rtwdev->dev, ##a)
+rtw/hal_rtw88/driver/pci.c:1842: dev_err(&pdev->dev, "failed to allocate hw\n");
+rtw/hal_rtw88/driver/main.c:2081: dev_warn(rtwdev->dev, "efuse MAC invalid, using random\n");
+rtw/hal_rtw89/compat/rtw89_compat.h:598: dev_info(dev, __VA_ARGS__); } } while (0)
+rtw/hal_rtw89/compat/rtw88_compat.h:80: #define dev_err(dev, fmt, ...)  rtw88_dev_printk(KERN_ERR,   dev, fmt, ##__VA_ARGS__)
+rtw/hal_rtw89/compat/rtw88_compat.h:81: #define dev_warn(dev, fmt, ...) rtw88_dev_printk(KERN_WARN,  dev, fmt, ##__VA_ARGS__)
+rtw/hal_rtw89/compat/rtw88_compat.h:82: #define dev_info(dev, fmt, ...) rtw88_dev_printk(KERN_INFO,  dev, fmt, ##__VA_ARGS__)
+rtw/hal_rtw89/driver/debug.h:59: #define rtw89_info(rtwdev, a...) dev_info((rtwdev)->dev, ##a)
+rtw/hal_rtw89/driver/debug.h:61: #define rtw89_warn(rtwdev, a...) dev_warn((rtwdev)->dev, ##a)
+rtw/hal_rtw89/driver/debug.h:62: #define rtw89_err(rtwdev, a...) dev_err((rtwdev)->dev, ##a)
+rtw/hal_rtw89/driver/pci.c:5007: dev_err(&pdev->dev, "failed to allocate hw\n");
+rtw/hal_rtw89/driver/fw.c:989: dev_info(device, "loaded firmware %s\n", fw_name);
+rtw/hal_rtw89/driver/fw.c:996: dev_err(device, "failed to early request firmware: %d\n", ret);
+
+Logging macro:
+rtw/hal_rtw88/driver/debug.h:72: #define rtw_info(rtwdev, a...) dev_info(rtwdev->dev, ##a)
+rtw/hal_rtw88/driver/debug.h:73: #define rtw_warn(rtwdev, a...) dev_warn(rtwdev->dev, ##a)
+rtw/hal_rtw88/driver/debug.h:74: #define rtw_err(rtwdev, a...) dev_err(rtwdev->dev, ##a)
+
+AirportRTWDiagnostics.h:
+/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+#ifndef AIRPORTRTW_DIAGNOSTICS_H
+#define AIRPORTRTW_DIAGNOSTICS_H
+#ifndef RTW_AWDL_STARTUP_PROBE
+#define RTW_AWDL_STARTUP_PROBE 0
+#endif
+#if defined(DEBUG) && DEBUG
+#define RTW_DIAGNOSTICS 1
+#define RTW_LOG(...) IOLog(__VA_ARGS__)
+#define RTW_DIAGNOSTIC(...) do { __VA_ARGS__; } while (0)
+#else
+#define RTW_DIAGNOSTICS 0
+#define RTW_LOG(...) do {} while (0)
+#define RTW_DIAGNOSTIC(...) do {} while (0)
+#endif
+#endif
+
+
+=== DIFF CHECK ===
+exit=0
+
+
+=== SEQUOIA BUILD ===
+BUILD_EXIT=0
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/net/if_media.h:299:9: warning: 'IFM_GMASK' macro redefined [-Wmacro-redefined]
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/net/if_media.h:304:9: warning: 'IFM_AVALID' macro redefined [-Wmacro-redefined]
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/net/if_media.h:305:9: warning: 'IFM_ACTIVE' macro redefined [-Wmacro-redefined]
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/net/if_media.h:322:9: warning: 'IFM_MAKEWORD' macro redefined [-Wmacro-redefined]
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/net/if_media.h:337:9: warning: 'IFM_TYPE_DESCRIPTIONS' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/_if_ether.h:260:8: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+rtw80211/openbsd/sys/_if_ether.h:262:8: warning: inline variables are a C++17 extension [-Wc++17-extensions]
+rtw80211/openbsd/sys/endian.h:165:9: warning: 'LITTLE_ENDIAN' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:1:
+rtw80211/openbsd/sys/endian.h:166:9: warning: 'BIG_ENDIAN' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:1:
+rtw80211/openbsd/sys/endian.h:167:9: warning: 'PDP_ENDIAN' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:1:
+rtw80211/openbsd/sys/endian.h:168:9: warning: 'BYTE_ORDER' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:1:
+rtw80211/openbsd/sys/endian.h:221:12: warning: 'NTOHL' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:1:
+rtw80211/openbsd/sys/endian.h:222:12: warning: 'NTOHS' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:1:
+rtw80211/openbsd/sys/endian.h:223:12: warning: 'HTONL' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:1:
+rtw80211/openbsd/sys/endian.h:224:12: warning: 'HTONS' macro redefined [-Wmacro-redefined]
+In file included from <built-in>:1:
+rtw80211/openbsd/sys/endian.h:244:9: warning: 'htobe16' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:245:9: warning: 'htobe32' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:246:9: warning: 'htobe64' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:247:9: warning: 'betoh16' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:248:9: warning: 'betoh32' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:249:9: warning: 'betoh64' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:250:9: warning: 'be32toh' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:251:9: warning: 'le32toh' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:252:9: warning: 'htole16' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:253:9: warning: 'htole32' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:254:9: warning: 'htole64' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:255:9: warning: 'letoh16' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:256:9: warning: 'letoh32' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/sys/endian.h:257:9: warning: 'letoh64' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/net80211/ieee80211_crypto.h:70:9: warning: 'IEEE80211_WEP_IVLEN' macro redefined [-Wmacro-redefined]
+rtw80211/openbsd/net80211/ieee80211_var.h:200:55: warning: format specifies type 'int' but the argument has type 'const uint8_t *' (aka 'const unsigned char *') [-Wformat]
+rtw80211/openbsd/net80211/ieee80211_var.h:200:59: warning: data argument not used by format string [-Wformat-extra-args]
+rtw80211/openbsd/net80211/ieee80211_var.h:208:50: warning: format specifies type 'unsigned int' but the argument has type 'const uint8_t *' (aka 'const unsigned char *') [-Wformat]
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:478:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:765:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:869:16: warning: unused variable 'authFrame' [-Wunused-variable]
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1031:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1212:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1241:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1251:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1260:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1280:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1293:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1303:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1316:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+In file included from <built-in>:1:
+In file included from <built-in>:1:
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+rtw80211/openbsd/net80211/ieee80211_var.h:102:1: warning: unused function 'ppsratecheck' [-Wunused-function]
+rtw80211/openbsd/net80211/ieee80211_var.h:156:1: warning: unused function 'ratecheck' [-Wunused-function]
+rtw80211/openbsd/net80211/ieee80211_var.h:178:18: warning: unused function 'ether_crc32_le_update' [-Wunused-function]
+rtw80211/openbsd/net80211/ieee80211_var.h:197:14: warning: unused function 'ether_sprintf' [-Wunused-function]
+rtw80211/openbsd/net80211/ieee80211_var.h:204:13: warning: unused function 'array_sprintf' [-Wunused-function]
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:20:18: warning: unused variable 'kRealtekVendor' [-Wunused-const-variable]
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:21:18: warning: unused variable 'kRtl8822CE' [-Wunused-const-variable]
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:22:18: warning: unused variable 'kRtl8822CEAlternate' [-Wunused-const-variable]
+clang++: warning: argument unused during compilation: '-stdlib=libc++' [-Wunused-command-line-argument]
+ld: warning: object file (/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/usr/lib/libkmodc++.a(cplus_start.o)) was built for newer macOS version (15.5) than being linked (15.2)
+ld: warning: object file (/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/usr/lib/libkmodc++.a(cplus_stop.o)) was built for newer macOS version (15.5) than being linked (15.2)
+note: Run script build phase 'Build RTW89 C Archive' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'AirportRTW-Sequoia' from project 'AirportRTW')
+/Users/shohel/Developer/AirportRTW-port-txrx/AirportRTW.xcodeproj: warning: The macOS deployment target 'MACOSX_DEPLOYMENT_TARGET' is set to 10.12, but the range of supported deployment target versions is 10.13 to 15.5.99. (in target 'fw_gen' from project 'AirportRTW')
+Kexts are available in /Users/shohel/Developer/AirportRTW-port-txrx/build/releases/Release
+
+=== BUILT ARTIFACT ===
+Executable SHA256=1a7b942edda46b071f32f24cd7e22ef37de81cb7f329df42feecf64e3a11fabd
+/Users/shohel/Developer/AirportRTW-port-txrx/build/releases/Release/Sequoia/AirportRTW.kext/Contents/MacOS/AirportRTW: Mach-O 64-bit kext bundle x86_64
+UUID: UUID: 4380E782-E33E-3E80-8261-471B65B742D0 (x86_64) /Users/shohel/Developer/AirportRTW-port-txrx/build/releases/Release/Sequoia/AirportRTW.kext/Contents/MacOS/AirportRTW
+CFBundleIdentifier=com.senmiko.AirportRTW
+CFBundleVersion=2.3.1
+CFBundleExecutable=AirportRTW
+
+=== FINAL SOURCE STATUS ===
+M .DS_Store
+ M rtw/hal_rtw88/RTWCore88.cpp
+ M rtw/hal_rtw88/driver/fw.c
+ M rtw/hal_rtw88/driver/tx.c
+?? rtw/hal_rtw88/driver/fw.c.before-ra-diagnostics.20261107-155217.bak
+
+=== CHANGE SUMMARY ===
+.DS_Store                   | Bin 18436 -> 10244 bytes
+ rtw/hal_rtw88/RTWCore88.cpp |  16 ++++++++--------
+ rtw/hal_rtw88/driver/fw.c   |  18 +++++++++++++++++-
+ rtw/hal_rtw88/driver/tx.c   |   3 +--
+ 4 files changed, 26 insertions(+), 11 deletions(-)
+
+No git reset/clean/checkout performed.
+No Desktop logs or local report files created.
