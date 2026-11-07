@@ -119,7 +119,7 @@ public:
     virtual IOReturn getBEACON_SCAN_CACHE_REQ(apple80211_scan_result *) override { return kIOReturnUnsupported; }
     virtual IOReturn getSLOW_WIFI_FEATURE_ENABLED(apple80211_slow_wifi_feature_enabled *) override { return kIOReturnUnsupported; }
     virtual IOReturn getCCA(apple80211_interface_cca_data *) override { return kIOReturnUnsupported; }
-    virtual IOReturn getRX_RATE(apple80211_rate_data *) override { return kIOReturnUnsupported; }
+    virtual IOReturn getRX_RATE(apple80211_rate_data *) override;
     virtual IOReturn getTIMESYNC_INFO(apple80211_timesync_info *) override { return kIOReturnUnsupported; }
     virtual IOReturn getSENSING_DATA(apple80211_sensing_data_t *) override { return kIOReturnUnsupported; }
     virtual IOReturn getCOUNTRY_BAND_SUPPORT(apple80211_country_band_support *) override { return kIOReturnUnsupported; }
