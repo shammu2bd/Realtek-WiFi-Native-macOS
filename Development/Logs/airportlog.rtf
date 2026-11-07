@@ -1,37 +1,35 @@
-Last login: Sat Nov  7 15:47:37 on ttys000
+Last login: Sat Nov  7 15:48:09 on ttys000
 shohel@Mahfujuls-MacBook-Pro ~ % >....                                          
-    echo "=== NATIVE TX RATE CALLBACK ==="
+      rtw/hal_rtw88/driver/fw.c
+
+    echo "=== RATE REPORT STRUCTURES ==="
+    grep -R -n -A35 -B8 \
+      'struct rtw_c2h_ra_rpt\|struct rtw_ra_report' \
+      rtw/hal_rtw88
+
+    echo "=== NATIVE RATE CALLBACK ==="
     grep -R -n -A65 -B20 \
       'copy_tx_rate\|rtw88LinuxGetTxRate\|getTxRate(RTWTxRate' \
       rtw/hal_rtw88
 
-    echo
-    echo "=== RATE STRUCTURE ==="
-    grep -R -n -A35 -B5 \
-      'struct RTWTxRate' include rtw
+    echo "=== EXISTING REGISTRY DIAGNOSTICS ==="
+    grep -R -n -E \
+      'setProperty|IOLog|rtw_info|rtw_warn' \
+      rtw/hal_rtw88/RTWCore88.cpp \
+      rtw/hal_rtw88/driver/fw.c
 
-    echo
-    echo "=== EXISTING DIAGNOSTIC HELPERS ==="
-    grep -R -n \
-      'IOLog\|IORegistryEntry::setProperty\|setProperty(' \
-      rtw/hal_rtw88 | head -100
-
-    echo
     echo "=== BUILD SCRIPT ==="
     sed -n '1,240p' scripts/build_release_kexts.sh
 } 2>&1 | tee "$LOG"
 
-echo
-echo "SOURCE_LOG=$LOG"
-=== REPOSITORY IDENTITY ===
+echo "LOG=$LOG"
+=== REPOSITORY ===
 /Users/shohel/Developer/AirportRTW-port-txrx
 2033dc3d581dcb4faaa46651f31c0f4a0b322e0b
-port/rtl88wifi-txrx-20261107
  M .DS_Store
  M rtw/hal_rtw88/RTWCore88.cpp
  M rtw/hal_rtw88/driver/tx.c
-
-=== C2H RATE REPORT HANDLER ===
+=== FIRMWARE RATE REPORT ===
 125-		return 1200;
 126-
 127-	/* lower than 40M 2ss mcs9, make it medium */
@@ -341,8 +339,220 @@ port/rtl88wifi-txrx-20261107
 431-	if (ret) {
 432-		rtw_err(rtwdev, "failed to send h2c command\n");
 433-		rtw_fw_dump_dbg_info(rtwdev);
-
-=== NATIVE TX RATE CALLBACK ===
+=== RATE REPORT STRUCTURES ===
+rtw/hal_rtw88/driver/main.h-741-struct rtw_tx_report {
+rtw/hal_rtw88/driver/main.h-742-	/* protect the tx report queue */
+rtw/hal_rtw88/driver/main.h-743-	spinlock_t q_lock;
+rtw/hal_rtw88/driver/main.h-744-	struct sk_buff_head queue;
+rtw/hal_rtw88/driver/main.h-745-	atomic_t sn;
+rtw/hal_rtw88/driver/main.h-746-	struct timer_list purge_timer;
+rtw/hal_rtw88/driver/main.h-747-};
+rtw/hal_rtw88/driver/main.h-748-
+rtw/hal_rtw88/driver/main.h:749:struct rtw_ra_report {
+rtw/hal_rtw88/driver/main.h-750-	struct rate_info txrate;
+rtw/hal_rtw88/driver/main.h-751-	u32 bit_rate;
+rtw/hal_rtw88/driver/main.h-752-	u8 desc_rate;
+rtw/hal_rtw88/driver/main.h-753-};
+rtw/hal_rtw88/driver/main.h-754-
+rtw/hal_rtw88/driver/main.h-755-struct rtw_txq {
+rtw/hal_rtw88/driver/main.h-756-	struct list_head list;
+rtw/hal_rtw88/driver/main.h-757-	unsigned long flags;
+rtw/hal_rtw88/driver/main.h-758-};
+rtw/hal_rtw88/driver/main.h-759-
+rtw/hal_rtw88/driver/main.h-760-DECLARE_EWMA(rssi, 10, 16);
+rtw/hal_rtw88/driver/main.h-761-
+rtw/hal_rtw88/driver/main.h-762-struct rtw_sta_info {
+rtw/hal_rtw88/driver/main.h-763-	struct rtw_dev *rtwdev;
+rtw/hal_rtw88/driver/main.h-764-	struct ieee80211_sta *sta;
+rtw/hal_rtw88/driver/main.h-765-	struct ieee80211_vif *vif;
+rtw/hal_rtw88/driver/main.h-766-
+rtw/hal_rtw88/driver/main.h-767-	struct ewma_rssi avg_rssi;
+rtw/hal_rtw88/driver/main.h-768-	u8 rssi_level;
+rtw/hal_rtw88/driver/main.h-769-
+rtw/hal_rtw88/driver/main.h-770-	u8 mac_id;
+rtw/hal_rtw88/driver/main.h-771-	u8 rate_id;
+rtw/hal_rtw88/driver/main.h-772-	enum rtw_bandwidth bw_mode;
+rtw/hal_rtw88/driver/main.h-773-	u8 stbc_en:2;
+rtw/hal_rtw88/driver/main.h-774-	u8 ldpc_en:2;
+rtw/hal_rtw88/driver/main.h-775-	bool sgi_enable;
+rtw/hal_rtw88/driver/main.h-776-	bool vht_enable;
+rtw/hal_rtw88/driver/main.h-777-	u8 init_ra_lv;
+rtw/hal_rtw88/driver/main.h-778-	u64 ra_mask;
+rtw/hal_rtw88/driver/main.h-779-
+rtw/hal_rtw88/driver/main.h-780-	DECLARE_BITMAP(tid_ba, IEEE80211_NUM_TIDS);
+rtw/hal_rtw88/driver/main.h-781-
+rtw/hal_rtw88/driver/main.h:782:	struct rtw_ra_report ra_report;
+rtw/hal_rtw88/driver/main.h-783-
+rtw/hal_rtw88/driver/main.h-784-	bool use_cfg_mask;
+rtw/hal_rtw88/driver/main.h-785-	struct cfg80211_bitrate_mask *mask;
+rtw/hal_rtw88/driver/main.h-786-
+rtw/hal_rtw88/driver/main.h-787-	struct work_struct rc_work;
+rtw/hal_rtw88/driver/main.h-788-};
+rtw/hal_rtw88/driver/main.h-789-
+rtw/hal_rtw88/driver/main.h-790-enum rtw_bfee_role {
+rtw/hal_rtw88/driver/main.h-791-	RTW_BFEE_NONE,
+rtw/hal_rtw88/driver/main.h-792-	RTW_BFEE_SU,
+rtw/hal_rtw88/driver/main.h-793-	RTW_BFEE_MU
+rtw/hal_rtw88/driver/main.h-794-};
+rtw/hal_rtw88/driver/main.h-795-
+rtw/hal_rtw88/driver/main.h-796-struct rtw_bfee {
+rtw/hal_rtw88/driver/main.h-797-	enum rtw_bfee_role role;
+rtw/hal_rtw88/driver/main.h-798-
+rtw/hal_rtw88/driver/main.h-799-	u16 p_aid;
+rtw/hal_rtw88/driver/main.h-800-	u8 g_id;
+rtw/hal_rtw88/driver/main.h-801-	u8 mac_addr[ETH_ALEN];
+rtw/hal_rtw88/driver/main.h-802-	u8 sound_dim;
+rtw/hal_rtw88/driver/main.h-803-
+rtw/hal_rtw88/driver/main.h-804-	/* SU-MIMO */
+rtw/hal_rtw88/driver/main.h-805-	u8 su_reg_index;
+rtw/hal_rtw88/driver/main.h-806-
+rtw/hal_rtw88/driver/main.h-807-	/* MU-MIMO */
+rtw/hal_rtw88/driver/main.h-808-	u16 aid;
+rtw/hal_rtw88/driver/main.h-809-};
+rtw/hal_rtw88/driver/main.h-810-
+rtw/hal_rtw88/driver/main.h-811-struct rtw_bf_info {
+rtw/hal_rtw88/driver/main.h-812-	u8 bfer_mu_cnt;
+rtw/hal_rtw88/driver/main.h-813-	u8 bfer_su_cnt;
+rtw/hal_rtw88/driver/main.h-814-	DECLARE_BITMAP(bfer_su_reg_maping, 2);
+rtw/hal_rtw88/driver/main.h-815-	u8 cur_csi_rpt_rate;
+rtw/hal_rtw88/driver/main.h-816-};
+rtw/hal_rtw88/driver/main.h-817-
+--
+rtw/hal_rtw88/driver/fw.c-140-	struct rtw_dev *rtwdev;
+rtw/hal_rtw88/driver/fw.c-141-	u8 *payload;
+rtw/hal_rtw88/driver/fw.c-142-	u8 length;
+rtw/hal_rtw88/driver/fw.c-143-};
+rtw/hal_rtw88/driver/fw.c-144-
+rtw/hal_rtw88/driver/fw.c-145-static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
+rtw/hal_rtw88/driver/fw.c-146-{
+rtw/hal_rtw88/driver/fw.c-147-	struct rtw_fw_iter_ra_data *ra_data = data;
+rtw/hal_rtw88/driver/fw.c:148:	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)ra_data->payload;
+rtw/hal_rtw88/driver/fw.c-149-	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
+rtw/hal_rtw88/driver/fw.c-150-	u8 mac_id, rate, sgi, bw;
+rtw/hal_rtw88/driver/fw.c-151-	u8 mcs, nss;
+rtw/hal_rtw88/driver/fw.c-152-	u32 bit_rate;
+rtw/hal_rtw88/driver/fw.c-153-
+rtw/hal_rtw88/driver/fw.c-154-	mac_id = ra_rpt->mac_id;
+rtw/hal_rtw88/driver/fw.c-155-	if (si->mac_id != mac_id)
+rtw/hal_rtw88/driver/fw.c-156-		return;
+rtw/hal_rtw88/driver/fw.c-157-
+rtw/hal_rtw88/driver/fw.c-158-	si->ra_report.txrate.flags = 0;
+rtw/hal_rtw88/driver/fw.c-159-
+rtw/hal_rtw88/driver/fw.c-160-	rate = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE);
+rtw/hal_rtw88/driver/fw.c-161-	sgi = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_SGI);
+rtw/hal_rtw88/driver/fw.c-162-	if (ra_data->length >= offsetofend(typeof(*ra_rpt), bw))
+rtw/hal_rtw88/driver/fw.c-163-		bw = ra_rpt->bw;
+rtw/hal_rtw88/driver/fw.c-164-	else
+rtw/hal_rtw88/driver/fw.c-165-		bw = si->bw_mode;
+rtw/hal_rtw88/driver/fw.c-166-
+rtw/hal_rtw88/driver/fw.c-167-	if (rate < DESC_RATEMCS0) {
+rtw/hal_rtw88/driver/fw.c-168-		si->ra_report.txrate.legacy = rtw_desc_to_bitrate(rate);
+rtw/hal_rtw88/driver/fw.c-169-		goto legacy;
+rtw/hal_rtw88/driver/fw.c-170-	}
+rtw/hal_rtw88/driver/fw.c-171-
+rtw/hal_rtw88/driver/fw.c-172-	rtw_desc_to_mcsrate(rate, &mcs, &nss);
+rtw/hal_rtw88/driver/fw.c-173-	if (rate >= DESC_RATEVHT1SS_MCS0)
+rtw/hal_rtw88/driver/fw.c-174-		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_VHT_MCS;
+rtw/hal_rtw88/driver/fw.c-175-	else if (rate >= DESC_RATEMCS0)
+rtw/hal_rtw88/driver/fw.c-176-		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_MCS;
+rtw/hal_rtw88/driver/fw.c-177-
+rtw/hal_rtw88/driver/fw.c-178-	if (rate >= DESC_RATEMCS0) {
+rtw/hal_rtw88/driver/fw.c-179-		si->ra_report.txrate.mcs = mcs;
+rtw/hal_rtw88/driver/fw.c-180-		si->ra_report.txrate.nss = nss;
+rtw/hal_rtw88/driver/fw.c-181-	}
+rtw/hal_rtw88/driver/fw.c-182-
+rtw/hal_rtw88/driver/fw.c-183-	if (sgi)
+--
+rtw/hal_rtw88/driver/fw.c-197-	si->ra_report.bit_rate = bit_rate;
+rtw/hal_rtw88/driver/fw.c-198-
+rtw/hal_rtw88/driver/fw.c-199-	sta->deflink.agg.max_rc_amsdu_len = get_max_amsdu_len(bit_rate);
+rtw/hal_rtw88/driver/fw.c-200-}
+rtw/hal_rtw88/driver/fw.c-201-
+rtw/hal_rtw88/driver/fw.c-202-static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
+rtw/hal_rtw88/driver/fw.c-203-				    u8 length)
+rtw/hal_rtw88/driver/fw.c-204-{
+rtw/hal_rtw88/driver/fw.c:205:	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)payload;
+rtw/hal_rtw88/driver/fw.c-206-	struct rtw_fw_iter_ra_data ra_data;
+rtw/hal_rtw88/driver/fw.c-207-
+rtw/hal_rtw88/driver/fw.c-208-	if (WARN(length < rtwdev->chip->c2h_ra_report_size,
+rtw/hal_rtw88/driver/fw.c-209-		 "invalid ra report c2h length %d\n", length))
+rtw/hal_rtw88/driver/fw.c-210-		return;
+rtw/hal_rtw88/driver/fw.c-211-
+rtw/hal_rtw88/driver/fw.c-212-	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
+rtw/hal_rtw88/driver/fw.c-213-					      RTW_C2H_RA_RPT_RATE);
+rtw/hal_rtw88/driver/fw.c-214-	ra_data.rtwdev = rtwdev;
+rtw/hal_rtw88/driver/fw.c-215-	ra_data.payload = payload;
+rtw/hal_rtw88/driver/fw.c-216-	ra_data.length = length;
+rtw/hal_rtw88/driver/fw.c-217-	rtw_iterate_stas_atomic(rtwdev, rtw_fw_ra_report_iter, &ra_data);
+rtw/hal_rtw88/driver/fw.c-218-}
+rtw/hal_rtw88/driver/fw.c-219-
+rtw/hal_rtw88/driver/fw.c-220-struct rtw_beacon_filter_iter_data {
+rtw/hal_rtw88/driver/fw.c-221-	struct rtw_dev *rtwdev;
+rtw/hal_rtw88/driver/fw.c-222-	u8 *payload;
+rtw/hal_rtw88/driver/fw.c-223-};
+rtw/hal_rtw88/driver/fw.c-224-
+rtw/hal_rtw88/driver/fw.c-225-static void rtw_fw_bcn_filter_notify_vif_iter(void *data,
+rtw/hal_rtw88/driver/fw.c-226-					      struct ieee80211_vif *vif)
+rtw/hal_rtw88/driver/fw.c-227-{
+rtw/hal_rtw88/driver/fw.c-228-	struct rtw_beacon_filter_iter_data *iter_data = data;
+rtw/hal_rtw88/driver/fw.c-229-	struct rtw_dev *rtwdev = iter_data->rtwdev;
+rtw/hal_rtw88/driver/fw.c-230-	u8 *payload = iter_data->payload;
+rtw/hal_rtw88/driver/fw.c-231-	u8 type = GET_BCN_FILTER_NOTIFY_TYPE(payload);
+rtw/hal_rtw88/driver/fw.c-232-	u8 event = GET_BCN_FILTER_NOTIFY_EVENT(payload);
+rtw/hal_rtw88/driver/fw.c-233-	s8 sig = (s8)GET_BCN_FILTER_NOTIFY_RSSI(payload);
+rtw/hal_rtw88/driver/fw.c-234-
+rtw/hal_rtw88/driver/fw.c-235-	switch (type) {
+rtw/hal_rtw88/driver/fw.c-236-	case BCN_FILTER_NOTIFY_SIGNAL_CHANGE:
+rtw/hal_rtw88/driver/fw.c-237-		event = event ? NL80211_CQM_RSSI_THRESHOLD_EVENT_HIGH :
+rtw/hal_rtw88/driver/fw.c-238-			NL80211_CQM_RSSI_THRESHOLD_EVENT_LOW;
+rtw/hal_rtw88/driver/fw.c-239-		ieee80211_cqm_rssi_notify(vif, event, sig, GFP_KERNEL);
+rtw/hal_rtw88/driver/fw.c-240-		break;
+--
+rtw/hal_rtw88/driver/fw.h-80-	u8 density;
+rtw/hal_rtw88/driver/fw.h-81-	u8 igi;
+rtw/hal_rtw88/driver/fw.h-82-	u8 l2h_th_init;
+rtw/hal_rtw88/driver/fw.h-83-	u8 l2h;
+rtw/hal_rtw88/driver/fw.h-84-	u8 h2l;
+rtw/hal_rtw88/driver/fw.h-85-	u8 option;
+rtw/hal_rtw88/driver/fw.h-86-} __packed;
+rtw/hal_rtw88/driver/fw.h-87-
+rtw/hal_rtw88/driver/fw.h:88:struct rtw_c2h_ra_rpt {
+rtw/hal_rtw88/driver/fw.h-89-	u8 rate_sgi;
+rtw/hal_rtw88/driver/fw.h-90-	u8 mac_id;
+rtw/hal_rtw88/driver/fw.h-91-	u8 byte2;
+rtw/hal_rtw88/driver/fw.h-92-	u8 status;
+rtw/hal_rtw88/driver/fw.h-93-	u8 byte4;
+rtw/hal_rtw88/driver/fw.h-94-	u8 ra_ratio;
+rtw/hal_rtw88/driver/fw.h-95-	u8 bw;
+rtw/hal_rtw88/driver/fw.h-96-} __packed;
+rtw/hal_rtw88/driver/fw.h-97-
+rtw/hal_rtw88/driver/fw.h-98-#define RTW_C2H_RA_RPT_RATE	GENMASK(6, 0)
+rtw/hal_rtw88/driver/fw.h-99-#define RTW_C2H_RA_RPT_SGI	BIT(7)
+rtw/hal_rtw88/driver/fw.h-100-
+rtw/hal_rtw88/driver/fw.h-101-struct rtw_h2c_register {
+rtw/hal_rtw88/driver/fw.h-102-	u32 w0;
+rtw/hal_rtw88/driver/fw.h-103-	u32 w1;
+rtw/hal_rtw88/driver/fw.h-104-} __packed;
+rtw/hal_rtw88/driver/fw.h-105-
+rtw/hal_rtw88/driver/fw.h-106-#define RTW_H2C_W0_CMDID		GENMASK(7, 0)
+rtw/hal_rtw88/driver/fw.h-107-
+rtw/hal_rtw88/driver/fw.h-108-/* H2C_CMD_DEFAULT_PORT command */
+rtw/hal_rtw88/driver/fw.h-109-#define RTW_H2C_DEFAULT_PORT_W0_PORTID	GENMASK(15, 8)
+rtw/hal_rtw88/driver/fw.h-110-#define RTW_H2C_DEFAULT_PORT_W0_MACID	GENMASK(23, 16)
+rtw/hal_rtw88/driver/fw.h-111-
+rtw/hal_rtw88/driver/fw.h-112-struct rtw_h2c_cmd {
+rtw/hal_rtw88/driver/fw.h-113-	__le32 msg;
+rtw/hal_rtw88/driver/fw.h-114-	__le32 msg_ext;
+rtw/hal_rtw88/driver/fw.h-115-} __packed;
+rtw/hal_rtw88/driver/fw.h-116-
+rtw/hal_rtw88/driver/fw.h-117-enum rtw_rsvd_packet_type {
+rtw/hal_rtw88/driver/fw.h-118-	RSVD_BEACON,
+rtw/hal_rtw88/driver/fw.h-119-	RSVD_DUMMY,
+rtw/hal_rtw88/driver/fw.h-120-	RSVD_PS_POLL,
+rtw/hal_rtw88/driver/fw.h-121-	RSVD_PROBE_RESP,
+rtw/hal_rtw88/driver/fw.h-122-	RSVD_NULL,
+rtw/hal_rtw88/driver/fw.h-123-	RSVD_QOS_NULL,
+=== NATIVE RATE CALLBACK ===
 rtw/hal_rtw88/Rtw88Hardware.c-128-{
 rtw/hal_rtw88/Rtw88Hardware.c-129-    return ampdu(vif, sta, tid, 0, window, IEEE80211_AMPDU_TX_OPERATIONAL);
 rtw/hal_rtw88/Rtw88Hardware.c-130-}
@@ -748,294 +958,7 @@ rtw/hal_rtw88/RTWCore88.cpp-343-                                      uint16_t f
 rtw/hal_rtw88/RTWCore88.cpp-344-{
 rtw/hal_rtw88/RTWCore88.cpp-345-    return rtw88LinuxAwdlTransmitAction(&linuxContext, frame, length, frequency);
 rtw/hal_rtw88/RTWCore88.cpp-346-}
-
-=== RATE STRUCTURE ===
-include/HAL/RTWTxRate.h-6-#include <stdbool.h>
-include/HAL/RTWTxRate.h-7-#endif
-include/HAL/RTWTxRate.h-8-
-include/HAL/RTWTxRate.h-9-enum RTWRateMode { RTW_RATE_LEGACY, RTW_RATE_HT, RTW_RATE_VHT, RTW_RATE_HE };
-include/HAL/RTWTxRate.h-10-/* A firmware TX-rate sample, not the maximum supported link rate. */
-include/HAL/RTWTxRate.h:11:struct RTWTxRate {
-include/HAL/RTWTxRate.h-12-    uint32_t bitrate100Kbps;
-include/HAL/RTWTxRate.h-13-    uint16_t widthMHz;
-include/HAL/RTWTxRate.h-14-    uint8_t mcs; /* HT: combined 0..31; VHT: per-stream 0..9; HE: per-stream 0..11. */
-include/HAL/RTWTxRate.h-15-    uint8_t nss;
-include/HAL/RTWTxRate.h-16-    uint8_t mode;
-include/HAL/RTWTxRate.h-17-    bool shortGI;
-include/HAL/RTWTxRate.h-18-    bool valid;
-include/HAL/RTWTxRate.h-19-    uint16_t guardIntervalNs; /* HE: 800, 1600 or 3200; HT/VHT: 400 or 800. */
-include/HAL/RTWTxRate.h-20-    bool dcm; /* HE dual-carrier modulation, when supplied by firmware. */
-include/HAL/RTWTxRate.h-21-};
-include/HAL/RTWTxRate.h-22-
-include/HAL/RTWTxRate.h-23-/* HT/VHT/HE PHY rates in 100 kbps, with cfg80211-compatible units.
-include/HAL/RTWTxRate.h-24- * HT/VHT rounding follows cfg80211; HE uses modulation and symbol timing.
-include/HAL/RTWTxRate.h-25- * Modulation rates are numeric protocol data; the HAL supplies actual NSS,
-include/HAL/RTWTxRate.h-26- * width and guard interval rather than substituting advertised capabilities.
-include/HAL/RTWTxRate.h-27- */
-include/HAL/RTWTxRate.h:28:static inline uint32_t rtw_tx_rate_calculate(const struct RTWTxRate *rate)
-include/HAL/RTWTxRate.h-29-{
-include/HAL/RTWTxRate.h-30-    uint64_t bits;
-include/HAL/RTWTxRate.h-31-    if (!rate) return 0;
-include/HAL/RTWTxRate.h-32-    if (rate->mode == RTW_RATE_LEGACY) return rate->bitrate100Kbps;
-include/HAL/RTWTxRate.h-33-    if (rate->mode == RTW_RATE_HE) {
-include/HAL/RTWTxRate.h-34-        /* HE has a 12.8 us useful symbol. Full-channel data subcarriers:
-include/HAL/RTWTxRate.h-35-         * 234/468/980/1960 for 20/40/80/160 MHz, respectively.
-include/HAL/RTWTxRate.h-36-         */
-include/HAL/RTWTxRate.h-37-        static const uint8_t numerators[12] = {1,1,3,2,3,4,9,5,6,20,15,25};
-include/HAL/RTWTxRate.h-38-        static const uint8_t denominators[12] = {2,1,2,1,1,1,2,1,1,3,2,3};
-include/HAL/RTWTxRate.h-39-        uint32_t carriers;
-include/HAL/RTWTxRate.h-40-        uint64_t denominator, numerator;
-include/HAL/RTWTxRate.h-41-        if (rate->mcs > 11 || rate->nss < 1 || rate->nss > 8) return 0;
-include/HAL/RTWTxRate.h-42-        if (rate->guardIntervalNs != 800 && rate->guardIntervalNs != 1600 &&
-include/HAL/RTWTxRate.h-43-            rate->guardIntervalNs != 3200) return 0;
-include/HAL/RTWTxRate.h-44-        if (rate->dcm && (rate->nss > 2 || (rate->mcs != 0 && rate->mcs != 1 &&
-include/HAL/RTWTxRate.h-45-            rate->mcs != 3 && rate->mcs != 4))) return 0;
-include/HAL/RTWTxRate.h-46-        switch (rate->widthMHz) {
-include/HAL/RTWTxRate.h-47-        case 20: carriers=234; break;
-include/HAL/RTWTxRate.h-48-        case 40: carriers=468; break;
-include/HAL/RTWTxRate.h-49-        case 80: carriers=980; break;
-include/HAL/RTWTxRate.h-50-        case 160: carriers=1960; break;
-include/HAL/RTWTxRate.h-51-        default: return 0;
-include/HAL/RTWTxRate.h-52-        }
-include/HAL/RTWTxRate.h-53-        numerator = (uint64_t)carriers * numerators[rate->mcs] * rate->nss * 10000;
-include/HAL/RTWTxRate.h-54-        denominator = (12800 + rate->guardIntervalNs) * denominators[rate->mcs];
-include/HAL/RTWTxRate.h-55-        if (rate->dcm) denominator *= 2;
-include/HAL/RTWTxRate.h-56-        return (uint32_t)((numerator + denominator / 2) / denominator);
-include/HAL/RTWTxRate.h-57-    }
-include/HAL/RTWTxRate.h-58-    if (rate->mode == RTW_RATE_HT) {
-include/HAL/RTWTxRate.h-59-        static const uint8_t factors[8] = {1, 2, 3, 4, 6, 8, 9, 10};
-include/HAL/RTWTxRate.h-60-        if (rate->mcs > 31 || (rate->widthMHz != 20 && rate->widthMHz != 40)) return 0;
-include/HAL/RTWTxRate.h-61-        bits = (rate->widthMHz == 40 ? 13500000ULL : 6500000ULL) *
-include/HAL/RTWTxRate.h-62-            factors[rate->mcs & 7] * (rate->mcs / 8 + 1);
-include/HAL/RTWTxRate.h-63-    } else if (rate->mode == RTW_RATE_VHT) {
---
-rtw/hal_rtw89/driver/Senmiko.c-686-    return cc != NULL;
-rtw/hal_rtw89/driver/Senmiko.c-687-}
-rtw/hal_rtw89/driver/Senmiko.c-688-
-rtw/hal_rtw89/driver/Senmiko.c-689-static void rtw89_copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
-rtw/hal_rtw89/driver/Senmiko.c-690-{
-rtw/hal_rtw89/driver/Senmiko.c:691:    struct RTWTxRate *out = opaque;
-rtw/hal_rtw89/driver/Senmiko.c-692-    const struct rtw89_sta *rtwsta = sta_to_rtwsta(sta);
-rtw/hal_rtw89/driver/Senmiko.c-693-    const struct rtw89_sta_link *link = rtwsta->links[0];
-rtw/hal_rtw89/driver/Senmiko.c-694-    const struct rate_info *report;
-rtw/hal_rtw89/driver/Senmiko.c-695-    uint32_t modes;
-rtw/hal_rtw89/driver/Senmiko.c-696-    if (!link) return;
-rtw/hal_rtw89/driver/Senmiko.c-697-    report = &link->ra_report.txrate;
-rtw/hal_rtw89/driver/Senmiko.c-698-    modes = report->flags & (RATE_INFO_FLAGS_MCS | RATE_INFO_FLAGS_VHT_MCS |
-rtw/hal_rtw89/driver/Senmiko.c-699-                            RATE_INFO_FLAGS_HE_MCS | RATE_INFO_FLAGS_EHT_MCS);
-rtw/hal_rtw89/driver/Senmiko.c-700-    if ((modes & (modes - 1)) || (modes & RATE_INFO_FLAGS_EHT_MCS)) return;
-rtw/hal_rtw89/driver/Senmiko.c-701-    /* bit_rate is not a presence flag: the compat helper returns zero for HE. */
-rtw/hal_rtw89/driver/Senmiko.c-702-    if (!modes && !report->legacy) return;
-rtw/hal_rtw89/driver/Senmiko.c-703-    out->shortGI = (report->flags & RATE_INFO_FLAGS_SHORT_GI) != 0;
-rtw/hal_rtw89/driver/Senmiko.c-704-    out->guardIntervalNs = out->shortGI ? 400 : 800;
-rtw/hal_rtw89/driver/Senmiko.c-705-    if (modes & RATE_INFO_FLAGS_HE_MCS) {
-rtw/hal_rtw89/driver/Senmiko.c-706-        out->mode = RTW_RATE_HE;
-rtw/hal_rtw89/driver/Senmiko.c-707-        out->mcs = report->mcs;
-rtw/hal_rtw89/driver/Senmiko.c-708-        out->nss = report->nss;
-rtw/hal_rtw89/driver/Senmiko.c-709-        out->shortGI = false; // Classic SHORT_GI means 400 ns, not HE's shortest GI.
-rtw/hal_rtw89/driver/Senmiko.c-710-        out->dcm = report->he_dcm != 0;
-rtw/hal_rtw89/driver/Senmiko.c-711-        switch (report->he_gi) {
-rtw/hal_rtw89/driver/Senmiko.c-712-        case NL80211_RATE_INFO_HE_GI_0_8: out->guardIntervalNs = 800; break;
-rtw/hal_rtw89/driver/Senmiko.c-713-        case NL80211_RATE_INFO_HE_GI_1_6: out->guardIntervalNs = 1600; break;
-rtw/hal_rtw89/driver/Senmiko.c-714-        case NL80211_RATE_INFO_HE_GI_3_2: out->guardIntervalNs = 3200; break;
-rtw/hal_rtw89/driver/Senmiko.c-715-        default: return;
-rtw/hal_rtw89/driver/Senmiko.c-716-        }
-rtw/hal_rtw89/driver/Senmiko.c-717-    } else if (modes & RATE_INFO_FLAGS_VHT_MCS) {
-rtw/hal_rtw89/driver/Senmiko.c-718-        out->mode = RTW_RATE_VHT;
-rtw/hal_rtw89/driver/Senmiko.c-719-        out->mcs = report->mcs;
-rtw/hal_rtw89/driver/Senmiko.c-720-        out->nss = report->nss;
-rtw/hal_rtw89/driver/Senmiko.c-721-    } else if (modes & RATE_INFO_FLAGS_MCS) {
-rtw/hal_rtw89/driver/Senmiko.c-722-        out->mode = RTW_RATE_HT;
-rtw/hal_rtw89/driver/Senmiko.c-723-        out->mcs = report->mcs;
-rtw/hal_rtw89/driver/Senmiko.c-724-        out->nss = report->mcs / 8 + 1;
-rtw/hal_rtw89/driver/Senmiko.c-725-    } else {
-rtw/hal_rtw89/driver/Senmiko.c-726-        out->mode = RTW_RATE_LEGACY;
---
-rtw/hal_rtw89/driver/Senmiko.c-736-    }
-rtw/hal_rtw89/driver/Senmiko.c-737-    out->bitrate100Kbps = rtw_tx_rate_calculate(out);
-rtw/hal_rtw89/driver/Senmiko.c-738-    out->valid = out->bitrate100Kbps != 0;
-rtw/hal_rtw89/driver/Senmiko.c-739-}
-rtw/hal_rtw89/driver/Senmiko.c-740-
-rtw/hal_rtw89/driver/Senmiko.c:741:void rtw89_macos_get_tx_rate(struct ieee80211_hw *hw, struct RTWTxRate *out)
-rtw/hal_rtw89/driver/Senmiko.c-742-{
-rtw/hal_rtw89/driver/Senmiko.c-743-    if (!out) return;
-rtw/hal_rtw89/driver/Senmiko.c-744-    memset(out, 0, sizeof(*out));
-rtw/hal_rtw89/driver/Senmiko.c-745-    if (hw) ieee80211_iterate_stations_atomic(hw, rtw89_copy_tx_rate, out);
-rtw/hal_rtw89/driver/Senmiko.c-746-}
-rtw/hal_rtw89/driver/Senmiko.c-747-
-rtw/hal_rtw89/driver/Senmiko.c-748-/* Bound the software pool by the chip's MAC-ID namespace, including the
-rtw/hal_rtw89/driver/Senmiko.c-749- * same MLO partition used by rtw89_acquire_mac_id(). Reserve the primary and
-rtw/hal_rtw89/driver/Senmiko.c-750- * secondary VIF IDs; allocation can still fail if other users consume IDs. */
-rtw/hal_rtw89/driver/Senmiko.c-751-unsigned int rtw89_macos_awdl_peer_capacity(struct ieee80211_hw *hw)
-rtw/hal_rtw89/driver/Senmiko.c-752-{
-rtw/hal_rtw89/driver/Senmiko.c-753-    struct rtw89_dev *rtwdev;
-rtw/hal_rtw89/driver/Senmiko.c-754-    unsigned int ids;
-rtw/hal_rtw89/driver/Senmiko.c-755-
-rtw/hal_rtw89/driver/Senmiko.c-756-    if (!hw || !hw->priv)
-rtw/hal_rtw89/driver/Senmiko.c-757-        return 0;
-rtw/hal_rtw89/driver/Senmiko.c-758-    rtwdev = to_rtw89(hw->priv);
-rtw/hal_rtw89/driver/Senmiko.c-759-    if (!rtwdev->chip)
-rtw/hal_rtw89/driver/Senmiko.c-760-        return 0;
-rtw/hal_rtw89/driver/Senmiko.c-761-    ids = rtwdev->chip->support_macid_num;
-rtw/hal_rtw89/driver/Senmiko.c-762-    if (rtwdev->support_mlo) {
-rtw/hal_rtw89/driver/Senmiko.c-763-        if (!rtwdev->chip->support_link_num)
-rtw/hal_rtw89/driver/Senmiko.c-764-            return 0;
-rtw/hal_rtw89/driver/Senmiko.c-765-        ids /= rtwdev->chip->support_link_num;
-rtw/hal_rtw89/driver/Senmiko.c-766-    }
-rtw/hal_rtw89/driver/Senmiko.c-767-    if (ids <= 2)
-rtw/hal_rtw89/driver/Senmiko.c-768-        return 0;
-rtw/hal_rtw89/driver/Senmiko.c-769-    return ids - 2 > 16 ? 16 : ids - 2;
-rtw/hal_rtw89/driver/Senmiko.c-770-}
-rtw/hal_rtw89/driver/Senmiko.c-771-
-rtw/hal_rtw89/driver/Senmiko.c-772-/* Called under WiphyGuard after a quiet-ADHOC sta_state add failure.
-rtw/hal_rtw89/driver/Senmiko.c-773- * true requires the native allocator to retain sta and its VIF, and retry
-rtw/hal_rtw89/driver/Senmiko.c-774- * NONE -> NOTEXIST cleanup (or fence/reset the device) before freeing either.
-rtw/hal_rtw89/driver/Senmiko.c-775- * This is firmware command ownership, not a positive firmware/RF ACK. */
-rtw/hal_rtw89/driver/Senmiko.c-776-bool rtw89_macos_awdl_peer_retained(struct ieee80211_vif *vif,
---
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-22-void rtw88_register_vif(struct ieee80211_vif *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-23-void rtw88_unregister_vif(void);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-24-void rtw89_macos_flush_rx_ba(struct ieee80211_sta *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-25-bool rtw89_macos_set_country(struct ieee80211_hw *, const char *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-26-bool rtw89_macos_country_ie(struct ieee80211_hw *, const unsigned char *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp:27:void rtw89_macos_get_tx_rate(struct ieee80211_hw *, struct RTWTxRate *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-28-int rtw89_macos_awdl_reserve(struct ieee80211_hw *, struct ieee80211_vif *,
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-29-                            const struct ieee80211_channel *, unsigned);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-30-int rtw89_macos_awdl_restore(struct ieee80211_hw *, struct ieee80211_vif *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-31-int rtw89_macos_awdl_tx_drain(struct ieee80211_hw *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-32-unsigned int rtw89_macos_awdl_channel_blockers(struct ieee80211_hw *, struct ieee80211_vif *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-33-unsigned int rtw89_macos_awdl_peer_capacity(struct ieee80211_hw *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-34-bool rtw89_macos_awdl_peer_retained(struct ieee80211_vif *, struct ieee80211_sta *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-35-bool rtw89_macos_awdl_needs_restore(struct ieee80211_hw *, struct ieee80211_vif *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-36-struct ieee80211_channel *rtw89_macos_awdl_current_channel(struct ieee80211_hw *,
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-37-                                                          struct ieee80211_vif *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-38-void rtw89_macos_peer_audit(struct ieee80211_hw *, struct ieee80211_vif *, uint32_t *);
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-39-}
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-40-
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-41-#include <AWDL/RTWAwdlLinuxInterface.hpp>
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-42-#include <AWDL/RTWAwdlLinuxActionTx.hpp>
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-43-#include <AWDL/RTWAwdlLinuxDataTx.hpp>
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-44-#include <AWDL/RTWAwdlReceiveRegistration.hpp>
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-45-
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-46-struct Rtw89AwdlPeerPool {
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-47-    Rtw89DeferredRelease deferred;
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-48-    struct Entry {
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-49-        void *station;
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-50-        size_t allocationSize;
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-51-        uint8_t address[6];
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-52-        unsigned state;
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-53-        bool registered,retiring;
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-54-    } entries[16];
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-55-    RTWAwdl::InterfaceState detachedInterface;
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-56-    void *primaryVif,*primaryStation;
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-57-    size_t primaryVifSize,primaryStationSize;
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-58-};
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-59-static_assert(offsetof(Rtw89AwdlPeerPool,deferred)==0,"deferred ownership header");
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-60-
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-61-// Only the transport invokes this, after compatibility worker shutdown. No
-rtw/hal_rtw89/Rtw89LinuxBridge.cpp-62-// driver/hardware operation may occur once the PCI core has been removed.
---
-rtw/hal_rtw88/Rtw88Hardware.c-145-
-rtw/hal_rtw88/Rtw88Hardware.c-146-/* Share the station iteration lock with C2H RA updates and station teardown. */
-rtw/hal_rtw88/Rtw88Hardware.c-147-#include "../../include/HAL/RTWTxRate.h"
-rtw/hal_rtw88/Rtw88Hardware.c-148-static void copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
-rtw/hal_rtw88/Rtw88Hardware.c-149-{
-rtw/hal_rtw88/Rtw88Hardware.c:150:    struct RTWTxRate *out = opaque;
-rtw/hal_rtw88/Rtw88Hardware.c-151-    const struct rtw_sta_info *si = (const void *)sta->drv_priv;
-rtw/hal_rtw88/Rtw88Hardware.c-152-    const struct rate_info *report = &si->ra_report.txrate;
-rtw/hal_rtw88/Rtw88Hardware.c-153-    if (!si->ra_report.bit_rate) return;
-rtw/hal_rtw88/Rtw88Hardware.c-154-    out->shortGI = (report->flags & RATE_INFO_FLAGS_SHORT_GI) != 0;
-rtw/hal_rtw88/Rtw88Hardware.c-155-    out->guardIntervalNs = out->shortGI ? 400 : 800;
-rtw/hal_rtw88/Rtw88Hardware.c-156-    if (report->flags & RATE_INFO_FLAGS_VHT_MCS) {
-rtw/hal_rtw88/Rtw88Hardware.c-157-        out->mode = RTW_RATE_VHT;
-rtw/hal_rtw88/Rtw88Hardware.c-158-        out->mcs = report->mcs;
-rtw/hal_rtw88/Rtw88Hardware.c-159-        out->nss = report->nss;
-rtw/hal_rtw88/Rtw88Hardware.c-160-    } else if (report->flags & RATE_INFO_FLAGS_MCS) {
-rtw/hal_rtw88/Rtw88Hardware.c-161-        out->mode = RTW_RATE_HT;
-rtw/hal_rtw88/Rtw88Hardware.c-162-        out->mcs = report->mcs;
-rtw/hal_rtw88/Rtw88Hardware.c-163-        out->nss = report->mcs / 8 + 1;
-rtw/hal_rtw88/Rtw88Hardware.c-164-    } else {
-rtw/hal_rtw88/Rtw88Hardware.c-165-        out->mode = RTW_RATE_LEGACY;
-rtw/hal_rtw88/Rtw88Hardware.c-166-        out->nss = 1;
-rtw/hal_rtw88/Rtw88Hardware.c-167-        out->bitrate100Kbps = report->legacy;
-rtw/hal_rtw88/Rtw88Hardware.c-168-    }
-rtw/hal_rtw88/Rtw88Hardware.c-169-    switch (report->bw) {
-rtw/hal_rtw88/Rtw88Hardware.c-170-    case RATE_INFO_BW_20: out->widthMHz = 20; break;
-rtw/hal_rtw88/Rtw88Hardware.c-171-    case RATE_INFO_BW_40: out->widthMHz = 40; break;
-rtw/hal_rtw88/Rtw88Hardware.c-172-    case RATE_INFO_BW_80: out->widthMHz = 80; break;
-rtw/hal_rtw88/Rtw88Hardware.c-173-    case RATE_INFO_BW_160: out->widthMHz = 160; break;
-rtw/hal_rtw88/Rtw88Hardware.c-174-    default: return;
-rtw/hal_rtw88/Rtw88Hardware.c-175-    }
-rtw/hal_rtw88/Rtw88Hardware.c-176-    out->bitrate100Kbps = rtw_tx_rate_calculate(out);
-rtw/hal_rtw88/Rtw88Hardware.c-177-    out->valid = out->bitrate100Kbps != 0;
-rtw/hal_rtw88/Rtw88Hardware.c-178-}
-rtw/hal_rtw88/Rtw88Hardware.c-179-
-rtw/hal_rtw88/Rtw88Hardware.c:180:void rtw88_hw_get_tx_rate(struct ieee80211_hw *hw, struct RTWTxRate *out)
-rtw/hal_rtw88/Rtw88Hardware.c-181-{
-rtw/hal_rtw88/Rtw88Hardware.c-182-    if (!out) return;
-rtw/hal_rtw88/Rtw88Hardware.c-183-    memset(out, 0, sizeof(*out));
-rtw/hal_rtw88/Rtw88Hardware.c-184-    if (hw) ieee80211_iterate_stations_atomic(hw, copy_tx_rate, out);
-rtw/hal_rtw88/Rtw88Hardware.c-185-}
---
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-18-void rtw_pci_remove(struct pci_dev *);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-19-struct ieee80211_hw *rtw88_get_hw(void);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-20-void airportrtw88_init_country(struct ieee80211_hw *);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-21-bool airportrtw88_apply_country(struct ieee80211_hw *, const char *, int);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-22-unsigned rtw88_hw_get_nss(struct ieee80211_hw *);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:23:void rtw88_hw_get_tx_rate(struct ieee80211_hw *, struct RTWTxRate *);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-24-void rtw88_register_vif(struct ieee80211_vif *);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-25-void rtw88_unregister_vif(void);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-26-}
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-27-
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-28-#include <AWDL/RTWAwdlLinuxInterface.hpp>
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-29-#include <AWDL/RTWAwdlLinuxActionTx.hpp>
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-30-#include <AWDL/RTWAwdlReceiveRegistration.hpp>
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-31-
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-32-namespace {
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-33-static Rtw88LinuxContext *activeContext;
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-34-static const size_t managementHeaderLength = 24;
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-35-
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-36-static void resumeTransmit()
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-37-{
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-38-    if (activeContext && activeContext->txResume)
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-39-        activeContext->txResume(activeContext->nativeOwner);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-40-}
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-41-
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-42-static void receiveFrame(void *opaque, struct sk_buff *skb)
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-43-{
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-44-    auto *context = static_cast<Rtw88LinuxContext *>(opaque);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-45-    if (!skb)
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-46-        return;
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-47-    struct ieee80211_rx_status *status = IEEE80211_SKB_RXCB(skb);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-48-    // Linux mac80211 removes the hardware FCS before handing frames to MLME.
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-49-    // Our bridge bypasses mac80211, so perform that step here. Otherwise the
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-50-    // CRC is parsed as trailing IEs and WCL rejects valid beacon results.
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-51-    auto *hw = context ? static_cast<struct ieee80211_hw *>(context->hardware) : nullptr;
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-52-    if (hw && ieee80211_hw_check(hw, RX_INCLUDES_FCS)) {
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-53-        const unsigned int fcsLength = 4;
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-54-        if (skb->len < 10 + fcsLength) {
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-55-            kfree_skb(skb);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-56-            return;
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-57-        }
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp-58-        skb_trim(skb, skb->len - fcsLength);
-
-=== EXISTING DIAGNOSTIC HELPERS ===
-rtw/hal_rtw88/Rtw88PciTransport.cpp:59:    if (device) RTW_DIAGNOSTIC(device->setProperty("RTWTransportStage", "object/device/workloop/singleton check"));
-rtw/hal_rtw88/Rtw88PciTransport.cpp:122:            RTW_DIAGNOSTIC(pciDevice->setProperty("RTWInterruptIndex", index, 32));
-rtw/hal_rtw88/Rtw88PciTransport.cpp:123:            RTW_DIAGNOSTIC(pciDevice->setProperty("RTWInterruptType", type, 32));
-rtw/hal_rtw88/Rtw88PciTransport.cpp:133:            RTW_DIAGNOSTIC(pciDevice->setProperty("RTWInterruptRegistrationResult", result, 32));
-rtw/hal_rtw88/compat/iokit_shim.h:13:/* ---- IOMalloc / IOFree / IOLog / IODelay / IOSleep ---- */
-rtw/hal_rtw88/compat/iokit_shim.h:16:extern void     IOLog(const char *format, ...) __attribute__((format(printf, 1, 2)));
-rtw/hal_rtw88/compat/rtw88_compat.h:175:/* Dump BE TX ring + interrupt state to IOLog. Called periodically by the
-rtw/hal_rtw88/Rtw88PciTransport.hpp:32:        pciDevice->setProperty("RTWTransportStage", stage);
-rtw/hal_rtw88/Rtw88PciTransport.hpp:36:        active->pciDevice->setProperty("RTWPCIProbeStage", stage);
-rtw/hal_rtw88/Rtw88PciTransport.hpp:37:        active->pciDevice->setProperty("RTWPCIProbeStageCode",
-rtw/hal_rtw88/Rtw88PciTransport.hpp:42:            active->pciDevice->setProperty("RTWChipStage", stage);
-rtw/hal_rtw88/Rtw88PciTransport.hpp:47:        active->pciDevice->setProperty("RTWPollRegister", reg, 32);
-rtw/hal_rtw88/Rtw88PciTransport.hpp:48:        active->pciDevice->setProperty("RTWPollValue", value, 32);
-rtw/hal_rtw88/Rtw88PciTransport.hpp:49:        active->pciDevice->setProperty("RTWPollMask", mask, 32);
-rtw/hal_rtw88/Rtw88PciTransport.hpp:50:        active->pciDevice->setProperty("RTWPollExpected", expected, 32);
-rtw/hal_rtw88/Rtw88PciTransport.hpp:53:        pciDevice->setProperty("RTWPCIProbeResult", static_cast<unsigned long long>(result), 32);
+=== EXISTING REGISTRY DIAGNOSTICS ===
 rtw/hal_rtw88/RTWCore88.cpp:62:    RTW_DIAGNOSTIC(device->setProperty("RTWHALStage", "PCI ID match"));
 rtw/hal_rtw88/RTWCore88.cpp:71:    RTW_DIAGNOSTIC(device->setProperty("RTWHALStage", "PCI transport initialization"));
 rtw/hal_rtw88/RTWCore88.cpp:76:    RTW_DIAGNOSTIC(device->setProperty("RTWHALStage", "scan dwell timer"));
@@ -1120,7 +1043,107 @@ rtw/hal_rtw88/RTWCore88.cpp:578:    RTW_DIAGNOSTIC(controller->setProperty("RTW8
 rtw/hal_rtw88/RTWCore88.cpp:580:    RTW_DIAGNOSTIC(controller->setProperty("RTW88TxDescMacId",
 rtw/hal_rtw88/RTWCore88.cpp:582:    RTW_DIAGNOSTIC(controller->setProperty("RTW88TxDescQueueSelect",
 rtw/hal_rtw88/RTWCore88.cpp:584:    RTW_DIAGNOSTIC(controller->setProperty("RTW88TxAvailableSlots",
-
+rtw/hal_rtw88/RTWCore88.cpp:586:    RTW_DIAGNOSTIC(controller->setProperty("RTW88OutputQueueLength",
+rtw/hal_rtw88/RTWCore88.cpp:588:    RTW_DIAGNOSTIC(controller->setProperty("RTW88OutputQueueActive",
+rtw/hal_rtw88/RTWCore88.cpp:590:    RTW_DIAGNOSTIC(controller->setProperty("RTW88StartCallCount", owner->startCallCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:591:    RTW_DIAGNOSTIC(controller->setProperty("RTW88TxBackpressureCount",
+rtw/hal_rtw88/RTWCore88.cpp:593:    RTW_DIAGNOSTIC(controller->setProperty("RTW88TxAmpduMask",
+rtw/hal_rtw88/RTWCore88.cpp:595:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AmpduTxStartCount",
+rtw/hal_rtw88/RTWCore88.cpp:597:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AmpduTxStartFailCount",
+rtw/hal_rtw88/RTWCore88.cpp:599:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AmpduTxStopCount",
+rtw/hal_rtw88/RTWCore88.cpp:601:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AmpduRxStartCount",
+rtw/hal_rtw88/RTWCore88.cpp:603:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AmpduRxStartFailCount",
+rtw/hal_rtw88/RTWCore88.cpp:605:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AmpduRxStopCount",
+rtw/hal_rtw88/RTWCore88.cpp:607:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssocStageMask",
+rtw/hal_rtw88/RTWCore88.cpp:609:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RAAssocMode",
+rtw/hal_rtw88/RTWCore88.cpp:611:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RAAssocBandwidth",
+rtw/hal_rtw88/RTWCore88.cpp:613:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RAAssocSpatialStreams",
+rtw/hal_rtw88/RTWCore88.cpp:615:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RAAssocRxNss",
+rtw/hal_rtw88/RTWCore88.cpp:617:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RAAssocTxNss",
+rtw/hal_rtw88/RTWCore88.cpp:619:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RAAssocMask",
+rtw/hal_rtw88/RTWCore88.cpp:623:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveValid", liveRate.valid));
+rtw/hal_rtw88/RTWCore88.cpp:624:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
+rtw/hal_rtw88/RTWCore88.cpp:625:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+rtw/hal_rtw88/RTWCore88.cpp:626:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+rtw/hal_rtw88/RTWCore88.cpp:627:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+rtw/hal_rtw88/RTWCore88.cpp:628:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+rtw/hal_rtw88/RTWCore88.cpp:629:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+rtw/hal_rtw88/RTWCore88.cpp:630:    RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseLength",
+rtw/hal_rtw88/RTWCore88.cpp:632:    RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseStatus",
+rtw/hal_rtw88/RTWCore88.cpp:634:    RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseAid",
+rtw/hal_rtw88/RTWCore88.cpp:636:    RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseFirstIE",
+rtw/hal_rtw88/RTWCore88.cpp:638:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssocStatus", owner->sc.sc_ic.ic_assoc_status, 16));
+rtw/hal_rtw88/RTWCore88.cpp:639:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxCCMPReplays", owner->sc.sc_ic.ic_stats.is_ccmp_replays, 32));
+rtw/hal_rtw88/RTWCore88.cpp:640:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxCCMPIntegrityFailures", owner->sc.sc_ic.ic_stats.is_ccmp_dec_errs, 32));
+rtw/hal_rtw88/RTWCore88.cpp:641:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxHardwareDecrypted", owner->linuxContext.rxHardwareDecryptedCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:642:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxProtectedSoftware", owner->linuxContext.rxProtectedSoftwareCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:643:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxCCMPMICStripped", owner->linuxContext.rxCCMPMICStrippedCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:644:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxConnectionProtected", owner->linuxContext.rxConnectionProtectedCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:645:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxConnectionUndecrypted", owner->linuxContext.rxConnectionUndecryptedCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:646:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxConnectionInvalid", owner->linuxContext.rxConnectionInvalidCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:647:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxConnectionSNAP", owner->linuxContext.rxConnectionSNAPCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:648:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxConnectionDHCP", owner->linuxContext.rxConnectionDHCPCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:649:    RTW_DIAGNOSTIC(controller->setProperty("RTW88TxAddressMismatch", owner->linuxContext.txAddressMismatchCount, 64));
+rtw/hal_rtw88/RTWCore88.cpp:650:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxUnauthorized", owner->sc.sc_ic.ic_stats.is_rx_unauth, 32));
+rtw/hal_rtw88/RTWCore88.cpp:651:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxProtectionOff", owner->sc.sc_ic.ic_stats.is_rx_nowep, 32));
+rtw/hal_rtw88/RTWCore88.cpp:652:    RTW_DIAGNOSTIC(controller->setProperty("RTW88PortValid", owner->sc.sc_ic.ic_bss && owner->sc.sc_ic.ic_bss->ni_port_valid));
+rtw/hal_rtw88/RTWCore88.cpp:657:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxDataAfterDecrypt", decryptedData, 64));
+rtw/hal_rtw88/RTWCore88.cpp:659:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxDecryptFailures", owner->sc.sc_ic.ic_stats.is_rx_wepfail, 32));
+rtw/hal_rtw88/RTWCore88.cpp:660:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxUnencrypted", owner->sc.sc_ic.ic_stats.is_rx_unencrypted, 32));
+rtw/hal_rtw88/RTWCore88.cpp:661:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxDecapFailures", owner->sc.sc_ic.ic_stats.is_rx_decap, 32));
+rtw/hal_rtw88/RTWCore88.cpp:662:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxMgmtDiscard",
+rtw/hal_rtw88/RTWCore88.cpp:664:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxElementTooSmall",
+rtw/hal_rtw88/RTWCore88.cpp:666:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxAssocNoRate",
+rtw/hal_rtw88/RTWCore88.cpp:668:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxDuplicate",
+rtw/hal_rtw88/RTWCore88.cpp:670:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxWrongDirection",
+rtw/hal_rtw88/RTWCore88.cpp:672:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxTooShort",
+rtw/hal_rtw88/RTWCore88.cpp:674:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RxBadVersion",
+rtw/hal_rtw88/RTWCore88.cpp:676:    RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseFC1",
+rtw/hal_rtw88/RTWCore88.cpp:678:    RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseSequence",
+rtw/hal_rtw88/RTWCore88.cpp:680:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssocStateBeforeInput",
+rtw/hal_rtw88/RTWCore88.cpp:682:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssocStateAfterInput",
+rtw/hal_rtw88/RTWCore88.cpp:684:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssocStatusAfterInput",
+rtw/hal_rtw88/RTWCore88.cpp:686:    RTW_DIAGNOSTIC(controller->setProperty("RTW88Net80211NodeCount",
+rtw/hal_rtw88/RTWCore88.cpp:688:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssociationRunWatchdogTicks",
+rtw/hal_rtw88/RTWCore88.cpp:690:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssociationRecoveryPending",
+rtw/hal_rtw88/RTWCore88.cpp:692:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssociationRecoveryAttempted",
+rtw/hal_rtw88/RTWCore88.cpp:694:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssociationRecoveryTriggerCount",
+rtw/hal_rtw88/RTWCore88.cpp:696:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssociationRecoveryAttemptCount",
+rtw/hal_rtw88/RTWCore88.cpp:698:    RTW_DIAGNOSTIC(controller->setProperty("RTW88AssociationRecoverySuccessCount",
+rtw/hal_rtw88/RTWCore88.cpp:700:    RTW_DIAGNOSTIC(controller->setProperty("RTWSAEStage", owner->sc.sc_ic.ic_sae_stage, 32));
+rtw/hal_rtw88/RTWCore88.cpp:701:    RTW_DIAGNOSTIC(controller->setProperty("RTWSAEError", owner->sc.sc_ic.ic_sae_error, 32));
+rtw/hal_rtw88/RTWCore88.cpp:702:    RTW_DIAGNOSTIC(controller->setProperty("RTW88Net80211State",
+rtw/hal_rtw88/RTWCore88.cpp:706:        RTW_DIAGNOSTIC(controller->setProperty("RTW88NodeFlags", (UInt64)node->ni_flags, 32));
+rtw/hal_rtw88/RTWCore88.cpp:707:        RTW_DIAGNOSTIC(controller->setProperty("RTW88NodeRsnProtocols",
+rtw/hal_rtw88/RTWCore88.cpp:709:        RTW_DIAGNOSTIC(controller->setProperty("RTW88InterfaceFlags",
+rtw/hal_rtw88/RTWCore88.cpp:711:        RTW_DIAGNOSTIC(controller->setProperty("RTW88TxBaStateBE",
+rtw/hal_rtw88/RTWCore88.cpp:713:        RTW_DIAGNOSTIC(controller->setProperty("RTW88TxBaStateBK",
+rtw/hal_rtw88/RTWCore88.cpp:715:        RTW_DIAGNOSTIC(controller->setProperty("RTW88TxBaStateVI",
+rtw/hal_rtw88/RTWCore88.cpp:717:        RTW_DIAGNOSTIC(controller->setProperty("RTW88TxBaStateVO",
+rtw/hal_rtw88/RTWCore88.cpp:720:    RTW_DIAGNOSTIC(controller->setProperty("RTW88TxBaAgreements",
+rtw/hal_rtw88/RTWCore88.cpp:722:    RTW_DIAGNOSTIC(controller->setProperty("RTW88TxBaTimeouts",
+rtw/hal_rtw88/RTWCore88.cpp:724:    RTW_DIAGNOSTIC(controller->setProperty("RTW88LastReceiveFrequency",
+rtw/hal_rtw88/RTWCore88.cpp:726:    RTW_DIAGNOSTIC(controller->setProperty("RTW88LastReceiveSignalRaw",
+rtw/hal_rtw88/RTWCore88.cpp:873:        controller->setProperty("RTW88AuthHALSeen", true);
+rtw/hal_rtw88/RTWCore88.cpp:874:        controller->setProperty("RTW88AuthFrameLength", (UInt32)length, 32);
+rtw/hal_rtw88/RTWCore88.cpp:875:        controller->setProperty("RTW88AuthFrequency", frequency, 32);
+rtw/hal_rtw88/RTWCore88.cpp:876:        controller->setProperty("RTW88AuthStateAtReceive", (UInt32)ic->ic_state, 32);
+rtw/hal_rtw88/RTWCore88.cpp:877:        controller->setProperty("RTW88AuthDestinationMatches", IEEE80211_ADDR_EQ(wh->i_addr1, ic->ic_myaddr));
+rtw/hal_rtw88/RTWCore88.cpp:878:        controller->setProperty("RTW88AuthSourceMatches", ic->ic_bss && IEEE80211_ADDR_EQ(wh->i_addr2, ic->ic_bss->ni_bssid));
+rtw/hal_rtw88/RTWCore88.cpp:879:        controller->setProperty("RTW88AuthBSSIDMatches", ic->ic_bss && IEEE80211_ADDR_EQ(wh->i_addr3, ic->ic_bss->ni_bssid));
+rtw/hal_rtw88/RTWCore88.cpp:882:            controller->setProperty("RTW88AuthAlgorithm", (UInt32)(body[0] | (body[1] << 8)), 32);
+rtw/hal_rtw88/RTWCore88.cpp:883:            controller->setProperty("RTW88AuthSequence", (UInt32)(body[2] | (body[3] << 8)), 32);
+rtw/hal_rtw88/RTWCore88.cpp:884:            controller->setProperty("RTW88AuthStatus", (UInt32)(body[4] | (body[5] << 8)), 32);
+rtw/hal_rtw88/RTWCore88.cpp:886:        controller->setProperty("RTW88AuthInputStage", "before mbuf allocation");
+rtw/hal_rtw88/RTWCore88.cpp:948:        RTW_DIAGNOSTIC(if (authFrame) owner->getController()->setProperty("RTW88AuthInputStage", "node lookup failed"));
+rtw/hal_rtw88/RTWCore88.cpp:1003:            owner->getController()->setProperty("RTW88AuthInputStage", "net80211 input");
+rtw/hal_rtw88/RTWCore88.cpp:1004:            owner->getController()->setProperty("RTW88AuthStateBeforeInput", (UInt32)ic->ic_state, 32);
+rtw/hal_rtw88/RTWCore88.cpp:1008:            owner->getController()->setProperty("RTW88AuthStateAfterInput", (UInt32)ic->ic_state, 32);
+rtw/hal_rtw88/RTWCore88.cpp:1009:            owner->getController()->setProperty("RTW88AuthInputStage", "net80211 input returned");
+rtw/hal_rtw88/driver/fw.c:388:		rtw_warn(rtwdev, "unhandled firmware c2h interrupt\n");
+rtw/hal_rtw88/driver/fw.c:1415:		rtw_warn(rtwdev, "Cannot add beacon rsvd page for %d\n",
+rtw/hal_rtw88/driver/fw.c:1433:		rtw_warn(rtwdev, "Cannot add PNO rsvd page for %d\n",
+rtw/hal_rtw88/driver/fw.c:1454:		rtw_warn(rtwdev, "Cannot add sta rsvd page for %d\n",
 === BUILD SCRIPT ===
 #!/bin/bash
 set -euo pipefail
@@ -1185,6 +1208,5 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
 fi
 
 echo "Kexts are available in $OUTPUT/$CONFIGURATION"
-
-SOURCE_LOG=/Users/shohel/Desktop/AirportRTW-DIAGNOSTIC-SOURCE.txt
+LOG=/Users/shohel/Desktop/AirportRTW-Diagnostic-Implementation.txt
 shohel@Mahfujuls-MacBook-Pro AirportRTW-port-txrx % 
