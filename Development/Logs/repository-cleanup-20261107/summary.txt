@@ -1,0 +1,20 @@
+Repository cleanup — 2026-11-07
+
+Repository: shammu2bd/Realtek-WiFi-Native-macOS
+Branch: main
+
+Deleted superseded runner scripts:
+- Development/stage29c-native-link-build.sh
+- Development/stage29c-native-link-build-v2.sh
+- Development/stage29c-native-link-build-v3.sh
+- Development/stage29c-native-link-build-v4.sh
+- Development/stage23-compile-only-validation.sh (kept -fixed variant)
+- Development/stage25-shutdown-fence-quarantine-patch.sh (kept -fixed variant)
+
+Preserved:
+- Development/Logs/** and Development/output.log
+- source files, firmware, MacKernelSDK libraries, ABI archives, stage history and fixed/latest scripts
+
+No driver source was modified and no build was claimed. The current Makefile explicitly keeps the Sequoia 24H32 WCL controller/interface objects outside AIRPORT_ALL_OBJS because their IO80211Controller vtable ABI differs from the legacy target. Linking them into that target would not be a safe build fix; native registration and packet ownership integration remains required.
+
+No tests, installation, loading, OpenCore edits, or security-setting changes were performed.
