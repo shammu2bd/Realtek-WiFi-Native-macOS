@@ -6504,3 +6504,265 @@ Wi-Fi:
 
 
 === LIVE RATE PROPERTIES ===
+
+AIRPORTRTW RA HANDLER ENTRY AND LIVE RATE CALLBACK INSTRUMENTATION
+Sat Nov  7 20:14:54 +06 2026
+
+REPOSITORY=/Users/shohel/Developer/AirportRTW-port-txrx
+BRANCH=port/rtl88wifi-txrx-20261107
+HEAD=2033dc3d581dcb4faaa46651f31c0f4a0b322e0b
+BACKUP=/Users/shohel/Developer/AirportRTW-port-txrx/backups/ra-handler-live-rate-20261107-201358
+PATCH_EXIT=0
+DIFF_CHECK_EXIT=0
+BUILD_EXIT=0
+NEW_BUILD=PASS
+BINARY_SHA256=afd95ae76ebb73ad9133558184b5dc0d7f87e197566b9627bac5e401bcd196b9
+BINARY_UUID=UUID: C5E55505-F154-369C-BAC4-126BC020F0D2 (x86_64) build/releases/Release/Sequoia/AirportRTW.kext/Contents/MacOS/AirportRTW
+
+=== PATCH DIFF ===
+diff --git a/rtw/hal_rtw88/RTWCore88.cpp b/rtw/hal_rtw88/RTWCore88.cpp
+index 2b2b758..65aaf26 100644
+--- a/rtw/hal_rtw88/RTWCore88.cpp
++++ b/rtw/hal_rtw88/RTWCore88.cpp
+@@ -1,3 +1,4 @@
++extern "C" void IOLog(const char *format, ...);
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ #include "RTWCore88.hpp"
+ #include "Rtw88PciTransport.hpp"
+@@ -279,7 +280,7 @@ int RTWCore88::getTxNSS()
+ bool RTWCore88::getTxRate(RTWTxRate &rate)
+ {
+     rtw88LinuxGetTxRate(&linuxContext, rate);
+-    return true;
++    return rate.valid && rate.bitrate100Kbps != 0;
+ }
+ 
+ bool RTWCore88::is5GBandSupport()
+@@ -620,13 +621,14 @@ void RTWCore88::watchdog(struct _ifnet *ifp)
+                             owner->linuxContext.raAuditU64[0], 64));
+     RTWTxRate liveRate = {};
+     owner->getTxRate(liveRate);
+-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveValid", liveRate.valid));
+-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
+-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
++    IOLog("[AirportRTW RA] LIVE_RATE_CALLBACK valid=%u mode=%u mcs=%u nss=%u bw=%u bitrate100=%u sgi=%u\n", liveRate.valid, liveRate.mode, liveRate.mcs, liveRate.nss, liveRate.widthMHz, liveRate.bitrate100Kbps, liveRate.shortGI);
++    controller->setProperty("RTW88RALiveValid", liveRate.valid);
++    controller->setProperty("RTW88RALiveMode", liveRate.mode, 8);
++    controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8);
++    controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16);
++    controller->setProperty("RTW88RALiveNss", liveRate.nss, 8);
++    controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI);
++    controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32);
+     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseLength",
+                             owner->lastAssocResponseLength, 32));
+     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseStatus",
+diff --git a/rtw/hal_rtw88/driver/fw.c b/rtw/hal_rtw88/driver/fw.c
+index 4820705..d27bdbc 100644
+--- a/rtw/hal_rtw88/driver/fw.c
++++ b/rtw/hal_rtw88/driver/fw.c
+@@ -1,3 +1,4 @@
++extern void IOLog(const char *format, ...);
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /* Copyright(c) 2018-2019  Realtek Corporation
+  */
+@@ -148,7 +149,7 @@ static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
+ 	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)ra_data->payload;
+ 	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
+ 	u8 mac_id, rate, sgi, bw;
+-	u8 mcs, nss;
++	u8 mcs = 0, nss = 0;
+ 	u32 bit_rate;
+ 
+ 	mac_id = ra_rpt->mac_id;
+@@ -195,6 +196,11 @@ legacy:
+ 
+ 	si->ra_report.desc_rate = rate;
+ 	si->ra_report.bit_rate = bit_rate;
++	/* Diagnostic correlation: decoded firmware station rate. */
++	IOLog("[AirportRTW RA] RA_C2H_DECODE macid=%u desc=%u sgi=%u bw=%u "
++		 "flags=0x%x legacy=%u mcs=%u nss=%u bitrate_100kbps=%u\n",
++		 si->mac_id, rate, sgi, bw, si->ra_report.txrate.flags,
++		 si->ra_report.txrate.legacy, mcs, nss, bit_rate);
+ 
+ 	sta->deflink.agg.max_rc_amsdu_len = get_max_amsdu_len(bit_rate);
+ }
+@@ -202,6 +208,9 @@ legacy:
+ static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
+ 				    u8 length)
+ {
++	/* RA_HANDLER_ENTRY_DIAGNOSTIC */
++	IOLog("[AirportRTW RA] RA_HANDLER_ENTER len=%u\n", length);
++
+ 	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)payload;
+ 	struct rtw_fw_iter_ra_data ra_data;
+ 
+@@ -211,6 +220,15 @@ static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
+ 
+ 	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
+ 					      RTW_C2H_RA_RPT_RATE);
++	/* Diagnostic capture: raw seven-byte C2H RA report. */
++	IOLog("[AirportRTW RA] RA_C2H_RAW len=%u bytes=%02x:%02x:%02x:%02x:%02x:%02x:%02x "
++		 "rate=%u sgi=%u macid=%u bw=%u\n",
++		 length, payload[0], payload[1], payload[2], payload[3],
++		 payload[4], payload[5], payload[6],
++		 u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE),
++		 u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_SGI),
++		 ra_rpt->mac_id, ra_rpt->bw);
++
+ 	ra_data.rtwdev = rtwdev;
+ 	ra_data.payload = payload;
+ 	ra_data.length = length;
+
+=== BUILD OUTPUT TAIL ===
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/PrivateSPI.pch:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:75:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/string.h:42:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/types.h:79:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types.h:87:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types/_offsetof.h:29:31: note: expanded from macro 'offsetof'
+   29 | #define offsetof(type, field) __offsetof(type, field)
+      |                               ^                ~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/PrivateSPI.pch:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:75:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/string.h:42:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/types.h:79:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types.h:82:33: note: expanded from macro '__offsetof'
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+      |                                 ^                        ~~~~~
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1295:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+ 1295 |     auto *owner = container_of(sc, RTWCore88, sc);
+      |                   ^                           ~~
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:3:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.hpp:5:
+In file included from rtw80211/compat.h:32:
+In file included from rtw80211/openbsd/net80211/ieee80211_var.h:64:
+In file included from rtw80211/openbsd/sys/_if_ether.h:62:
+In file included from rtw80211/openbsd/sys/_if_media.h:74:
+In file included from rtw80211/linux/types.h:83:
+rtw80211/linux/kernel.h:165:20: note: expanded from macro 'container_of'
+  165 | ((type *)(__mptr - offsetof(type, member))); })
+      |                    ^              ~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/PrivateSPI.pch:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:75:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/string.h:42:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/types.h:79:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types.h:87:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types/_offsetof.h:29:31: note: expanded from macro 'offsetof'
+   29 | #define offsetof(type, field) __offsetof(type, field)
+      |                               ^                ~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/PrivateSPI.pch:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:75:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/string.h:42:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/types.h:79:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types.h:82:33: note: expanded from macro '__offsetof'
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+      |                                 ^                        ~~~~~
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1305:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+ 1305 |     auto *owner = container_of(sc, RTWCore88, sc);
+      |                   ^                           ~~
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:3:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.hpp:5:
+In file included from rtw80211/compat.h:32:
+In file included from rtw80211/openbsd/net80211/ieee80211_var.h:64:
+In file included from rtw80211/openbsd/sys/_if_ether.h:62:
+In file included from rtw80211/openbsd/sys/_if_media.h:74:
+In file included from rtw80211/linux/types.h:83:
+rtw80211/linux/kernel.h:165:20: note: expanded from macro 'container_of'
+  165 | ((type *)(__mptr - offsetof(type, member))); })
+      |                    ^              ~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/PrivateSPI.pch:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:75:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/string.h:42:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/types.h:79:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types.h:87:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types/_offsetof.h:29:31: note: expanded from macro 'offsetof'
+   29 | #define offsetof(type, field) __offsetof(type, field)
+      |                               ^                ~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/PrivateSPI.pch:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:75:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/string.h:42:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/types.h:79:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types.h:82:33: note: expanded from macro '__offsetof'
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+      |                                 ^                        ~~~~~
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:1318:19: warning: offset of on non-standard-layout type 'RTWCore88' [-Winvalid-offsetof]
+ 1318 |     auto *owner = container_of(sc, RTWCore88, sc);
+      |                   ^                           ~~
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:3:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.hpp:5:
+In file included from rtw80211/compat.h:32:
+In file included from rtw80211/openbsd/net80211/ieee80211_var.h:64:
+In file included from rtw80211/openbsd/sys/_if_ether.h:62:
+In file included from rtw80211/openbsd/sys/_if_media.h:74:
+In file included from rtw80211/linux/types.h:83:
+rtw80211/linux/kernel.h:165:20: note: expanded from macro 'container_of'
+  165 | ((type *)(__mptr - offsetof(type, member))); })
+      |                    ^              ~~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/PrivateSPI.pch:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:75:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/string.h:42:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/types.h:79:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types.h:87:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types/_offsetof.h:29:31: note: expanded from macro 'offsetof'
+   29 | #define offsetof(type, field) __offsetof(type, field)
+      |                               ^                ~~~~~
+In file included from <built-in>:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/PrivateSPI.pch:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:75:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/string.h:42:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/types.h:79:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types.h:82:33: note: expanded from macro '__offsetof'
+   82 | #define __offsetof(type, field) __builtin_offsetof(type, field)
+      |                                 ^                        ~~~~~
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:3:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.hpp:5:
+In file included from rtw80211/compat.h:32:
+rtw80211/openbsd/net80211/ieee80211_var.h:102:1: warning: unused function 'ppsratecheck' [-Wunused-function]
+  102 | ppsratecheck(struct timeval *lasttime, int *curpps, int maxpps)
+      | ^~~~~~~~~~~~
+rtw80211/openbsd/net80211/ieee80211_var.h:156:1: warning: unused function 'ratecheck' [-Wunused-function]
+  156 | ratecheck(struct timeval *lasttime, const struct timeval *mininterval)
+      | ^~~~~~~~~
+rtw80211/openbsd/net80211/ieee80211_var.h:178:18: warning: unused function 'ether_crc32_le_update' [-Wunused-function]
+  178 | static u_int32_t ether_crc32_le_update(u_int32_t crc, const u_int8_t *buf, size_t len)
+      |                  ^~~~~~~~~~~~~~~~~~~~~
+rtw80211/openbsd/net80211/ieee80211_var.h:197:14: warning: unused function 'ether_sprintf' [-Wunused-function]
+  197 | static char* ether_sprintf(const uint8_t *ap)
+      |              ^~~~~~~~~~~~~
+rtw80211/openbsd/net80211/ieee80211_var.h:204:13: warning: unused function 'array_sprintf' [-Wunused-function]
+  204 | static void array_sprintf(char *output, uint8_t output_size, const uint8_t *array, const uint8_t len)
+      |             ^~~~~~~~~~~~~
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:21:18: warning: unused variable 'kRealtekVendor' [-Wunused-const-variable]
+   21 | constexpr UInt16 kRealtekVendor = 0x10ec;
+      |                  ^~~~~~~~~~~~~~
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:22:18: warning: unused variable 'kRtl8822CE' [-Wunused-const-variable]
+   22 | constexpr UInt16 kRtl8822CE = 0xc822;
+      |                  ^~~~~~~~~~
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/RTWCore88.cpp:23:18: warning: unused variable 'kRtl8822CEAlternate' [-Wunused-const-variable]
+   23 | constexpr UInt16 kRtl8822CEAlternate = 0xc82f;
+      |                  ^~~~~~~~~~~~~~~~~~~
+109 warnings generated.
+clang++: warning: argument unused during compilation: '-stdlib=libc++' [-Wunused-command-line-argument]
+ld: warning: object file (/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/usr/lib/libkmodc++.a(cplus_start.o)) was built for newer macOS version (15.5) than being linked (15.2)
+ld: warning: object file (/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk/usr/lib/libkmodc++.a(cplus_stop.o)) was built for newer macOS version (15.5) than being linked (15.2)
+note: Run script build phase 'Build RTW89 C Archive' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'AirportRTW-Sequoia' from project 'AirportRTW')
+/Users/shohel/Developer/AirportRTW-port-txrx/AirportRTW.xcodeproj: warning: The macOS deployment target 'MACOSX_DEPLOYMENT_TARGET' is set to 10.12, but the range of supported deployment target versions is 10.13 to 15.5.99. (in target 'fw_gen' from project 'AirportRTW')
+Kexts are available in /Users/shohel/Developer/AirportRTW-port-txrx/build/releases/Release
+
+=== WORKTREE STATUS ===
+ M .DS_Store
+ M rtw/hal_rtw88/RTWCore88.cpp
+ M rtw/hal_rtw88/driver/fw.c
+ M rtw/hal_rtw88/driver/tx.c
+?? backups/
+?? rtw/hal_rtw88/driver/fw.c.before-ra-diagnostics.20261107-155217.bak
