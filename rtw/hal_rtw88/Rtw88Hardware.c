@@ -145,9 +145,16 @@ void rtw88_rx_ampdu_stop(struct ieee80211_sta *sta, u8 tid)
 
 /* Share the station iteration lock with C2H RA updates and station teardown. */
 #include "../../include/HAL/RTWTxRate.h"
+struct rtw_tx_rate_query {
+    struct ieee80211_sta *target;
+    struct RTWTxRate *rate;
+};
+
 static void copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
 {
-    struct RTWTxRate *out = opaque;
+    struct rtw_tx_rate_query *query = opaque;
+    struct RTWTxRate *out = query->rate;
+    if (!query->target || sta != query->target) return;
     const struct rtw_sta_info *si = (const void *)sta->drv_priv;
     const struct rate_info *report = &si->ra_report.txrate;
     if (!si->ra_report.bit_rate) return;
@@ -177,9 +184,14 @@ static void copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
     out->valid = out->bitrate100Kbps != 0;
 }
 
-void rtw88_hw_get_tx_rate(struct ieee80211_hw *hw, struct RTWTxRate *out)
+void rtw88_hw_get_tx_rate(struct ieee80211_hw *hw, struct ieee80211_sta *target,
+                          struct RTWTxRate *out)
 {
+    struct rtw_tx_rate_query query;
     if (!out) return;
     memset(out, 0, sizeof(*out));
-    if (hw) ieee80211_iterate_stations_atomic(hw, copy_tx_rate, out);
+    if (!hw || !target) return;
+    query.target = target;
+    query.rate = out;
+    ieee80211_iterate_stations_atomic(hw, copy_tx_rate, &query);
 }
