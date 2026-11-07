@@ -1,0 +1,1241 @@
+========== STAGE169 EVENT-SOURCE DISPATCH AND REFERENCE-EDGE AUDIT ==========
+STAGE169_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE169_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE169_WORKTREE_STATUS_ENTRIES=192
+STAGE169_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE169_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE169_STAGE165_REPORT_SHA=97a0a664c5ed0f53bcf3f1204bd0c8f2b5a74277
+STAGE169_STAGE166_REPORT_SHA=7ad1c896b9d7ded57c40e0898a02c5c15ce1a28c
+STAGE169_STAGE167_REPORT_SHA=0af39ae31f8519131c8b1fe42cf1835def44e167
+STAGE169_STAGE168_REPORT_SHA=976cdc2bc96f69706c9257d07bc99f3ae4fd801e
+STAGE169_READER_COMMIT=cea28a5297633118177cee6a75e86d8bc57f1960
+STAGE169_SCOPE=READ_ONLY_VTABLE_TARGETS_AND_EVENT_SOURCE_REFERENCE_EDGES
+STAGE169_PROJECT_SOURCE_MODIFIED=NO PROJECT_BUILD_OUTPUTS=NO
+STAGE169_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN AUXKC=UNCHANGED OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+FILESSET_CARVE=PASS OWNER=com.apple.kernel
+FILESSET_CARVE=PASS OWNER=com.apple.iokit.IO80211Family
+
+VTABLE_CLASS=IOWorkLoop WORDS=66
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x28 RAW_INDEX=7 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x38 RAW_INDEX=9 TARGET=0xffffff8000af8ba0 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop12getMetaClassEv
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x48 RAW_INDEX=11 TARGET=0xffffff8000a4b760 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject12taggedRetainEPKv
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x50 RAW_INDEX=12 TARGET=0xffffff8000a4b7c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKv
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x58 RAW_INDEX=13 TARGET=0xffffff8000a4b7e0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKvi
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x128 RAW_INDEX=39 TARGET=0xffffff8000af9460 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop9getThreadEv
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x130 RAW_INDEX=40 TARGET=0xffffff8000af9470 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop8onThreadEv
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x138 RAW_INDEX=41 TARGET=0xffffff8000af9490 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop6inGateEv
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x148 RAW_INDEX=43 TARGET=0xffffff8000af95a0 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop17removeEventSourceEP13IOEventSource
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x158 RAW_INDEX=45 TARGET=0xffffff8000af9650 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop22disableAllEventSourcesEv
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x1b8 RAW_INDEX=57 TARGET=0xffffff8000af9f30 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop20_RESERVEDIOWorkLoop0Ev
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x1c0 RAW_INDEX=58 TARGET=0xffffff8000af9f50 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop20_RESERVEDIOWorkLoop1Ev
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x218 RESULT=NO_ENTRY
+VTABLE_SLOT CLASS=IOWorkLoop VPTR_OFFSET=0x220 RESULT=NO_ENTRY
+
+VTABLE_CLASS=IOEventSource WORDS=58
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x28 RAW_INDEX=7 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x38 RAW_INDEX=9 TARGET=0xffffff8000afa8c0 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource12getMetaClassEv
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x48 RAW_INDEX=11 TARGET=0xffffff8000a4b760 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject12taggedRetainEPKv
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x50 RAW_INDEX=12 TARGET=0xffffff8000a4b7c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKv
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x58 RAW_INDEX=13 TARGET=0xffffff8000a4b7e0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKvi
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x128 RAW_INDEX=39 TARGET=0xffffff8000afa9c0 OWNER=com.apple.kernel SYMBOL=__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x130 RAW_INDEX=40 TARGET=0xffffff8000afa9f0 OWNER=com.apple.kernel SYMBOL=__ZN13IOEventSource7setNextEPS_
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x138 RAW_INDEX=41 TARGET=0xffffff8000afaa00 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource7getNextEv
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x148 RAW_INDEX=43 TARGET=0xffffff8000afaa60 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource9getActionEv
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x158 RAW_INDEX=45 TARGET=0xffffff8000afaaa0 OWNER=com.apple.kernel SYMBOL=__ZN13IOEventSource7disableEv
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x1b8 RAW_INDEX=57 TARGET=0x0 OWNER=UNKNOWN SYMBOL=-
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x1c0 RESULT=NO_ENTRY
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x218 RESULT=NO_ENTRY
+VTABLE_SLOT CLASS=IOEventSource VPTR_OFFSET=0x220 RESULT=NO_ENTRY
+
+VTABLE_CLASS=IOTimerEventSource WORDS=79
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x28 RAW_INDEX=7 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x38 RAW_INDEX=9 TARGET=0xffffff8000affe80 OWNER=com.apple.kernel SYMBOL=__ZNK18IOTimerEventSource12getMetaClassEv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x48 RAW_INDEX=11 TARGET=0xffffff8000a4b760 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject12taggedRetainEPKv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x50 RAW_INDEX=12 TARGET=0xffffff8000a4b7c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x58 RAW_INDEX=13 TARGET=0xffffff8000a4b7e0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKvi
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x128 RAW_INDEX=39 TARGET=0xffffff8000afff20 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource11setWorkLoopEP10IOWorkLoop
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x130 RAW_INDEX=40 TARGET=0xffffff8000afa9f0 OWNER=com.apple.kernel SYMBOL=__ZN13IOEventSource7setNextEPS_
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x138 RAW_INDEX=41 TARGET=0xffffff8000afaa00 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource7getNextEv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x148 RAW_INDEX=43 TARGET=0xffffff8000afaa60 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource9getActionEv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x158 RAW_INDEX=45 TARGET=0xffffff8000afffc0 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource7disableEv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x1b8 RAW_INDEX=57 TARGET=0xffffff8000b00020 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource14setTimeoutFuncEv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x1c0 RAW_INDEX=58 TARGET=0xffffff8000b00140 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource4initEP8OSObjectPFvS1_PS_E
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x218 RAW_INDEX=69 TARGET=0xffffff8000b00310 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource13cancelTimeoutEv
+VTABLE_SLOT CLASS=IOTimerEventSource VPTR_OFFSET=0x220 RAW_INDEX=70 TARGET=0xffffff8000b00380 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource4initEjP8OSObjectPFvS1_PS_E
+
+VTABLE_CLASS=IOCommandPool WORDS=52
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x28 RAW_INDEX=7 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x38 RAW_INDEX=9 TARGET=0xffffff8000afda80 OWNER=com.apple.kernel SYMBOL=__ZNK13IOCommandPool12getMetaClassEv
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x48 RAW_INDEX=11 TARGET=0xffffff8000a4b760 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject12taggedRetainEPKv
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x50 RAW_INDEX=12 TARGET=0xffffff8000a4b7c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKv
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x58 RAW_INDEX=13 TARGET=0xffffff8000a4b7e0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKvi
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x128 RAW_INDEX=39 TARGET=0xffffff8000afdbc0 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandPool10getCommandEb
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x130 RAW_INDEX=40 TARGET=0xffffff8000afdc10 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandPool13returnCommandEP9IOCommand
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x138 RAW_INDEX=41 TARGET=0xffffff8000afdc40 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandPool15gatedGetCommandEPP9IOCommandb
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x148 RAW_INDEX=43 TARGET=0xffffff8000afdd60 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandPool23_RESERVEDIOCommandPool0Ev
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x158 RAW_INDEX=45 TARGET=0xffffff8000afdda0 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandPool23_RESERVEDIOCommandPool2Ev
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x1b8 RESULT=NO_ENTRY
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x1c0 RESULT=NO_ENTRY
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x218 RESULT=NO_ENTRY
+VTABLE_SLOT CLASS=IOCommandPool VPTR_OFFSET=0x220 RESULT=NO_ENTRY
+
+VTABLE_CLASS=IOCommandGate WORDS=75
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x28 RAW_INDEX=7 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x38 RAW_INDEX=9 TARGET=0xffffff8000afc5e0 OWNER=com.apple.kernel SYMBOL=__ZNK13IOCommandGate12getMetaClassEv
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x48 RAW_INDEX=11 TARGET=0xffffff8000a4b760 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject12taggedRetainEPKv
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x50 RAW_INDEX=12 TARGET=0xffffff8000a4b7c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKv
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x58 RAW_INDEX=13 TARGET=0xffffff8000a4b7e0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKvi
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x128 RAW_INDEX=39 TARGET=0xffffff8000afc620 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandGate11setWorkLoopEP10IOWorkLoop
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x130 RAW_INDEX=40 TARGET=0xffffff8000afa9f0 OWNER=com.apple.kernel SYMBOL=__ZN13IOEventSource7setNextEPS_
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x138 RAW_INDEX=41 TARGET=0xffffff8000afaa00 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource7getNextEv
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x148 RAW_INDEX=43 TARGET=0xffffff8000afaa60 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource9getActionEv
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x158 RAW_INDEX=45 TARGET=0xffffff8000afc810 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandGate7disableEv
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x1b8 RAW_INDEX=57 TARGET=0xffffff8000afc850 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandGate4initEP8OSObjectPFiS1_PvS2_S2_S2_E
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x1c0 RAW_INDEX=58 TARGET=0xffffff8000afc880 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandGate10runCommandEPvS0_S0_S0_
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x218 RAW_INDEX=69 TARGET=0xffffff8000afce80 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandGate23_RESERVEDIOCommandGate4Ev
+VTABLE_SLOT CLASS=IOCommandGate VPTR_OFFSET=0x220 RAW_INDEX=70 TARGET=0xffffff8000afcea0 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandGate23_RESERVEDIOCommandGate5Ev
+
+VTABLE_CLASS=IO80211TimerSource WORDS=80
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x28 RAW_INDEX=7 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x38 RAW_INDEX=9 TARGET=0xffffff8002145958 OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZNK18IO80211TimerSource12getMetaClassEv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x48 RAW_INDEX=11 TARGET=0xffffff8000a4b760 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject12taggedRetainEPKv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x50 RAW_INDEX=12 TARGET=0xffffff8000a4b7c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x58 RAW_INDEX=13 TARGET=0xffffff8000a4b7e0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKvi
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x128 RAW_INDEX=39 TARGET=0xffffff8000afff20 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource11setWorkLoopEP10IOWorkLoop
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x130 RAW_INDEX=40 TARGET=0xffffff8000afa9f0 OWNER=com.apple.kernel SYMBOL=__ZN13IOEventSource7setNextEPS_
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x138 RAW_INDEX=41 TARGET=0xffffff8000afaa00 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource7getNextEv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x148 RAW_INDEX=43 TARGET=0xffffff8000afaa60 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource9getActionEv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x158 RAW_INDEX=45 TARGET=0xffffff8000afffc0 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource7disableEv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x1b8 RAW_INDEX=57 TARGET=0xffffff8000b00020 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource14setTimeoutFuncEv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x1c0 RAW_INDEX=58 TARGET=0xffffff8000b00140 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource4initEP8OSObjectPFvS1_PS_E
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x218 RAW_INDEX=69 TARGET=0xffffff8000b00310 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource13cancelTimeoutEv
+VTABLE_SLOT CLASS=IO80211TimerSource VPTR_OFFSET=0x220 RAW_INDEX=70 TARGET=0xffffff8000b00380 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource4initEjP8OSObjectPFvS1_PS_E
+
+VTABLE_CLASS=IO80211WorkQueue WORDS=68
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x28 RAW_INDEX=7 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x38 RAW_INDEX=9 TARGET=0xffffff8002258ed0 OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZNK16IO80211WorkQueue12getMetaClassEv
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x48 RAW_INDEX=11 TARGET=0xffffff8000a4b760 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject12taggedRetainEPKv
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x50 RAW_INDEX=12 TARGET=0xffffff8000a4b7c0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKv
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x58 RAW_INDEX=13 TARGET=0xffffff8000a4b7e0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject13taggedReleaseEPKvi
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x128 RAW_INDEX=39 TARGET=0xffffff80022591fa OWNER=com.apple.iokit.IO80211Family SYMBOL=__ZNK16IO80211WorkQueue9getThreadEv
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x130 RAW_INDEX=40 TARGET=0xffffff8000af9470 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop8onThreadEv
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x138 RAW_INDEX=41 TARGET=0xffffff8000af9490 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop6inGateEv
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x148 RAW_INDEX=43 TARGET=0xffffff8000af95a0 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop17removeEventSourceEP13IOEventSource
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x158 RAW_INDEX=45 TARGET=0xffffff8000af9650 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop22disableAllEventSourcesEv
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x1b8 RAW_INDEX=57 TARGET=0xffffff8000af9f30 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop20_RESERVEDIOWorkLoop0Ev
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x1c0 RAW_INDEX=58 TARGET=0xffffff8000af9f50 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop20_RESERVEDIOWorkLoop1Ev
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x218 RESULT=NO_ENTRY
+VTABLE_SLOT CLASS=IO80211WorkQueue VPTR_OFFSET=0x220 RESULT=NO_ENTRY
+
+TARGET_SYMBOL TAG=IOWORKLOOP_INIT NAME=__ZN10IOWorkLoop4initEv ADDRESS=0xffffff8000af8bb0 OWNER=com.apple.kernel
+METHOD_TAG=IOWORKLOOP_INIT SYMBOL=__ZN10IOWorkLoop4initEv ADDRESS=0xffffff8000af8bb0 INSTRUCTIONS=111
+ffffff8000af8bb0	pushq	%rbp
+ffffff8000af8bb1	movq	%rsp, %rbp
+ffffff8000af8bb4	pushq	%r15
+ffffff8000af8bb6	pushq	%r14
+ffffff8000af8bb8	pushq	%rbx
+ffffff8000af8bb9	pushq	%rax
+ffffff8000af8bba	movq	%rdi, %rbx
+ffffff8000af8bbd	cmpq	$0x0, 0x40(%rdi)
+ffffff8000af8bc2	je	0xffffff8000af8bcd
+ffffff8000af8bc4	cmpq	$0x0, 0x10(%rbx)
+ffffff8000af8bc9	jne	0xffffff8000af8c09
+ffffff8000af8bcb	jmp	0xffffff8000af8bf7
+ffffff8000af8bcd	xorl	%esi, %esi
+ffffff8000af8bcf	testb	$0x10, -0x82ff7e(%rip)
+ffffff8000af8bd6	leaq	-0x82ffad(%rip), %rdi
+ffffff8000af8bdd	sete	%sil
+ffffff8000af8be1	shll	$0xf, %esi
+ffffff8000af8be4	orl	$0x4, %esi
+ffffff8000af8be7	callq	_kalloc_type_impl
+ffffff8000af8bec	movq	%rax, 0x40(%rbx)
+ffffff8000af8bf0	cmpq	$0x0, 0x10(%rbx)
+ffffff8000af8bf5	jne	0xffffff8000af8c09
+ffffff8000af8bf7	callq	_IORecursiveLockAlloc
+ffffff8000af8bfc	movq	%rax, 0x10(%rbx)
+ffffff8000af8c00	testq	%rax, %rax
+ffffff8000af8c03	je	0xffffff8000af8d33
+ffffff8000af8c09	cmpq	$0x0, 0x28(%rbx)
+ffffff8000af8c0e	jne	0xffffff8000af8c63
+ffffff8000af8c10	movq	_IOLockGroup(%rip), %rdi
+ffffff8000af8c17	callq	_lck_spin_alloc_init
+ffffff8000af8c1c	movq	%rax, 0x28(%rbx)
+ffffff8000af8c20	testq	%rax, %rax
+ffffff8000af8c23	je	0xffffff8000af8d33
+ffffff8000af8c29	movq	_IOLockGroup(%rip), %rdi
+ffffff8000af8c30	movq	$0x0, (%rax)
+ffffff8000af8c37	testq	%rdi, %rdi
+ffffff8000af8c3a	je	0xffffff8000af8c5f
+ffffff8000af8c3c	lock
+ffffff8000af8c3d	incl	0x8(%rdi)
+ffffff8000af8c40	cmpl	$0x0, 0x4(%rdi)
+ffffff8000af8c44	jns	0xffffff8000af8c5f
+ffffff8000af8c46	movl	$0x1, %eax
+ffffff8000af8c4b	lock
+ffffff8000af8c4c	xaddl	%eax, (%rdi)
+ffffff8000af8c4f	addl	$0xf0000001, %eax               ## imm = 0xF0000001
+ffffff8000af8c54	cmpl	$0xf0000001, %eax               ## imm = 0xF0000001
+ffffff8000af8c59	jbe	0xffffff8000af8d40
+ffffff8000af8c5f	movb	$0x0, 0x38(%rbx)
+ffffff8000af8c63	movq	%rbx, %rdi
+ffffff8000af8c66	callq	__ZN12IOStatistics16registerWorkLoopEP10IOWorkLoop ## IOStatistics::registerWorkLoop(IOWorkLoop*)
+ffffff8000af8c6b	movq	0x40(%rbx), %rcx
+ffffff8000af8c6f	movq	%rax, 0x10(%rcx)
+ffffff8000af8c73	cmpq	$0x0, 0x20(%rbx)
+ffffff8000af8c78	je	0xffffff8000af8c93
+ffffff8000af8c7a	movq	0x30(%rbx), %rax
+ffffff8000af8c7e	testq	%rax, %rax
+ffffff8000af8c81	je	0xffffff8000af8cf8
+ffffff8000af8c83	lock		orw	$0x4, 0x730(%rax)
+ffffff8000af8c8c	movb	$0x1, %al
+ffffff8000af8c8e	jmp	0xffffff8000af8d35
+ffffff8000af8c93	movq	(%rbx), %rax
+ffffff8000af8c96	movq	0x118(%rax), %r15
+ffffff8000af8c9d	movq	__ZN13IOCommandGate10gMetaClassE(%rip), %rax ## IOCommandGate::gMetaClass
+ffffff8000af8ca4	leaq	__ZN13IOCommandGate10gMetaClassE(%rip), %rdi ## IOCommandGate::gMetaClass
+ffffff8000af8cab	callq	*0x88(%rax)
+ffffff8000af8cb1	testq	%rax, %rax
+ffffff8000af8cb4	je	0xffffff8000af8d2b
+ffffff8000af8cb6	movq	%rax, %r14
+ffffff8000af8cb9	movq	(%rax), %rax
+ffffff8000af8cbc	movq	%r14, %rdi
+ffffff8000af8cbf	movq	%rbx, %rsi
+ffffff8000af8cc2	movq	%r15, %rdx
+ffffff8000af8cc5	callq	*0x1b8(%rax)
+ffffff8000af8ccb	testb	%al, %al
+ffffff8000af8ccd	je	0xffffff8000af8d22
+ffffff8000af8ccf	movq	%r14, 0x20(%rbx)
+ffffff8000af8cd3	movq	(%r14), %rax
+ffffff8000af8cd6	movq	%r14, %rdi
+ffffff8000af8cd9	movq	%rbx, %rsi
+ffffff8000af8cdc	callq	*0x128(%rax)
+ffffff8000af8ce2	movq	(%rbx), %rax
+ffffff8000af8ce5	movq	0x20(%rbx), %rsi
+ffffff8000af8ce9	movq	%rbx, %rdi
+ffffff8000af8cec	callq	*0x140(%rax)
+ffffff8000af8cf2	testl	%eax, %eax
+ffffff8000af8cf4	jne	0xffffff8000af8d33
+ffffff8000af8cf6	jmp	0xffffff8000af8c7a
+ffffff8000af8cf8	leaq	0x30(%rbx), %r14
+ffffff8000af8cfc	movq	(%rbx), %rax
+ffffff8000af8cff	movq	0x120(%rax), %rdi
+ffffff8000af8d06	movq	%rbx, %rsi
+ffffff8000af8d09	movl	$0xffffffff, %edx               ## imm = 0xFFFFFFFF
+ffffff8000af8d0e	movq	%r14, %rcx
+ffffff8000af8d11	callq	_kernel_thread_start_priority
+ffffff8000af8d16	testl	%eax, %eax
+ffffff8000af8d18	jne	0xffffff8000af8d33
+ffffff8000af8d1a	movq	(%r14), %rax
+ffffff8000af8d1d	jmp	0xffffff8000af8c83
+ffffff8000af8d22	movq	(%r14), %rax
+ffffff8000af8d25	movq	%r14, %rdi
+ffffff8000af8d28	callq	*0x28(%rax)
+ffffff8000af8d2b	movq	$0x0, 0x20(%rbx)
+ffffff8000af8d33	xorl	%eax, %eax
+ffffff8000af8d35	addq	$0x8, %rsp
+ffffff8000af8d39	popq	%rbx
+ffffff8000af8d3a	popq	%r14
+ffffff8000af8d3c	popq	%r15
+ffffff8000af8d3e	popq	%rbp
+ffffff8000af8d3f	retq
+ffffff8000af8d40	callq	0xffffff8000bdbfaf
+ffffff8000af8d45	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOWORKLOOP_FREE NAME=__ZN10IOWorkLoop4freeEv ADDRESS=0xffffff8000af8d50 OWNER=com.apple.kernel
+METHOD_TAG=IOWORKLOOP_FREE SYMBOL=__ZN10IOWorkLoop4freeEv ADDRESS=0xffffff8000af8d50 INSTRUCTIONS=168
+ffffff8000af8d50	pushq	%rbp
+ffffff8000af8d51	movq	%rsp, %rbp
+ffffff8000af8d54	pushq	%r15
+ffffff8000af8d56	pushq	%r14
+ffffff8000af8d58	pushq	%rbx
+ffffff8000af8d59	pushq	%rax
+ffffff8000af8d5a	movq	%rdi, %rbx
+ffffff8000af8d5d	cmpq	$0x0, 0x30(%rdi)
+ffffff8000af8d62	je	0xffffff8000af8de8
+ffffff8000af8d68	movq	(%rbx), %rax
+ffffff8000af8d6b	movq	%rbx, %rdi
+ffffff8000af8d6e	callq	*0x180(%rax)
+ffffff8000af8d74	movq	(%rbx), %rax
+ffffff8000af8d77	movq	%rbx, %rdi
+ffffff8000af8d7a	callq	*0x158(%rax)
+ffffff8000af8d80	movq	0x28(%rbx), %r14
+ffffff8000af8d84	pushfq
+ffffff8000af8d85	popq	%r15
+ffffff8000af8d87	testl	$0x200, %r15d                   ## imm = 0x200
+ffffff8000af8d8e	je	0xffffff8000af8d91
+ffffff8000af8d90	cli
+ffffff8000af8d91	leaq	-0x8d9b90(%rip), %rsi
+ffffff8000af8d98	movq	%r14, %rdi
+ffffff8000af8d9b	callq	0xffffff80003ec170
+ffffff8000af8da0	movl	0x8a335e(%rip), %edi
+ffffff8000af8da6	testl	%edi, %edi
+ffffff8000af8da8	jne	0xffffff8000af8fcc
+ffffff8000af8dae	orb	$0x2, 0x39(%rbx)
+ffffff8000af8db2	leaq	0x38(%rbx), %rdi
+ffffff8000af8db6	movq	0x30(%rbx), %rsi
+ffffff8000af8dba	callq	_thread_wakeup_thread
+ffffff8000af8dbf	movq	0x28(%rbx), %rdi
+ffffff8000af8dc3	callq	0xffffff80003ec320
+ffffff8000af8dc8	pushfq
+ffffff8000af8dc9	popq	%rax
+ffffff8000af8dca	testl	$0x200, %r15d                   ## imm = 0x200
+ffffff8000af8dd1	jne	0xffffff8000af8f97
+ffffff8000af8dd7	testl	$0x200, %eax                    ## imm = 0x200
+ffffff8000af8ddc	je	0xffffff8000af8fb5
+ffffff8000af8de2	cli
+ffffff8000af8de3	jmp	0xffffff8000af8fb5
+ffffff8000af8de8	movq	0x18(%rbx), %r14
+ffffff8000af8dec	testq	%r14, %r14
+ffffff8000af8def	je	0xffffff8000af8e3c
+ffffff8000af8df1	nopw	%cs:(%rax,%rax)
+ffffff8000af8e00	movq	(%r14), %rax
+ffffff8000af8e03	movq	%r14, %rdi
+ffffff8000af8e06	callq	*0x138(%rax)
+ffffff8000af8e0c	movq	%rax, %r15
+ffffff8000af8e0f	movq	(%r14), %rax
+ffffff8000af8e12	movq	%r14, %rdi
+ffffff8000af8e15	xorl	%esi, %esi
+ffffff8000af8e17	callq	*0x128(%rax)
+ffffff8000af8e1d	movq	(%r14), %rax
+ffffff8000af8e20	movq	%r14, %rdi
+ffffff8000af8e23	xorl	%esi, %esi
+ffffff8000af8e25	callq	*0x130(%rax)
+ffffff8000af8e2b	movq	(%r14), %rax
+ffffff8000af8e2e	movq	%r14, %rdi
+ffffff8000af8e31	callq	*0x28(%rax)
+ffffff8000af8e34	movq	%r15, %r14
+ffffff8000af8e37	testq	%r15, %r15
+ffffff8000af8e3a	jne	0xffffff8000af8e00
+ffffff8000af8e3c	movq	$0x0, 0x18(%rbx)
+ffffff8000af8e44	movq	0x40(%rbx), %rax
+ffffff8000af8e48	movq	0x8(%rax), %r14
+ffffff8000af8e4c	testq	%r14, %r14
+ffffff8000af8e4f	je	0xffffff8000af8ea0
+ffffff8000af8e51	nopw	%cs:(%rax,%rax)
+ffffff8000af8e60	movq	(%r14), %rax
+ffffff8000af8e63	movq	%r14, %rdi
+ffffff8000af8e66	callq	*0x138(%rax)
+ffffff8000af8e6c	movq	%rax, %r15
+ffffff8000af8e6f	movq	(%r14), %rax
+ffffff8000af8e72	movq	%r14, %rdi
+ffffff8000af8e75	xorl	%esi, %esi
+ffffff8000af8e77	callq	*0x128(%rax)
+ffffff8000af8e7d	movq	(%r14), %rax
+ffffff8000af8e80	movq	%r14, %rdi
+ffffff8000af8e83	xorl	%esi, %esi
+ffffff8000af8e85	callq	*0x130(%rax)
+ffffff8000af8e8b	movq	(%r14), %rax
+ffffff8000af8e8e	movq	%r14, %rdi
+ffffff8000af8e91	callq	*0x28(%rax)
+ffffff8000af8e94	movq	%r15, %r14
+ffffff8000af8e97	testq	%r15, %r15
+ffffff8000af8e9a	jne	0xffffff8000af8e60
+ffffff8000af8e9c	movq	0x40(%rbx), %rax
+ffffff8000af8ea0	movq	$0x0, 0x8(%rax)
+ffffff8000af8ea8	movq	0x20(%rbx), %rdi
+ffffff8000af8eac	testq	%rdi, %rdi
+ffffff8000af8eaf	je	0xffffff8000af8ec7
+ffffff8000af8eb1	movq	$0x0, 0x30(%rdi)
+ffffff8000af8eb9	movq	(%rdi), %rax
+ffffff8000af8ebc	callq	*0x28(%rax)
+ffffff8000af8ebf	movq	$0x0, 0x20(%rbx)
+ffffff8000af8ec7	movq	0x28(%rbx), %rsi
+ffffff8000af8ecb	testq	%rsi, %rsi
+ffffff8000af8ece	je	0xffffff8000af8f14
+ffffff8000af8ed0	movq	_IOLockGroup(%rip), %rdi
+ffffff8000af8ed7	movq	(%rsi), %rax
+ffffff8000af8eda	cmpq	$0x2007, %rax                   ## imm = 0x2007
+ffffff8000af8ee0	je	0xffffff8000af8f00
+ffffff8000af8ee2	movq	$0x2007, (%rsi)                 ## imm = 0x2007
+ffffff8000af8ee9	testq	%rdi, %rdi
+ffffff8000af8eec	je	0xffffff8000af8f00
+ffffff8000af8eee	leaq	0x8(%rdi), %rax
+ffffff8000af8ef2	movq	%rsi, %r14
+ffffff8000af8ef5	movq	%rax, %rsi
+ffffff8000af8ef8	callq	0xffffff80003e7e70
+ffffff8000af8efd	movq	%r14, %rsi
+ffffff8000af8f00	leaq	_KT_LCK_SPIN(%rip), %rdi
+ffffff8000af8f07	callq	_kfree_type_impl_internal
+ffffff8000af8f0c	movq	$0x0, 0x28(%rbx)
+ffffff8000af8f14	movq	0x10(%rbx), %r14
+ffffff8000af8f18	testq	%r14, %r14
+ffffff8000af8f1b	je	0xffffff8000af8f51
+ffffff8000af8f1d	cmpl	$0x7fe2007, (%r14)              ## imm = 0x7FE2007
+ffffff8000af8f24	je	0xffffff8000af8f3a
+ffffff8000af8f26	movq	0x10(%r14), %rdi
+ffffff8000af8f2a	movl	$0x7fe2007, (%r14)              ## imm = 0x7FE2007
+ffffff8000af8f31	leaq	0x10(%rdi), %rsi
+ffffff8000af8f35	callq	0xffffff80003e7e70
+ffffff8000af8f3a	leaq	-0x830ed1(%rip), %rdi
+ffffff8000af8f41	movq	%r14, %rsi
+ffffff8000af8f44	callq	_kfree_type_impl
+ffffff8000af8f49	movq	$0x0, 0x10(%rbx)
+ffffff8000af8f51	movq	0x40(%rbx), %rax
+ffffff8000af8f55	leaq	-0x84ef9c(%rip), %rcx
+ffffff8000af8f5c	testq	%rax, %rax
+ffffff8000af8f5f	je	0xffffff8000af8fbd
+ffffff8000af8f61	movq	%rcx, %r14
+ffffff8000af8f64	movq	0x10(%rax), %rdi
+ffffff8000af8f68	callq	__ZN12IOStatistics18unregisterWorkLoopEP17IOWorkLoopCounter ## IOStatistics::unregisterWorkLoop(IOWorkLoopCounter*)
+ffffff8000af8f6d	movq	0x40(%rbx), %rsi
+ffffff8000af8f71	testq	%rsi, %rsi
+ffffff8000af8f74	je	0xffffff8000af8f92
+ffffff8000af8f76	movq	$0x0, 0x40(%rbx)
+ffffff8000af8f7e	leaq	-0x8302d5(%rip), %rdi
+ffffff8000af8f85	callq	_kfree_type_impl
+ffffff8000af8f8a	movq	$0x0, 0x40(%rbx)
+ffffff8000af8f92	movq	%r14, %rcx
+ffffff8000af8f95	jmp	0xffffff8000af8fbd
+ffffff8000af8f97	sti
+ffffff8000af8f98	nop
+ffffff8000af8f99	cmpl	$0x0, %gs:0x58
+ffffff8000af8fa2	jne	0xffffff8000af8fb5
+ffffff8000af8fa4	movq	%gs:0x0, %rax
+ffffff8000af8fad	testb	$0x4, 0x50(%rax)
+ffffff8000af8fb1	je	0xffffff8000af8fb5
+ffffff8000af8fb3	int	$0xff
+ffffff8000af8fb5	movl	$0x178, %ecx                    ## imm = 0x178
+ffffff8000af8fba	addq	(%rbx), %rcx
+ffffff8000af8fbd	movq	%rbx, %rdi
+ffffff8000af8fc0	addq	$0x8, %rsp
+ffffff8000af8fc4	popq	%rbx
+ffffff8000af8fc5	popq	%r14
+ffffff8000af8fc7	popq	%r15
+ffffff8000af8fc9	popq	%rbp
+ffffff8000af8fca	jmpq	*(%rcx)
+ffffff8000af8fcc	movq	%r14, %rsi
+ffffff8000af8fcf	xorl	%edx, %edx
+ffffff8000af8fd1	xorl	%ecx, %ecx
+ffffff8000af8fd3	xorl	%r8d, %r8d
+ffffff8000af8fd6	xorl	%r9d, %r9d
+ffffff8000af8fd9	callq	_dtrace_probe
+ffffff8000af8fde	jmp	0xffffff8000af8dae
+ffffff8000af8fe3	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOWORKLOOP_ADD_EVENT_SOURCE NAME=__ZN10IOWorkLoop14addEventSourceEP13IOEventSource ADDRESS=0xffffff8000af94b0 OWNER=com.apple.kernel
+METHOD_TAG=IOWORKLOOP_ADD_EVENT_SOURCE SYMBOL=__ZN10IOWorkLoop14addEventSourceEP13IOEventSource ADDRESS=0xffffff8000af94b0 INSTRUCTIONS=68
+ffffff8000af94b0	pushq	%rbp
+ffffff8000af94b1	movq	%rsp, %rbp
+ffffff8000af94b4	pushq	%r15
+ffffff8000af94b6	pushq	%r14
+ffffff8000af94b8	pushq	%rbx
+ffffff8000af94b9	pushq	%rax
+ffffff8000af94ba	movq	%rsi, %rdx
+ffffff8000af94bd	movq	0x30(%rdi), %rax
+ffffff8000af94c1	testq	%rax, %rax
+ffffff8000af94c4	je	0xffffff8000af94d0
+ffffff8000af94c6	cmpq	$0x0, 0xa48(%rax)
+ffffff8000af94ce	je	0xffffff8000af94f1
+ffffff8000af94d0	movq	0x20(%rdi), %rdi
+ffffff8000af94d4	movq	(%rdi), %rax
+ffffff8000af94d7	movq	0x1c0(%rax), %rax
+ffffff8000af94de	xorl	%esi, %esi
+ffffff8000af94e0	xorl	%ecx, %ecx
+ffffff8000af94e2	xorl	%r8d, %r8d
+ffffff8000af94e5	addq	$0x8, %rsp
+ffffff8000af94e9	popq	%rbx
+ffffff8000af94ea	popq	%r14
+ffffff8000af94ec	popq	%r15
+ffffff8000af94ee	popq	%rbp
+ffffff8000af94ef	jmpq	*%rax
+ffffff8000af94f1	movq	0x18(%rdx), %rax
+ffffff8000af94f5	testq	%rax, %rax
+ffffff8000af94f8	je	0xffffff8000af94d0
+ffffff8000af94fa	movq	(%rax), %rcx
+ffffff8000af94fd	movq	%rdi, %r14
+ffffff8000af9500	movq	%rax, %rdi
+ffffff8000af9503	movq	%rdx, %r15
+ffffff8000af9506	callq	*0x38(%rcx)
+ffffff8000af9509	movq	%r14, %rdi
+ffffff8000af950c	movq	%r15, %rdx
+ffffff8000af950f	leaq	__ZN13IOCommandPool10gMetaClassE(%rip), %rcx ## IOCommandPool::gMetaClass
+ffffff8000af9516	nopw	%cs:(%rax,%rax)
+ffffff8000af9520	cmpq	%rcx, %rax
+ffffff8000af9523	je	0xffffff8000af94d0
+ffffff8000af9525	movq	0x10(%rax), %rax
+ffffff8000af9529	testq	%rax, %rax
+ffffff8000af952c	jne	0xffffff8000af9520
+ffffff8000af952e	movq	0x30(%rdi), %rbx
+ffffff8000af9532	movq	0x18(%rdx), %rdi
+ffffff8000af9536	movq	(%rdi), %rax
+ffffff8000af9539	callq	*0x38(%rax)
+ffffff8000af953c	movq	%r14, %rdi
+ffffff8000af953f	movq	%r15, %rdx
+ffffff8000af9542	movq	0x18(%rax), %rax
+ffffff8000af9546	testq	%rax, %rax
+ffffff8000af9549	je	0xffffff8000af94d0
+ffffff8000af954b	movq	(%rax), %rcx
+ffffff8000af954e	movq	%rax, %rdi
+ffffff8000af9551	callq	*0x148(%rcx)
+ffffff8000af9557	movq	%r14, %rdi
+ffffff8000af955a	movq	%r15, %rdx
+ffffff8000af955d	testq	%rbx, %rbx
+ffffff8000af9560	je	0xffffff8000af94d0
+ffffff8000af9566	testq	%rax, %rax
+ffffff8000af9569	je	0xffffff8000af94d0
+ffffff8000af956f	movq	0x6e8(%rbx), %rsi
+ffffff8000af9576	addq	$0x760, %rbx                    ## imm = 0x760
+ffffff8000af957d	movq	%rbx, %rdi
+ffffff8000af9580	movq	%rax, %rdx
+ffffff8000af9583	callq	_bsd_setthreadname
+ffffff8000af9588	movq	%r14, %rdi
+ffffff8000af958b	movq	%r15, %rdx
+ffffff8000af958e	jmp	0xffffff8000af94d0
+ffffff8000af9593	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOWORKLOOP_REMOVE_EVENT_SOURCE NAME=__ZN10IOWorkLoop17removeEventSourceEP13IOEventSource ADDRESS=0xffffff8000af95a0 OWNER=com.apple.kernel
+METHOD_TAG=IOWORKLOOP_REMOVE_EVENT_SOURCE SYMBOL=__ZN10IOWorkLoop17removeEventSourceEP13IOEventSource ADDRESS=0xffffff8000af95a0 INSTRUCTIONS=12
+ffffff8000af95a0	pushq	%rbp
+ffffff8000af95a1	movq	%rsp, %rbp
+ffffff8000af95a4	movq	%rsi, %rdx
+ffffff8000af95a7	movq	0x20(%rdi), %rdi
+ffffff8000af95ab	movq	(%rdi), %rax
+ffffff8000af95ae	movq	0x1c0(%rax), %rax
+ffffff8000af95b5	movl	$0x1, %esi
+ffffff8000af95ba	xorl	%ecx, %ecx
+ffffff8000af95bc	xorl	%r8d, %r8d
+ffffff8000af95bf	popq	%rbp
+ffffff8000af95c0	jmpq	*%rax
+ffffff8000af95c2	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOWORKLOOP_RELEASE_EVENT_CHAIN NAME=__ZN10IOWorkLoop17releaseEventChainEP13IOEventSource ADDRESS=0xffffff8000afa700 OWNER=com.apple.kernel
+METHOD_TAG=IOWORKLOOP_RELEASE_EVENT_CHAIN SYMBOL=__ZN10IOWorkLoop17releaseEventChainEP13IOEventSource ADDRESS=0xffffff8000afa700 INSTRUCTIONS=31
+ffffff8000afa700	testq	%rdi, %rdi
+ffffff8000afa703	je	0xffffff8000afa750
+ffffff8000afa705	pushq	%rbp
+ffffff8000afa706	movq	%rsp, %rbp
+ffffff8000afa709	pushq	%r14
+ffffff8000afa70b	pushq	%rbx
+ffffff8000afa70c	movq	%rdi, %rbx
+ffffff8000afa70f	nop
+ffffff8000afa710	movq	(%rbx), %rax
+ffffff8000afa713	movq	%rbx, %rdi
+ffffff8000afa716	callq	*0x138(%rax)
+ffffff8000afa71c	movq	%rax, %r14
+ffffff8000afa71f	movq	(%rbx), %rax
+ffffff8000afa722	movq	%rbx, %rdi
+ffffff8000afa725	xorl	%esi, %esi
+ffffff8000afa727	callq	*0x128(%rax)
+ffffff8000afa72d	movq	(%rbx), %rax
+ffffff8000afa730	movq	%rbx, %rdi
+ffffff8000afa733	xorl	%esi, %esi
+ffffff8000afa735	callq	*0x130(%rax)
+ffffff8000afa73b	movq	(%rbx), %rax
+ffffff8000afa73e	movq	%rbx, %rdi
+ffffff8000afa741	callq	*0x28(%rax)
+ffffff8000afa744	movq	%r14, %rbx
+ffffff8000afa747	testq	%r14, %r14
+ffffff8000afa74a	jne	0xffffff8000afa710
+ffffff8000afa74c	popq	%rbx
+ffffff8000afa74d	popq	%r14
+ffffff8000afa74f	popq	%rbp
+ffffff8000afa750	retq
+ffffff8000afa751	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOEVENTSOURCE_INIT NAME=__ZN13IOEventSource4initEP8OSObjectPFvS1_zE ADDRESS=0xffffff8000afa940 OWNER=com.apple.kernel
+METHOD_TAG=IOEVENTSOURCE_INIT SYMBOL=__ZN13IOEventSource4initEP8OSObjectPFvS1_zE ADDRESS=0xffffff8000afa940 INSTRUCTIONS=34
+ffffff8000afa940	pushq	%rbp
+ffffff8000afa941	movq	%rsp, %rbp
+ffffff8000afa944	pushq	%r14
+ffffff8000afa946	pushq	%rbx
+ffffff8000afa947	movq	%rsi, %rbx
+ffffff8000afa94a	testq	%rsi, %rsi
+ffffff8000afa94d	je	0xffffff8000afa9a0
+ffffff8000afa94f	movq	%rdi, %r14
+ffffff8000afa952	movq	%rbx, 0x18(%rdi)
+ffffff8000afa956	movq	(%rdi), %rax
+ffffff8000afa959	movq	%rdx, %rsi
+ffffff8000afa95c	callq	*0x140(%rax)
+ffffff8000afa962	movb	$0x1, 0x28(%r14)
+ffffff8000afa967	cmpq	$0x0, 0x40(%r14)
+ffffff8000afa96c	jne	0xffffff8000afa991
+ffffff8000afa96e	xorl	%esi, %esi
+ffffff8000afa970	testb	$0x10, -0x831c1f(%rip)
+ffffff8000afa977	leaq	-0x831c4e(%rip), %rdi
+ffffff8000afa97e	sete	%sil
+ffffff8000afa982	shll	$0xf, %esi
+ffffff8000afa985	orl	$0x4, %esi
+ffffff8000afa988	callq	_kalloc_type_impl
+ffffff8000afa98d	movq	%rax, 0x40(%r14)
+ffffff8000afa991	movq	%rbx, %rdi
+ffffff8000afa994	callq	__ZN12IOStatistics19registerEventSourceEP8OSObject ## IOStatistics::registerEventSource(OSObject*)
+ffffff8000afa999	movq	0x40(%r14), %rcx
+ffffff8000afa99d	movq	%rax, (%rcx)
+ffffff8000afa9a0	testq	%rbx, %rbx
+ffffff8000afa9a3	setne	%al
+ffffff8000afa9a6	popq	%rbx
+ffffff8000afa9a7	popq	%r14
+ffffff8000afa9a9	popq	%rbp
+ffffff8000afa9aa	retq
+ffffff8000afa9ab	nopl	(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOEVENTSOURCE_SET_WORKLOOP NAME=__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop ADDRESS=0xffffff8000afa9c0 OWNER=com.apple.kernel
+METHOD_TAG=IOEVENTSOURCE_SET_WORKLOOP SYMBOL=__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop ADDRESS=0xffffff8000afa9c0 INSTRUCTIONS=17
+ffffff8000afa9c0	pushq	%rbp
+ffffff8000afa9c1	movq	%rsp, %rbp
+ffffff8000afa9c4	pushq	%r14
+ffffff8000afa9c6	pushq	%rbx
+ffffff8000afa9c7	movq	%rsi, %rbx
+ffffff8000afa9ca	movq	%rdi, %r14
+ffffff8000afa9cd	testq	%rsi, %rsi
+ffffff8000afa9d0	jne	0xffffff8000afa9de
+ffffff8000afa9d2	movq	(%r14), %rax
+ffffff8000afa9d5	movq	%r14, %rdi
+ffffff8000afa9d8	callq	*0x158(%rax)
+ffffff8000afa9de	movq	%rbx, 0x30(%r14)
+ffffff8000afa9e2	popq	%rbx
+ffffff8000afa9e3	popq	%r14
+ffffff8000afa9e5	popq	%rbp
+ffffff8000afa9e6	retq
+ffffff8000afa9e7	nopw	(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOEVENTSOURCE_GET_WORKLOOP NAME=__ZNK13IOEventSource11getWorkLoopEv ADDRESS=0xffffff8000afaac0 OWNER=com.apple.kernel
+METHOD_TAG=IOEVENTSOURCE_GET_WORKLOOP SYMBOL=__ZNK13IOEventSource11getWorkLoopEv ADDRESS=0xffffff8000afaac0 INSTRUCTIONS=6
+ffffff8000afaac0	pushq	%rbp
+ffffff8000afaac1	movq	%rsp, %rbp
+ffffff8000afaac4	movq	0x30(%rdi), %rax
+ffffff8000afaac8	popq	%rbp
+ffffff8000afaac9	retq
+ffffff8000afaaca	nopw	(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOEVENTSOURCE_FREE NAME=__ZN13IOEventSource4freeEv ADDRESS=0xffffff8000afa8d0 OWNER=com.apple.kernel
+METHOD_TAG=IOEVENTSOURCE_FREE SYMBOL=__ZN13IOEventSource4freeEv ADDRESS=0xffffff8000afa8d0 INSTRUCTIONS=35
+ffffff8000afa8d0	pushq	%rbp
+ffffff8000afa8d1	movq	%rsp, %rbp
+ffffff8000afa8d4	pushq	%rbx
+ffffff8000afa8d5	pushq	%rax
+ffffff8000afa8d6	movq	%rdi, %rbx
+ffffff8000afa8d9	movq	0x40(%rdi), %rax
+ffffff8000afa8dd	testq	%rax, %rax
+ffffff8000afa8e0	je	0xffffff8000afa8ea
+ffffff8000afa8e2	movq	(%rax), %rdi
+ffffff8000afa8e5	callq	__ZN12IOStatistics21unregisterEventSourceEP20IOEventSourceCounter ## IOStatistics::unregisterEventSource(IOEventSourceCounter*)
+ffffff8000afa8ea	testb	$0x4, 0x2a(%rbx)
+ffffff8000afa8ee	je	0xffffff8000afa8fe
+ffffff8000afa8f0	movq	0x20(%rbx), %rdi
+ffffff8000afa8f4	testq	%rdi, %rdi
+ffffff8000afa8f7	je	0xffffff8000afa8fe
+ffffff8000afa8f9	callq	__Block_release
+ffffff8000afa8fe	movq	0x40(%rbx), %rsi
+ffffff8000afa902	testq	%rsi, %rsi
+ffffff8000afa905	je	0xffffff8000afa91b
+ffffff8000afa907	movq	$0x0, 0x40(%rbx)
+ffffff8000afa90f	leaq	-0x831ba6(%rip), %rdi
+ffffff8000afa916	callq	_kfree_type_impl
+ffffff8000afa91b	movq	(%rbx), %rax
+ffffff8000afa91e	movq	%rbx, %rdi
+ffffff8000afa921	callq	*0x38(%rax)
+ffffff8000afa924	testq	%rax, %rax
+ffffff8000afa927	je	0xffffff8000afa931
+ffffff8000afa929	movq	%rax, %rdi
+ffffff8000afa92c	callq	__ZNK11OSMetaClass18instanceDestructedEv ## OSMetaClass::instanceDestructed() const
+ffffff8000afa931	movq	(%rbx), %rax
+ffffff8000afa934	movq	%rbx, %rdi
+ffffff8000afa937	addq	$0x8, %rsp
+ffffff8000afa93b	popq	%rbx
+ffffff8000afa93c	popq	%rbp
+ffffff8000afa93d	jmpq	*0x8(%rax)
+
+TARGET_SYMBOL TAG=IOTIMER_INIT_CALLBACK NAME=__ZN18IOTimerEventSource4initEP8OSObjectPFvS1_PS_E ADDRESS=0xffffff8000b00140 OWNER=com.apple.kernel
+METHOD_TAG=IOTIMER_INIT_CALLBACK SYMBOL=__ZN18IOTimerEventSource4initEP8OSObjectPFvS1_PS_E ADDRESS=0xffffff8000b00140 INSTRUCTIONS=26
+ffffff8000b00140	pushq	%rbp
+ffffff8000b00141	movq	%rsp, %rbp
+ffffff8000b00144	pushq	%rbx
+ffffff8000b00145	pushq	%rax
+ffffff8000b00146	movq	%rdi, %rbx
+ffffff8000b00149	callq	__ZN13IOEventSource4initEP8OSObjectPFvS1_zE ## IOEventSource::init(OSObject*, void (*)(OSObject*, ...))
+ffffff8000b0014e	testb	%al, %al
+ffffff8000b00150	je	0xffffff8000b0017c
+ffffff8000b00152	movq	(%rbx), %rax
+ffffff8000b00155	movq	%rbx, %rdi
+ffffff8000b00158	callq	*0x1b8(%rax)
+ffffff8000b0015e	cmpq	$0x0, 0x48(%rbx)
+ffffff8000b00163	je	0xffffff8000b0017c
+ffffff8000b00165	movq	0x40(%rbx), %rax
+ffffff8000b00169	movq	(%rax), %rcx
+ffffff8000b0016c	movb	$0x1, %al
+ffffff8000b0016e	testq	%rcx, %rcx
+ffffff8000b00171	je	0xffffff8000b0017e
+ffffff8000b00173	movl	$0x1, 0x10(%rcx)
+ffffff8000b0017a	jmp	0xffffff8000b0017e
+ffffff8000b0017c	xorl	%eax, %eax
+ffffff8000b0017e	addq	$0x8, %rsp
+ffffff8000b00182	popq	%rbx
+ffffff8000b00183	popq	%rbp
+ffffff8000b00184	retq
+ffffff8000b00185	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOTIMER_SET_WORKLOOP NAME=__ZN18IOTimerEventSource11setWorkLoopEP10IOWorkLoop ADDRESS=0xffffff8000afff20 OWNER=com.apple.kernel
+METHOD_TAG=IOTIMER_SET_WORKLOOP SYMBOL=__ZN18IOTimerEventSource11setWorkLoopEP10IOWorkLoop ADDRESS=0xffffff8000afff20 INSTRUCTIONS=32
+ffffff8000afff20	pushq	%rbp
+ffffff8000afff21	movq	%rsp, %rbp
+ffffff8000afff24	pushq	%r14
+ffffff8000afff26	pushq	%rbx
+ffffff8000afff27	movq	%rsi, %rbx
+ffffff8000afff2a	testq	%rsi, %rsi
+ffffff8000afff2d	jne	0xffffff8000afff3e
+ffffff8000afff2f	movq	(%rdi), %rax
+ffffff8000afff32	movq	%rdi, %r14
+ffffff8000afff35	callq	*0x158(%rax)
+ffffff8000afff3b	movq	%r14, %rdi
+ffffff8000afff3e	movq	%rbx, 0x30(%rdi)
+ffffff8000afff42	cmpb	$0x1, 0x28(%rdi)
+ffffff8000afff46	jne	0xffffff8000afff5c
+ffffff8000afff48	testq	%rbx, %rbx
+ffffff8000afff4b	sete	%al
+ffffff8000afff4e	movq	0x50(%rdi), %rsi
+ffffff8000afff52	testq	%rsi, %rsi
+ffffff8000afff55	sete	%cl
+ffffff8000afff58	orb	%al, %cl
+ffffff8000afff5a	je	0xffffff8000afff61
+ffffff8000afff5c	popq	%rbx
+ffffff8000afff5d	popq	%r14
+ffffff8000afff5f	popq	%rbp
+ffffff8000afff60	retq
+ffffff8000afff61	movq	(%rdi), %rax
+ffffff8000afff64	movq	0x210(%rax), %rax
+ffffff8000afff6b	popq	%rbx
+ffffff8000afff6c	popq	%r14
+ffffff8000afff6e	popq	%rbp
+ffffff8000afff6f	jmpq	*%rax
+ffffff8000afff71	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOTIMER_FREE NAME=__ZN18IOTimerEventSource4freeEv ADDRESS=0xffffff8000affe90 OWNER=com.apple.kernel
+METHOD_TAG=IOTIMER_FREE SYMBOL=__ZN18IOTimerEventSource4freeEv ADDRESS=0xffffff8000affe90 INSTRUCTIONS=23
+ffffff8000affe90	pushq	%rbp
+ffffff8000affe91	movq	%rsp, %rbp
+ffffff8000affe94	pushq	%rbx
+ffffff8000affe95	pushq	%rax
+ffffff8000affe96	movq	%rdi, %rbx
+ffffff8000affe99	cmpq	$0x0, 0x48(%rdi)
+ffffff8000affe9e	je	0xffffff8000affeb5
+ffffff8000affea0	movq	(%rbx), %rax
+ffffff8000affea3	movq	%rbx, %rdi
+ffffff8000affea6	callq	*0x218(%rax)
+ffffff8000affeac	movq	0x48(%rbx), %rdi
+ffffff8000affeb0	callq	_thread_call_free
+ffffff8000affeb5	movq	0x58(%rbx), %rsi
+ffffff8000affeb9	testq	%rsi, %rsi
+ffffff8000affebc	je	0xffffff8000affed2
+ffffff8000affebe	movq	$0x0, 0x58(%rbx)
+ffffff8000affec6	leaq	-0x836e5d(%rip), %rdi
+ffffff8000affecd	callq	_kfree_type_impl
+ffffff8000affed2	movq	%rbx, %rdi
+ffffff8000affed5	addq	$0x8, %rsp
+ffffff8000affed9	popq	%rbx
+ffffff8000affeda	popq	%rbp
+ffffff8000affedb	jmp	__ZN13IOEventSource4freeEv      ## IOEventSource::free()
+
+TARGET_SYMBOL TAG=IOTIMER_CANCEL_TIMEOUT NAME=__ZN18IOTimerEventSource13cancelTimeoutEv ADDRESS=0xffffff8000b00310 OWNER=com.apple.kernel
+METHOD_TAG=IOTIMER_CANCEL_TIMEOUT SYMBOL=__ZN18IOTimerEventSource13cancelTimeoutEv ADDRESS=0xffffff8000b00310 INSTRUCTIONS=36
+ffffff8000b00310	pushq	%rbp
+ffffff8000b00311	movq	%rsp, %rbp
+ffffff8000b00314	pushq	%rbx
+ffffff8000b00315	pushq	%rax
+ffffff8000b00316	movq	%rdi, %rbx
+ffffff8000b00319	movq	0x58(%rdi), %rax
+ffffff8000b0031d	testq	%rax, %rax
+ffffff8000b00320	je	0xffffff8000b00324
+ffffff8000b00322	incl	(%rax)
+ffffff8000b00324	testb	$0x2, 0x2a(%rbx)
+ffffff8000b00328	movq	0x48(%rbx), %rdi
+ffffff8000b0032c	jne	0xffffff8000b00335
+ffffff8000b0032e	callq	_thread_call_cancel
+ffffff8000b00333	jmp	0xffffff8000b0033a
+ffffff8000b00335	callq	_thread_call_cancel_wait
+ffffff8000b0033a	movq	$0x0, 0x50(%rbx)
+ffffff8000b00342	testl	%eax, %eax
+ffffff8000b00344	je	0xffffff8000b00353
+ffffff8000b00346	cmpq	$0x0, 0x58(%rbx)
+ffffff8000b0034b	je	0xffffff8000b00353
+ffffff8000b0034d	testb	$0x1, 0x2a(%rbx)
+ffffff8000b00351	jne	0xffffff8000b0035a
+ffffff8000b00353	addq	$0x8, %rsp
+ffffff8000b00357	popq	%rbx
+ffffff8000b00358	popq	%rbp
+ffffff8000b00359	retq
+ffffff8000b0035a	movq	(%rbx), %rax
+ffffff8000b0035d	movq	%rbx, %rdi
+ffffff8000b00360	callq	*0x28(%rax)
+ffffff8000b00363	movq	0x30(%rbx), %rdi
+ffffff8000b00367	movq	(%rdi), %rax
+ffffff8000b0036a	addq	$0x8, %rsp
+ffffff8000b0036e	popq	%rbx
+ffffff8000b0036f	popq	%rbp
+ffffff8000b00370	jmpq	*0x28(%rax)
+ffffff8000b00373	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOTIMER_TIMEOUT_AND_RELEASE NAME=__ZN18IOTimerEventSource17timeoutAndReleaseEPvS0_ ADDRESS=0xffffff8000b00610 OWNER=com.apple.kernel
+METHOD_TAG=IOTIMER_TIMEOUT_AND_RELEASE SYMBOL=__ZN18IOTimerEventSource17timeoutAndReleaseEPvS0_ ADDRESS=0xffffff8000b00610 INSTRUCTIONS=78
+ffffff8000b00610	pushq	%rbp
+ffffff8000b00611	movq	%rsp, %rbp
+ffffff8000b00614	pushq	%r15
+ffffff8000b00616	pushq	%r14
+ffffff8000b00618	pushq	%r12
+ffffff8000b0061a	pushq	%rbx
+ffffff8000b0061b	movq	%rdi, %rbx
+ffffff8000b0061e	movq	0x40(%rdi), %rax
+ffffff8000b00622	movq	(%rax), %rax
+ffffff8000b00625	testq	%rax, %rax
+ffffff8000b00628	je	0xffffff8000b0062d
+ffffff8000b0062a	incl	0x30(%rax)
+ffffff8000b0062d	cmpb	$0x1, 0x28(%rbx)
+ffffff8000b00631	jne	0xffffff8000b00706
+ffffff8000b00637	cmpq	$0x0, 0x20(%rbx)
+ffffff8000b0063c	je	0xffffff8000b00706
+ffffff8000b00642	movq	0x58(%rbx), %rax
+ffffff8000b00646	movq	0x8(%rax), %r14
+ffffff8000b0064a	testq	%r14, %r14
+ffffff8000b0064d	je	0xffffff8000b00706
+ffffff8000b00653	movq	%rsi, %r12
+ffffff8000b00656	movq	(%r14), %rax
+ffffff8000b00659	movq	%r14, %rdi
+ffffff8000b0065c	callq	*0x180(%rax)
+ffffff8000b00662	movq	0x40(%rbx), %rax
+ffffff8000b00666	movq	(%rax), %r15
+ffffff8000b00669	testq	%r15, %r15
+ffffff8000b0066c	je	0xffffff8000b00682
+ffffff8000b0066e	leaq	_pal_rtc_nanotime_info(%rip), %rdi
+ffffff8000b00675	callq	__rtc_nanotime_read
+ffffff8000b0067a	movq	%rax, 0x18(%r15)
+ffffff8000b0067e	incl	0x28(%r15)
+ffffff8000b00682	movq	0x20(%rbx), %r15
+ffffff8000b00686	testq	%r15, %r15
+ffffff8000b00689	je	0xffffff8000b006d6
+ffffff8000b0068b	movq	0x58(%rbx), %rax
+ffffff8000b0068f	cmpl	%r12d, (%rax)
+ffffff8000b00692	jne	0xffffff8000b006d6
+ffffff8000b00694	movq	%gs:0x10, %r12
+ffffff8000b0069d	testb	$0x2, 0x730(%r12)
+ffffff8000b006a6	je	0xffffff8000b006c0
+ffffff8000b006a8	leaq	_pal_rtc_nanotime_info(%rip), %rdi
+ffffff8000b006af	callq	__rtc_nanotime_read
+ffffff8000b006b4	movq	0x5c0(%r12), %rcx
+ffffff8000b006bc	movq	%rax, 0x30(%rcx)
+ffffff8000b006c0	movq	0x18(%rbx), %rcx
+ffffff8000b006c4	movq	0x30(%rbx), %r8
+ffffff8000b006c8	movq	%rbx, %rdi
+ffffff8000b006cb	movq	%r15, %rsi
+ffffff8000b006ce	movq	%rbx, %rdx
+ffffff8000b006d1	callq	0xffffff8000b00760
+ffffff8000b006d6	movq	0x40(%rbx), %rax
+ffffff8000b006da	movq	(%rax), %r15
+ffffff8000b006dd	testq	%r15, %r15
+ffffff8000b006e0	je	0xffffff8000b006fa
+ffffff8000b006e2	leaq	_pal_rtc_nanotime_info(%rip), %rdi
+ffffff8000b006e9	callq	__rtc_nanotime_read
+ffffff8000b006ee	subq	0x18(%r15), %rax
+ffffff8000b006f2	addq	%rax, 0x20(%r15)
+ffffff8000b006f6	incl	0x2c(%r15)
+ffffff8000b006fa	movq	(%r14), %rax
+ffffff8000b006fd	movq	%r14, %rdi
+ffffff8000b00700	callq	*0x178(%rax)
+ffffff8000b00706	movq	0x58(%rbx), %rax
+ffffff8000b0070a	movq	0x8(%rax), %rdi
+ffffff8000b0070e	testq	%rdi, %rdi
+ffffff8000b00711	je	0xffffff8000b00719
+ffffff8000b00713	movq	(%rdi), %rax
+ffffff8000b00716	callq	*0x28(%rax)
+ffffff8000b00719	movq	(%rbx), %rax
+ffffff8000b0071c	movq	%rbx, %rdi
+ffffff8000b0071f	popq	%rbx
+ffffff8000b00720	popq	%r12
+ffffff8000b00722	popq	%r14
+ffffff8000b00724	popq	%r15
+ffffff8000b00726	popq	%rbp
+ffffff8000b00727	jmpq	*0x28(%rax)
+ffffff8000b0072a	nopw	(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOTIMER_TIMEOUT_SIGNALED NAME=__ZN18IOTimerEventSource15timeoutSignaledEPvS0_ ADDRESS=0xffffff8000b00730 OWNER=com.apple.kernel
+METHOD_TAG=IOTIMER_TIMEOUT_SIGNALED SYMBOL=__ZN18IOTimerEventSource15timeoutSignaledEPvS0_ ADDRESS=0xffffff8000b00730 INSTRUCTIONS=262
+ffffff8000b00730	pushq	%rbp
+ffffff8000b00731	movq	%rsp, %rbp
+ffffff8000b00734	movq	0x58(%rdi), %rax
+ffffff8000b00738	movl	%esi, 0x4(%rax)
+ffffff8000b0073b	cmpb	$0x1, 0x28(%rdi)
+ffffff8000b0073f	jne	0xffffff8000b0074f
+ffffff8000b00741	movq	0x30(%rdi), %rdi
+ffffff8000b00745	movq	(%rdi), %rax
+ffffff8000b00748	popq	%rbp
+ffffff8000b00749	jmpq	*0x170(%rax)
+ffffff8000b0074f	popq	%rbp
+ffffff8000b00750	retq
+ffffff8000b00751	nopw	%cs:(%rax,%rax)
+ffffff8000b00760	pushq	%rbp
+ffffff8000b00761	movq	%rsp, %rbp
+ffffff8000b00764	pushq	%r15
+ffffff8000b00766	pushq	%r14
+ffffff8000b00768	pushq	%r13
+ffffff8000b0076a	pushq	%r12
+ffffff8000b0076c	pushq	%rbx
+ffffff8000b0076d	subq	$0x18, %rsp
+ffffff8000b00771	movq	%r8, %r15
+ffffff8000b00774	movq	%rcx, %rbx
+ffffff8000b00777	movq	%rsi, %r12
+ffffff8000b0077a	movq	_gIOKitTrace(%rip), %r13
+ffffff8000b00781	movzwl	0x2a(%rdi), %eax
+ffffff8000b00785	movq	%rsi, %r14
+ffffff8000b00788	testb	$0x4, %al
+ffffff8000b0078a	je	0xffffff8000b00794
+ffffff8000b0078c	movq	0x20(%rdi), %rcx
+ffffff8000b00790	movq	0x10(%rcx), %r14
+ffffff8000b00794	testb	$0x20, %r13b
+ffffff8000b00798	je	0xffffff8000b007a6
+ffffff8000b0079a	testl	$0xfffffff7, _kdebug_enable(%rip) ## imm = 0xFFFFFFF7
+ffffff8000b007a4	jne	0xffffff8000b007b5
+ffffff8000b007a6	testb	$0x4, %al
+ffffff8000b007a8	jne	0xffffff8000b0081f
+ffffff8000b007aa	movq	%rbx, %rdi
+ffffff8000b007ad	movq	%rdx, %rsi
+ffffff8000b007b0	callq	*%r12
+ffffff8000b007b3	jmp	0xffffff8000b00829
+ffffff8000b007b5	movq	_vm_kernel_slid_base(%rip), %rcx
+ffffff8000b007bc	movq	_vm_kernel_slid_top(%rip), %r8
+ffffff8000b007c3	movq	_vm_kernel_slide(%rip), %r9
+ffffff8000b007ca	movq	%rbx, %rax
+ffffff8000b007cd	subq	%r9, %rax
+ffffff8000b007d0	xorl	%r10d, %r10d
+ffffff8000b007d3	cmpq	%rbx, %r8
+ffffff8000b007d6	cmovbeq	%r10, %rax
+ffffff8000b007da	cmpq	%rbx, %rcx
+ffffff8000b007dd	cmovaq	%r10, %rax
+ffffff8000b007e1	movq	%r14, %rsi
+ffffff8000b007e4	subq	%r9, %rsi
+ffffff8000b007e7	cmpq	%r14, %r8
+ffffff8000b007ea	cmovbeq	%r10, %rsi
+ffffff8000b007ee	cmpq	%r14, %rcx
+ffffff8000b007f1	cmovaq	%r10, %rsi
+ffffff8000b007f5	movq	%rdi, -0x38(%rbp)
+ffffff8000b007f9	movl	$0x5030011, %edi                ## imm = 0x5030011
+ffffff8000b007fe	movq	%rdx, -0x30(%rbp)
+ffffff8000b00802	movq	%rax, %rdx
+ffffff8000b00805	xorl	%ecx, %ecx
+ffffff8000b00807	xorl	%r8d, %r8d
+ffffff8000b0080a	callq	_kernel_debug
+ffffff8000b0080f	movq	-0x38(%rbp), %rdi
+ffffff8000b00813	movq	-0x30(%rbp), %rdx
+ffffff8000b00817	movzwl	0x2a(%rdi), %eax
+ffffff8000b0081b	testb	$0x4, %al
+ffffff8000b0081d	je	0xffffff8000b007aa
+ffffff8000b0081f	movq	0x20(%rdi), %rdi
+ffffff8000b00823	movq	%rdx, %rsi
+ffffff8000b00826	callq	*0x10(%rdi)
+ffffff8000b00829	movq	%r14, %rdi
+ffffff8000b0082c	movq	%rbx, %rsi
+ffffff8000b0082f	movq	%r15, %rdx
+ffffff8000b00832	nop
+ffffff8000b00833	nop
+ffffff8000b00834	nop
+ffffff8000b00835	testb	$0x20, %r13b
+ffffff8000b00839	je	0xffffff8000b00847
+ffffff8000b0083b	testl	$0xfffffff7, _kdebug_enable(%rip) ## imm = 0xFFFFFFF7
+ffffff8000b00845	jne	0xffffff8000b00856
+ffffff8000b00847	addq	$0x18, %rsp
+ffffff8000b0084b	popq	%rbx
+ffffff8000b0084c	popq	%r12
+ffffff8000b0084e	popq	%r13
+ffffff8000b00850	popq	%r14
+ffffff8000b00852	popq	%r15
+ffffff8000b00854	popq	%rbp
+ffffff8000b00855	retq
+ffffff8000b00856	movq	_vm_kernel_slid_base(%rip), %rax
+ffffff8000b0085d	movq	_vm_kernel_slid_top(%rip), %rcx
+ffffff8000b00864	movq	_vm_kernel_slide(%rip), %rdi
+ffffff8000b0086b	movq	%rbx, %rdx
+ffffff8000b0086e	subq	%rdi, %rdx
+ffffff8000b00871	xorl	%r8d, %r8d
+ffffff8000b00874	cmpq	%rbx, %rcx
+ffffff8000b00877	cmovbeq	%r8, %rdx
+ffffff8000b0087b	cmpq	%rbx, %rax
+ffffff8000b0087e	cmovaq	%r8, %rdx
+ffffff8000b00882	movq	%r14, %rsi
+ffffff8000b00885	subq	%rdi, %rsi
+ffffff8000b00888	cmpq	%r14, %rcx
+ffffff8000b0088b	cmovbeq	%r8, %rsi
+ffffff8000b0088f	cmpq	%r14, %rax
+ffffff8000b00892	cmovaq	%r8, %rsi
+ffffff8000b00896	movl	$0x5030012, %edi                ## imm = 0x5030012
+ffffff8000b0089b	xorl	%ecx, %ecx
+ffffff8000b0089d	xorl	%r8d, %r8d
+ffffff8000b008a0	addq	$0x18, %rsp
+ffffff8000b008a4	popq	%rbx
+ffffff8000b008a5	popq	%r12
+ffffff8000b008a7	popq	%r13
+ffffff8000b008a9	popq	%r14
+ffffff8000b008ab	popq	%r15
+ffffff8000b008ad	popq	%rbp
+ffffff8000b008ae	jmp	_kernel_debug
+ffffff8000b008b3	nopw	%cs:(%rax,%rax)
+ffffff8000b008c0	pushq	%rbp
+ffffff8000b008c1	movq	%rsp, %rbp
+ffffff8000b008c4	pushq	%r14
+ffffff8000b008c6	pushq	%rbx
+ffffff8000b008c7	movq	%rdi, %rbx
+ffffff8000b008ca	leaq	-0x8ab819(%rip), %rax
+ffffff8000b008d1	movq	%rax, (%rdi)
+ffffff8000b008d4	movq	0x8(%rdi), %rax
+ffffff8000b008d8	movq	0x8(%rax), %r14
+ffffff8000b008dc	movq	_sAllClassesLock(%rip), %rdi
+ffffff8000b008e3	callq	_IOLockLock
+ffffff8000b008e8	movq	0x8b45c1(%rip), %rdi
+ffffff8000b008ef	testq	%rdi, %rdi
+ffffff8000b008f2	je	0xffffff8000b00914
+ffffff8000b008f4	movq	0x18(%rbx), %rsi
+ffffff8000b008f8	movq	(%rdi), %rax
+ffffff8000b008fb	testq	%r14, %r14
+ffffff8000b008fe	je	0xffffff8000b00940
+ffffff8000b00900	callq	*0x1d8(%rax)
+ffffff8000b00906	movq	_sAllClassesLock(%rip), %rdi
+ffffff8000b0090d	callq	_lck_mtx_unlock
+ffffff8000b00912	jmp	0xffffff8000b00925
+ffffff8000b00914	movq	_sAllClassesLock(%rip), %rdi
+ffffff8000b0091b	callq	_lck_mtx_unlock
+ffffff8000b00920	testq	%r14, %r14
+ffffff8000b00923	je	0xffffff8000b00952
+ffffff8000b00925	movq	(%r14), %rax
+ffffff8000b00928	movq	%r14, %rdi
+ffffff8000b0092b	movq	%rbx, %rsi
+ffffff8000b0092e	callq	*0x218(%rax)
+ffffff8000b00934	movq	0x18(%rbx), %rdi
+ffffff8000b00938	movq	(%rdi), %rax
+ffffff8000b0093b	callq	*0x28(%rax)
+ffffff8000b0093e	jmp	0xffffff8000b00952
+ffffff8000b00940	callq	*0x1e8(%rax)
+ffffff8000b00946	movq	_sAllClassesLock(%rip), %rdi
+ffffff8000b0094d	callq	_lck_mtx_unlock
+ffffff8000b00952	movq	0x8b454f(%rip), %rsi
+ffffff8000b00959	testq	%rsi, %rsi
+ffffff8000b0095c	je	0xffffff8000b0099e
+ffffff8000b0095e	movl	0x10(%rsi), %edx
+ffffff8000b00961	testq	%rdx, %rdx
+ffffff8000b00964	je	0xffffff8000b0099e
+ffffff8000b00966	movq	0x18(%rsi), %rax
+ffffff8000b0096a	xorl	%ecx, %ecx
+ffffff8000b0096c	nopl	(%rax)
+ffffff8000b00970	cmpq	%rbx, (%rax,%rcx,8)
+ffffff8000b00974	je	0xffffff8000b00980
+ffffff8000b00976	incq	%rcx
+ffffff8000b00979	cmpq	%rcx, %rdx
+ffffff8000b0097c	jne	0xffffff8000b00970
+ffffff8000b0097e	jmp	0xffffff8000b0099e
+ffffff8000b00980	decl	%edx
+ffffff8000b00982	movl	%edx, 0x10(%rsi)
+ffffff8000b00985	subl	%ecx, %edx
+ffffff8000b00987	jbe	0xffffff8000b0099e
+ffffff8000b00989	shlq	$0x3, %rdx
+ffffff8000b0098d	movl	%ecx, %esi
+ffffff8000b0098f	leaq	(%rax,%rsi,8), %rdi
+ffffff8000b00993	incl	%ecx
+ffffff8000b00995	leaq	(%rax,%rcx,8), %rsi
+ffffff8000b00999	callq	_memmove
+ffffff8000b0099e	movq	0x8(%rbx), %rsi
+ffffff8000b009a2	movq	$0x0, 0x8(%rbx)
+ffffff8000b009aa	leaq	-0x8397c1(%rip), %rdi
+ffffff8000b009b1	callq	_kfree_type_impl
+ffffff8000b009b6	movq	$-0x1, (%rbx)
+ffffff8000b009bd	popq	%rbx
+ffffff8000b009be	popq	%r14
+ffffff8000b009c0	popq	%rbp
+ffffff8000b009c1	retq
+ffffff8000b009c2	nopw	%cs:(%rax,%rax)
+ffffff8000b009d0	pushq	%rbp
+ffffff8000b009d1	movq	%rsp, %rbp
+ffffff8000b009d4	pushq	%r14
+ffffff8000b009d6	pushq	%rbx
+ffffff8000b009d7	movq	%rdi, %rbx
+ffffff8000b009da	leaq	-0x8ab929(%rip), %rax
+ffffff8000b009e1	movq	%rax, (%rdi)
+ffffff8000b009e4	movq	0x8(%rdi), %rax
+ffffff8000b009e8	movq	0x8(%rax), %r14
+ffffff8000b009ec	movq	_sAllClassesLock(%rip), %rdi
+ffffff8000b009f3	callq	_IOLockLock
+ffffff8000b009f8	movq	0x8b44b1(%rip), %rdi
+ffffff8000b009ff	testq	%rdi, %rdi
+ffffff8000b00a02	je	0xffffff8000b00a24
+ffffff8000b00a04	movq	0x18(%rbx), %rsi
+ffffff8000b00a08	movq	(%rdi), %rax
+ffffff8000b00a0b	testq	%r14, %r14
+ffffff8000b00a0e	je	0xffffff8000b00a50
+ffffff8000b00a10	callq	*0x1d8(%rax)
+ffffff8000b00a16	movq	_sAllClassesLock(%rip), %rdi
+ffffff8000b00a1d	callq	_lck_mtx_unlock
+ffffff8000b00a22	jmp	0xffffff8000b00a35
+ffffff8000b00a24	movq	_sAllClassesLock(%rip), %rdi
+ffffff8000b00a2b	callq	_lck_mtx_unlock
+ffffff8000b00a30	testq	%r14, %r14
+ffffff8000b00a33	je	0xffffff8000b00a62
+ffffff8000b00a35	movq	(%r14), %rax
+ffffff8000b00a38	movq	%r14, %rdi
+ffffff8000b00a3b	movq	%rbx, %rsi
+ffffff8000b00a3e	callq	*0x218(%rax)
+ffffff8000b00a44	movq	0x18(%rbx), %rdi
+ffffff8000b00a48	movq	(%rdi), %rax
+ffffff8000b00a4b	callq	*0x28(%rax)
+ffffff8000b00a4e	jmp	0xffffff8000b00a62
+ffffff8000b00a50	callq	*0x1e8(%rax)
+ffffff8000b00a56	movq	_sAllClassesLock(%rip), %rdi
+ffffff8000b00a5d	callq	_lck_mtx_unlock
+ffffff8000b00a62	movq	0x8b443f(%rip), %rsi
+ffffff8000b00a69	testq	%rsi, %rsi
+ffffff8000b00a6c	je	0xffffff8000b00aae
+ffffff8000b00a6e	movl	0x10(%rsi), %edx
+ffffff8000b00a71	testq	%rdx, %rdx
+ffffff8000b00a74	je	0xffffff8000b00aae
+ffffff8000b00a76	movq	0x18(%rsi), %rax
+ffffff8000b00a7a	xorl	%ecx, %ecx
+ffffff8000b00a7c	nopl	(%rax)
+ffffff8000b00a80	cmpq	%rbx, (%rax,%rcx,8)
+ffffff8000b00a84	je	0xffffff8000b00a90
+ffffff8000b00a86	incq	%rcx
+ffffff8000b00a89	cmpq	%rcx, %rdx
+ffffff8000b00a8c	jne	0xffffff8000b00a80
+ffffff8000b00a8e	jmp	0xffffff8000b00aae
+ffffff8000b00a90	decl	%edx
+ffffff8000b00a92	movl	%edx, 0x10(%rsi)
+ffffff8000b00a95	subl	%ecx, %edx
+ffffff8000b00a97	jbe	0xffffff8000b00aae
+ffffff8000b00a99	shlq	$0x3, %rdx
+ffffff8000b00a9d	movl	%ecx, %esi
+ffffff8000b00a9f	leaq	(%rax,%rsi,8), %rdi
+ffffff8000b00aa3	incl	%ecx
+ffffff8000b00aa5	leaq	(%rax,%rcx,8), %rsi
+ffffff8000b00aa9	callq	_memmove
+ffffff8000b00aae	movq	0x8(%rbx), %rsi
+ffffff8000b00ab2	movq	$0x0, 0x8(%rbx)
+ffffff8000b00aba	leaq	-0x8398d1(%rip), %rdi
+ffffff8000b00ac1	callq	_kfree_type_impl
+ffffff8000b00ac6	movq	$-0x1, (%rbx)
+ffffff8000b00acd	popq	%rbx
+ffffff8000b00ace	popq	%r14
+ffffff8000b00ad0	popq	%rbp
+ffffff8000b00ad1	retq
+ffffff8000b00ad2	nopw	%cs:(%rax,%rax)
+
+TARGET_SYMBOL TAG=IOCOMMANDPOOL_INIT NAME=__ZN16IOCommandPool4initEv ADDRESS=NOT_FOUND OWNER=UNKNOWN
+METHOD_NOT_VERIFIED TAG=IOCOMMANDPOOL_INIT
+
+TARGET_SYMBOL TAG=IOCOMMANDPOOL_FREE NAME=__ZN16IOCommandPool4freeEv ADDRESS=NOT_FOUND OWNER=UNKNOWN
+METHOD_NOT_VERIFIED TAG=IOCOMMANDPOOL_FREE
+
+TARGET_SYMBOL TAG=IOCOMMANDGATE_FREE NAME=__ZN13IOCommandGate4freeEv ADDRESS=0xffffff8000afc5f0 OWNER=com.apple.kernel
+METHOD_TAG=IOCOMMANDGATE_FREE SYMBOL=__ZN13IOCommandGate4freeEv ADDRESS=0xffffff8000afc5f0 INSTRUCTIONS=16
+ffffff8000afc5f0	cmpq	$0x0, 0x30(%rdi)
+ffffff8000afc5f5	je	__ZN13IOEventSource4freeEv      ## IOEventSource::free()
+ffffff8000afc5fb	pushq	%rbp
+ffffff8000afc5fc	movq	%rsp, %rbp
+ffffff8000afc5ff	pushq	%rbx
+ffffff8000afc600	pushq	%rax
+ffffff8000afc601	movq	(%rdi), %rax
+ffffff8000afc604	movq	%rdi, %rbx
+ffffff8000afc607	xorl	%esi, %esi
+ffffff8000afc609	callq	*0x128(%rax)
+ffffff8000afc60f	movq	%rbx, %rdi
+ffffff8000afc612	addq	$0x8, %rsp
+ffffff8000afc616	popq	%rbx
+ffffff8000afc617	popq	%rbp
+ffffff8000afc618	jmp	__ZN13IOEventSource4freeEv      ## IOEventSource::free()
+ffffff8000afc61d	nopl	(%rax)
+
+TARGET_SYMBOL TAG=OSOBJECT_RETAIN NAME=__ZNK8OSObject6retainEv ADDRESS=0xffffff8000a4b5c0 OWNER=com.apple.kernel
+METHOD_TAG=OSOBJECT_RETAIN SYMBOL=__ZNK8OSObject6retainEv ADDRESS=0xffffff8000a4b5c0 INSTRUCTIONS=7
+ffffff8000a4b5c0	pushq	%rbp
+ffffff8000a4b5c1	movq	%rsp, %rbp
+ffffff8000a4b5c4	movq	(%rdi), %rax
+ffffff8000a4b5c7	movq	0x48(%rax), %rax
+ffffff8000a4b5cb	xorl	%esi, %esi
+ffffff8000a4b5cd	popq	%rbp
+ffffff8000a4b5ce	jmpq	*%rax
+
+TARGET_SYMBOL TAG=OSOBJECT_RELEASE NAME=__ZNK8OSObject7releaseEv ADDRESS=0xffffff8000a4b5d0 OWNER=com.apple.kernel
+METHOD_TAG=OSOBJECT_RELEASE SYMBOL=__ZNK8OSObject7releaseEv ADDRESS=0xffffff8000a4b5d0 INSTRUCTIONS=7
+ffffff8000a4b5d0	pushq	%rbp
+ffffff8000a4b5d1	movq	%rsp, %rbp
+ffffff8000a4b5d4	movq	(%rdi), %rax
+ffffff8000a4b5d7	movq	0x50(%rax), %rax
+ffffff8000a4b5db	xorl	%esi, %esi
+ffffff8000a4b5dd	popq	%rbp
+ffffff8000a4b5de	jmpq	*%rax
+
+METHOD_INVENTORY CLASS=IOWorkLoop TOTAL=53 SELECTED=5
+METHOD_INVENTORY_ENTRY CLASS=IOWorkLoop ADDRESS=0xffffff8000af8bb0 OWNER=com.apple.kernel NAME=__ZN10IOWorkLoop4initEv
+METHOD_INVENTORY_ENTRY CLASS=IOWorkLoop ADDRESS=0xffffff8000af8d50 OWNER=com.apple.kernel NAME=__ZN10IOWorkLoop4freeEv
+METHOD_INVENTORY_ENTRY CLASS=IOWorkLoop ADDRESS=0xffffff8000af94b0 OWNER=com.apple.kernel NAME=__ZN10IOWorkLoop14addEventSourceEP13IOEventSource
+METHOD_INVENTORY_ENTRY CLASS=IOWorkLoop ADDRESS=0xffffff8000af95a0 OWNER=com.apple.kernel NAME=__ZN10IOWorkLoop17removeEventSourceEP13IOEventSource
+METHOD_INVENTORY_ENTRY CLASS=IOWorkLoop ADDRESS=0xffffff8000afa700 OWNER=com.apple.kernel NAME=__ZN10IOWorkLoop17releaseEventChainEP13IOEventSource
+
+METHOD_INVENTORY CLASS=IOEventSource TOTAL=46 SELECTED=4
+METHOD_INVENTORY_ENTRY CLASS=IOEventSource ADDRESS=0xffffff8000afa8d0 OWNER=com.apple.kernel NAME=__ZN13IOEventSource4freeEv
+METHOD_INVENTORY_ENTRY CLASS=IOEventSource ADDRESS=0xffffff8000afa940 OWNER=com.apple.kernel NAME=__ZN13IOEventSource4initEP8OSObjectPFvS1_zE
+METHOD_INVENTORY_ENTRY CLASS=IOEventSource ADDRESS=0xffffff8000afa9c0 OWNER=com.apple.kernel NAME=__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop
+METHOD_INVENTORY_ENTRY CLASS=IOEventSource ADDRESS=0xffffff8000afaac0 OWNER=com.apple.kernel NAME=__ZNK13IOEventSource11getWorkLoopEv
+
+METHOD_INVENTORY CLASS=IOTimerEventSource TOTAL=48 SELECTED=7
+METHOD_INVENTORY_ENTRY CLASS=IOTimerEventSource ADDRESS=0xffffff8000affe90 OWNER=com.apple.kernel NAME=__ZN18IOTimerEventSource4freeEv
+METHOD_INVENTORY_ENTRY CLASS=IOTimerEventSource ADDRESS=0xffffff8000afff20 OWNER=com.apple.kernel NAME=__ZN18IOTimerEventSource11setWorkLoopEP10IOWorkLoop
+METHOD_INVENTORY_ENTRY CLASS=IOTimerEventSource ADDRESS=0xffffff8000b00140 OWNER=com.apple.kernel NAME=__ZN18IOTimerEventSource4initEP8OSObjectPFvS1_PS_E
+METHOD_INVENTORY_ENTRY CLASS=IOTimerEventSource ADDRESS=0xffffff8000b00310 OWNER=com.apple.kernel NAME=__ZN18IOTimerEventSource13cancelTimeoutEv
+METHOD_INVENTORY_ENTRY CLASS=IOTimerEventSource ADDRESS=0xffffff8000b00380 OWNER=com.apple.kernel NAME=__ZN18IOTimerEventSource4initEjP8OSObjectPFvS1_PS_E
+METHOD_INVENTORY_ENTRY CLASS=IOTimerEventSource ADDRESS=0xffffff8000b00610 OWNER=com.apple.kernel NAME=__ZN18IOTimerEventSource17timeoutAndReleaseEPvS0_
+METHOD_INVENTORY_ENTRY CLASS=IOTimerEventSource ADDRESS=0xffffff8000b00730 OWNER=com.apple.kernel NAME=__ZN18IOTimerEventSource15timeoutSignaledEPvS0_
+
+METHOD_INVENTORY CLASS=IOCommandPool TOTAL=33 SELECTED=3
+METHOD_INVENTORY_ENTRY CLASS=IOCommandPool ADDRESS=0xffffff8000afda90 OWNER=com.apple.kernel NAME=__ZN13IOCommandPool4freeEv
+METHOD_INVENTORY_ENTRY CLASS=IOCommandPool ADDRESS=0xffffff8000afdb00 OWNER=com.apple.kernel NAME=__ZN13IOCommandPool16initWithWorkLoopEP10IOWorkLoop
+METHOD_INVENTORY_ENTRY CLASS=IOCommandPool ADDRESS=0xffffff8000afdba0 OWNER=com.apple.kernel NAME=__ZN13IOCommandPool4initEP9IOServiceP10IOWorkLoopj
+
+METHOD_INVENTORY CLASS=IOCommandGate TOTAL=38 SELECTED=3
+METHOD_INVENTORY_ENTRY CLASS=IOCommandGate ADDRESS=0xffffff8000afc5f0 OWNER=com.apple.kernel NAME=__ZN13IOCommandGate4freeEv
+METHOD_INVENTORY_ENTRY CLASS=IOCommandGate ADDRESS=0xffffff8000afc620 OWNER=com.apple.kernel NAME=__ZN13IOCommandGate11setWorkLoopEP10IOWorkLoop
+METHOD_INVENTORY_ENTRY CLASS=IOCommandGate ADDRESS=0xffffff8000afc850 OWNER=com.apple.kernel NAME=__ZN13IOCommandGate4initEP8OSObjectPFiS1_PvS2_S2_S2_E
+
+METHOD_INVENTORY CLASS=OSObject TOTAL=52 SELECTED=10
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b590 OWNER=com.apple.kernel NAME=__ZNK8OSObject7releaseEi
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b5b0 OWNER=com.apple.kernel NAME=__ZNK8OSObject14getRetainCountEv
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b5c0 OWNER=com.apple.kernel NAME=__ZNK8OSObject6retainEv
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b5d0 OWNER=com.apple.kernel NAME=__ZNK8OSObject7releaseEv
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b760 OWNER=com.apple.kernel NAME=__ZNK8OSObject12taggedRetainEPKv
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b7c0 OWNER=com.apple.kernel NAME=__ZNK8OSObject13taggedReleaseEPKv
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b7e0 OWNER=com.apple.kernel NAME=__ZNK8OSObject13taggedReleaseEPKvi
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b870 OWNER=com.apple.kernel NAME=__ZN8OSObject4initEv
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4b880 OWNER=com.apple.kernel NAME=__ZN8OSObject4freeEv
+METHOD_INVENTORY_ENTRY CLASS=OSObject ADDRESS=0xffffff8000a4bdf0 OWNER=com.apple.kernel NAME=__ZNK8OSObject15taggedTryRetainEPKv
+DISPATCH_CANDIDATE CLASS=IOWorkLoop OFFSET=0x1c0 TARGET=0xffffff8000af9f50 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop20_RESERVEDIOWorkLoop1Ev
+DISPATCH_CANDIDATE CLASS=IOWorkLoop OFFSET=0x180 TARGET=0xffffff8000af98e0 OWNER=com.apple.kernel SYMBOL=__ZN10IOWorkLoop9closeGateEv
+DISPATCH_CANDIDATE CLASS=IOWorkLoop OFFSET=0x158 TARGET=0xffffff8000af9650 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop22disableAllEventSourcesEv
+DISPATCH_CANDIDATE CLASS=IOWorkLoop OFFSET=0x128 TARGET=0xffffff8000af9460 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop9getThreadEv
+DISPATCH_CANDIDATE CLASS=IOWorkLoop OFFSET=0x130 TARGET=0xffffff8000af9470 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop8onThreadEv
+DISPATCH_CANDIDATE CLASS=IOWorkLoop OFFSET=0x138 TARGET=0xffffff8000af9490 OWNER=com.apple.kernel SYMBOL=__ZNK10IOWorkLoop6inGateEv
+DISPATCH_CANDIDATE CLASS=IOEventSource OFFSET=0x158 TARGET=0xffffff8000afaaa0 OWNER=com.apple.kernel SYMBOL=__ZN13IOEventSource7disableEv
+DISPATCH_CANDIDATE CLASS=IOEventSource OFFSET=0x38 TARGET=0xffffff8000afa8c0 OWNER=com.apple.kernel SYMBOL=__ZNK13IOEventSource12getMetaClassEv
+DISPATCH_CANDIDATE CLASS=IOEventSource OFFSET=0x28 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+DISPATCH_CANDIDATE CLASS=IOTimerEventSource OFFSET=0x218 TARGET=0xffffff8000b00310 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource13cancelTimeoutEv
+DISPATCH_CANDIDATE CLASS=IOTimerEventSource OFFSET=0x1b8 TARGET=0xffffff8000b00020 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource14setTimeoutFuncEv
+DISPATCH_CANDIDATE CLASS=IOTimerEventSource OFFSET=0x220 TARGET=0xffffff8000b00380 OWNER=com.apple.kernel SYMBOL=__ZN18IOTimerEventSource4initEjP8OSObjectPFvS1_PS_E
+DISPATCH_CANDIDATE CLASS=IOCommandPool OFFSET=0x148 TARGET=0xffffff8000afdd60 OWNER=com.apple.kernel SYMBOL=__ZN13IOCommandPool23_RESERVEDIOCommandPool0Ev
+DISPATCH_CANDIDATE CLASS=IOCommandPool OFFSET=0x38 TARGET=0xffffff8000afda80 OWNER=com.apple.kernel SYMBOL=__ZNK13IOCommandPool12getMetaClassEv
+DISPATCH_CANDIDATE CLASS=IOCommandPool OFFSET=0x28 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+DISPATCH_CANDIDATE CLASS=IOCommandGate OFFSET=0x28 TARGET=0xffffff8000a4b5d0 OWNER=com.apple.kernel SYMBOL=__ZNK8OSObject7releaseEv
+DISPATCH_CANDIDATE CLASS=IOCommandGate OFFSET=0x118 TARGET=0xffffff8000afa940 OWNER=com.apple.kernel SYMBOL=__ZN13IOEventSource4initEP8OSObjectPFvS1_zE
+
+DIRECT_XREF_SCAN_OWNER=com.apple.kernel RETURN_CODE=0
+DIRECT_XREF OWNER=com.apple.kernel FUNCTION=__ZNK8OSObject6retainEv INSTRUCTION=__ZNK8OSObject6retainEv:
+DIRECT_XREF OWNER=com.apple.kernel FUNCTION=__ZNK8OSObject7releaseEv INSTRUCTION=__ZNK8OSObject7releaseEv:
+DIRECT_XREF OWNER=com.apple.kernel FUNCTION=__ZN10IOWorkLoop14addEventSourceEP13IOEventSource INSTRUCTION=__ZN10IOWorkLoop14addEventSourceEP13IOEventSource:
+DIRECT_XREF OWNER=com.apple.kernel FUNCTION=__ZN10IOWorkLoop17removeEventSourceEP13IOEventSource INSTRUCTION=__ZN10IOWorkLoop17removeEventSourceEP13IOEventSource:
+DIRECT_XREF OWNER=com.apple.kernel FUNCTION=__ZN10IOWorkLoop17releaseEventChainEP13IOEventSource INSTRUCTION=__ZN10IOWorkLoop17releaseEventChainEP13IOEventSource:
+DIRECT_XREF OWNER=com.apple.kernel FUNCTION=__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop INSTRUCTION=__ZN13IOEventSource11setWorkLoopEP10IOWorkLoop:
+DIRECT_XREF OWNER=com.apple.kernel FUNCTION=__ZN18IOTimerEventSource11setWorkLoopEP10IOWorkLoop INSTRUCTION=__ZN18IOTimerEventSource11setWorkLoopEP10IOWorkLoop:
+DIRECT_XREF_MATCH_COUNT OWNER=com.apple.kernel COUNT=7
+
+DIRECT_XREF_SCAN_OWNER=com.apple.iokit.IO80211Family RETURN_CODE=0
+DIRECT_XREF_MATCH_COUNT OWNER=com.apple.iokit.IO80211Family COUNT=0
+
+STAGE169_INTERPRETATION=VIRTUAL_TARGETS_AND_LIFECYCLE_METHODS_REPORTED; DISTINGUISH_WORKLOOP_RETENTION_FROM_EVENT_SOURCE_RETENTION
+
+===== PROJECT PRESERVATION CHECK =====
+PROJECT_STATUS_BEFORE_SHA=737ab289015b79eb99af06b9440edb20dac332f9fc2eb5d078a371e4928d98f6
+PROJECT_STATUS_AFTER_SHA=737ab289015b79eb99af06b9440edb20dac332f9fc2eb5d078a371e4928d98f6
+PROJECT_WORKTREE_PRESERVATION=PASS
+STAGE169_PROJECT_SOURCE_MODIFIED=NO PROJECT_BUILD_OUTPUTS=NO
+STAGE169_SIGNING=NOT_RUN INSTALL=NOT_RUN LOAD=NOT_RUN UNLOAD=NOT_RUN AUXKC=UNCHANGED OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE169 ==========
