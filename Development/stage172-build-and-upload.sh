@@ -163,7 +163,10 @@ set +e
   echo "SIGNING: NOT_RUN"
   echo "OPENCORE_EFI_SIP_NVRAM: UNCHANGED"
   echo "END_UTC: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-  exit "$BUILD_RC"
+  FINAL_RC="$BUILD_RC"
+  if [ "$BUILD_RC" -eq 0 ] && [ "$VERIFY_RC" -ne 0 ]; then FINAL_RC="$VERIFY_RC"; fi
+  echo "STAGE172_FINAL_EXIT: $FINAL_RC"
+  exit "$FINAL_RC"
 ) 2>&1 | tee "$BUILD_LOG"
 PIPE_RC=${PIPESTATUS[0]}
 set -e
