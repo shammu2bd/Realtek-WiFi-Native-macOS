@@ -32,6 +32,11 @@ public:
     bool start(IOService *provider) override;
     void stop(IOService *provider) override;
     void free() override;
+    /* IO80211Controller::start() uses this distinct Apple work queue for its
+     * command gate, PostOffice and timer sources. It is not the generic
+     * IOWorkLoop returned to the driver's own RX/TX consumers. */
+    bool createWorkQueue() override;
+    IO80211WorkQueue *getWorkQueue() const override;
     bool createWorkLoop() override;
     IOWorkLoop *getWorkLoop() const override;
 
@@ -108,7 +113,8 @@ private:
 
     static constexpr uint32_t kStagedRxPacketCapacity = 128;
 
-    IOWorkLoop *_workLoop = nullptr;
+    IO80211WorkQueue *_workQueue = nullptr; // owned until after IO80211Controller::free()
+    IOWorkLoop *_workLoop = nullptr; // separate native RX/TX workloop
     IO80211SkywalkInterface *_packetPathInterface = nullptr; // retained while active
     volatile uint32_t _packetPathState = kPacketPathDisabled;
     volatile uint32_t _packetPathInFlight = 0;
