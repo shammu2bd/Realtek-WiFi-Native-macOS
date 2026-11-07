@@ -1,355 +1,333 @@
-Last login: Sat Nov  7 15:11:38 on ttys000
+Last login: Sat Nov  7 15:16:21 on ttys000
 shohel@Mahfujuls-MacBook-Pro ~ % >....                                          
-    sed -n '1,300p' scripts/build_release_kexts.sh
+        rtw/hal_rtw88/driver/rtw8821c.c
 
     echo
-    echo "=== PROJECT AND BUILD FILES ==="
-    find . -maxdepth 4 \
-      \( -name 'Makefile' -o -name '*.pbxproj' -o -name '*.xcodeproj' \) \
-      -print
+    echo "=== RA REPORT EVENT DISPATCH ==="
+    sed -n '300,345p' rtw/hal_rtw88/driver/fw.c
 
     echo
-    echo "=== NATIVE RATE REPORTING IMPLEMENTATIONS ==="
+    echo "=== RATE CALCULATION AND REPORT WRITERS ==="
     git grep -n -E \
-      'getTxRate|bitrate100Kbps|RTWTxRate|AirportRTWSkywalkInterface' \
-      -- AirportRTW include rtw/hal_rtw88 | head -n 300 || true
+      'rtw_desc_to_bitrate|rtw_desc_to_mcsrate|ra_report\.bit_rate|ra_report\.txrate|rtw_fw_ra_report' \
+      -- rtw/hal_rtw88
 
     echo
-    echo "=== TX SOURCE CHANGE ==="
-    git diff -- rtw/hal_rtw88/driver/tx.c
+    echo "=== SEQUOIA TARGET SOURCE MEMBERSHIP ==="
+    grep -n -E \
+      'AirportRTWSkywalkInterface.cpp|AirportRTWNativeInterface|AirportRTWV2.cpp|RTWCore88.cpp|Rtw88Hardware.c' \
+      AirportRTW.xcodeproj/project.pbxproj
 
 } 2>&1 | tee "$LOG"
 
-echo
-echo "SOURCE CAPTURE COMPLETE"
 echo "LOG=$LOG"
-=== REPOSITORY STATE ===
+=== REVISION ===
 2033dc3d581dcb4faaa46651f31c0f4a0b322e0b
  M .DS_Store
  M rtw/hal_rtw88/driver/tx.c
 
-=== RTW TX RATE STRUCTURE ===
-/* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
-#ifndef AIRPORTRTW_TX_RATE_H
-#define AIRPORTRTW_TX_RATE_H
-#include <stdint.h>
-#ifndef __cplusplus
-#include <stdbool.h>
-#endif
+=== FIRMWARE RATE REPORT PARSER ===
+		return 1200;
 
-enum RTWRateMode { RTW_RATE_LEGACY, RTW_RATE_HT, RTW_RATE_VHT, RTW_RATE_HE };
-/* A firmware TX-rate sample, not the maximum supported link rate. */
-struct RTWTxRate {
-    uint32_t bitrate100Kbps;
-    uint16_t widthMHz;
-    uint8_t mcs; /* HT: combined 0..31; VHT: per-stream 0..9; HE: per-stream 0..11. */
-    uint8_t nss;
-    uint8_t mode;
-    bool shortGI;
-    bool valid;
-    uint16_t guardIntervalNs; /* HE: 800, 1600 or 3200; HT/VHT: 400 or 800. */
-    bool dcm; /* HE dual-carrier modulation, when supplied by firmware. */
+	/* lower than 40M 2ss mcs9, make it medium */
+	if (bit_rate < 4000)
+		return 2600;
+
+	/* not yet 80M 2ss mcs8/9, make it twice regular packet size */
+	if (bit_rate < 7000)
+		return 3500;
+
+	/* unlimited */
+	return 0;
+}
+
+struct rtw_fw_iter_ra_data {
+	struct rtw_dev *rtwdev;
+	u8 *payload;
+	u8 length;
 };
 
-/* HT/VHT/HE PHY rates in 100 kbps, with cfg80211-compatible units.
- * HT/VHT rounding follows cfg80211; HE uses modulation and symbol timing.
- * Modulation rates are numeric protocol data; the HAL supplies actual NSS,
- * width and guard interval rather than substituting advertised capabilities.
- */
-static inline uint32_t rtw_tx_rate_calculate(const struct RTWTxRate *rate)
+static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
 {
-    uint64_t bits;
-    if (!rate) return 0;
-    if (rate->mode == RTW_RATE_LEGACY) return rate->bitrate100Kbps;
-    if (rate->mode == RTW_RATE_HE) {
-        /* HE has a 12.8 us useful symbol. Full-channel data subcarriers:
-         * 234/468/980/1960 for 20/40/80/160 MHz, respectively.
-         */
-        static const uint8_t numerators[12] = {1,1,3,2,3,4,9,5,6,20,15,25};
-        static const uint8_t denominators[12] = {2,1,2,1,1,1,2,1,1,3,2,3};
-        uint32_t carriers;
-        uint64_t denominator, numerator;
-        if (rate->mcs > 11 || rate->nss < 1 || rate->nss > 8) return 0;
-        if (rate->guardIntervalNs != 800 && rate->guardIntervalNs != 1600 &&
-            rate->guardIntervalNs != 3200) return 0;
-        if (rate->dcm && (rate->nss > 2 || (rate->mcs != 0 && rate->mcs != 1 &&
-            rate->mcs != 3 && rate->mcs != 4))) return 0;
-        switch (rate->widthMHz) {
-        case 20: carriers=234; break;
-        case 40: carriers=468; break;
-        case 80: carriers=980; break;
-        case 160: carriers=1960; break;
-        default: return 0;
-        }
-        numerator = (uint64_t)carriers * numerators[rate->mcs] * rate->nss * 10000;
-        denominator = (12800 + rate->guardIntervalNs) * denominators[rate->mcs];
-        if (rate->dcm) denominator *= 2;
-        return (uint32_t)((numerator + denominator / 2) / denominator);
-    }
-    if (rate->mode == RTW_RATE_HT) {
-        static const uint8_t factors[8] = {1, 2, 3, 4, 6, 8, 9, 10};
-        if (rate->mcs > 31 || (rate->widthMHz != 20 && rate->widthMHz != 40)) return 0;
-        bits = (rate->widthMHz == 40 ? 13500000ULL : 6500000ULL) *
-            factors[rate->mcs & 7] * (rate->mcs / 8 + 1);
-    } else if (rate->mode == RTW_RATE_VHT) {
-        static const uint32_t base[4][10] = {
-            {6500000,13000000,19500000,26000000,39000000,52000000,58500000,65000000,78000000,86700000},
-            {13500000,27000000,40500000,54000000,81000000,108000000,121500000,135000000,162000000,180000000},
-            {29300000,58500000,87800000,117000000,175500000,234000000,263300000,292500000,351000000,390000000},
-            {58500000,117000000,175500000,234000000,351000000,468000000,526500000,585000000,702000000,780000000}
-        };
-        unsigned index;
-        if (rate->mcs > 9 || rate->nss < 1 || rate->nss > 4) return 0;
-        switch (rate->widthMHz) {
-        case 20: index=0; break;
-        case 40: index=1; break;
-        case 80: index=2; break;
-        case 160: index=3; break;
-        default: return 0;
-        }
-        bits = (uint64_t)base[index][rate->mcs] * rate->nss;
-    } else return 0;
-    if (rate->shortGI) bits = (bits / 9) * 10;
-    return (uint32_t)((bits + 50000) / 100000);
-}
-#endif
+	struct rtw_fw_iter_ra_data *ra_data = data;
+	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)ra_data->payload;
+	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
+	u8 mac_id, rate, sgi, bw;
+	u8 mcs, nss;
+	u32 bit_rate;
 
-=== RTW88 CORE RATE GETTER ===
-    if (sc.sc_ic.ic_state != IEEE80211_S_INIT)
-        ieee80211_new_state(&sc.sc_ic, IEEE80211_S_INIT, -1);
-    rtw88LinuxPowerDown(&linuxContext);
-    sc.sc_ic.ic_if.if_flags &= ~(IFF_UP | IFF_RUNNING);
-    sc.sc_sta = nullptr;
-    sc.sc_flags &= ~(RTW88_FLAG_ENABLED | RTW88_FLAG_SCANNING |
-                     RTW88_FLAG_FW_RUNNING | RTW88_FLAG_INTERFACE);
-#ifdef AIRPORT_WCL
-    if (scanDwellTimer)
-        scanDwellTimer->cancelTimeout();
-    if (sc.sc_ic.ic_event_handler)
-        sc.sc_ic.ic_event_handler(&sc.sc_ic, IEEE80211_EVT_DRIVER_STOPPED, nullptr);
-#endif
-    RTW_LOG("AirportRTW: Wi-Fi disable complete\n");
-    return kIOReturnSuccess;
+	mac_id = ra_rpt->mac_id;
+	if (si->mac_id != mac_id)
+		return;
+
+	si->ra_report.txrate.flags = 0;
+
+	rate = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE);
+	sgi = u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_SGI);
+	if (ra_data->length >= offsetofend(typeof(*ra_rpt), bw))
+		bw = ra_rpt->bw;
+	else
+		bw = si->bw_mode;
+
+	if (rate < DESC_RATEMCS0) {
+		si->ra_report.txrate.legacy = rtw_desc_to_bitrate(rate);
+		goto legacy;
+	}
+
+	rtw_desc_to_mcsrate(rate, &mcs, &nss);
+	if (rate >= DESC_RATEVHT1SS_MCS0)
+		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_VHT_MCS;
+	else if (rate >= DESC_RATEMCS0)
+		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_MCS;
+
+	if (rate >= DESC_RATEMCS0) {
+		si->ra_report.txrate.mcs = mcs;
+		si->ra_report.txrate.nss = nss;
+	}
+
+	if (sgi)
+		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_SHORT_GI;
+
+	if (bw == RTW_CHANNEL_WIDTH_80)
+		si->ra_report.txrate.bw = RATE_INFO_BW_80;
+	else if (bw == RTW_CHANNEL_WIDTH_40)
+		si->ra_report.txrate.bw = RATE_INFO_BW_40;
+	else
+		si->ra_report.txrate.bw = RATE_INFO_BW_20;
+
+legacy:
+	bit_rate = cfg80211_calculate_bitrate(&si->ra_report.txrate);
+
+	si->ra_report.desc_rate = rate;
+	si->ra_report.bit_rate = bit_rate;
+
+	sta->deflink.agg.max_rc_amsdu_len = get_max_amsdu_len(bit_rate);
 }
 
-void RTWCore88::free()
+static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
+				    u8 length)
 {
-    ieee80211_sae_clear(&sc.sc_ic, true);
-    detach(pciDevice);
-    super::free();
+	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)payload;
+	struct rtw_fw_iter_ra_data ra_data;
+
+	if (WARN(length < rtwdev->chip->c2h_ra_report_size,
+		 "invalid ra report c2h length %d\n", length))
+		return;
+
+	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
+					      RTW_C2H_RA_RPT_RATE);
+	ra_data.rtwdev = rtwdev;
+	ra_data.payload = payload;
+	ra_data.length = length;
+	rtw_iterate_stas_atomic(rtwdev, rtw_fw_ra_report_iter, &ra_data);
 }
 
-int RTWCore88::getTxNSS()
+struct rtw_beacon_filter_iter_data {
+	struct rtw_dev *rtwdev;
+	u8 *payload;
+};
+
+static void rtw_fw_bcn_filter_notify_vif_iter(void *data,
+					      struct ieee80211_vif *vif)
 {
-    return rtw88LinuxGetNSS(&linuxContext);
-}
+	struct rtw_beacon_filter_iter_data *iter_data = data;
+	struct rtw_dev *rtwdev = iter_data->rtwdev;
+	u8 *payload = iter_data->payload;
 
-bool RTWCore88::getTxRate(RTWTxRate &rate)
+=== RATE REPORT STRUCTURES ===
+
+	u32 total_cam_num;
+	struct rtw_cam_entry cam_table[RTW_MAX_SEC_CAM_NUM];
+	DECLARE_BITMAP(cam_map, RTW_MAX_SEC_CAM_NUM);
+};
+
+struct rtw_tx_report {
+	/* protect the tx report queue */
+	spinlock_t q_lock;
+	struct sk_buff_head queue;
+	atomic_t sn;
+	struct timer_list purge_timer;
+};
+
+struct rtw_ra_report {
+	struct rate_info txrate;
+	u32 bit_rate;
+	u8 desc_rate;
+};
+
+struct rtw_txq {
+	struct list_head list;
+	unsigned long flags;
+};
+
+DECLARE_EWMA(rssi, 10, 16);
+
+struct rtw_sta_info {
+	struct rtw_dev *rtwdev;
+	struct ieee80211_sta *sta;
+	struct ieee80211_vif *vif;
+
+	struct ewma_rssi avg_rssi;
+	u8 rssi_level;
+
+	u8 mac_id;
+	u8 rate_id;
+	enum rtw_bandwidth bw_mode;
+	u8 stbc_en:2;
+	u8 ldpc_en:2;
+	bool sgi_enable;
+	bool vht_enable;
+	u8 init_ra_lv;
+	u64 ra_mask;
+
+	DECLARE_BITMAP(tid_ba, IEEE80211_NUM_TIDS);
+
+	struct rtw_ra_report ra_report;
+
+	bool use_cfg_mask;
+	struct cfg80211_bitrate_mask *mask;
+
+	struct work_struct rc_work;
+};
+
+enum rtw_bfee_role {
+	RTW_BFEE_NONE,
+	RTW_BFEE_SU,
+	RTW_BFEE_MU
+};
+
+};
+
+/* rate_info — used by rtw_ra_report in main.h */
+#define RATE_INFO_FLAGS_MCS       (1 << 0)
+#define RATE_INFO_FLAGS_VHT_MCS   (1 << 1)
+#define RATE_INFO_FLAGS_SHORT_GI  (1 << 2)
+#define RATE_INFO_FLAGS_HE_MCS    (1 << 3)
+#define RATE_INFO_FLAGS_EHT_MCS   (1 << 4)
+
+struct rate_info {
+    u32 flags;
+    u32 legacy;
+    u8  mcs;
+    u8  nss;
+    u8  bw;
+    u8  he_gi;
+    u8  he_dcm;
+    u8  he_ru_alloc;
+    u8  n_bonded_ch;
+    u8  eht_gi;
+    u8  eht_ru_alloc;
+};
+
+static inline u32 cfg80211_calculate_bitrate(struct rate_info *rate)
 {
-    rtw88LinuxGetTxRate(&linuxContext, rate);
-    return true;
+    if (rate->flags & RATE_INFO_FLAGS_VHT_MCS)
+        return rate->nss * (rate->mcs + 1) * 1000; /* rough estimate */
+    if (rate->flags & RATE_INFO_FLAGS_MCS)
+        return (rate->mcs + 1) * 1000;
+    return rate->legacy * 100; /* legacy is in 100kbps units */
 }
 
-bool RTWCore88::is5GBandSupport()
-{
-    Rtw88NativeCapabilities caps = {};
-    return rtw88LinuxGetCapabilities(&linuxContext, true, caps);
+struct station_info {
+    u64              filled;
+    struct rate_info txrate;
+    struct rate_info rxrate;
+    u32  inactive_time;
+    u64  rx_bytes;
+    u64  tx_bytes;
+    u32  rx_packets;
+    u32  tx_packets;
+    s8   signal;
+    s8   signal_avg;
+};
+
+struct ieee80211_prep_tx_info {
+    u16 duration;
+    bool success;
+};
+
+/* ------------------------------------------------------------------ */
+
+=== RTL8821CE RA REPORT CONFIGURATION ===
+1990-	.max_power_index = 0x3f,
+1991-	.csi_buf_pg_num = 0,
+1992-	.band = RTW_BAND_2G | RTW_BAND_5G,
+1993-	.page_size = TX_PAGE_SIZE,
+1994-	.dig_min = 0x1c,
+1995-	.amsdu_in_ampdu = true,
+1996-	.usb_tx_agg_desc_num = 3,
+1997-	.hw_feature_report = true,
+1998:	.c2h_ra_report_size = 7,
+1999-	.old_datarate_fb_limit = false,
+2000-	.ht_supported = true,
+2001-	.vht_supported = true,
+2002-	.lps_deep_mode_supported = BIT(LPS_DEEP_MODE_LCLK),
+2003-	.sys_func_en = 0xD8,
+2004-	.pwr_on_seq = card_enable_flow_8821c,
+2005-	.pwr_off_seq = card_disable_flow_8821c,
+2006-	.page_table = page_table_8821c,
+2007-	.rqpn_table = rqpn_table_8821c,
+2008-	.prioq_addrs = &prioq_addrs_8821c,
+2009-	.intf_table = &phy_para_table_8821c,
+2010-	.dig = rtw8821c_dig,
+
+=== RA REPORT EVENT DISPATCH ===
+	struct rtw_c2h_cmd *c2h;
+	u32 pkt_offset;
+	u8 len;
+
+	pkt_offset = *((u32 *)skb->cb);
+	c2h = (struct rtw_c2h_cmd *)(skb->data + pkt_offset);
+	len = skb->len - pkt_offset - 2;
+
+	mutex_lock(&rtwdev->mutex);
+
+	if (!test_bit(RTW_FLAG_RUNNING, rtwdev->flags))
+		goto unlock;
+
+	switch (c2h->id) {
+	case C2H_CCX_TX_RPT:
+		rtw_tx_report_handle(rtwdev, skb, C2H_CCX_TX_RPT);
+		break;
+	case C2H_BT_INFO:
+		rtw_coex_bt_info_notify(rtwdev, c2h->payload, len);
+		break;
+	case C2H_BT_HID_INFO:
+		rtw_coex_bt_hid_info_notify(rtwdev, c2h->payload, len);
+		break;
+	case C2H_WLAN_INFO:
+		rtw_coex_wl_fwdbginfo_notify(rtwdev, c2h->payload, len);
+		break;
+	case C2H_BCN_FILTER_NOTIFY:
+		rtw_fw_bcn_filter_notify(rtwdev, c2h->payload, len);
+		break;
+	case C2H_HALMAC:
+		rtw_fw_c2h_cmd_handle_ext(rtwdev, skb);
+		break;
+	case C2H_RA_RPT:
+		rtw_fw_ra_report_handle(rtwdev, c2h->payload, len);
+		break;
+	case C2H_ADAPTIVITY:
+		rtw_fw_adaptivity_result(rtwdev, c2h->payload, len);
+		break;
+	default:
+		rtw_dbg(rtwdev, RTW_DBG_FW, "C2H 0x%x isn't handled\n", c2h->id);
+		break;
+	}
+
+unlock:
+	mutex_unlock(&rtwdev->mutex);
 }
 
-const char *RTWCore88::getFirmwareName()
-{
-    return sc.sc_fwname;
-}
-
-uint32_t RTWCore88::getRegulatoryLocale()
-{
-    return rtw88LinuxGetLocale(&linuxContext);
-}
-
-bool RTWCore88::setCountryCode(const char cc[2])
-{
-    if (!cc) return false;
-    char requested[3] = {cc[0], cc[1], 0};
-    getController()->setProperty("RTWCountryRequest", requested);
-    const bool applied = rtw88LinuxSetCountry(&linuxContext, cc);
-    getController()->setProperty("RTWCountryRequestApplied", applied);
-    getController()->setProperty("RTWEffectiveCountry", getFirmwareCountryCode());
-    return applied;
-}
-
-const char *RTWCore88::getFirmwareCountryCode()
-{
-    rtw88LinuxGetCountry(&linuxContext, sc.sc_country);
-    getController()->setProperty("RTWAPCountry", linuxContext.apCountry[0] ?
-
-=== RTW88 LINUX BRIDGE RATE GETTER ===
-    auto *hw = context ? static_cast<ieee80211_hw *>(context->hardware) : nullptr;
-    return rtw88_hw_get_nss(hw);
-}
-
-bool rtw88LinuxSetCountry(Rtw88LinuxContext *context, const char cc[2])
-{
-    if (!context || !context->started || !context->hardware) return false;
-    auto *hw = static_cast<ieee80211_hw *>(context->hardware);
-    WiphyGuard guard(hw);
-    const bool applied = airportrtw88_apply_country(hw, cc, 2);
-    if (applied) context->apCountryApplied = false;
-    return applied;
-}
-
-unsigned int rtw88LinuxGetLocale(Rtw88LinuxContext *context)
-{
-    if (!context || !context->hardware) return 0;
-    auto *hw = static_cast<ieee80211_hw *>(context->hardware);
-    WiphyGuard guard(hw);
-    return airportrtw88_get_locale(hw);
-}
-
-void rtw88LinuxGetCountry(Rtw88LinuxContext *context, char out[3])
-{
-    out[0] = '0'; out[1] = '0'; out[2] = '\0';
-    if (!context || !context->hardware || !context->device) return;
-    WiphyGuard guard(static_cast<ieee80211_hw *>(context->hardware));
-    rtw88_get_country_code(static_cast<struct rtw_dev *>(context->device), out);
-}
-
-void rtw88LinuxGetTxRate(Rtw88LinuxContext *context, RTWTxRate &rate)
-{
-    rate = {};
-    auto *hw = context ? static_cast<ieee80211_hw *>(context->hardware) : nullptr;
-    if (hw) rtw88_hw_get_tx_rate(hw, &rate);
-}
-
-bool rtw88LinuxGetCapabilities(Rtw88LinuxContext *context, bool fiveGHz,
-                               Rtw88NativeCapabilities &caps)
-{
-    caps = {};
-    auto *hw = context ? static_cast<ieee80211_hw *>(context->hardware) : nullptr;
-    auto *band = hw && hw->wiphy ? hw->wiphy->bands[
-        fiveGHz ? NL80211_BAND_5GHZ : NL80211_BAND_2GHZ] : nullptr;
-    if (!band) return false;
-    caps.ht = band->ht_cap.ht_supported;
-    caps.htCaps = band->ht_cap.cap;
-    caps.ampduParams = band->ht_cap.ampdu_factor |
-                      (band->ht_cap.ampdu_density << 2);
-    memcpy(caps.htMCS, band->ht_cap.mcs.rx_mask, sizeof(caps.htMCS));
-    caps.vht = band->vht_cap.vht_supported;
-    caps.vhtCaps = band->vht_cap.cap;
-    caps.vhtRxMCS = le16_to_cpu(band->vht_cap.vht_mcs.rx_mcs_map);
-    caps.vhtTxMCS = le16_to_cpu(band->vht_cap.vht_mcs.tx_mcs_map);
-    return true;
-}
-
-bool rtw88LinuxAssociate(Rtw88LinuxContext *context,
-                         const uint8_t bssid[6], uint16_t aid,
-                         uint16_t capability, uint16_t channel,
-                         uint16_t beaconInterval, uint8_t dtimPeriod,
-
-=== RTW88 HARDWARE RATE CALLBACK ===
-}
-void rtw88_tx_ampdu_stop(struct ieee80211_vif *vif, struct ieee80211_sta *sta, u8 tid)
-{
-    (void)ampdu(vif, sta, tid, 0, 0, IEEE80211_AMPDU_TX_STOP_FLUSH);
-}
-int rtw88_rx_ampdu_start(struct ieee80211_sta *sta, u8 tid, u16 ssn, u16 window)
-{
-    return ampdu(sta && tid < IEEE80211_NUM_TIDS && sta->txq[tid] ? sta->txq[tid]->vif : NULL,
-                 sta, tid, ssn, window, IEEE80211_AMPDU_RX_START);
-}
-void rtw88_rx_ampdu_stop(struct ieee80211_sta *sta, u8 tid)
-{
-    (void)ampdu(sta && tid < IEEE80211_NUM_TIDS && sta->txq[tid] ? sta->txq[tid]->vif : NULL,
-                sta, tid, 0, 0, IEEE80211_AMPDU_RX_STOP);
-}
-
-/* Share the station iteration lock with C2H RA updates and station teardown. */
-#include "../../include/HAL/RTWTxRate.h"
-static void copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
-{
-    struct RTWTxRate *out = opaque;
-    const struct rtw_sta_info *si = (const void *)sta->drv_priv;
-    const struct rate_info *report = &si->ra_report.txrate;
-    if (!si->ra_report.bit_rate) return;
-    out->shortGI = (report->flags & RATE_INFO_FLAGS_SHORT_GI) != 0;
-    out->guardIntervalNs = out->shortGI ? 400 : 800;
-    if (report->flags & RATE_INFO_FLAGS_VHT_MCS) {
-        out->mode = RTW_RATE_VHT;
-        out->mcs = report->mcs;
-        out->nss = report->nss;
-    } else if (report->flags & RATE_INFO_FLAGS_MCS) {
-        out->mode = RTW_RATE_HT;
-        out->mcs = report->mcs;
-        out->nss = report->mcs / 8 + 1;
-    } else {
-        out->mode = RTW_RATE_LEGACY;
-        out->nss = 1;
-        out->bitrate100Kbps = report->legacy;
-    }
-    switch (report->bw) {
-    case RATE_INFO_BW_20: out->widthMHz = 20; break;
-    case RATE_INFO_BW_40: out->widthMHz = 40; break;
-    case RATE_INFO_BW_80: out->widthMHz = 80; break;
-    case RATE_INFO_BW_160: out->widthMHz = 160; break;
-    default: return;
-    }
-    out->bitrate100Kbps = rtw_tx_rate_calculate(out);
-    out->valid = out->bitrate100Kbps != 0;
-}
-
-void rtw88_hw_get_tx_rate(struct ieee80211_hw *hw, struct RTWTxRate *out)
-{
-    if (!out) return;
-    memset(out, 0, sizeof(*out));
-    if (hw) ieee80211_iterate_stations_atomic(hw, copy_tx_rate, out);
-}
-
-=== TX RATE AND FIRMWARE FEEDBACK WRITERS ===
-rtw/hal_rtw88/RTWCore88.cpp:279:bool RTWCore88::getTxRate(RTWTxRate &rate)
-rtw/hal_rtw88/RTWCore88.cpp:281:    rtw88LinuxGetTxRate(&linuxContext, rate);
-rtw/hal_rtw88/RTWCore88.cpp:621:    RTWTxRate liveRate = {};
-rtw/hal_rtw88/RTWCore88.cpp:622:    owner->getTxRate(liveRate);
-rtw/hal_rtw88/RTWCore88.hpp:40:    bool getTxRate(RTWTxRate &rate) override;
-rtw/hal_rtw88/Rtw88Hardware.c:147:#include "../../include/HAL/RTWTxRate.h"
-rtw/hal_rtw88/Rtw88Hardware.c:148:static void copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
-rtw/hal_rtw88/Rtw88Hardware.c:150:    struct RTWTxRate *out = opaque;
+=== RATE CALCULATION AND REPORT WRITERS ===
 rtw/hal_rtw88/Rtw88Hardware.c:152:    const struct rate_info *report = &si->ra_report.txrate;
 rtw/hal_rtw88/Rtw88Hardware.c:153:    if (!si->ra_report.bit_rate) return;
-rtw/hal_rtw88/Rtw88Hardware.c:176:    out->bitrate100Kbps = rtw_tx_rate_calculate(out);
-rtw/hal_rtw88/Rtw88Hardware.c:180:void rtw88_hw_get_tx_rate(struct ieee80211_hw *hw, struct RTWTxRate *out)
-rtw/hal_rtw88/Rtw88Hardware.c:184:    if (hw) ieee80211_iterate_stations_atomic(hw, copy_tx_rate, out);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:23:void rtw88_hw_get_tx_rate(struct ieee80211_hw *, struct RTWTxRate *);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:701:        info->flags |= IEEE80211_TX_CTL_REQ_TX_STATUS;
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:705:        info->flags |= IEEE80211_TX_CTL_REQ_TX_STATUS;
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:711:        info->flags |= IEEE80211_TX_CTL_REQ_TX_STATUS |
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:960:void rtw88LinuxGetTxRate(Rtw88LinuxContext *context, RTWTxRate &rate)
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:964:    if (hw) rtw88_hw_get_tx_rate(hw, &rate);
-rtw/hal_rtw88/Rtw88LinuxBridge.hpp:13:#include "../../include/HAL/RTWTxRate.h"
-rtw/hal_rtw88/Rtw88LinuxBridge.hpp:18:void rtw88LinuxGetTxRate(struct Rtw88LinuxContext *context, RTWTxRate &rate);
-rtw/hal_rtw88/Rtw88Namespace.h:6:#define rtw88_hw_get_tx_rate airportrtw88_rtw88_hw_get_tx_rate
-rtw/hal_rtw88/Rtw88Namespace.h:112:#define ieee80211_tx_status airportrtw88_ieee80211_tx_status
-rtw/hal_rtw88/Rtw88Namespace.h:113:#define ieee80211_tx_status_irqsafe airportrtw88_ieee80211_tx_status_irqsafe
-rtw/hal_rtw88/compat/net/mac80211.h:975:#define IEEE80211_TX_CTL_REQ_TX_STATUS  (1 << 0)
-rtw/hal_rtw88/compat/net/mac80211.h:994:struct ieee80211_tx_rate {
-rtw/hal_rtw88/compat/net/mac80211.h:1008:            struct ieee80211_tx_rate rates[IEEE80211_TX_MAX_RATES];
-rtw/hal_rtw88/compat/net/mac80211.h:1009:            s8  rts_cts_rate_idx;
-rtw/hal_rtw88/compat/net/mac80211.h:1020:            struct ieee80211_tx_rate rates[IEEE80211_TX_MAX_RATES];
-rtw/hal_rtw88/compat/net/mac80211.h:1082:    u8   rate_idx;
-rtw/hal_rtw88/compat/net/mac80211.h:1851:void ieee80211_tx_status_irqsafe(struct ieee80211_hw *hw, struct sk_buff *skb);
-rtw/hal_rtw88/compat/net/mac80211.h:1852:void ieee80211_tx_status(struct ieee80211_hw *hw, struct sk_buff *skb);
-rtw/hal_rtw88/compat/net/mac80211.h:2252:/* rate_info — used by rtw_ra_report in main.h */
-rtw/hal_rtw88/compat/net/mac80211.h:2284:    struct rate_info txrate;
-rtw/hal_rtw88/compat/rtw88_compat.c:593:void ieee80211_tx_status_irqsafe(struct ieee80211_hw *hw, struct sk_buff *skb)
-rtw/hal_rtw88/compat/rtw88_compat.c:597:    if (g_hw_cbs && g_hw_cbs->tx_status)
-rtw/hal_rtw88/compat/rtw88_compat.c:598:        g_hw_cbs->tx_status(ctx, skb);
-rtw/hal_rtw88/compat/rtw88_compat.c:603:void ieee80211_tx_status(struct ieee80211_hw *hw, struct sk_buff *skb)
-rtw/hal_rtw88/compat/rtw88_compat.c:605:    ieee80211_tx_status_irqsafe(hw, skb);
-rtw/hal_rtw88/compat/rtw88_compat.h:363:    void (*tx_status)(void *kext_hw, struct sk_buff *skb);
-rtw/hal_rtw88/compat/rtw89_compat.h:914:/* "non-irq" flavor: the compat tx_status path is context-agnostic */
-rtw/hal_rtw88/compat/rtw89_compat.h:915:static inline void ieee80211_tx_status_ni(struct ieee80211_hw *hw,
-rtw/hal_rtw88/compat/rtw89_compat.h:918:    ieee80211_tx_status(hw, skb);
+rtw/hal_rtw88/Rtw88Namespace.h:293:#define rtw_desc_to_bitrate airportrtw88_rtw_desc_to_bitrate
+rtw/hal_rtw88/Rtw88Namespace.h:294:#define rtw_desc_to_mcsrate airportrtw88_rtw_desc_to_mcsrate
 rtw/hal_rtw88/driver/fw.c:145:static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
 rtw/hal_rtw88/driver/fw.c:158:	si->ra_report.txrate.flags = 0;
 rtw/hal_rtw88/driver/fw.c:168:		si->ra_report.txrate.legacy = rtw_desc_to_bitrate(rate);
+rtw/hal_rtw88/driver/fw.c:172:	rtw_desc_to_mcsrate(rate, &mcs, &nss);
 rtw/hal_rtw88/driver/fw.c:174:		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_VHT_MCS;
 rtw/hal_rtw88/driver/fw.c:176:		si->ra_report.txrate.flags |= RATE_INFO_FLAGS_MCS;
 rtw/hal_rtw88/driver/fw.c:179:		si->ra_report.txrate.mcs = mcs;
@@ -359,423 +337,41 @@ rtw/hal_rtw88/driver/fw.c:187:		si->ra_report.txrate.bw = RATE_INFO_BW_80;
 rtw/hal_rtw88/driver/fw.c:189:		si->ra_report.txrate.bw = RATE_INFO_BW_40;
 rtw/hal_rtw88/driver/fw.c:191:		si->ra_report.txrate.bw = RATE_INFO_BW_20;
 rtw/hal_rtw88/driver/fw.c:194:	bit_rate = cfg80211_calculate_bitrate(&si->ra_report.txrate);
-rtw/hal_rtw88/driver/fw.c:196:	si->ra_report.desc_rate = rate;
 rtw/hal_rtw88/driver/fw.c:197:	si->ra_report.bit_rate = bit_rate;
 rtw/hal_rtw88/driver/fw.c:202:static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
-rtw/hal_rtw88/driver/fw.c:208:	if (WARN(length < rtwdev->chip->c2h_ra_report_size,
-rtw/hal_rtw88/driver/fw.c:212:	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
 rtw/hal_rtw88/driver/fw.c:217:	rtw_iterate_stas_atomic(rtwdev, rtw_fw_ra_report_iter, &ra_data);
 rtw/hal_rtw88/driver/fw.c:333:		rtw_fw_ra_report_handle(rtwdev, c2h->payload, len);
-rtw/hal_rtw88/driver/fw.c:743:	SET_RA_INFO_RATE_ID(h2c_pkt, si->rate_id);
-rtw/hal_rtw88/driver/fw.c:795:	SET_WL_PHY_INFO_TX_RATE_DESC(h2c_pkt, dm_info->tx_rate);
-rtw/hal_rtw88/driver/fw.h:598:#define SET_WL_PHY_INFO_TX_RATE_DESC(h2c_pkt, value)			       \
-rtw/hal_rtw88/driver/fw.h:661:#define SET_RA_INFO_RATE_ID(h2c_pkt, value)                                    \
 rtw/hal_rtw88/driver/mac80211.c:735:	sinfo->txrate = si->ra_report.txrate;
-rtw/hal_rtw88/driver/main.c:175:	u8 new_csi_rate_idx;
-rtw/hal_rtw88/driver/main.c:183:			      fix_rate_enable, &new_csi_rate_idx);
-rtw/hal_rtw88/driver/main.c:185:	if (new_csi_rate_idx != bf_info->cur_csi_rpt_rate)
-rtw/hal_rtw88/driver/main.c:186:		bf_info->cur_csi_rpt_rate = new_csi_rate_idx;
-rtw/hal_rtw88/driver/main.c:1052:static u8 get_rate_id(u8 wireless_set, enum rtw_bandwidth bw_mode, u8 tx_num)
-rtw/hal_rtw88/driver/main.c:1054:	u8 rate_id = 0;
-rtw/hal_rtw88/driver/main.c:1058:		rate_id = RTW_RATEID_B_20M;
-rtw/hal_rtw88/driver/main.c:1061:		rate_id = RTW_RATEID_G;
-rtw/hal_rtw88/driver/main.c:1064:		rate_id = RTW_RATEID_BG;
-rtw/hal_rtw88/driver/main.c:1068:			rate_id = RTW_RATEID_GN_N1SS;
-rtw/hal_rtw88/driver/main.c:1070:			rate_id = RTW_RATEID_GN_N2SS;
-rtw/hal_rtw88/driver/main.c:1072:			rate_id = RTW_RATEID_ARFR5_N_3SS;
-rtw/hal_rtw88/driver/main.c:1077:				rate_id = RTW_RATEID_BGN_40M_1SS;
-rtw/hal_rtw88/driver/main.c:1079:				rate_id = RTW_RATEID_BGN_40M_2SS;
-rtw/hal_rtw88/driver/main.c:1081:				rate_id = RTW_RATEID_ARFR5_N_3SS;
-rtw/hal_rtw88/driver/main.c:1083:				rate_id = RTW_RATEID_ARFR7_N_4SS;
-rtw/hal_rtw88/driver/main.c:1086:				rate_id = RTW_RATEID_BGN_20M_1SS;
-rtw/hal_rtw88/driver/main.c:1088:				rate_id = RTW_RATEID_BGN_20M_2SS;
-rtw/hal_rtw88/driver/main.c:1090:				rate_id = RTW_RATEID_ARFR5_N_3SS;
-rtw/hal_rtw88/driver/main.c:1092:				rate_id = RTW_RATEID_ARFR7_N_4SS;
-rtw/hal_rtw88/driver/main.c:1097:			rate_id = RTW_RATEID_ARFR1_AC_1SS;
-rtw/hal_rtw88/driver/main.c:1099:			rate_id = RTW_RATEID_ARFR0_AC_2SS;
-rtw/hal_rtw88/driver/main.c:1101:			rate_id = RTW_RATEID_ARFR4_AC_3SS;
-rtw/hal_rtw88/driver/main.c:1103:			rate_id = RTW_RATEID_ARFR6_AC_4SS;
-rtw/hal_rtw88/driver/main.c:1108:				rate_id = RTW_RATEID_ARFR1_AC_1SS;
-rtw/hal_rtw88/driver/main.c:1110:				rate_id = RTW_RATEID_ARFR0_AC_2SS;
-rtw/hal_rtw88/driver/main.c:1112:				rate_id = RTW_RATEID_ARFR4_AC_3SS;
-rtw/hal_rtw88/driver/main.c:1114:				rate_id = RTW_RATEID_ARFR6_AC_4SS;
-rtw/hal_rtw88/driver/main.c:1117:				rate_id = RTW_RATEID_ARFR2_AC_2G_1SS;
-rtw/hal_rtw88/driver/main.c:1119:				rate_id = RTW_RATEID_ARFR3_AC_2G_2SS;
-rtw/hal_rtw88/driver/main.c:1121:				rate_id = RTW_RATEID_ARFR4_AC_3SS;
-rtw/hal_rtw88/driver/main.c:1123:				rate_id = RTW_RATEID_ARFR6_AC_4SS;
-rtw/hal_rtw88/driver/main.c:1130:	return rate_id;
-rtw/hal_rtw88/driver/main.c:1237:	u8 rate_id;
-rtw/hal_rtw88/driver/main.c:1331:	rate_id = get_rate_id(wireless_set, bw_mode, tx_num);
-rtw/hal_rtw88/driver/main.c:1343:	si->rate_id = rate_id;
-rtw/hal_rtw88/driver/main.h:608:	u8 rate_id;
-rtw/hal_rtw88/driver/main.h:749:struct rtw_ra_report {
-rtw/hal_rtw88/driver/main.h:750:	struct rate_info txrate;
-rtw/hal_rtw88/driver/main.h:771:	u8 rate_id;
-rtw/hal_rtw88/driver/main.h:782:	struct rtw_ra_report ra_report;
-rtw/hal_rtw88/driver/main.h:1237:	u8 c2h_ra_report_size;
-rtw/hal_rtw88/driver/main.h:1532:	u8 wl_tx_rate;
-rtw/hal_rtw88/driver/main.h:1735:	u8 tx_rate;
-rtw/hal_rtw88/driver/pci.c:1020:		if (info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS) {
-rtw/hal_rtw88/driver/pci.c:1032:		ieee80211_tx_status_irqsafe(hw, skb);
-rtw/hal_rtw88/driver/phy.c:613:static u32 rtw_phy_get_rrsr_mask(struct rtw_dev *rtwdev, u8 rate_idx)
-rtw/hal_rtw88/driver/phy.c:617:	rate_order = rate_idx;
-rtw/hal_rtw88/driver/phy.c:619:	if (rate_idx >= DESC_RATEVHT4SS_MCS0)
-rtw/hal_rtw88/driver/phy.c:621:	else if (rate_idx >= DESC_RATEVHT3SS_MCS0)
-rtw/hal_rtw88/driver/phy.c:623:	else if (rate_idx >= DESC_RATEVHT2SS_MCS0)
-rtw/hal_rtw88/driver/phy.c:625:	else if (rate_idx >= DESC_RATEVHT1SS_MCS0)
-rtw/hal_rtw88/driver/phy.c:627:	else if (rate_idx >= DESC_RATEMCS24)
-rtw/hal_rtw88/driver/phy.c:629:	else if (rate_idx >= DESC_RATEMCS16)
-rtw/hal_rtw88/driver/phy.c:631:	else if (rate_idx >= DESC_RATEMCS8)
-rtw/hal_rtw88/driver/phy.c:633:	else if (rate_idx >= DESC_RATEMCS0)
-rtw/hal_rtw88/driver/phy.c:635:	else if (rate_idx >= DESC_RATE6M)
-rtw/hal_rtw88/driver/phy.c:640:	if (rate_idx >= DESC_RATEMCS0 || rate_order == 0)
-rtw/hal_rtw88/driver/phy.c:653:	mask = rtw_phy_get_rrsr_mask(rtwdev, si->ra_report.desc_rate);
-rtw/hal_rtw88/driver/phy.c:2373:	u8 base_idx, rate_idx;
-rtw/hal_rtw88/driver/phy.c:2385:		rate_idx = rates[rate];
-rtw/hal_rtw88/driver/phy.c:2386:		hal->tx_pwr_by_rate_offset_2g[path][rate_idx] -= base_2g;
-rtw/hal_rtw88/driver/phy.c:2387:		hal->tx_pwr_by_rate_offset_5g[path][rate_idx] -= base_5g;
-rtw/hal_rtw88/driver/phy.c:2476:		if (rtwdev->dm_info.tx_rate <= DESC_RATE11M) {
-rtw/hal_rtw88/driver/rtw8723d.c:2140:	.c2h_ra_report_size = 7,
-rtw/hal_rtw88/driver/rtw8723x.c:628:	u8 tx_rate = dm_info->tx_rate;
-rtw/hal_rtw88/driver/rtw8723x.c:631:	switch (tx_rate) {
-rtw/hal_rtw88/driver/rtw8723x.c:651:		rtw_warn(rtwdev, "pwrtrack unhandled tx_rate 0x%x\n", tx_rate);
-rtw/hal_rtw88/driver/rtw8814a.c:1904:	u8 tx_rate = rtwdev->dm_info.tx_rate;
-rtw/hal_rtw88/driver/rtw8814a.c:1908:	tx_pwr_idx = rtw_phy_get_tx_power_index(rtwdev, path, tx_rate,
-rtw/hal_rtw88/driver/rtw8814a.c:2207:	.c2h_ra_report_size = 6,
-rtw/hal_rtw88/driver/rtw8821c.c:688:	u8 rate, rate_idx, pwr_index, shift;
-rtw/hal_rtw88/driver/rtw8821c.c:697:			rate_idx = rate & 0xfc;
-rtw/hal_rtw88/driver/rtw8821c.c:698:			rtw_write32(rtwdev, offset_txagc[path] + rate_idx,
-rtw/hal_rtw88/driver/rtw8821c.c:1078:	u8 tx_rate = dm_info->tx_rate;
-rtw/hal_rtw88/driver/rtw8821c.c:1081:	tx_pwr_idx = rtw_phy_get_tx_power_index(rtwdev, RF_PATH_A, tx_rate,
-rtw/hal_rtw88/driver/rtw8821c.c:1998:	.c2h_ra_report_size = 7,
-rtw/hal_rtw88/driver/rtw8822b.c:943:	u8 rate, rate_idx, pwr_index, shift;
-rtw/hal_rtw88/driver/rtw8822b.c:952:			rate_idx = rate & 0xfc;
-rtw/hal_rtw88/driver/rtw8822b.c:953:			rtw_write32(rtwdev, offset_txagc[path] + rate_idx,
-rtw/hal_rtw88/driver/rtw8822b.c:1425:	u8 tx_rate = dm_info->tx_rate;
-rtw/hal_rtw88/driver/rtw8822b.c:1428:	tx_pwr_idx = rtw_phy_get_tx_power_index(rtwdev, path, tx_rate,
-rtw/hal_rtw88/driver/rtw8822b.c:2541:	.c2h_ra_report_size = 7,
-rtw/hal_rtw88/driver/rtw8822c.c:1964:#define WLAN_RESP_TXRATE		0x84
-rtw/hal_rtw88/driver/rtw8822c.c:2090:	rtw_write8(rtwdev, REG_BBPSF_CTRL + 2, WLAN_RESP_TXRATE);
-rtw/hal_rtw88/driver/rtw8822c.c:2718:	u8 rate_idx = rate & 0xfc;
-rtw/hal_rtw88/driver/rtw8822c.c:2732:	rtw_write32_mask(rtwdev, offset_txagc + rate_idx, MASKDWORD,
-rtw/hal_rtw88/driver/rtw8822c.c:5359:	.c2h_ra_report_size = 7,
-rtw/hal_rtw88/driver/rx.c:223:		rx_status->rate_idx = pkt_stat->rate - DESC_RATE6M;
-rtw/hal_rtw88/driver/rx.c:227:		rx_status->rate_idx = pkt_stat->rate - DESC_RATE1M;
+rtw/hal_rtw88/driver/main.c:127:u16 rtw_desc_to_bitrate(u8 desc_rate)
+rtw/hal_rtw88/driver/main.h:2237:void rtw_desc_to_mcsrate(u16 rate, u8 *mcs, u8 *nss);
+rtw/hal_rtw88/driver/main.h:2257:u16 rtw_desc_to_bitrate(u8 desc_rate);
 rtw/hal_rtw88/driver/rx.c:229:		rtw_desc_to_mcsrate(pkt_stat->rate, &rx_status->rate_idx,
-rtw/hal_rtw88/driver/tx.c:52:		      le32_encode_bits(pkt_info->rate_id, RTW_TX_DESC_W1_RATE_ID) |
-rtw/hal_rtw88/driver/tx.c:112:static u8 get_highest_ht_tx_rate(struct rtw_dev *rtwdev,
-rtw/hal_rtw88/driver/tx.c:125:static u8 get_highest_vht_tx_rate(struct rtw_dev *rtwdev,
-rtw/hal_rtw88/driver/tx.c:215:static void rtw_tx_report_tx_status(struct rtw_dev *rtwdev,
-rtw/hal_rtw88/driver/tx.c:227:	ieee80211_tx_status_irqsafe(rtwdev->hw, skb);
-rtw/hal_rtw88/driver/tx.c:254:			rtw_tx_report_tx_status(rtwdev, cur, st == 0);
-rtw/hal_rtw88/driver/tx.c:280:		pkt_info->rate_id = RTW_RATEID_B_20M;
-rtw/hal_rtw88/driver/tx.c:284:		pkt_info->rate_id = RTW_RATEID_G;
-rtw/hal_rtw88/driver/tx.c:348:	u8 rate_id = 6;
-rtw/hal_rtw88/driver/tx.c:369:		rate = get_highest_vht_tx_rate(rtwdev, sta);
-rtw/hal_rtw88/driver/tx.c:371:		rate = get_highest_ht_tx_rate(rtwdev, sta);
-rtw/hal_rtw88/driver/tx.c:380:	rate_id = si->rate_id;
-rtw/hal_rtw88/driver/tx.c:390:	pkt_info->rate_id = rate_id;
-rtw/hal_rtw88/driver/tx.c:424:	pkt_info->rate_id = RTW_RATEID_G;
-rtw/hal_rtw88/driver/tx.c:466:	if (info->flags & IEEE80211_TX_CTL_REQ_TX_STATUS)
-rtw/hal_rtw88/driver/tx.h:32:#define RTW_TX_DESC_W1_RATE_ID GENMASK(20, 16)
+rtw/hal_rtw88/driver/util.c:82:void rtw_desc_to_mcsrate(u16 rate, u8 *mcs, u8 *nss)
 
-=== BUILD SCRIPT SOURCE SELECTION ===
-#!/bin/bash
-set -euo pipefail
-
-ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-OUTPUT="$ROOT/build/releases"
-OBJECTS="$ROOT/build/releases-obj"
-CONFIGURATION="${CONFIGURATION:-Release}"
-
-BACKEND_C_SOURCES="fw_blobs89.c rtw88_compat.c rtw88_firmware.c rtw89_compat.c Senmiko.c acpi.c cam.c chan.c coex.c core.c debug.c efuse.c efuse_be.c fw.c mac.c mac80211.c mac_be.c pci.c pci_be.c phy.c phy_be.c ps.c regd.c rtw8852a.c rtw8852a_rfk.c rtw8852a_rfk_table.c rtw8852a_table.c rtw8852ae.c sar.c ser.c util.c wow.c"
-
-TARGETS=(
-  AirportRTW-High\ Sierra
-  AirportRTW-Mojave
-  AirportRTW-Catalina
-  AirportRTW-Big\ Sur
-  AirportRTW-Monterey
-  AirportRTW-Ventura
-  AirportRTW-Sonoma14.0
-  AirportRTW-Sonoma14.4
-  AirportRTW-Sequoia
-  AirportRTW-Tahoe
-)
-
-if (( $# )); then
-  TARGETS=("$@")
-fi
-
-EXTRA_BUILD_SETTINGS=()
-if [[ "${AWDL_STARTUP_PROBE:-0}" == "1" ]]; then
-  if [[ "${#TARGETS[@]}" != "1" || "${TARGETS[0]}" != "AirportRTW-Tahoe" ]]; then
-    echo "AWDL startup probe builds require the single AirportRTW-Tahoe target" >&2
-    exit 2
-  fi
-  # Keep opt-in diagnostics separate from normal release artifacts and caches.
-  OUTPUT="$ROOT/build/awdl-startup-probe"
-  OBJECTS="$ROOT/build/awdl-startup-probe-obj"
-  EXTRA_BUILD_SETTINGS+=( 'OTHER_CPLUSPLUSFLAGS=$(inherited) -DRTW_AWDL_STARTUP_PROBE=1' )
-fi
-
-for target in "${TARGETS[@]}"; do
-  xcodebuild -quiet \
-    -project "$ROOT/AirportRTW.xcodeproj" \
-    -target "$target" \
-    -configuration "$CONFIGURATION" \
-    ARCHS=x86_64 \
-    CODE_SIGNING_ALLOWED=NO \
-    EXCLUDED_SOURCE_FILE_NAMES="$BACKEND_C_SOURCES" \
-    'OTHER_LDFLAGS=$(inherited) $(DERIVED_FILE_DIR)/librtw89_c.a $(DERIVED_FILE_DIR)/librtw88_c.a $(DERIVED_FILE_DIR)/librtw_sae.a' \
-    SYMROOT="$OUTPUT" \
-    OBJROOT="$OBJECTS" \
-    ${EXTRA_BUILD_SETTINGS[@]+"${EXTRA_BUILD_SETTINGS[@]}"}
-done
-
-if [[ "$CONFIGURATION" == "Release" ]]; then
-  for target in "${TARGETS[@]}"; do
-    executable="$OUTPUT/$CONFIGURATION/${target#AirportRTW-}/AirportRTW.kext/Contents/MacOS/AirportRTW"
-    if [[ -f "$executable" ]]; then
-      xcrun strip -S -x "$executable"
-    fi
-  done
-fi
-
-echo "Kexts are available in $OUTPUT/$CONFIGURATION"
-
-=== PROJECT AND BUILD FILES ===
-./AirportRTW.xcodeproj
-./AirportRTW.xcodeproj/project.pbxproj
-./MacKernelSDK/Library/kmod/libkmod.xcodeproj
-
-=== NATIVE RATE REPORTING IMPLEMENTATIONS ===
-AirportRTW/AirportRTWSkywalkInterface.cpp:3://  AirportRTWSkywalkInterface.cpp
-AirportRTW/AirportRTWSkywalkInterface.cpp:10:#include "AirportRTWSkywalkInterface.hpp"
-AirportRTW/AirportRTWSkywalkInterface.cpp:20:OSDefineMetaClassAndStructors(AirportRTWSkywalkInterface, IO80211InfraProtocol);
-AirportRTW/AirportRTWSkywalkInterface.cpp:97:void AirportRTWSkywalkInterface::associateSSID(uint8_t *ssid, uint32_t ssid_len, const struct ether_addr &bssid, uint32_t authtype_lower, uint32_t authtype_upper, uint8_t *key, uint32_t key_len, int key_index)
-AirportRTW/AirportRTWSkywalkInterface.cpp:175:void AirportRTWSkywalkInterface::setPTK(const u_int8_t *key, size_t key_len) {
-AirportRTW/AirportRTWSkywalkInterface.cpp:216:void AirportRTWSkywalkInterface::setGTK(const u_int8_t *gtk, size_t key_len, u_int8_t kid, u_int8_t *rsc) {
-AirportRTW/AirportRTWSkywalkInterface.cpp:269:bool AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:285://ifnet_t AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:293:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:307:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:316:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:324:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:388:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:423:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:438:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:447:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:462:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:475:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:484:    RTWTxRate liveRate = {};
-AirportRTW/AirportRTWSkywalkInterface.cpp:485:    if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/AirportRTWSkywalkInterface.cpp:515:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:535:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:543:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:557:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:570:        RTWTxRate liveRate = {};
-AirportRTW/AirportRTWSkywalkInterface.cpp:571:        if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/AirportRTWSkywalkInterface.cpp:573:            rd->rate[0] = liveRate.bitrate100Kbps / 10; // Apple ABI uses integer Mbps.
-AirportRTW/AirportRTWSkywalkInterface.cpp:617:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:630:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:647:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:670:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:687:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:701:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:717:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:725:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:734:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:775:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:803:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:821:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:832:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:844:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:861:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:873:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:880:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:886:    RTWTxRate liveRate = {};
-AirportRTW/AirportRTWSkywalkInterface.cpp:887:    if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/AirportRTWSkywalkInterface.cpp:898:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:917:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:983:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:992:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.cpp:1001:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/AirportRTWSkywalkInterface.hpp:5://  AirportRTWSkywalkInterface.hpp
-AirportRTW/AirportRTWSkywalkInterface.hpp:12:#ifndef AirportRTWSkywalkInterface_hpp
-AirportRTW/AirportRTWSkywalkInterface.hpp:13:#define AirportRTWSkywalkInterface_hpp
-AirportRTW/AirportRTWSkywalkInterface.hpp:17:class AirportRTWSkywalkInterface : public IO80211InfraProtocol {
-AirportRTW/AirportRTWSkywalkInterface.hpp:18:    OSDeclareDefaultStructors(AirportRTWSkywalkInterface)
-AirportRTW/AirportRTWSkywalkInterface.hpp:276:#endif /* AirportRTWSkywalkInterface_hpp */
-AirportRTW/AirportRTWV2.cpp:15:#include "AirportRTWSkywalkInterface.hpp"
-AirportRTW/AirportRTWV2.cpp:262:    fNetIf = new AirportRTWSkywalkInterface;
-AirportRTW/AirportSTAIOCTL.cpp:484:        RTWTxRate liveRate = {};
-AirportRTW/AirportSTAIOCTL.cpp:485:        if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/AirportSTAIOCTL.cpp:487:            rd->rate[0] = liveRate.bitrate100Kbps / 10; // Apple ABI uses integer Mbps.
-AirportRTW/AirportSTAIOCTL.cpp:773:    RTWTxRate liveRate = {};
-AirportRTW/AirportSTAIOCTL.cpp:774:    if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/AirportSTAIOCTL.cpp:1302:    RTWTxRate liveRate = {};
-AirportRTW/AirportSTAIOCTL.cpp:1303:    if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/WCL/AirportRTWNativeInterface.hpp:2://  AirportRTWSkywalkInterface.hpp
-AirportRTW/WCL/AirportRTWNativeInterface.hpp:9:#ifndef AirportRTWSkywalkInterface_hpp
-AirportRTW/WCL/AirportRTWNativeInterface.hpp:10:#define AirportRTWSkywalkInterface_hpp
-AirportRTW/WCL/AirportRTWNativeInterface.hpp:24:class AirportRTWSkywalkInterface : public IO80211InfraProtocol {
-AirportRTW/WCL/AirportRTWNativeInterface.hpp:25:    OSDeclareDefaultStructors(AirportRTWSkywalkInterface)
-AirportRTW/WCL/AirportRTWNativeInterface.hpp:499:#endif /* AirportRTWSkywalkInterface_hpp */
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:3://  AirportRTWSkywalkInterface.cpp
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:23:OSDefineMetaClassAndStructors(AirportRTWSkywalkInterface, IO80211InfraProtocol);
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:100:void AirportRTWSkywalkInterface::associateSSID(uint8_t *ssid, uint32_t ssid_len, const struct ether_addr &bssid, uint32_t authtype_lower, uint32_t authtype_upper, uint8_t *key, uint32_t key_len, int key_index)
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:180:void AirportRTWSkywalkInterface::setPTK(const u_int8_t *key, size_t key_len) {
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:221:void AirportRTWSkywalkInterface::setGTK(const u_int8_t *gtk, size_t key_len, u_int8_t kid, u_int8_t *rsc) {
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:274:bool AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:300://ifnet_t AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:308:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:335:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:344:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:352:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:421:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:456:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:471:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:480:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:495:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:508:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:517:    RTWTxRate liveRate = {};
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:518:    if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:548:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:572:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:580:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:594:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:607:        RTWTxRate liveRate = {};
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:608:        if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:610:            rd->rate[0] = liveRate.bitrate100Kbps / 10; // Apple ABI uses integer Mbps.
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:654:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:674:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:691:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:716:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:735:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:749:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:765:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:773:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:782:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:823:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:851:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:869:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:880:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:892:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:909:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:921:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:928:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:934:    RTWTxRate liveRate = {};
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:935:    if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:946:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:965:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:1030:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:1039:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:1048:IOReturn AirportRTWSkywalkInterface::
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:1073:IOReturn AirportRTWSkywalkInterface::getHW_ADDR(apple80211_hw_mac_address *data)
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:1083:IOReturn AirportRTWSkywalkInterface::setMacAddress(ether_addr &address)
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:1088:IOReturn AirportRTWSkywalkInterface::setMacAddress(mloAddrArray &addresses)
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:1097:IOReturn AirportRTWSkywalkInterface::getHW_ADDR(apple80211_hw_mac_address *)
-AirportRTW/WCL/AirportRTWSkywalkInterface.cpp:1104:IOReturn AirportRTWSkywalkInterface::setVIRTUAL_IF_CREATE(apple80211_virt_if_create_data *data)
-AirportRTW/WCL/AirportRTWV2.cpp:36:        static_cast<AirportRTWSkywalkInterface *>(fNetIf)->stopWCL();
-AirportRTW/WCL/AirportRTWV2.cpp:105:    static_cast<AirportRTWSkywalkInterface *>(interface)->handleWCLEvent(msgCode, data);
-AirportRTW/WCL/AirportRTWV2.cpp:139:        static_cast<AirportRTWSkywalkInterface *>(that->fNetIf)->completeWCLScan();
-AirportRTW/WCL/AirportRTWV2.cpp:446:    fNetIf = new AirportRTWSkywalkInterface;
-AirportRTW/WCL/AirportRTWV2.cpp:448:    if (!fNetIf || !static_cast<AirportRTWSkywalkInterface *>(fNetIf)->init(this)) {
-AirportRTW/WCL/AirportRTWV2.cpp:581:        static_cast<AirportRTWSkywalkInterface *>(fNetIf)->stopWCL();
-AirportRTW/WCL/AirportRTWV2.cpp:772:    static_cast<AirportRTWSkywalkInterface *>(that->fNetIf)->handleWCLLink(
-AirportRTW/WCL/AirportRTWV2.cpp:1172:        static_cast<AirportRTWSkywalkInterface *>(fNetIf)->handleWCLEvent(
-AirportRTW/WCL/WCL.cpp:82:struct AirportRTWSkywalkInterface::CountryUpdate {
-AirportRTW/WCL/WCL.cpp:83:    AirportRTWSkywalkInterface *interface;
-AirportRTW/WCL/WCL.cpp:90:void AirportRTWSkywalkInterface::deferWCLCountryUpdate()
-AirportRTW/WCL/WCL.cpp:114:void AirportRTWSkywalkInterface::wclCountryUpdateThread(void *arg, void *)
-AirportRTW/WCL/WCL.cpp:128:IOReturn AirportRTWSkywalkInterface::wclCountryUpdateGated(
-AirportRTW/WCL/WCL.cpp:152:bool AirportRTWSkywalkInterface::initWCL()
-AirportRTW/WCL/WCL.cpp:165:void AirportRTWSkywalkInterface::stopWCL()
-AirportRTW/WCL/WCL.cpp:201:IOReturn AirportRTWSkywalkInterface::stopWCLGated(
-AirportRTW/WCL/WCL.cpp:204:    static_cast<AirportRTWSkywalkInterface *>(arg)->wclStopping = true;
-AirportRTW/WCL/WCL.cpp:208:void AirportRTWSkywalkInterface::free()
-AirportRTW/WCL/WCL.cpp:219:IOReturn AirportRTWSkywalkInterface::wclCommand(OSObject *, void *a0, void *a1, void *a2, void *)
-AirportRTW/WCL/WCL.cpp:221:    auto self = static_cast<AirportRTWSkywalkInterface *>(a0);
-AirportRTW/WCL/WCL.cpp:256:IOReturn AirportRTWSkywalkInterface::setWCL_SCAN_REQ(apple80211ScanRequest *request)
-AirportRTW/WCL/WCL.cpp:261:IOReturn AirportRTWSkywalkInterface::setWCL_SCAN_ABORT(void *)
-AirportRTW/WCL/WCL.cpp:266:IOReturn AirportRTWSkywalkInterface::setWCL_ASSOCIATE(apple80211AssocCandidates *request)
-AirportRTW/WCL/WCL.cpp:272:IOReturn AirportRTWSkywalkInterface::setWCL_JOIN_ABORT(void *)
-AirportRTW/WCL/WCL.cpp:274:IOReturn AirportRTWSkywalkInterface::setWCL_JOIN_ABORT(apple80211_wcl_abort_join *)
-AirportRTW/WCL/WCL.cpp:280:IOReturn AirportRTWSkywalkInterface::setWCL_LEAVE_NETWORK(apple80211_leave_network *)
-AirportRTW/WCL/WCL.cpp:285:IOReturn AirportRTWSkywalkInterface::beginWCLScan(apple80211ScanRequest *request)
-AirportRTW/WCL/WCL.cpp:347:void AirportRTWSkywalkInterface::finishWCLScan(IOReturn status)
-AirportRTW/WCL/WCL.cpp:386:void AirportRTWSkywalkInterface::completeWCLScan()
-AirportRTW/WCL/WCL.cpp:392:void AirportRTWSkywalkInterface::publishWCLBeacon(const ieee80211_node *node, const uint8_t *ies, size_t length)
-AirportRTW/WCL/WCL.cpp:444:void AirportRTWSkywalkInterface::clearWCLPMKSA()
-AirportRTW/WCL/WCL.cpp:455:IOReturn AirportRTWSkywalkInterface::setCLEAR_PMKSA_CACHE(void *)
-AirportRTW/WCL/WCL.cpp:460:IOReturn AirportRTWSkywalkInterface::installWCLKey(apple80211_key *key)
-AirportRTW/WCL/WCL.cpp:489:IOReturn AirportRTWSkywalkInterface::accessWCLRSN(apple80211_rsn_ie_data *data, bool write)
-AirportRTW/WCL/WCL.cpp:511:IOReturn AirportRTWSkywalkInterface::beginWCLJoin(apple80211AssocCandidates *request)
-AirportRTW/WCL/WCL.cpp:520:IOReturn AirportRTWSkywalkInterface::startWCLJoin(AirportWCL::JoinRequest &join)
-AirportRTW/WCL/WCL.cpp:665:void AirportRTWSkywalkInterface::resumeWCLJoin()
-AirportRTW/WCL/WCL.cpp:684:IOReturn AirportRTWSkywalkInterface::postWCLJoinMessage(unsigned message, void *data, size_t size)
-AirportRTW/WCL/WCL.cpp:708:void AirportRTWSkywalkInterface::drainWCLJoinMessages(OSObject *owner, IOTimerEventSource *)
-AirportRTW/WCL/WCL.cpp:710:    auto self = static_cast<AirportRTWSkywalkInterface *>(owner);
-AirportRTW/WCL/WCL.cpp:726:IOReturn AirportRTWSkywalkInterface::deliverWCLJoinMessage(unsigned message, void *data, size_t size)
-AirportRTW/WCL/WCL.cpp:747:void AirportRTWSkywalkInterface::finishWCLJoin(uint16_t status, uint16_t reason, IOReturn driverStatus)
-AirportRTW/WCL/WCL.cpp:772:void AirportRTWSkywalkInterface::wclJoinTimeout(OSObject *owner, IOTimerEventSource *)
-AirportRTW/WCL/WCL.cpp:774:    auto self = OSDynamicCast(AirportRTWSkywalkInterface, owner);
-AirportRTW/WCL/WCL.cpp:781:IOReturn AirportRTWSkywalkInterface::leaveWCLNetwork()
-AirportRTW/WCL/WCL.cpp:808:IOReturn AirportRTWSkywalkInterface::abortWCLJoin()
-AirportRTW/WCL/WCL.cpp:815:void AirportRTWSkywalkInterface::handleWCLLink(bool up)
-AirportRTW/WCL/WCL.cpp:832:void AirportRTWSkywalkInterface::handleWCLEvent(int code, void *data)
-AirportRTW/WCL/WCL.cpp:988:IOReturn AirportRTWSkywalkInterface::getWCL_VALID_CHANNEL_COUNT(unsigned long *count)
-AirportRTW/WCL/WCL.cpp:1000:IOReturn AirportRTWSkywalkInterface::setWCL_LINK_STATE_UPDATE(apple80211_wcl_update_link_state *data)
-AirportRTW/WCL/WCL.cpp:1023:IOReturn AirportRTWSkywalkInterface::getWCL_BSS_INFO(apple80211_beacon_msg *data)
-AirportRTW/WCL/WCL.cpp:1030:IOReturn AirportRTWSkywalkInterface::getWCL_EXTENDED_BSS_INFO(apple80211_extended_bss_info *data)
-AirportRTW/WCL/WCL.cpp:1037:IOReturn AirportRTWSkywalkInterface::copyWCLExtendedBss(void *data)
-AirportRTW/WCL/WCL.cpp:1082:IOReturn AirportRTWSkywalkInterface::setWCL_UPDATE_FAST_LANE(apple80211_fastlane *data)
-AirportRTW/WCL/WCL.cpp:1090:IOReturn AirportRTWSkywalkInterface::getWCL_LOW_LATENCY_INFO(apple80211_low_latency_info *data)
-AirportRTW/WCL/WCL.cpp:1099:IOReturn AirportRTWSkywalkInterface::getCHANNELS_INFO(apple80211_channels_info *data)
-AirportRTW/WCL/WCL.cpp:1108:IOReturn AirportRTWSkywalkInterface::copyWCLChannels(void *data)
-AirportRTW/WCL/WCL.cpp:1129:IOReturn AirportRTWSkywalkInterface::getWCL_TRAFFIC_COUNTERS(apple80211_wcl_traffic_counters *data)
-AirportRTW/WCL/WCL.cpp:1138:IOReturn AirportRTWSkywalkInterface::copyWCLTrafficCounters(void *data)
-AirportRTW/WCL/WCL.cpp:1149:IOReturn AirportRTWSkywalkInterface::getWCL_CHANNELS_INFO(apple80211ChannelInfo *data)
-AirportRTW/WCL/WCL.cpp:1176:IOReturn AirportRTWSkywalkInterface::getBEACON_INFO(apple80211_beacon_info_t *data)
-include/HAL/ItlDriverInfo.hpp:18:#include "RTWTxRate.h"
-include/HAL/ItlDriverInfo.hpp:33:    virtual bool getTxRate(RTWTxRate &rate) { (void)rate; return false; }
-include/HAL/RTWTxRate.h:11:struct RTWTxRate {
-include/HAL/RTWTxRate.h:12:    uint32_t bitrate100Kbps;
-include/HAL/RTWTxRate.h:28:static inline uint32_t rtw_tx_rate_calculate(const struct RTWTxRate *rate)
-include/HAL/RTWTxRate.h:32:    if (rate->mode == RTW_RATE_LEGACY) return rate->bitrate100Kbps;
-rtw/hal_rtw88/RTWCore88.cpp:279:bool RTWCore88::getTxRate(RTWTxRate &rate)
-rtw/hal_rtw88/RTWCore88.cpp:621:    RTWTxRate liveRate = {};
-rtw/hal_rtw88/RTWCore88.cpp:622:    owner->getTxRate(liveRate);
-rtw/hal_rtw88/RTWCore88.cpp:629:    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
-rtw/hal_rtw88/RTWCore88.hpp:40:    bool getTxRate(RTWTxRate &rate) override;
-rtw/hal_rtw88/Rtw88Hardware.c:147:#include "../../include/HAL/RTWTxRate.h"
-rtw/hal_rtw88/Rtw88Hardware.c:150:    struct RTWTxRate *out = opaque;
-rtw/hal_rtw88/Rtw88Hardware.c:167:        out->bitrate100Kbps = report->legacy;
-rtw/hal_rtw88/Rtw88Hardware.c:176:    out->bitrate100Kbps = rtw_tx_rate_calculate(out);
-rtw/hal_rtw88/Rtw88Hardware.c:177:    out->valid = out->bitrate100Kbps != 0;
-rtw/hal_rtw88/Rtw88Hardware.c:180:void rtw88_hw_get_tx_rate(struct ieee80211_hw *hw, struct RTWTxRate *out)
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:23:void rtw88_hw_get_tx_rate(struct ieee80211_hw *, struct RTWTxRate *);
-rtw/hal_rtw88/Rtw88LinuxBridge.cpp:960:void rtw88LinuxGetTxRate(Rtw88LinuxContext *context, RTWTxRate &rate)
-rtw/hal_rtw88/Rtw88LinuxBridge.hpp:13:#include "../../include/HAL/RTWTxRate.h"
-rtw/hal_rtw88/Rtw88LinuxBridge.hpp:18:void rtw88LinuxGetTxRate(struct Rtw88LinuxContext *context, RTWTxRate &rate);
-
-=== TX SOURCE CHANGE ===
-diff --git a/rtw/hal_rtw88/driver/tx.c b/rtw/hal_rtw88/driver/tx.c
-index e3a16aa..f44e03a 100644
---- a/rtw/hal_rtw88/driver/tx.c
-+++ b/rtw/hal_rtw88/driver/tx.c
-@@ -189,8 +189,7 @@ void rtw_tx_report_purge_timer(struct timer_list *t)
- 	rtw_warn(rtwdev, "failed to get tx report from firmware\n");
- 
- 	spin_lock_irqsave(&tx_report->q_lock, flags);
--	rtw88_candidate_log("rtw88: TX report expired pending=%u; ACK unknown\n",
--                            skb_queue_len(&tx_report->queue));
-+	rtw_warn(rtwdev, "TX report expired; pending=%u, ACK status unknown\n", skb_queue_len(&tx_report->queue));
- 	skb_queue_purge(&tx_report->queue);
- 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
- }
-
-SOURCE CAPTURE COMPLETE
-LOG=/Users/shohel/Desktop/AirportRTW-TX-RATE-BODIES.txt
+=== SEQUOIA TARGET SOURCE MEMBERSHIP ===
+490:		F8A028222A4A7DDC00C6DE90 /* AirportRTWV2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028202A4A7DDC00C6DE90 /* AirportRTWV2.cpp */; };
+494:		F8A028722A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028702A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp */; };
+770:		F8D94CCD2B9ABFE20081A3C4 /* AirportRTWV2.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028202A4A7DDC00C6DE90 /* AirportRTWV2.cpp */; };
+775:		F8D94CD22B9ABFE20081A3C4 /* AirportRTWSkywalkInterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F8A028702A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp */; };
+1135:		00B6E3322109E6A8EBBE7429 /* AirportRTW-Sequoia WCL/AirportRTWV2.cpp */ = {isa = PBXBuildFile; fileRef = DCF64BCD448F0C0719DD9131 /* AirportRTWV2.cpp */; };
+1136:		1015BB37CB80C30DD4C9AD6F /* AirportRTW-Sequoia WCL/AirportRTWSkywalkInterface.cpp */ = {isa = PBXBuildFile; fileRef = 1609A38552302A3D45D6666F /* AirportRTWSkywalkInterface.cpp */; };
+1138:		AB9BDFA642C2339CCA9690F5 /* AirportRTW-Tahoe WCL/AirportRTWV2.cpp */ = {isa = PBXBuildFile; fileRef = DCF64BCD448F0C0719DD9131 /* AirportRTWV2.cpp */; };
+1139:		1690A53773C7C2C8CB17D267 /* AirportRTW-Tahoe WCL/AirportRTWSkywalkInterface.cpp */ = {isa = PBXBuildFile; fileRef = 1609A38552302A3D45D6666F /* AirportRTWSkywalkInterface.cpp */; };
+1396:		F8A028202A4A7DDC00C6DE90 /* AirportRTWV2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AirportRTWV2.cpp; sourceTree = "<group>"; };
+1400:		F8A028702A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = AirportRTWSkywalkInterface.cpp; sourceTree = "<group>"; };
+1537:		DCF64BCD448F0C0719DD9131 /* WCL/AirportRTWV2.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "AirportRTW/WCL/AirportRTWV2.cpp"; sourceTree = SOURCE_ROOT; };
+1538:		1609A38552302A3D45D6666F /* WCL/AirportRTWSkywalkInterface.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "AirportRTW/WCL/AirportRTWSkywalkInterface.cpp"; sourceTree = SOURCE_ROOT; };
+1541:		511E0B690B4B222E8418B477 /* WCL/AirportRTWNativeInterface.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = "AirportRTW/WCL/AirportRTWNativeInterface.hpp"; sourceTree = SOURCE_ROOT; };
+1547:		07B5BB249744E37FC2B8C48B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "rtw/hal_rtw88/RTWCore88.cpp"; sourceTree = SOURCE_ROOT; };
+1861:				F8A028202A4A7DDC00C6DE90 /* AirportRTWV2.cpp */,
+1865:				F8A028702A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp */,
+3546:				F8A028222A4A7DDC00C6DE90 /* AirportRTWV2.cpp in Sources */,
+3551:				F8A028722A4A7FE100C6DE90 /* AirportRTWSkywalkInterface.cpp in Sources */,
+3616:				F8D94CCD2B9ABFE20081A3C4 /* AirportRTWV2.cpp in Sources */,
+3621:				F8D94CD22B9ABFE20081A3C4 /* AirportRTWSkywalkInterface.cpp in Sources */,
+3687:				00B6E3322109E6A8EBBE7429 /* AirportRTWV2.cpp in Sources */,
+3691:				1015BB37CB80C30DD4C9AD6F /* AirportRTWSkywalkInterface.cpp in Sources */,
+3760:				AB9BDFA642C2339CCA9690F5 /* AirportRTWV2.cpp in Sources */,
+3764:				1690A53773C7C2C8CB17D267 /* AirportRTWSkywalkInterface.cpp in Sources */,
+LOG=/Users/shohel/Desktop/AirportRTW-FIRMWARE-RATE-PARSER.txt
 shohel@Mahfujuls-MacBook-Pro AirportRTW-port-txrx % 
