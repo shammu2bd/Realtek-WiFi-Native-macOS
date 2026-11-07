@@ -375,6 +375,9 @@ static void releaseStation(Rtw88LinuxContext *context)
             if (sta->txq[i]) IOFree(sta->txq[i], sizeof(ieee80211_txq) + hw->txq_data_size);
     }
     context->stationAdded = false;
+    while (__sync_lock_test_and_set(&context->rxRateLock, 1)) { }
+    context->rxRate = {};
+    __sync_lock_release(&context->rxRateLock);
     IOFree(sta, context->stationAllocationSize);
     context->station = nullptr;
     context->stationAllocationSize = 0;
