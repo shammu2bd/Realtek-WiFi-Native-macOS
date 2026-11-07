@@ -1328,6 +1328,16 @@ void rtw_update_sta_info(struct rtw_dev *rtwdev, struct rtw_sta_info *si,
 	    sta->deflink.ht_cap.ht_supported)
 		tx_num = efuse->hw_cap.nss;
 
+	/* The RTL8821C has exactly one transmit spatial stream. If its
+	 * hardware-feature report supplied NSS=0, do not select rate ID 0
+	 * (legacy 6 Mbps fallback) for a valid 5 GHz VHT association.
+	 * Leave every 2.4 GHz rate-selection path unchanged.
+	 */
+	if (hal->current_band_type == RTW_BAND_5G &&
+	    sta->deflink.vht_cap.vht_supported &&
+	    rtwdev->chip->id == RTW_CHIP_TYPE_8821C && tx_num == 0)
+		tx_num = 1;
+
 	rate_id = get_rate_id(wireless_set, bw_mode, tx_num);
 
 	ra_mask &= rtw_rate_mask_rssi(si, wireless_set);
@@ -1631,7 +1641,17 @@ static void rtw_init_vht_cap(struct rtw_dev *rtwdev,
 	struct rtw_efuse *efuse = &rtwdev->efuse;
 	u16 mcs_map = 0;
 	__le16 highest;
+	u8 nss = efuse->hw_cap.nss;
 	int i;
+
+	/* RTL8821C is a fixed 1T1R device. Some firmware/efuse reports
+	 * expose NSS as zero; publishing an all-unsupported VHT MCS map in
+	 * that case makes the peer appear VHT-capable but leaves firmware
+	 * rate control with only the 6 Mbps OFDM fallback. Keep this repair
+	 * limited to the RTL8821C VHT capability map.
+	 */
+	if (rtwdev->chip->id == RTW_CHIP_TYPE_8821C && nss == 0)
+		nss = 1;
 
 	if (efuse->hw_cap.ptcl != EFUSE_HW_CAP_IGNORE &&
 	    efuse->hw_cap.ptcl != EFUSE_HW_CAP_PTCL_VHT)
@@ -1655,7 +1675,7 @@ static void rtw_init_vht_cap(struct rtw_dev *rtwdev,
 		vht_cap->cap |= IEEE80211_VHT_CAP_RXLDPC;
 
 	for (i = 0; i < 8; i++) {
-		if (i < efuse->hw_cap.nss)
+		if (i < nss)
 			mcs_map |= IEEE80211_VHT_MCS_SUPPORT_0_9 << (i * 2);
 		else
 			mcs_map |= IEEE80211_VHT_MCS_NOT_SUPPORTED << (i * 2);
