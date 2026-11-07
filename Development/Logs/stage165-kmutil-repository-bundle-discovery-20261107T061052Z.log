@@ -1,0 +1,80 @@
+========== STAGE165 KMUTIL EXPLICIT-REPOSITORY SYMBOL-PROVIDER AUDIT ==========
+STAGE165_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+STAGE165_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+STAGE165_WORKTREE_STATUS_ENTRIES=192
+STAGE165_TARGET=15.8.1 BUILD=24H32 ARCH=x86_64
+STAGE165_BOOTKC_SHA256=cd013c14a7f21dbb8181fb06c44e079de8646b6a674abe21f6e47f42e8979af3
+STAGE165_STAGE163_REPORT_SHA=d5f10cd40dd568907bc0712afeb0554383b033ac
+STAGE165_STAGE164_REPORT_SHA=314ac400f81e698c2dfa3c216efd86d3f1e3765b
+STAGE165_SDK=/Applications/Xcode_16.4.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.5.sdk
+STAGE165_BUNDLE_ID=io.github.x1ren41l.RTL88WiFi
+STAGE165_SCOPE=TEMPORARY_KEXT_LINK_AND_KMUTIL_REPOSITORY_DISCOVERY
+STAGE165_PROJECT_SOURCE_MODIFIED=NO PROJECT_BUILD_OUTPUTS=NO
+STAGE165_INSTALL=NOT_RUN LOAD=NOT_RUN AUXKC=UNCHANGED OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+
+===== NATIVE PROBE PLIST VALIDATION =====
+NATIVE_PLIST_GENERATION=PASS
+TARGET=macOS 15.8.1 (24H32) x86_64
+CFBundleIdentifier=io.github.x1ren41l.RTL88WiFi
+CFBundleExecutable=RTL88WiFiNative
+NATIVE_DEPENDENCY=com.apple.iokit.IO80211Family 1200.13.1
+NATIVE_DEPENDENCY=com.apple.iokit.IOSkywalkFamily 1.0
+NATIVE_DEPENDENCY=com.apple.iokit.IOPCIFamily 2.9
+IO80211FamilyLegacy=ABSENT
+PERSONALITY=RTW88WCLController PCI=0xC82110EC 0xB82110EC
+OUTPUT=/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T/stage165-work.Iex0oP/repository/RTL88WiFiNative.kext/Contents/Info.plist
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T//stage165-work.Iex0oP/repository/RTL88WiFiNative.kext/Contents/Info.plist: OK
+PROBE_PLIST_LINT=PASS
+PROBE_PLIST_EXECUTABLE=RTL88WiFiNative
+PROBE_KEXT_REPOSITORY=/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T//stage165-work.Iex0oP/repository
+PROBE_KEXT_BUNDLE=/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T//stage165-work.Iex0oP/repository/RTL88WiFiNative.kext
+PROBE_KEXT_BUNDLE_LAYOUT=PASS
+
+===== KMOD INFO COMPILE =====
+
+===== FACTORY PROBE COMPILE =====
+
+===== TEMPORARY KEXT LINK =====
+TEMP_KEXT_LINK=PASS
+TEMP_KEXT_EXECUTABLE=PASS
+TEMP_KEXT_BINARY_SHA256=11308b0747bce490057735a0311a219787fd0abf8cb32f9ec83cf56a4961b736
+/var/folders/xd/spdz2_mj3txdwydhx70xm31m0000gn/T//stage165-work.Iex0oP/repository/RTL88WiFiNative.kext/Contents/MacOS/RTL88WiFiNative: Mach-O 64-bit kext bundle x86_64
+x86_64
+
+===== UNDEFINED FACTORY SYMBOL CHECK =====
+__ZN16IO80211WorkQueue9workQueueEv
+FACTORY_UNDEFINED_IMPORT=PASS
+
+===== KMUTIL LIBRARIES: EXPLICIT REPOSITORY + BUNDLE PATH =====
+KMUTIL_COMMAND=kmutil libraries -r <temporary-repository> -p <temporary-kext-bundle> --all-symbols
+No variant specified, falling back to release
+For arch x86_64:
+	For extension io.github.x1ren41l.RTL88WiFi:
+		_printf in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN16IO80211WorkQueue9workQueueEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+KMUTIL_ALL_SYMBOLS_EXIT=0
+KMUTIL_ALL_FACTORY_SYMBOL_LISTED=YES
+
+===== KMUTIL LIBRARIES: UNIQUE PROVIDER LIST =====
+No variant specified, falling back to release
+For arch x86_64:
+	For extension io.github.x1ren41l.RTL88WiFi:
+		_printf in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN16IO80211WorkQueue9workQueueEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+KMUTIL_ONEDEF_SYMBOLS_EXIT=0
+KMUTIL_ONEDEF_FACTORY_SYMBOL_LISTED=YES
+KMUTIL_ONEDEF_IO80211FAMILY_PROVIDER_LISTED=YES
+===== UNIQUE-PROVIDER SYMBOL CONTEXT =====
+For arch x86_64:
+	For extension io.github.x1ren41l.RTL88WiFi:
+		_printf in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.kpi.libkern (24.6.0)
+		__ZN16IO80211WorkQueue9workQueueEv in /System/Library/KernelCollections/BootKernelExtensions.kc: com.apple.iokit.IO80211Family (1200.13.1)
+STAGE165_SYMBOL_PROVIDER_RESULT=PASS_UNIQUE_FACTORY_PROVIDER_REPORTED
+
+===== PROJECT PRESERVATION CHECK =====
+PROJECT_STATUS_BEFORE_SHA=737ab289015b79eb99af06b9440edb20dac332f9fc2eb5d078a371e4928d98f6
+PROJECT_STATUS_AFTER_SHA=737ab289015b79eb99af06b9440edb20dac332f9fc2eb5d078a371e4928d98f6
+PROJECT_WORKTREE_PRESERVATION=PASS
+STAGE165_PROJECT_SOURCE_MODIFIED=NO PROJECT_BUILD_OUTPUTS=NO
+STAGE165_INSTALL=NOT_RUN LOAD=NOT_RUN AUXKC=UNCHANGED OPENCORE=UNCHANGED EFI=UNCHANGED SIP=UNCHANGED NVRAM=UNCHANGED REBOOT=NOT_RUN
+========== END STAGE165 ==========
