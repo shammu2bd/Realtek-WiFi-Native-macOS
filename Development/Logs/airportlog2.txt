@@ -617,3 +617,1094 @@ Wi-Fi:
 Timestamp               Ty Process[PID:TID]
 2026-11-07 18:38:17.114 Df log[4091:13439] [com.apple.log:] log run noninteractively, parent: 4081 (Python), args: 'log' 'show' '--last' '15m' '--style' 'compact' '--predicate' 'eventMessage CONTAINS[c] "RA_C2H" OR eventMessage CONTAINS[c] "AirportRTW"'
 2026-11-07 18:40:31.739 Df log[4204:13b15] [com.apple.log:] log run noninteractively, parent: 4190 (Python), args: 'log' 'show' '--last' '30m' '--style' 'compact' '--info' '--debug' '--predicate' 'eventMessage CONTAINS[c] "RA_C2H" OR eventMessage CONTAINS[c] "AirportRTW"'
+
+
+AIRPORTRTW SOURCE DIAGNOSTIC INSPECTION
+Captured: 2026-11-07T12:42:50.202140+00:00
+Repository: /Users/shohel/Developer/AirportRTW-port-txrx
+Branch: port/rtl88wifi-txrx-20261107
+HEAD: 2033dc3d581dcb4faaa46651f31c0f4a0b322e0b
+LOCAL CHANGES (preserved; no source writes performed):
+M .DS_Store
+ M rtw/hal_rtw88/RTWCore88.cpp
+ M rtw/hal_rtw88/driver/fw.c
+ M rtw/hal_rtw88/driver/tx.c
+?? rtw/hal_rtw88/driver/fw.c.before-ra-diagnostics.20261107-155217.bak
+
+=== EXACT RA STRINGS / CALL SITES ===
+
+--- RA_C2H_RAW ---
+
+FILE: rtw/hal_rtw88/driver/fw.c
+  219: 					      RTW_C2H_RA_RPT_RATE);
+  220: 	/* Diagnostic capture: raw seven-byte C2H RA report. */
+  221: 	rtw_info(rtwdev,
+  222: 		 "RA_C2H_RAW len=%u bytes=%02x:%02x:%02x:%02x:%02x:%02x:%02x "
+  223: 		 "rate=%u sgi=%u macid=%u bw=%u\\n",
+  224: 		 length, payload[0], payload[1], payload[2], payload[3],
+  225: 		 payload[4], payload[5], payload[6],
+  226: 		 u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE),
+
+--- RA_C2H_DECODE ---
+
+FILE: rtw/hal_rtw88/driver/fw.c
+  197: 	si->ra_report.bit_rate = bit_rate;
+  198: 	/* Diagnostic correlation: decoded firmware station rate. */
+  199: 	rtw_info(ra_data->rtwdev,
+  200: 		 "RA_C2H_DECODE macid=%u desc=%u sgi=%u bw=%u "
+  201: 		 "flags=0x%x legacy=%u mcs=%u nss=%u bitrate_100kbps=%u\\n",
+  202: 		 si->mac_id, rate, sgi, bw, si->ra_report.txrate.flags,
+  203: 		 si->ra_report.txrate.legacy, mcs, nss, bit_rate);
+  204: 
+
+=== LIVE RATE PROPERTY PUBLICATION ===
+
+FILE: rtw/hal_rtw88/RTWCore88.cpp
+  620:                             owner->linuxContext.raAuditU64[0], 64));
+  621:     RTWTxRate liveRate = {};
+  622:     owner->getTxRate(liveRate);
+  623:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveValid", liveRate.valid));
+  624:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
+  625:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+  626:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+  627:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+
+FILE: rtw/hal_rtw88/RTWCore88.cpp
+  621:     RTWTxRate liveRate = {};
+  622:     owner->getTxRate(liveRate);
+  623:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveValid", liveRate.valid));
+  624:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
+  625:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+  626:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+  627:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+  628:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+
+FILE: rtw/hal_rtw88/RTWCore88.cpp
+  622:     owner->getTxRate(liveRate);
+  623:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveValid", liveRate.valid));
+  624:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
+  625:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+  626:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+  627:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+  628:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+  629:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+
+FILE: rtw/hal_rtw88/RTWCore88.cpp
+  623:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveValid", liveRate.valid));
+  624:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
+  625:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+  626:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+  627:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+  628:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+  629:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+  630:     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseLength",
+
+FILE: rtw/hal_rtw88/RTWCore88.cpp
+  624:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
+  625:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+  626:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+  627:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+  628:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+  629:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+  630:     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseLength",
+  631:                             owner->lastAssocResponseLength, 32));
+
+FILE: rtw/hal_rtw88/RTWCore88.cpp
+  625:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
+  626:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+  627:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+  628:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+  629:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+  630:     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseLength",
+  631:                             owner->lastAssocResponseLength, 32));
+  632:     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseStatus",
+
+FILE: rtw/hal_rtw88/RTWCore88.cpp
+  626:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
+  627:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
+  628:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
+  629:     RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+  630:     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseLength",
+  631:                             owner->lastAssocResponseLength, 32));
+  632:     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseStatus",
+  633:                             owner->lastAssocResponseStatus, 16));
+
+=== LOGGING MACROS AND CALL SITES ===
+
+--- RTW_DIAGNOSTIC ---
+
+FILE: include/AirportRTWDiagnostics.h
+    1: /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+    2: #ifndef AIRPORTRTW_DIAGNOSTICS_H
+    3: #define AIRPORTRTW_DIAGNOSTICS_H
+    4: #ifndef RTW_AWDL_STARTUP_PROBE
+    5: #define RTW_AWDL_STARTUP_PROBE 0
+    6: #endif
+
+FILE: include/AirportRTWDiagnostics.h
+    1: /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+    2: #ifndef AIRPORTRTW_DIAGNOSTICS_H
+    3: #define AIRPORTRTW_DIAGNOSTICS_H
+    4: #ifndef RTW_AWDL_STARTUP_PROBE
+    5: #define RTW_AWDL_STARTUP_PROBE 0
+    6: #endif
+    7: #if defined(DEBUG) && DEBUG
+
+FILE: include/AirportRTWDiagnostics.h
+    5: #define RTW_AWDL_STARTUP_PROBE 0
+    6: #endif
+    7: #if defined(DEBUG) && DEBUG
+    8: #define RTW_DIAGNOSTICS 1
+    9: #define RTW_LOG(...) IOLog(__VA_ARGS__)
+   10: #define RTW_DIAGNOSTIC(...) do { __VA_ARGS__; } while (0)
+   11: #else
+   12: #define RTW_DIAGNOSTICS 0
+
+FILE: include/AirportRTWDiagnostics.h
+    7: #if defined(DEBUG) && DEBUG
+    8: #define RTW_DIAGNOSTICS 1
+    9: #define RTW_LOG(...) IOLog(__VA_ARGS__)
+   10: #define RTW_DIAGNOSTIC(...) do { __VA_ARGS__; } while (0)
+   11: #else
+   12: #define RTW_DIAGNOSTICS 0
+   13: #define RTW_LOG(...) do {} while (0)
+   14: #define RTW_DIAGNOSTIC(...) do {} while (0)
+
+FILE: include/AirportRTWDiagnostics.h
+    9: #define RTW_LOG(...) IOLog(__VA_ARGS__)
+   10: #define RTW_DIAGNOSTIC(...) do { __VA_ARGS__; } while (0)
+   11: #else
+   12: #define RTW_DIAGNOSTICS 0
+   13: #define RTW_LOG(...) do {} while (0)
+   14: #define RTW_DIAGNOSTIC(...) do {} while (0)
+   15: #endif
+   16: #endif
+
+FILE: include/AirportRTWDiagnostics.h
+   11: #else
+   12: #define RTW_DIAGNOSTICS 0
+   13: #define RTW_LOG(...) do {} while (0)
+   14: #define RTW_DIAGNOSTIC(...) do {} while (0)
+   15: #endif
+   16: #endif
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1338:     struct ieee80211com *ic = fHalService->get80211Controller();
+ 1339:     const UInt32 scanDoneDelayMS = 100;
+ 1340:     if (OSDynamicCast(RTWCore, fHalService)) {
+ 1341:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestCount", ++rtwScanRequestCount, 64));
+ 1342:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestState", (UInt64)ic->ic_state, 8));
+ 1343:     }
+ 1344: #if 0
+ 1345:     XYLog("%s Type: %u BSS Type: %u PHY Mode: %u Dwell time: %u Rest time: %u Num channels: %u SSID: %s BSSID: %s\n",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1339:     const UInt32 scanDoneDelayMS = 100;
+ 1340:     if (OSDynamicCast(RTWCore, fHalService)) {
+ 1341:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestCount", ++rtwScanRequestCount, 64));
+ 1342:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestState", (UInt64)ic->ic_state, 8));
+ 1343:     }
+ 1344: #if 0
+ 1345:     XYLog("%s Type: %u BSS Type: %u PHY Mode: %u Dwell time: %u Rest time: %u Num channels: %u SSID: %s BSSID: %s\n",
+ 1346:           __FUNCTION__,
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1355: #endif
+ 1356:     if (fScanResultWrapping) {
+ 1357:         if (OSDynamicCast(RTWCore, fHalService))
+ 1358:             RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestResult", (UInt64)22, 32));
+ 1359:         return 22;
+ 1360:     }
+ 1361:     if (ic->ic_state <= IEEE80211_S_INIT) {
+ 1362:         if (OSDynamicCast(RTWCore, fHalService))
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1360:     }
+ 1361:     if (ic->ic_state <= IEEE80211_S_INIT) {
+ 1362:         if (OSDynamicCast(RTWCore, fHalService))
+ 1363:             RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestResult", (UInt64)22, 32));
+ 1364:         return 22;
+ 1365:     }
+ 1366:     if (OSDynamicCast(RTWCore, fHalService))
+ 1367:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestResult", (UInt64)0, 32));
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1364:         return 22;
+ 1365:     }
+ 1366:     if (OSDynamicCast(RTWCore, fHalService))
+ 1367:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestResult", (UInt64)0, 32));
+ 1368:     if (sd->scan_type == APPLE80211_SCAN_TYPE_FAST || sd->scan_type == APPLE80211_SCAN_TYPE_PASSIVE) {
+ 1369:         if (scanSource) {
+ 1370:             scanSource->setTimeoutMS(scanDoneDelayMS);
+ 1371:             scanSource->enable();
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1386:     struct ieee80211com *ic = fHalService->get80211Controller();
+ 1387:     const UInt32 scanDoneDelayMS = 100;
+ 1388:     if (OSDynamicCast(RTWCore, fHalService)) {
+ 1389:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanMultipleRequestCount",
+ 1390:                     ++rtwScanRequestCount, 64));
+ 1391:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestState", (UInt64)ic->ic_state, 8));
+ 1392:     }
+ 1393: #if 0
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1388:     if (OSDynamicCast(RTWCore, fHalService)) {
+ 1389:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanMultipleRequestCount",
+ 1390:                     ++rtwScanRequestCount, 64));
+ 1391:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestState", (UInt64)ic->ic_state, 8));
+ 1392:     }
+ 1393: #if 0
+ 1394:     int i;
+ 1395:     XYLog("%s Type: %u SSID Count: %u BSSID Count: %u PHY Mode: %u Dwell time: %u Rest time: %u Num channels: %u Unk: %u\n",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1407: #endif
+ 1408:     if (fScanResultWrapping) {
+ 1409:         if (OSDynamicCast(RTWCore, fHalService))
+ 1410:             RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestResult", (UInt64)22, 32));
+ 1411:         return 22;
+ 1412:     }
+ 1413:     if (ic->ic_state <= IEEE80211_S_INIT) {
+ 1414:         if (OSDynamicCast(RTWCore, fHalService))
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1412:     }
+ 1413:     if (ic->ic_state <= IEEE80211_S_INIT) {
+ 1414:         if (OSDynamicCast(RTWCore, fHalService))
+ 1415:             RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestResult", (UInt64)22, 32));
+ 1416:         return 22;
+ 1417:     }
+ 1418:     if (OSDynamicCast(RTWCore, fHalService))
+ 1419:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestResult", (UInt64)0, 32));
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1416:         return 22;
+ 1417:     }
+ 1418:     if (OSDynamicCast(RTWCore, fHalService))
+ 1419:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanRequestResult", (UInt64)0, 32));
+ 1420:     ieee80211_begin_cache_bgscan(&ic->ic_ac.ac_if);
+ 1421:     if (scanSource) {
+ 1422:         scanSource->setTimeoutMS(scanDoneDelayMS);
+ 1423:         scanSource->enable();
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1431:     struct ieee80211com *ic = fHalService->get80211Controller();
+ 1432:     const bool isRtw89 = OSDynamicCast(RTWCore, fHalService) != nullptr;
+ 1433:     if (isRtw89) {
+ 1434:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRequestCount",
+ 1435:                     ++rtwScanResultRequestCount, 64));
+ 1436:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultNodeCount", (UInt64)ic->ic_nnodes, 32));
+ 1437:     }
+ 1438:     
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1433:     if (isRtw89) {
+ 1434:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRequestCount",
+ 1435:                     ++rtwScanResultRequestCount, 64));
+ 1436:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultNodeCount", (UInt64)ic->ic_nnodes, 32));
+ 1437:     }
+ 1438:     
+ 1439:     if (fNextNodeToSend == NULL) {
+ 1440:         if (fScanResultWrapping) {
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1512:         memcpy(&result->asr_ssid, fNextNodeToSend->ni_essid, result->asr_ssid_len);
+ 1513: 
+ 1514:     if (isRtw89) {
+ 1515:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultSSIDLength",
+ 1516:                     (UInt64)result->asr_ssid_len, 8));
+ 1517:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultChannel",
+ 1518:                     (UInt64)result->asr_channel.channel, 16));
+ 1519:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRSSI",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1514:     if (isRtw89) {
+ 1515:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultSSIDLength",
+ 1516:                     (UInt64)result->asr_ssid_len, 8));
+ 1517:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultChannel",
+ 1518:                     (UInt64)result->asr_channel.channel, 16));
+ 1519:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRSSI",
+ 1520:                     (UInt64)(SInt64)result->asr_rssi, 64));
+ 1521:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultNoise",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1516:                     (UInt64)result->asr_ssid_len, 8));
+ 1517:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultChannel",
+ 1518:                     (UInt64)result->asr_channel.channel, 16));
+ 1519:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRSSI",
+ 1520:                     (UInt64)(SInt64)result->asr_rssi, 64));
+ 1521:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultNoise",
+ 1522:                     (UInt64)(SInt64)result->asr_noise, 64));
+ 1523:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultAge",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1518:                     (UInt64)result->asr_channel.channel, 16));
+ 1519:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRSSI",
+ 1520:                     (UInt64)(SInt64)result->asr_rssi, 64));
+ 1521:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultNoise",
+ 1522:                     (UInt64)(SInt64)result->asr_noise, 64));
+ 1523:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultAge",
+ 1524:                     (UInt64)result->asr_age, 32));
+ 1525:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultChannelFlags",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1520:                     (UInt64)(SInt64)result->asr_rssi, 64));
+ 1521:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultNoise",
+ 1522:                     (UInt64)(SInt64)result->asr_noise, 64));
+ 1523:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultAge",
+ 1524:                     (UInt64)result->asr_age, 32));
+ 1525:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultChannelFlags",
+ 1526:                     (UInt64)result->asr_channel.flags, 32));
+ 1527:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultIELength",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1522:                     (UInt64)(SInt64)result->asr_noise, 64));
+ 1523:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultAge",
+ 1524:                     (UInt64)result->asr_age, 32));
+ 1525:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultChannelFlags",
+ 1526:                     (UInt64)result->asr_channel.flags, 32));
+ 1527:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultIELength",
+ 1528:                     (UInt64)(UInt16)result->asr_ie_len, 16));
+ 1529:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultIEType",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1524:                     (UInt64)result->asr_age, 32));
+ 1525:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultChannelFlags",
+ 1526:                     (UInt64)result->asr_channel.flags, 32));
+ 1527:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultIELength",
+ 1528:                     (UInt64)(UInt16)result->asr_ie_len, 16));
+ 1529:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultIEType",
+ 1530:                     (UInt64)(result->asr_ie_len > 0
+ 1531:                                  ? reinterpret_cast<const UInt8 *>(
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1526:                     (UInt64)result->asr_channel.flags, 32));
+ 1527:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultIELength",
+ 1528:                     (UInt64)(UInt16)result->asr_ie_len, 16));
+ 1529:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultIEType",
+ 1530:                     (UInt64)(result->asr_ie_len > 0
+ 1531:                                  ? reinterpret_cast<const UInt8 *>(
+ 1532:                                        result->asr_ie_data)[0]
+ 1533:                                  : 0), 8));
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1531:                                  ? reinterpret_cast<const UInt8 *>(
+ 1532:                                        result->asr_ie_data)[0]
+ 1533:                                  : 0), 8));
+ 1534:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultCapability",
+ 1535:                     (UInt64)(UInt16)result->asr_cap, 16));
+ 1536:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultBeaconInterval",
+ 1537:                     (UInt64)(UInt16)result->asr_beacon_int, 16));
+ 1538:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRateCount",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1533:                                  : 0), 8));
+ 1534:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultCapability",
+ 1535:                     (UInt64)(UInt16)result->asr_cap, 16));
+ 1536:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultBeaconInterval",
+ 1537:                     (UInt64)(UInt16)result->asr_beacon_int, 16));
+ 1538:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRateCount",
+ 1539:                     (UInt64)result->asr_nrates, 8));
+ 1540:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRate0",
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1535:                     (UInt64)(UInt16)result->asr_cap, 16));
+ 1536:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultBeaconInterval",
+ 1537:                     (UInt64)(UInt16)result->asr_beacon_int, 16));
+ 1538:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRateCount",
+ 1539:                     (UInt64)result->asr_nrates, 8));
+ 1540:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRate0",
+ 1541:                     (UInt64)result->asr_rates[0], 32));
+ 1542:     }
+
+FILE: AirportRTW/AirportSTAIOCTL.cpp
+ 1537:                     (UInt64)(UInt16)result->asr_beacon_int, 16));
+ 1538:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRateCount",
+ 1539:                     (UInt64)result->asr_nrates, 8));
+ 1540:         RTW_DIAGNOSTIC(setProperty("RTW89AppleScanResultRate0",
+ 1541:                     (UInt64)result->asr_rates[0], 32));
+ 1542:     }
+ 1543: 
+ 1544:     *sr = result;
+
+--- rtw_info ---
+
+FILE: rtw/hal_rtw88/driver/debug.h
+   69: 
+   70: #endif /* CONFIG_RTW88_DEBUG */
+   71: 
+   72: #define rtw_info(rtwdev, a...) dev_info(rtwdev->dev, ##a)
+   73: #define rtw_warn(rtwdev, a...) dev_warn(rtwdev->dev, ##a)
+   74: #define rtw_err(rtwdev, a...) dev_err(rtwdev->dev, ##a)
+   75: 
+   76: #endif
+
+FILE: rtw/hal_rtw88/driver/fw.c
+  196: 	si->ra_report.desc_rate = rate;
+  197: 	si->ra_report.bit_rate = bit_rate;
+  198: 	/* Diagnostic correlation: decoded firmware station rate. */
+  199: 	rtw_info(ra_data->rtwdev,
+  200: 		 "RA_C2H_DECODE macid=%u desc=%u sgi=%u bw=%u "
+  201: 		 "flags=0x%x legacy=%u mcs=%u nss=%u bitrate_100kbps=%u\\n",
+  202: 		 si->mac_id, rate, sgi, bw, si->ra_report.txrate.flags,
+  203: 		 si->ra_report.txrate.legacy, mcs, nss, bit_rate);
+
+FILE: rtw/hal_rtw88/driver/fw.c
+  218: 	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
+  219: 					      RTW_C2H_RA_RPT_RATE);
+  220: 	/* Diagnostic capture: raw seven-byte C2H RA report. */
+  221: 	rtw_info(rtwdev,
+  222: 		 "RA_C2H_RAW len=%u bytes=%02x:%02x:%02x:%02x:%02x:%02x:%02x "
+  223: 		 "rate=%u sgi=%u macid=%u bw=%u\\n",
+  224: 		 length, payload[0], payload[1], payload[2], payload[3],
+  225: 		 payload[4], payload[5], payload[6],
+
+FILE: rtw/hal_rtw88/driver/main.c
+ 1839: 	update_firmware_info(rtwdev, fw);
+ 1840: 	complete_all(&fw->completion);
+ 1841: 
+ 1842: 	rtw_info(rtwdev, "%sFirmware version %u.%u.%u, H2C version %u\n",
+ 1843: 		 fw->type == RTW_WOWLAN_FW ? "WOW " : "",
+ 1844: 		 fw->version, fw->sub_version, fw->sub_index, fw->h2c_version);
+ 1845: }
+ 1846: 
+
+--- rtw_warn ---
+
+FILE: rtw/hal_rtw88/driver/bf.c
+   51: 	if (!sta) {
+   52: 		rcu_read_unlock();
+   53: 
+   54: 		rtw_warn(rtwdev, "failed to find station entry for bss %pM\n",
+   55: 			 bssid);
+   56: 		return;
+   57: 	}
+   58: 
+
+FILE: rtw/hal_rtw88/driver/rtw8821c.c
+  600: 	}
+  601: 
+  602: 	if (lna_idx >= lna_gain_table_size) {
+  603: 		rtw_warn(rtwdev, "incorrect lna index (%d)\n", lna_idx);
+  604: 		return -120;
+  605: 	}
+  606: 
+  607: 	lna_gain = lna_gain_table[lna_idx];
+
+FILE: rtw/hal_rtw88/driver/rtw8821c.c
+  674: 		query_phy_status_page1(rtwdev, phy_status, pkt_stat);
+  675: 		break;
+  676: 	default:
+  677: 		rtw_warn(rtwdev, "unused phy status page (%d)\n", page);
+  678: 		return;
+  679: 	}
+  680: }
+  681: 
+
+FILE: rtw/hal_rtw88/driver/rtw8821c.c
+ 1046: 	}
+ 1047: 
+ 1048: 	if (swing_index >= ARRAY_SIZE(rtw8821c_txscale_tbl)) {
+ 1049: 		rtw_warn(rtwdev, "swing index overflow\n");
+ 1050: 		swing_index = ARRAY_SIZE(rtw8821c_txscale_tbl) - 1;
+ 1051: 	}
+ 1052: 
+ 1053: 	*txagc_idx = agc_index;
+
+FILE: rtw/hal_rtw88/driver/rtw8821c.c
+ 1177: 	else if (bfee->role == RTW_BFEE_MU)
+ 1178: 		rtw8821c_bf_config_bfee_mu(rtwdev, vif, bfee, enable);
+ 1179: 	else
+ 1180: 		rtw_warn(rtwdev, "wrong bfee role\n");
+ 1181: }
+ 1182: 
+ 1183: static void rtw8821c_phy_cck_pd_set(struct rtw_dev *rtwdev, u8 new_lvl)
+ 1184: {
+
+FILE: rtw/hal_rtw88/driver/debug.h
+   70: #endif /* CONFIG_RTW88_DEBUG */
+   71: 
+   72: #define rtw_info(rtwdev, a...) dev_info(rtwdev->dev, ##a)
+   73: #define rtw_warn(rtwdev, a...) dev_warn(rtwdev->dev, ##a)
+   74: #define rtw_err(rtwdev, a...) dev_err(rtwdev->dev, ##a)
+   75: 
+   76: #endif
+
+FILE: rtw/hal_rtw88/driver/rtw8822b.c
+  929: 		query_phy_status_page1(rtwdev, phy_status, pkt_stat);
+  930: 		break;
+  931: 	default:
+  932: 		rtw_warn(rtwdev, "unused phy status page (%d)\n", page);
+  933: 		return;
+  934: 	}
+  935: }
+  936: 
+
+FILE: rtw/hal_rtw88/driver/rtw8822b.c
+  993: 		antenna_tx, antenna_rx);
+  994: 
+  995: 	if (!rtw8822b_check_rf_path(antenna_tx)) {
+  996: 		rtw_warn(rtwdev, "unsupported tx path 0x%x\n", antenna_tx);
+  997: 		return -EINVAL;
+  998: 	}
+  999: 
+ 1000: 	if (!rtw8822b_check_rf_path(antenna_rx)) {
+
+FILE: rtw/hal_rtw88/driver/rtw8822b.c
+  998: 	}
+  999: 
+ 1000: 	if (!rtw8822b_check_rf_path(antenna_rx)) {
+ 1001: 		rtw_warn(rtwdev, "unsupported rx path 0x%x\n", antenna_rx);
+ 1002: 		return -EINVAL;
+ 1003: 	}
+ 1004: 
+ 1005: 	hal->antenna_tx = antenna_tx;
+
+FILE: rtw/hal_rtw88/driver/rtw8822b.c
+ 1384: 	}
+ 1385: 
+ 1386: 	if (swing_index >= RTW_TXSCALE_SIZE) {
+ 1387: 		rtw_warn(rtwdev, "swing index overflow\n");
+ 1388: 		swing_index = RTW_TXSCALE_SIZE - 1;
+ 1389: 	}
+ 1390: 	*txagc_idx = agc_index;
+ 1391: 	*swing_idx = swing_index;
+
+FILE: rtw/hal_rtw88/driver/rtw8822b.c
+ 1534: 	else if (bfee->role == RTW_BFEE_MU)
+ 1535: 		rtw8822b_bf_config_bfee_mu(rtwdev, vif, bfee, enable);
+ 1536: 	else
+ 1537: 		rtw_warn(rtwdev, "wrong bfee role\n");
+ 1538: }
+ 1539: 
+ 1540: static void rtw8822b_adaptivity_init(struct rtw_dev *rtwdev)
+ 1541: {
+
+FILE: rtw/hal_rtw88/driver/rx.c
+   80: 		evm_id = RTW_EVM_3SS_A;
+   81: 		break;
+   82: 	default:
+   83: 		rtw_warn(rtwdev, "unknown pkt rate = %d\n", pkt_stat->rate);
+   84: 		return;
+   85: 	}
+   86: 
+   87: 	for (i = 0; i < rate_ss_evm; i++) {
+
+FILE: rtw/hal_rtw88/driver/ps.c
+  164: 
+  165: 	if (ret) {
+  166: 		rtw_write32_clr(rtwdev, REG_TCR, BIT_PWRMGT_HWDATA_EN);
+  167: 		rtw_warn(rtwdev, "firmware failed to leave lps state\n");
+  168: 		rtw_fw_dump_dbg_info(rtwdev);
+  169: 	}
+  170: }
+  171: 
+
+FILE: rtw/hal_rtw88/driver/pci.c
+  702: 
+  703: 	/* rx tag mismatch, throw a warning */
+  704: 	if (total_pkt_size != rtwpci->rx_tag)
+  705: 		rtw_warn(rtwdev, "pci bus timeout, check dma status\n");
+  706: 
+  707: 	rtwpci->rx_tag = (rtwpci->rx_tag + 1) % RX_TAG_MAX;
+  708: }
+  709: 
+
+FILE: rtw/hal_rtw88/driver/rtw8723x.c
+   54: 				10000, 1000000, false,
+   55: 				rtwdev, RF_PATH_A, RF_CFGCH, BIT_LCK);
+   56: 	if (ret)
+   57: 		rtw_warn(rtwdev, "failed to poll LCK status bit\n");
+   58: 
+   59: 	rtw_write_rf(rtwdev, RF_PATH_A, RF_CFGCH, RFREG_MASK, lc_cal);
+   60: 	if ((val_ctx & BIT_MASK_CTX_TYPE) != 0)
+   61: 		rtw_write8(rtwdev, REG_CTX, val_ctx);
+
+FILE: rtw/hal_rtw88/driver/rtw8723x.c
+  403: 		pwr_index = hal->tx_pwr_tbl[path][rate];
+  404: 
+  405: 		if (rate >= ARRAY_SIZE(rtw8723x_txagc)) {
+  406: 			rtw_warn(rtwdev, "rate 0x%x isn't supported\n", rate);
+  407: 			continue;
+  408: 		}
+  409: 		txagc = &rtw8723x_txagc[rate];
+  410: 		if (!txagc->addr) {
+
+FILE: rtw/hal_rtw88/driver/rtw8723x.c
+  408: 		}
+  409: 		txagc = &rtw8723x_txagc[rate];
+  410: 		if (!txagc->addr) {
+  411: 			rtw_warn(rtwdev, "rate 0x%x isn't defined\n", rate);
+  412: 			continue;
+  413: 		}
+  414: 
+  415: 		rtw_write32_mask(rtwdev, txagc->addr, txagc->mask, pwr_index);
+
+FILE: rtw/hal_rtw88/driver/rtw8723x.c
+  648: 		limit_ofdm = 34;
+  649: 		break;
+  650: 	default:
+  651: 		rtw_warn(rtwdev, "pwrtrack unhandled tx_rate 0x%x\n", tx_rate);
+  652: 		break;
+  653: 	}
+  654: 
+  655: 	return limit_ofdm;
+
+FILE: rtw/hal_rtw88/driver/rtw8723d.c
+  222: 		query_phy_status_page1(rtwdev, phy_status, pkt_stat);
+  223: 		break;
+  224: 	default:
+  225: 		rtw_warn(rtwdev, "unused phy status page (%d)\n", page);
+  226: 		return;
+  227: 	}
+  228: }
+  229: 
+
+FILE: rtw/hal_rtw88/driver/rtw8723d.c
+  516: 	rtw_write32(rtwdev, REG_IQK_AGC_PTS_11N, 0xf8000000);
+  517: 
+  518: 	if (!check_hw_ready(rtwdev, REG_IQK_RES_RY, BIT_IQK_DONE, 1))
+  519: 		rtw_warn(rtwdev, "%s %s IQK isn't done\n", iqk_cfg->name,
+  520: 			 tx ? "TX" : "RX");
+  521: }
+  522: 
+  523: static void rtw8723d_iqk_txrx_path_post(struct rtw_dev *rtwdev,
+
+FILE: rtw/hal_rtw88/driver/fw.c
+  401: 	if (rtw_read8(rtwdev, REG_MCU_TST_CFG) == VAL_FW_TRIGGER)
+  402: 		rtw_fw_recovery(rtwdev);
+  403: 	else
+  404: 		rtw_warn(rtwdev, "unhandled firmware c2h interrupt\n");
+  405: }
+  406: EXPORT_SYMBOL(rtw_fw_c2h_cmd_isr);
+  407: 
+  408: static void rtw_fw_send_h2c_command_register(struct rtw_dev *rtwdev,
+
+FILE: rtw/hal_rtw88/driver/fw.c
+ 1428: 	if (vif->type != NL80211_IFTYPE_AP &&
+ 1429: 	    vif->type != NL80211_IFTYPE_ADHOC &&
+ 1430: 	    vif->type != NL80211_IFTYPE_MESH_POINT) {
+ 1431: 		rtw_warn(rtwdev, "Cannot add beacon rsvd page for %d\n",
+ 1432: 			 vif->type);
+ 1433: 		return;
+ 1434: 	}
+ 1435: 
+
+FILE: rtw/hal_rtw88/driver/fw.c
+ 1446: 	int i;
+ 1447: 
+ 1448: 	if (vif->type != NL80211_IFTYPE_STATION) {
+ 1449: 		rtw_warn(rtwdev, "Cannot add PNO rsvd page for %d\n",
+ 1450: 			 vif->type);
+ 1451: 		return;
+ 1452: 	}
+ 1453: 
+
+FILE: rtw/hal_rtw88/driver/fw.c
+ 1467: 	struct ieee80211_vif *vif = rtwvif_to_vif(rtwvif);
+ 1468: 
+ 1469: 	if (vif->type != NL80211_IFTYPE_STATION) {
+ 1470: 		rtw_warn(rtwdev, "Cannot add sta rsvd page for %d\n",
+ 1471: 			 vif->type);
+ 1472: 		return;
+ 1473: 	}
+ 1474: 
+
+FILE: rtw/hal_rtw88/driver/phy.c
+ 1546: 		*rate_num = 2;
+ 1547: 		break;
+ 1548: 	default:
+ 1549: 		rtw_warn(rtwdev, "invalid tx power index addr 0x%08x\n", addr);
+ 1550: 		break;
+ 1551: 	}
+ 1552: }
+ 1553: 
+
+FILE: rtw/hal_rtw88/driver/phy.c
+ 2577: 	const u8 *delta_swing_table_idx_neg;
+ 2578: 
+ 2579: 	if (delta >= RTW_PWR_TRK_TBL_SZ) {
+ 2580: 		rtw_warn(rtwdev, "power track table overflow\n");
+ 2581: 		return 0;
+ 2582: 	}
+ 2583: 
+ 2584: 	if (!swing_table) {
+
+FILE: rtw/hal_rtw88/driver/phy.c
+ 2582: 	}
+ 2583: 
+ 2584: 	if (!swing_table) {
+ 2585: 		rtw_warn(rtwdev, "swing table not configured\n");
+ 2586: 		return 0;
+ 2587: 	}
+ 2588: 
+ 2589: 	delta_swing_table_idx_pos = swing_table->p[tbl_path];
+
+FILE: rtw/hal_rtw88/driver/phy.c
+ 2590: 	delta_swing_table_idx_neg = swing_table->n[tbl_path];
+ 2591: 
+ 2592: 	if (!delta_swing_table_idx_pos || !delta_swing_table_idx_neg) {
+ 2593: 		rtw_warn(rtwdev, "invalid swing table index\n");
+ 2594: 		return 0;
+ 2595: 	}
+ 2596: 
+ 2597: 	if (dm_info->thermal_avg[therm_path] >
+
+FILE: rtw/hal_rtw88/driver/main.c
+  629: 	struct rtw_dev *rtwdev = (struct rtw_dev *)data;
+  630: 
+  631: 	if (rtwdev->sta_cnt == 0) {
+  632: 		rtw_warn(rtwdev, "sta count before reset should not be 0\n");
+  633: 		return;
+  634: 	}
+  635: 	rtw_sta_remove(rtwdev, sta, false);
+  636: }
+
+FILE: rtw/hal_rtw88/driver/main.c
+ 1470: 		rtw_fw_scan_notify(rtwdev, false);
+ 1471: 		if (!wait_for_completion_timeout(&rtwdev->fw_scan_density,
+ 1472: 						 SCAN_NOTIFY_TIMEOUT))
+ 1473: 			rtw_warn(rtwdev, "firmware failed to report density after scan\n");
+ 1474: 	}
+ 1475: }
+ 1476: 
+ 1477: void rtw_core_scan_start(struct rtw_dev *rtwdev, struct rtw_vif *rtwvif,
+
+--- rtw_err ---
+
+FILE: rtw/hal_rtw88/driver/phy.h
+  137: 	const struct rtw_rfe_def *rfe_def = rtw_get_rfe_def(rtwdev);
+  138: 
+  139: 	if (!rfe_def || !rfe_def->phy_pg_tbl || !rfe_def->txpwr_lmt_tbl) {
+  140: 		rtw_err(rtwdev, "rfe %d isn't supported\n",
+  141: 			rtwdev->efuse.rfe_option);
+  142: 		return -ENODEV;
+  143: 	}
+  144: 
+
+FILE: rtw/hal_rtw88/driver/mac80211.c
+   87: 	    !(hw->conf.flags & IEEE80211_CONF_IDLE)) {
+   88: 		ret = rtw_leave_ips(rtwdev);
+   89: 		if (ret) {
+   90: 			rtw_err(rtwdev, "failed to leave idle state\n");
+   91: 			goto out;
+   92: 		}
+   93: 	}
+   94: 
+
+FILE: rtw/hal_rtw88/driver/mac80211.c
+  845: 	mutex_lock(&rtwdev->mutex);
+  846: 	ret = rtw_wow_suspend(rtwdev, wowlan);
+  847: 	if (ret)
+  848: 		rtw_err(rtwdev, "failed to suspend for wow %d\n", ret);
+  849: 	mutex_unlock(&rtwdev->mutex);
+  850: 
+  851: 	return ret ? 1 : 0;
+  852: }
+
+FILE: rtw/hal_rtw88/driver/mac80211.c
+  859: 	mutex_lock(&rtwdev->mutex);
+  860: 	ret = rtw_wow_resume(rtwdev);
+  861: 	if (ret)
+  862: 		rtw_err(rtwdev, "failed to resume for wow %d\n", ret);
+  863: 	mutex_unlock(&rtwdev->mutex);
+  864: 
+  865: 	return ret ? 1 : 0;
+  866: }
+
+FILE: rtw/hal_rtw88/driver/mac80211.c
+  901: 	ret = rtw_hw_scan_offload(rtwdev, vif, true);
+  902: 	if (ret) {
+  903: 		rtw_hw_scan_abort(rtwdev);
+  904: 		rtw_err(rtwdev, "HW scan failed with status: %d\n", ret);
+  905: 	}
+  906: 	mutex_unlock(&rtwdev->mutex);
+  907: 
+  908: 	return ret;
+
+FILE: rtw/hal_rtw88/driver/coex.c
+  657: 
+  658: 	if (!wait_event_timeout(coex->wait, !skb_queue_empty(&coex->queue),
+  659: 				COEX_REQUEST_TIMEOUT)) {
+  660: 		rtw_err(rtwdev, "coex request time out\n");
+  661: 		goto out;
+  662: 	}
+  663: 
+  664: 	skb_resp = skb_dequeue(&coex->queue);
+
+FILE: rtw/hal_rtw88/driver/coex.c
+  663: 
+  664: 	skb_resp = skb_dequeue(&coex->queue);
+  665: 	if (!skb_resp) {
+  666: 		rtw_err(rtwdev, "failed to get coex info response\n");
+  667: 		goto out;
+  668: 	}
+  669: 
+  670: out:
+
+FILE: rtw/hal_rtw88/driver/coex.c
+  926: 	u32 val;
+  927: 
+  928: 	if (!ltecoex_read_reg(rtwdev, addr, &val)) {
+  929: 		rtw_err(rtwdev, "failed to read indirect register\n");
+  930: 		return 0;
+  931: 	}
+  932: 
+  933: 	return val;
+
+FILE: rtw/hal_rtw88/driver/coex.c
+  944: 	tmp = (tmp & (~mask)) | ((val << shift) & mask);
+  945: 
+  946: 	if (!ltecoex_reg_write(rtwdev, addr, tmp))
+  947: 		rtw_err(rtwdev, "failed to write indirect register\n");
+  948: }
+  949: EXPORT_SYMBOL(rtw_coex_write_indirect_reg);
+  950: 
+  951: static void rtw_coex_coex_ctrl_owner(struct rtw_dev *rtwdev, bool wifi_control)
+
+FILE: rtw/hal_rtw88/driver/debug.h
+   71: 
+   72: #define rtw_info(rtwdev, a...) dev_info(rtwdev->dev, ##a)
+   73: #define rtw_warn(rtwdev, a...) dev_warn(rtwdev->dev, ##a)
+   74: #define rtw_err(rtwdev, a...) dev_err(rtwdev->dev, ##a)
+   75: 
+   76: #endif
+
+FILE: rtw/hal_rtw88/driver/ps.c
+   16: 
+   17: 	ret = rtw_core_start(rtwdev);
+   18: 	if (ret)
+   19: 		rtw_err(rtwdev, "leave idle state failed\n");
+   20: 
+   21: 	rtw_coex_ips_notify(rtwdev, COEX_IPS_LEAVE);
+   22: 	rtw_set_channel(rtwdev);
+   23: 
+
+FILE: rtw/hal_rtw88/driver/ps.c
+   57: 
+   58: 	ret = rtw_ips_pwr_up(rtwdev);
+   59: 	if (ret) {
+   60: 		rtw_err(rtwdev, "failed to leave ips state\n");
+   61: 		return ret;
+   62: 	}
+   63: 
+   64: 	rtw_iterate_vifs(rtwdev, rtw_restore_port_cfg_iter, rtwdev);
+
+FILE: rtw/hal_rtw88/driver/mac.c
+   90: 		}
+   91: 
+   92: 		if (retry == RTW_PWR_POLLING_CNT) {
+   93: 			rtw_err(rtwdev, "failed to poll REG_SDIO_HSUS_CTRL[1]");
+   94: 			return -ETIMEDOUT;
+   95: 		}
+   96: 
+   97: 		if (rtw_sdio_is_sdio30_supported(rtwdev))
+
+FILE: rtw/hal_rtw88/driver/mac.c
+  177: 		return 0;
+  178: 
+  179: err:
+  180: 	rtw_err(rtwdev, "failed to poll offset=0x%x mask=0x%x value=0x%x\n",
+  181: 		offset, cmd->mask, cmd->value);
+  182: 	return -EBUSY;
+  183: }
+  184: 
+
+FILE: rtw/hal_rtw88/driver/mac.c
+  413: 	return 0;
+  414: 
+  415: err:
+  416: 	rtw_err(rtwdev, "mac power on failed");
+  417: 	return ret;
+  418: }
+  419: 
+  420: void rtw_mac_power_off(struct rtw_dev *rtwdev)
+
+FILE: rtw/hal_rtw88/driver/mac.c
+  561: 
+  562: 	ret = send_firmware_pkt_rsvd_page(rtwdev, pg_addr, data, size);
+  563: 	if (ret)
+  564: 		rtw_err(rtwdev, "failed to download rsvd page\n");
+  565: 
+  566: 	return ret;
+  567: }
+  568: 
+
+FILE: rtw/hal_rtw88/driver/mac.c
+  634: 			rtw_write8(rtwdev, REG_MCUFW_CTRL, fw_ctrl);
+  635: 		}
+  636: 
+  637: 		rtw_err(rtwdev, "invalid fw checksum\n");
+  638: 
+  639: 		return false;
+  640: 	}
+  641: 
+
+FILE: rtw/hal_rtw88/driver/mac.c
+  759: 	if (!check_hw_ready(rtwdev, REG_MCUFW_CTRL, FW_READY_MASK, FW_READY)) {
+  760: 		fw_key = rtw_read32(rtwdev, REG_FW_DBG7) & FW_KEY_MASK;
+  761: 		if (fw_key == ILLEGAL_KEY_GROUP)
+  762: 			rtw_err(rtwdev, "invalid fw key\n");
+  763: 		return -EINVAL;
+  764: 	}
+  765: 
+  766: 	return 0;
+
+FILE: rtw/hal_rtw88/driver/mac.c
+  856: 			rtw_write8_set(rtwdev, REG_MCUFW_CTRL, BIT_MCUFWDL_EN);
+  857: 			msleep(20);
+  858: 		}
+  859: 		rtw_err(rtwdev, "failed to check fw download ready\n");
+  860: fwdl_ready:
+  861: 		rtw_write32_clr(rtwdev, REG_MCUFW_CTRL, BIT_ROM_DLEN);
+  862: 	} else {
+  863: 		rtw_write8_clr(rtwdev, REG_MCUFW_CTRL, BIT_MCUFWDL_EN);
+
+FILE: rtw/hal_rtw88/driver/mac.c
+  922: 					    last_page_size);
+  923: 
+  924: 	if (!check_hw_ready(rtwdev, REG_MCUFW_CTRL, BIT_FWDL_CHK_RPT, 1)) {
+  925: 		rtw_err(rtwdev, "failed to check download firmware report\n");
+  926: 		return -EINVAL;
+  927: 	}
+  928: 
+  929: 	return 0;
+
+FILE: rtw/hal_rtw88/driver/mac.c
+  949: 		msleep(20);
+  950: 	}
+  951: 
+  952: 	rtw_err(rtwdev, "failed to validate firmware\n");
+  953: 	return -EINVAL;
+  954: }
+  955: 
+  956: static int __rtw_download_firmware_legacy(struct rtw_dev *rtwdev,
+
+FILE: rtw/hal_rtw88/driver/mac.c
+ 1189: 	fifo->rsvd_drv_addr = cur_pg_addr;
+ 1190: 
+ 1191: 	if (fifo->rsvd_boundary != fifo->rsvd_drv_addr) {
+ 1192: 		rtw_err(rtwdev, "wrong rsvd driver address\n");
+ 1193: 		return -EINVAL;
+ 1194: 	}
+ 1195: 
+ 1196: 	return 0;
+
+FILE: rtw/hal_rtw88/driver/mac.c
+ 1352: 	h2cq_free = wp >= rp ? h2cq_size - (wp - rp) : rp - wp;
+ 1353: 
+ 1354: 	if (h2cq_size != h2cq_free) {
+ 1355: 		rtw_err(rtwdev, "H2C queue mismatch\n");
+ 1356: 		return -EINVAL;
+ 1357: 	}
+ 1358: 
+ 1359: 	return 0;
+
+FILE: rtw/hal_rtw88/driver/pci.c
+  191: 	u8 *head;
+  192: 
+  193: 	if (len > TRX_BD_IDX_MASK) {
+  194: 		rtw_err(rtwdev, "len %d exceeds maximum TX entries\n", len);
+  195: 		return -EINVAL;
+  196: 	}
+  197: 
+  198: 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+
+FILE: rtw/hal_rtw88/driver/pci.c
+  197: 
+  198: 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+  199: 	if (!head) {
+  200: 		rtw_err(rtwdev, "failed to allocate tx ring\n");
+  201: 		return -ENOMEM;
+  202: 	}
+  203: 
+  204: 	skb_queue_head_init(&tx_ring->queue);
+
+FILE: rtw/hal_rtw88/driver/pci.c
+  270: 
+  271: 	head = dma_alloc_coherent(&pdev->dev, ring_sz, &dma, GFP_KERNEL);
+  272: 	if (!head) {
+  273: 		rtw_err(rtwdev, "failed to allocate rx ring\n");
+  274: 		return -ENOMEM;
+  275: 	}
+  276: 	rx_ring->r.head = head;
+  277: 
+
+FILE: rtw/hal_rtw88/driver/pci.c
+  313: 	}
+  314: 	dma_free_coherent(&pdev->dev, ring_sz, head, dma);
+  315: 
+  316: 	rtw_err(rtwdev, "failed to init rx buffer\n");
+  317: 
+  318: 	return ret;
+  319: }
+  320: 
+
+FILE: rtw/hal_rtw88/driver/pci.c
+  887: 
+  888: 	ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_BCN);
+  889: 	if (ret) {
+  890: 		rtw_err(rtwdev, "failed to write rsvd page data\n");
+  891: 		return ret;
+  892: 	}
+  893: 
+  894: 	/* reserved pages go through beacon queue */
+
+FILE: rtw/hal_rtw88/driver/pci.c
+  911: 
+  912: 	ret = rtw_pci_tx_write_data(rtwdev, &pkt_info, skb, RTW_TX_QUEUE_H2C);
+  913: 	if (ret) {
+  914: 		rtw_err(rtwdev, "failed to write h2c data\n");
+  915: 		return ret;
+  916: 	}
+  917: 
+  918: 	rtw_pci_tx_kick_off_queue(rtwdev, RTW_TX_QUEUE_H2C);
+
+FILE: rtw/hal_rtw88/driver/pci.c
+  988: 	while (count--) {
+  989: 		skb = skb_dequeue(&ring->queue);
+  990: 		if (!skb) {
+  991: 			rtw_err(rtwdev, "failed to dequeue %d skb TX queue %d, BD=0x%08x, rp %d -> %d\n",
+  992: 				count, hw_queue, bd_idx, ring->r.rp, cur_rp);
+  993: 			break;
+  994: 		}
+  995: 		tx_data = rtw_pci_get_tx_data(skb);
+
+=== LOGGING MACRO DEFINITIONS ===
+
+FILE: include/AirportRTWDiagnostics.h
+   10: #define RTW_DIAGNOSTIC(...) do { __VA_ARGS__; } while (0)
+   11: #else
+   12: #define RTW_DIAGNOSTICS 0
+   13: #define RTW_LOG(...) do {} while (0)
+   14: #define RTW_DIAGNOSTIC(...) do {} while (0)
+   15: #endif
+   16: #endif
+
+FILE: include/AirportRTWDiagnostics.h
+   14: #define RTW_DIAGNOSTIC(...) do {} while (0)
+   15: #endif
+   16: #endif
+
+FILE: rtw/hal_rtw88/driver/debug.h
+   72: #define rtw_info(rtwdev, a...) dev_info(rtwdev->dev, ##a)
+   73: #define rtw_warn(rtwdev, a...) dev_warn(rtwdev->dev, ##a)
+   74: #define rtw_err(rtwdev, a...) dev_err(rtwdev->dev, ##a)
+   75: 
+   76: #endif
+
+FILE: rtw/hal_rtw88/driver/debug.h
+   73: #define rtw_warn(rtwdev, a...) dev_warn(rtwdev->dev, ##a)
+   74: #define rtw_err(rtwdev, a...) dev_err(rtwdev->dev, ##a)
+   75: 
+   76: #endif
+
+FILE: rtw/hal_rtw88/driver/debug.h
+   74: #define rtw_err(rtwdev, a...) dev_err(rtwdev->dev, ##a)
+   75: 
+   76: #endif
+
+=== INSPECTION NOTES ===
+This inspection reads source only. It does not edit, reset, clean, or rebuild the repository.
+No local log file was created.
