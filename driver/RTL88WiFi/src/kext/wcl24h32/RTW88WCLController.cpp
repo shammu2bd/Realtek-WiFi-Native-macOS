@@ -20,6 +20,13 @@ extern "C" {
 #include <IOKit/network/IOOutputQueue.h>
 #include <libkern/c++/OSMetaClass.h>
 
+/* Exact macOS 15.8.1 (24H32) IO80211WorkQueue factory exported by
+ * com.apple.iokit.IO80211Family. The returned object derives from
+ * IOWorkLoop; the asm label preserves Apple's exact C++ symbol ABI while
+ * avoiding a locally invented IO80211WorkQueue class/vtable declaration. */
+extern "C" IOWorkLoop *rtw88wclCreateIO80211WorkQueue(void)
+    __asm__("__ZN16IO80211WorkQueue9workQueueEv");
+
 #define super IO80211Controller
 OSDefineMetaClassAndStructors(RTW88WCLController, IO80211Controller)
 
@@ -27,6 +34,7 @@ bool RTW88WCLController::init(OSDictionary *properties)
 {
     if (!super::init(properties))
         return false;
+    _workQueue = nullptr;
     _workLoop = nullptr;
     _packetPathInterface = nullptr;
     _packetPathState = kPacketPathDisabled;
@@ -43,6 +51,27 @@ bool RTW88WCLController::init(OSDictionary *properties)
     _baseStarted = false;
     _radioStarted = false;
     return true;
+}
+
+bool RTW88WCLController::createWorkQueue()
+{
+    if (_workQueue)
+        return true;
+
+    IOWorkLoop *queue = rtw88wclCreateIO80211WorkQueue();
+    if (!queue)
+        return false;
+
+    /* The factory returns an IO80211WorkQueue, a single-inheritance
+     * IOWorkLoop subclass. This controller owns the factory's initial
+     * reference; getWorkQueue() lends it to IO80211Controller. */
+    _workQueue = reinterpret_cast<IO80211WorkQueue *>(queue);
+    return true;
+}
+
+IO80211WorkQueue *RTW88WCLController::getWorkQueue() const
+{
+    return _workQueue;
 }
 
 bool RTW88WCLController::createWorkLoop()
@@ -62,6 +91,14 @@ bool RTW88WCLController::start(IOService *provider)
 {
     if (!provider || _baseStarted || _pciBackend || _radio)
         return false;
+
+    /* The Apple base start path immediately asks getWorkQueue() while
+     * creating its command gate and PostOffice. Acquire the exact 24H32
+     * queue before entering that base start path. */
+    if (!createWorkQueue()) {
+        IOLog("rtl88wifi-wcl: IO80211WorkQueue factory failed\n");
+        return false;
+    }
     if (!super::start(provider))
         return false;
     _baseStarted = true;
@@ -478,7 +515,14 @@ void RTW88WCLController::free()
         _workLoop->release();
         _workLoop = nullptr;
     }
+    /* The Apple base free path dismantles the PostOffice and timer sources.
+     * Keep their borrowed work-queue pointer valid until that teardown has
+     * completed, then release the factory-owned reference exactly once. */
     super::free();
+    if (_workQueue) {
+        reinterpret_cast<IOWorkLoop *>(_workQueue)->release();
+        _workQueue = nullptr;
+    }
 }
 
 bool RTW88WCLController::isCommandProhibited(int command)
