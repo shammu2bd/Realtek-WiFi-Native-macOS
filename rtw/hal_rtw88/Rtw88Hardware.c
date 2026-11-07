@@ -143,55 +143,61 @@ void rtw88_rx_ampdu_stop(struct ieee80211_sta *sta, u8 tid)
                 sta, tid, 0, 0, IEEE80211_AMPDU_RX_STOP);
 }
 
-/* Share the station iteration lock with C2H RA updates and station teardown. */
+/* Read the RA report from the exact associated peer.  Do not walk the
+ * compatibility station registry here: firmware RA updates already resolve
+ * the peer by mac_id and store the report in this sta->drv_priv.  A failed
+ * registry lookup used to make every Apple rate getter fall back to 6 Mbps.
+ */
 #include "../../include/HAL/RTWTxRate.h"
-struct rtw_tx_rate_query {
-    struct ieee80211_sta *target;
-    struct RTWTxRate *rate;
-};
-
-static void copy_tx_rate(void *opaque, struct ieee80211_sta *sta)
-{
-    struct rtw_tx_rate_query *query = opaque;
-    struct RTWTxRate *out = query->rate;
-    if (!query->target || sta != query->target) return;
-    const struct rtw_sta_info *si = (const void *)sta->drv_priv;
-    const struct rate_info *report = &si->ra_report.txrate;
-    if (!si->ra_report.bit_rate) return;
-    out->shortGI = (report->flags & RATE_INFO_FLAGS_SHORT_GI) != 0;
-    out->guardIntervalNs = out->shortGI ? 400 : 800;
-    if (report->flags & RATE_INFO_FLAGS_VHT_MCS) {
-        out->mode = RTW_RATE_VHT;
-        out->mcs = report->mcs;
-        out->nss = report->nss;
-    } else if (report->flags & RATE_INFO_FLAGS_MCS) {
-        out->mode = RTW_RATE_HT;
-        out->mcs = report->mcs;
-        out->nss = report->mcs / 8 + 1;
-    } else {
-        out->mode = RTW_RATE_LEGACY;
-        out->nss = 1;
-        out->bitrate100Kbps = report->legacy;
-    }
-    switch (report->bw) {
-    case RATE_INFO_BW_20: out->widthMHz = 20; break;
-    case RATE_INFO_BW_40: out->widthMHz = 40; break;
-    case RATE_INFO_BW_80: out->widthMHz = 80; break;
-    case RATE_INFO_BW_160: out->widthMHz = 160; break;
-    default: return;
-    }
-    out->bitrate100Kbps = rtw_tx_rate_calculate(out);
-    out->valid = out->bitrate100Kbps != 0;
-}
 
 void rtw88_hw_get_tx_rate(struct ieee80211_hw *hw, struct ieee80211_sta *target,
                           struct RTWTxRate *out)
 {
-    struct rtw_tx_rate_query query;
+    const struct rtw_sta_info *si;
+    const struct rate_info *report;
+    struct RTWTxRate rate = {0};
     if (!out) return;
     memset(out, 0, sizeof(*out));
-    if (!hw || !target) return;
-    query.target = target;
-    query.rate = out;
-    ieee80211_iterate_stations_atomic(hw, copy_tx_rate, &query);
+    if (!hw || !target || !target->drv_priv) return;
+
+    si = (const struct rtw_sta_info *)(const void *)target->drv_priv;
+    report = &si->ra_report.txrate;
+
+    /* bit_rate is set only after a firmware C2H RA report was decoded. */
+    if (!si->ra_report.bit_rate) return;
+
+    rate.shortGI = (report->flags & RATE_INFO_FLAGS_SHORT_GI) != 0;
+    rate.guardIntervalNs = rate.shortGI ? 400 : 800;
+    if (report->flags & RATE_INFO_FLAGS_VHT_MCS) {
+        if (report->mcs > 9 || report->nss < 1 || report->nss > 4) return;
+        rate.mode = RTW_RATE_VHT;
+        rate.mcs = report->mcs;
+        rate.nss = report->nss;
+    } else if (report->flags & RATE_INFO_FLAGS_MCS) {
+        if (report->mcs > 31) return;
+        rate.mode = RTW_RATE_HT;
+        rate.mcs = report->mcs;
+        rate.nss = report->mcs / 8 + 1;
+    } else {
+        if (!report->legacy) return;
+        rate.mode = RTW_RATE_LEGACY;
+        rate.nss = 1;
+        rate.widthMHz = 20;
+        rate.bitrate100Kbps = report->legacy;
+        rate.valid = true;
+        *out = rate;
+        return;
+    }
+
+    switch (report->bw) {
+    case RATE_INFO_BW_20: rate.widthMHz = 20; break;
+    case RATE_INFO_BW_40: rate.widthMHz = 40; break;
+    case RATE_INFO_BW_80: rate.widthMHz = 80; break;
+    case RATE_INFO_BW_160: rate.widthMHz = 160; break;
+    default: return;
+    }
+
+    rate.bitrate100Kbps = rtw_tx_rate_calculate(&rate);
+    rate.valid = rate.bitrate100Kbps != 0;
+    if (rate.valid) *out = rate;
 }
