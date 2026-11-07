@@ -13,6 +13,28 @@ static struct ieee80211_vif *g_rtw88_vif;
 static struct ieee80211_sta *g_rtw88_sta;
 static IORecursiveLock *g_station_lock;
 
+/* The registry is a header-owned singleton for this HAL.  The previous
+ * implementation never allocated its lock, so every add/iterate operation
+ * returned immediately and firmware C2H RA reports could never reach the
+ * associated station's drv_priv.  Initialize lazily before every public
+ * registry operation; publish the lock atomically for concurrent callers. */
+static bool rtw_registry_ensure_lock(void)
+{
+    IORecursiveLock *lock = __atomic_load_n(&g_station_lock, __ATOMIC_ACQUIRE);
+    if (lock)
+        return true;
+
+    IORecursiveLock *candidate = IORecursiveLockAlloc();
+    if (!candidate)
+        return false;
+
+    if (!OSCompareAndSwapPtr(NULL, candidate,
+                             (void * volatile *)&g_station_lock))
+        IORecursiveLockFree(candidate);
+
+    return __atomic_load_n(&g_station_lock, __ATOMIC_ACQUIRE) != NULL;
+}
+
 static bool rtw_registry_has_vif(struct ieee80211_vif *vif)
 {
     for (unsigned i = 0; i < RTW_REGISTRY_VIFS; ++i)
@@ -23,7 +45,7 @@ static bool rtw_registry_has_vif(struct ieee80211_vif *vif)
 bool rtw88_add_vif(struct ieee80211_vif *vif)
 {
     bool added = false;
-    if (!g_station_lock || !vif) return false;
+    if (!rtw_registry_ensure_lock() || !vif) return false;
     IORecursiveLockLock(g_station_lock);
     if (rtw_registry_has_vif(vif)) added = true;
     else for (unsigned i = 0; i < RTW_REGISTRY_VIFS; ++i) {
@@ -35,7 +57,7 @@ bool rtw88_add_vif(struct ieee80211_vif *vif)
 
 void rtw88_remove_sta(struct ieee80211_sta *sta)
 {
-    if (!g_station_lock || !sta) return;
+    if (!rtw_registry_ensure_lock() || !sta) return;
     IORecursiveLockLock(g_station_lock);
     for (unsigned i = 0; i < RTW_REGISTRY_PEERS; ++i)
         if (g_registry_peers[i].sta == sta) {
@@ -47,7 +69,7 @@ void rtw88_remove_sta(struct ieee80211_sta *sta)
 
 void rtw88_remove_vif(struct ieee80211_vif *vif)
 {
-    if (!g_station_lock || !vif) return;
+    if (!rtw_registry_ensure_lock() || !vif) return;
     IORecursiveLockLock(g_station_lock);
     for (unsigned i = 0; i < RTW_REGISTRY_PEERS; ++i)
         if (g_registry_peers[i].vif == vif) rtw88_remove_sta(g_registry_peers[i].sta);
@@ -84,7 +106,7 @@ done:
 /* Compatibility entry points affect the primary station only. */
 void rtw88_register_vif(struct ieee80211_vif *vif)
 {
-    if (!g_station_lock) return;
+    if (!rtw_registry_ensure_lock()) return;
     IORecursiveLockLock(g_station_lock);
     if (g_rtw88_vif != vif) rtw88_remove_vif(g_rtw88_vif);
     if (rtw88_add_vif(vif)) g_rtw88_vif = vif;
@@ -106,7 +128,7 @@ void ieee80211_iterate_active_interfaces_atomic(
     void (*iterator)(void *, u8 *, struct ieee80211_vif *), void *data)
 {
     (void)iter_flags;
-    if (!g_station_lock || hw != g_rtw88_hw || !iterator) return;
+    if (!rtw_registry_ensure_lock() || hw != g_rtw88_hw || !iterator) return;
     IORecursiveLockLock(g_station_lock);
     for (unsigned i = 0; i < RTW_REGISTRY_VIFS; ++i) {
         struct ieee80211_vif *vif = g_registry_vifs[i];
@@ -133,7 +155,7 @@ void ieee80211_iterate_stations_atomic(struct ieee80211_hw *hw,
 struct ieee80211_sta *ieee80211_find_sta(struct ieee80211_vif *vif, const u8 *addr)
 {
     struct ieee80211_sta *result = NULL;
-    if (!g_station_lock || !vif || !addr) return NULL;
+    if (!rtw_registry_ensure_lock() || !vif || !addr) return NULL;
     IORecursiveLockLock(g_station_lock);
     for (unsigned i = 0; i < RTW_REGISTRY_PEERS; ++i)
         if (g_registry_peers[i].vif == vif && g_registry_peers[i].sta &&
@@ -147,7 +169,7 @@ struct ieee80211_sta *ieee80211_find_sta_by_ifaddr(struct ieee80211_hw *hw,
     const u8 *addr, const u8 *localaddr)
 {
     struct ieee80211_sta *result = NULL;
-    if (!g_station_lock || hw != g_rtw88_hw || !addr) return NULL;
+    if (!rtw_registry_ensure_lock() || hw != g_rtw88_hw || !addr) return NULL;
     IORecursiveLockLock(g_station_lock);
     for (unsigned i = 0; i < RTW_REGISTRY_PEERS; ++i)
         if (g_registry_peers[i].sta &&
