@@ -20,7 +20,7 @@ struct ieee80211_hw *rtw88_get_hw(void);
 void airportrtw88_init_country(struct ieee80211_hw *);
 bool airportrtw88_apply_country(struct ieee80211_hw *, const char *, int);
 unsigned rtw88_hw_get_nss(struct ieee80211_hw *);
-void rtw88_hw_get_tx_rate(struct ieee80211_hw *, struct RTWTxRate *);
+void rtw88_hw_get_tx_rate(struct ieee80211_hw *, struct ieee80211_sta *, struct RTWTxRate *);
 void rtw88_register_vif(struct ieee80211_vif *);
 void rtw88_unregister_vif(void);
 }
