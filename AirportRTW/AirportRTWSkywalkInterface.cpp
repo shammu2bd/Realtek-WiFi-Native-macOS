@@ -476,39 +476,22 @@ IOReturn AirportRTWSkywalkInterface::
 getMCS_VHT(struct apple80211_mcs_vht_data *data)
 {
     struct ieee80211com *ic = fHalService->get80211Controller();
-    if (ic->ic_bss == NULL || ic->ic_curmode < IEEE80211_MODE_11AC) {
-        return kIOReturnError;
-    }
-    memset(data, 0, sizeof(struct apple80211_mcs_vht_data));
-    data->version = APPLE80211_VERSION;
+    if (!data)
+        return kIOReturnBadArgument;
+    if (ic->ic_bss == NULL || ic->ic_curmode < IEEE80211_MODE_11AC)
+        return kIOReturnNotReady;
+
     RTWTxRate liveRate = {};
-    if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-        if (!liveRate.valid || liveRate.mode != RTW_RATE_VHT) return 6;
-        data->guard_interval = liveRate.shortGI ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
-        data->index = liveRate.mcs;
-        data->nss = liveRate.nss;
-        data->bw = liveRate.widthMHz;
-        return kIOReturnSuccess;
-    }
-    data->guard_interval = (ieee80211_node_supports_vht_sgi80(ic->ic_bss) || ieee80211_node_supports_vht_sgi160(ic->ic_bss)) ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
-    data->index = ic->ic_bss->ni_txmcs;
-    data->nss = fHalService->getDriverInfo()->getTxNSS();
-    switch (ic->ic_bss->ni_chw) {
-        case IEEE80211_CHAN_WIDTH_40:
-            data->bw = 40;
-            break;
-        case IEEE80211_CHAN_WIDTH_80:
-            data->bw = 80;
-            break;
-        case IEEE80211_CHAN_WIDTH_80P80:
-        case IEEE80211_CHAN_WIDTH_160:
-            data->bw = 160;
-            break;
-            
-        default:
-            data->bw = 20;
-            break;
-    }
+    if (!fHalService->getDriverInfo()->getTxRate(liveRate) ||
+        !liveRate.valid || liveRate.mode != RTW_RATE_VHT)
+        return kIOReturnNotReady;
+
+    memset(data, 0, sizeof(*data));
+    data->version = APPLE80211_VERSION;
+    data->guard_interval = liveRate.shortGI ? APPLE80211_GI_SHORT : APPLE80211_GI_LONG;
+    data->index = liveRate.mcs;
+    data->nss = liveRate.nss;
+    data->bw = liveRate.widthMHz;
     return kIOReturnSuccess;
 }
 
@@ -517,7 +500,6 @@ getRX_RATE(apple80211_rate_data *data)
 {
     if (!data)
         return kIOReturnBadArgument;
-
     memset(data, 0, sizeof(*data));
     data->version = APPLE80211_VERSION;
     data->num_radios = 1;
@@ -525,7 +507,7 @@ getRX_RATE(apple80211_rate_data *data)
     RTWTxRate liveRate = {};
     if (!fHalService->getDriverInfo()->getRxRate(liveRate) ||
         !liveRate.valid || !liveRate.bitrate100Kbps)
-        return 6;
+        return kIOReturnNotReady;
 
     data->rate[0] = liveRate.bitrate100Kbps / 10;
     return kIOReturnSuccess;
@@ -576,61 +558,21 @@ getTXPOWER(struct apple80211_txpower_data *txd)
 IOReturn AirportRTWSkywalkInterface::
 getRATE(struct apple80211_rate_data *rd)
 {
-    struct ieee80211com *ic = fHalService->get80211Controller();
-    if (ic->ic_bss == NULL)
-        return 6;
-    int nss;
-    int sgi;
-    int index = 0;
-    if (ic->ic_state == IEEE80211_S_RUN) {
-        memset(rd, 0, sizeof(*rd));
-        rd->version = APPLE80211_VERSION;
-        rd->num_radios = 1;
-        RTWTxRate liveRate = {};
-        if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-            if (!liveRate.valid) return 6;
-            rd->rate[0] = liveRate.bitrate100Kbps / 10; // Apple ABI uses integer Mbps.
-            return kIOReturnSuccess;
-        }
+    if (!rd)
+        return kIOReturnBadArgument;
+    memset(rd, 0, sizeof(*rd));
+    rd->version = APPLE80211_VERSION;
+    rd->num_radios = 1;
 
-        sgi = ieee80211_node_supports_sgi(ic->ic_bss);
-        if (ic->ic_curmode == IEEE80211_MODE_11AC) {
-            if (sgi)
-                index += 1;
-            nss = fHalService->getDriverInfo()->getTxNSS();
-            switch (ic->ic_bss->ni_chw) {
-                case IEEE80211_CHAN_WIDTH_40:
-                    index += 4;
-                    break;
-                case IEEE80211_CHAN_WIDTH_80:
-                    index += 8;
-                    break;
-                case IEEE80211_CHAN_WIDTH_80P80:
-                case IEEE80211_CHAN_WIDTH_160:
-                    index += 12;
-                    break;
+    /* This driver owns the PHY rate. Never substitute net80211's legacy
+     * 6-Mbps initial value when the firmware RA report has not arrived. */
+    RTWTxRate liveRate = {};
+    if (!fHalService->getDriverInfo()->getTxRate(liveRate) ||
+        !liveRate.valid || !liveRate.bitrate100Kbps)
+        return kIOReturnNotReady;
 
-                default:
-                    break;
-            }
-            index += 2 * (nss - 1);
-            const struct ieee80211_vht_rateset *rs = &ieee80211_std_ratesets_11ac[index];
-            rd->rate[0] = rs->rates[ic->ic_bss->ni_txmcs % rs->nrates] / 2;
-        } else if (ic->ic_curmode == IEEE80211_MODE_11N) {
-            int is_40mhz = ic->ic_bss->ni_chw == IEEE80211_CHAN_WIDTH_40;
-            if (sgi)
-                index += 1;
-            if (is_40mhz)
-                index += (IEEE80211_HT_RATESET_MIMO4_SGI + 1);
-            index += (ic->ic_bss->ni_txmcs / 16);
-            nss = ic->ic_bss->ni_txmcs / 8 + 1;
-            index += 2 * (nss - 1);
-            rd->rate[0] = ieee80211_std_ratesets_11n[index].rates[ic->ic_bss->ni_txmcs % 8] / 2;
-        } else
-            rd->rate[0] = ic->ic_bss->ni_rates.rs_rates[ic->ic_bss->ni_txrate];
-        return kIOReturnSuccess;
-    }
-    return 6;
+    rd->rate[0] = liveRate.bitrate100Kbps / 10; // Apple ABI uses integer Mbps.
+    return kIOReturnSuccess;
 }
 
 IOReturn AirportRTWSkywalkInterface::
@@ -749,15 +691,12 @@ getNSS(struct apple80211_nss_data *data)
     memset(data, 0, sizeof(*data));
     data->version = APPLE80211_VERSION;
 
-    /* Report the active firmware-selected spatial stream count, not the
-     * adapter's maximum hardware capability. */
     RTWTxRate liveRate = {};
-    if (fHalService->getDriverInfo()->getTxRate(liveRate) &&
-        liveRate.valid && liveRate.nss) {
-        data->nss = liveRate.nss;
-    } else {
-        data->nss = fHalService->getDriverInfo()->getTxNSS();
-    }
+    if (!fHalService->getDriverInfo()->getTxRate(liveRate) ||
+        !liveRate.valid || !liveRate.nss)
+        return kIOReturnNotReady;
+
+    data->nss = liveRate.nss;
     return kIOReturnSuccess;
 }
 
@@ -908,20 +847,21 @@ setDEAUTH(struct apple80211_deauth_data *da)
 }
 
 IOReturn AirportRTWSkywalkInterface::
-getMCS(struct apple80211_mcs_data* md)
+getMCS(struct apple80211_mcs_data *md)
 {
     struct ieee80211com *ic = fHalService->get80211Controller();
-    if (ic->ic_state != IEEE80211_S_RUN ||  ic->ic_bss == NULL || !md)
-        return 6;
+    if (!md)
+        return kIOReturnBadArgument;
+    if (ic->ic_state != IEEE80211_S_RUN || ic->ic_bss == NULL)
+        return kIOReturnNotReady;
+
     RTWTxRate liveRate = {};
-    if (fHalService->getDriverInfo()->getTxRate(liveRate)) {
-        if (!liveRate.valid || liveRate.mode == RTW_RATE_LEGACY) return 6;
-        md->version = APPLE80211_VERSION;
-        md->index = liveRate.mcs;
-        return kIOReturnSuccess;
-    }
+    if (!fHalService->getDriverInfo()->getTxRate(liveRate) ||
+        !liveRate.valid || liveRate.mode == RTW_RATE_LEGACY)
+        return kIOReturnNotReady;
+
     md->version = APPLE80211_VERSION;
-    md->index = ic->ic_bss->ni_txmcs;
+    md->index = liveRate.mcs;
     return kIOReturnSuccess;
 }
 
