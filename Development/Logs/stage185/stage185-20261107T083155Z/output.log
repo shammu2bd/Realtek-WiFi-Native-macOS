@@ -1,0 +1,85 @@
+M  driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h
+M  driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h
+M  driver/RTL88WiFi/Makefile
+M  driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h
+M  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp
+M  driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp
+M  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp
+M  driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxFrameProtection.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h
+D  tests/rtw88_tx_ba_state_test.cpp
+D  tests/rtw88_tx_sequence_numbers_test.cpp
+D  tests/rtw88_tx_state_gate_test.cpp
+D  tests/test-stage102-xnu-thread-call-lifecycle.py
+D  tests/test-wcl-controller-primary-attachment-stage121.py
+D  tests/test-wcl-link-state-publication-stage124.py
+D  tests/test-wcl-native-wifi-menu-readiness-stage125.py
+M  tests/test-wcl-registration-contract.py
+M  tests/test-wcl-registration-info-stage11.py
+D  tests/test-wcl-registration-transaction-stage108.py
+M  tests/test-wcl-resource-transaction.py
+M  tests/test-wcl-skywalk-queues.py
+D  tests/test-wcl-stage100-tx-callback-deferral.py
+D  tests/test-wcl-stage93-independent-tx-audit.py
+D  tests/test-wcl-stage94-radio-tx-sync.py
+D  tests/test-wcl-stage95-key-retirement.py
+D  tests/test-wcl-stage96-key-retirement.py
+D  tests/test-wcl-stage97-independent-audit.py
+D  tests/test-wcl-stage98-native-build-lock-audit.py
+D  tests/test-wcl-stage99-tx-completion-reclamation-audit.py
+D  tests/test-wcl-tx-completion-stage92.py
+M  tests/test-wcl-tx-queue-array-contract.py
+D  tests/test-wcl-tx-submission-stage91.py
+D  tests/wcl_registration_transaction_stage108_test.cpp
+D  tests/wcl_tx_completion_bounded_queue_test.cpp
+M  tests/wcl_tx_completion_slots_test.cpp
+D  tests/wcl_tx_submission_batch_test.cpp
+D  tests/wcl_tx_submission_gate_test.cpp
+M  tests/wcl_tx_submission_queue_array_test.cpp
+=== STAGE185 SKYwalk PUBLICATION GUARD ===
+PATCH=PASS
+294-    }
+295-
+296-    /* Do not publish the native IO80211 service unless Apple's registration
+297-     * transaction committed and the Skywalk queues are live. */
+298-    if (!_skywalkQueues || !_skywalkQueues->isRegistered()) {
+299:        IOLog("rtl88wifi-wcl: refusing publication until Skywalk datapath is ready\\n");
+300-        goto fail;
+301-    }
+302-
+303-    _infraInterface->registerService();
+304-
+305-    const IOReturn interruptStatus = _pciBackend->setRadioRunning(true);
+306-    if (interruptStatus != kIOReturnSuccess) {
+307-        IOLog("rtl88wifi-wcl: PCI interrupt activation failed: 0x%08x\n",
+=== FOCUSED REGRESSION TESTS ===
+--- tests/test-wcl-registration-contract.py ---
+Traceback (most recent call last):
+  File "/Users/shohel/Developer/Stage183-reconciled-stage183-retry-20261107T082751Z/tests/test-wcl-registration-contract.py", line 54, in <module>
+    assert "not registered" in queues.lower()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+STAGE185_FINAL
+RUN=stage185-20261107T083155Z
+EXIT=10
+ORIGINAL_WORKTREE_MODIFIED=NO
+INSTALL_LOAD_SIGNING=NOT_RUN
+OPENCORE_SYSTEM_SECURITY=UNCHANGED
