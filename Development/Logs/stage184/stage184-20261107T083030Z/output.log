@@ -1,0 +1,55 @@
+=== STAGE184 NATIVE LIFECYCLE RECOVERY ===
+RUN=stage184-20261107T083030Z
+WORKTREE=/Users/shohel/Developer/Stage183-reconciled-stage183-retry-20261107T082751Z
+BRANCH=work/stage183-retry-20261107T082751Z
+true
+
+=== VERIFY BASELINE COMMIT ===
+From https://github.com/shammu2bd/Realtek-WiFi-Native-macOS
+ * branch            work/stage125-native-wifi-menu-readiness-audit -> FETCH_HEAD
+BASE_SHA=96ebabdc230e0ecac29c37ce99e391474aa0000f
+
+=== RESTORE COHERENT LIFECYCLE FILE SET IN ISOLATED WORKTREE ===
+RESTORED=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+RESTORED=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+RESTORED=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp
+RESTORED=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp
+RESTORED=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+RESTORED=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+
+=== VERIFY COMPLETE STARTUP AND SHUTDOWN TRANSACTIONS ===
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: RTW88WCLInfraInterface::start(IOService *provider)
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: super::start(provider)
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: attachControllerInterface()
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: attachRadio(_controller->radioBackend())
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: prepareRegistrationInfo(address)
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: beginRegistrationTransaction()
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: registerInfraEthernetInterface(
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: commitRegistrationTransaction()
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: RTW88WCLInfraInterface::shutdownForController()
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: beginDeregistrationTransaction()
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: finishDeregistrationTransaction()
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp :: detachControllerInterface()
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp :: beginRegistrationTransaction
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp :: commitRegistrationTransaction
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp :: abortRegistrationTransaction
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp :: beginDeregistrationTransaction
+PASS driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp :: finishDeregistrationTransaction
+LIFECYCLE_CONTRACT=0
+
+=== CHECK PATCH HYGIENE ===
+
+=== FOCUSED REGRESSION TESTS ===
+--- tests/test-wcl-registration-contract.py ---
+Traceback (most recent call last):
+  File "/Users/shohel/Developer/Stage183-reconciled-stage183-retry-20261107T082751Z/tests/test-wcl-registration-contract.py", line 50, in <module>
+    assert "refusing publication until Skywalk datapath is ready" in controller
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
+
+STAGE184_FINAL
+RUN=stage184-20261107T083030Z
+EXIT=10
+ORIGINAL_WORKTREE_MODIFIED=NO
+INSTALL_LOAD_SIGNING=NOT_RUN
+OPENCORE_SYSTEM_SECURITY=UNCHANGED
