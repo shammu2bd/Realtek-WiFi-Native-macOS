@@ -31,6 +31,8 @@ public:
 
     // true: HAL owns rate reporting; valid=false means no sample yet.
     virtual bool getTxRate(RTWTxRate &rate) { (void)rate; return false; }
+    // Last CRC-valid data-frame PHY rate received from the associated peer.
+    virtual bool getRxRate(RTWTxRate &rate) { (void)rate; return false; }
 
     
     virtual const char *getFirmwareName() = 0;
