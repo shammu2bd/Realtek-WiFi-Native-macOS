@@ -1,0 +1,26 @@
+name: Native controller workqueue source contract
+
+on:
+  push:
+    branches:
+      - work/stage172-controller-native-workqueue
+  pull_request:
+    paths:
+      - "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp"
+      - "driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp"
+      - "tests/test-wcl-controller-native-workqueue-stage172.py"
+      - ".github/workflows/stage172-native-workqueue-source-contract.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  source-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run native controller work-queue source contract
+        run: python3 tests/test-wcl-controller-native-workqueue-stage172.py
