@@ -96,7 +96,7 @@ bool RTW88WCLController::start(IOService *provider)
      * creating its command gate and PostOffice. Acquire the exact 24H32
      * queue before entering that base start path. */
     if (!createWorkQueue()) {
-        IOLog("rtl88wifi-wcl: IO80211WorkQueue factory failed\\n");
+        IOLog("rtl88wifi-wcl: IO80211WorkQueue factory failed\n");
         return false;
     }
     if (!super::start(provider))
