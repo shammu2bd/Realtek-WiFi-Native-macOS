@@ -1286,8 +1286,11 @@ void rtw_update_sta_info(struct rtw_dev *rtwdev, struct rtw_sta_info *si,
 		if (sta->deflink.vht_cap.vht_supported) {
 			ra_mask &= RA_MASK_VHT_RATES | RA_MASK_CCK_IN_VHT |
 				   RA_MASK_OFDM_IN_VHT;
+			/* VHT has its own rate-ID family; do not include HT here.
+			 * get_rate_id() handles CCK|OFDM|VHT for 2.4 GHz,
+			 * but has no CCK|OFDM|HT|VHT combination. */
 			wireless_set = WIRELESS_CCK | WIRELESS_OFDM |
-				       WIRELESS_HT | WIRELESS_VHT;
+				       WIRELESS_VHT;
 		} else if (sta->deflink.ht_cap.ht_supported) {
 			ra_mask &= RA_MASK_HT_RATES | RA_MASK_CCK_IN_HT |
 				   RA_MASK_OFDM_IN_HT_2G;
