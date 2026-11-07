@@ -83,7 +83,7 @@ void rtw88_remove_vif(struct ieee80211_vif *vif)
 bool rtw88_add_sta(struct ieee80211_vif *vif, struct ieee80211_sta *sta)
 {
     bool added = false;
-    if (!g_station_lock || !vif || !sta) return false;
+    if (!rtw_registry_ensure_lock() || !vif || !sta) return false;
     IORecursiveLockLock(g_station_lock);
     if (!rtw_registry_has_vif(vif)) goto done;
     for (unsigned i = 0; i < RTW_REGISTRY_PEERS; ++i) {
@@ -116,7 +116,7 @@ void rtw88_register_vif(struct ieee80211_vif *vif)
 void rtw88_unregister_vif(void) { rtw88_register_vif(NULL); }
 void rtw88_register_sta(struct ieee80211_sta *sta)
 {
-    if (!g_station_lock) return;
+    if (!rtw_registry_ensure_lock()) return;
     IORecursiveLockLock(g_station_lock);
     if (g_rtw88_sta != sta) rtw88_remove_sta(g_rtw88_sta);
     if (rtw88_add_sta(g_rtw88_vif, sta)) g_rtw88_sta = sta;
@@ -146,7 +146,7 @@ void ieee80211_iterate_active_interfaces(
 void ieee80211_iterate_stations_atomic(struct ieee80211_hw *hw,
     void (*iterator)(void *, struct ieee80211_sta *), void *data)
 {
-    if (!g_station_lock || hw != g_rtw88_hw || !iterator) return;
+    if (!rtw_registry_ensure_lock() || hw != g_rtw88_hw || !iterator) return;
     IORecursiveLockLock(g_station_lock);
     for (unsigned i = 0; i < RTW_REGISTRY_PEERS; ++i)
         if (g_registry_peers[i].sta) iterator(data, g_registry_peers[i].sta);
