@@ -127,7 +127,7 @@ set +e
       plutil -lint "$OUT/Contents/Info.plist"
       PLIST_RC=$?
       file "$BIN"
-      lipo -verify_arch x86_64 "$BIN"
+      lipo "$BIN" -verify_arch x86_64
       ARCH_RC=$?
       echo "NATIVE_BINARY_SHA256:"
       shasum -a 256 "$BIN"
