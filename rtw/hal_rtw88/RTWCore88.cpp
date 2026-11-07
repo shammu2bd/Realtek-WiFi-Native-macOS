@@ -283,6 +283,12 @@ bool RTWCore88::getTxRate(RTWTxRate &rate)
     return rate.valid && rate.bitrate100Kbps != 0;
 }
 
+bool RTWCore88::getRxRate(RTWTxRate &rate)
+{
+    rtw88LinuxGetRxRate(&linuxContext, rate);
+    return rate.valid && rate.bitrate100Kbps != 0;
+}
+
 bool RTWCore88::is5GBandSupport()
 {
     Rtw88NativeCapabilities caps = {};
