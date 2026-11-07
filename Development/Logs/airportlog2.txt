@@ -5955,3 +5955,140 @@ include/AirportRTWDiagnostics.h-16-#endif
 
 === DIFF CHECK ===
 DIFF_CHECK=PASS
+
+AIRPORTRTW TARGETED RA IOLOG AND LIVE PROPERTY PATCH
+Sat Nov  7 13:30:22 UTC 2026
+
+=== REPOSITORY ===
+/Users/shohel/Developer/AirportRTW-port-txrx
+port/rtl88wifi-txrx-20261107
+2033dc3d581dcb4faaa46651f31c0f4a0b322e0b
+
+=== PATCH RESULT ===
+RA_RAW_LOGGER=IOLog
+RA_DECODED_LOGGER=IOLog
+LIVE_RATE_PROPERTY_STATEMENTS_FIXED=7
+DIFF_CHECK=PASS
+BACKUP=/Users/shohel/Developer/AirportRTW-port-txrx/backups/ra-property-implementation-20261107-192944
+
+=== BUILD RESULT ===
+BUILD_EXIT=65
+BINARY_SHA256=1a7b942edda46b071f32f24cd7e22ef37de81cb7f329df42feecf64e3a11fabd
+BUNDLE_ID=com.senmiko.AirportRTW
+BUNDLE_VERSION=2.3.1
+UUID: 4380E782-E33E-3E80-8261-471B65B742D0 (x86_64) build/releases/Release/Sequoia/AirportRTW.kext/Contents/MacOS/AirportRTW
+
+=== BUILD OUTPUT TAIL ===
+  121 | max(u_int a, u_int b)
+      |                      ^
+      |                      ;
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:126:11: error: expected ')'
+  126 | min(u_int a, u_int b)
+      |           ^
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:126:1: note: to match this '('
+  126 | min(u_int a, u_int b)
+      | ^
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/linux/kernel.h:48:20: note: expanded from macro 'min'
+   48 | #define min(a, b) ((a) < (b) ? (a) : (b))
+      |                    ^
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:45:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/system.h:57:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:126:1: error: expected ')'
+  126 | min(u_int a, u_int b)
+      | ^
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/linux/kernel.h:48:24: note: expanded from macro 'min'
+   48 | #define min(a, b) ((a) < (b) ? (a) : (b))
+      |                        ^
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:126:1: note: to match this '('
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/linux/kernel.h:48:19: note: expanded from macro 'min'
+   48 | #define min(a, b) ((a) < (b) ? (a) : (b))
+      |                   ^
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:45:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/system.h:57:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:125:8: error: 'inline' can only appear on functions
+  125 | static inline u_int
+      |        ^
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:126:5: error: redefinition of 'u_int' as different kind of symbol
+  126 | min(u_int a, u_int b)
+      |     ^
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/sys/_types/_u_int.h:30:25: note: previous definition is here
+   30 | typedef unsigned int    u_int;
+      |                         ^
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:45:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/system.h:57:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/libkern/libkern.h:126:22: error: expected ';' after top level declarator
+  126 | min(u_int a, u_int b)
+      |                      ^
+      |                      ;
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:48:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOTypes.h:232:2: error: expected identifier
+  232 |         kMicrosecondScale = 1000,
+      |         ^
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/iokit_shim.h:94:27: note: expanded from macro 'kMicrosecondScale'
+   94 | #define kMicrosecondScale 1000u
+      |                           ^
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:48:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOTypes.h:233:2: error: expected identifier
+  233 |         kMillisecondScale = 1000 * 1000,
+      |         ^
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/iokit_shim.h:93:27: note: expanded from macro 'kMillisecondScale'
+   93 | #define kMillisecondScale 1000000u
+      |                           ^
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:49:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLocks.h:64:25: error: typedef redefinition with different types ('struct _IOLock' vs 'struct IOLock')
+   64 | typedef struct _IOLock  IOLock;
+      |                         ^
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/iokit_shim.h:36:23: note: previous definition is here
+   36 | typedef struct IOLock IOLock;
+      |                       ^
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:49:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLocks.h:130:9: error: cannot apply asm label to function after its first use
+  130 | int     IOLockSleep( IOLock * lock, void *event, UInt32 interType) __DARWIN14_ALIAS(IOLockSleep);
+      |         ^                                                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLocks.h:135:9: error: conflicting types for 'IOLockWakeup'
+  135 | void    IOLockWakeup(IOLock * lock, void *event, bool oneThread) __DARWIN14_ALIAS(IOLockWakeup);
+      |         ^
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/iokit_shim.h:47:17: note: previous declaration is here
+   47 | extern void     IOLockWakeup(IOLock *lock, void *event, int oneThread);
+      |                 ^
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:49:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLocks.h:172:33: error: typedef redefinition with different types ('struct _IORecursiveLock' vs 'struct IORecursiveLock')
+  172 | typedef struct _IORecursiveLock IORecursiveLock;
+      |                                 ^
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/iokit_shim.h:50:32: note: previous definition is here
+   50 | typedef struct IORecursiveLock IORecursiveLock;
+      |                                ^
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/driver/fw.c:1:
+In file included from /Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLib.h:49:
+/Users/shohel/Developer/AirportRTW-port-txrx/MacKernelSDK/Headers/IOKit/IOLocks.h:223:17: error: conflicting types for 'IORecursiveLockHaveLock'
+  223 | boolean_t       IORecursiveLockHaveLock( const IORecursiveLock * lock);
+      |                 ^
+/Users/shohel/Developer/AirportRTW-port-txrx/rtw/hal_rtw88/compat/iokit_shim.h:56:25: note: previous declaration is here
+   56 | extern int              IORecursiveLockHaveLock(IORecursiveLock *lock);
+      |                         ^
+fatal error: too many errors emitted, stopping now [-ferror-limit=]
+16 warnings and 20 errors generated.
+note: Run script build phase 'Build RTW89 C Archive' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'AirportRTW-Sequoia' from project 'AirportRTW')
+/Users/shohel/Developer/AirportRTW-port-txrx/AirportRTW.xcodeproj: warning: The macOS deployment target 'MACOSX_DEPLOYMENT_TARGET' is set to 10.12, but the range of supported deployment target versions is 10.13 to 15.5.99. (in target 'fw_gen' from project 'AirportRTW')
+** BUILD FAILED **
+
+=== DIFF STAT ===
+ rtw/hal_rtw88/RTWCore88.cpp | 16 ++++++++--------
+ rtw/hal_rtw88/driver/fw.c   | 17 ++++++++++++++++-
+ 2 files changed, 24 insertions(+), 9 deletions(-)
+
+=== WORKTREE STATUS ===
+ M .DS_Store
+ M rtw/hal_rtw88/RTWCore88.cpp
+ M rtw/hal_rtw88/driver/fw.c
+ M rtw/hal_rtw88/driver/tx.c
+?? backups/
+?? rtw/hal_rtw88/driver/fw.c.before-ra-diagnostics.20261107-155217.bak
