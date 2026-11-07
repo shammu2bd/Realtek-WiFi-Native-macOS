@@ -1681,7 +1681,7 @@ static void rtw_init_vht_cap(struct rtw_dev *rtwdev,
 			mcs_map |= IEEE80211_VHT_MCS_NOT_SUPPORTED << (i * 2);
 	}
 
-	highest = cpu_to_le16(390 * efuse->hw_cap.nss);
+	highest = cpu_to_le16(390 * nss);
 
 	vht_cap->vht_mcs.rx_mcs_map = cpu_to_le16(mcs_map);
 	vht_cap->vht_mcs.tx_mcs_map = cpu_to_le16(mcs_map);
