@@ -48,7 +48,7 @@ static RTWTxRate decodeRxRate(const struct ieee80211_rx_status *status)
     rate.widthMHz = status->bw == RATE_INFO_BW_80 ? 80 :
         status->bw == RATE_INFO_BW_40 ? 40 :
         status->bw == RATE_INFO_BW_160 ? 160 : 20;
-    rate.shortGI = (status->flag & RX_FLAG_SHORT_GI) != 0;
+    rate.shortGI = (status->enc_flags & RX_ENC_FLAG_SHORT_GI) != 0;
     rate.guardIntervalNs = rate.shortGI ? 400 : 800;
 
     if (status->encoding == RX_ENC_VHT) {
