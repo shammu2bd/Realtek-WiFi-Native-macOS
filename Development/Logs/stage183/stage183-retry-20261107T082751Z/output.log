@@ -1,0 +1,186 @@
+=== STAGE183 RETRY: FETCH_HEAD-BASED RECONCILIATION ===
+RUN=stage183-retry-20261107T082751Z
+BRANCH=work/stage183-retry-20261107T082751Z
+WORKTREE=/Users/shohel/Developer/Stage183-reconciled-stage183-retry-20261107T082751Z
+ORIGINAL_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+ORIGINAL_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+
+=== FETCH EXACT REMOTE BASE ===
+From https://github.com/shammu2bd/Realtek-WiFi-Native-macOS
+ * branch            work/stage125-native-wifi-menu-readiness-audit -> FETCH_HEAD
+BASE_COMMIT=96ebabdc230e0ecac29c37ce99e391474aa0000f
+
+=== CAPTURE LOCAL TRACKED DRIVER/TEST DELTAS ===
+PATCH_BYTES=545211
+ .../IOKit/skywalk/IOSkywalkRxCompletionQueue.h     |   10 -
+ .../IOKit/skywalk/IOSkywalkTxSubmissionQueue.h     |    2 +-
+ driver/RTL88WiFi/Makefile                          |   51 +-
+ .../src/compat/linux/skbuff_tx_completion.h        |   24 +-
+ driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp       | 2284 +++++++-------------
+ driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp       |   68 +-
+ driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp       |   67 +-
+ driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp       |    4 +-
+ driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp       |   56 -
+ .../RTL88WiFi/src/kext/RTW88TxFrameProtection.hpp  |   15 -
+ .../RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp  |   78 -
+ driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp     |  158 --
+ .../src/kext/wcl24h32/RTW88WCLController.cpp       |  379 +---
+ .../src/kext/wcl24h32/RTW88WCLController.hpp       |   37 +-
+ .../src/kext/wcl24h32/RTW88WCLInfraInterface.cpp   |  309 +--
+ .../src/kext/wcl24h32/RTW88WCLInfraInterface.hpp   |   17 +-
+ .../wcl24h32/RTW88WCLRegistrationTransaction.hpp   |  112 -
+ .../src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp    |  324 +--
+ .../src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp    |   66 +-
+ .../src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp |  243 +--
+ .../src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp |   52 +-
+ .../kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp |   63 +-
+ .../kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp    |   27 -
+ .../wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp     |  333 ---
+ .../wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp     |   71 -
+ .../kext/wcl24h32/RTW88WCLTxSubmissionBatch.hpp    |   38 -
+ .../src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp |  116 -
+ .../drivers/net/wireless/realtek/rtw88/hci.h       |    9 -
+ .../drivers/net/wireless/realtek/rtw88/mac.c       |   55 -
+ .../drivers/net/wireless/realtek/rtw88/mac.h       |    7 -
+ .../drivers/net/wireless/realtek/rtw88/mac80211.c  |   37 +-
+ .../drivers/net/wireless/realtek/rtw88/main.c      |    1 -
+ .../drivers/net/wireless/realtek/rtw88/main.h      |    3 +-
+ .../drivers/net/wireless/realtek/rtw88/pci.c       |   53 +-
+ .../drivers/net/wireless/realtek/rtw88/sec.c       |   20 +-
+ .../drivers/net/wireless/realtek/rtw88/tx.c        |   33 -
+ .../drivers/net/wireless/realtek/rtw88/tx.h        |    2 -
+ tests/rtw88_tx_ba_state_test.cpp                   |   61 -
+ tests/rtw88_tx_sequence_numbers_test.cpp           |   90 -
+ tests/rtw88_tx_state_gate_test.cpp                 |  190 --
+ tests/test-stage102-xnu-thread-call-lifecycle.py   |  239 --
+ ...t-wcl-controller-primary-attachment-stage121.py |   72 -
+ tests/test-wcl-link-state-publication-stage124.py  |   83 -
+ ...test-wcl-native-wifi-menu-readiness-stage125.py |  254 ---
+ tests/test-wcl-registration-contract.py            |   78 +-
+ tests/test-wcl-registration-info-stage11.py        |   90 +-
+ .../test-wcl-registration-transaction-stage108.py  |  197 --
+ tests/test-wcl-resource-transaction.py             |    2 +-
+ tests/test-wcl-skywalk-queues.py                   |    4 +-
+ tests/test-wcl-stage100-tx-callback-deferral.py    |  225 --
+ tests/test-wcl-stage93-independent-tx-audit.py     |  305 ---
+ tests/test-wcl-stage94-radio-tx-sync.py            |  364 ----
+ tests/test-wcl-stage95-key-retirement.py           |  155 --
+ tests/test-wcl-stage96-key-retirement.py           |  142 --
+ tests/test-wcl-stage97-independent-audit.py        |  111 -
+ tests/test-wcl-stage98-native-build-lock-audit.py  |  135 --
+ ...-wcl-stage99-tx-completion-reclamation-audit.py |  280 ---
+ tests/test-wcl-tx-completion-stage92.py            |  283 ---
+ tests/test-wcl-tx-queue-array-contract.py          |   15 +-
+ tests/test-wcl-tx-submission-stage91.py            |  237 --
+ .../wcl_registration_transaction_stage108_test.cpp |   64 -
+ tests/wcl_tx_completion_bounded_queue_test.cpp     |  101 -
+ tests/wcl_tx_completion_slots_test.cpp             |   34 -
+ tests/wcl_tx_submission_batch_test.cpp             |   91 -
+ tests/wcl_tx_submission_gate_test.cpp              |  164 --
+ tests/wcl_tx_submission_queue_array_test.cpp       |   13 -
+ 66 files changed, 1121 insertions(+), 8182 deletions(-)
+
+=== CREATE FRESH ISOLATED WORKTREE ===
+Preparing worktree (new branch 'work/stage183-retry-20261107T082751Z')
+Updating files:  45% (1327/2895)Updating files:  46% (1332/2895)Updating files:  47% (1361/2895)Updating files:  48% (1390/2895)Updating files:  49% (1419/2895)Updating files:  50% (1448/2895)Updating files:  51% (1477/2895)Updating files:  52% (1506/2895)Updating files:  53% (1535/2895)Updating files:  54% (1564/2895)Updating files:  55% (1593/2895)Updating files:  56% (1622/2895)Updating files:  57% (1651/2895)Updating files:  58% (1680/2895)Updating files:  59% (1709/2895)Updating files:  60% (1737/2895)Updating files:  61% (1766/2895)Updating files:  62% (1795/2895)Updating files:  63% (1824/2895)Updating files:  64% (1853/2895)Updating files:  65% (1882/2895)Updating files:  66% (1911/2895)Updating files:  67% (1940/2895)Updating files:  68% (1969/2895)Updating files:  69% (1998/2895)Updating files:  70% (2027/2895)Updating files:  71% (2056/2895)Updating files:  72% (2085/2895)Updating files:  73% (2114/2895)Updating files:  74% (2143/2895)Updating files:  75% (2172/2895)Updating files:  76% (2201/2895)Updating files:  77% (2230/2895)Updating files:  78% (2259/2895)Updating files:  79% (2288/2895)Updating files:  80% (2316/2895)Updating files:  81% (2345/2895)Updating files:  82% (2374/2895)Updating files:  83% (2403/2895)Updating files:  84% (2432/2895)Updating files:  85% (2461/2895)Updating files:  86% (2490/2895)Updating files:  87% (2519/2895)Updating files:  87% (2537/2895)Updating files:  88% (2548/2895)Updating files:  89% (2577/2895)Updating files:  90% (2606/2895)Updating files:  91% (2635/2895)Updating files:  92% (2664/2895)Updating files:  93% (2693/2895)Updating files:  94% (2722/2895)Updating files:  95% (2751/2895)Updating files:  96% (2780/2895)Updating files:  97% (2809/2895)Updating files:  98% (2838/2895)Updating files:  99% (2867/2895)Updating files: 100% (2895/2895)Updating files: 100% (2895/2895), done.
+HEAD is now at 96ebabd Index Stage180 native KEXT build report
+
+=== APPLY LOCAL DELTAS THREE-WAY ===
+Applied patch to 'driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h' cleanly.
+Applied patch to 'driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h' cleanly.
+Applied patch to 'driver/RTL88WiFi/Makefile' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp' cleanly.
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp' cleanly.
+Falling back to direct application...
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp' cleanly.
+Applied patch to 'driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp' cleanly.
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c' cleanly.
+Applied patch to 'driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h' cleanly.
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Applied patch to 'tests/test-wcl-registration-contract.py' cleanly.
+Applied patch to 'tests/test-wcl-registration-info-stage11.py' cleanly.
+Falling back to direct application...
+Applied patch to 'tests/test-wcl-resource-transaction.py' cleanly.
+Applied patch to 'tests/test-wcl-skywalk-queues.py' cleanly.
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Applied patch to 'tests/test-wcl-tx-queue-array-contract.py' cleanly.
+Falling back to direct application...
+Falling back to direct application...
+Falling back to direct application...
+Applied patch to 'tests/wcl_tx_completion_slots_test.cpp' cleanly.
+Falling back to direct application...
+Falling back to direct application...
+Applied patch to 'tests/wcl_tx_submission_queue_array_test.cpp' cleanly.
+PATCH_APPLY_EXIT=0
+
+=== COPY UNTRACKED DRIVER/TEST SOURCES ===
+UNTRACKED_FILES_COPIED=1
+
+=== RESTORE ONLY DELETED TRANSACTION/QUEUE SUPPORT FILES ===
+RESTORED_DELETED_SUPPORT=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationTransaction.hpp
+RESTORED_DELETED_SUPPORT=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp
+RESTORED_DELETED_SUPPORT=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp
+RESTORED_DELETED_SUPPORT=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionBatch.hpp
+RESTORED_DELETED_SUPPORT=driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp
+
+=== CHECK STARTUP TRANSACTION AND LOCAL MERGE STATE ===
+FAIL super::start(provider)
+FAIL attachControllerInterface()
+FAIL attachRadio(_controller->radioBackend())
+FAIL prepareRegistrationInfo(address)
+FAIL beginRegistrationTransaction()
+FAIL registerInfraEthernetInterface(
+FAIL commitRegistrationTransaction()
+FAIL suspiciously short startup implementation
+START_FUNCTION_LINES=11
+STARTUP_CONTRACT_EXIT=20
+RECONCILIATION=STOPPED_STARTUP_CONTRACT_NOT_RESTORED
+No blind replacement of controller/interface implementation was attempted.
+
+STAGE183_RETRY_FINAL
+RUN=stage183-retry-20261107T082751Z
+CONSOLIDATION_EXIT=14
+ORIGINAL_WORKTREE_MODIFIED=NO
+INSTALL_LOAD_SIGNING=NOT_RUN
+OPENCORE_SYSTEM_SECURITY=UNCHANGED
