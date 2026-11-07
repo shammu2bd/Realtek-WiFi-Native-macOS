@@ -16,6 +16,7 @@ class Rtw88PciTransport;
 
 unsigned rtw88LinuxGetNSS(struct Rtw88LinuxContext *context);
 void rtw88LinuxGetTxRate(struct Rtw88LinuxContext *context, RTWTxRate &rate);
+void rtw88LinuxGetRxRate(struct Rtw88LinuxContext *context, RTWTxRate &rate);
 
 struct Rtw88NativeCapabilities {
     uint16_t htCaps;
@@ -123,6 +124,8 @@ struct Rtw88LinuxContext {
     volatile uint64_t txReportCount;
     volatile uint32_t txReportStatus;
     volatile uint32_t txReportAttempts;
+    volatile uint32_t rxRateLock;
+    RTWTxRate rxRate;
     void *nativeOwner;
     ReceiveCallback receive;
     TxResumeCallback txResume;
