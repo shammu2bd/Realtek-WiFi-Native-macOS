@@ -136,8 +136,10 @@ CPP
   else
     echo "KMUTIL_IO80211FAMILY_PROVIDER_LISTED=NO"
   fi
-  if [[ "$KMUTIL_RC" -eq 0 ]] && grep -Fq "com.apple.iokit.IO80211Family" "$WORK/kmutil-libraries.txt"; then
-    echo "STAGE164_SYMBOL_PROVIDER_RESULT=PASS_PROVIDER_LIBRARY_PRESENT"
+  if [[ "$KMUTIL_RC" -eq 0 ]] &&
+     grep -Eiq 'IO80211WorkQueue.*workQueue|workQueue.*IO80211WorkQueue|__ZN16IO80211WorkQueue9workQueueEv' "$WORK/kmutil-libraries.txt" &&
+     grep -Fq "com.apple.iokit.IO80211Family" "$WORK/kmutil-libraries.txt"; then
+    echo "STAGE164_SYMBOL_PROVIDER_RESULT=PASS_FACTORY_SYMBOL_AND_PROVIDER_REPORTED"
   else
     echo "STAGE164_SYMBOL_PROVIDER_RESULT=REVIEW_REQUIRED"
   fi
