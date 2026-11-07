@@ -1,4 +1,5 @@
 /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+#include <libkern/OSAtomic.h>
 /* Included after mac80211 types and g_rtw88_hw. Each HAL owns a registry.
  * Writers and iterators hold the recursive registry lock. Lookup returns a
  * borrowed pointer: callers must serialize peer teardown for its entire use.
