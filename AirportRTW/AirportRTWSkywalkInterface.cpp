@@ -744,9 +744,20 @@ getPOWERSAVE(struct apple80211_powersave_data *pd)
 IOReturn AirportRTWSkywalkInterface::
 getNSS(struct apple80211_nss_data *data)
 {
+    if (!data)
+        return kIOReturnBadArgument;
     memset(data, 0, sizeof(*data));
     data->version = APPLE80211_VERSION;
-    data->nss = fHalService->getDriverInfo()->getTxNSS();
+
+    /* Report the active firmware-selected spatial stream count, not the
+     * adapter's maximum hardware capability. */
+    RTWTxRate liveRate = {};
+    if (fHalService->getDriverInfo()->getTxRate(liveRate) &&
+        liveRate.valid && liveRate.nss) {
+        data->nss = liveRate.nss;
+    } else {
+        data->nss = fHalService->getDriverInfo()->getTxNSS();
+    }
     return kIOReturnSuccess;
 }
 
