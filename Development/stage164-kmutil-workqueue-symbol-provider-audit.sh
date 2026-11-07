@@ -36,9 +36,11 @@ STAGE163_ACTUAL="$(gh api "repos/$REPO/contents/$STAGE163_PATH?ref=main" --jq '.
 SDK="$(xcrun --sdk macosx --show-sdk-path)"
 MKSDK="$ROOT/driver/RTL88WiFi/MacKernelSDK"
 KMOD_SRC="$ROOT/driver/RTL88WiFi/src/kext/kmod_info.c"
-BASE_INFO="$ROOT/driver/RTL88WiFi/RTL88WiFiNative.kext/Contents/Info.plist"
+BASE_INFO="$ROOT/driver/RTL88WiFi/RTL88WiFi.kext/Contents/Info.plist"
+PLIST_GENERATOR="$ROOT/tools/generate-sequoia-native-plist.py"
+CONTROLLER_HEADER="$ROOT/driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp"
 LIBKMOD="$MKSDK/Library/x86_64/libkmod.a"
-for p in "$KMOD_SRC" "$BASE_INFO" "$LIBKMOD"; do
+for p in "$KMOD_SRC" "$BASE_INFO" "$LIBKMOD" "$PLIST_GENERATOR" "$CONTROLLER_HEADER"; do
   [[ -r "$p" ]] || { echo "ERROR: missing required input $p"; exit 11; }
 done
 BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$BASE_INFO")"
@@ -51,7 +53,7 @@ STATUS_BEFORE="$(git status --porcelain | shasum -a 256 | awk '{print $1}')"
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 PROBE_KEXT="$WORK/RTL88WiFiNative.kext"
 mkdir -p "$PROBE_KEXT/Contents/MacOS"
-cp "$BASE_INFO" "$PROBE_KEXT/Contents/Info.plist"
+python3 "$PLIST_GENERATOR" --base-plist "$BASE_INFO" --controller-header "$CONTROLLER_HEADER" --output "$PROBE_KEXT/Contents/Info.plist"
 
 cat > "$WORK/workqueue_symbol_probe.cpp" <<'CPP'
 class IO80211WorkQueue;
