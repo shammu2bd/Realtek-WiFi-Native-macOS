@@ -1,0 +1,304 @@
+=== STAGE183 NATIVE SOURCE CONSOLIDATION ===
+RUN=stage183-20261107T082545Z
+REPO=shammu2bd/Realtek-WiFi-Native-macOS
+ORIGINAL_BRANCH=work/stage125-native-wifi-menu-readiness-audit
+ORIGINAL_HEAD=3d02ef10e353bb80d032980ffe2e7d28b90fd7da
+NEW_BRANCH=work/stage183-consolidated-native-source
+NEW_WORKTREE=/Users/shohel/Developer/Stage183-consolidated-native-source
+
+=== 1. VERIFY ORIGINAL WORKTREE AND FETCH REMOTE ===
+D  .github/workflows/stage100-tx-callback-deferral-audit.yml
+D  .github/workflows/stage101-bounded-queue-lifecycle.yml
+D  .github/workflows/stage102-xnu-thread-call-lifecycle.yml
+D  .github/workflows/stage94-radio-tx-sync.yml
+D  .github/workflows/stage95-key-retirement-audit.yml
+D  .github/workflows/stage96-key-retirement.yml
+D  .github/workflows/stage97-independent-audit.yml
+D  .github/workflows/stage98-native-build-lock-audit.yml
+D  .github/workflows/stage99-tx-completion-reclamation-audit.yml
+D  Development/Allowlist/stage110-signing-efi-audit.gitblob
+D  Development/Allowlist/stage111-runtime-amfipass-audit.gitblob
+D  Development/Allowlist/stage119-controller-interface-attachment.gitblob
+D  Development/Allowlist/stage120-exact-attachment-abi.gitblob
+M  Development/Logs/automation-status/latest.txt
+D  Development/Logs/stage100-clean-dual-object-compile-20261106T043340Z.log
+D  Development/Logs/stage100-tx-callback-deferral-audit-20261106.md
+D  Development/Logs/stage101-bounded-queue-lifecycle-20261106.md
+D  Development/Logs/stage101-clean-dual-object-compile-20261106T044830Z.log
+D  Development/Logs/stage101-final-clean-compile-20261106T045101Z.log
+D  Development/Logs/stage102-clean-dual-object-compile-20261106T051059Z.log
+D  Development/Logs/stage102-post-fix-clean-dual-object-compile-20261106T051547Z.log
+D  Development/Logs/stage102-xnu-thread-call-lifecycle-20261106.md
+D  Development/Logs/stage103-final-bundle-validation-20261106T053206Z.log
+D  Development/Logs/stage103-native-full-link-bundle-20261106T052811Z.log
+D  Development/Logs/stage104-native-binary-audit-20261106T053603Z.log
+D  Development/Logs/stage105-native-symbol-abi-audit-20261106T054714Z.log
+D  Development/Logs/stage106-sip-preserving-signing-feasibility-20261106T055452Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T060847Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T061303Z.log
+D  Development/Logs/stage107-opencore-injection-feasibility-20261106T062025Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T081017Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092047Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092654Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T092902Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T093052Z.log
+D  Development/Logs/stage108-registration-transaction-20261106T093213Z.log
+D  Development/Logs/stage109-native-bundle-readiness-20261106T093723Z.log
+D  Development/Logs/stage110-signing-efi-audit-20261106T104448Z.log
+D  Development/Logs/stage110-signing-efi-audit-20261106T104722Z.log
+D  Development/Logs/stage111-first-run-unverified-20261106T114413Z.patch
+D  Development/Logs/stage111-first-run-unverified-20261106T114413Z.txt
+D  Development/Logs/stage119-controller-interface-attachment-20261106T141021Z.log
+D  Development/Logs/stage120-20261106T141707Z/class-and-vtable-index.txt
+D  Development/Logs/stage120-20261106T141707Z/controller-attachment-abi.txt
+D  Development/Logs/stage120-20261106T141707Z/method-status.txt
+D  Development/Logs/stage120-20261106T141707Z/selected-method-disassembly.txt
+D  Development/Logs/stage120-20261106T141707Z/summary.txt
+D  Development/Logs/stage120-20261106T141707Z/tools/__pycache__/disasm.cpython-315.pyc
+D  Development/Logs/stage120-20261106T141707Z/tools/__pycache__/kcfile.cpython-315.pyc
+D  Development/Logs/stage120-20261106T141707Z/tools/disasm.py
+D  Development/Logs/stage120-20261106T141707Z/tools/kcfile.py
+D  Development/Logs/stage120-20261106T141707Z/vtable-index.txt
+D  Development/Logs/stage121-github-source-review-20261106T142841Z.log
+D  Development/Logs/stage121-native-controller-attachment-20261106T142556Z.log
+A  Development/Logs/stage122-readonly-runtime-diagnostics-20261106T144511Z-upload-20261106T151521Z-0a691ba8.log
+A  Development/Logs/stage122-runtime-summary-20261106T151904Z.txt
+A  Development/Logs/stage123-runtime-activation-recovered-20261106T212519.log
+A  Development/Logs/stage124-native-wifi-interface-state-20261106T155623Z.log
+A  Development/Logs/stage124-native-wifi-interface-state-20261106T160152Z.log
+A  Development/Logs/stage125-native-wifi-menu-readiness-20261106T162258Z.log
+D  Development/Logs/stage125-native-wifi-menu-readiness-audit.md
+A  Development/Logs/stage126-apple-power-state-abi-audit.md
+D  Development/Logs/stage91-native-wcl-compile-20261105T181953Z.log
+D  Development/Logs/stage91-ownership-review-20261106.md
+D  Development/Logs/stage91-tx-submission-tests-20261105T173517Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T175804Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T181048Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T181733Z.log
+D  Development/Logs/stage91-tx-submission-tests-20261105T185437Z.log
+D  Development/Logs/stage91-wmm-completion-fix-compile-20261105T185446Z.log
+D  Development/Logs/stage91-wmm-completion-retry-fix-20261106.md
+D  Development/Logs/stage92-tx-completion-compile-20261105T193145Z.log
+D  Development/Logs/stage92-tx-completion-handoff-24H32-20261106.md
+D  Development/Logs/stage92-tx-completion-tests-20261105T192820Z.log
+D  Development/Logs/stage92-tx-completion-tests-20261105T193136Z.log
+D  Development/Logs/stage93-independent-tx-audit-20261105T194044Z.log
+D  Development/Logs/stage94-radio-tx-sync-20261106.md
+D  Development/Logs/stage94-radio-tx-sync-design-20261106.md
+D  Development/Logs/stage94-radio-tx-sync-model-20261106.log
+D  Development/Logs/stage95-key-retirement-audit-20261106.md
+D  Development/Logs/stage96-key-retirement-barrier-20261106.md
+D  Development/Logs/stage97-independent-audit-20261106.md
+D  Development/Logs/stage98-clean-compile-20261106T034521Z.log
+D  Development/Logs/stage98-final-compile-20261106T034120Z.log
+D  Development/Logs/stage98-native-build-lock-audit-20261106.md
+D  Development/Logs/stage98-target-compile-diagnostic-20261106.md
+D  Development/Logs/stage98-target-compile-diagnostic-20261106T033413Z.log
+D  Development/Logs/stage98-target-compile-fixed-20261106T033742Z.log
+D  Development/Logs/stage99-clean-dual-object-compile-20261106T041443Z.log
+D  Development/Logs/stage99-tx-completion-lock-and-reclamation-audit-20261106.md
+M  Development/README.md
+D  Development/STAGE108-REGISTRATION-TRANSACTION.md
+D  Development/STAGE110-SIGNING-EFI-AUDIT.md
+D  Development/STAGE111-RUNTIME-AMFIPASS-AUDIT.md
+M  Development/output.log
+D  Development/stage104-native-binary-audit.sh
+D  Development/stage105-native-symbol-abi-audit.sh
+D  Development/stage106-sip-preserving-signing-audit.sh
+D  Development/stage107-opencore-injection-feasibility.sh
+D  Development/stage108-registration-transaction.sh
+D  Development/stage109-native-bundle-readiness-audit.sh
+D  Development/stage110-signing-efi-audit.sh
+D  Development/stage111-runtime-amfipass-audit.py
+D  Development/stage119-controller-interface-attachment.py
+D  Development/stage120-exact-attachment-abi.py
+D  Development/stage121-native-controller-attachment.sh
+D  Development/stage121-publish-existing-run.sh
+D  Development/stage124-native-wifi-interface-state.sh
+D  Development/stage125-native-wifi-menu-readiness-audit.sh
+A  Development/stage126-apple-power-state-abi-audit.sh
+D  docs/STAGE91-TX-SUBMISSION-CALLBACK.md
+M  driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h
+M  driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h
+M  driver/RTL88WiFi/Makefile
+M  driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h
+M  driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp
+M  driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp
+M  driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp
+M  driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxFrameProtection.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp
+D  driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp
+MM driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp
+MM driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationTransaction.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp
+M  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionBatch.hpp
+D  driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c
+M  driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h
+D  tests/rtw88_tx_ba_state_test.cpp
+D  tests/rtw88_tx_sequence_numbers_test.cpp
+D  tests/rtw88_tx_state_gate_test.cpp
+D  tests/test-stage102-xnu-thread-call-lifecycle.py
+D  tests/test-wcl-controller-primary-attachment-stage121.py
+D  tests/test-wcl-link-state-publication-stage124.py
+D  tests/test-wcl-native-wifi-menu-readiness-stage125.py
+M  tests/test-wcl-registration-contract.py
+M  tests/test-wcl-registration-info-stage11.py
+D  tests/test-wcl-registration-transaction-stage108.py
+M  tests/test-wcl-resource-transaction.py
+M  tests/test-wcl-skywalk-queues.py
+D  tests/test-wcl-stage100-tx-callback-deferral.py
+D  tests/test-wcl-stage93-independent-tx-audit.py
+D  tests/test-wcl-stage94-radio-tx-sync.py
+D  tests/test-wcl-stage95-key-retirement.py
+D  tests/test-wcl-stage96-key-retirement.py
+D  tests/test-wcl-stage97-independent-audit.py
+D  tests/test-wcl-stage98-native-build-lock-audit.py
+D  tests/test-wcl-stage99-tx-completion-reclamation-audit.py
+D  tests/test-wcl-tx-completion-stage92.py
+M  tests/test-wcl-tx-queue-array-contract.py
+D  tests/test-wcl-tx-submission-stage91.py
+D  tests/wcl_registration_transaction_stage108_test.cpp
+D  tests/wcl_tx_completion_bounded_queue_test.cpp
+M  tests/wcl_tx_completion_slots_test.cpp
+D  tests/wcl_tx_submission_batch_test.cpp
+D  tests/wcl_tx_submission_gate_test.cpp
+M  tests/wcl_tx_submission_queue_array_test.cpp
+D  tools/run-stage100-tx-callback-deferral-audit.sh
+D  tools/run-stage101-bounded-queue-lifecycle.sh
+D  tools/run-stage102-xnu-thread-call-lifecycle.sh
+D  tools/run-stage91-tx-submission-tests.sh
+D  tools/run-stage91-wmm-completion-fix-validation.sh
+D  tools/run-stage92-tx-completion-tests.sh
+D  tools/run-stage92-tx-completion-validation.sh
+D  tools/run-stage93-independent-tx-audit.sh
+D  tools/run-stage94-radio-tx-ba-model-tests.sh
+D  tools/run-stage94-radio-tx-sync-model-tests.sh
+D  tools/run-stage95-key-retirement-audit.sh
+D  tools/run-stage96-key-retirement-tests.sh
+D  tools/run-stage97-independent-audit.sh
+D  tools/run-stage98-native-build-lock-audit.sh
+D  tools/run-stage99-tx-completion-reclamation-audit.sh
+?? .github/workflows/
+?? Development/Logs/stage172/
+?? Development/Logs/stage173-undefined-symbols.txt
+?? Development/Logs/stage174-network-symbols.txt
+?? Development/Logs/stage174-undefined-symbols.txt
+?? Development/Logs/stage176-runtime-preflight.txt
+?? Development/Logs/stage177-control-plane-source-inventory.txt
+?? Development/Logs/stage178-control-plane-focused-review.txt
+?? Development/Logs/stage179-implementation-preflight.txt
+?? Development/Logs/stage179/
+?? Development/Logs/stage180/
+?? Development/Logs/stage181/
+?? Development/Logs/stage182/
+?? tests/test-wcl-controller-native-workqueue-stage172.py
+From https://github.com/shammu2bd/Realtek-WiFi-Native-macOS
+ * branch            work/stage125-native-wifi-menu-readiness-audit -> FETCH_HEAD
+fatal: ambiguous argument 'origin/work/stage125-native-wifi-menu-readiness-audit': unknown revision or path not in the working tree.
+Use '--' to separate paths from revisions, like this:
+'git <command> [<revision>...] -- [<file>...]'
+origin/work/stage125-native-wifi-menu-readiness-audit
+
+=== 2. CAPTURE ALL LOCAL DRIVER AND TEST CHANGES ===
+PATCH_BYTES=545211
+TRACKED_SOURCE_CHANGES:
+M	driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkRxCompletionQueue.h
+M	driver/RTL88WiFi/MacKernelSDK/Headers/IOKit/skywalk/IOSkywalkTxSubmissionQueue.h
+M	driver/RTL88WiFi/Makefile
+M	driver/RTL88WiFi/src/compat/linux/skbuff_tx_completion.h
+M	driver/RTL88WiFi/src/kext/RTW88IEEE80211.cpp
+M	driver/RTL88WiFi/src/kext/RTW88IEEE80211.hpp
+M	driver/RTL88WiFi/src/kext/RTW88PCIDevice.cpp
+M	driver/RTL88WiFi/src/kext/RTW88PCIDevice.hpp
+D	driver/RTL88WiFi/src/kext/RTW88TxBAState.hpp
+D	driver/RTL88WiFi/src/kext/RTW88TxFrameProtection.hpp
+D	driver/RTL88WiFi/src/kext/RTW88TxSequenceNumbers.hpp
+D	driver/RTL88WiFi/src/kext/RTW88TxStateGate.hpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.cpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLController.hpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.cpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLInfraInterface.hpp
+D	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLRegistrationTransaction.hpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.cpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkQueues.hpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.cpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLSkywalkTxAdapter.hpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTXQueueArrayContract.hpp
+M	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionSlots.hpp
+D	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.cpp
+D	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxCompletionWorkQueue.hpp
+D	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionBatch.hpp
+D	driver/RTL88WiFi/src/kext/wcl24h32/RTW88WCLTxSubmissionGate.hpp
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/hci.h
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.c
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac.h
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/mac80211.c
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.c
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/main.h
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/pci.c
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/sec.c
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.c
+M	driver/rtw88-stable/drivers/net/wireless/realtek/rtw88/tx.h
+D	tests/rtw88_tx_ba_state_test.cpp
+D	tests/rtw88_tx_sequence_numbers_test.cpp
+D	tests/rtw88_tx_state_gate_test.cpp
+D	tests/test-stage102-xnu-thread-call-lifecycle.py
+D	tests/test-wcl-controller-primary-attachment-stage121.py
+D	tests/test-wcl-link-state-publication-stage124.py
+D	tests/test-wcl-native-wifi-menu-readiness-stage125.py
+M	tests/test-wcl-registration-contract.py
+M	tests/test-wcl-registration-info-stage11.py
+D	tests/test-wcl-registration-transaction-stage108.py
+M	tests/test-wcl-resource-transaction.py
+M	tests/test-wcl-skywalk-queues.py
+D	tests/test-wcl-stage100-tx-callback-deferral.py
+D	tests/test-wcl-stage93-independent-tx-audit.py
+D	tests/test-wcl-stage94-radio-tx-sync.py
+D	tests/test-wcl-stage95-key-retirement.py
+D	tests/test-wcl-stage96-key-retirement.py
+D	tests/test-wcl-stage97-independent-audit.py
+D	tests/test-wcl-stage98-native-build-lock-audit.py
+D	tests/test-wcl-stage99-tx-completion-reclamation-audit.py
+D	tests/test-wcl-tx-completion-stage92.py
+M	tests/test-wcl-tx-queue-array-contract.py
+D	tests/test-wcl-tx-submission-stage91.py
+D	tests/wcl_registration_transaction_stage108_test.cpp
+D	tests/wcl_tx_completion_bounded_queue_test.cpp
+M	tests/wcl_tx_completion_slots_test.cpp
+D	tests/wcl_tx_submission_batch_test.cpp
+D	tests/wcl_tx_submission_gate_test.cpp
+M	tests/wcl_tx_submission_queue_array_test.cpp
+
+=== 3. CREATE ISOLATED CONSOLIDATION WORKTREE ===
+Preparing worktree (new branch 'work/stage183-consolidated-native-source')
+fatal: not a valid object name: 'origin/work/stage125-native-wifi-menu-readiness-audit'
+
+STAGE183_FINAL
+RUN=stage183-20261107T082545Z
+CONSOLIDATION_EXIT=13
+ORIGINAL_WORKTREE_MODIFIED=NO
+INSTALL_LOAD_SIGNING=NOT_RUN
+OPENCORE_SYSTEM_SECURITY=UNCHANGED
+=== UPLOAD STAGE183 REPORT TO GITHUB MAIN ===
+SUMMARY_UPLOAD=PASS
