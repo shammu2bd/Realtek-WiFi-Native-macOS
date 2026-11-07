@@ -1,3 +1,4 @@
+extern "C" void IOLog(const char *format, ...);
 /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
 #include "RTWCore88.hpp"
 #include "Rtw88PciTransport.hpp"
@@ -279,7 +280,7 @@ int RTWCore88::getTxNSS()
 bool RTWCore88::getTxRate(RTWTxRate &rate)
 {
     rtw88LinuxGetTxRate(&linuxContext, rate);
-    return true;
+    return rate.valid && rate.bitrate100Kbps != 0;
 }
 
 bool RTWCore88::is5GBandSupport()
@@ -620,13 +621,14 @@ void RTWCore88::watchdog(struct _ifnet *ifp)
                             owner->linuxContext.raAuditU64[0], 64));
     RTWTxRate liveRate = {};
     owner->getTxRate(liveRate);
-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveValid", liveRate.valid));
-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMode", liveRate.mode, 8));
-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8));
-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16));
-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveNss", liveRate.nss, 8));
-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI));
-    RTW_DIAGNOSTIC(controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32));
+    IOLog("[AirportRTW RA] LIVE_RATE_CALLBACK valid=%u mode=%u mcs=%u nss=%u bw=%u bitrate100=%u sgi=%u\n", liveRate.valid, liveRate.mode, liveRate.mcs, liveRate.nss, liveRate.widthMHz, liveRate.bitrate100Kbps, liveRate.shortGI);
+    controller->setProperty("RTW88RALiveValid", liveRate.valid);
+    controller->setProperty("RTW88RALiveMode", liveRate.mode, 8);
+    controller->setProperty("RTW88RALiveMcs", liveRate.mcs, 8);
+    controller->setProperty("RTW88RALiveBandwidth", liveRate.widthMHz, 16);
+    controller->setProperty("RTW88RALiveNss", liveRate.nss, 8);
+    controller->setProperty("RTW88RALiveShortGI", liveRate.shortGI);
+    controller->setProperty("RTW88RALiveBitrate100Kbps", liveRate.bitrate100Kbps, 32);
     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseLength",
                             owner->lastAssocResponseLength, 32));
     RTW_DIAGNOSTIC(controller->setProperty("RTW88LastAssocResponseStatus",

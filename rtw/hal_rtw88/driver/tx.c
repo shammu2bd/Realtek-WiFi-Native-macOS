@@ -189,8 +189,7 @@ void rtw_tx_report_purge_timer(struct timer_list *t)
 	rtw_warn(rtwdev, "failed to get tx report from firmware\n");
 
 	spin_lock_irqsave(&tx_report->q_lock, flags);
-	rtw88_candidate_log("rtw88: TX report expired pending=%u; ACK unknown\n",
-                            skb_queue_len(&tx_report->queue));
+	rtw_warn(rtwdev, "TX report expired; pending=%u, ACK status unknown\n", skb_queue_len(&tx_report->queue));
 	skb_queue_purge(&tx_report->queue);
 	spin_unlock_irqrestore(&tx_report->q_lock, flags);
 }

@@ -1,3 +1,4 @@
+extern void IOLog(const char *format, ...);
 // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
 /* Copyright(c) 2018-2019  Realtek Corporation
  */
@@ -148,7 +149,7 @@ static void rtw_fw_ra_report_iter(void *data, struct ieee80211_sta *sta)
 	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)ra_data->payload;
 	struct rtw_sta_info *si = (struct rtw_sta_info *)sta->drv_priv;
 	u8 mac_id, rate, sgi, bw;
-	u8 mcs, nss;
+	u8 mcs = 0, nss = 0;
 	u32 bit_rate;
 
 	mac_id = ra_rpt->mac_id;
@@ -195,6 +196,11 @@ legacy:
 
 	si->ra_report.desc_rate = rate;
 	si->ra_report.bit_rate = bit_rate;
+	/* Diagnostic correlation: decoded firmware station rate. */
+	IOLog("[AirportRTW RA] RA_C2H_DECODE macid=%u desc=%u sgi=%u bw=%u "
+		 "flags=0x%x legacy=%u mcs=%u nss=%u bitrate_100kbps=%u\n",
+		 si->mac_id, rate, sgi, bw, si->ra_report.txrate.flags,
+		 si->ra_report.txrate.legacy, mcs, nss, bit_rate);
 
 	sta->deflink.agg.max_rc_amsdu_len = get_max_amsdu_len(bit_rate);
 }
@@ -202,6 +208,9 @@ legacy:
 static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
 				    u8 length)
 {
+	/* RA_HANDLER_ENTRY_DIAGNOSTIC */
+	IOLog("[AirportRTW RA] RA_HANDLER_ENTER len=%u\n", length);
+
 	struct rtw_c2h_ra_rpt *ra_rpt = (struct rtw_c2h_ra_rpt *)payload;
 	struct rtw_fw_iter_ra_data ra_data;
 
@@ -211,6 +220,15 @@ static void rtw_fw_ra_report_handle(struct rtw_dev *rtwdev, u8 *payload,
 
 	rtwdev->dm_info.tx_rate = u8_get_bits(ra_rpt->rate_sgi,
 					      RTW_C2H_RA_RPT_RATE);
+	/* Diagnostic capture: raw seven-byte C2H RA report. */
+	IOLog("[AirportRTW RA] RA_C2H_RAW len=%u bytes=%02x:%02x:%02x:%02x:%02x:%02x:%02x "
+		 "rate=%u sgi=%u macid=%u bw=%u\n",
+		 length, payload[0], payload[1], payload[2], payload[3],
+		 payload[4], payload[5], payload[6],
+		 u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_RATE),
+		 u8_get_bits(ra_rpt->rate_sgi, RTW_C2H_RA_RPT_SGI),
+		 ra_rpt->mac_id, ra_rpt->bw);
+
 	ra_data.rtwdev = rtwdev;
 	ra_data.payload = payload;
 	ra_data.length = length;
