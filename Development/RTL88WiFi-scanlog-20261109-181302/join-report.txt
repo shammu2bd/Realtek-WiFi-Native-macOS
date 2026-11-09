@@ -1,0 +1,395 @@
+RTL88WiFi report
+
+Driver
+  DriverBuild        : 1.0.11-rtl88wifi-r29-unifi-scan-lifecycle-20261109
+  AWDL_RADIO_POLICY  : disabled
+  PREFER_5GHZ_POLICY : enabled
+  RADIO_NOISE_SOURCE : estimated
+
+Most recent join request from macOS (earlier attempts: see the log below)
+  auth lower=1  (1 = Open System in the legacy Apple80211 ABI)
+  auth upper=8
+    meaning: WPA2-PSK
+  key length=32 bytes  (32 = a ready-made WPA2 key, which the driver needs)
+  SSID length=5 bytes
+  host ABI: newer 32-bit ASSOCIATE payload normalized (return n/a)
+
+  Driver answer: 0x0
+    = accepted; the join started. If it still failed, the cause is in the log below.
+
+Link now
+  interface : en1
+  status    : active
+  IPv4      : assigned
+  channel   : 157
+  signal    : -54 dBm
+
+Driver log: the buffer has wrapped, so the oldest lines are gone (kept: 348 lines)
+
+Join attempts found in the log
+  none retained in the log buffer
+  note: registry input fields exist, but no matching full ASSOCIATE log line is retained; they may describe an early-rejected request or an earlier attempt.
+
+Station MAC address changes (Private Wi-Fi address)
+  selector ingress: GET=not seen, SET=not seen, last return=n/a
+  no Private MAC requests or station-address changes in the log
+
+Uplink aggregation (A-MPDU / Block Ack)
+  no aggregation events in the log
+  latest heartbeat: uplink aggregation is ON
+  heartbeats while connected: 1, of which with aggregation OFF: 0
+
+Key rekeys and key errors
+  none in the log
+
+Driver log (newest last; times are seconds before the newest line)
+             bssids=2 watch=rate-above-trigger
+     -96.7s  rtw88: connected scan rate-limited elapsed_ms=13460 minimum_ms=15000 home_ch=157
+     -96.7s  RTL88WiFi: active-scan requests coalesced pending_bursts=16 channels=38
+     -96.7s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1540
+     -96.7s  rtw88: connected scan rate-limited elapsed_ms=13486 minimum_ms=15000 home_ch=157
+     -96.7s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1514
+     -96.7s  rtw88: connected scan rate-limited elapsed_ms=13513 minimum_ms=15000 home_ch=157
+     -96.7s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1487
+     -96.6s  rtw88: connected scan rate-limited elapsed_ms=13538 minimum_ms=15000 home_ch=157
+     -96.6s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1462
+     -96.6s  rtw88: connected scan rate-limited elapsed_ms=13566 minimum_ms=15000 home_ch=157
+     -96.6s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1434
+     -96.6s  rtw88: connected scan rate-limited elapsed_ms=13592 minimum_ms=15000 home_ch=157
+     -96.6s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1408
+     -96.5s  rtw88: connected scan rate-limited elapsed_ms=13618 minimum_ms=15000 home_ch=157
+     -96.5s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1382
+     -95.2s  rtw88: mesh ESS inventory fresh_nodes=4 cached_channels=8 home_ch=157
+     -95.2s  rtw88: mesh ESS node id=335867 ch=157 rssi=-83
+     -95.2s  rtw88: mesh ESS node id=45b117 ch=157 rssi=-75
+     -95.2s  rtw88: mesh ESS node id=e7db71 ch=1 rssi=-76
+     -95.2s  rtw88: mesh ESS node id=e6fcd6 ch=1 rssi=-76
+     -95.2s  rtw88: scan start returnState=5 connected=1 partial=1
+     -95.2s  rtw88: mesh scan slice selected_ch=5 candidate_channels=8 same_band=0 cross_band=8 cursor=5 peers=4 dwell_channels=1
+     -95.2s  rtw88: connected scan using bounded software channel scan (1 channels)
+     -95.2s  RTL88WiFi: pending scan dispatched channels=38 bursts=22
+     -95.2s  rtw88: scan worker enter connected=1 channels=1
+     -95.2s  rtw88: scan worker radio-prepared connected=1
+     -95.2s  rtw88: scan worker channel-begin index=1/1 ch=5 band=0 passive=0
+     -95.2s  rtw88: scan worker channel-switched ch=5
+     -95.1s  rtw88: scan worker dwell-complete ch=5 dwell_ms=35
+     -95.1s  rtw88: scan worker home-restored home_ch=157 scanned_ch=5
+     -95.0s  rtw88: scan worker finalize aborted=0 visited_2g=1 visited_5g=0
+     -95.0s  rtw88: scan worker core-complete enter stage=7 raw_state=1
+     -95.0s  rtw88: scan worker core-complete returned raw_state=1
+     -95.0s  rtw88: scanDone enter aborted=0 manual_finalizer=1 return_state=5 home_ch=157
+     -95.0s  rtw88: mesh scan slice done ch=5 candidates=8 elapsed_ms=129 aborted=0 home_ch=157
+     -95.0s  RTL88WiFi: scan completion delivered aborted=0 backend_state=5 pending=0 pending_bursts=0
+     -95.0s  rtw88: scan worker scanDone returned raw_state=5 stage=7
+     -92.3s  rtw88: mesh rate transition kbps=234000 vht=1 mcs=5 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-54 peer_bssids=2 watch=rate-above-trigger
+     -90.0s  rtw88: connected scan rate-limited elapsed_ms=5155 minimum_ms=15000 home_ch=157
+     -90.0s  RTL88WiFi: scan request saved as one pending follow-up channels=0
+     -90.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=9845
+     -87.3s  rtw88: mesh rate transition kbps=175500 vht=1 mcs=4 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-45 peer_bssids=2 watch=rate-above-trigger
+     -83.2s  rtw88: connected scan rate-limited elapsed_ms=11964 minimum_ms=15000 home_ch=157
+     -83.2s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=3036
+     -83.2s  rtw88: connected scan rate-limited elapsed_ms=11997 minimum_ms=15000 home_ch=157
+     -83.2s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=3003
+     -83.1s  rtw88: connected scan rate-limited elapsed_ms=12034 minimum_ms=15000 home_ch=157
+     -83.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=2966
+     -83.1s  rtw88: connected scan rate-limited elapsed_ms=12067 minimum_ms=15000 home_ch=157
+     -83.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=2933
+     -83.1s  rtw88: connected scan rate-limited elapsed_ms=12096 minimum_ms=15000 home_ch=157
+     -83.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=2904
+     -83.0s  rtw88: connected scan rate-limited elapsed_ms=12125 minimum_ms=15000 home_ch=157
+     -83.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=2875
+     -83.0s  rtw88: connected scan rate-limited elapsed_ms=12151 minimum_ms=15000 home_ch=157
+     -83.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=2849
+     -82.3s  rtw88: mesh rate transition kbps=263250 vht=1 mcs=6 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-49 peer_bssids=2 watch=rate-above-trigger
+     -80.2s  rtw88: mesh ESS inventory fresh_nodes=2 cached_channels=8 home_ch=157
+     -80.2s  rtw88: mesh ESS node id=335867 ch=157 rssi=-79
+     -80.2s  rtw88: mesh ESS node id=45b117 ch=157 rssi=-75
+     -80.2s  rtw88: scan start returnState=5 connected=1 partial=1
+     -80.2s  rtw88: mesh scan slice selected_ch=6 candidate_channels=8 same_band=0 cross_band=8 cursor=6 peers=2 dwell_channels=1
+     -80.2s  rtw88: connected scan using bounded software channel scan (1 channels)
+     -80.2s  RTL88WiFi: pending scan dispatched channels=38 bursts=8
+     -80.2s  rtw88: scan worker enter connected=1 channels=1
+     -80.2s  rtw88: scan worker radio-prepared connected=1
+     -80.2s  rtw88: scan worker channel-begin index=1/1 ch=6 band=0 passive=0
+     -80.1s  rtw88: scan worker channel-switched ch=6
+     -80.1s  rtw88: scan worker dwell-complete ch=6 dwell_ms=35
+     -80.1s  rtw88: scan worker home-restored home_ch=157 scanned_ch=6
+     -80.0s  rtw88: scan worker finalize aborted=0 visited_2g=1 visited_5g=0
+     -80.0s  rtw88: scan worker core-complete enter stage=7 raw_state=1
+     -80.0s  rtw88: scan worker core-complete returned raw_state=1
+     -80.0s  rtw88: scanDone enter aborted=0 manual_finalizer=1 return_state=5 home_ch=157
+     -80.0s  rtw88: mesh scan slice done ch=6 candidates=8 elapsed_ms=130 aborted=0 home_ch=157
+     -80.0s  RTL88WiFi: scan completion delivered aborted=0 backend_state=5 pending=0 pending_bursts=0
+     -80.0s  rtw88: scan worker scanDone returned raw_state=5 stage=7
+     -76.9s  rtw88: connected scan rate-limited elapsed_ms=3298 minimum_ms=15000 home_ch=157
+     -76.9s  RTL88WiFi: scan request saved as one pending follow-up channels=6
+     -76.9s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=11702
+     -76.8s  rtw88: connected scan rate-limited elapsed_ms=3327 minimum_ms=15000 home_ch=157
+     -76.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=11673
+     -76.8s  rtw88: connected scan rate-limited elapsed_ms=3353 minimum_ms=15000 home_ch=157
+     -76.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=11647
+     -76.8s  rtw88: connected scan rate-limited elapsed_ms=3379 minimum_ms=15000 home_ch=157
+     -76.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=11621
+     -76.8s  rtw88: connected scan rate-limited elapsed_ms=3406 minimum_ms=15000 home_ch=157
+     -76.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=11594
+     -76.7s  rtw88: connected scan rate-limited elapsed_ms=3431 minimum_ms=15000 home_ch=157
+     -76.7s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=11569
+     -76.7s  rtw88: connected scan rate-limited elapsed_ms=3456 minimum_ms=15000 home_ch=157
+     -76.7s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=11544
+     -75.0s  rtw88: connected scan rate-limited elapsed_ms=5156 minimum_ms=15000 home_ch=157
+     -75.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=9844
+     -70.6s  rtw88: connected scan rate-limited elapsed_ms=9610 minimum_ms=15000 home_ch=157
+     -70.6s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=5390
+     -70.5s  rtw88: connected scan rate-limited elapsed_ms=9636 minimum_ms=15000 home_ch=157
+     -70.5s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=5364
+     -70.5s  rtw88: connected scan rate-limited elapsed_ms=9661 minimum_ms=15000 home_ch=157
+     -70.5s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=5339
+     -70.5s  rtw88: connected scan rate-limited elapsed_ms=9686 minimum_ms=15000 home_ch=157
+     -70.5s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=5314
+     -70.4s  rtw88: connected scan rate-limited elapsed_ms=9714 minimum_ms=15000 home_ch=157
+     -70.4s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=5286
+     -70.4s  rtw88: connected scan rate-limited elapsed_ms=9742 minimum_ms=15000 home_ch=157
+     -70.4s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=5258
+     -70.4s  rtw88: connected scan rate-limited elapsed_ms=9768 minimum_ms=15000 home_ch=157
+     -70.4s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=5232
+     -67.3s  rtw88: mesh rate transition kbps=175500 vht=1 mcs=4 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-46 peer_bssids=2 watch=rate-above-trigger
+     -65.2s  rtw88: mesh ESS inventory fresh_nodes=3 cached_channels=8 home_ch=157
+     -65.2s  rtw88: mesh ESS node id=335867 ch=157 rssi=-78
+     -65.2s  rtw88: mesh ESS node id=45b117 ch=157 rssi=-75
+     -65.2s  rtw88: mesh ESS node id=e7db89 ch=6 rssi=-54
+     -65.2s  rtw88: scan start returnState=5 connected=1 partial=1
+     -65.2s  rtw88: mesh scan slice selected_ch=7 candidate_channels=8 same_band=0 cross_band=8 cursor=7 peers=3 dwell_channels=1
+     -65.2s  rtw88: connected scan using bounded software channel scan (1 channels)
+     -65.2s  RTL88WiFi: pending scan dispatched channels=38 bursts=15
+     -65.2s  rtw88: scan worker enter connected=1 channels=1
+     -65.2s  rtw88: scan worker radio-prepared connected=1
+     -65.2s  rtw88: scan worker channel-begin index=1/1 ch=7 band=0 passive=0
+     -65.1s  rtw88: scan worker channel-switched ch=7
+     -65.1s  rtw88: scan worker dwell-complete ch=7 dwell_ms=35
+     -65.1s  rtw88: scan worker home-restored home_ch=157 scanned_ch=7
+     -65.0s  rtw88: scan worker finalize aborted=0 visited_2g=1 visited_5g=0
+     -65.0s  rtw88: scan worker core-complete enter stage=7 raw_state=1
+     -65.0s  rtw88: scan worker core-complete returned raw_state=1
+     -65.0s  rtw88: scanDone enter aborted=0 manual_finalizer=1 return_state=5 home_ch=157
+     -65.0s  rtw88: mesh scan slice done ch=7 candidates=8 elapsed_ms=128 aborted=0 home_ch=157
+     -65.0s  RTL88WiFi: scan completion delivered aborted=0 backend_state=5 pending=0 pending_bursts=0
+     -65.0s  rtw88: scan worker scanDone returned raw_state=5 stage=7
+     -64.3s  rtw88: connected scan rate-limited elapsed_ms=821 minimum_ms=15000 home_ch=157
+     -64.3s  RTL88WiFi: scan request saved as one pending follow-up channels=6
+     -64.3s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=14179
+     -64.3s  rtw88: connected scan rate-limited elapsed_ms=847 minimum_ms=15000 home_ch=157
+     -64.3s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=14153
+     -64.3s  rtw88: connected scan rate-limited elapsed_ms=877 minimum_ms=15000 home_ch=157
+     -64.3s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=14123
+     -64.3s  rtw88: connected scan rate-limited elapsed_ms=905 minimum_ms=15000 home_ch=157
+     -64.3s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=14095
+     -64.2s  rtw88: connected scan rate-limited elapsed_ms=933 minimum_ms=15000 home_ch=157
+     -64.2s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=14067
+     -64.2s  rtw88: connected scan rate-limited elapsed_ms=961 minimum_ms=15000 home_ch=157
+     -64.2s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=14039
+     -64.2s  rtw88: connected scan rate-limited elapsed_ms=990 minimum_ms=15000 home_ch=157
+     -64.2s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=14010
+     -62.3s  rtw88: mesh rate transition kbps=263250 vht=1 mcs=6 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-50 peer_bssids=2 watch=rate-above-trigger
+     -60.0s  rtw88: connected scan rate-limited elapsed_ms=5156 minimum_ms=15000 home_ch=157
+     -60.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=9844
+     -58.1s  rtw88: connected scan rate-limited elapsed_ms=7065 minimum_ms=15000 home_ch=157
+     -58.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=7935
+     -58.1s  rtw88: connected scan rate-limited elapsed_ms=7099 minimum_ms=15000 home_ch=157
+     -58.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=7901
+     -58.0s  rtw88: connected scan rate-limited elapsed_ms=7124 minimum_ms=15000 home_ch=157
+     -58.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=7876
+     -58.0s  rtw88: connected scan rate-limited elapsed_ms=7149 minimum_ms=15000 home_ch=157
+     -58.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=7851
+     -58.0s  rtw88: connected scan rate-limited elapsed_ms=7175 minimum_ms=15000 home_ch=157
+     -58.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=7825
+     -58.0s  rtw88: connected scan rate-limited elapsed_ms=7199 minimum_ms=15000 home_ch=157
+     -58.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=7801
+     -57.9s  rtw88: connected scan rate-limited elapsed_ms=7225 minimum_ms=15000 home_ch=157
+     -57.9s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=7775
+     -57.3s  rtw88: mesh rate transition kbps=27000 vht=1 mcs=1 nss=1 tx_bw=40 home_bw=80 sgi=0 rssi=-54 peer_bssids=2 watch=rate-above-trigger
+     -51.9s  rtw88: connected scan rate-limited elapsed_ms=13290 minimum_ms=15000 home_ch=157
+     -51.9s  RTL88WiFi: active-scan requests coalesced pending_bursts=16 channels=38
+     -51.9s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1710
+     -51.8s  rtw88: connected scan rate-limited elapsed_ms=13316 minimum_ms=15000 home_ch=157
+     -51.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1684
+     -51.8s  rtw88: connected scan rate-limited elapsed_ms=13341 minimum_ms=15000 home_ch=157
+     -51.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1659
+     -51.8s  rtw88: connected scan rate-limited elapsed_ms=13368 minimum_ms=15000 home_ch=157
+     -51.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1632
+     -51.8s  rtw88: connected scan rate-limited elapsed_ms=13395 minimum_ms=15000 home_ch=157
+     -51.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1605
+     -51.7s  rtw88: connected scan rate-limited elapsed_ms=13422 minimum_ms=15000 home_ch=157
+     -51.7s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1578
+     -51.7s  rtw88: connected scan rate-limited elapsed_ms=13447 minimum_ms=15000 home_ch=157
+     -51.7s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=1552
+     -50.2s  rtw88: mesh ESS inventory fresh_nodes=4 cached_channels=8 home_ch=157
+     -50.2s  rtw88: mesh ESS node id=335867 ch=157 rssi=-78
+     -50.2s  rtw88: mesh ESS node id=45b117 ch=157 rssi=-80
+     -50.2s  rtw88: mesh ESS node id=e7d821 ch=6 rssi=-72
+     -50.2s  rtw88: mesh ESS node id=e7db89 ch=6 rssi=-54
+     -50.2s  rtw88: scan start returnState=5 connected=1 partial=1
+     -50.2s  rtw88: mesh scan slice selected_ch=11 candidate_channels=8 same_band=0 cross_band=8 cursor=0 peers=4 dwell_channels=1
+     -50.2s  rtw88: connected scan using bounded software channel scan (1 channels)
+     -50.2s  RTL88WiFi: pending scan dispatched channels=38 bursts=22
+     -50.2s  rtw88: scan worker enter connected=1 channels=1
+     -50.2s  rtw88: scan worker radio-prepared connected=1
+     -50.2s  rtw88: scan worker channel-begin index=1/1 ch=11 band=0 passive=0
+     -50.1s  rtw88: scan worker channel-switched ch=11
+     -50.1s  rtw88: scan worker dwell-complete ch=11 dwell_ms=35
+     -50.1s  rtw88: scan worker home-restored home_ch=157 scanned_ch=11
+     -50.0s  rtw88: scan worker finalize aborted=0 visited_2g=1 visited_5g=0
+     -50.0s  rtw88: scan worker core-complete enter stage=7 raw_state=1
+     -50.0s  rtw88: scan worker core-complete returned raw_state=1
+     -50.0s  rtw88: scanDone enter aborted=0 manual_finalizer=1 return_state=5 home_ch=157
+     -50.0s  rtw88: mesh scan slice done ch=11 candidates=8 elapsed_ms=128 aborted=0 home_ch=157
+     -50.0s  RTL88WiFi: scan completion delivered aborted=0 backend_state=5 pending=0 pending_bursts=0
+     -50.0s  rtw88: scan worker scanDone returned raw_state=5 stage=7
+     -47.3s  rtw88: mesh rate transition kbps=87750 vht=1 mcs=2 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-54 peer_bssids=2 watch=rate-above-trigger
+     -45.6s  rtw88: connected scan rate-limited elapsed_ms=4513 minimum_ms=15000 home_ch=157
+     -45.6s  RTL88WiFi: scan request saved as one pending follow-up channels=6
+     -45.6s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=10487
+     -45.6s  rtw88: connected scan rate-limited elapsed_ms=4546 minimum_ms=15000 home_ch=157
+     -45.6s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=10454
+     -45.6s  rtw88: connected scan rate-limited elapsed_ms=4572 minimum_ms=15000 home_ch=157
+     -45.6s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=10428
+     -45.6s  rtw88: connected scan rate-limited elapsed_ms=4598 minimum_ms=15000 home_ch=157
+     -45.6s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=10402
+     -45.5s  rtw88: connected scan rate-limited elapsed_ms=4629 minimum_ms=15000 home_ch=157
+     -45.5s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=10371
+     -45.5s  rtw88: connected scan rate-limited elapsed_ms=4656 minimum_ms=15000 home_ch=157
+     -45.5s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=10344
+     -45.5s  rtw88: connected scan rate-limited elapsed_ms=4688 minimum_ms=15000 home_ch=157
+     -45.5s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=10312
+     -45.0s  rtw88: connected scan rate-limited elapsed_ms=5151 minimum_ms=15000 home_ch=157
+     -45.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=9849
+     -42.3s  rtw88: DIAG sample=173 state=5 visible=1 agg=1 rx_frames=331 be_avail=255 stalled=0 txq=0 txcap=256 txpeak=0 txout=86538 txretry=360 gated=0 gates=0 qdrop=11198 qstall=360
+     -42.3s  rtw88: mesh rate transition kbps=117000 vht=1 mcs=3 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-45 peer_bssids=2 watch=rate-above-trigger
+     -42.3s  rtw88: TXSTATE BE hw_wp=183 hw_rp=183 sw_wp=183 sw_rp=183 qlen=0 TXDMA_ST=0x00000000 PKT_EMPTY=0x0fff BD[rp]:dma0=0x75da2000 dma1=0x75da2030 sz0=48 sz1=94 psb=0x0002 RX_rp=448 RX_hwwp=448 HISR0=0xe1100002 HISR3=0x00000001 BEDOK_p=0
+     -39.4s  rtw88: connected scan rate-limited elapsed_ms=10743 minimum_ms=15000 home_ch=157
+     -39.4s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=4257
+     -39.4s  rtw88: connected scan rate-limited elapsed_ms=10769 minimum_ms=15000 home_ch=157
+     -39.4s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=4231
+     -39.4s  rtw88: connected scan rate-limited elapsed_ms=10799 minimum_ms=15000 home_ch=157
+     -39.4s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=4201
+     -39.3s  rtw88: connected scan rate-limited elapsed_ms=10827 minimum_ms=15000 home_ch=157
+     -39.3s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=4173
+     -39.3s  rtw88: connected scan rate-limited elapsed_ms=10852 minimum_ms=15000 home_ch=157
+     -39.3s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=4148
+     -39.3s  rtw88: connected scan rate-limited elapsed_ms=10880 minimum_ms=15000 home_ch=157
+     -39.3s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=4120
+     -39.3s  rtw88: connected scan rate-limited elapsed_ms=10906 minimum_ms=15000 home_ch=157
+     -39.3s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=4094
+     -37.3s  rtw88: mesh rate transition kbps=234000 vht=1 mcs=5 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-45 peer_bssids=2 watch=rate-above-trigger
+     -35.2s  rtw88: mesh ESS inventory fresh_nodes=4 cached_channels=8 home_ch=157
+     -35.2s  rtw88: mesh ESS node id=335867 ch=157 rssi=-80
+     -35.2s  rtw88: mesh ESS node id=45b117 ch=157 rssi=-78
+     -35.2s  rtw88: mesh ESS node id=e7d821 ch=6 rssi=-72
+     -35.2s  rtw88: mesh ESS node id=e7db89 ch=6 rssi=-54
+     -35.2s  rtw88: scan start returnState=5 connected=1 partial=1
+     -35.2s  rtw88: mesh scan slice selected_ch=1 candidate_channels=8 same_band=0 cross_band=8 cursor=1 peers=4 dwell_channels=1
+     -35.2s  rtw88: connected scan using bounded software channel scan (1 channels)
+     -35.2s  RTL88WiFi: pending scan dispatched channels=38 bursts=15
+     -35.2s  rtw88: scan worker enter connected=1 channels=1
+     -35.2s  rtw88: scan worker radio-prepared connected=1
+     -35.2s  rtw88: scan worker channel-begin index=1/1 ch=1 band=0 passive=0
+     -35.1s  rtw88: scan worker channel-switched ch=1
+     -35.1s  rtw88: scan worker dwell-complete ch=1 dwell_ms=35
+     -35.1s  rtw88: scan worker home-restored home_ch=157 scanned_ch=1
+     -35.0s  rtw88: scan worker finalize aborted=0 visited_2g=1 visited_5g=0
+     -35.0s  rtw88: scan worker core-complete enter stage=7 raw_state=1
+     -35.0s  rtw88: scan worker core-complete returned raw_state=1
+     -35.0s  rtw88: scanDone enter aborted=0 manual_finalizer=1 return_state=5 home_ch=157
+     -35.0s  rtw88: mesh scan slice done ch=1 candidates=8 elapsed_ms=129 aborted=0 home_ch=157
+     -35.0s  RTL88WiFi: scan completion delivered aborted=0 backend_state=5 pending=0 pending_bursts=0
+     -35.0s  rtw88: scan worker scanDone returned raw_state=5 stage=7
+     -33.2s  rtw88: connected scan rate-limited elapsed_ms=1978 minimum_ms=15000 home_ch=157
+     -33.2s  RTL88WiFi: scan request saved as one pending follow-up channels=6
+     -33.2s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=13022
+     -33.1s  rtw88: connected scan rate-limited elapsed_ms=2013 minimum_ms=15000 home_ch=157
+     -33.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=12987
+     -33.1s  rtw88: connected scan rate-limited elapsed_ms=2038 minimum_ms=15000 home_ch=157
+     -33.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=12962
+     -33.1s  rtw88: connected scan rate-limited elapsed_ms=2063 minimum_ms=15000 home_ch=157
+     -33.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=12937
+     -33.1s  rtw88: connected scan rate-limited elapsed_ms=2090 minimum_ms=15000 home_ch=157
+     -33.1s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=12910
+     -33.0s  rtw88: connected scan rate-limited elapsed_ms=2115 minimum_ms=15000 home_ch=157
+     -33.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=12885
+     -33.0s  rtw88: connected scan rate-limited elapsed_ms=2142 minimum_ms=15000 home_ch=157
+     -33.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=12858
+     -32.3s  rtw88: mesh rate transition kbps=263250 vht=1 mcs=6 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-45 peer_bssids=2 watch=rate-above-trigger
+     -30.0s  rtw88: connected scan rate-limited elapsed_ms=5157 minimum_ms=15000 home_ch=157
+     -30.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=9843
+     -27.3s  rtw88: mesh rate transition kbps=87750 vht=1 mcs=2 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-49 peer_bssids=2 watch=rate-above-trigger
+     -27.0s  rtw88: connected scan rate-limited elapsed_ms=8200 minimum_ms=15000 home_ch=157
+     -27.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=6800
+     -26.9s  rtw88: connected scan rate-limited elapsed_ms=8227 minimum_ms=15000 home_ch=157
+     -26.9s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=6773
+     -26.9s  rtw88: connected scan rate-limited elapsed_ms=8252 minimum_ms=15000 home_ch=157
+     -26.9s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=6748
+     -26.9s  rtw88: connected scan rate-limited elapsed_ms=8277 minimum_ms=15000 home_ch=157
+     -26.9s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=6723
+     -26.9s  rtw88: connected scan rate-limited elapsed_ms=8304 minimum_ms=15000 home_ch=157
+     -26.9s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=6696
+     -26.8s  rtw88: connected scan rate-limited elapsed_ms=8331 minimum_ms=15000 home_ch=157
+     -26.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=6669
+     -26.8s  rtw88: connected scan rate-limited elapsed_ms=8357 minimum_ms=15000 home_ch=157
+     -26.8s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=6643
+     -22.3s  rtw88: mesh rate transition kbps=117000 vht=1 mcs=3 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-54 peer_bssids=2 watch=rate-above-trigger
+     -20.2s  rtw88: mesh ESS inventory fresh_nodes=5 cached_channels=8 home_ch=157
+     -20.2s  rtw88: mesh ESS node id=335867 ch=157 rssi=-81
+     -20.2s  rtw88: mesh ESS node id=45b117 ch=157 rssi=-78
+     -20.2s  rtw88: mesh ESS node id=e7d821 ch=6 rssi=-72
+     -20.2s  rtw88: mesh ESS node id=e7db89 ch=6 rssi=-54
+     -20.2s  rtw88: mesh ESS node id=e6fcd6 ch=1 rssi=-76
+     -20.2s  rtw88: scan start returnState=5 connected=1 partial=1
+     -20.2s  rtw88: mesh scan slice selected_ch=2 candidate_channels=8 same_band=0 cross_band=8 cursor=2 peers=5 dwell_channels=1
+     -20.2s  rtw88: connected scan using bounded software channel scan (1 channels)
+     -20.2s  RTL88WiFi: pending scan dispatched channels=38 bursts=15
+     -20.2s  rtw88: scan worker enter connected=1 channels=1
+     -20.2s  rtw88: scan worker radio-prepared connected=1
+     -20.2s  rtw88: scan worker channel-begin index=1/1 ch=2 band=0 passive=0
+     -20.1s  rtw88: scan worker channel-switched ch=2
+     -20.1s  rtw88: scan worker dwell-complete ch=2 dwell_ms=35
+     -20.1s  rtw88: scan worker home-restored home_ch=157 scanned_ch=2
+     -20.0s  rtw88: scan worker finalize aborted=0 visited_2g=1 visited_5g=0
+     -20.0s  rtw88: scan worker core-complete enter stage=7 raw_state=1
+     -20.0s  rtw88: scan worker core-complete returned raw_state=1
+     -20.0s  rtw88: scanDone enter aborted=0 manual_finalizer=1 return_state=5 home_ch=157
+     -20.0s  rtw88: mesh scan slice done ch=2 candidates=8 elapsed_ms=130 aborted=0 home_ch=157
+     -20.0s  RTL88WiFi: scan completion delivered aborted=0 backend_state=5 pending=0 pending_bursts=0
+     -20.0s  rtw88: scan worker scanDone returned raw_state=5 stage=7
+     -17.3s  rtw88: mesh rate transition kbps=234000 vht=1 mcs=5 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-54 peer_bssids=2 watch=rate-above-trigger
+     -15.0s  rtw88: connected scan rate-limited elapsed_ms=5155 minimum_ms=15000 home_ch=157
+     -15.0s  RTL88WiFi: scan request saved as one pending follow-up channels=0
+     -15.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=9845
+     -12.3s  rtw88: mesh rate transition kbps=175500 vht=1 mcs=4 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-54 peer_bssids=2 watch=rate-above-trigger
+      -7.3s  rtw88: mesh rate transition kbps=234000 vht=1 mcs=5 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-45 peer_bssids=2 watch=rate-above-trigger
+      -5.2s  rtw88: mesh ESS inventory fresh_nodes=4 cached_channels=2 home_ch=157
+      -5.2s  rtw88: mesh ESS node id=335867 ch=157 rssi=-81
+      -5.2s  rtw88: mesh ESS node id=45b117 ch=157 rssi=-80
+      -5.2s  rtw88: mesh ESS node id=e7d821 ch=6 rssi=-72
+      -5.2s  rtw88: mesh ESS node id=e6fcd6 ch=1 rssi=-76
+      -5.2s  rtw88: scan start returnState=5 connected=1 partial=1
+      -5.2s  rtw88: mesh scan slice selected_ch=1 candidate_channels=2 same_band=0 cross_band=2 cursor=1 peers=4 dwell_channels=1
+      -5.2s  rtw88: connected scan using bounded software channel scan (1 channels)
+      -5.2s  RTL88WiFi: pending scan dispatched channels=0 bursts=1
+      -5.2s  rtw88: scan worker enter connected=1 channels=1
+      -5.2s  rtw88: scan worker radio-prepared connected=1
+      -5.2s  rtw88: scan worker channel-begin index=1/1 ch=1 band=0 passive=0
+      -5.1s  rtw88: scan worker channel-switched ch=1
+      -5.1s  rtw88: scan worker dwell-complete ch=1 dwell_ms=35
+      -5.1s  rtw88: scan worker home-restored home_ch=157 scanned_ch=1
+      -5.0s  rtw88: scan worker finalize aborted=0 visited_2g=1 visited_5g=0
+      -5.0s  rtw88: scan worker core-complete enter stage=7 raw_state=1
+      -5.0s  rtw88: scan worker core-complete returned raw_state=1
+      -5.0s  rtw88: scanDone enter aborted=0 manual_finalizer=1 return_state=5 home_ch=157
+      -5.0s  rtw88: mesh scan slice done ch=1 candidates=2 elapsed_ms=129 aborted=0 home_ch=157
+      -5.0s  RTL88WiFi: scan completion delivered aborted=0 backend_state=5 pending=0 pending_bursts=0
+      -5.0s  rtw88: scan worker scanDone returned raw_state=5 stage=7
+      -2.3s  rtw88: mesh rate transition kbps=175500 vht=1 mcs=4 nss=1 tx_bw=80 home_bw=80 sgi=0 rssi=-54 peer_bssids=2 watch=rate-above-trigger
+      -0.0s  rtw88: connected scan rate-limited elapsed_ms=5157 minimum_ms=15000 home_ch=157
+      -0.0s  RTL88WiFi: scan request saved as one pending follow-up channels=0
+      +0.0s  RTL88WiFi: SCAN_REQ deferred by connected-scan throttle remaining_ms=9843
+
+---- end: please paste everything above ----
